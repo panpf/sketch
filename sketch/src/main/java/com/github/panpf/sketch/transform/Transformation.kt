@@ -15,6 +15,7 @@ interface Transformation {
      * The key is added to the image request's memory cache key and should contain any params that
      * are part of this transformation (e.g. size, scale, color, radius, etc.).
      */
+    // todo rename to contentKey
     val cacheKey: String
 
     /**
@@ -26,3 +27,17 @@ interface Transformation {
      */
     suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): TransformResult?
 }
+
+
+fun List<Transformation>?.merge(other: List<Transformation>?): List<Transformation>? =
+    if (this != null) {
+        if (other != null) {
+            this.plus(other).distinctBy {
+                it.cacheKey
+            }
+        } else {
+            this
+        }
+    } else {
+        other
+    }

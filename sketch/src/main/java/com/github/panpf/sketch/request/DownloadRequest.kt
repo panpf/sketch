@@ -5,10 +5,12 @@ import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.http.merge
 import com.github.panpf.sketch.request.DownloadRequest.Builder
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
+import com.github.panpf.sketch.sketch
 
 fun DownloadRequest(
     context: Context,
@@ -34,69 +36,89 @@ interface DownloadRequest : ImageRequest {
     val networkContentDiskCachePolicy: CachePolicy
     val progressListener: ProgressListener<ImageRequest>?
 
+    val globalOptions: DownloadOptions?
+    val definedOptions: DownloadOptions
+
     fun newDownloadRequest(
+        context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
-    ): DownloadRequest = Builder(this).apply {
+    ): DownloadRequest = Builder(context, this).apply {
         configBlock?.invoke(this)
     }.build()
 
     fun newDownloadRequestBuilder(
+        context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
-    ): Builder = Builder(this).apply {
+    ): Builder = Builder(context, this).apply {
         configBlock?.invoke(this)
     }
 
-    open class Builder(context: Context, private val uriString: String) {
+    open class Builder {
 
-        private val context: Context = context.applicationContext
-        private var depth: RequestDepth? = null
-        private var parametersBuilder: Parameters.Builder? = null
+        private val context: Context
+        private val uriString: String
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
-
-        private var httpHeaders: HttpHeaders.Builder? = null
-        private var networkContentDiskCachePolicy: CachePolicy? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
 
-        internal constructor(request: DownloadRequest, context: Context = request.context)
-                : this(context, request.uriString) {
+        private var globalOptions: DownloadOptions? = null
+
+        private var depth: RequestDepth? = null
+        private var parametersBuilder: Parameters.Builder? = null
+        private var httpHeaders: HttpHeaders.Builder? = null
+        private var networkContentDiskCachePolicy: CachePolicy? = null
+
+        constructor(context: Context, uriString: String) {
+            this.context = context.applicationContext
+            this.uriString = uriString
+
+            this.globalOptions = context.sketch.globalDownloadOptions
+        }
+
+        internal constructor(context: Context, request: DownloadRequest) {
+            this.context = context.applicationContext
+            this.uriString = request.uriString
+            this.listener = request.listener
+            this.progressListener = request.progressListener
+
+            this.globalOptions = request.globalOptions
+
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
-            this.listener = request.listener
-
             this.httpHeaders = request.httpHeaders?.newBuilder()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
-            this.progressListener = request.progressListener
         }
 
-        fun options(options: DownloadOptions, requestFirst: Boolean = false): Builder = apply {
-            if (!requestFirst || this.depth == null) {
-                options.depth?.let {
-                    this.depth = it
-                }
+        fun listener(listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>?): Builder =
+            apply {
+                @Suppress("UNCHECKED_CAST")
+                this.listener = listener as Listener<ImageRequest, ImageResult, ImageResult>?
             }
-            options.parameters?.takeIf { it.isNotEmpty() }?.let {
-                it.forEach { entry ->
-                    if (!requestFirst || parametersBuilder?.exist(entry.first) != true) {
-                        setParameter(entry.first, entry.second.value, entry.second.cacheKey)
-                    }
-                }
+
+        /**
+         * Convenience function to create and set the [Listener].
+         */
+        inline fun listener(
+            crossinline onStart: (request: DownloadRequest) -> Unit = {},
+            crossinline onCancel: (request: DownloadRequest) -> Unit = {},
+            crossinline onError: (request: DownloadRequest, result: DownloadResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: DownloadRequest, result: DownloadResult.Success) -> Unit = { _, _ -> }
+        ): Builder = listener(object :
+            Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
+            override fun onStart(request: DownloadRequest) = onStart(request)
+            override fun onCancel(request: DownloadRequest) = onCancel(request)
+            override fun onError(request: DownloadRequest, result: DownloadResult.Error) =
+                onError(request, result)
+
+            override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) =
+                onSuccess(request, result)
+        })
+
+        fun progressListener(progressListener: ProgressListener<DownloadRequest>?): Builder =
+            apply {
+                @Suppress("UNCHECKED_CAST")
+                this.progressListener =
+                    progressListener as ProgressListener<ImageRequest>?
             }
-            options.httpHeaders?.takeIf { !it.isEmpty() }?.let { headers ->
-                headers.addList.forEach {
-                    addHttpHeader(it.first, it.second)
-                }
-                headers.setList.forEach {
-                    if (!requestFirst || httpHeaders?.setExist(it.first) != true) {
-                        setHttpHeader(it.first, it.second)
-                    }
-                }
-            }
-            if (!requestFirst || this.networkContentDiskCachePolicy == null) {
-                options.networkContentDiskCachePolicy?.let {
-                    this.networkContentDiskCachePolicy = it
-                }
-            }
-        }
 
         fun depth(depth: RequestDepth?): Builder = apply {
             this.depth = depth
@@ -170,59 +192,72 @@ interface DownloadRequest : ImageRequest {
                 this.networkContentDiskCachePolicy = networkContentDiskCachePolicy
             }
 
-        fun listener(listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                this.listener = listener as Listener<ImageRequest, ImageResult, ImageResult>?
+        fun options(options: DownloadOptions, requestFirst: Boolean = false): Builder = apply {
+            if (!requestFirst || this.depth == null) {
+                options.depth?.let {
+                    this.depth = it
+                }
             }
-
-        /**
-         * Convenience function to create and set the [Listener].
-         */
-        inline fun listener(
-            crossinline onStart: (request: DownloadRequest) -> Unit = {},
-            crossinline onCancel: (request: DownloadRequest) -> Unit = {},
-            crossinline onError: (request: DownloadRequest, result: DownloadResult.Error) -> Unit = { _, _ -> },
-            crossinline onSuccess: (request: DownloadRequest, result: DownloadResult.Success) -> Unit = { _, _ -> }
-        ): Builder = listener(object :
-            Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
-            override fun onStart(request: DownloadRequest) = onStart(request)
-            override fun onCancel(request: DownloadRequest) = onCancel(request)
-            override fun onError(request: DownloadRequest, result: DownloadResult.Error) =
-                onError(request, result)
-
-            override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) =
-                onSuccess(request, result)
-        })
-
-        fun progressListener(progressListener: ProgressListener<DownloadRequest>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                this.progressListener =
-                    progressListener as ProgressListener<ImageRequest>?
+            options.parameters?.takeIf { it.isNotEmpty() }?.let {
+                it.forEach { entry ->
+                    if (!requestFirst || parametersBuilder?.exist(entry.first) != true) {
+                        setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+                    }
+                }
             }
+            options.httpHeaders?.takeIf { !it.isEmpty() }?.let { headers ->
+                headers.addList.forEach {
+                    addHttpHeader(it.first, it.second)
+                }
+                headers.setList.forEach {
+                    if (!requestFirst || httpHeaders?.setExist(it.first) != true) {
+                        setHttpHeader(it.first, it.second)
+                    }
+                }
+            }
+            if (!requestFirst || this.networkContentDiskCachePolicy == null) {
+                options.networkContentDiskCachePolicy?.let {
+                    this.networkContentDiskCachePolicy = it
+                }
+            }
+        }
 
         fun build(): DownloadRequest = DownloadRequestImpl(
             context = context,
             uriString = uriString,
-            depth = depth ?: NETWORK,
-            parameters = parametersBuilder?.build(),
-            httpHeaders = httpHeaders?.build(),
-            networkContentDiskCachePolicy = networkContentDiskCachePolicy ?: ENABLED,
             listener = listener,
             progressListener = progressListener,
+            globalOptions = globalOptions,
+            definedOptions = DownloadOptions {
+                depth(depth)
+                parameters(parametersBuilder?.build())
+                httpHeaders(httpHeaders?.build())
+                networkContentDiskCachePolicy(networkContentDiskCachePolicy)
+            },
+            depth = depth
+                ?: globalOptions?.depth
+                ?: NETWORK,
+            parameters = parametersBuilder?.build()
+                .merge(globalOptions?.parameters),
+            httpHeaders = httpHeaders?.build()
+                .merge(globalOptions?.httpHeaders),
+            networkContentDiskCachePolicy = networkContentDiskCachePolicy
+                ?: globalOptions?.networkContentDiskCachePolicy
+                ?: ENABLED,
         )
     }
 
     private class DownloadRequestImpl(
         override val context: Context,
         override val uriString: String,
+        override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
+        override val progressListener: ProgressListener<ImageRequest>?,
+        override val globalOptions: DownloadOptions?,
+        override val definedOptions: DownloadOptions,
         override val depth: RequestDepth,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
         override val networkContentDiskCachePolicy: CachePolicy,
-        override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
-        override val progressListener: ProgressListener<ImageRequest>?,
     ) : DownloadRequest {
 
         override val uri: Uri by lazy { Uri.parse(uriString) }
@@ -233,7 +268,7 @@ interface DownloadRequest : ImageRequest {
             buildString {
                 append("Download")
                 append("_").append(uriString)
-                depth.takeIf { it != NETWORK }?.let{
+                depth.takeIf { it != NETWORK }?.let {
                     append("_").append("RequestDepth(${it})")
                 }
                 parameters?.key?.takeIf { it.isNotEmpty() }?.let {

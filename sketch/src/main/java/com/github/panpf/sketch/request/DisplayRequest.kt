@@ -17,6 +17,7 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.http.merge
 import com.github.panpf.sketch.request.DisplayRequest.Builder
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.CombinedListener
@@ -34,6 +35,7 @@ import com.github.panpf.sketch.resize.ScreenSizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewSizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
@@ -41,6 +43,7 @@ import com.github.panpf.sketch.target.ListenerProvider
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.transform.merge
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
@@ -92,40 +95,40 @@ interface DisplayRequest : LoadRequest {
     val errorImage: StateImage?
     val transition: Transition.Factory?
 
-//    val viewOptions: DisplayOptions?
-//    val defaultOptions: DisplayOptions?
-//    val definedOptions: DisplayOptions
+    val viewOptions: DisplayOptions?
+    override val globalOptions: DisplayOptions?
+    override val definedOptions: DisplayOptions
 
     fun newDisplayRequestBuilder(
         context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
-    ): Builder = Builder(this, context).apply {
+    ): Builder = Builder(context, this).apply {
         configBlock?.invoke(this)
     }
 
     fun newDisplayRequest(
         context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
-    ): DisplayRequest = Builder(this, context).apply {
+    ): DisplayRequest = Builder(context, this).apply {
         configBlock?.invoke(this)
     }.build()
 
     class Builder {
         private val context: Context
         private val uriString: String
-        private val target: Target
-
-        private var depth: RequestDepth? = null
-        private var parametersBuilder: Parameters.Builder? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
-
-        private var httpHeaders: HttpHeaders.Builder? = null
-        private var networkContentDiskCachePolicy: CachePolicy? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
 
-        private var bitmapConfig: BitmapConfig? = null
+        private val target: Target
+        private var lifecycle: Lifecycle? = null
 
-        @RequiresApi(VERSION_CODES.O)
+        private var viewOptions: DisplayOptions? = null
+        private var globalOptions: DisplayOptions? = null
+        private var depth: RequestDepth? = null
+        private var parametersBuilder: Parameters.Builder? = null
+        private var httpHeaders: HttpHeaders.Builder? = null
+        private var networkContentDiskCachePolicy: CachePolicy? = null
+        private var bitmapConfig: BitmapConfig? = null
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
         private var resizeSize: Size? = null
@@ -136,57 +139,45 @@ interface DisplayRequest : LoadRequest {
         private var disabledBitmapPool: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
-
         private var bitmapMemoryCachePolicy: CachePolicy? = null
         private var disabledAnimationDrawable: Boolean? = null
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
 
-        private var lifecycle: Lifecycle? = null
-
-//        private var viewOptions: DisplayOptions? = null
-//        private var defaultOptions: DisplayOptions? = null
-
         constructor(context: Context, uriString: String?, target: Target) {
             this.context = context
             this.uriString = uriString.orEmpty()
-            this.target = target
-            target.asOrNull<ViewTarget<*>>()
-                ?.view.asOrNull<DisplayOptionsProvider>()
-                ?.displayOptions?.let {
-                    options(it)
-                }
 
-//            this.viewOptions = target.asOrNull<ViewTarget<*>>()
-//                ?.view.asOrNull<DisplayOptionsProvider>()
-//                ?.displayOptions
-//            this.defaultOptions = context.sketch.defaultDisplayOptions
+            this.target = target
+
+            this.viewOptions = target.asOrNull<ViewTarget<*>>()
+                ?.view.asOrNull<DisplayOptionsProvider>()
+                ?.displayOptions
+            this.globalOptions = context.sketch.globalDisplayOptions
         }
 
-        internal constructor(request: DisplayRequest, context: Context = request.context) {
+        internal constructor(context: Context, request: DisplayRequest) {
             this.context = context
             this.uriString = request.uriString
-            this.target = request.target
-
-//            this.viewOptions = request.viewOptions
-//            this.defaultOptions = request.defaultOptions
-
-            this.depth = request.depth
-            this.parametersBuilder = request.parameters?.newBuilder()
             this.listener =
                 request.listener.asOrNull<CombinedListener<ImageRequest, ImageResult, ImageResult>>()?.fromBuilderListener
                     ?: request.listener
-            this.httpHeaders = request.httpHeaders?.newBuilder()
-            this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
             this.progressListener =
                 request.progressListener.asOrNull<CombinedProgressListener<ImageRequest>>()?.fromBuilderProgressListener
                     ?: request.progressListener
+
+            this.target = request.target
+            this.lifecycle = request.lifecycle
+
+            this.viewOptions = request.viewOptions
+            this.globalOptions = request.globalOptions
+            this.depth = request.depth
+            this.parametersBuilder = request.parameters?.newBuilder()
+            this.httpHeaders = request.httpHeaders?.newBuilder()
+            this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
             this.bitmapConfig = request.bitmapConfig
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                this.colorSpace = request.colorSpace
-            }
-            @Suppress("DEPRECATION")
+            if (VERSION.SDK_INT >= VERSION_CODES.O) this.colorSpace = request.colorSpace
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resizeSize = request.resizeSize
             this.resizeSizeResolver = request.resizeSizeResolver
@@ -201,111 +192,41 @@ interface DisplayRequest : LoadRequest {
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
-
-            this.lifecycle = request.lifecycle
         }
 
-        fun options(options: DisplayOptions, requestFirst: Boolean = false): Builder = apply {
-            if (!requestFirst || this.depth == null) {
-                options.depth?.let {
-                    this.depth = it
-                }
-            }
-            options.parameters?.takeIf { it.isNotEmpty() }?.let {
-                it.forEach { entry ->
-                    if (!requestFirst || parametersBuilder?.exist(entry.first) != true) {
-                        setParameter(entry.first, entry.second.value, entry.second.cacheKey)
-                    }
-                }
-            }
-            options.httpHeaders?.takeIf { !it.isEmpty() }?.let { headers ->
-                headers.addList.forEach {
-                    addHttpHeader(it.first, it.second)
-                }
-                headers.setList.forEach {
-                    if (!requestFirst || httpHeaders?.setExist(it.first) != true) {
-                        setHttpHeader(it.first, it.second)
-                    }
-                }
-            }
-            if (!requestFirst || this.networkContentDiskCachePolicy == null) {
-                options.networkContentDiskCachePolicy?.let {
-                    this.networkContentDiskCachePolicy = it
-                }
+        fun listener(listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?): Builder =
+            apply {
+                @Suppress("UNCHECKED_CAST")
+                this.listener = listener as Listener<ImageRequest, ImageResult, ImageResult>?
             }
 
-            if (!requestFirst || this.bitmapConfig == null) {
-                options.bitmapConfig?.let {
-                    this.bitmapConfig = it
-                }
-            }
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                if (!requestFirst || this.colorSpace == null) {
-                    options.colorSpace?.let {
-                        this.colorSpace = it
-                    }
-                }
-            }
-            if (!requestFirst || this.preferQualityOverSpeed == null) {
-                @Suppress("DEPRECATION")
-                options.preferQualityOverSpeed?.let {
-                    this.preferQualityOverSpeed = it
-                }
-            }
-            if (!requestFirst || this.resizeSize == null) {
-                options.resizeSize?.let {
-                    this.resizeSize = it
-                }
-            }
-            if (!requestFirst || this.resizePrecisionDecider == null) {
-                options.resizePrecisionDecider?.let {
-                    this.resizePrecisionDecider = it
-                }
-            }
-            if (!requestFirst || this.resizeScale == null) {
-                options.resizeScale?.let {
-                    this.resizeScale = it
-                }
-            }
-            options.transformations?.takeIf { it.isNotEmpty() }?.let {
-                addTransformations(it)
-            }
-            if (!requestFirst || this.disabledBitmapPool == null) {
-                options.disabledBitmapPool?.let {
-                    this.disabledBitmapPool = it
-                }
-            }
-            if (!requestFirst || this.bitmapResultDiskCachePolicy == null) {
-                options.bitmapResultDiskCachePolicy?.let {
-                    this.bitmapResultDiskCachePolicy = it
-                }
+        /**
+         * Convenience function to create and set the [Listener].
+         */
+        inline fun listener(
+            crossinline onStart: (request: DisplayRequest) -> Unit = {},
+            crossinline onCancel: (request: DisplayRequest) -> Unit = {},
+            crossinline onError: (request: DisplayRequest, result: DisplayResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: DisplayRequest, result: DisplayResult.Success) -> Unit = { _, _ -> }
+        ): Builder =
+            listener(object : Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {
+                override fun onStart(request: DisplayRequest) = onStart(request)
+                override fun onCancel(request: DisplayRequest) = onCancel(request)
+                override fun onError(request: DisplayRequest, result: DisplayResult.Error) =
+                    onError(request, result)
+
+                override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) =
+                    onSuccess(request, result)
+            })
+
+        fun progressListener(progressListener: ProgressListener<DisplayRequest>?): Builder =
+            apply {
+                @Suppress("UNCHECKED_CAST")
+                this.progressListener = progressListener as ProgressListener<ImageRequest>?
             }
 
-            if (!requestFirst || this.disabledAnimationDrawable == null) {
-                options.disabledAnimationDrawable?.let {
-                    this.disabledAnimationDrawable = it
-                }
-            }
-            if (!requestFirst || this.bitmapMemoryCachePolicy == null) {
-                options.bitmapMemoryCachePolicy?.let {
-                    this.bitmapMemoryCachePolicy = it
-                }
-            }
-            if (!requestFirst || this.placeholderImage == null) {
-                options.placeholderImage?.let {
-                    this.placeholderImage = it
-                }
-            }
-            if (!requestFirst || this.errorImage == null) {
-                options.errorImage?.let {
-                    this.errorImage = it
-                }
-            }
-            if (!requestFirst || this.transition == null) {
-                options.transition?.let {
-                    this.transition = it
-                }
-            }
+        fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
+            this.lifecycle = lifecycle
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -570,102 +491,212 @@ interface DisplayRequest : LoadRequest {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
         }
 
-        fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
-            this.lifecycle = lifecycle
+        fun options(options: DisplayOptions, requestFirst: Boolean = false): Builder = apply {
+            if (!requestFirst || this.depth == null) {
+                options.depth?.let {
+                    this.depth = it
+                }
+            }
+            options.parameters?.takeIf { it.isNotEmpty() }?.let {
+                it.forEach { entry ->
+                    if (!requestFirst || parametersBuilder?.exist(entry.first) != true) {
+                        setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+                    }
+                }
+            }
+            options.httpHeaders?.takeIf { !it.isEmpty() }?.let { headers ->
+                headers.addList.forEach {
+                    addHttpHeader(it.first, it.second)
+                }
+                headers.setList.forEach {
+                    if (!requestFirst || httpHeaders?.setExist(it.first) != true) {
+                        setHttpHeader(it.first, it.second)
+                    }
+                }
+            }
+            if (!requestFirst || this.networkContentDiskCachePolicy == null) {
+                options.networkContentDiskCachePolicy?.let {
+                    this.networkContentDiskCachePolicy = it
+                }
+            }
+
+            if (!requestFirst || this.bitmapConfig == null) {
+                options.bitmapConfig?.let {
+                    this.bitmapConfig = it
+                }
+            }
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                if (!requestFirst || this.colorSpace == null) {
+                    options.colorSpace?.let {
+                        this.colorSpace = it
+                    }
+                }
+            }
+            if (!requestFirst || this.preferQualityOverSpeed == null) {
+                @Suppress("DEPRECATION")
+                options.preferQualityOverSpeed?.let {
+                    this.preferQualityOverSpeed = it
+                }
+            }
+            if (!requestFirst || this.resizeSize == null) {
+                options.resizeSize?.let {
+                    this.resizeSize = it
+                }
+            }
+            if (!requestFirst || this.resizePrecisionDecider == null) {
+                options.resizePrecisionDecider?.let {
+                    this.resizePrecisionDecider = it
+                }
+            }
+            if (!requestFirst || this.resizeScale == null) {
+                options.resizeScale?.let {
+                    this.resizeScale = it
+                }
+            }
+            options.transformations?.takeIf { it.isNotEmpty() }?.let {
+                addTransformations(it)
+            }
+            if (!requestFirst || this.disabledBitmapPool == null) {
+                options.disabledBitmapPool?.let {
+                    this.disabledBitmapPool = it
+                }
+            }
+            if (!requestFirst || this.bitmapResultDiskCachePolicy == null) {
+                options.bitmapResultDiskCachePolicy?.let {
+                    this.bitmapResultDiskCachePolicy = it
+                }
+            }
+
+            if (!requestFirst || this.disabledAnimationDrawable == null) {
+                options.disabledAnimationDrawable?.let {
+                    this.disabledAnimationDrawable = it
+                }
+            }
+            if (!requestFirst || this.bitmapMemoryCachePolicy == null) {
+                options.bitmapMemoryCachePolicy?.let {
+                    this.bitmapMemoryCachePolicy = it
+                }
+            }
+            if (!requestFirst || this.placeholderImage == null) {
+                options.placeholderImage?.let {
+                    this.placeholderImage = it
+                }
+            }
+            if (!requestFirst || this.errorImage == null) {
+                options.errorImage?.let {
+                    this.errorImage = it
+                }
+            }
+            if (!requestFirst || this.transition == null) {
+                options.transition?.let {
+                    this.transition = it
+                }
+            }
         }
 
-        fun listener(listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                this.listener = listener as Listener<ImageRequest, ImageResult, ImageResult>?
-            }
-
-        /**
-         * Convenience function to create and set the [Listener].
-         */
-        inline fun listener(
-            crossinline onStart: (request: DisplayRequest) -> Unit = {},
-            crossinline onCancel: (request: DisplayRequest) -> Unit = {},
-            crossinline onError: (request: DisplayRequest, result: DisplayResult.Error) -> Unit = { _, _ -> },
-            crossinline onSuccess: (request: DisplayRequest, result: DisplayResult.Success) -> Unit = { _, _ -> }
-        ): Builder =
-            listener(object : Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {
-                override fun onStart(request: DisplayRequest) = onStart(request)
-                override fun onCancel(request: DisplayRequest) = onCancel(request)
-                override fun onError(request: DisplayRequest, result: DisplayResult.Error) =
-                    onError(request, result)
-
-                override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) =
-                    onSuccess(request, result)
-            })
-
-        fun progressListener(progressListener: ProgressListener<DisplayRequest>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                this.progressListener = progressListener as ProgressListener<ImageRequest>?
-            }
-
         fun build(): DisplayRequest =
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                DisplayRequestImpl(
-                    context = context,
-                    uriString = uriString,
-                    depth = depth ?: NETWORK,
-                    parameters = parametersBuilder?.build(),
-                    httpHeaders = httpHeaders?.build(),
-                    networkContentDiskCachePolicy = networkContentDiskCachePolicy ?: ENABLED,
-                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy ?: ENABLED,
-                    bitmapConfig = bitmapConfig,
-                    colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
-                    preferQualityOverSpeed = preferQualityOverSpeed ?: false,
-                    resizeSize = resizeSize,
-                    resizeSizeResolver = resizeSizeResolver ?: if (target is ViewTarget<*>)
+            DisplayRequestImpl(
+                context = context,
+                uriString = uriString,
+                listener = combinationListener(),
+                progressListener = combinationProgressListener(),
+                target = target,
+                lifecycle = lifecycle ?: resolveLifecycle(),
+                viewOptions = viewOptions,
+                globalOptions = globalOptions,
+                definedOptions = DisplayOptions {
+                    depth(depth)
+                    parameters(parametersBuilder?.build())
+                    httpHeaders(httpHeaders?.build())
+                    networkContentDiskCachePolicy(networkContentDiskCachePolicy)
+                    bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy)
+                    bitmapConfig(bitmapConfig)
+                    if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace(colorSpace)
+                    preferQualityOverSpeed(preferQualityOverSpeed)
+                    resizeSize(resizeSize)
+                    resizeSizeResolver(resizeSizeResolver)
+                    resizePrecision(resizePrecisionDecider)
+                    resizeScale(resizeScale)
+                    transformations(transformations?.toList())
+                    disabledBitmapPool(disabledBitmapPool)
+                    ignoreExifOrientation(ignoreExifOrientation)
+                    bitmapMemoryCachePolicy(bitmapMemoryCachePolicy)
+                    disabledAnimationDrawable(disabledAnimationDrawable)
+                    placeholderImage(placeholderImage)
+                    errorImage(errorImage)
+                    transition(transition)
+                },
+                depth = depth
+                    ?: viewOptions?.depth
+                    ?: globalOptions?.depth
+                    ?: NETWORK,
+                parameters = parametersBuilder?.build()
+                    .merge(viewOptions?.parameters)
+                    .merge(globalOptions?.parameters),
+                httpHeaders = httpHeaders?.build()
+                    .merge(viewOptions?.httpHeaders)
+                    .merge(globalOptions?.httpHeaders),
+                networkContentDiskCachePolicy = networkContentDiskCachePolicy
+                    ?: viewOptions?.networkContentDiskCachePolicy
+                    ?: globalOptions?.networkContentDiskCachePolicy
+                    ?: ENABLED,
+                bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
+                    ?: viewOptions?.bitmapResultDiskCachePolicy
+                    ?: globalOptions?.bitmapResultDiskCachePolicy
+                    ?: ENABLED,
+                bitmapConfig = bitmapConfig
+                    ?: viewOptions?.bitmapConfig
+                    ?: globalOptions?.bitmapConfig,
+                colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O)
+                    colorSpace ?: viewOptions?.colorSpace
+                    ?: globalOptions?.colorSpace else null,
+                preferQualityOverSpeed = preferQualityOverSpeed
+                    ?: viewOptions?.preferQualityOverSpeed
+                    ?: globalOptions?.preferQualityOverSpeed ?: false,
+                resizeSize = resizeSize
+                    ?: viewOptions?.resizeSize
+                    ?: globalOptions?.resizeSize,
+                resizeSizeResolver = resizeSizeResolver
+                    ?: viewOptions?.resizeSizeResolver
+                    ?: globalOptions?.resizeSizeResolver
+                    ?: if (target is ViewTarget<*>)
                         ViewSizeResolver(target.view) else ScreenSizeResolver(context),
-                    resizePrecisionDecider = resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
-                    resizeScale = resizeScale ?: CENTER_CROP,
-                    transformations = transformations?.toList(),
-                    disabledBitmapPool = disabledBitmapPool ?: false,
-                    ignoreExifOrientation = ignoreExifOrientation ?: false,
-                    bitmapMemoryCachePolicy = bitmapMemoryCachePolicy ?: ENABLED,
-                    disabledAnimationDrawable = disabledAnimationDrawable ?: false,
-                    placeholderImage = placeholderImage,
-                    errorImage = errorImage,
-                    transition = transition,
-                    target = target,
-                    lifecycle = lifecycle ?: resolveLifecycle(),
-                    listener = combinationListener(),
-                    progressListener = combinationProgressListener(),
-                )
-            } else {
-                DisplayRequestImpl(
-                    context = context,
-                    uriString = uriString,
-                    depth = depth ?: NETWORK,
-                    parameters = parametersBuilder?.build(),
-                    httpHeaders = httpHeaders?.build(),
-                    networkContentDiskCachePolicy = networkContentDiskCachePolicy ?: ENABLED,
-                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy ?: ENABLED,
-                    bitmapConfig = bitmapConfig,
-                    preferQualityOverSpeed = preferQualityOverSpeed ?: false,
-                    resizeSize = resizeSize,
-                    resizeSizeResolver = resizeSizeResolver ?: if (target is ViewTarget<*>)
-                        ViewSizeResolver(target.view) else ScreenSizeResolver(context),
-                    resizePrecisionDecider = resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
-                    resizeScale = resizeScale ?: CENTER_CROP,
-                    transformations = transformations?.toList(),
-                    disabledBitmapPool = disabledBitmapPool ?: false,
-                    ignoreExifOrientation = ignoreExifOrientation ?: false,
-                    bitmapMemoryCachePolicy = bitmapMemoryCachePolicy ?: ENABLED,
-                    disabledAnimationDrawable = disabledAnimationDrawable ?: false,
-                    placeholderImage = placeholderImage,
-                    errorImage = errorImage,
-                    transition = transition,
-                    target = target,
-                    lifecycle = lifecycle ?: resolveLifecycle(),
-                    listener = combinationListener(),
-                    progressListener = combinationProgressListener(),
-                )
-            }
+                resizePrecisionDecider = resizePrecisionDecider
+                    ?: viewOptions?.resizePrecisionDecider
+                    ?: globalOptions?.resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
+                resizeScale = resizeScale
+                    ?: viewOptions?.resizeScale
+                    ?: globalOptions?.resizeScale
+                    ?: CENTER_CROP,
+                transformations = transformations?.toList()
+                    .merge(viewOptions?.transformations)
+                    .merge(globalOptions?.transformations),
+                disabledBitmapPool = disabledBitmapPool
+                    ?: viewOptions?.disabledBitmapPool
+                    ?: globalOptions?.disabledBitmapPool
+                    ?: false,
+                ignoreExifOrientation = ignoreExifOrientation
+                    ?: viewOptions?.ignoreExifOrientation
+                    ?: globalOptions?.ignoreExifOrientation
+                    ?: false,
+                bitmapMemoryCachePolicy = bitmapMemoryCachePolicy
+                    ?: viewOptions?.bitmapMemoryCachePolicy
+                    ?: globalOptions?.bitmapMemoryCachePolicy
+                    ?: ENABLED,
+                disabledAnimationDrawable = disabledAnimationDrawable
+                    ?: viewOptions?.disabledAnimationDrawable
+                    ?: globalOptions?.disabledAnimationDrawable
+                    ?: false,
+                placeholderImage = placeholderImage
+                    ?: viewOptions?.placeholderImage
+                    ?: globalOptions?.placeholderImage,
+                errorImage = errorImage
+                    ?: viewOptions?.errorImage
+                    ?: globalOptions?.errorImage,
+                transition = transition
+                    ?: viewOptions?.transition
+                    ?: globalOptions?.transition,
+            )
 
         private fun resolveLifecycle(): Lifecycle? {
             val target = target
@@ -705,13 +736,20 @@ interface DisplayRequest : LoadRequest {
     private class DisplayRequestImpl(
         override val context: Context,
         override val uriString: String,
+        override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
+        override val progressListener: ProgressListener<ImageRequest>?,
+        override val target: Target,
+        override val lifecycle: Lifecycle?,
+        override val viewOptions: DisplayOptions?,
+        override val globalOptions: DisplayOptions?,
+        override val definedOptions: DisplayOptions,
         override val depth: RequestDepth,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
         override val networkContentDiskCachePolicy: CachePolicy,
         override val bitmapResultDiskCachePolicy: CachePolicy,
         override val bitmapConfig: BitmapConfig?,
-        @Suppress("OverridingDeprecatedMember")
+        override val colorSpace: ColorSpace?,
         override val preferQualityOverSpeed: Boolean,
         override val resizeSize: Size?,
         override val resizeSizeResolver: SizeResolver,
@@ -725,76 +763,7 @@ interface DisplayRequest : LoadRequest {
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Transition.Factory?,
-        override val target: Target,
-        override val lifecycle: Lifecycle?,
-        override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
-        override val progressListener: ProgressListener<ImageRequest>?,
     ) : DisplayRequest {
-
-        @RequiresApi(VERSION_CODES.O)
-        constructor(
-            context: Context,
-            uriString: String,
-            depth: RequestDepth,
-            parameters: Parameters?,
-            httpHeaders: HttpHeaders?,
-            networkContentDiskCachePolicy: CachePolicy,
-            bitmapResultDiskCachePolicy: CachePolicy,
-            bitmapConfig: BitmapConfig?,
-            colorSpace: ColorSpace?,
-            preferQualityOverSpeed: Boolean,
-            resizeSize: Size?,
-            resizeSizeResolver: SizeResolver,
-            resizePrecisionDecider: PrecisionDecider,
-            resizeScale: Scale,
-            transformations: List<Transformation>?,
-            disabledBitmapPool: Boolean,
-            ignoreExifOrientation: Boolean,
-            bitmapMemoryCachePolicy: CachePolicy,
-            disabledAnimationDrawable: Boolean,
-            placeholderImage: StateImage?,
-            errorImage: StateImage?,
-            transition: Transition.Factory?,
-            target: Target,
-            lifecycle: Lifecycle?,
-            listener: Listener<ImageRequest, ImageResult, ImageResult>?,
-            progressListener: ProgressListener<ImageRequest>?,
-        ) : this(
-            context = context,
-            uriString = uriString,
-            depth = depth,
-            parameters = parameters,
-            httpHeaders = httpHeaders,
-            networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-            bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-            bitmapConfig = bitmapConfig,
-            preferQualityOverSpeed = preferQualityOverSpeed,
-            resizeSize = resizeSize,
-            resizeSizeResolver = resizeSizeResolver,
-            resizePrecisionDecider = resizePrecisionDecider,
-            resizeScale = resizeScale,
-            transformations = transformations,
-            disabledBitmapPool = disabledBitmapPool,
-            ignoreExifOrientation = ignoreExifOrientation,
-            bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-            disabledAnimationDrawable = disabledAnimationDrawable,
-            placeholderImage = placeholderImage,
-            errorImage = errorImage,
-            transition = transition,
-            target = target,
-            lifecycle = lifecycle,
-            listener = listener,
-            progressListener = progressListener,
-        ) {
-            _colorSpace = colorSpace
-        }
-
-        @RequiresApi(VERSION_CODES.O)
-        private var _colorSpace: ColorSpace? = null
-
-        @get:RequiresApi(VERSION_CODES.O)
-        override val colorSpace: ColorSpace?
-            get() = _colorSpace
 
         override val uri: Uri by lazy { Uri.parse(uriString) }
 
@@ -828,7 +797,7 @@ interface DisplayRequest : LoadRequest {
             buildString {
                 append("Display")
                 append("_").append(uriString)
-                depth.takeIf { it != NETWORK }?.let{
+                depth.takeIf { it != NETWORK }?.let {
                     append("_").append("RequestDepth(${it})")
                 }
                 parameters?.key?.takeIf { it.isNotEmpty() }?.let {

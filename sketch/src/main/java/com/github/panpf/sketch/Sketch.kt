@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CountDrawablePendingManager
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
@@ -47,9 +46,6 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.internal.DefaultDisplayOptionsInterceptor
-import com.github.panpf.sketch.request.internal.DefaultDownloadOptionsInterceptor
-import com.github.panpf.sketch.request.internal.DefaultLoadOptionsInterceptor
 import com.github.panpf.sketch.request.internal.DisplayEngineInterceptor
 import com.github.panpf.sketch.request.internal.DisplayExecutor
 import com.github.panpf.sketch.request.internal.DownloadEngineInterceptor
@@ -57,9 +53,6 @@ import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
 import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.ScreenSizeResolver
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.CoroutineDispatcher
@@ -87,9 +80,9 @@ class Sketch private constructor(
     _displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>>?,
     _bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>>?,
     _drawableDecodeInterceptors: List<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>?,
-    val defaultDisplayOptions: DisplayOptions?,
-    val defaultLoadOptions: LoadOptions?,
-    val defaultDownloadOptions: DownloadOptions?,
+    val globalDisplayOptions: DisplayOptions?,
+    val globalLoadOptions: LoadOptions?,
+    val globalDownloadOptions: DownloadOptions?,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
@@ -125,17 +118,11 @@ class Sketch private constructor(
         }.build()
 
     val downloadInterceptors: List<RequestInterceptor<DownloadRequest, DownloadData>> =
-        (_downloadInterceptors ?: listOf()) +
-                DefaultDownloadOptionsInterceptor(defaultDownloadOptions) +
-                DownloadEngineInterceptor()
+        (_downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
     val loadInterceptors: List<RequestInterceptor<LoadRequest, LoadData>> =
-        (_loadInterceptors ?: listOf()) +
-                DefaultLoadOptionsInterceptor(defaultLoadOptions) +
-                LoadEngineInterceptor()
+        (_loadInterceptors ?: listOf()) + LoadEngineInterceptor()
     val displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>> =
-        (_displayInterceptors ?: listOf()) +
-                DefaultDisplayOptionsInterceptor(defaultDisplayOptions) +
-                DisplayEngineInterceptor()
+        (_displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
 
     val bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>> =
         (_bitmapDecodeInterceptors ?: listOf()) +
@@ -313,9 +300,9 @@ class Sketch private constructor(
             null
         private var drawableDecodeInterceptors: MutableList<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>? =
             null
-        private var defaultDisplayOptions: DisplayOptions? = null
-        private var defaultLoadOptions: LoadOptions? = null
-        private var defaultDownloadOptions: DownloadOptions? = null
+        private var globalDisplayOptions: DisplayOptions? = null
+        private var globalLoadOptions: LoadOptions? = null
+        private var globalDownloadOptions: DownloadOptions? = null
 
         fun logger(logger: Logger?): Builder = apply {
             this.logger = logger
@@ -382,16 +369,16 @@ class Sketch private constructor(
                     }
             }
 
-        fun defaultDisplayOptions(defaultDisplayOptions: DisplayOptions): Builder = apply {
-            this.defaultDisplayOptions = defaultDisplayOptions
+        fun globalDisplayOptions(globalDisplayOptions: DisplayOptions): Builder = apply {
+            this.globalDisplayOptions = globalDisplayOptions
         }
 
-        fun defaultLoadOptions(defaultLoadOptions: DisplayOptions): Builder = apply {
-            this.defaultLoadOptions = defaultLoadOptions
+        fun globalLoadOptions(globalLoadOptions: DisplayOptions): Builder = apply {
+            this.globalLoadOptions = globalLoadOptions
         }
 
-        fun defaultDownloadOptions(defaultDownloadOptions: DisplayOptions): Builder = apply {
-            this.defaultDownloadOptions = defaultDownloadOptions
+        fun globalDownloadOptions(globalDownloadOptions: DisplayOptions): Builder = apply {
+            this.globalDownloadOptions = globalDownloadOptions
         }
 
         fun build(): Sketch = Sketch(
@@ -407,9 +394,9 @@ class Sketch private constructor(
             _displayInterceptors = displayInterceptors,
             _bitmapDecodeInterceptors = bitmapDecodeInterceptors,
             _drawableDecodeInterceptors = drawableDecodeInterceptors,
-            defaultDisplayOptions = defaultDisplayOptions,
-            defaultLoadOptions = defaultLoadOptions,
-            defaultDownloadOptions = defaultDownloadOptions,
+            globalDisplayOptions = globalDisplayOptions,
+            globalLoadOptions = globalLoadOptions,
+            globalDownloadOptions = globalDownloadOptions,
         )
     }
 

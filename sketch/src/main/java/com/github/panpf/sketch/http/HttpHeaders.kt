@@ -72,3 +72,23 @@ class HttpHeaders(
         fun build(): HttpHeaders = HttpHeaders(addList.toList(), setList.toList())
     }
 }
+
+fun HttpHeaders?.merge(other: HttpHeaders?): HttpHeaders? =
+    if (this != null) {
+        if (other != null) {
+            this.newBuilder().apply {
+                other.setList.forEach {
+                    if (!setExist(it.first)) {
+                        set(it.first, it.second)
+                    }
+                }
+                other.addList.forEach {
+                    add(it.first, it.second)
+                }
+            }.build()
+        } else {
+            this
+        }
+    } else {
+        other
+    }

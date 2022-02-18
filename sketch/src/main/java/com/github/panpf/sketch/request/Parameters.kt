@@ -58,7 +58,7 @@ class Parameters private constructor(
                 "${it.key}:$value"
             }
         }.sorted().joinToString(separator = ",")
-        if(keys.isNotEmpty()) {
+        if (keys.isNotEmpty()) {
             "Parameters($keys)"
         } else {
             null
@@ -71,7 +71,7 @@ class Parameters private constructor(
                 "${it.key}:$cacheKey"
             }
         }.sorted().joinToString(separator = ",")
-        if(keys.isNotEmpty()) {
+        if (keys.isNotEmpty()) {
             "Parameters($keys)"
         } else {
             null
@@ -153,3 +153,20 @@ inline fun Parameters.isNotEmpty(): Boolean = !isEmpty()
 
 /** Returns the value associated with [key] or null if [key] has no mapping. */
 inline operator fun Parameters.get(key: String): Any? = value(key)
+
+fun Parameters?.merge(other: Parameters?): Parameters? =
+    if (this != null) {
+        if (other != null) {
+            this.newBuilder().apply {
+                other.values().forEach {
+                    if (!exist(it.key)) {
+                        set(it.key, it.value)
+                    }
+                }
+            }.build()
+        } else {
+            this
+        }
+    } else {
+        other
+    }

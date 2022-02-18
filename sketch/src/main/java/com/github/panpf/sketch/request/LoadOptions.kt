@@ -256,15 +256,15 @@ interface LoadOptions : DownloadOptions {
             this.resizeSizeResolver = sizeResolver
         }
 
-        fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
+        fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
             this.resizePrecisionDecider = precisionDecider
         }
 
-        fun resizePrecision(precision: Precision): Builder = apply {
-            this.resizePrecisionDecider = FixedPrecisionDecider(precision)
+        fun resizePrecision(precision: Precision?): Builder = apply {
+            this.resizePrecisionDecider = precision?.let { FixedPrecisionDecider(it) }
         }
 
-        fun resizeScale(scale: Scale): Builder = apply {
+        fun resizeScale(scale: Scale?): Builder = apply {
             this.resizeScale = scale
         }
 

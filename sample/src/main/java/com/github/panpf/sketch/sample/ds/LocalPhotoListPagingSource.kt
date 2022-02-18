@@ -85,7 +85,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
             val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrNull()
             if (imageInfo != null) {
                 val exifOrientation =
-                    if (context.appSettingsService.ignoreExifOrientation.value != true) {
+                    if (!context.appSettingsService.ignoreExifOrientation.value) {
                         dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
                     } else {
                         ExifInterface.ORIENTATION_UNDEFINED
