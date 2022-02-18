@@ -61,7 +61,7 @@ class GifMovieDrawableDecoder constructor(
                 movie.isOpaque && request.bitmapConfig?.isLowQuality == true -> RGB_565
                 else -> ARGB_8888
             },
-            if (request.disabledBitmapPool != true) sketch.bitmapPool else null,
+            if (!request.disabledBitmapPool) sketch.bitmapPool else null,
         ).apply {
             setRepeatCount(request.repeatCount() ?: ANIMATION_REPEAT_INFINITE)
 
@@ -107,9 +107,7 @@ class GifMovieDrawableDecoder constructor(
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): GifMovieDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                && request.disabledAnimationDrawable != true
-            ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !request.disabledAnimationDrawable) {
                 val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
                 if (imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()) {

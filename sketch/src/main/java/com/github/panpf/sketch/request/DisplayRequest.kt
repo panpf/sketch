@@ -13,10 +13,12 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.DisplayRequest.Builder
+import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.ImageRequest
@@ -27,6 +29,7 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.ScreenSizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewSizeResolver
@@ -83,8 +86,8 @@ interface DisplayRequest : LoadRequest {
     val target: Target
     val lifecycle: Lifecycle?
 
-    val disabledAnimationDrawable: Boolean?
-    val bitmapMemoryCachePolicy: CachePolicy?
+    val disabledAnimationDrawable: Boolean
+    val bitmapMemoryCachePolicy: CachePolicy
     val placeholderImage: StateImage?
     val errorImage: StateImage?
     val transition: Transition.Factory?
@@ -607,23 +610,24 @@ interface DisplayRequest : LoadRequest {
                 DisplayRequestImpl(
                     context = context,
                     uriString = uriString,
-                    depth = depth,
+                    depth = depth ?: NETWORK,
                     parameters = parametersBuilder?.build(),
                     httpHeaders = httpHeaders?.build(),
-                    networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                    networkContentDiskCachePolicy = networkContentDiskCachePolicy ?: ENABLED,
+                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy ?: ENABLED,
                     bitmapConfig = bitmapConfig,
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
-                    preferQualityOverSpeed = preferQualityOverSpeed,
+                    preferQualityOverSpeed = preferQualityOverSpeed ?: false,
                     resizeSize = resizeSize,
-                    resizeSizeResolver = resizeSizeResolver ?: resolveResizeSizeResolver(),
-                    resizePrecisionDecider = resizePrecisionDecider,
-                    resizeScale = resizeScale,
+                    resizeSizeResolver = resizeSizeResolver ?: if (target is ViewTarget<*>)
+                        ViewSizeResolver(target.view) else ScreenSizeResolver(context),
+                    resizePrecisionDecider = resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
+                    resizeScale = resizeScale ?: CENTER_CROP,
                     transformations = transformations?.toList(),
-                    disabledBitmapPool = disabledBitmapPool,
-                    ignoreExifOrientation = ignoreExifOrientation,
-                    bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-                    disabledAnimationDrawable = disabledAnimationDrawable,
+                    disabledBitmapPool = disabledBitmapPool ?: false,
+                    ignoreExifOrientation = ignoreExifOrientation ?: false,
+                    bitmapMemoryCachePolicy = bitmapMemoryCachePolicy ?: ENABLED,
+                    disabledAnimationDrawable = disabledAnimationDrawable ?: false,
                     placeholderImage = placeholderImage,
                     errorImage = errorImage,
                     transition = transition,
@@ -636,22 +640,23 @@ interface DisplayRequest : LoadRequest {
                 DisplayRequestImpl(
                     context = context,
                     uriString = uriString,
-                    depth = depth,
+                    depth = depth ?: NETWORK,
                     parameters = parametersBuilder?.build(),
                     httpHeaders = httpHeaders?.build(),
-                    networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                    networkContentDiskCachePolicy = networkContentDiskCachePolicy ?: ENABLED,
+                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy ?: ENABLED,
                     bitmapConfig = bitmapConfig,
-                    preferQualityOverSpeed = preferQualityOverSpeed,
+                    preferQualityOverSpeed = preferQualityOverSpeed ?: false,
                     resizeSize = resizeSize,
-                    resizeSizeResolver = resizeSizeResolver ?: resolveResizeSizeResolver(),
-                    resizePrecisionDecider = resizePrecisionDecider,
-                    resizeScale = resizeScale,
+                    resizeSizeResolver = resizeSizeResolver ?: if (target is ViewTarget<*>)
+                        ViewSizeResolver(target.view) else ScreenSizeResolver(context),
+                    resizePrecisionDecider = resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
+                    resizeScale = resizeScale ?: CENTER_CROP,
                     transformations = transformations?.toList(),
-                    disabledBitmapPool = disabledBitmapPool,
-                    ignoreExifOrientation = ignoreExifOrientation,
-                    bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-                    disabledAnimationDrawable = disabledAnimationDrawable,
+                    disabledBitmapPool = disabledBitmapPool ?: false,
+                    ignoreExifOrientation = ignoreExifOrientation ?: false,
+                    bitmapMemoryCachePolicy = bitmapMemoryCachePolicy ?: ENABLED,
+                    disabledAnimationDrawable = disabledAnimationDrawable ?: false,
                     placeholderImage = placeholderImage,
                     errorImage = errorImage,
                     transition = transition,
@@ -667,18 +672,6 @@ interface DisplayRequest : LoadRequest {
             val context = if (target is ViewTarget<*>) target.view.context else null
             return context.getLifecycle()
         }
-
-        private fun resolveResizeSizeResolver(): SizeResolver? =
-            resizeSizeResolver
-                ?: if (resizeSize == null) {
-                    if (target is ViewTarget<*>) {
-                        ViewSizeResolver(target.view)
-                    } else {
-                        ScreenSizeResolver(context)
-                    }
-                } else {
-                    null
-                }
 
         private fun combinationListener(): Listener<ImageRequest, ImageResult, ImageResult>? {
             val target = target
@@ -712,23 +705,23 @@ interface DisplayRequest : LoadRequest {
     private class DisplayRequestImpl(
         override val context: Context,
         override val uriString: String,
-        override val depth: RequestDepth?,
+        override val depth: RequestDepth,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
-        override val networkContentDiskCachePolicy: CachePolicy?,
-        override val bitmapResultDiskCachePolicy: CachePolicy?,
+        override val networkContentDiskCachePolicy: CachePolicy,
+        override val bitmapResultDiskCachePolicy: CachePolicy,
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
-        override val preferQualityOverSpeed: Boolean?,
+        override val preferQualityOverSpeed: Boolean,
         override val resizeSize: Size?,
-        override val resizeSizeResolver: SizeResolver?,
-        override val resizePrecisionDecider: PrecisionDecider?,
-        override val resizeScale: Scale?,
+        override val resizeSizeResolver: SizeResolver,
+        override val resizePrecisionDecider: PrecisionDecider,
+        override val resizeScale: Scale,
         override val transformations: List<Transformation>?,
-        override val disabledBitmapPool: Boolean?,
-        override val ignoreExifOrientation: Boolean?,
-        override val bitmapMemoryCachePolicy: CachePolicy?,
-        override val disabledAnimationDrawable: Boolean?,
+        override val disabledBitmapPool: Boolean,
+        override val ignoreExifOrientation: Boolean,
+        override val bitmapMemoryCachePolicy: CachePolicy,
+        override val disabledAnimationDrawable: Boolean,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Transition.Factory?,
@@ -742,23 +735,23 @@ interface DisplayRequest : LoadRequest {
         constructor(
             context: Context,
             uriString: String,
-            depth: RequestDepth?,
+            depth: RequestDepth,
             parameters: Parameters?,
             httpHeaders: HttpHeaders?,
-            networkContentDiskCachePolicy: CachePolicy?,
-            bitmapResultDiskCachePolicy: CachePolicy?,
+            networkContentDiskCachePolicy: CachePolicy,
+            bitmapResultDiskCachePolicy: CachePolicy,
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
-            preferQualityOverSpeed: Boolean?,
+            preferQualityOverSpeed: Boolean,
             resizeSize: Size?,
-            resizeSizeResolver: SizeResolver?,
-            resizePrecisionDecider: PrecisionDecider?,
-            resizeScale: Scale?,
+            resizeSizeResolver: SizeResolver,
+            resizePrecisionDecider: PrecisionDecider,
+            resizeScale: Scale,
             transformations: List<Transformation>?,
-            disabledBitmapPool: Boolean?,
-            ignoreExifOrientation: Boolean?,
-            bitmapMemoryCachePolicy: CachePolicy?,
-            disabledAnimationDrawable: Boolean?,
+            disabledBitmapPool: Boolean,
+            ignoreExifOrientation: Boolean,
+            bitmapMemoryCachePolicy: CachePolicy,
+            disabledAnimationDrawable: Boolean,
             placeholderImage: StateImage?,
             errorImage: StateImage?,
             transition: Transition.Factory?,
@@ -811,8 +804,8 @@ interface DisplayRequest : LoadRequest {
             resizeSize?.takeIf { it.width > 0 && it.height > 0 }?.let {
                 Resize(
                     width = it.width, height = it.height,
-                    precisionDecider = resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
-                    scale = resizeScale ?: Scale.CENTER_CROP
+                    precisionDecider = resizePrecisionDecider,
+                    scale = resizeScale
                 )
             }
         }
@@ -823,7 +816,7 @@ interface DisplayRequest : LoadRequest {
                 qualityKey?.let {
                     append("_").append(it)
                 }
-                if (disabledAnimationDrawable == true) {
+                if (disabledAnimationDrawable) {
                     append("_").append("DisabledAnimationDrawable")
                 }
             }
@@ -835,7 +828,7 @@ interface DisplayRequest : LoadRequest {
             buildString {
                 append("Display")
                 append("_").append(uriString)
-                depth?.let {
+                depth.takeIf { it != NETWORK }?.let{
                     append("_").append("RequestDepth(${it})")
                 }
                 parameters?.key?.takeIf { it.isNotEmpty() }?.let {
@@ -844,7 +837,7 @@ interface DisplayRequest : LoadRequest {
                 httpHeaders?.takeIf { !it.isEmpty() }?.let {
                     append("_").append(it)
                 }
-                networkContentDiskCachePolicy?.let {
+                networkContentDiskCachePolicy.takeIf { it == ENABLED }?.let {
                     append("_").append("networkContentDiskCachePolicy($it)")
                 }
                 bitmapConfig?.let {
@@ -856,7 +849,7 @@ interface DisplayRequest : LoadRequest {
                     }
                 }
                 @Suppress("DEPRECATION")
-                if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+                if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
                     append("_").append("preferQualityOverSpeed")
                 }
                 resize?.let {
@@ -865,19 +858,19 @@ interface DisplayRequest : LoadRequest {
                 transformations?.takeIf { it.isNotEmpty() }?.let { list ->
                     append("_").append("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
                 }
-                if (disabledBitmapPool == true) {
+                if (disabledBitmapPool) {
                     append("_").append("disabledBitmapPool")
                 }
-                if (ignoreExifOrientation == true) {
+                if (ignoreExifOrientation) {
                     append("_").append("ignoreExifOrientation")
                 }
-                bitmapResultDiskCachePolicy?.let {
+                bitmapResultDiskCachePolicy.takeIf { it == ENABLED }?.let {
                     append("_").append("bitmapResultDiskCachePolicy($it)")
                 }
-                if (disabledAnimationDrawable == true) {
+                if (disabledAnimationDrawable) {
                     append("_").append("disabledAnimationDrawable")
                 }
-                bitmapMemoryCachePolicy?.let {
+                bitmapMemoryCachePolicy.takeIf { it == ENABLED }?.let {
                     append("_").append("bitmapMemoryCachePolicy($it)")
                 }
             }

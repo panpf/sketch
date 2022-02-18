@@ -34,7 +34,7 @@ class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData>
         request.target.onStart(placeholderDrawable)
 
         val requestDepth = request.depth
-        if (requestDepth != null && requestDepth >= MEMORY) {
+        if (requestDepth >= MEMORY) {
             throw RequestDepthException(request, requestDepth, request.depthFrom)
         }
 

@@ -22,9 +22,8 @@ class LoadExecutor(private val sketch: Sketch) {
         try {
             onStart(request)
 
-            val resizeSizeResolver = request.resizeSizeResolver
-            val newRequest = if (request.resizeSize == null && resizeSizeResolver != null) {
-                val newResizeSize = resizeSizeResolver.size()
+            val newRequest = if (request.resizeSize == null) {
+                val newResizeSize = request.resizeSizeResolver.size()
                 if (newResizeSize != null) {
                     request.newLoadRequest { resizeSize(newResizeSize) }
                 } else {

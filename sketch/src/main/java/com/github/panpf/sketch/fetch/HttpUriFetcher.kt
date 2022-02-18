@@ -53,7 +53,7 @@ class HttpUriFetcher(
             }
 
             val requestDepth = request.depth
-            if (requestDepth != null && requestDepth >= RequestDepth.LOCAL) {
+            if (requestDepth >= RequestDepth.LOCAL) {
                 throw RequestDepthException(request, requestDepth, request.depthFrom)
             }
 
@@ -280,7 +280,7 @@ class HttpUriFetcher(
 
         companion object {
             fun from(sketch: Sketch, request: DownloadRequest): HttpDiskCacheHelper? {
-                val cachePolicy = request.networkContentDiskCachePolicy ?: ENABLED
+                val cachePolicy = request.networkContentDiskCachePolicy
                 return if (cachePolicy.isReadOrWrite) {
                     val diskCache = sketch.diskCache
                     val dataDiskCacheKey = request.networkContentDiskCacheKey

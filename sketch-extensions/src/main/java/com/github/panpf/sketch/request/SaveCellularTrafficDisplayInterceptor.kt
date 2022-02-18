@@ -17,7 +17,7 @@ class SaveCellularTrafficDisplayInterceptor : RequestInterceptor<DisplayRequest,
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val sketch = chain.sketch
         val request = chain.request
-        val requestDepth = request.depth ?: NETWORK
+        val requestDepth = request.depth
         val finalRequest = if (
             enabled
             && request.isSaveCellularTraffic

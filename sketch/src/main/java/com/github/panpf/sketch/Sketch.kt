@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CountDrawablePendingManager
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
@@ -56,6 +57,9 @@ import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
 import com.github.panpf.sketch.request.internal.requestManager
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScreenSizeResolver
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.CoroutineDispatcher
@@ -142,14 +146,6 @@ class Sketch private constructor(
         (_drawableDecodeInterceptors ?: listOf()) + DrawableDecodeEngineInterceptor()
 
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
-//    val sketchDefaultDisplayOptions = DisplayOptions(){
-//        networkContentDiskCachePolicy(CachePolicy.ENABLED)
-//        resizePrecision(Precision.LESS_PIXELS)
-//        resizeScale(Scale.CENTER_CROP)
-//        resizeSize(appContext.re)
-//    }
-//    val sketchDefaultLoadOptions: LoadOptions?,
-//    val sketchDefaultDownloadOptions: DownloadOptions?,
 
     init {
         appContext.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {

@@ -10,10 +10,12 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.LoadRequest.Builder
+import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
@@ -22,6 +24,7 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.ScreenSizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
@@ -76,15 +79,15 @@ interface LoadRequest : DownloadRequest {
      * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
      */
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
-    val preferQualityOverSpeed: Boolean?
+    val preferQualityOverSpeed: Boolean
 
     /**
      * The size of the desired bitmap
      */
     val resizeSize: Size?
-    val resizeSizeResolver: SizeResolver?
-    val resizePrecisionDecider: PrecisionDecider?
-    val resizeScale: Scale?
+    val resizeSizeResolver: SizeResolver
+    val resizePrecisionDecider: PrecisionDecider
+    val resizeScale: Scale
     val resize: Resize?
 
     /**
@@ -95,17 +98,17 @@ interface LoadRequest : DownloadRequest {
     /**
      * Disabled reuse of Bitmap from [BitmapPool]
      */
-    val disabledBitmapPool: Boolean?
+    val disabledBitmapPool: Boolean
 
     /**
      * Ignore exif orientation
      */
-    val ignoreExifOrientation: Boolean?
+    val ignoreExifOrientation: Boolean
 
     /**
      * @see com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheInterceptor
      */
-    val bitmapResultDiskCachePolicy: CachePolicy?
+    val bitmapResultDiskCachePolicy: CachePolicy
 
 //    val viewOptions: LoadOptions?
 //    val defaultOptions: DisplayOptions?
@@ -476,21 +479,21 @@ interface LoadRequest : DownloadRequest {
                 LoadRequestImpl(
                     context = context,
                     uriString = uriString,
-                    depth = depth,
+                    depth = depth ?: NETWORK,
                     parameters = parametersBuilder?.build(),
                     httpHeaders = httpHeaders?.build(),
-                    networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                    networkContentDiskCachePolicy = networkContentDiskCachePolicy ?: ENABLED,
+                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy ?: ENABLED,
                     bitmapConfig = bitmapConfig,
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
-                    preferQualityOverSpeed = preferQualityOverSpeed,
+                    preferQualityOverSpeed = preferQualityOverSpeed ?: false,
                     resizeSize = resizeSize,
-                    resizeSizeResolver = resizeSizeResolver ?: resolveResizeSizeResolver(),
-                    resizePrecisionDecider = resizePrecisionDecider,
-                    resizeScale = resizeScale,
+                    resizeSizeResolver = resizeSizeResolver ?: ScreenSizeResolver(context),
+                    resizePrecisionDecider = resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
+                    resizeScale = resizeScale ?: CENTER_CROP,
                     transformations = transformations?.toList(),
-                    disabledBitmapPool = disabledBitmapPool,
-                    ignoreExifOrientation = ignoreExifOrientation,
+                    disabledBitmapPool = disabledBitmapPool ?: false,
+                    ignoreExifOrientation = ignoreExifOrientation ?: false,
                     listener = listener,
                     progressListener = progressListener,
                 )
@@ -498,53 +501,45 @@ interface LoadRequest : DownloadRequest {
                 LoadRequestImpl(
                     context = context,
                     uriString = uriString,
-                    depth = depth,
+                    depth = depth ?: NETWORK,
                     parameters = parametersBuilder?.build(),
                     httpHeaders = httpHeaders?.build(),
-                    networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                    networkContentDiskCachePolicy = networkContentDiskCachePolicy ?: ENABLED,
+                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy ?: ENABLED,
                     bitmapConfig = bitmapConfig,
-                    preferQualityOverSpeed = preferQualityOverSpeed,
+                    preferQualityOverSpeed = preferQualityOverSpeed ?: false,
                     resizeSize = resizeSize,
-                    resizeSizeResolver = resizeSizeResolver ?: resolveResizeSizeResolver(),
-                    resizePrecisionDecider = resizePrecisionDecider,
-                    resizeScale = resizeScale,
+                    resizeSizeResolver = resizeSizeResolver ?: ScreenSizeResolver(context),
+                    resizePrecisionDecider = resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
+                    resizeScale = resizeScale ?: CENTER_CROP,
                     transformations = transformations?.toList(),
-                    disabledBitmapPool = disabledBitmapPool,
-                    ignoreExifOrientation = ignoreExifOrientation,
+                    disabledBitmapPool = disabledBitmapPool ?: false,
+                    ignoreExifOrientation = ignoreExifOrientation ?: false,
                     listener = listener,
                     progressListener = progressListener,
                 )
             }
-
-        private fun resolveResizeSizeResolver(): SizeResolver? =
-            resizeSizeResolver
-                ?: if (resizeSize == null) {
-                    ScreenSizeResolver(context)
-                } else {
-                    null
-                }
     }
 
 
     private class LoadRequestImpl(
         override val context: Context,
         override val uriString: String,
-        override val depth: RequestDepth?,
+        override val depth: RequestDepth,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
-        override val networkContentDiskCachePolicy: CachePolicy?,
-        override val bitmapResultDiskCachePolicy: CachePolicy?,
+        override val networkContentDiskCachePolicy: CachePolicy,
+        override val bitmapResultDiskCachePolicy: CachePolicy,
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
-        override val preferQualityOverSpeed: Boolean?,
+        override val preferQualityOverSpeed: Boolean,
         override val resizeSize: Size?,
-        override val resizeSizeResolver: SizeResolver?,
-        override val resizePrecisionDecider: PrecisionDecider?,
-        override val resizeScale: Scale?,
+        override val resizeSizeResolver: SizeResolver,
+        override val resizePrecisionDecider: PrecisionDecider,
+        override val resizeScale: Scale,
         override val transformations: List<Transformation>?,
-        override val disabledBitmapPool: Boolean?,
-        override val ignoreExifOrientation: Boolean?,
+        override val disabledBitmapPool: Boolean,
+        override val ignoreExifOrientation: Boolean,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
     ) : LoadRequest {
@@ -553,21 +548,21 @@ interface LoadRequest : DownloadRequest {
         constructor(
             context: Context,
             uriString: String,
-            depth: RequestDepth?,
+            depth: RequestDepth,
             parameters: Parameters?,
             httpHeaders: HttpHeaders?,
-            networkContentDiskCachePolicy: CachePolicy?,
-            bitmapResultDiskCachePolicy: CachePolicy?,
+            networkContentDiskCachePolicy: CachePolicy,
+            bitmapResultDiskCachePolicy: CachePolicy,
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
-            preferQualityOverSpeed: Boolean?,
+            preferQualityOverSpeed: Boolean,
             resizeSize: Size?,
-            resizeSizeResolver: SizeResolver?,
-            resizePrecisionDecider: PrecisionDecider?,
-            resizeScale: Scale?,
+            resizeSizeResolver: SizeResolver,
+            resizePrecisionDecider: PrecisionDecider,
+            resizeScale: Scale,
             transformations: List<Transformation>?,
-            disabledBitmapPool: Boolean?,
-            ignoreExifOrientation: Boolean?,
+            disabledBitmapPool: Boolean,
+            ignoreExifOrientation: Boolean,
             listener: Listener<ImageRequest, ImageResult, ImageResult>?,
             progressListener: ProgressListener<ImageRequest>?
         ) : this(
@@ -608,8 +603,8 @@ interface LoadRequest : DownloadRequest {
             resizeSize?.takeIf { it.width > 0 && it.height > 0 }?.let {
                 Resize(
                     width = it.width, height = it.height,
-                    precisionDecider = resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
-                    scale = resizeScale ?: Scale.CENTER_CROP
+                    precisionDecider = resizePrecisionDecider,
+                    scale = resizeScale
                 )
             }
         }
@@ -629,7 +624,7 @@ interface LoadRequest : DownloadRequest {
             buildString {
                 append("Load")
                 append("_").append(uriString)
-                depth?.let {
+                depth.takeIf { it != NETWORK }?.let{
                     append("_").append("RequestDepth(${it})")
                 }
                 parameters?.key?.takeIf { it.isNotEmpty() }?.let {
@@ -638,7 +633,7 @@ interface LoadRequest : DownloadRequest {
                 httpHeaders?.takeIf { !it.isEmpty() }?.let {
                     append("_").append(it)
                 }
-                networkContentDiskCachePolicy?.let {
+                networkContentDiskCachePolicy.takeIf { it == ENABLED }?.let {
                     append("_").append("networkContentDiskCachePolicy($it)")
                 }
                 bitmapConfig?.let {
@@ -650,7 +645,7 @@ interface LoadRequest : DownloadRequest {
                     }
                 }
                 @Suppress("DEPRECATION")
-                if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+                if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
                     append("_").append("preferQualityOverSpeed")
                 }
                 resize?.let {
@@ -659,13 +654,13 @@ interface LoadRequest : DownloadRequest {
                 transformations?.takeIf { it.isNotEmpty() }?.let { list ->
                     append("_").append("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
                 }
-                if (disabledBitmapPool == true) {
+                if (disabledBitmapPool) {
                     append("_").append("disabledBitmapPool")
                 }
-                if (ignoreExifOrientation == true) {
+                if (ignoreExifOrientation) {
                     append("_").append("ignoreExifOrientation")
                 }
-                bitmapResultDiskCachePolicy?.let {
+                bitmapResultDiskCachePolicy.takeIf { it == ENABLED }?.let {
                     append("_").append("bitmapResultDiskCachePolicy($it)")
                 }
             }
@@ -678,7 +673,7 @@ interface LoadRequest : DownloadRequest {
 fun LoadRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
     DecodeConfig().apply {
         @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed == true) {
+        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
             inPreferQualityOverSpeed = true
         }
 
@@ -706,7 +701,7 @@ internal fun LoadRequest.newQualityKey(): String? {
             }
         }
         @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+        if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
             add("preferQualityOverSpeed")
         }
         resize?.let {
@@ -715,7 +710,7 @@ internal fun LoadRequest.newQualityKey(): String? {
         transformations?.takeIf { it.isNotEmpty() }?.let { list ->
             add("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
         }
-        if (ignoreExifOrientation == true) {
+        if (ignoreExifOrientation) {
             add("ignoreExifOrientation")
         }
     }

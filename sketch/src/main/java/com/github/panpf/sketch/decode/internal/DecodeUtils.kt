@@ -105,7 +105,7 @@ fun realDecode(
     decodeRegion: ((srcRect: Rect, decodeConfig: DecodeConfig) -> Bitmap)?
 ): BitmapDecodeResult {
     val exifOrientationHelper = ExifOrientationHelper(
-        if (request.ignoreExifOrientation != true) {
+        if (!request.ignoreExifOrientation) {
             exifOrientation
         } else {
             ExifInterface.ORIENTATION_UNDEFINED
@@ -161,9 +161,9 @@ fun realDecode(
 
 fun BitmapDecodeResult.applyExifOrientation(
     bitmapPool: BitmapPool,
-    ignoreExifOrientation: Boolean?,
+    ignoreExifOrientation: Boolean,
 ): BitmapDecodeResult {
-    val exifOrientationHelper = if (ignoreExifOrientation != true) {
+    val exifOrientationHelper = if (!ignoreExifOrientation) {
         ExifOrientationHelper(exifOrientation)
     } else {
         ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)

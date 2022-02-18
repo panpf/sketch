@@ -3,8 +3,10 @@ package com.github.panpf.sketch.request
 import android.content.Context
 import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.DownloadRequest.Builder
+import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
 
@@ -29,7 +31,7 @@ interface DownloadRequest : ImageRequest {
     val networkContentDiskCacheKey: String
 
     val httpHeaders: HttpHeaders?
-    val networkContentDiskCachePolicy: CachePolicy?
+    val networkContentDiskCachePolicy: CachePolicy
     val progressListener: ProgressListener<ImageRequest>?
 
     fun newDownloadRequest(
@@ -203,10 +205,10 @@ interface DownloadRequest : ImageRequest {
         fun build(): DownloadRequest = DownloadRequestImpl(
             context = context,
             uriString = uriString,
-            depth = depth,
+            depth = depth ?: NETWORK,
             parameters = parametersBuilder?.build(),
             httpHeaders = httpHeaders?.build(),
-            networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+            networkContentDiskCachePolicy = networkContentDiskCachePolicy ?: ENABLED,
             listener = listener,
             progressListener = progressListener,
         )
@@ -215,10 +217,10 @@ interface DownloadRequest : ImageRequest {
     private class DownloadRequestImpl(
         override val context: Context,
         override val uriString: String,
-        override val depth: RequestDepth?,
+        override val depth: RequestDepth,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
-        override val networkContentDiskCachePolicy: CachePolicy?,
+        override val networkContentDiskCachePolicy: CachePolicy,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
     ) : DownloadRequest {
@@ -231,7 +233,7 @@ interface DownloadRequest : ImageRequest {
             buildString {
                 append("Download")
                 append("_").append(uriString)
-                depth?.let {
+                depth.takeIf { it != NETWORK }?.let{
                     append("_").append("RequestDepth(${it})")
                 }
                 parameters?.key?.takeIf { it.isNotEmpty() }?.let {
@@ -240,7 +242,7 @@ interface DownloadRequest : ImageRequest {
                 httpHeaders?.takeIf { !it.isEmpty() }?.let {
                     append("_").append(it)
                 }
-                networkContentDiskCachePolicy?.let {
+                networkContentDiskCachePolicy.takeIf { it == ENABLED }?.let {
                     append("_").append("networkContentDiskCachePolicy($it)")
                 }
             }

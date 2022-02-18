@@ -15,7 +15,7 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor<DisplayReque
     @MainThread
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val request = chain.request
-        val requestDepth = request.depth ?: NETWORK
+        val requestDepth = request.depth
         val finalRequest = if (
             enabled
             && scrolling

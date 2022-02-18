@@ -3,7 +3,6 @@ package com.github.panpf.sketch.decode.internal
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.isReadOrWrite
@@ -41,11 +40,11 @@ fun newBitmapMemoryCacheHelper(
     sketch: Sketch,
     request: DisplayRequest
 ): BitmapMemoryCacheHelper? {
-    val cachePolicy = request.bitmapMemoryCachePolicy ?: ENABLED
+    val cachePolicy = request.bitmapMemoryCachePolicy
     if (!cachePolicy.isReadOrWrite) return null
     return BitmapMemoryCacheHelper(
         sketch.memoryCache,
-        request.bitmapMemoryCachePolicy ?: ENABLED,
+        request.bitmapMemoryCachePolicy,
         request.cacheKey,
         sketch.logger,
         request,

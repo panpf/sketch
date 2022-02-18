@@ -39,9 +39,8 @@ class DisplayExecutor(private val sketch: Sketch) {
             requestDelegate.start()
             onStart(request)
 
-            val resizeSizeResolver = request.resizeSizeResolver
-            val newRequest = if (request.resizeSize == null && resizeSizeResolver != null) {
-                val newResizeSize = resizeSizeResolver.size()
+            val newRequest = if (request.resizeSize == null) {
+                val newResizeSize = request.resizeSizeResolver.size()
                 if (newResizeSize != null) {
                     request.newDisplayRequest { resizeSize(newResizeSize) }
                 } else {
