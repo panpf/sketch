@@ -1,6 +1,7 @@
 include(":sample")
 include(":sample-compose")
 include(":sketch")
+include(":sketch-compose")
 include(":sketch-extensions")
 include(":sketch-gif-movie")
 include(":sketch-gif-koral")

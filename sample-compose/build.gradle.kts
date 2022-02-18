@@ -12,9 +12,9 @@ android {
     compileSdk = property("COMPILE_SDK").toString().toInt()
 
     defaultConfig {
-        applicationId = "com.github.panpf.sketch3.sample.compose"
+        applicationId = "com.github.panpf.sketch3.compose.sample"
 
-        minSdk = 21
+        minSdk = property("COMPOSE_MIN_SDK").toString().toInt()
         targetSdk = property("TARGET_SDK").toString().toInt()
         versionCode = property("VERSION_CODE").toString().toInt()
         versionName = "${property("VERSION_NAME")}.${getGitVersion()}"
@@ -80,6 +80,7 @@ android {
 
 dependencies {
     implementation(project(":sketch"))
+    implementation(project(":sketch-compose"))
     implementation(project(":sketch-extensions"))
     implementation(project(":sketch-gif-koral"))
     implementation(project(":sketch-gif-movie"))
@@ -105,16 +106,12 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:${property("ANDROIDX_SWIPEREFRESHLAYOUT")}")
 
-    // Integration with activities
     implementation("androidx.activity:activity-compose:${property("ANDROIDX_ACTIVITY_COMPOSE")}")
-    // Compose Material Design
     implementation("androidx.compose.material:material:${property("ANDROIDX_COMPOSE")}")
-    // Animations
     implementation("androidx.compose.animation:animation:${property("ANDROIDX_COMPOSE")}")
-    // Tooling support (Previews, etc.)
     implementation("androidx.compose.ui:ui-tooling:${property("ANDROIDX_COMPOSE")}")
-    // Integration with ViewModels
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${property("ANDROIDX_LIFECYCLE_VIEWMODEL_COMPOSE")}")
+    implementation("androidx.paging:paging-compose:${property("ANDROIDX_PAGING_COMPOSE")}")
 
     implementation("com.google.android.material:material:${property("GOOGLE_MATERIAL")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-recycler:${property("ASSEMBLY_ADAPTER_4")}")
@@ -135,8 +132,6 @@ dependencies {
     implementation("io.github.panpf.activitymonitor:activitymonitor:${property("ACTIVITY_MONITOR")}")
     implementation("com.squareup.retrofit2:retrofit:${property("RETROFIT")}")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${property("RETROFIT2_KOTLINX_SERIALIZATION_CONVERTER")}")
-    implementation("com.google.accompanist:accompanist-drawablepainter:${property("ACCOMPANIST_DRAWABLE_PAINTER")}")
-    implementation("androidx.paging:paging-compose:${property("ANDROIDX_PAGING_COMPOSE")}")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:${property("LEAK_CANARY")}")
 }

@@ -6,11 +6,11 @@
 
     <fragment
         android:id="@+id/composeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.ComposeFragment"
+        android:name="com.github.panpf.sketch.compose.sample.ui.ComposeFragment"
         android:label="ComposeFragment" />
     <fragment
         android:id="@+id/pexelsPhotosFragment"
-        android:name="com.github.panpf.sketch.sample.ui.PexelsPhotosFragment"
+        android:name="com.github.panpf.sketch.compose.sample.ui.PexelsPhotosFragment"
         android:label="PexelsPhotosFragment" />
 
     <action
