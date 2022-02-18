@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose
+package com.github.panpf.sketch.compose.internal
 
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraintsScope

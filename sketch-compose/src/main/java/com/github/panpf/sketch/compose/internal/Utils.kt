@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose
+package com.github.panpf.sketch.compose.internal
 
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable

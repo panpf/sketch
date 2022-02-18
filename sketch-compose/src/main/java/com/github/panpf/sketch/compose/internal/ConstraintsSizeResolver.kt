@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose
+package com.github.panpf.sketch.compose.internal
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Constraints

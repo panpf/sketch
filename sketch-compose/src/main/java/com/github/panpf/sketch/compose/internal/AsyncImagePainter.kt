@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose
+package com.github.panpf.sketch.compose.internal
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -12,35 +12,38 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.compose.State.Empty
+import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State.Empty
+import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State.Error
+import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State.Loading
+import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State.Success
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class AsyncImagePainter(
-    val context: Context,
-    val sketch: Sketch,
+    context: Context,
+    private val sketch: Sketch,
     imageUri: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)?,
-    val isPreview: Boolean,
-    val filterQuality: FilterQuality,
+    private val isPreview: Boolean,
+    private val filterQuality: FilterQuality,
 ) : Painter(), RememberObserver {
 
     private val target = object : com.github.panpf.sketch.target.Target {
         override fun onStart(placeholder: Drawable?) {
             super.onStart(placeholder)
-            state = State.Loading(placeholder?.toPainter(filterQuality))
+            state = Loading(placeholder?.toPainter(filterQuality))
         }
 
         override fun onSuccess(result: Drawable) {
             super.onSuccess(result)
-            state = State.Success(result.toPainter(filterQuality))
+            state = Success(result.toPainter(filterQuality))
         }
 
         override fun onError(error: Drawable?) {
             super.onError(error)
-            state = State.Error(error?.toPainter(filterQuality))
+            state = Error(error?.toPainter(filterQuality))
         }
     }
 
@@ -78,7 +81,7 @@ class AsyncImagePainter(
 
     override fun onRemembered() {
         if (isPreview) {
-            state = State.Loading(
+            state = Loading(
                 request.placeholderImage?.getDrawable(sketch, request, null)
                     ?.toPainter(filterQuality)
             )
@@ -109,5 +112,28 @@ class AsyncImagePainter(
 
         // Draw the current painter.
         painter?.apply { draw(size, alpha, colorFilter) }
+    }
+
+    /**
+     * The current state of the [AsyncImagePainter].
+     */
+    sealed class State {
+
+        /** The current painter being drawn by [AsyncImagePainter]. */
+        abstract val painter: Painter?
+
+        /** The request has not been started. */
+        object Empty : State() {
+            override val painter: Painter? get() = null
+        }
+
+        /** The request is in-progress. */
+        data class Loading(override val painter: Painter?) : State()
+
+        /** The request was successful. */
+        data class Success(override val painter: Painter) : State()
+
+        /** The request failed. */
+        data class Error(override val painter: Painter?) : State()
     }
 }

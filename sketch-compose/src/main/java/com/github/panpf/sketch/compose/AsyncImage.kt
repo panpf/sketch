@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.Constraints
+import com.github.panpf.sketch.compose.internal.AsyncImagePainter
+import com.github.panpf.sketch.compose.internal.ConstraintsSizeResolver
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sketch
 
@@ -45,6 +47,8 @@ fun AsyncImage(
     // Invoke this manually so `painter.state` is up to date immediately.
     // It must be updated immediately or it will crash in the LazyColumn or LazyVerticalGrid
     asyncImagePainter.onRemembered()
+
+    // todo Refer to updatePainter to implement the cross-transition image
 
     BoxWithConstraints(modifier, alignment) {
         // Resolve the size for the image request.

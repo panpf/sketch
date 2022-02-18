@@ -62,5 +62,6 @@ fun PhotoContent(index: Int, photo: Photo) {
         bitmapMemoryCachePolicy(DISABLED)
         bitmapResultDiskCachePolicy(DISABLED)
         networkContentDiskCachePolicy(DISABLED)
+        crossfadeTransition()
     }
 }
