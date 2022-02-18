@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.compose
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.getValue
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlin.math.roundToInt
 
 class AsyncImagePainter(
+    val context: Context,
     val sketch: Sketch,
     imageUri: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)?,
@@ -63,7 +65,7 @@ class AsyncImagePainter(
             .first()
     }
 
-    val request = DisplayRequest(imageUri, target, configBlock).run {
+    val request = DisplayRequest(context, imageUri, target, configBlock).run {
         // todo Limit the size of the
 //        if (resizeSize == null && resizeSizeResolver == null) {
 //            newDisplayRequest {

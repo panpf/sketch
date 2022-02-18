@@ -28,14 +28,14 @@ class SvgBitmapDecoderTest {
         val sketch = Sketch.new(context)
 
         // normal
-        val request = LoadRequest(newAssetUri("sample.svg"))
+        val request = LoadRequest(context, newAssetUri("sample.svg"))
         val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample.svg"), null)
         Assert.assertNotNull(
             SvgBitmapDecoder.Factory(false).create(sketch, request, RequestExtras(), fetchResult)
         )
 
         // not svg
-        val request1 = LoadRequest(newAssetUri("sample.png"))
+        val request1 = LoadRequest(context, newAssetUri("sample.png"))
         val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
         Assert.assertNull(
             SvgBitmapDecoder.Factory(false).create(sketch, request1, RequestExtras(), fetchResult1)

@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
@@ -26,6 +27,7 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScreenSizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewSizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
@@ -43,18 +45,20 @@ import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.getLifecycle
 
 fun DisplayRequest(
+    context: Context,
     uriString: String?,
     target: Target,
     configBlock: (Builder.() -> Unit)? = null
-): DisplayRequest = Builder(uriString, target).apply {
+): DisplayRequest = Builder(context, uriString, target).apply {
     configBlock?.invoke(this)
 }.build()
 
 fun DisplayRequestBuilder(
+    context: Context,
     uriString: String?,
     target: Target,
     configBlock: (Builder.() -> Unit)? = null
-): Builder = Builder(uriString, target).apply {
+): Builder = Builder(context, uriString, target).apply {
     configBlock?.invoke(this)
 }
 
@@ -62,7 +66,7 @@ fun DisplayRequest(
     uriString: String?,
     imageView: ImageView,
     configBlock: (Builder.() -> Unit)? = null
-): DisplayRequest = Builder(uriString, ImageViewTarget(imageView)).apply {
+): DisplayRequest = Builder(imageView.context, uriString, ImageViewTarget(imageView)).apply {
     configBlock?.invoke(this)
 }.build()
 
@@ -70,7 +74,7 @@ fun DisplayRequestBuilder(
     uriString: String?,
     imageView: ImageView,
     configBlock: (Builder.() -> Unit)? = null
-): Builder = Builder(uriString, ImageViewTarget(imageView)).apply {
+): Builder = Builder(imageView.context, uriString, ImageViewTarget(imageView)).apply {
     configBlock?.invoke(this)
 }
 
@@ -85,21 +89,26 @@ interface DisplayRequest : LoadRequest {
     val errorImage: StateImage?
     val transition: Transition.Factory?
 
-    val resizeSizeResolver: SizeResolver?
+//    val viewOptions: DisplayOptions?
+//    val defaultOptions: DisplayOptions?
+//    val definedOptions: DisplayOptions
 
     fun newDisplayRequestBuilder(
+        context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
-    ): Builder = Builder(this).apply {
+    ): Builder = Builder(this, context).apply {
         configBlock?.invoke(this)
     }
 
     fun newDisplayRequest(
+        context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
-    ): DisplayRequest = Builder(this).apply {
+    ): DisplayRequest = Builder(this, context).apply {
         configBlock?.invoke(this)
     }.build()
 
     class Builder {
+        private val context: Context
         private val uriString: String
         private val target: Target
 
@@ -133,20 +142,33 @@ interface DisplayRequest : LoadRequest {
 
         private var lifecycle: Lifecycle? = null
 
-        constructor(uriString: String?, target: Target) {
+//        private var viewOptions: DisplayOptions? = null
+//        private var defaultOptions: DisplayOptions? = null
+
+        constructor(context: Context, uriString: String?, target: Target) {
+            this.context = context
             this.uriString = uriString.orEmpty()
             this.target = target
             target.asOrNull<ViewTarget<*>>()
                 ?.view.asOrNull<DisplayOptionsProvider>()
-                ?.displayOptions
-                ?.let {
+                ?.displayOptions?.let {
                     options(it)
                 }
+
+//            this.viewOptions = target.asOrNull<ViewTarget<*>>()
+//                ?.view.asOrNull<DisplayOptionsProvider>()
+//                ?.displayOptions
+//            this.defaultOptions = context.sketch.defaultDisplayOptions
         }
 
-        internal constructor(request: DisplayRequest) {
+        internal constructor(request: DisplayRequest, context: Context = request.context) {
+            this.context = context
             this.uriString = request.uriString
             this.target = request.target
+
+//            this.viewOptions = request.viewOptions
+//            this.defaultOptions = request.defaultOptions
+
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.listener =
@@ -580,37 +602,10 @@ interface DisplayRequest : LoadRequest {
                 this.progressListener = progressListener as ProgressListener<ImageRequest>?
             }
 
-        fun build(): DisplayRequest {
-            val target = target
-            val listener = listener
-            val progressListener = progressListener
-            val viewListenerProvider =
-                target.asOrNull<ViewTarget<*>>()?.view?.asOrNull<ListenerProvider>()
-            @Suppress("UNCHECKED_CAST") val viewListener =
-                viewListenerProvider?.getListener() as Listener<ImageRequest, ImageResult, ImageResult>?
-            @Suppress("UNCHECKED_CAST") val viewProgressListener =
-                viewListenerProvider?.getProgressListener() as ProgressListener<ImageRequest>?
-            val finalListener =
-                if (listener != null && viewListener != null && listener !== viewListener) {
-                    CombinedListener(viewListener, listener)
-                } else {
-                    listener ?: viewListener
-                }
-            val finalProgressListener =
-                if (progressListener != null && viewProgressListener != null && progressListener != viewProgressListener) {
-                    CombinedProgressListener(viewProgressListener, progressListener)
-                } else {
-                    progressListener ?: viewProgressListener
-                }
-
-            val finalResizeResolver =
-                resizeSizeResolver ?: if (resizeSize == null && target is ViewTarget<*>) {
-                    ViewSizeResolver(target.view)
-                } else {
-                    null
-                }
-            return if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        fun build(): DisplayRequest =
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 DisplayRequestImpl(
+                    context = context,
                     uriString = uriString,
                     depth = depth,
                     parameters = parametersBuilder?.build(),
@@ -621,7 +616,7 @@ interface DisplayRequest : LoadRequest {
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                     preferQualityOverSpeed = preferQualityOverSpeed,
                     resizeSize = resizeSize,
-                    resizeSizeResolver = finalResizeResolver,
+                    resizeSizeResolver = resizeSizeResolver ?: resolveResizeSizeResolver(),
                     resizePrecisionDecider = resizePrecisionDecider,
                     resizeScale = resizeScale,
                     transformations = transformations?.toList(),
@@ -634,11 +629,12 @@ interface DisplayRequest : LoadRequest {
                     transition = transition,
                     target = target,
                     lifecycle = lifecycle ?: resolveLifecycle(),
-                    listener = finalListener,
-                    progressListener = finalProgressListener,
+                    listener = combinationListener(),
+                    progressListener = combinationProgressListener(),
                 )
             } else {
                 DisplayRequestImpl(
+                    context = context,
                     uriString = uriString,
                     depth = depth,
                     parameters = parametersBuilder?.build(),
@@ -648,7 +644,7 @@ interface DisplayRequest : LoadRequest {
                     bitmapConfig = bitmapConfig,
                     preferQualityOverSpeed = preferQualityOverSpeed,
                     resizeSize = resizeSize,
-                    resizeSizeResolver = finalResizeResolver,
+                    resizeSizeResolver = resizeSizeResolver ?: resolveResizeSizeResolver(),
                     resizePrecisionDecider = resizePrecisionDecider,
                     resizeScale = resizeScale,
                     transformations = transformations?.toList(),
@@ -661,20 +657,60 @@ interface DisplayRequest : LoadRequest {
                     transition = transition,
                     target = target,
                     lifecycle = lifecycle ?: resolveLifecycle(),
-                    listener = finalListener,
-                    progressListener = finalProgressListener,
+                    listener = combinationListener(),
+                    progressListener = combinationProgressListener(),
                 )
             }
-        }
 
         private fun resolveLifecycle(): Lifecycle? {
             val target = target
             val context = if (target is ViewTarget<*>) target.view.context else null
             return context.getLifecycle()
         }
+
+        private fun resolveResizeSizeResolver(): SizeResolver? =
+            resizeSizeResolver
+                ?: if (resizeSize == null) {
+                    if (target is ViewTarget<*>) {
+                        ViewSizeResolver(target.view)
+                    } else {
+                        ScreenSizeResolver(context)
+                    }
+                } else {
+                    null
+                }
+
+        private fun combinationListener(): Listener<ImageRequest, ImageResult, ImageResult>? {
+            val target = target
+            val listener = listener
+            val viewListenerProvider =
+                target.asOrNull<ViewTarget<*>>()?.view?.asOrNull<ListenerProvider>()
+            @Suppress("UNCHECKED_CAST") val viewListener =
+                viewListenerProvider?.getListener() as Listener<ImageRequest, ImageResult, ImageResult>?
+            return if (listener != null && viewListener != null && listener !== viewListener) {
+                CombinedListener(viewListener, listener)
+            } else {
+                listener ?: viewListener
+            }
+        }
+
+        private fun combinationProgressListener(): ProgressListener<ImageRequest>? {
+            val target = target
+            val progressListener = progressListener
+            val viewListenerProvider =
+                target.asOrNull<ViewTarget<*>>()?.view?.asOrNull<ListenerProvider>()
+            @Suppress("UNCHECKED_CAST") val viewProgressListener =
+                viewListenerProvider?.getProgressListener() as ProgressListener<ImageRequest>?
+            return if (progressListener != null && viewProgressListener != null && progressListener != viewProgressListener) {
+                CombinedProgressListener(viewProgressListener, progressListener)
+            } else {
+                progressListener ?: viewProgressListener
+            }
+        }
     }
 
     private class DisplayRequestImpl(
+        override val context: Context,
         override val uriString: String,
         override val depth: RequestDepth?,
         override val parameters: Parameters?,
@@ -704,6 +740,7 @@ interface DisplayRequest : LoadRequest {
 
         @RequiresApi(VERSION_CODES.O)
         constructor(
+            context: Context,
             uriString: String,
             depth: RequestDepth?,
             parameters: Parameters?,
@@ -730,6 +767,7 @@ interface DisplayRequest : LoadRequest {
             listener: Listener<ImageRequest, ImageResult, ImageResult>?,
             progressListener: ProgressListener<ImageRequest>?,
         ) : this(
+            context = context,
             uriString = uriString,
             depth = depth,
             parameters = parameters,

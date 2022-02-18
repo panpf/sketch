@@ -80,7 +80,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
     private suspend fun urisToPhotos(uris: List<String>): List<Photo> = withToIO {
         uris.map { uri ->
             val sketch = context.sketch
-            val fetcher = sketch.componentRegistry.newFetcher(sketch, LoadRequest(uri))
+            val fetcher = sketch.componentRegistry.newFetcher(sketch, LoadRequest(context, uri))
             val dataSource = fetcher.fetch().dataSource
             val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrNull()
             if (imageInfo != null) {

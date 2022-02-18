@@ -4,7 +4,6 @@ import android.widget.ImageView
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.Sketch.Companion
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Factory
 import com.github.panpf.sketch.fetch.newAppIconUri
@@ -40,7 +39,7 @@ class AppIconUriFetcherTest {
         val contentUri = "content://sample_app/sample"
         val imageView = ImageView(context)
 
-        fetcherFactory.create(sketch, LoadRequest(appIconUri))!!.apply {
+        fetcherFactory.create(sketch, LoadRequest(context, appIconUri))!!.apply {
             Assert.assertEquals("packageName", packageName)
             Assert.assertEquals(12412, versionCode)
         }
@@ -48,8 +47,8 @@ class AppIconUriFetcherTest {
             Assert.assertEquals("packageName", packageName)
             Assert.assertEquals(12412, versionCode)
         }
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(appIconUri)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(context, appIconUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }
 
     @Test
@@ -62,7 +61,7 @@ class AppIconUriFetcherTest {
             context.packageManager.getPackageInfo(context.packageName, 0).versionCode
         )
 
-        val fetcher = fetcherFactory.create(sketch, LoadRequest(appIconUri))!!
+        val fetcher = fetcherFactory.create(sketch, LoadRequest(context, appIconUri))!!
         val source = runBlocking {
             fetcher.fetch().dataSource
         }

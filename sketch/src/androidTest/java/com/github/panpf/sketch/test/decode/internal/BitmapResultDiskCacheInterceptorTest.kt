@@ -24,8 +24,8 @@ class BitmapResultDiskCacheInterceptorTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
         val interceptors = listOf(BitmapResultDiskCacheInterceptor(), BitmapDecodeEngineInterceptor())
-        val loadRequest = LoadRequest(newAssetUri("sample.jpeg")) {
-            resize(500, 500)
+        val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg")) {
+            resizeSize(500, 500)
         }
         val requestExtras = RequestExtras()
         val chain =

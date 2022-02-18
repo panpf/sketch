@@ -29,21 +29,21 @@ class GifMovieDrawableDecoderTest {
         val sketch = Sketch.new(context)
 
         // normal
-        val request = DisplayRequest(newAssetUri("sample_anim.gif"), TestTarget())
+        val request = DisplayRequest(context, newAssetUri("sample_anim.gif"), TestTarget())
         val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample_anim.gif"), null)
         Assert.assertNotNull(
             GifMovieDrawableDecoder.Factory().create(sketch, request, RequestExtras(), fetchResult)
         )
 
         // not gif
-        val request1 = DisplayRequest(newAssetUri("sample.png"), TestTarget())
+        val request1 = DisplayRequest(context, newAssetUri("sample.png"), TestTarget())
         val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
         Assert.assertNull(
             GifMovieDrawableDecoder.Factory().create(sketch, request1, RequestExtras(), fetchResult1)
         )
 
         // disabledAnimationDrawable true
-        val request2 = DisplayRequest(newAssetUri("sample_anim.gif"), TestTarget()) {
+        val request2 = DisplayRequest(context, newAssetUri("sample_anim.gif"), TestTarget()) {
             disabledAnimationDrawable()
         }
         val fetchResult2 = FetchResult(ErrorDataSource(sketch, request2, LOCAL), null)
@@ -52,7 +52,7 @@ class GifMovieDrawableDecoderTest {
         )
 
         // mimeType error
-        val request3 = DisplayRequest(newAssetUri("sample_anim.gif"), TestTarget())
+        val request3 = DisplayRequest(context, newAssetUri("sample_anim.gif"), TestTarget())
         val fetchResult3 = FetchResult(
             AssetDataSource(sketch, request3, "sample_anim.gif"),
             "image/jpeg",

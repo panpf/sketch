@@ -17,6 +17,7 @@ import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.transform.Transformation
@@ -78,6 +79,7 @@ interface DisplayOptions : LoadOptions {
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
         private var resizeSize: Size? = null
+        private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScale: Scale? = null
         private var transformations: List<Transformation>? = null
@@ -107,6 +109,7 @@ interface DisplayOptions : LoadOptions {
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resizeSize = request.resizeSize
+            this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScale = request.resizeScale
             this.transformations = request.transformations
@@ -254,6 +257,10 @@ interface DisplayOptions : LoadOptions {
             this.resizeSize = Size(width, height)
         }
 
+        fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
+            this.resizeSizeResolver = sizeResolver
+        }
+
         fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
             this.resizePrecisionDecider = precisionDecider
         }
@@ -368,6 +375,7 @@ interface DisplayOptions : LoadOptions {
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                     preferQualityOverSpeed = preferQualityOverSpeed,
                     resizeSize = resizeSize,
+                    resizeSizeResolver = resizeSizeResolver,
                     resizePrecisionDecider = resizePrecisionDecider,
                     resizeScale = resizeScale,
                     transformations = transformations,
@@ -389,6 +397,7 @@ interface DisplayOptions : LoadOptions {
                     bitmapConfig = bitmapConfig,
                     preferQualityOverSpeed = preferQualityOverSpeed,
                     resizeSize = resizeSize,
+                    resizeSizeResolver = resizeSizeResolver,
                     resizePrecisionDecider = resizePrecisionDecider,
                     resizeScale = resizeScale,
                     transformations = transformations,
@@ -414,6 +423,7 @@ interface DisplayOptions : LoadOptions {
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
         override val resizeSize: Size?,
+        override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider?,
         override val resizeScale: Scale?,
         override val transformations: List<Transformation>?,
@@ -437,6 +447,7 @@ interface DisplayOptions : LoadOptions {
             colorSpace: ColorSpace?,
             preferQualityOverSpeed: Boolean?,
             resizeSize: Size?,
+            resizeSizeResolver: SizeResolver?,
             resizePrecisionDecider: PrecisionDecider?,
             resizeScale: Scale?,
             transformations: List<Transformation>?,
@@ -456,6 +467,7 @@ interface DisplayOptions : LoadOptions {
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
             resizeSize = resizeSize,
+            resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScale = resizeScale,
             transformations = transformations,

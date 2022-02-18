@@ -20,7 +20,7 @@ class AssetDataSourceTest {
     fun testConstructor() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         AssetDataSource(
             sketch = sketch,
             request = request,
@@ -39,7 +39,7 @@ class AssetDataSourceTest {
         val sketch = Sketch.new(context)
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("sample.jpeg")),
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
         ).apply {
             Assert.assertEquals(540456, length())
@@ -48,7 +48,7 @@ class AssetDataSourceTest {
         assertThrow(FileNotFoundException::class) {
             AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(newAssetUri("not_found.jpeg")),
+                request = LoadRequest(context, newAssetUri("not_found.jpeg")),
                 assetFileName = "not_found.jpeg"
             ).apply {
                 length()
@@ -62,7 +62,7 @@ class AssetDataSourceTest {
         val sketch = Sketch.new(context)
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("sample.jpeg")),
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
         ).apply {
             Assert.assertNotNull(newFileDescriptor())
@@ -71,7 +71,7 @@ class AssetDataSourceTest {
         assertThrow(FileNotFoundException::class) {
             AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(newAssetUri("not_found.jpeg")),
+                request = LoadRequest(context, newAssetUri("not_found.jpeg")),
                 assetFileName = "not_found.jpeg"
             ).apply {
                 newFileDescriptor()
@@ -85,7 +85,7 @@ class AssetDataSourceTest {
         val sketch = Sketch.new(context)
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("sample.jpeg")),
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
         ).apply {
             newInputStream().close()
@@ -94,7 +94,7 @@ class AssetDataSourceTest {
         assertThrow(FileNotFoundException::class) {
             AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(newAssetUri("not_found.jpeg")),
+                request = LoadRequest(context, newAssetUri("not_found.jpeg")),
                 assetFileName = "not_found.jpeg"
             ).apply {
                 newInputStream()
@@ -108,7 +108,7 @@ class AssetDataSourceTest {
         val sketch = Sketch.new(context)
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("sample.jpeg")),
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
         ).apply {
             Assert.assertEquals(
@@ -119,7 +119,7 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("not_found.jpeg")),
+            request = LoadRequest(context, newAssetUri("not_found.jpeg")),
             assetFileName = "not_found.jpeg"
         ).apply {
             Assert.assertEquals("AssetDataSource(assetFileName='not_found.jpeg')", toString())

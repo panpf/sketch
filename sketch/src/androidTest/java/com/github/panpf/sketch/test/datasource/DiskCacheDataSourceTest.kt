@@ -20,7 +20,7 @@ class DiskCacheDataSourceTest {
     fun testConstructor() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,
@@ -48,7 +48,7 @@ class DiskCacheDataSourceTest {
     fun testNewFileDescriptor() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,
@@ -72,7 +72,7 @@ class DiskCacheDataSourceTest {
     fun testNewInputStream() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,
@@ -96,7 +96,7 @@ class DiskCacheDataSourceTest {
     fun testFile() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,
@@ -126,7 +126,7 @@ class DiskCacheDataSourceTest {
     fun testToString() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,

@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request
 
+import android.content.Context
 import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.http.HttpHeaders
@@ -8,16 +9,18 @@ import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
 
 fun DownloadRequest(
+    context: Context,
     uriString: String,
     configBlock: (Builder.() -> Unit)? = null
-): DownloadRequest = Builder(uriString).apply {
+): DownloadRequest = Builder(context, uriString).apply {
     configBlock?.invoke(this)
 }.build()
 
 fun DownloadRequestBuilder(
+    context: Context,
     uriString: String,
     configBlock: (Builder.() -> Unit)? = null
-): Builder = Builder(uriString).apply {
+): Builder = Builder(context, uriString).apply {
     configBlock?.invoke(this)
 }
 
@@ -41,8 +44,9 @@ interface DownloadRequest : ImageRequest {
         configBlock?.invoke(this)
     }
 
-    open class Builder(private val uriString: String) {
+    open class Builder(context: Context, private val uriString: String) {
 
+        private val context: Context = context.applicationContext
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
@@ -51,7 +55,8 @@ interface DownloadRequest : ImageRequest {
         private var networkContentDiskCachePolicy: CachePolicy? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
 
-        internal constructor(request: DownloadRequest) : this(request.uriString) {
+        internal constructor(request: DownloadRequest, context: Context = request.context)
+                : this(context, request.uriString) {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.listener = request.listener
@@ -196,6 +201,7 @@ interface DownloadRequest : ImageRequest {
             }
 
         fun build(): DownloadRequest = DownloadRequestImpl(
+            context = context,
             uriString = uriString,
             depth = depth,
             parameters = parametersBuilder?.build(),
@@ -207,6 +213,7 @@ interface DownloadRequest : ImageRequest {
     }
 
     private class DownloadRequestImpl(
+        override val context: Context,
         override val uriString: String,
         override val depth: RequestDepth?,
         override val parameters: Parameters?,

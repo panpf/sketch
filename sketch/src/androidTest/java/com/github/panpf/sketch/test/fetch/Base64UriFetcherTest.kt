@@ -40,7 +40,7 @@ class Base64UriFetcherTest {
         val contentUri = "content://sample_app/sample"
         val imageView = ImageView(context)
 
-        fetcherFactory.create(sketch, LoadRequest(base64Uri))!!.apply {
+        fetcherFactory.create(sketch, LoadRequest(context, base64Uri))!!.apply {
             Assert.assertEquals("image/png", mimeType)
             Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64StringLazy.value)
         }
@@ -48,8 +48,8 @@ class Base64UriFetcherTest {
             Assert.assertEquals("image/png", mimeType)
             Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64StringLazy.value)
         }
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(base64Uri)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(context, base64Uri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }
 
     @Test
@@ -60,7 +60,7 @@ class Base64UriFetcherTest {
         val imageData = "4y2u1412421089084901240129".toByteArray()
         val base64Uri = "data:image/png;base64,${Base64.encodeToString(imageData, Base64.DEFAULT)}"
 
-        val fetcher = fetcherFactory.create(sketch, LoadRequest(base64Uri))!!
+        val fetcher = fetcherFactory.create(sketch, LoadRequest(context, base64Uri))!!
         val source = runBlocking {
             fetcher.fetch().dataSource
         }

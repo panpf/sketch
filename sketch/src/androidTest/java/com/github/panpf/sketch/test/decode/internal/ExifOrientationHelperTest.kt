@@ -44,21 +44,21 @@ class ExifOrientationHelperTest {
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
             AssetDataSource(
-                sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg"
+                sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
             ).readExifOrientation()
         )
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             AssetDataSource(
-                sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp"
+                sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp"
             ).readExifOrientation()
         )
 
         ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             Assert.assertEquals(
                 it.exifOrientation,
-                FileDataSource(sketch, LoadRequest(it.file.path), it.file).readExifOrientation()
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file).readExifOrientation()
             )
         }
 
@@ -66,7 +66,7 @@ class ExifOrientationHelperTest {
             ExifInterface.ORIENTATION_UNDEFINED,
             ResourceDataSource(
                 sketch,
-                LoadRequest(context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).readExifOrientation()
@@ -81,33 +81,33 @@ class ExifOrientationHelperTest {
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
             AssetDataSource(
-                sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg"
+                sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
             ).readExifOrientationWithMimeType("image/jpeg")
         )
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             AssetDataSource(
-                sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg"
+                sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
             ).readExifOrientationWithMimeType("image/bmp")
         )
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             AssetDataSource(
-                sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp"
+                sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp"
             ).readExifOrientationWithMimeType("image/webp")
         )
 
         ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             Assert.assertEquals(
                 it.exifOrientation,
-                FileDataSource(sketch, LoadRequest(it.file.path), it.file)
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
                     .readExifOrientationWithMimeType("image/jpeg")
             )
             Assert.assertEquals(
                 ExifInterface.ORIENTATION_UNDEFINED,
-                FileDataSource(sketch, LoadRequest(it.file.path), it.file)
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
                     .readExifOrientationWithMimeType("image/bmp")
             )
         }
@@ -116,7 +116,7 @@ class ExifOrientationHelperTest {
             ExifInterface.ORIENTATION_UNDEFINED,
             ResourceDataSource(
                 sketch,
-                LoadRequest(context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).readExifOrientationWithMimeType("image/jpeg")

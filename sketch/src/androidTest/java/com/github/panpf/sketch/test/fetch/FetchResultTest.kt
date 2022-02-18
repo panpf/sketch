@@ -20,7 +20,7 @@ class FetchResultTest {
     fun testFrom() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest("")
+        val request = LoadRequest(context, "")
 
         FetchResult(FileDataSource(sketch, request, File("/sdcard/sample.jpeg")), "image/jpeg").apply {
             Assert.assertEquals(DataFrom.LOCAL, from)
@@ -35,7 +35,7 @@ class FetchResultTest {
     fun testToString() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest("")
+        val request = LoadRequest(context, "")
 
         FetchResult(FileDataSource(sketch, request, File("/sdcard/sample.jpeg")), "image/jpeg").apply {
             Assert.assertEquals("FetchResult(source=FileDataSource(file='/sdcard/sample.jpeg'),mimeType='image/jpeg')", this.toString())

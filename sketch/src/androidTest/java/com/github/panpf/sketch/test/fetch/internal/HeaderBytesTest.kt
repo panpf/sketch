@@ -161,12 +161,12 @@ class HeaderBytesTest {
         val sketch = Sketch.new(context)
 
         // normal
-        val request = LoadRequest(newAssetUri("sample_anim.gif"))
+        val request = LoadRequest(context, newAssetUri("sample_anim.gif"))
         val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample_anim.gif"), null)
         Assert.assertTrue(fetchResult.headerBytes.isGif())
 
         // not gif
-        val request1 = LoadRequest(newAssetUri("sample.png"))
+        val request1 = LoadRequest(context, newAssetUri("sample.png"))
         val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
         Assert.assertFalse(fetchResult1.headerBytes.isGif())
     }

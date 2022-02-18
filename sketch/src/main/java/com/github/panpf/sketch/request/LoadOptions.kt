@@ -15,6 +15,7 @@ import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.util.Size
 
@@ -40,6 +41,7 @@ interface LoadOptions : DownloadOptions {
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val preferQualityOverSpeed: Boolean?
     val resizeSize: Size?
+    val resizeSizeResolver: SizeResolver?
     val resizePrecisionDecider: PrecisionDecider?
     val resizeScale: Scale?
     val transformations: List<Transformation>?
@@ -54,6 +56,7 @@ interface LoadOptions : DownloadOptions {
                 && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
                 && preferQualityOverSpeed == null
                 && resizeSize == null
+                && resizeSizeResolver == null
                 && resizePrecisionDecider == null
                 && resizeScale == null
                 && transformations == null
@@ -87,6 +90,7 @@ interface LoadOptions : DownloadOptions {
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
         private var resizeSize: Size? = null
+        private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScale: Scale? = null
         private var transformations: MutableSet<Transformation>? = null
@@ -110,6 +114,7 @@ interface LoadOptions : DownloadOptions {
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resizeSize = request.resizeSize
+            this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScale = request.resizeScale
             this.transformations = request.transformations?.toMutableSet()
@@ -247,6 +252,10 @@ interface LoadOptions : DownloadOptions {
             this.resizeSize = Size(width, height)
         }
 
+        fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
+            this.resizeSizeResolver = sizeResolver
+        }
+
         fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
             this.resizePrecisionDecider = precisionDecider
         }
@@ -291,6 +300,7 @@ interface LoadOptions : DownloadOptions {
                 colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                 preferQualityOverSpeed = preferQualityOverSpeed,
                 resizeSize = resizeSize,
+                resizeSizeResolver = resizeSizeResolver,
                 resizePrecisionDecider = resizePrecisionDecider,
                 resizeScale = resizeScale,
                 transformations = transformations?.toList(),
@@ -307,6 +317,7 @@ interface LoadOptions : DownloadOptions {
                 bitmapConfig = bitmapConfig,
                 preferQualityOverSpeed = preferQualityOverSpeed,
                 resizeSize = resizeSize,
+                resizeSizeResolver = resizeSizeResolver,
                 resizePrecisionDecider = resizePrecisionDecider,
                 resizeScale = resizeScale,
                 transformations = transformations?.toList(),
@@ -326,6 +337,7 @@ interface LoadOptions : DownloadOptions {
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
         override val resizeSize: Size?,
+        override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider?,
         override val resizeScale: Scale?,
         override val transformations: List<Transformation>?,
@@ -344,6 +356,7 @@ interface LoadOptions : DownloadOptions {
             colorSpace: ColorSpace?,
             preferQualityOverSpeed: Boolean?,
             resizeSize: Size?,
+            resizeSizeResolver: SizeResolver?,
             resizePrecisionDecider: PrecisionDecider?,
             resizeScale: Scale?,
             transformations: List<Transformation>?,
@@ -358,6 +371,7 @@ interface LoadOptions : DownloadOptions {
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
             resizeSize = resizeSize,
+            resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScale = resizeScale,
             transformations = transformations,

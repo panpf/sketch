@@ -36,10 +36,11 @@ fun AsyncImage(
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ) {
-    val sketch = LocalContext.current.sketch
+    val context = LocalContext.current
+    val sketch = context.sketch
     val isPreview = LocalInspectionMode.current
     val asyncImagePainter = remember {
-        AsyncImagePainter(sketch, imageUri, configBlock, isPreview, filterQuality)
+        AsyncImagePainter(context, sketch, imageUri, configBlock, isPreview, filterQuality)
     }
     // Invoke this manually so `painter.state` is up to date immediately.
     // It must be updated immediately or it will crash in the LazyColumn or LazyVerticalGrid

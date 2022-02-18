@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
 import android.net.Uri
@@ -11,31 +12,35 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.LoadRequest.Builder
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScreenSizeResolver
+import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
+import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.util.Size
 
 fun LoadRequest(
+    context: Context,
     uriString: String,
     configBlock: (Builder.() -> Unit)? = null
-): LoadRequest = Builder(uriString).apply {
+): LoadRequest = Builder(context, uriString).apply {
     configBlock?.invoke(this)
 }.build()
 
 fun LoadRequestBuilder(
+    context: Context,
     uriString: String,
     configBlock: (Builder.() -> Unit)? = null
-): Builder = Builder(uriString).apply {
+): Builder = Builder(context, uriString).apply {
     configBlock?.invoke(this)
 }
 
@@ -77,6 +82,7 @@ interface LoadRequest : DownloadRequest {
      * The size of the desired bitmap
      */
     val resizeSize: Size?
+    val resizeSizeResolver: SizeResolver?
     val resizePrecisionDecider: PrecisionDecider?
     val resizeScale: Scale?
     val resize: Resize?
@@ -101,6 +107,10 @@ interface LoadRequest : DownloadRequest {
      */
     val bitmapResultDiskCachePolicy: CachePolicy?
 
+//    val viewOptions: LoadOptions?
+//    val defaultOptions: DisplayOptions?
+//    val definedOptions: DisplayOptions
+
     fun newLoadRequestBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
@@ -113,8 +123,9 @@ interface LoadRequest : DownloadRequest {
         configBlock?.invoke(this)
     }.build()
 
-    class Builder(private val uriString: String) {
+    class Builder(context: Context, private val uriString: String) {
 
+        private val context: Context = context.applicationContext
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
@@ -129,6 +140,7 @@ interface LoadRequest : DownloadRequest {
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
         private var resizeSize: Size? = null
+        private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScale: Scale? = null
         private var transformations: MutableSet<Transformation>? = null
@@ -136,7 +148,8 @@ interface LoadRequest : DownloadRequest {
         private var ignoreExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
 
-        internal constructor(request: LoadRequest) : this(request.uriString) {
+        internal constructor(request: LoadRequest, context: Context = request.context)
+                : this(context, request.uriString) {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.listener = request.listener
@@ -152,6 +165,7 @@ interface LoadRequest : DownloadRequest {
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resizeSize = request.resizeSize
+            this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScale = request.resizeScale
             this.transformations = request.transformations?.toMutableSet()
@@ -210,6 +224,11 @@ interface LoadRequest : DownloadRequest {
             if (!requestFirst || this.resizeSize == null) {
                 options.resizeSize?.let {
                     this.resizeSize = it
+                }
+            }
+            if (!requestFirst || this.resizeSizeResolver == null) {
+                options.resizeSizeResolver?.let {
+                    this.resizeSizeResolver = it
                 }
             }
             if (!requestFirst || this.resizePrecisionDecider == null) {
@@ -366,6 +385,10 @@ interface LoadRequest : DownloadRequest {
             this.resizeSize = Size(width, height)
         }
 
+        fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
+            this.resizeSizeResolver = sizeResolver
+        }
+
         fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
             this.resizePrecisionDecider = precisionDecider
         }
@@ -448,49 +471,64 @@ interface LoadRequest : DownloadRequest {
             this.progressListener = progressListener as ProgressListener<ImageRequest>?
         }
 
-        fun build(): LoadRequest = if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            LoadRequestImpl(
-                uriString = uriString,
-                depth = depth,
-                parameters = parametersBuilder?.build(),
-                httpHeaders = httpHeaders?.build(),
-                networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-                bitmapConfig = bitmapConfig,
-                colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
-                preferQualityOverSpeed = preferQualityOverSpeed,
-                resizeSize = resizeSize,
-                resizePrecisionDecider = resizePrecisionDecider,
-                resizeScale = resizeScale,
-                transformations = transformations?.toList(),
-                disabledBitmapPool = disabledBitmapPool,
-                ignoreExifOrientation = ignoreExifOrientation,
-                listener = listener,
-                progressListener = progressListener,
-            )
-        } else {
-            LoadRequestImpl(
-                uriString = uriString,
-                depth = depth,
-                parameters = parametersBuilder?.build(),
-                httpHeaders = httpHeaders?.build(),
-                networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-                bitmapConfig = bitmapConfig,
-                preferQualityOverSpeed = preferQualityOverSpeed,
-                resizeSize = resizeSize,
-                resizePrecisionDecider = resizePrecisionDecider,
-                resizeScale = resizeScale,
-                transformations = transformations?.toList(),
-                disabledBitmapPool = disabledBitmapPool,
-                ignoreExifOrientation = ignoreExifOrientation,
-                listener = listener,
-                progressListener = progressListener,
-            )
-        }
+        fun build(): LoadRequest =
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                LoadRequestImpl(
+                    context = context,
+                    uriString = uriString,
+                    depth = depth,
+                    parameters = parametersBuilder?.build(),
+                    httpHeaders = httpHeaders?.build(),
+                    networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                    bitmapConfig = bitmapConfig,
+                    colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
+                    preferQualityOverSpeed = preferQualityOverSpeed,
+                    resizeSize = resizeSize,
+                    resizeSizeResolver = resizeSizeResolver ?: resolveResizeSizeResolver(),
+                    resizePrecisionDecider = resizePrecisionDecider,
+                    resizeScale = resizeScale,
+                    transformations = transformations?.toList(),
+                    disabledBitmapPool = disabledBitmapPool,
+                    ignoreExifOrientation = ignoreExifOrientation,
+                    listener = listener,
+                    progressListener = progressListener,
+                )
+            } else {
+                LoadRequestImpl(
+                    context = context,
+                    uriString = uriString,
+                    depth = depth,
+                    parameters = parametersBuilder?.build(),
+                    httpHeaders = httpHeaders?.build(),
+                    networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                    bitmapConfig = bitmapConfig,
+                    preferQualityOverSpeed = preferQualityOverSpeed,
+                    resizeSize = resizeSize,
+                    resizeSizeResolver = resizeSizeResolver ?: resolveResizeSizeResolver(),
+                    resizePrecisionDecider = resizePrecisionDecider,
+                    resizeScale = resizeScale,
+                    transformations = transformations?.toList(),
+                    disabledBitmapPool = disabledBitmapPool,
+                    ignoreExifOrientation = ignoreExifOrientation,
+                    listener = listener,
+                    progressListener = progressListener,
+                )
+            }
+
+        private fun resolveResizeSizeResolver(): SizeResolver? =
+            resizeSizeResolver
+                ?: if (resizeSize == null) {
+                    ScreenSizeResolver(context)
+                } else {
+                    null
+                }
     }
 
+
     private class LoadRequestImpl(
+        override val context: Context,
         override val uriString: String,
         override val depth: RequestDepth?,
         override val parameters: Parameters?,
@@ -501,6 +539,7 @@ interface LoadRequest : DownloadRequest {
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
         override val resizeSize: Size?,
+        override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider?,
         override val resizeScale: Scale?,
         override val transformations: List<Transformation>?,
@@ -512,6 +551,7 @@ interface LoadRequest : DownloadRequest {
 
         @RequiresApi(VERSION_CODES.O)
         constructor(
+            context: Context,
             uriString: String,
             depth: RequestDepth?,
             parameters: Parameters?,
@@ -522,6 +562,7 @@ interface LoadRequest : DownloadRequest {
             colorSpace: ColorSpace?,
             preferQualityOverSpeed: Boolean?,
             resizeSize: Size?,
+            resizeSizeResolver: SizeResolver?,
             resizePrecisionDecider: PrecisionDecider?,
             resizeScale: Scale?,
             transformations: List<Transformation>?,
@@ -530,6 +571,7 @@ interface LoadRequest : DownloadRequest {
             listener: Listener<ImageRequest, ImageResult, ImageResult>?,
             progressListener: ProgressListener<ImageRequest>?
         ) : this(
+            context = context,
             uriString = uriString,
             depth = depth,
             parameters = parameters,
@@ -539,6 +581,7 @@ interface LoadRequest : DownloadRequest {
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
             resizeSize = resizeSize,
+            resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScale = resizeScale,
             transformations = transformations,

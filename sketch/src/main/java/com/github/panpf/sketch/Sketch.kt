@@ -3,7 +3,6 @@ package com.github.panpf.sketch
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.res.Configuration
-import android.widget.ImageView
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
@@ -56,9 +55,7 @@ import com.github.panpf.sketch.request.internal.DownloadEngineInterceptor
 import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
-import com.github.panpf.sketch.resize.internal.ResizeResolverInterceptor
 import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.CoroutineDispatcher
@@ -134,7 +131,6 @@ class Sketch private constructor(
     val displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>> =
         (_displayInterceptors ?: listOf()) +
                 DefaultDisplayOptionsInterceptor(defaultDisplayOptions) +
-                ResizeResolverInterceptor() +
                 DisplayEngineInterceptor()
 
     val bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>> =
@@ -146,6 +142,14 @@ class Sketch private constructor(
         (_drawableDecodeInterceptors ?: listOf()) + DrawableDecodeEngineInterceptor()
 
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
+//    val sketchDefaultDisplayOptions = DisplayOptions(){
+//        networkContentDiskCachePolicy(CachePolicy.ENABLED)
+//        resizePrecision(Precision.LESS_PIXELS)
+//        resizeScale(Scale.CENTER_CROP)
+//        resizeSize(appContext.re)
+//    }
+//    val sketchDefaultLoadOptions: LoadOptions?,
+//    val sketchDefaultDownloadOptions: DownloadOptions?,
 
     init {
         appContext.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {
@@ -233,20 +237,6 @@ class Sketch private constructor(
         }
     }
 
-    @AnyThread
-    fun enqueueDisplay(
-        uriString: String?,
-        target: Target,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest(uriString, target, configBlock))
-
-    @AnyThread
-    fun enqueueDisplay(
-        uriString: String?,
-        imageView: ImageView,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest(uriString, imageView, configBlock))
-
     suspend fun executeDisplay(request: DisplayRequest): DisplayResult =
         coroutineScope {
             val job = async(Dispatchers.Main.immediate) {
@@ -259,18 +249,6 @@ class Sketch private constructor(
             job.await()
         }
 
-    suspend fun executeDisplay(
-        uriString: String?,
-        target: Target,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): DisplayResult = executeDisplay(DisplayRequest(uriString, target, configBlock))
-
-    suspend fun executeDisplay(
-        uriString: String?,
-        imageView: ImageView,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): DisplayResult = executeDisplay(DisplayRequest(uriString, imageView, configBlock))
-
 
     /****************************************** Load **********************************************/
 
@@ -282,23 +260,12 @@ class Sketch private constructor(
         return OneShotDisposable(job)
     }
 
-    @AnyThread
-    fun enqueueLoad(
-        uriString: String,
-        configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<LoadResult> = enqueueLoad(LoadRequest(uriString, configBlock))
-
     suspend fun executeLoad(request: LoadRequest): LoadResult = coroutineScope {
         val job = async(Dispatchers.Main.immediate) {
             loadExecutor.execute(request)
         }
         job.await()
     }
-
-    suspend fun executeLoad(
-        uriString: String,
-        configBlock: (LoadRequest.Builder.() -> Unit)? = null
-    ): LoadResult = executeLoad(LoadRequest(uriString, configBlock))
 
 
     /**************************************** Download ********************************************/
@@ -311,12 +278,6 @@ class Sketch private constructor(
         return OneShotDisposable(job)
     }
 
-    @AnyThread
-    fun enqueueDownload(
-        uriString: String,
-        configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest(uriString, configBlock))
-
     suspend fun executeDownload(request: DownloadRequest): DownloadResult =
         coroutineScope {
             val job = async(Dispatchers.Main.immediate) {
@@ -324,11 +285,6 @@ class Sketch private constructor(
             }
             job.await()
         }
-
-    suspend fun executeDownload(
-        uriString: String,
-        configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): DownloadResult = executeDownload(DownloadRequest(uriString, configBlock))
 
 
     companion object {

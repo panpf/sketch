@@ -23,7 +23,7 @@ class BitmapDecodeInterceptorChainTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
         val interceptors = listOf(BitmapDecodeEngineInterceptor())
-        val loadRequest = LoadRequest(newAssetUri("sample.jpeg"))
+        val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
         val requestExtras = RequestExtras()
         val chain =
             BitmapDecodeInterceptorChain(interceptors, 0, sketch, loadRequest, requestExtras, null)

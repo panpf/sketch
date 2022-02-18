@@ -17,7 +17,7 @@ class ByteArrayDataSourceTest {
     fun testConstructor() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest("http://sample.jpeg")
+        val request = LoadRequest(context, "http://sample.jpeg")
         ByteArrayDataSource(
             sketch = sketch,
             request = request,
@@ -37,7 +37,7 @@ class ByteArrayDataSourceTest {
         val sketch = Sketch.new(context)
         ByteArrayDataSource(
             sketch = sketch,
-            request = LoadRequest("http://sample.jpeg"),
+            request = LoadRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
@@ -51,7 +51,7 @@ class ByteArrayDataSourceTest {
         val sketch = Sketch.new(context)
         ByteArrayDataSource(
             sketch = sketch,
-            request = LoadRequest("http://sample.jpeg"),
+            request = LoadRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
@@ -65,7 +65,7 @@ class ByteArrayDataSourceTest {
         val sketch = Sketch.new(context)
         ByteArrayDataSource(
             sketch = sketch,
-            request = LoadRequest("http://sample.jpeg"),
+            request = LoadRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {

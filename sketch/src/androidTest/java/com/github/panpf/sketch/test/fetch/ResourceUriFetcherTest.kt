@@ -53,10 +53,10 @@ class ResourceUriFetcherTest {
         val contentUri = "content://sample_app/sample"
         val imageView = ImageView(context)
 
-        fetcherFactory.create(sketch, LoadRequest(androidResUriByName))!!.apply {
+        fetcherFactory.create(sketch, LoadRequest(context, androidResUriByName))!!.apply {
             Assert.assertEquals(androidResUriByName, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, LoadRequest(androidResUriById))!!.apply {
+        fetcherFactory.create(sketch, LoadRequest(context, androidResUriById))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
         fetcherFactory.create(sketch, DisplayRequest(androidResUriByName, imageView))!!.apply {
@@ -65,10 +65,10 @@ class ResourceUriFetcherTest {
         fetcherFactory.create(sketch, DisplayRequest(androidResUriById, imageView))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(androidResUriByName)))
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(androidResUriById)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(httpUri)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(context, androidResUriByName)))
+        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(context, androidResUriById)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, httpUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }
 
     @Test
@@ -81,13 +81,13 @@ class ResourceUriFetcherTest {
             newResourceUri(testAppPackage, "drawable", "ic_launcher")
         val androidResUriById = newResourceUri(testAppPackage, drawable.ic_launcher)
 
-        val fetcherByName = fetcherFactory.create(sketch, LoadRequest(androidResUriByName))!!
+        val fetcherByName = fetcherFactory.create(sketch, LoadRequest(context, androidResUriByName))!!
         val sourceByName = runBlocking {
             fetcherByName.fetch().dataSource
         }
         Assert.assertTrue(sourceByName is ResourceDataSource)
 
-        val fetcherById = fetcherFactory.create(sketch, LoadRequest(androidResUriById))!!
+        val fetcherById = fetcherFactory.create(sketch, LoadRequest(context, androidResUriById))!!
         val sourceById = runBlocking {
             fetcherById.fetch().dataSource
         }

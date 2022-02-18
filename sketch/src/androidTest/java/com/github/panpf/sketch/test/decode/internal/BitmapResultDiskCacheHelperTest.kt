@@ -31,7 +31,7 @@ class BitmapResultDiskCacheHelperTest {
     fun testNewBitmapResultCacheHelper() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         Assert.assertNotNull(
             newBitmapResultDiskCacheHelper(sketch, request)
@@ -62,7 +62,7 @@ class BitmapResultDiskCacheHelperTest {
     fun testRead() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         sketch.diskCache.clear()
 
@@ -103,7 +103,7 @@ class BitmapResultDiskCacheHelperTest {
     fun testWrite() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         sketch.diskCache.clear()
 

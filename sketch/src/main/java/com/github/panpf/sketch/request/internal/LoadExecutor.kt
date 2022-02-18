@@ -22,14 +22,26 @@ class LoadExecutor(private val sketch: Sketch) {
         try {
             onStart(request)
 
+            val resizeSizeResolver = request.resizeSizeResolver
+            val newRequest = if (request.resizeSize == null && resizeSizeResolver != null) {
+                val newResizeSize = resizeSizeResolver.size()
+                if (newResizeSize != null) {
+                    request.newLoadRequest { resizeSize(newResizeSize) }
+                } else {
+                    request
+                }
+            } else {
+                request
+            }
+
             val loadData = LoadInterceptorChain(
                 initialRequest = request,
                 interceptors = sketch.loadInterceptors,
                 index = 0,
                 sketch = sketch,
-                request = request,
+                request = newRequest,
                 requestExtras = requestExtras,
-            ).proceed(request)
+            ).proceed(newRequest)
 
             val successResult =
                 LoadResult.Success(request, loadData.bitmap, loadData.imageInfo, loadData.dataFrom)

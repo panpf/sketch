@@ -98,14 +98,14 @@ class DecodeUtilsTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactory().apply {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
                 Assert.assertEquals("image/jpeg", mimeType)
             }
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp")
             .readImageInfoWithBitmapFactory().apply {
                 Assert.assertEquals(1080, width)
                 Assert.assertEquals(1344, height)
@@ -114,7 +114,7 @@ class DecodeUtilsTest {
 
         ResourceDataSource(
             sketch,
-            LoadRequest(context.newResourceUri(R.xml.network_security_config)),
+            LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
             context.resources,
             R.xml.network_security_config
         )
@@ -130,14 +130,14 @@ class DecodeUtilsTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactoryOrThrow().apply {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
                 Assert.assertEquals("image/jpeg", mimeType)
             }
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp")
             .readImageInfoWithBitmapFactoryOrThrow().apply {
                 Assert.assertEquals(1080, width)
                 Assert.assertEquals(1344, height)
@@ -147,7 +147,7 @@ class DecodeUtilsTest {
         assertThrow(Exception::class) {
             ResourceDataSource(
                 sketch,
-                LoadRequest(context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrThrow()
@@ -159,14 +159,14 @@ class DecodeUtilsTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
                 Assert.assertEquals("image/jpeg", mimeType)
             }
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp")
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
                 Assert.assertEquals(1080, width)
                 Assert.assertEquals(1344, height)
@@ -176,7 +176,7 @@ class DecodeUtilsTest {
         Assert.assertNull(
             ResourceDataSource(
                 sketch,
-                LoadRequest(context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrNull()
@@ -188,20 +188,20 @@ class DecodeUtilsTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeBitmapWithBitmapFactory()!!.apply {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
             }
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeBitmapWithBitmapFactory(BitmapFactory.Options().apply { inSampleSize = 2 })!!
             .apply {
                 Assert.assertEquals(646, width)
                 Assert.assertEquals(968, height)
             }
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp")
             .decodeBitmapWithBitmapFactory()!!.apply {
                 Assert.assertEquals(1080, width)
                 Assert.assertEquals(1344, height)
@@ -210,7 +210,7 @@ class DecodeUtilsTest {
         Assert.assertNull(
             ResourceDataSource(
                 sketch,
-                LoadRequest(context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).decodeBitmapWithBitmapFactory()
@@ -222,13 +222,13 @@ class DecodeUtilsTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeRegionBitmap(Rect(500, 500, 600, 600))!!.apply {
                 Assert.assertEquals(100, width)
                 Assert.assertEquals(100, height)
             }
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeRegionBitmap(
                 Rect(500, 500, 600, 600),
                 BitmapFactory.Options().apply { inSampleSize = 2 })!!
@@ -237,7 +237,7 @@ class DecodeUtilsTest {
                 Assert.assertEquals(50, height)
             }
 
-        AssetDataSource(sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp")
+        AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp")
             .decodeRegionBitmap(Rect(500, 500, 700, 700))!!.apply {
                 Assert.assertEquals(200, width)
                 Assert.assertEquals(200, height)
@@ -246,7 +246,7 @@ class DecodeUtilsTest {
         assertThrow(IOException::class) {
             ResourceDataSource(
                 sketch,
-                LoadRequest(context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).decodeRegionBitmap(Rect(500, 500, 600, 600))

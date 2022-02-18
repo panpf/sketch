@@ -64,7 +64,7 @@ class ImageRegionDecoder constructor(
             exifOrientation: Int,
             sketch: Sketch
         ): ImageRegionDecoder {
-            val request = LoadRequest(imageUri) // todo 请求要从 view 中去
+            val request = LoadRequest(sketch.appContext, imageUri) // todo 请求要从 view 中去
             val fetch = sketch.componentRegistry.newFetcher(sketch, request)
             val fetchResult = runBlocking {
                 fetch.fetch()
