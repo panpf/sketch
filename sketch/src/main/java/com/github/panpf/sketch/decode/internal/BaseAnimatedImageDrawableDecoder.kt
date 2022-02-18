@@ -54,13 +54,13 @@ abstract class BaseAnimatedImageDrawableDecoder(
     override suspend fun decode(): DrawableDecodeResult {
         val source = when (dataSource) {
             is AssetDataSource -> {
-                ImageDecoder.createSource(sketch.appContext.assets, dataSource.assetFileName)
+                ImageDecoder.createSource(sketch.context.assets, dataSource.assetFileName)
             }
             is ResourceDataSource -> {
                 ImageDecoder.createSource(dataSource.resources, dataSource.drawableId)
             }
             is ContentDataSource -> {
-                ImageDecoder.createSource(sketch.appContext.contentResolver, dataSource.contentUri)
+                ImageDecoder.createSource(sketch.context.contentResolver, dataSource.contentUri)
             }
             is ByteArrayDataSource -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

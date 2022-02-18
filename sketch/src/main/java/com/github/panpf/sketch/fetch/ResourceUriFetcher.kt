@@ -66,7 +66,7 @@ class ResourceUriFetcher(
         val authority = uri.authority?.takeIf { it.isNotEmpty() }
             ?: throw FileNotFoundException("No authority: $uri")
         val r: Resources = try {
-            sketch.appContext.packageManager.getResourcesForApplication(authority)
+            sketch.context.packageManager.getResourcesForApplication(authority)
         } catch (ex: NameNotFoundException) {
             throw FileNotFoundException("No package found for authority: $uri")
         }

@@ -43,7 +43,6 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class LruDiskCache constructor(
     context: Context,
-    private val logger: Logger,
     override val maxSize: Long = DiskCache.DEFAULT_MAX_SIZE,
     private val _directory: File? = null,
     val version: Int = 1,
@@ -62,6 +61,7 @@ class LruDiskCache constructor(
     private val getCount = AtomicInteger()
     private val hitCount = AtomicInteger()
 
+    override var logger: Logger? = null
     override val size: Long
         get() = _cache?.size() ?: 0
     override val directory: File by lazy {
@@ -145,7 +145,7 @@ class LruDiskCache constructor(
                 getCount.set(0)
                 hitCount.set(0)
             }
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
                 if (this != null) {
                     "get. Hit(${hitRatio}). $key"
@@ -169,7 +169,7 @@ class LruDiskCache constructor(
         } else {
             DiskLruCache.deleteContents(directory)
         }
-        logger.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
+        logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
     }
 
     @Synchronized
@@ -197,7 +197,7 @@ class LruDiskCache constructor(
 
     class LruDiskCacheSnapshot(
         private val lruDiskCache: LruDiskCache,
-        private val logger: Logger,
+        private val logger: Logger?,
         override val key: String,
         private val snapshot: DiskLruCache.SimpleSnapshot
     ) : Snapshot {
@@ -214,7 +214,7 @@ class LruDiskCache constructor(
         override fun remove(): Boolean =
             try {
                 snapshot.diskLruCache.remove(snapshot.key)
-                logger.d(MODULE) {
+                logger?.d(MODULE) {
                     "delete. size ${lruDiskCache.size.formatFileSize()}. $key"
                 }
                 true
@@ -226,7 +226,7 @@ class LruDiskCache constructor(
 
     class LruDiskCacheEditor(
         private val lruDiskCache: LruDiskCache,
-        private val logger: Logger,
+        private val logger: Logger?,
         private val key: String,
         private val diskEditor: DiskLruCache.Editor
     ) : Editor {
@@ -244,7 +244,7 @@ class LruDiskCache constructor(
         )
         override fun commit() {
             diskEditor.commit()
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "commit. size ${lruDiskCache.size.formatFileSize()}. $key"
             }
         }
@@ -255,7 +255,7 @@ class LruDiskCache constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "abort. size ${lruDiskCache.size.formatFileSize()}. $key"
             }
         }

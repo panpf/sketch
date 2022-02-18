@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger
  * Release the cached [Bitmap] reuse pool according to the least-used rule
  */
 class LruBitmapPool constructor(
-    private val logger: Logger,
     override val maxSize: Long,
     val allowedConfigs: Set<Bitmap.Config?> =
         Bitmap.Config.values().run {
@@ -55,27 +54,28 @@ class LruBitmapPool constructor(
     private val getCount = AtomicInteger()
     private val hitCount = AtomicInteger()
 
+    override var logger: Logger? = null
     override val size: Long
         get() = _size
 
     override fun put(bitmap: Bitmap): Boolean {
         if (bitmap.isRecycled) {
-            logger.w(MODULE, "put. Reject. Recycled, ${bitmap.logString}")
+            logger?.w(MODULE, "put. Reject. Recycled, ${bitmap.logString}")
             return false
         }
         if (!bitmap.isMutable) {
-            logger.w(MODULE, "put. Reject. Immutable, ${bitmap.logString}")
+            logger?.w(MODULE, "put. Reject. Immutable, ${bitmap.logString}")
             return false
         }
         val bitmapSize = strategy.getSize(bitmap).toLong()
         if (bitmapSize > maxSize * 0.7f) {
-            logger.w(MODULE) {
+            logger?.w(MODULE) {
                 "put. Reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}, ${bitmap.logString}"
             }
             return false
         }
         if (!allowedConfigs.contains(bitmap.config)) {
-            logger.w(MODULE) {
+            logger?.w(MODULE) {
                 "put. Reject. Disallowed config: ${bitmap.config}, ${bitmap.logString}"
             }
             return false
@@ -86,7 +86,7 @@ class LruBitmapPool constructor(
             puts++
             this._size += bitmapSize
             trimToSize(maxSize)
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "put. Successful. ${size.formatFileSize()}. ${bitmap.logString}"
             }
         }
@@ -116,7 +116,7 @@ class LruBitmapPool constructor(
                     this.setHasAlpha(true)
                 }
 
-                logger.d(MODULE) {
+                logger?.d(MODULE) {
                     val hitRatio = (hitCount.toFloat() / getCount).format(2)
                     val key = strategy.logBitmap(width, height, config)
                     if (this != null) {
@@ -136,7 +136,7 @@ class LruBitmapPool constructor(
 
     override fun getOrCreate(width: Int, height: Int, config: Bitmap.Config): Bitmap {
         return get(width, height, config) ?: Bitmap.createBitmap(width, height, config).apply {
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 val key = strategy.logBitmap(width, height, config)
                 "Create bitmap. ${this.logString}. $key"
             }
@@ -152,7 +152,7 @@ class LruBitmapPool constructor(
                 trimToSize(maxSize / 2)
             }
             val releasedSize = (oldSize - size)
-            logger.w(MODULE) {
+            logger?.w(MODULE) {
                 "trim. level '${trimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
             }
         }
@@ -162,7 +162,7 @@ class LruBitmapPool constructor(
         synchronized(this) {
             val oldSize = size
             trimToSize(0)
-            logger.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
+            logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
         }
     }
 
@@ -176,7 +176,7 @@ class LruBitmapPool constructor(
                     this._size -= strategy.getSize(removed)
                     removed.recycle()
                     evictions++
-                    logger.d(MODULE) {
+                    logger?.d(MODULE) {
                         "Evicting bitmap. ${removed.logString}"
                     }
                 }
@@ -195,11 +195,11 @@ class LruBitmapPool constructor(
         options: BitmapFactory.Options, imageWidth: Int, imageHeight: Int, imageMimeType: String?,
     ): Boolean {
         if (imageWidth == 0 || imageHeight == 0) {
-            logger.e(MODULE, "outWidth or ourHeight is 0")
+            logger?.e(MODULE, "outWidth or ourHeight is 0")
             return false
         }
         if (imageMimeType?.isNotEmpty() != true) {
-            logger.e(MODULE, "outMimeType is empty")
+            logger?.e(MODULE, "outMimeType is empty")
             return false
         }
 
@@ -234,7 +234,7 @@ class LruBitmapPool constructor(
         options.inBitmap = inBitmap
         options.inMutable = true
         if (inBitmap != null) {
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "setInBitmapForBitmapFactory. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
                     imageWidth,
                     imageHeight,
@@ -252,7 +252,7 @@ class LruBitmapPool constructor(
         options: BitmapFactory.Options, imageWidth: Int, imageHeight: Int,
     ): Boolean {
         if (imageWidth == 0 || imageHeight == 0) {
-            logger.e(MODULE, "outWidth or ourHeight is 0")
+            logger?.e(MODULE, "outWidth or ourHeight is 0")
             return false
         }
 
@@ -277,7 +277,7 @@ class LruBitmapPool constructor(
             options.inSampleSize = inSampleSize
         }
         options.inBitmap = inBitmap
-        logger.d(MODULE) {
+        logger?.d(MODULE) {
             "setInBitmapForRegionDecoder. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
                 finalWidth,
                 finalHeight,
@@ -295,12 +295,12 @@ class LruBitmapPool constructor(
 
         val success = put(bitmap)
         if (success) {
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "Put to bitmap pool. ${bitmap.logString}"
             }
         } else {
             bitmap.recycle()
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "Recycle bitmap. ${bitmap.logString}"
             }
         }

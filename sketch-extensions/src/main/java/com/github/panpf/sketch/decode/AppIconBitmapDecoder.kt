@@ -23,7 +23,7 @@ class AppIconBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
-        val packageManager = sketch.appContext.packageManager
+        val packageManager = sketch.context.packageManager
         val packageInfo: PackageInfo = try {
             packageManager.getPackageInfo(packageName, 0)
         } catch (e: PackageManager.NameNotFoundException) {

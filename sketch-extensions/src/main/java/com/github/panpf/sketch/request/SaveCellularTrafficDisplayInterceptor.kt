@@ -22,7 +22,7 @@ class SaveCellularTrafficDisplayInterceptor : RequestInterceptor<DisplayRequest,
             enabled
             && request.isSaveCellularTraffic
             && !request.isIgnoredSaveCellularTraffic
-            && sketch.appContext.isCellularNetworkConnected()
+            && sketch.context.isCellularNetworkConnected()
             && requestDepth < RequestDepth.LOCAL
         ) {
             request.newDisplayRequest {

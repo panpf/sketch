@@ -27,6 +27,6 @@ class DrawableResStateImage(@DrawableRes private val resId: Int) : StateImage {
     override fun getDrawable(
         sketch: Sketch, request: DisplayRequest, throwable: SketchException?
     ): Drawable? {
-        return AppCompatResources.getDrawable(sketch.appContext, resId)
+        return AppCompatResources.getDrawable(sketch.context, resId)
     }
 }

@@ -20,7 +20,7 @@ class ContentUriFetcher(
     }
 
     override suspend fun fetch(): FetchResult {
-        val mimeType = sketch.appContext.contentResolver.getType(contentUri)
+        val mimeType = sketch.context.contentResolver.getType(contentUri)
         return FetchResult(ContentDataSource(sketch, request, contentUri), mimeType)
     }
 

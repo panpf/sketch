@@ -28,6 +28,6 @@ class ColorResStateImage(@ColorRes private val colorRes: Int) : StateImage {
     override fun getDrawable(
         sketch: Sketch, request: DisplayRequest, throwable: SketchException?
     ): Drawable {
-        return ColorDrawable(ResourcesCompat.getColor(sketch.appContext.resources, colorRes, null))
+        return ColorDrawable(ResourcesCompat.getColor(sketch.context.resources, colorRes, null))
     }
 }

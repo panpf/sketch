@@ -32,7 +32,7 @@ interface DataSource {
     val request: ImageRequest
 
     val context: Context
-        get() = sketch.appContext
+        get() = sketch.context
 
     val dataFrom: DataFrom
 

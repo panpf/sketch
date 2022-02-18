@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.util.DiskLruCache
+import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 import java.io.File
 import java.io.IOException
@@ -80,6 +81,8 @@ interface DiskCache {
      * Gets an edit lock bound to the specified [key], or creates a new one if it does not exist
      */
     fun editLock(key: String): Mutex
+
+    var logger: Logger?
 
     /**
      * Snapshot the values for an entry.

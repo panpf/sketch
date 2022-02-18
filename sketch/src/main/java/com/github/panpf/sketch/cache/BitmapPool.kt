@@ -2,6 +2,7 @@ package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.github.panpf.sketch.util.Logger
 
 /**
  * [Bitmap] reuse pool, used for caching and reuse [Bitmap],
@@ -84,4 +85,6 @@ interface BitmapPool {
      * @return If true is returned, it is in the pool
      */
     fun free(bitmap: Bitmap?): Boolean
+
+    var logger: Logger?
 }

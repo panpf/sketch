@@ -19,7 +19,7 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor<DisplayRequest, Dis
     @MainThread
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val newRequest = chain.request.newDisplayRequest {
-            val appSettings = chain.sketch.appContext.appSettingsService
+            val appSettings = chain.sketch.context.appSettingsService
             if (appSettings.disabledBitmapMemoryCache.value) {
                 bitmapMemoryCachePolicy(DISABLED)
             }

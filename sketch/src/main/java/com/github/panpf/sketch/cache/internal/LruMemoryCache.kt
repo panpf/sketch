@@ -31,10 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * A bitmap memory cache that manages the cache according to a least-used rule
  */
-class LruMemoryCache constructor(
-    private val logger: Logger,
-    override val maxSize: Long
-) : MemoryCache {
+class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
 
     companion object {
         private const val MODULE = "LruMemoryCache"
@@ -48,25 +45,26 @@ class LruMemoryCache constructor(
     private val getCount = AtomicInteger()
     private val hitCount = AtomicInteger()
 
+    override var logger: Logger? = null
     override val size: Long
         get() = cache.size().toLong()
 
     override fun put(key: String, countBitmap: CountBitmap): Boolean {
         return if (cache[key] == null) {
             cache.put(key, countBitmap)
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "put. ${countBitmap.info}. ${size.formatFileSize()}. $key"
             }
             true
         } else {
-            logger.w(MODULE, String.format("Exist. key=$key"))
+            logger?.w(MODULE, String.format("Exist. key=$key"))
             false
         }
     }
 
     override fun remove(key: String): CountBitmap? =
         cache.remove(key).apply {
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "remove. ${this.info}. ${size.formatFileSize()}. $key"
             }
         }
@@ -89,7 +87,7 @@ class LruMemoryCache constructor(
                 getCount.set(0)
                 hitCount.set(0)
             }
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 if (this != null) {
                     val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
                     "get. Hit(${hitRatio}). ${this.info}/${this.bitmap!!.toHexString()}. $key"
@@ -108,7 +106,7 @@ class LruMemoryCache constructor(
             cache.trimToSize(cache.maxSize() / 2)
         }
         val releasedSize = oldSize - size
-        logger.w(
+        logger?.w(
             MODULE,
             "trim. level '${trimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
         )
@@ -117,7 +115,7 @@ class LruMemoryCache constructor(
     override fun clear() {
         val oldSize = size
         cache.evictAll()
-        logger.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
+        logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
     }
 
     override fun editLock(key: String): Mutex = synchronized(editLockLock) {

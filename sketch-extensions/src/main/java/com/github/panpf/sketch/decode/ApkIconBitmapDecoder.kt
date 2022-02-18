@@ -24,7 +24,7 @@ class ApkIconBitmapDecoder(
     override suspend fun decode(): BitmapDecodeResult {
         val file = fetchResult.dataSource.file()
         val bitmap = readApkIcon(
-            sketch.appContext,
+            sketch.context,
             file.path,
             false,
             sketch.bitmapPool

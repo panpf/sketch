@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.cache
 
+import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 
 /**
@@ -65,4 +66,6 @@ interface MemoryCache {
      * Gets an edit lock bound to the [key], or creates a new one if it does not exist
      */
     fun editLock(key: String): Mutex
+
+    var logger: Logger?
 }
