@@ -9,7 +9,6 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestDepth.MEMORY
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.toDisplayData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
@@ -38,7 +37,7 @@ class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData>
             throw RequestDepthException(request, requestDepth, request.depthFrom)
         }
 
-        return withContext(Dispatchers.IO) {
+        return withContext(sketch.decodeTaskDispatcher) {
             DrawableDecodeInterceptorChain(
                 interceptors = sketch.drawableDecodeInterceptors,
                 index = 0,

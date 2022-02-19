@@ -67,6 +67,7 @@ import kotlin.math.roundToLong
 val Context.sketch: Sketch
     get() = SketchSingleton.sketch(this)
 
+// todo Monitor system callbacks, TrimMemory and networking
 class Sketch private constructor(
     val context: Context,
     val logger: Logger,
@@ -85,7 +86,7 @@ class Sketch private constructor(
     val globalDownloadOptions: DownloadOptions?,
 ) {
     private val scope = CoroutineScope(
-        SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
+        SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
             logger.e("scope", throwable, "exception")
         }
     )
@@ -95,6 +96,8 @@ class Sketch private constructor(
 
     val countDrawablePendingManager = CountDrawablePendingManager(logger)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
+    // Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance
+    val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
 
     init {
         memoryCache.logger = logger

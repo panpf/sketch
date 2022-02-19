@@ -7,14 +7,13 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DownloadEngineInterceptor : RequestInterceptor<DownloadRequest, DownloadData> {
 
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain<DownloadRequest, DownloadData>): DownloadData =
-        withContext(Dispatchers.IO) {
+        withContext(chain.sketch.decodeTaskDispatcher) {
             val sketch = chain.sketch
             val request = chain.request
             val fetcher = sketch.componentRegistry.newFetcher(sketch, request)

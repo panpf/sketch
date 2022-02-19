@@ -6,14 +6,13 @@ import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.toLoadData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class LoadEngineInterceptor : RequestInterceptor<LoadRequest, LoadData> {
 
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain<LoadRequest, LoadData>): LoadData =
-        withContext(Dispatchers.IO) {
+        withContext(chain.sketch.decodeTaskDispatcher) {
             val sketch = chain.sketch
             val request = chain.request
             BitmapDecodeInterceptorChain(

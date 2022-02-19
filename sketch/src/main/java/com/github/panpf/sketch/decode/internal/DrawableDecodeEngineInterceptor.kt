@@ -4,20 +4,18 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.request.DisplayRequest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class DrawableDecodeEngineInterceptor : DecodeInterceptor<DisplayRequest, DrawableDecodeResult> {
 
     @WorkerThread
     override suspend fun intercept(
         chain: DecodeInterceptor.Chain<DisplayRequest, DrawableDecodeResult>,
-    ): DrawableDecodeResult = withContext(Dispatchers.IO) {
+    ): DrawableDecodeResult {
         val request = chain.request
         val componentRegistry = chain.sketch.componentRegistry
         val fetcher = componentRegistry.newFetcher(chain.sketch, request)
         val fetchResult = chain.fetchResult ?: fetcher.fetch()
-        componentRegistry
+        return componentRegistry
             .newDrawableDecoder(chain.sketch, request, chain.requestExtras, fetchResult)
             .decode()
     }
