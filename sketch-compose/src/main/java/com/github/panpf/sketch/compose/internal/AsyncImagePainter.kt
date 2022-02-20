@@ -2,50 +2,93 @@ package com.github.panpf.sketch.compose.internal
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State.Empty
-import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State.Error
-import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State.Loading
-import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State.Success
+import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.util.getLastDrawable
+import kotlinx.coroutines.Dispatchers
+import com.github.panpf.sketch.target.Target as SketchTarget
+
+@Composable
+fun rememberAsyncImagePainter(
+    imageUri: String?,
+    configBlock: (DisplayRequest.Builder.() -> Unit)?,
+    filterQuality: FilterQuality,
+    resizeScale: Scale,
+): AsyncImagePainter {
+    val context = LocalContext.current
+    val sketch = context.sketch
+    val isPreview = LocalInspectionMode.current
+    val scope = rememberCoroutineScope { Dispatchers.Main.immediate }
+    val imagePainter = remember(scope) {
+        AsyncImagePainter(
+            context,
+            sketch,
+            imageUri,
+            configBlock,
+            resizeScale,
+            isPreview,
+            filterQuality
+        )
+    }
+    // Invoke this manually so `painter.state` is up to date immediately.
+    // It must be updated immediately or it will crash in the LazyColumn or LazyVerticalGrid
+    imagePainter.onRemembered()
+    // transition
+    updateTransition(imagePainter)
+    return imagePainter
+}
 
 class AsyncImagePainter(
     context: Context,
     private val sketch: Sketch,
     imageUri: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)?,
+    val resizeScale: Scale,
     private val isPreview: Boolean,
     private val filterQuality: FilterQuality,
 ) : Painter(), RememberObserver {
 
-    private val target = object : com.github.panpf.sketch.target.Target {
-        override fun onStart(placeholder: Drawable?) {
-            super.onStart(placeholder)
-            state = Loading(placeholder?.toPainter(filterQuality))
-        }
+    private val target = createSketchTarget()
+    private var disposable: Disposable<DisplayResult>? = null
 
-        override fun onSuccess(result: Drawable) {
-            super.onSuccess(result)
-            state = Success(result.toPainter(filterQuality))
-        }
+    val request = buildRequest(context, imageUri, configBlock, resizeScale, target)
 
-        override fun onError(error: Drawable?) {
-            super.onError(error)
-            state = Error(error?.toPainter(filterQuality))
-        }
-    }
+    /** The current [AsyncImagePainter.State]. */
+    internal var state: State by mutableStateOf(State.Empty)
+        private set
+
+    override fun onRemembered() {
+        if (isPreview) {
+            state = State.Loading(
+                request.placeholderImage
+                    ?.getDrawable(sketch, request, null)
+                    ?.toPainter(filterQuality)
+            )
+        } else if (disposable == null) {
+
 
 //    private inner class DrawSizeResolver : SizeResolver {
 //
@@ -62,30 +105,9 @@ class AsyncImagePainter(
 //            }
 //            .first()
 //    }
-
-    val request = DisplayRequest(context, imageUri, target, configBlock).run {
-        // todo Limit the size of the
-        if (resizeSize == null && definedOptions.resizeSizeResolver == null) {
-            newDisplayRequest {
-                resizeSizeResolver(ConstraintsSizeResolver())
-            }
-        } else {
-            this
-        }
-    }
-    var disposable: Disposable<DisplayResult>? = null
-
-    /** The current [AsyncImagePainter.State]. */
-    var state: State by mutableStateOf(Empty)
-        private set
-
-    override fun onRemembered() {
-        if (isPreview) {
-            state = Loading(
-                request.placeholderImage?.getDrawable(sketch, request, null)
-                    ?.toPainter(filterQuality)
-            )
-        } else if (disposable == null) {
+//            if (request.defined.sizeResolver == null) {
+//                resizeSize(DrawSizeResolver())
+//            }
             disposable = sketch.enqueueDisplay(request)
         }
     }
@@ -99,7 +121,7 @@ class AsyncImagePainter(
 
     internal var painter: Painter? by mutableStateOf(null)
 
-    private var drawSize = MutableStateFlow(Size.Zero)
+    //    private var drawSize = MutableStateFlow(Size.Zero)
     private var alpha: Float by mutableStateOf(1f)
     private var colorFilter: ColorFilter? by mutableStateOf(null)
 
@@ -108,11 +130,53 @@ class AsyncImagePainter(
 
     override fun DrawScope.onDraw() {
         // Update the draw scope's current size.
-        drawSize.value = size
+//        drawSize.value = size
 
         // Draw the current painter.
         painter?.apply { draw(size, alpha, colorFilter) }
     }
+
+    private fun createSketchTarget(): SketchTarget =
+        object : SketchTarget {
+            override fun onStart(placeholder: Drawable?) {
+                super.onStart(placeholder)
+                state = State.Loading(placeholder?.toPainter(filterQuality))
+            }
+
+            override fun onSuccess(result: Drawable) {
+                super.onSuccess(result)
+                state = State.Success(result.toPainter(filterQuality), result)
+            }
+
+            override fun onError(error: Drawable?) {
+                super.onError(error)
+                state = State.Error(error?.toPainter(filterQuality), error)
+            }
+        }
+
+    private fun buildRequest(
+        context: Context,
+        imageUri: String?,
+        configBlock: (DisplayRequest.Builder.() -> Unit)?,
+        resizeScale: Scale,
+        target: SketchTarget
+    ): DisplayRequest =
+        DisplayRequest(context, imageUri, target, configBlock).run {
+            val resetSizeResolver = resizeSize == null && definedOptions.resizeSizeResolver == null
+            val resetScale = definedOptions.resizeScale == null
+            if (resetSizeResolver || resetScale) {
+                newDisplayRequest {
+                    if (resetSizeResolver) {
+                        resizeSizeResolver(ConstraintsSizeResolver())
+                    }
+                    if (resetScale) {
+                        resizeScale(resizeScale)
+                    }
+                }
+            } else {
+                this
+            }
+        }
 
     /**
      * The current state of the [AsyncImagePainter].
@@ -131,9 +195,60 @@ class AsyncImagePainter(
         data class Loading(override val painter: Painter?) : State()
 
         /** The request was successful. */
-        data class Success(override val painter: Painter) : State()
+        data class Success(override val painter: Painter, val drawable: Drawable) : State()
 
         /** The request failed. */
-        data class Error(override val painter: Painter?) : State()
+        data class Error(override val painter: Painter?, val drawable: Drawable?) : State()
     }
 }
+
+/**
+ * Allows us to observe the current [AsyncImagePainter.painter]. This function allows us to
+ * minimize the amount of recomposition needed such that this function only needs to be restarted
+ * when the [AsyncImagePainter.state] changes.
+ */
+@Composable
+private fun updateTransition(imagePainter: AsyncImagePainter) {
+    val request = imagePainter.request
+    // This may look like a useless remember, but this allows any painter instances
+    // to receive remember events (if it implements RememberObserver). Do not remove.
+    val state = imagePainter.state
+    val painter = remember(state) { state.painter }
+
+    // Short circuit if the crossfade transition isn't set.
+    // Check `imageLoader.defaults.transitionFactory` specifically as the default isn't set
+    // until the request is executed.
+    val transition = request.transition
+    if (transition !is CrossfadeTransition.Factory) {
+        imagePainter.painter = painter
+        return
+    }
+
+    // Keep track of the most recent loading painter to crossfade from it.
+    val loading = remember(request) { ValueHolder<Painter?>(null) }
+    if (state is State.Loading) loading.value = state.painter
+
+    // Short circuit if the request isn't successful or if it's returned by the memory cache.
+    if (state is State.Success) {
+        val drawable = state.drawable.getLastDrawable()
+        if (drawable is SketchDrawable && drawable.dataFrom != MEMORY_CACHE) {
+            // Set the crossfade painter.
+            imagePainter.painter = rememberCrossfadePainter(
+                key = state,
+                start = loading.value,
+                end = painter,
+                fitScale = imagePainter.resizeScale != Scale.FILL,
+                durationMillis = transition.durationMillis,
+                fadeStart = state.drawable !is SketchCountBitmapDrawable,
+                preferExactIntrinsicSize = transition.preferExactIntrinsicSize
+            )
+        } else {
+            imagePainter.painter = painter
+        }
+    } else {
+        imagePainter.painter = painter
+    }
+}
+
+/** A simple mutable value holder that avoids recomposition. */
+private class ValueHolder<T>(@JvmField var value: T)

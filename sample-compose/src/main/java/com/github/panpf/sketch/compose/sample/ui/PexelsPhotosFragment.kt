@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.sample.R
 import com.github.panpf.sketch.compose.sample.base.ToolbarFragment
@@ -59,9 +58,6 @@ fun PhotoContent(index: Int, photo: Photo) {
     ) {
         placeholderImage(R.drawable.im_placeholder)
         errorImage(R.drawable.im_error)
-        bitmapMemoryCachePolicy(DISABLED)
-        bitmapResultDiskCachePolicy(DISABLED)
-        networkContentDiskCachePolicy(DISABLED)
         crossfadeTransition()
     }
 }

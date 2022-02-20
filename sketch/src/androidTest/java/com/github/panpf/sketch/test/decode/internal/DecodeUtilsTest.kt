@@ -94,6 +94,11 @@ class DecodeUtilsTest {
     }
 
     @Test
+    fun testComputeSizeMultiplier() {
+        TODO("Wait for the implementation")
+    }
+
+    @Test
     fun testReadImageInfoWithBitmapFactory() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)

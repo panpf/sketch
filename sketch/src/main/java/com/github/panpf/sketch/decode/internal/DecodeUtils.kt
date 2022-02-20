@@ -29,22 +29,24 @@ import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.ImageFormat.HEIC
 import com.github.panpf.sketch.ImageFormat.HEIF
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.calculateResizeMapping
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toHexString
 import java.io.IOException
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 /*
@@ -94,6 +96,22 @@ fun calculateSamplingSize(value1: Int, inSampleSize: Int): Int {
 
 fun calculateSamplingSizeForRegion(value1: Int, inSampleSize: Int): Int {
     return floor((value1 / inSampleSize.toFloat()).toDouble()).toInt()
+}
+
+fun computeSizeMultiplier(
+    @Px srcWidth: Float,
+    @Px srcHeight: Float,
+    @Px dstWidth: Float,
+    @Px dstHeight: Float,
+    fitScale: Boolean
+): Float {
+    val widthPercent = dstWidth / srcWidth
+    val heightPercent = dstHeight / srcHeight
+    return if (fitScale) {
+        min(widthPercent, heightPercent)
+    } else {
+        max(widthPercent, heightPercent)
+    }
 }
 
 fun realDecode(

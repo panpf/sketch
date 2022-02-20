@@ -96,6 +96,7 @@ class Sketch private constructor(
 
     val countDrawablePendingManager = CountDrawablePendingManager(logger)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
+
     // Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
 
@@ -121,55 +122,26 @@ class Sketch private constructor(
 
         logger.d("Configuration") {
             buildString {
+                val fetchers = componentRegistry.fetcherFactoryList.joinToString(",")
+                val bitmapDecoders = componentRegistry.bitmapDecoderFactoryList.joinToString(",")
+                val drawableDecoders =
+                    componentRegistry.drawableDecoderFactoryList.joinToString(",")
+                val displayInterceptors = displayInterceptors.joinToString(",")
+                val bitmapDecodeInterceptors = bitmapDecodeInterceptors.joinToString(",")
+                val drawableDecodeInterceptors = drawableDecodeInterceptors.joinToString(",")
                 append("\n").append("logger: $logger")
                 append("\n").append("httpStack: $httpStack")
                 append("\n").append("memoryCache: $memoryCache")
                 append("\n").append("bitmapPool: $bitmapPool")
                 append("\n").append("diskCache: $diskCache")
-                append("\n").append(
-                    "fetchers: ${
-                        componentRegistry.fetcherFactoryList.joinToString(
-                            separator = ","
-                        )
-                    }"
-                )
-                append("\n").append(
-                    "bitmapDecoders: ${
-                        componentRegistry.bitmapDecoderFactoryList.joinToString(
-                            separator = ","
-                        )
-                    }"
-                )
-                append("\n").append(
-                    "drawableDecoders: ${
-                        componentRegistry.drawableDecoderFactoryList.joinToString(
-                            separator = ","
-                        )
-                    }"
-                )
+                append("\n").append("fetchers: $fetchers")
+                append("\n").append("bitmapDecoders: $bitmapDecoders")
+                append("\n").append("drawableDecoders: $drawableDecoders")
                 append("\n").append("downloadInterceptors: ${downloadInterceptors.joinToString()}")
-                append("\n").append("loadInterceptors: ${loadInterceptors.joinToString(separator = ",")}")
-                append("\n").append(
-                    "displayInterceptors: ${
-                        displayInterceptors.joinToString(
-                            separator = ","
-                        )
-                    }"
-                )
-                append("\n").append(
-                    "bitmapDecodeInterceptors: ${
-                        bitmapDecodeInterceptors.joinToString(
-                            separator = ","
-                        )
-                    }"
-                )
-                append("\n").append(
-                    "drawableDecodeInterceptors: ${
-                        drawableDecodeInterceptors.joinToString(
-                            separator = ","
-                        )
-                    }"
-                )
+                append("\n").append("loadInterceptors: ${loadInterceptors.joinToString(",")}")
+                append("\n").append("displayInterceptors: $displayInterceptors")
+                append("\n").append("bitmapDecodeInterceptors: $bitmapDecodeInterceptors")
+                append("\n").append("drawableDecodeInterceptors: $drawableDecodeInterceptors")
             }
         }
     }
