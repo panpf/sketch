@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.sample.R
@@ -25,24 +26,25 @@ import com.github.panpf.sketch.compose.sample.vm.PexelsImageListViewModel
 import com.github.panpf.sketch.stateimage.IconResStateImage
 import com.github.panpf.tools4a.dimen.ktx.px2dp
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
+import kotlinx.coroutines.flow.Flow
 
 class PexelsPhotosFragment : ToolbarFragment() {
 
-    private val pexelsImageListViewModel by viewModels<PexelsImageListViewModel>()
+    private val viewModel by viewModels<PexelsImageListViewModel>()
 
     @OptIn(ExperimentalFoundationApi::class)
     override fun createView(inflater: LayoutInflater, parent: ViewGroup?): View =
         ComposeView(requireContext()).apply {
             setContent {
-                PhotoListContent(pexelsImageListViewModel)
+                PhotoListContent(viewModel.pagingFlow)
             }
         }
 }
 
 @ExperimentalFoundationApi
 @Composable
-fun PhotoListContent(viewModel: PexelsImageListViewModel) {
-    val items = viewModel.pagingFlow.collectAsLazyPagingItems()
+fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>) {
+    val items = photoPagingFlow.collectAsLazyPagingItems()
     LazyVerticalGrid(GridCells.Fixed(3)) {
         itemsIndexed(items) { index, photo ->
             photo?.let { PhotoContent(index, it) }
