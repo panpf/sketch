@@ -18,8 +18,8 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -264,10 +264,7 @@ class CrossfadeDrawable @JvmOverloads constructor(
 
         val targetWidth = targetBounds.width()
         val targetHeight = targetBounds.height()
-        val widthPercent = targetWidth / width.toDouble()
-        val heightPercent = targetHeight / height.toDouble()
-        val multiplier =
-            if (fitScale) min(widthPercent, heightPercent) else max(widthPercent, heightPercent)
+        val multiplier = computeSizeMultiplier(width, height, targetWidth, targetHeight, fitScale)
         val dx = ((targetWidth - multiplier * width) / 2).roundToInt()
         val dy = ((targetHeight - multiplier * height) / 2).roundToInt()
 

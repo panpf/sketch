@@ -2,6 +2,8 @@
 
 package com.github.panpf.sketch.decode
 
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Movie
@@ -61,7 +63,16 @@ class GifMovieDrawableDecoder constructor(
                 movie.isOpaque && request.bitmapConfig?.isLowQuality == true -> RGB_565
                 else -> ARGB_8888
             },
-            if (!request.disabledBitmapPool) sketch.bitmapPool else null,
+            if (!request.disabledBitmapPool) {
+                object : MovieDrawable.BitmapCreator {
+                    override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
+                        sketch.bitmapPool.getOrCreate(width, height, config)
+
+                    override fun freeBitmap(bitmap: Bitmap) {
+                        sketch.bitmapPool.free(bitmap)
+                    }
+                }
+            } else null,
         ).apply {
             setRepeatCount(request.repeatCount() ?: ANIMATION_REPEAT_INFINITE)
 

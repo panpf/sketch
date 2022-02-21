@@ -99,6 +99,22 @@ fun calculateSamplingSizeForRegion(value1: Int, inSampleSize: Int): Int {
 }
 
 fun computeSizeMultiplier(
+    @Px srcWidth: Int,
+    @Px srcHeight: Int,
+    @Px dstWidth: Int,
+    @Px dstHeight: Int,
+    fitScale: Boolean
+): Double {
+    val widthPercent = dstWidth / srcWidth.toDouble()
+    val heightPercent = dstHeight / srcHeight.toDouble()
+    return if (fitScale) {
+        min(widthPercent, heightPercent)
+    } else {
+        max(widthPercent, heightPercent)
+    }
+}
+
+fun computeSizeMultiplier(
     @Px srcWidth: Float,
     @Px srcHeight: Float,
     @Px dstWidth: Float,

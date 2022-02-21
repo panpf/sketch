@@ -16,12 +16,12 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import android.os.SystemClock
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.calculateInSampleSize
+import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
+import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
-import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.isHardware
@@ -32,13 +32,19 @@ import com.github.panpf.sketch.util.isHardware
 class MovieDrawable constructor(
     private val movie: Movie,
     private val config: Bitmap.Config = Bitmap.Config.ARGB_8888,
-    private val bitmapPool: BitmapPool?,
+    bitmapCreator: BitmapCreator? = null
 ) : Drawable(), Animatable2Compat {
 
     val bitmapInfo: BitmapInfo by lazy {
         softwareBitmap?.let {
             BitmapInfo(it.width, it.height, it.byteCountCompat, it.config)
         } ?: BitmapInfo(0, 0, 0, null)
+    }
+    private val bitmapCreator = bitmapCreator ?: object : BitmapCreator {
+        override fun createBitmap(width: Int, height: Int, config: Bitmap.Config): Bitmap =
+            Bitmap.createBitmap(width, height, config)
+
+        override fun freeBitmap(bitmap: Bitmap) = bitmap.recycle()
     }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
@@ -229,17 +235,16 @@ class MovieDrawable constructor(
         if (movieWidth <= 0 || movieHeight <= 0) return
 
         softwareScale =
-            1f / calculateInSampleSize(movieWidth, movieHeight, boundsWidth, boundsHeight)
-//        softwareScale = DecodeUtils
-//            .computeSizeMultiplier(movieWidth, movieHeight, boundsWidth, boundsHeight, scale)
-//            .run { if (isSoftwareScalingEnabled) this else coerceAtMost(1.0) }
-//            .toFloat()
+            computeSizeMultiplier(movieWidth, movieHeight, boundsWidth, boundsHeight, true)
+                .run { if (isSoftwareScalingEnabled) this else coerceAtMost(1.0) }
+                .toFloat()
         val bitmapWidth = (softwareScale * movieWidth).toInt()
         val bitmapHeight = (softwareScale * movieHeight).toInt()
 
-        val bitmap = bitmapPool?.getOrCreate(bitmapWidth, bitmapHeight, config)
-            ?: Bitmap.createBitmap(bitmapWidth, bitmapHeight, config)
-        softwareBitmap?.recycle()
+        val bitmap = bitmapCreator.createBitmap(bitmapWidth, bitmapHeight, config)
+        softwareBitmap?.let {
+            bitmapCreator.freeBitmap(it)
+        }
         softwareBitmap = bitmap
         softwareCanvas = Canvas(bitmap)
 
@@ -250,9 +255,9 @@ class MovieDrawable constructor(
         } else {
             hardwareScale =
                 1f / calculateInSampleSize(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight)
-//            hardwareScale = DecodeUtils
-//                .computeSizeMultiplier(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, scale)
-//                .toFloat()
+            hardwareScale =
+                computeSizeMultiplier(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, true)
+                    .toFloat()
             hardwareDx = bounds.left + (boundsWidth - hardwareScale * bitmapWidth) / 2
             hardwareDy = bounds.top + (boundsHeight - hardwareScale * bitmapHeight) / 2
         }
@@ -267,7 +272,6 @@ class MovieDrawable constructor(
     override fun start() {
         if (isRunning) return
         isRunning = true
-        // todo create bitmap
 
         loopIteration = 0
         startTimeMillis = SystemClock.uptimeMillis()
@@ -279,9 +283,6 @@ class MovieDrawable constructor(
     override fun stop() {
         if (!isRunning) return
         isRunning = false
-        // todo free bitmap
-//        bitmapPool.freeBitmapToPool(softwareBitmap)
-//        softwareBitmap = null
 
         callbacks.forEach { it.onAnimationEnd(this) }
     }
@@ -297,4 +298,9 @@ class MovieDrawable constructor(
     override fun clearAnimationCallbacks() = callbacks.clear()
 
     private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }
+
+    interface BitmapCreator {
+        fun createBitmap(width: Int, height: Int, config: Bitmap.Config): Bitmap
+        fun freeBitmap(bitmap: Bitmap)
+    }
 }
