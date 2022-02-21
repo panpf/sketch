@@ -1,13 +1,8 @@
 package com.github.panpf.sketch.transition
 
-import android.widget.ImageView
-import android.widget.ImageView.ScaleType.CENTER_INSIDE
-import android.widget.ImageView.ScaleType.FIT_CENTER
-import android.widget.ImageView.ScaleType.FIT_END
-import android.widget.ImageView.ScaleType.FIT_START
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayResult
 
 /**
@@ -31,7 +26,7 @@ class CrossfadeTransition @JvmOverloads constructor(
         val drawable = CrossfadeDrawable(
             start = target.drawable,
             end = result.drawable,
-            fitScale = (target.view as? ImageView)?.fitScale ?: true,
+//            fitScale = (target.view as? ImageView)?.fitScale ?: true,
             durationMillis = durationMillis,
             fadeStart = target.drawable !is SketchCountBitmapDrawable,    // If the start drawable is a placeholder drawn from the memory cache, the fade in effect is not used
             preferExactIntrinsicSize = preferExactIntrinsicSize
@@ -42,11 +37,11 @@ class CrossfadeTransition @JvmOverloads constructor(
         }
     }
 
-    private val ImageView.fitScale: Boolean
-        get() = when (scaleType) {
-            FIT_START, FIT_CENTER, FIT_END, CENTER_INSIDE -> true
-            else -> false
-        }
+//    private val ImageView.fitScale: Boolean
+//        get() = when (scaleType) {
+//            FIT_START, FIT_CENTER, FIT_END, CENTER_INSIDE -> true
+//            else -> false
+//        }
 
     class Factory @JvmOverloads constructor(
         val durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,

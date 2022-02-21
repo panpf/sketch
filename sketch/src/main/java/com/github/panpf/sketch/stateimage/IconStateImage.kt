@@ -11,6 +11,7 @@ class IconStateImage(
     private val iconDrawable: Drawable,
     @ColorInt private val backgroundColor: Int? = null
 ) : StateImage {
+
     override fun getDrawable(
         sketch: Sketch, request: DisplayRequest, throwable: SketchException?
     ): Drawable {

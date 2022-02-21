@@ -19,7 +19,6 @@ import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -41,7 +40,6 @@ import kotlin.math.roundToInt
 class CrossfadeDrawable @JvmOverloads constructor(
     start: Drawable?,
     end: Drawable?,
-    val fitScale: Boolean = true,
     val durationMillis: Int = DEFAULT_DURATION,
     val fadeStart: Boolean = true,
     val preferExactIntrinsicSize: Boolean = false,
@@ -49,10 +47,10 @@ class CrossfadeDrawable @JvmOverloads constructor(
 
     private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()
 
-    private val intrinsicWidth =
-        computeIntrinsicDimension(start?.intrinsicWidth, end?.intrinsicWidth)
-    private val intrinsicHeight =
-        computeIntrinsicDimension(start?.intrinsicHeight, end?.intrinsicHeight)
+    private val intrinsicWidth = end?.intrinsicWidth ?: -1
+//        computeIntrinsicDimension(start?.intrinsicWidth, end?.intrinsicWidth)
+    private val intrinsicHeight = end?.intrinsicHeight ?: -1
+//        computeIntrinsicDimension(start?.intrinsicHeight, end?.intrinsicHeight)
 
     private var startTimeMillis = 0L
     private var maxAlpha = 255
@@ -264,7 +262,7 @@ class CrossfadeDrawable @JvmOverloads constructor(
 
         val targetWidth = targetBounds.width()
         val targetHeight = targetBounds.height()
-        val multiplier = computeSizeMultiplier(width, height, targetWidth, targetHeight, fitScale)
+        val multiplier = computeSizeMultiplier(width, height, targetWidth, targetHeight, false)
         val dx = ((targetWidth - multiplier * width) / 2).roundToInt()
         val dy = ((targetHeight - multiplier * height) / 2).roundToInt()
 
@@ -275,10 +273,10 @@ class CrossfadeDrawable @JvmOverloads constructor(
         drawable.setBounds(left, top, right, bottom)
     }
 
-    private fun computeIntrinsicDimension(startSize: Int?, endSize: Int?): Int {
-        if (!preferExactIntrinsicSize && (startSize == -1 || endSize == -1)) return -1
-        return max(startSize ?: -1, endSize ?: -1)
-    }
+//    private fun computeIntrinsicDimension(startSize: Int?, endSize: Int?): Int {
+//        if (!preferExactIntrinsicSize && (startSize == -1 || endSize == -1)) return -1
+//        return max(startSize ?: -1, endSize ?: -1)
+//    }
 
     private fun markDone() {
         state = STATE_DONE

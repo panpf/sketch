@@ -12,7 +12,7 @@ import androidx.core.graphics.alpha
 
 @SuppressLint("RestrictedApi")
 class IconStateDrawable(
-    private val iconDrawable: Drawable,
+    val iconDrawable: Drawable,
     @param:ColorInt private val backgroundColor: Int? = null
 ) : Drawable(), Drawable.Callback {
 

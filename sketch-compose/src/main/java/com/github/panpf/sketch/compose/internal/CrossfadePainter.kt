@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
-import kotlin.math.max
 
 /** Return a [CrossfadePainter] for the given [key]. */
 @Composable
@@ -23,12 +22,11 @@ internal fun rememberCrossfadePainter(
     key: Any,
     start: Painter?,
     end: Painter?,
-    fitScale: Boolean,
     durationMillis: Int,
     fadeStart: Boolean,
     preferExactIntrinsicSize: Boolean,
 ): Painter = remember(key) {
-    CrossfadePainter(start, end, fitScale, durationMillis, fadeStart, preferExactIntrinsicSize)
+    CrossfadePainter(start, end, durationMillis, fadeStart, preferExactIntrinsicSize)
 }
 
 /**
@@ -41,7 +39,6 @@ internal fun rememberCrossfadePainter(
 private class CrossfadePainter(
     private var start: Painter?,
     private val end: Painter?,
-    private val fitScale: Boolean,
     private val durationMillis: Int,
     private val fadeStart: Boolean,
     private val preferExactIntrinsicSize: Boolean,
@@ -95,19 +92,17 @@ private class CrossfadePainter(
     }
 
     private fun computeIntrinsicSize(): Size {
-        val startSize = start?.intrinsicSize ?: Size.Zero
+//        val startSize = start?.intrinsicSize ?: Size.Zero
         val endSize = end?.intrinsicSize ?: Size.Zero
 
-        val isStartSpecified = startSize.isSpecified
+//        val isStartSpecified = startSize.isSpecified
         val isEndSpecified = endSize.isSpecified
-        if (isStartSpecified && isEndSpecified) {
-            return Size(
-                width = max(startSize.width, endSize.width),
-                height = max(startSize.height, endSize.height),
-            )
+//        if (isStartSpecified && isEndSpecified) {
+        if (isEndSpecified) {
+            return endSize
         }
         if (preferExactIntrinsicSize) {
-            if (isStartSpecified) return startSize
+//            if (isStartSpecified) return startSize
             if (isEndSpecified) return endSize
         }
         return Size.Unspecified
@@ -145,7 +140,7 @@ private class CrossfadePainter(
             srcHeight = srcHeight,
             dstWidth = dstSize.width,
             dstHeight = dstSize.height,
-            fitScale = fitScale
+            fitScale = false
         )
         return Size(
             width = multiplier * srcWidth,

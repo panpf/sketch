@@ -237,7 +237,6 @@ private fun updateTransition(imagePainter: AsyncImagePainter) {
                 key = state,
                 start = loading.value,
                 end = painter,
-                fitScale = imagePainter.resizeScale != Scale.FILL,
                 durationMillis = transition.durationMillis,
                 fadeStart = state.drawable !is SketchCountBitmapDrawable,
                 preferExactIntrinsicSize = transition.preferExactIntrinsicSize
