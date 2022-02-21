@@ -11,11 +11,9 @@
 
 Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加载的必备功能外，还支持 GIF，手势缩放、分块显示超大图片、自动纠正图片方向、显示视频缩略图等功能
 
-## 示例 APP
+<!-- ![sample_app_download_qrcode] -->
 
-![sample_app_download_qrcode]
-
-扫描二维码下载或[点我下载][sample_app_download_link]
+[点我下载示例 APP][sample_app_download_link]
 
 ## 特性
 
@@ -173,7 +171,7 @@ Please view the [CHANGELOG.md] file
 [CHANGELOG.md]: CHANGELOG.md
 
 [sample_app_download_qrcode]: docs/sketch-sample.png
-[sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk
+[sample_app_download_link]: https://github.com/panpf/sketch/raw/main/docs/sketch-sample.apk
 [UriModel]: sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
 
 [uri]: docs/wiki/uri.md
