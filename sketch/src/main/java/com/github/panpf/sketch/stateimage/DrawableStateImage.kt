@@ -25,6 +25,6 @@ class DrawableStateImage(private val drawable: Drawable) : StateImage {
     override fun getDrawable(
         sketch: Sketch, request: DisplayRequest, throwable: SketchException?
     ): Drawable {
-        return drawable
+        return drawable.mutate()
     }
 }

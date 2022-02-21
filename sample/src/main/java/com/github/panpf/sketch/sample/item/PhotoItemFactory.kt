@@ -5,6 +5,7 @@ import android.graphics.Point
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,9 +18,11 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.longImageClipPrecision
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.ItemImageBinding
+import com.github.panpf.sketch.stateimage.IconResStateImage
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingErrorImage
 import com.github.panpf.sketch.stateimage.saveCellularTrafficErrorImage
 import com.github.panpf.sketch.viewability.setClickRedisplayAndIgnoreSaveCellularTraffic
@@ -65,13 +68,28 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
         binding.imageItemImageView.apply {
             setClickRedisplayAndIgnoreSaveCellularTraffic(true)
             updateDisplayOptions {
-                placeholderImage(R.drawable.im_placeholder)
-//                svgBackgroundColor(Color.WHITE)
-                errorImage(R.drawable.im_error) {
-                    saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
+                placeholderImage(
+                    IconResStateImage(
+                        R.drawable.ic_image_outline,
+                        ResourcesCompat.getColor(resources, color.placeholder_bg, null)
+                    )
+                )
+                errorImage(
+                    IconResStateImage(
+                        R.drawable.ic_error,
+                        ResourcesCompat.getColor(resources, color.placeholder_bg, null)
+                    )
+                ) {
+                    saveCellularTrafficErrorImage(
+                        IconResStateImage(
+                            R.drawable.ic_signal_cellular,
+                            ResourcesCompat.getColor(resources, color.placeholder_bg, null)
+                        )
+                    )
                     pauseLoadWhenScrollingErrorImage()
                 }
-                crossfadeTransition()
+//                svgBackgroundColor(Color.WHITE)
+                crossfadeTransition(preferExactIntrinsicSize = true)
             }
         }
     }
