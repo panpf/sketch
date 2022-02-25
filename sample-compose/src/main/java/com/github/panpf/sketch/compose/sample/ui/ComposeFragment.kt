@@ -19,6 +19,7 @@ package com.github.panpf.sketch.compose.sample.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.compose.ui.platform.ComposeView
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.AsyncImage
@@ -26,7 +27,7 @@ import com.github.panpf.sketch.compose.sample.base.ToolbarFragment
 import com.github.panpf.sketch.compose.sample.R
 
 class ComposeFragment : ToolbarFragment() {
-    override fun createView(inflater: LayoutInflater, parent: ViewGroup?): View =
+    override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View =
         ComposeView(requireContext()).apply {
             setContent {
                 AsyncImage(

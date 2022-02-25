@@ -27,7 +27,7 @@ abstract class ToolbarFragment : BaseFragment() {
 
         setTransparentStatusBar(toolbar)
 
-        val view = createView(inflater, contentContainer)
+        val view = createView(toolbar, inflater, contentContainer)
         contentContainer.addView(view)
 
         this@ToolbarFragment.toolbar = toolbar
@@ -46,6 +46,7 @@ abstract class ToolbarFragment : BaseFragment() {
     }
 
     protected abstract fun createView(
+        toolbar: Toolbar,
         inflater: LayoutInflater,
         parent: ViewGroup?
     ): View

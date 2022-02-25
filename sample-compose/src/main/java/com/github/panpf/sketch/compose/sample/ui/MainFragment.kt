@@ -3,6 +3,7 @@ package com.github.panpf.sketch.compose.sample.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,7 @@ class MainFragment : ToolbarFragment() {
     }
 
     @OptIn(ExperimentalFoundationApi::class)
-    override fun createView(inflater: LayoutInflater, parent: ViewGroup?): View =
+    override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View =
         ComposeView(requireContext()).apply {
             setContent {
                 LazyColumn(content = {
