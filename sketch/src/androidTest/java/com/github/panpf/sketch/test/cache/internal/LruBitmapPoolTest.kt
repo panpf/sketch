@@ -22,18 +22,18 @@ class LruBitmapPoolTest {
 
     @Test
     fun testMaxSize() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertEquals("10MB", maxSize.formatFileSize())
         }
 
-        LruBitmapPool(Logger(), 100L * 1024 * 1024).apply {
+        LruBitmapPool(100L * 1024 * 1024).apply {
             Assert.assertEquals("100MB", maxSize.formatFileSize())
         }
     }
 
     @Test
     fun testAllowedConfigs() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             when {
                 Build.VERSION.SDK_INT >= 26 -> {
                     Assert.assertEquals(
@@ -57,7 +57,6 @@ class LruBitmapPoolTest {
         }
 
         LruBitmapPool(
-            Logger(),
             100L * 1024 * 1024,
             allowedConfigs = setOf(RGB_565, ARGB_8888)
         ).apply {
@@ -70,7 +69,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testSize() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
             putBitmap(1)
@@ -83,7 +82,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testPut() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024, allowedConfigs = setOf(ARGB_8888)).apply {
+        LruBitmapPool(10L * 1024 * 1024, allowedConfigs = setOf(ARGB_8888)).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
             putBitmap(1)
@@ -113,7 +112,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testGetDirty() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             Assert.assertNull(getDirty(100, 100, ARGB_8888))
 
@@ -130,7 +129,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testGet() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             Assert.assertNull(get(100, 100, ARGB_8888))
 
@@ -147,7 +146,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testGetOrCreate() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             Assert.assertNotNull(getOrCreate(100, 100, ARGB_8888))
             Assert.assertEquals("0B", size.formatFileSize())
@@ -165,7 +164,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testTrim() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(1)
             putBitmap(2)
@@ -177,7 +176,7 @@ class LruBitmapPoolTest {
             Assert.assertEquals("0B", size.formatFileSize())
         }
 
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(1)
             putBitmap(2)
@@ -192,7 +191,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testClear() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(1)
             putBitmap(2)
@@ -208,7 +207,6 @@ class LruBitmapPoolTest {
     @Test
     fun testToString() {
         LruBitmapPool(
-            Logger(),
             10L * 1024 * 1024,
             allowedConfigs = setOf(RGB_565, ARGB_8888)
         ).apply {
@@ -226,7 +224,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testSetInBitmapForBitmapFactory() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertFalse(
                 setInBitmapForBitmapFactory(BitmapFactory.Options(), 0, 100, "image/jpeg")
             )
@@ -272,7 +270,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testSetInBitmapForRegionDecoder() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertFalse(
                 setInBitmapForRegionDecoder(BitmapFactory.Options(), 0, 100)
             )
@@ -306,7 +304,7 @@ class LruBitmapPoolTest {
 
     @Test
     fun testFree() {
-        LruBitmapPool(Logger(), 10L * 1024 * 1024).apply {
+        LruBitmapPool(10L * 1024 * 1024).apply {
             Assert.assertFalse(free(null))
 
             Assert.assertFalse(free(Bitmap.createBitmap(100, 100, ARGB_8888).apply { recycle() }))

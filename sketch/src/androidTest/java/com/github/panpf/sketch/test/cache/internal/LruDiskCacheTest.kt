@@ -4,7 +4,6 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.MD5Utils
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
@@ -19,12 +18,11 @@ class LruDiskCacheTest {
     @Test
     fun testMaxSize() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             Assert.assertEquals("512MB", it.maxSize.formatFileSize())
         }
 
-        LruDiskCache(context, logger, maxSize = 100L * 1024 * 1024).use {
+        LruDiskCache(context, maxSize = 100L * 1024 * 1024).use {
             Assert.assertEquals("100MB", it.maxSize.formatFileSize())
         }
     }
@@ -32,14 +30,13 @@ class LruDiskCacheTest {
     @Test
     fun testVersion() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             Assert.assertEquals(1, it.version)
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
@@ -49,13 +46,13 @@ class LruDiskCacheTest {
             Assert.assertNotNull(it["file2"])
         }
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             Assert.assertEquals(1, it.version)
             Assert.assertNotNull(it["file1"])
             Assert.assertNotNull(it["file2"])
         }
 
-        LruDiskCache(context, logger, version = 2).use {
+        LruDiskCache(context, version = 2).use {
             Assert.assertEquals(2, it.version)
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
@@ -65,9 +62,8 @@ class LruDiskCacheTest {
     @Test
     fun testDirectory() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             val defaultCacheDir =
                 File(context.externalCacheDir ?: context.cacheDir, DiskCache.DEFAULT_DIR_NAME)
             Assert.assertEquals(
@@ -77,7 +73,7 @@ class LruDiskCacheTest {
         }
 
         val cacheDir = File("/sdcard/testDir")
-        LruDiskCache(context, logger, _directory = cacheDir).use {
+        LruDiskCache(context, _directory = cacheDir).use {
             Assert.assertEquals(
                 cacheDir.path,
                 it.directory.path
@@ -88,14 +84,13 @@ class LruDiskCacheTest {
     @Test
     fun testSize() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             Assert.assertEquals("0B", it.size.formatFileSize())
 
             it.putFile("file1", 1)
@@ -109,14 +104,13 @@ class LruDiskCacheTest {
     @Test
     fun testPutRemoveGetExist() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, logger, 10L * 1024 * 1024).use {
+        LruDiskCache(context, 10L * 1024 * 1024).use {
             Assert.assertNull(it["file1"])
             Assert.assertFalse(it.exist("file1"))
             it.putFile("file1", 1)
@@ -148,14 +142,13 @@ class LruDiskCacheTest {
     @Test
     fun testLRU() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, logger, 10L * 1024 * 1024).use {
+        LruDiskCache(context, 10L * 1024 * 1024).use {
             Assert.assertEquals("0B", it.size.formatFileSize())
 
             it.putFile("file1", 1)
@@ -212,14 +205,13 @@ class LruDiskCacheTest {
     @Test
     fun testClear() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             Assert.assertEquals("0B", it.size.formatFileSize())
             it.putFile("file1", 1)
             it.putFile("file2", 2)
@@ -243,8 +235,7 @@ class LruDiskCacheTest {
     @Test
     fun testEditLock() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
-        LruDiskCache(context, logger, 10L * 1024 * 1024).use {
+        LruDiskCache(context, 10L * 1024 * 1024).use {
             Assert.assertNotNull(it.editLock("file1"))
             Assert.assertNotNull(it.editLock("file2"))
             Assert.assertNotNull(it.editLock("file3"))
@@ -255,11 +246,10 @@ class LruDiskCacheTest {
     @Test
     fun testToString() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
 
         val defaultCacheDir =
             File(context.externalCacheDir ?: context.cacheDir, DiskCache.DEFAULT_DIR_NAME)
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             Assert.assertEquals(
                 "LruDiskCache(maxSize=512MB,version=1,directory='${defaultCacheDir.path}')",
                 it.toString()
@@ -267,13 +257,7 @@ class LruDiskCacheTest {
         }
 
         val cacheDir = File("/sdcard/testDir")
-        LruDiskCache(
-            context,
-            logger,
-            100L * 1024 * 1024,
-            version = 2,
-            _directory = cacheDir
-        ).use {
+        LruDiskCache(context, 100L * 1024 * 1024, version = 2, _directory = cacheDir).use {
             Assert.assertEquals(
                 "LruDiskCache(maxSize=100MB,version=2,directory='${cacheDir.path}')",
                 it.toString()
@@ -284,16 +268,15 @@ class LruDiskCacheTest {
     @Test
     fun testSnapshot() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
         val defaultCacheDir =
             File(context.externalCacheDir ?: context.cacheDir, DiskCache.DEFAULT_DIR_NAME)
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             it.putFile("file1", 1)
             val file1Snapshot = it["file1"]!!
 
@@ -321,14 +304,13 @@ class LruDiskCacheTest {
     @Test
     fun testEditor() {
         val context = InstrumentationRegistry.getContext()
-        val logger = Logger()
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, logger).use {
+        LruDiskCache(context).use {
             val file1Editor = it.edit("file1")!!
             file1Editor.newOutputStream().use { outputStream ->
                 outputStream.write(1)
