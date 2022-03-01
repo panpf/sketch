@@ -13,7 +13,7 @@ import com.github.panpf.sketch.cache.internal.isLowRamDevice
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 @RunWith(AndroidJUnit4::class)
 class CacheUtilsTest {
@@ -55,11 +55,11 @@ class CacheUtilsTest {
             else -> 16 * 1024 * 1024
         }
         val maxCacheBytes =
-            ((if (isLowRamDevice) 0.33f else 0.4f) * appMemoryClassBytes).roundToInt()
+            ((if (isLowRamDevice) 0.33f else 0.4f) * appMemoryClassBytes).roundToLong()
         val displayMetrics = context.resources.displayMetrics
         val screenBytes = displayMetrics.widthPixels * displayMetrics.heightPixels * 4
         // Memory is expected to cache images for up to six screens
-        val expectCacheBytes = screenBytes * 6
+        val expectCacheBytes = (screenBytes * 6).toLong()
         val defaultMemoryCacheBytes = expectCacheBytes.coerceAtMost(maxCacheBytes)
         Assert.assertEquals(defaultMemoryCacheBytes, context.defaultMemoryCacheBytes())
     }

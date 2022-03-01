@@ -13,6 +13,9 @@ class CountDrawablePendingManager constructor(private val logger: Logger) {
 
     private val map = HashMap<String, SketchCountBitmapDrawable>()
 
+    val size: Int
+        get() = map.size
+
     @MainThread
     fun mark(callingStation: String, key: String, drawable: SketchCountBitmapDrawable) {
         requiredMainThread()
@@ -39,7 +42,11 @@ class CountDrawablePendingManager constructor(private val logger: Logger) {
     }
 
     @MainThread
-    private fun realComplete(callingStation: String, key: String, drawable: SketchCountBitmapDrawable) {
+    private fun realComplete(
+        callingStation: String,
+        key: String,
+        drawable: SketchCountBitmapDrawable
+    ) {
         drawable.setIsPending("$callingStation:complete", false)
         if (drawable.getPendingCount() == 0) {
             map.remove(key)

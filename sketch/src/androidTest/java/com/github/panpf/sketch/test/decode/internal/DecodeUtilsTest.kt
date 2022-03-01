@@ -14,6 +14,7 @@ import com.github.panpf.sketch.decode.internal.OpenGLTextureHelper
 import com.github.panpf.sketch.decode.internal.calculateInSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSamplingSize
 import com.github.panpf.sketch.decode.internal.calculateSamplingSizeForRegion
+import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.decode.internal.decodeBitmapWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.isInBitmapError
@@ -95,7 +96,20 @@ class DecodeUtilsTest {
 
     @Test
     fun testComputeSizeMultiplier() {
-        TODO("Wait for the implementation")
+        Assert.assertEquals(0.2, computeSizeMultiplier(1000, 600, 200, 400, true), 0.1)
+        Assert.assertEquals(0.6, computeSizeMultiplier(1000, 600, 200, 400, false), 0.1)
+        Assert.assertEquals(0.3, computeSizeMultiplier(1000, 600, 400, 200, true), 0.1)
+        Assert.assertEquals(0.4, computeSizeMultiplier(1000, 600, 400, 200, false), 0.1)
+
+        Assert.assertEquals(0.6, computeSizeMultiplier(1000, 600, 2000, 400, true), 0.1)
+        Assert.assertEquals(2.0, computeSizeMultiplier(1000, 600, 2000, 400, false), 0.1)
+        Assert.assertEquals(0.4, computeSizeMultiplier(1000, 600, 400, 2000, true), 0.1)
+        Assert.assertEquals(3.3, computeSizeMultiplier(1000, 600, 400, 2000, false), 0.1)
+
+        Assert.assertEquals(2.0, computeSizeMultiplier(1000, 600, 2000, 4000, true), 0.1)
+        Assert.assertEquals(6.6, computeSizeMultiplier(1000, 600, 2000, 4000, false), 0.1)
+        Assert.assertEquals(3.3, computeSizeMultiplier(1000, 600, 4000, 2000, true), 0.1)
+        Assert.assertEquals(4.0, computeSizeMultiplier(1000, 600, 4000, 2000, false), 0.1)
     }
 
     @Test

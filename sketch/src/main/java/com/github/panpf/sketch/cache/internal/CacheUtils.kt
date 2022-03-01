@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 internal fun Context.getAppMemoryClassBytes(): Int {
     val activityManager =
@@ -26,12 +26,12 @@ internal fun Context.isLowRamDevice(): Boolean {
     return VERSION.SDK_INT < VERSION_CODES.KITKAT || activityManager?.isLowRamDevice == true
 }
 
-internal fun Context.defaultMemoryCacheBytes(): Int {
+internal fun Context.defaultMemoryCacheBytes(): Long {
     val maxCacheBytes =
-        ((if (isLowRamDevice()) 0.25f else 0.33f) * getAppMemoryClassBytes()).roundToInt()
+        ((if (isLowRamDevice()) 0.25f else 0.33f) * getAppMemoryClassBytes()).roundToLong()
     val displayMetrics = resources.displayMetrics
     val screenBytes = displayMetrics.widthPixels * displayMetrics.heightPixels * 4
     // Memory is expected to cache images for up to six screens
-    val expectCacheBytes = screenBytes * 6
+    val expectCacheBytes = (screenBytes * 6).toLong()
     return expectCacheBytes.coerceAtMost(maxCacheBytes)
 }
