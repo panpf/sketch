@@ -2,17 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_main"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/pexelsPhotosFragment">
 
-    <fragment
+    <!--<fragment
         android:id="@+id/mainFragment"
         android:name="com.github.panpf.sketch.compose.sample.ui.MainFragment"
-        android:label="MainFragment" />
-
-    <fragment
-        android:id="@+id/composeFragment"
-        android:name="com.github.panpf.sketch.compose.sample.ui.ComposeFragment"
-        android:label="ComposeFragment" />
+        android:label="MainFragment" />-->
     <fragment
         android:id="@+id/pexelsPhotosFragment"
         android:name="com.github.panpf.sketch.compose.sample.ui.PexelsPhotosFragment"
@@ -21,6 +16,10 @@
         android:id="@+id/giphyGifListFragment"
         android:name="com.github.panpf.sketch.compose.sample.ui.GiphyGifListFragment"
         android:label="GiphyGifListFragment" />
+    <fragment
+        android:id="@+id/composeFragment"
+        android:name="com.github.panpf.sketch.compose.sample.ui.ComposeFragment"
+        android:label="ComposeFragment" />
 
     <action
         android:id="@+id/action_global_pexelsPhotosFragment"
@@ -28,17 +27,17 @@
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_composeFragment"
-        app:destination="@id/composeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
+        app:popExitAnim="@anim/nav_pop_exit"/>
     <action
         android:id="@+id/action_global_giphyGifListFragment"
         app:destination="@id/giphyGifListFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit"/>
+    <action
+        android:id="@+id/action_global_composeFragment"
+        app:destination="@id/composeFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.compose.sample.ui
 
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
@@ -16,9 +17,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.compose.AsyncImage
+import com.github.panpf.sketch.compose.sample.NavMainDirections
 import com.github.panpf.sketch.compose.sample.R
 import com.github.panpf.sketch.compose.sample.R.drawable
 import com.github.panpf.sketch.compose.sample.base.ToolbarFragment
@@ -36,6 +39,14 @@ class PexelsPhotosFragment : ToolbarFragment() {
     @OptIn(ExperimentalFoundationApi::class)
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         toolbar.title = "Pexels Photos"
+        toolbar.menu.add("GIF").apply {
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            setOnMenuItemClickListener {
+                findNavController().popBackStack()
+                findNavController().navigate(NavMainDirections.actionGlobalGiphyGifListFragment())
+                true
+            }
+        }
         return ComposeView(requireContext()).apply {
             setContent {
                 PhotoListContent(viewModel.pagingFlow)
