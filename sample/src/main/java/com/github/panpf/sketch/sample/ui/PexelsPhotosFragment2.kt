@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
@@ -35,7 +34,6 @@ import com.github.panpf.sketch.sample.bean.SwitchMenuItemInfo
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.CoilPhotoItemFactory
 import com.github.panpf.sketch.sample.item.LoadStateItemFactory
-import com.github.panpf.sketch.sample.item.PhotoItemFactory
 import com.github.panpf.sketch.sample.vm.ListMenuViewModel
 import com.github.panpf.sketch.sample.vm.PexelsImageListViewModel
 import com.github.panpf.tools4k.lang.asOrThrow
@@ -139,7 +137,7 @@ class PexelsPhotosFragment2 : ToolbarBindingFragment<FragmentRecyclerBinding>() 
                         }
                     }
                     else -> {
-                        layoutManager = LinearLayoutManager(requireContext())
+                        throw IllegalArgumentException("Unsupported layout mode: $it")
                     }
                 }
 

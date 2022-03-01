@@ -27,7 +27,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
@@ -154,7 +153,7 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                         }
                     }
                     else -> {
-                        layoutManager = LinearLayoutManager(requireContext())
+                        throw IllegalArgumentException("Unsupported layout mode: $it")
                     }
                 }
 

@@ -43,14 +43,12 @@ class ListMenuViewModel(
                     values = arrayOf(
                         LayoutMode.GRID,
                         LayoutMode.STAGGERED_GRID,
-                        LayoutMode.LINE
                     ),
                     initValue = application1.appSettingsService.photoListLayoutMode.value!!,
                     titles = null,
                     iconResIds = arrayOf(
                         R.drawable.ic_layout_grid_staggered,
                         R.drawable.ic_layout_grid,
-                        R.drawable.ic_layout_line
                     ),
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
                 ) { _, newValue ->
