@@ -14,7 +14,7 @@ import org.json.JSONObject
 
 class RotateTransformation(val degrees: Int) : Transformation {
 
-    override val cacheKey: String = "Rotate($degrees)"
+    override val key: String = "RotateTransformation($degrees)"
 
     override suspend fun transform(
         sketch: Sketch,

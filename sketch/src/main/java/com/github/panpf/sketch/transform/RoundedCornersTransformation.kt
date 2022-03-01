@@ -50,7 +50,7 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
         }
     }
 
-    override val cacheKey: String = "RoundedCorners(${radiusArray.joinToString(separator = ",")})"
+    override val key: String = "RoundedCornersTransformation(${radiusArray.joinToString(separator = ",")})"
 
     override suspend fun transform(
         sketch: Sketch,

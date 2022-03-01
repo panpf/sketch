@@ -48,7 +48,7 @@ data class LongImageClipPrecisionDecider constructor(
         }
     }
 
-    override val contentKey: String by lazy { "LongImageClip($precision,$minDifferenceOfAspectRatio)" }
+    override val key: String by lazy { "LongImageClipPrecisionDecider($precision,$minDifferenceOfAspectRatio)" }
 
     override fun precision(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int

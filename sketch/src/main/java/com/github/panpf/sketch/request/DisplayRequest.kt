@@ -407,7 +407,7 @@ interface DisplayRequest : LoadRequest {
 
         fun addTransformations(transformations: List<Transformation>): Builder = apply {
             val newTransformations = transformations.filter { newTransformation ->
-                this.transformations?.find { it.cacheKey == newTransformation.cacheKey } == null
+                this.transformations?.find { it.key == newTransformation.key } == null
             }
             this.transformations = (this.transformations ?: HashSet()).apply {
                 addAll(newTransformations)
@@ -420,7 +420,7 @@ interface DisplayRequest : LoadRequest {
 
         fun removeTransformations(removeTransformations: List<Transformation>): Builder = apply {
             this.transformations = this.transformations?.filter { oldTransformation ->
-                removeTransformations.find { it.cacheKey == oldTransformation.cacheKey } == null
+                removeTransformations.find { it.key == oldTransformation.key } == null
             }?.toMutableSet()
         }
 
@@ -872,7 +872,7 @@ interface DisplayRequest : LoadRequest {
                     append("_").append("networkContentDiskCachePolicy($it)")
                 }
                 bitmapConfig?.let {
-                    append("_").append(it.cacheKey)
+                    append("_").append(it.key)
                 }
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     colorSpace?.let {
@@ -884,10 +884,12 @@ interface DisplayRequest : LoadRequest {
                     append("_").append("preferQualityOverSpeed")
                 }
                 resize?.let {
-                    append("_").append(it.cacheKey)
+                    append("_").append(it.key)
                 }
                 transformations?.takeIf { it.isNotEmpty() }?.let { list ->
-                    append("_").append("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
+                    append("_").append("transformations(${list.joinToString(separator = ",") { 
+                        it.key.replace("Transformation", "") 
+                    }})")
                 }
                 if (disabledBitmapPool) {
                     append("_").append("disabledBitmapPool")

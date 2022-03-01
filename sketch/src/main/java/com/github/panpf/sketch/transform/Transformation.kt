@@ -15,8 +15,7 @@ interface Transformation {
      * The key is added to the image request's memory cache key and should contain any params that
      * are part of this transformation (e.g. size, scale, color, radius, etc.).
      */
-    // todo rename to contentKey
-    val cacheKey: String
+    val key: String
 
     /**
      * Apply the transformation to [input] and return the transformed [Bitmap].
@@ -33,7 +32,7 @@ fun List<Transformation>?.merge(other: List<Transformation>?): List<Transformati
     if (this != null) {
         if (other != null) {
             this.plus(other).distinctBy {
-                it.cacheKey
+                it.key
             }
         } else {
             this

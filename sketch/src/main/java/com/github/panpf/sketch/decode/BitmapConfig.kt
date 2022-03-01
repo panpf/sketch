@@ -6,8 +6,7 @@ import com.github.panpf.sketch.ImageFormat
 
 class BitmapConfig(private val config: Bitmap.Config) {
 
-    // todo rename to contentKey
-    val cacheKey: String by lazy {
+    val key: String by lazy {
         val configName = when {
             this === LOW_QUALITY -> "LOW_QUALITY"
             this === MIDDEN_QUALITY -> "MIDDEN_QUALITY"

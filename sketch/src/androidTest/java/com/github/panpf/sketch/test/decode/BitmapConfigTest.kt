@@ -36,16 +36,16 @@ class BitmapConfigTest {
     @Test
     fun testCacheKey() {
         BitmapConfig.LOW_QUALITY.apply {
-            Assert.assertEquals("BitmapConfig(LOW_QUALITY)", cacheKey)
+            Assert.assertEquals("BitmapConfig(LOW_QUALITY)", key)
         }
         BitmapConfig.MIDDEN_QUALITY.apply {
-            Assert.assertEquals("BitmapConfig(MIDDEN_QUALITY)", cacheKey)
+            Assert.assertEquals("BitmapConfig(MIDDEN_QUALITY)", key)
         }
         BitmapConfig.HIGH_QUALITY.apply {
-            Assert.assertEquals("BitmapConfig(HIGH_QUALITY)", cacheKey)
+            Assert.assertEquals("BitmapConfig(HIGH_QUALITY)", key)
         }
         BitmapConfig(RGB_565).apply {
-            Assert.assertEquals("BitmapConfig(RGB_565)", cacheKey)
+            Assert.assertEquals("BitmapConfig(RGB_565)", key)
         }
     }
 

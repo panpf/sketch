@@ -48,42 +48,42 @@ class ResizeTest {
     @Test
     fun testCacheKey() {
         Resize(100, 100).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),CENTER_CROP)", cacheKey)
+            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),CENTER_CROP)", key)
         }
         Resize(100, 50).apply {
-            Assert.assertEquals("Resize(100x50,Fixed(LESS_PIXELS),CENTER_CROP)", cacheKey)
+            Assert.assertEquals("Resize(100x50,Fixed(LESS_PIXELS),CENTER_CROP)", key)
         }
         Resize(50, 100).apply {
-            Assert.assertEquals("Resize(50x100,Fixed(LESS_PIXELS),CENTER_CROP)", cacheKey)
+            Assert.assertEquals("Resize(50x100,Fixed(LESS_PIXELS),CENTER_CROP)", key)
         }
 
         Resize(100, 100, precision = KEEP_ASPECT_RATIO).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(KEEP_ASPECT_RATIO),CENTER_CROP)", cacheKey)
+            Assert.assertEquals("Resize(100x100,Fixed(KEEP_ASPECT_RATIO),CENTER_CROP)", key)
         }
         Resize(100, 100, precision = EXACTLY).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),CENTER_CROP)", cacheKey)
+            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),CENTER_CROP)", key)
         }
         Resize(100, 100, precision = LESS_PIXELS).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),CENTER_CROP)", cacheKey)
+            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),CENTER_CROP)", key)
         }
         Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(
                 "Resize(100x100,LongImageClip(EXACTLY,2.0),CENTER_CROP)",
-                cacheKey
+                key
             )
         }
 
         Resize(100, 100, scale = START_CROP).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),START_CROP)", cacheKey)
+            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),START_CROP)", key)
         }
         Resize(100, 100, scale = CENTER_CROP).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),CENTER_CROP)", cacheKey)
+            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),CENTER_CROP)", key)
         }
         Resize(100, 100, scale = END_CROP).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),END_CROP)", cacheKey)
+            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),END_CROP)", key)
         }
         Resize(100, 100, scale = FILL).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),FILL)", cacheKey)
+            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),FILL)", key)
         }
     }
 

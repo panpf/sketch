@@ -9,7 +9,7 @@ import org.json.JSONObject
 @Keep
 data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDecider {
 
-    override val contentKey: String by lazy { "Fixed($precision)" }
+    override val key: String by lazy { "FixedPrecisionDecider($precision)" }
 
     override fun precision(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int

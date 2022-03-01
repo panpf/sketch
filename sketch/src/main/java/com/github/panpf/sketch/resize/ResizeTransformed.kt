@@ -8,7 +8,7 @@ import org.json.JSONObject
 class ResizeTransformed constructor(val resize: Resize) : Transformed {
 
     override val key: String by lazy {
-        resize.cacheKey.replace("Resize", "ResizeTransformed")
+        resize.key.replace("Resize", "ResizeTransformed")
     }
     override val cacheResultToDisk: Boolean = true
 

@@ -370,7 +370,7 @@ interface LoadRequest : DownloadRequest {
 
         fun addTransformations(transformations: List<Transformation>): Builder = apply {
             val newTransformations = transformations.filter { newTransformation ->
-                this.transformations?.find { it.cacheKey == newTransformation.cacheKey } == null
+                this.transformations?.find { it.key == newTransformation.key } == null
             }
             this.transformations = (this.transformations ?: HashSet()).apply {
                 addAll(newTransformations)
@@ -383,7 +383,7 @@ interface LoadRequest : DownloadRequest {
 
         fun removeTransformations(removeTransformations: List<Transformation>): Builder = apply {
             this.transformations = this.transformations?.filter { oldTransformation ->
-                removeTransformations.find { it.cacheKey == oldTransformation.cacheKey } == null
+                removeTransformations.find { it.key == oldTransformation.key } == null
             }?.toMutableSet()
         }
 
@@ -614,7 +614,7 @@ interface LoadRequest : DownloadRequest {
                     append("_").append("networkContentDiskCachePolicy($it)")
                 }
                 bitmapConfig?.let {
-                    append("_").append(it.cacheKey)
+                    append("_").append(it.key)
                 }
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     colorSpace?.let {
@@ -626,10 +626,12 @@ interface LoadRequest : DownloadRequest {
                     append("_").append("preferQualityOverSpeed")
                 }
                 resize?.let {
-                    append("_").append(it.cacheKey)
+                    append("_").append(it.key)
                 }
                 transformations?.takeIf { it.isNotEmpty() }?.let { list ->
-                    append("_").append("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
+                    append("_").append("transformations(${list.joinToString(separator = ",") { 
+                        it.key.replace("Transformation", "") 
+                    }})")
                 }
                 if (disabledBitmapPool) {
                     append("_").append("disabledBitmapPool")
@@ -670,7 +672,7 @@ internal fun LoadRequest.newQualityKey(): String? {
             add(it)
         }
         bitmapConfig?.let {
-            add(it.cacheKey)
+            add(it.key)
         }
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             colorSpace?.let {
@@ -682,10 +684,10 @@ internal fun LoadRequest.newQualityKey(): String? {
             add("preferQualityOverSpeed")
         }
         resize?.let {
-            add(it.cacheKey)
+            add(it.key)
         }
         transformations?.takeIf { it.isNotEmpty() }?.let { list ->
-            add("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
+            add("transformations(${list.joinToString(separator = ",") { it.key }})")
         }
         if (ignoreExifOrientation) {
             add("ignoreExifOrientation")

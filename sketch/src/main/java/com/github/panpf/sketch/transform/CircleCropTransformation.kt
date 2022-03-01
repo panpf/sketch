@@ -16,7 +16,7 @@ import org.json.JSONObject
 
 class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transformation {
 
-    override val cacheKey: String = "CircleCrop($scale)"
+    override val key: String = "CircleCropTransformation($scale)"
 
     override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): TransformResult {
         val newSize = input.width.coerceAtMost(input.height)

@@ -56,8 +56,8 @@ data class Resize constructor(
         scale: Scale = Scale.CENTER_CROP
     ) : this(size.width, size.height, fixedPrecision(Precision.LESS_PIXELS), scale)
 
-    val cacheKey: String by lazy {
-        val precisionDeciderString = precisionDecider.toString().replace("PrecisionDecider", "")
+    val key: String by lazy {
+        val precisionDeciderString = precisionDecider.key.replace("PrecisionDecider", "")
         "Resize(${width}x$height,${precisionDeciderString},${scale})"
     }
 
@@ -94,5 +94,5 @@ data class Resize constructor(
             put("scale", scale.name)
         }
 
-    override fun toString(): String = cacheKey
+    override fun toString(): String = key
 }

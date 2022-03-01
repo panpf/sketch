@@ -30,8 +30,8 @@ class BlurTransformation(
         }
     }
 
-    override val cacheKey: String =
-        "Blur(${radius}${if (maskColor != null) ",$maskColor" else ""})"
+    override val key: String =
+        "BlurTransformation(${radius}${if (maskColor != null) ",$maskColor" else ""})"
 
     override suspend fun transform(
         sketch: Sketch,
