@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
  *  require an exact intrinsic size to scale the drawable.
  */
 // todo change to TransitionDrawable
-class CrossfadeDrawable @JvmOverloads constructor(
+open class CrossfadeDrawable @JvmOverloads constructor(
     start: Drawable?,
     end: Drawable?,
     val durationMillis: Int = DEFAULT_DURATION,

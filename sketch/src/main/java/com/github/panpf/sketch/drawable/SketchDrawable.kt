@@ -22,7 +22,7 @@ import com.github.panpf.sketch.util.BitmapInfo
 
 interface SketchDrawable {
 
-    val requestKey: String?
+    val requestKey: String
 
     val requestUri: String
 
@@ -30,7 +30,7 @@ interface SketchDrawable {
 
     val imageExifOrientation: Int
 
-    val dataFrom: DataFrom?
+    val dataFrom: DataFrom
 
     val transformedList: List<Transformed>?
 
