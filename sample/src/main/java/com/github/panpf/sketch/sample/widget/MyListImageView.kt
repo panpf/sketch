@@ -10,7 +10,7 @@ import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
 import com.github.panpf.sketch.viewability.removeProgressIndicator
-import com.github.panpf.sketch.viewability.setMimeTypeLogoWithDrawable
+import com.github.panpf.sketch.viewability.showMimeTypeLogoWithDrawable
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
@@ -66,7 +66,7 @@ class MyListImageView @JvmOverloads constructor(
                 }
             }
             showMimeTypeLogoInLIst.observeFromView(this@MyListImageView) {
-                setMimeTypeLogoWithDrawable(
+                showMimeTypeLogoWithDrawable(
                     mimeTypeIconMap = if (it == true) mimeTypeLogoMap else null,
                     margin = 4.dp2px
                 )

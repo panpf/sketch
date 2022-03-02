@@ -76,16 +76,14 @@ class MimeTypeLogoViewAbility(
 }
 
 
-fun ViewAbilityOwner.setMimeTypeLogo(mimeTypeLogoViewAbility: MimeTypeLogoViewAbility?) {
-    viewAbilityList
-        .find { it is MimeTypeLogoViewAbility }
-        ?.let { removeViewAbility(it) }
+fun ViewAbilityOwner.showMimeTypeLogo(mimeTypeLogoViewAbility: MimeTypeLogoViewAbility?) {
+    removeMimeTypeLogo()
     if (mimeTypeLogoViewAbility != null) {
         addViewAbility(mimeTypeLogoViewAbility)
     }
 }
 
-fun ViewAbilityOwner.setMimeTypeLogoWith(
+fun ViewAbilityOwner.showMimeTypeLogoWith(
     mimeTypeIconMap: Map<String, MimeTypeLogo>?,
     margin: Int = 0
 ) {
@@ -94,10 +92,10 @@ fun ViewAbilityOwner.setMimeTypeLogoWith(
     } else {
         null
     }
-    setMimeTypeLogo(mimeTypeLogoViewAbility)
+    showMimeTypeLogo(mimeTypeLogoViewAbility)
 }
 
-fun ViewAbilityOwner.setMimeTypeLogoWithDrawable(
+fun ViewAbilityOwner.showMimeTypeLogoWithDrawable(
     mimeTypeIconMap: Map<String, Drawable>?,
     margin: Int = 0
 ) {
@@ -109,10 +107,10 @@ fun ViewAbilityOwner.setMimeTypeLogoWithDrawable(
     } else {
         null
     }
-    setMimeTypeLogo(mimeTypeLogoViewAbility)
+    showMimeTypeLogo(mimeTypeLogoViewAbility)
 }
 
-fun ViewAbilityOwner.setMimeTypeLogoWithResId(
+fun ViewAbilityOwner.showMimeTypeLogoWithResId(
     mimeTypeIconMap: Map<String, Int>?,
     margin: Int = 0
 ) {
@@ -124,7 +122,13 @@ fun ViewAbilityOwner.setMimeTypeLogoWithResId(
     } else {
         null
     }
-    setMimeTypeLogo(mimeTypeLogoViewAbility)
+    showMimeTypeLogo(mimeTypeLogoViewAbility)
+}
+
+fun ViewAbilityOwner.removeMimeTypeLogo() {
+    viewAbilityList
+        .find { it is MimeTypeLogoViewAbility }
+        ?.let { removeViewAbility(it) }
 }
 
 class MimeTypeLogo {
