@@ -100,11 +100,6 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
     override fun getScaleType(): ScaleType? = zoomer?.scaleType
 
-    private fun reset() {
-        destroyZoomer()
-        createZoomer()
-    }
-
     private fun createZoomer() {
         val host = host ?: return
         host.superScaleType = MATRIX
@@ -128,7 +123,6 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
     fun enabledReadMode(readModeDecider: ReadModeDecider = defaultReadModeDecider()) {
         this.readModeDecider = readModeDecider
-        reset()
     }
 
     fun disabledReadMode() {
