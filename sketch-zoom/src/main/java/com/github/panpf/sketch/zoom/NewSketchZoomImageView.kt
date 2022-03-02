@@ -27,7 +27,7 @@ open class NewSketchZoomImageView @JvmOverloads constructor(
     defStyle: Int = 0
 ) : AbsAbilityImageView(context, attrs, defStyle) {
 
-    private val zoomerViewAbility = ZoomerViewAbility()
+    private val zoomerViewAbility = ZoomViewAbility()
 
     init {
         addViewAbility(zoomerViewAbility)

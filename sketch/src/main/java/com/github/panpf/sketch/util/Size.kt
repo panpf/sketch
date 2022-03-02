@@ -22,6 +22,7 @@ open class Size(var width: Int, var height: Int) {
 
     constructor() : this(0, 0)
 
+    // todo 干掉 operator
     operator fun set(width: Int, height: Int) {
         this.width = width
         this.height = height
