@@ -1,16 +1,20 @@
-package com.github.panpf.sketch.viewability
+package com.github.panpf.sketch.viewability.internal
 
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
+import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
+import com.github.panpf.sketch.viewability.Host
+import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
 import com.github.panpf.sketch.viewability.ViewAbility.ClickObserver
 import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
@@ -19,16 +23,21 @@ import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
 import com.github.panpf.sketch.viewability.ViewAbility.LongClickObserver
 import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
 import com.github.panpf.sketch.viewability.ViewAbility.RequestProgressListenerObserver
+import com.github.panpf.sketch.viewability.ViewAbility.ScaleTypeObserver
+import com.github.panpf.sketch.viewability.ViewAbility.SizeChangeObserver
+import com.github.panpf.sketch.viewability.ViewAbility.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility.VisibilityChangedObserver
+import com.github.panpf.sketch.viewability.ViewAbilityContainer
+import com.github.panpf.sketch.viewability.ViewAbilityOwner
 import java.lang.ref.WeakReference
 
-class ViewAbilityContainerImpl(
+class RealViewAbilityContainer(
     private val owner: ViewAbilityOwner,
     view: View
 ) : ViewAbilityContainer {
 
     private val displayRequestListener: DisplayRequestListener by lazy {
-        DisplayRequestListener(WeakReference(this@ViewAbilityContainerImpl))
+        DisplayRequestListener(WeakReference(this@RealViewAbilityContainer))
     }
     private val host = Host(view, owner)
 
@@ -37,13 +46,17 @@ class ViewAbilityContainerImpl(
 
     private val _viewAbilityList = LinkedHashSet<ViewAbility>()
     private var _viewAbilityImmutableList: List<ViewAbility> = _viewAbilityList.toList()
+
     private var attachObserverList: List<AttachObserver>? = null
-    private var visibilityChangedObserverList: List<VisibilityChangedObserver>? = null
     private var layoutAbilityList: List<LayoutObserver>? = null
+    private var sizeChangeAbilityList: List<SizeChangeObserver>? = null
     private var drawObserverList: List<DrawObserver>? = null
-    private var drawableObserverList: List<DrawableObserver>? = null
+    private var touchEventObserverList: List<TouchEventObserver>? = null
     private var clickObserverList: List<ClickObserver>? = null
     private var longClickAbilityList: List<LongClickObserver>? = null
+    private var visibilityChangedObserverList: List<VisibilityChangedObserver>? = null
+    private var drawableObserverList: List<DrawableObserver>? = null
+    private var scaleTypeAbilityList: List<ScaleTypeObserver>? = null
     private var requestListenerAbilityList: List<RequestListenerObserver>? = null
     private var requestProgressListenerAbilityList: List<RequestProgressListenerObserver>? = null
 
@@ -51,20 +64,24 @@ class ViewAbilityContainerImpl(
         get() = _viewAbilityImmutableList
 
     private fun onAbilityListChanged() {
-        attachObserverList = _viewAbilityList.mapNotNull { if (it is AttachObserver) it else null }
-        visibilityChangedObserverList =
-            _viewAbilityList.mapNotNull { if (it is VisibilityChangedObserver) it else null }
-        layoutAbilityList = _viewAbilityList.mapNotNull { if (it is LayoutObserver) it else null }
-        drawObserverList = _viewAbilityList.mapNotNull { if (it is DrawObserver) it else null }
-        drawableObserverList =
-            _viewAbilityList.mapNotNull { if (it is DrawableObserver) it else null }
-        clickObserverList = _viewAbilityList.mapNotNull { if (it is ClickObserver) it else null }
-        longClickAbilityList =
-            _viewAbilityList.mapNotNull { if (it is LongClickObserver) it else null }
-        requestListenerAbilityList =
-            _viewAbilityList.mapNotNull { if (it is RequestListenerObserver) it else null }
-        requestProgressListenerAbilityList =
-            _viewAbilityList.mapNotNull { if (it is RequestProgressListenerObserver) it else null }
+        attachObserverList = _viewAbilityList.filterIsInstance(AttachObserver::class.java)
+        layoutAbilityList = _viewAbilityList.filterIsInstance(LayoutObserver::class.java)
+        sizeChangeAbilityList = _viewAbilityList.filterIsInstance(SizeChangeObserver::class.java)
+        drawObserverList = _viewAbilityList.filterIsInstance(DrawObserver::class.java)
+        touchEventObserverList = _viewAbilityList.filterIsInstance(TouchEventObserver::class.java)
+        clickObserverList = _viewAbilityList.filterIsInstance(ClickObserver::class.java)
+        longClickAbilityList = _viewAbilityList.filterIsInstance(LongClickObserver::class.java)
+        visibilityChangedObserverList = _viewAbilityList
+            .filterIsInstance(VisibilityChangedObserver::class.java)
+        drawableObserverList = _viewAbilityList.filterIsInstance(DrawableObserver::class.java)
+        scaleTypeAbilityList = _viewAbilityList
+            .filterIsInstance(ScaleTypeObserver::class.java).apply {
+                require(size <= 1) { "Only one ScaleTypeObserver can be added" }
+            }
+        requestListenerAbilityList = _viewAbilityList
+            .filterIsInstance(RequestListenerObserver::class.java)
+        requestProgressListenerAbilityList = _viewAbilityList
+            .filterIsInstance(RequestProgressListenerObserver::class.java)
         _viewAbilityImmutableList = _viewAbilityList.toList()
         refreshOnClickListener()
         refreshOnLongClickListener()
@@ -74,9 +91,8 @@ class ViewAbilityContainerImpl(
         _viewAbilityList.add(viewAbility)
         onAbilityListChanged()
 
-        _viewAbilityList.forEach {
-            it.host = host
-        }
+        viewAbility.host = host
+
         val view = host.view
         if (view.isAttachedToWindowCompat) {
             if (viewAbility is AttachObserver) {
@@ -99,9 +115,8 @@ class ViewAbilityContainerImpl(
         if (viewAbility is AttachObserver) {
             viewAbility.onDetachedFromWindow()
         }
-        _viewAbilityList.forEach {
-            it.host = null
-        }
+
+        viewAbility.host = null
 
         _viewAbilityList.remove(viewAbility)
         onAbilityListChanged()
@@ -133,6 +148,12 @@ class ViewAbilityContainerImpl(
         }
     }
 
+    override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
+        sizeChangeAbilityList?.forEach {
+            it.onSizeChanged(width, height, oldWidth, oldHeight)
+        }
+    }
+
     override fun onDrawBefore(canvas: Canvas) {
         drawObserverList?.forEach {
             it.onDrawBefore(canvas)
@@ -161,6 +182,12 @@ class ViewAbilityContainerImpl(
         drawableObserverList?.forEach {
             it.onDrawableChanged(oldDrawable, newDrawable)
         }
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        return touchEventObserverList?.fold(false) { acc, touchEventObserver ->
+            acc || touchEventObserver.onTouchEvent(event)
+        } ?: false
     }
 
     private fun onRequestStart(request: DisplayRequest) {
@@ -203,6 +230,14 @@ class ViewAbilityContainerImpl(
     override fun setOnLongClickListener(l: OnLongClickListener?) {
         this.longClickListenerWrapper = l
         refreshOnLongClickListener()
+    }
+
+    override fun setScaleType(scaleType: ScaleType): Boolean {
+        return scaleTypeAbilityList?.firstOrNull()?.setScaleType(scaleType) == true
+    }
+
+    override fun getScaleType(): ScaleType? {
+        return scaleTypeAbilityList?.firstOrNull()?.getScaleType()
     }
 
     override fun getRequestListener(): Listener<DisplayRequest, Success, Error>? {
@@ -259,29 +294,29 @@ class ViewAbilityContainerImpl(
         }
     }
 
-    private class DisplayRequestListener(private val view: WeakReference<ViewAbilityContainerImpl>) :
+    private class DisplayRequestListener(private val realView: WeakReference<RealViewAbilityContainer>) :
         Listener<DisplayRequest, Success, Error>,
         ProgressListener<DisplayRequest> {
 
         override fun onStart(request: DisplayRequest) {
             super.onStart(request)
-            view.get()?.onRequestStart(request)
+            realView.get()?.onRequestStart(request)
         }
 
         override fun onError(request: DisplayRequest, result: Error) {
             super.onError(request, result)
-            view.get()?.onRequestError(request, result)
+            realView.get()?.onRequestError(request, result)
         }
 
         override fun onSuccess(request: DisplayRequest, result: Success) {
             super.onSuccess(request, result)
-            view.get()?.onRequestSuccess(request, result)
+            realView.get()?.onRequestSuccess(request, result)
         }
 
         override fun onUpdateProgress(
             request: DisplayRequest, totalLength: Long, completedLength: Long
         ) {
-            view.get()?.onUpdateRequestProgress(request, totalLength, completedLength)
+            realView.get()?.onUpdateRequestProgress(request, totalLength, completedLength)
         }
     }
 }
