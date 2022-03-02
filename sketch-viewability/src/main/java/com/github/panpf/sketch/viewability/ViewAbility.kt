@@ -13,6 +13,7 @@ interface ViewAbility {
 
     var host: Host?
 
+    // todo 移到单独的 Observers 文件中
     interface AttachObserver {
         fun onAttachedToWindow()
         fun onDetachedFromWindow()
