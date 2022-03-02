@@ -8,7 +8,7 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.base.BindingFragment
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.viewability.showArcProgressIndicator
-import com.github.panpf.sketch.viewability.showDataFrom
+import com.github.panpf.sketch.viewability.showDataFromLogo
 
 class ImageFragment : BindingFragment<FragmentImageBinding>() {
 
@@ -20,7 +20,7 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
     override fun onInitViews(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         super.onInitViews(binding, savedInstanceState)
         binding.imageFragmentImageView.showArcProgressIndicator()
-        binding.imageFragmentImageView.showDataFrom()
+        binding.imageFragmentImageView.showDataFromLogo()
     }
 
     override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {

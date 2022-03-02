@@ -14,8 +14,8 @@ import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
 import com.github.panpf.sketch.util.getLastDrawable
-import com.github.panpf.sketch.viewability.removeDataFrom
-import com.github.panpf.sketch.viewability.showDataFrom
+import com.github.panpf.sketch.viewability.removeDataFromLogo
+import com.github.panpf.sketch.viewability.showDataFromLogo
 
 open class MyImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
@@ -39,11 +39,11 @@ open class MyImageView @JvmOverloads constructor(
                 addSource(bitmapQuality.liveEvent, observer)
             }
 
-            showDataFrom.observeFromView(this@MyImageView) {
+            showDataFromLogo.observeFromView(this@MyImageView) {
                 if (it == true) {
-                    showDataFrom()
+                    showDataFromLogo()
                 } else {
-                    removeDataFrom()
+                    removeDataFromLogo()
                 }
             }
         }

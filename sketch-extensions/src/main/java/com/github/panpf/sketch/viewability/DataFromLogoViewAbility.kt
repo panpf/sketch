@@ -13,7 +13,7 @@ import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
 import com.github.panpf.sketch.viewability.ViewAbility.DrawableObserver
 import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
 
-class DataFromViewAbility(
+class DataFromLogoViewAbility(
     sizeDp: Float = DEFAULT_SIZE_DP
 ) : ViewAbility, AttachObserver, DrawObserver, LayoutObserver, DrawableObserver {
 
@@ -107,13 +107,13 @@ class DataFromViewAbility(
     }
 }
 
-fun ViewAbilityOwner.showDataFrom(sizeDp: Float = DataFromViewAbility.DEFAULT_SIZE_DP) {
-    removeDataFrom()
-    addViewAbility(DataFromViewAbility(sizeDp))
+fun ViewAbilityOwner.showDataFromLogo(sizeDp: Float = DataFromLogoViewAbility.DEFAULT_SIZE_DP) {
+    removeDataFromLogo()
+    addViewAbility(DataFromLogoViewAbility(sizeDp))
 }
 
-fun ViewAbilityOwner.removeDataFrom() {
+fun ViewAbilityOwner.removeDataFromLogo() {
     viewAbilityList
-        .find { it is DataFromViewAbility }
+        .find { it is DataFromLogoViewAbility }
         ?.let { removeViewAbility(it) }
 }

@@ -212,8 +212,8 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
     private fun makeOtherMenuList(): List<Any> = buildList {
         add(
             SwitchMenu(
-                title = "Show data from",
-                data = appSettingsService.showDataFrom,
+                title = "Show data from logo",
+                data = appSettingsService.showDataFromLogo,
                 desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
             )
         )

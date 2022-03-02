@@ -65,7 +65,7 @@ class AppSettingsService(val context: Context) {
         BooleanPrefsData(context, "disabledBitmapPool", false)
     }
 
-    val showDataFrom by lazy {
+    val showDataFromLogo by lazy {
         BooleanPrefsData(context, "showDataFrom", true)
     }
 
