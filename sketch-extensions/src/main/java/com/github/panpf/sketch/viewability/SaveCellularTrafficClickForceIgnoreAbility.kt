@@ -6,10 +6,8 @@ import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
-import com.github.panpf.sketch.viewability.ViewAbility.ClickObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
 
-class SaveCellularTrafficClickForceIgnoreViewAbility
+class SaveCellularTrafficClickForceIgnoreAbility
     : ViewAbility, ClickObserver, RequestListenerObserver {
 
     private var errorFromSaveCellularTraffic = false
@@ -53,9 +51,9 @@ class SaveCellularTrafficClickForceIgnoreViewAbility
 
 fun ViewAbilityOwner.setClickRedisplayAndIgnoreSaveCellularTraffic(enabled: Boolean) {
     viewAbilityList
-        .find { it is SaveCellularTrafficClickForceIgnoreViewAbility }
+        .find { it is SaveCellularTrafficClickForceIgnoreAbility }
         ?.let { removeViewAbility(it) }
     if (enabled) {
-        addViewAbility(SaveCellularTrafficClickForceIgnoreViewAbility())
+        addViewAbility(SaveCellularTrafficClickForceIgnoreAbility())
     }
 }

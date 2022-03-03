@@ -13,22 +13,23 @@ import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
+import com.github.panpf.sketch.viewability.AttachObserver
+import com.github.panpf.sketch.viewability.ClickObserver
+import com.github.panpf.sketch.viewability.DrawForegroundObserver
+import com.github.panpf.sketch.viewability.DrawObserver
+import com.github.panpf.sketch.viewability.DrawableObserver
 import com.github.panpf.sketch.viewability.Host
+import com.github.panpf.sketch.viewability.LayoutObserver
+import com.github.panpf.sketch.viewability.LongClickObserver
+import com.github.panpf.sketch.viewability.RequestListenerObserver
+import com.github.panpf.sketch.viewability.RequestProgressListenerObserver
+import com.github.panpf.sketch.viewability.ScaleTypeObserver
+import com.github.panpf.sketch.viewability.SizeChangeObserver
+import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
-import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
-import com.github.panpf.sketch.viewability.ViewAbility.ClickObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawableObserver
-import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
-import com.github.panpf.sketch.viewability.ViewAbility.LongClickObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestProgressListenerObserver
-import com.github.panpf.sketch.viewability.ViewAbility.ScaleTypeObserver
-import com.github.panpf.sketch.viewability.ViewAbility.SizeChangeObserver
-import com.github.panpf.sketch.viewability.ViewAbility.TouchEventObserver
-import com.github.panpf.sketch.viewability.ViewAbility.VisibilityChangedObserver
 import com.github.panpf.sketch.viewability.ViewAbilityContainer
 import com.github.panpf.sketch.viewability.ViewAbilityOwner
+import com.github.panpf.sketch.viewability.VisibilityChangedObserver
 import java.lang.ref.WeakReference
 
 class RealViewAbilityContainer(
@@ -51,6 +52,7 @@ class RealViewAbilityContainer(
     private var layoutAbilityList: List<LayoutObserver>? = null
     private var sizeChangeAbilityList: List<SizeChangeObserver>? = null
     private var drawObserverList: List<DrawObserver>? = null
+    private var drawForegroundObserverList: List<DrawForegroundObserver>? = null
     private var touchEventObserverList: List<TouchEventObserver>? = null
     private var clickObserverList: List<ClickObserver>? = null
     private var longClickAbilityList: List<LongClickObserver>? = null
@@ -68,6 +70,7 @@ class RealViewAbilityContainer(
         layoutAbilityList = _viewAbilityList.filterIsInstance(LayoutObserver::class.java)
         sizeChangeAbilityList = _viewAbilityList.filterIsInstance(SizeChangeObserver::class.java)
         drawObserverList = _viewAbilityList.filterIsInstance(DrawObserver::class.java)
+        drawForegroundObserverList = _viewAbilityList.filterIsInstance(DrawForegroundObserver::class.java)
         touchEventObserverList = _viewAbilityList.filterIsInstance(TouchEventObserver::class.java)
         clickObserverList = _viewAbilityList.filterIsInstance(ClickObserver::class.java)
         longClickAbilityList = _viewAbilityList.filterIsInstance(LongClickObserver::class.java)
@@ -167,13 +170,13 @@ class RealViewAbilityContainer(
     }
 
     override fun onDrawForegroundBefore(canvas: Canvas) {
-        drawObserverList?.forEach {
+        drawForegroundObserverList?.forEach {
             it.onDrawForegroundBefore(canvas)
         }
     }
 
     override fun onDrawForeground(canvas: Canvas) {
-        drawObserverList?.forEach {
+        drawForegroundObserverList?.forEach {
             it.onDrawForeground(canvas)
         }
     }

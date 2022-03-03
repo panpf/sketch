@@ -27,10 +27,10 @@ open class SketchZoomImageView @JvmOverloads constructor(
     defStyle: Int = 0
 ) : AbsAbilityImageView(context, attrs, defStyle) {
 
-    val zoomViewAbility = ZoomViewAbility()
+    val zoomAbility = ZoomAbility()
 
     init {
-        addViewAbility(zoomViewAbility)
+        addViewAbility(zoomAbility)
     }
 
     override fun submitRequest(request: DisplayRequest) {
@@ -38,8 +38,8 @@ open class SketchZoomImageView @JvmOverloads constructor(
     }
 
     override fun canScrollHorizontally(direction: Int): Boolean =
-        zoomViewAbility.canScrollHorizontally(direction)
+        zoomAbility.canScrollHorizontally(direction)
 
     override fun canScrollVertically(direction: Int): Boolean =
-        zoomViewAbility.canScrollVertically(direction)
+        zoomAbility.canScrollVertically(direction)
 }

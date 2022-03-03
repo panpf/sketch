@@ -21,14 +21,8 @@ import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
-import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
-import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestProgressListenerObserver
-import com.github.panpf.sketch.viewability.ViewAbility.VisibilityChangedObserver
 
-class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawable) : ViewAbility,
+class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) : ViewAbility,
     LayoutObserver, RequestListenerObserver, RequestProgressListenerObserver,
     DrawObserver, VisibilityChangedObserver, AttachObserver {
 
@@ -93,14 +87,6 @@ class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawabl
         if (progressDrawable.isVisible) {
             progressDrawable.draw(canvas)
         }
-    }
-
-    override fun onDrawForegroundBefore(canvas: Canvas) {
-
-    }
-
-    override fun onDrawForeground(canvas: Canvas) {
-
     }
 
     override fun onDetachedFromWindow() {
@@ -186,13 +172,13 @@ class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawabl
 
 fun ViewAbilityOwner.showProgressIndicator(progressDrawable: ProgressDrawable) {
     removeProgressIndicator()
-    val indicator = ProgressIndicatorViewAbility(progressDrawable)
+    val indicator = ProgressIndicatorAbility(progressDrawable)
     addViewAbility(indicator)
 }
 
 fun ViewAbilityOwner.removeProgressIndicator() {
     viewAbilityList
-        .find { it is ProgressIndicatorViewAbility }
+        .find { it is ProgressIndicatorAbility }
         ?.let { removeViewAbility(it) }
 }
 

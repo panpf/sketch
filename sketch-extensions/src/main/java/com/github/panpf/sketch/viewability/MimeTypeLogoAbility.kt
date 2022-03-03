@@ -7,12 +7,8 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.getLastDrawable
-import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawableObserver
-import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
 
-class MimeTypeLogoViewAbility(
+class MimeTypeLogoAbility(
     private val mimeTypeIconMap: Map<String, MimeTypeLogo>,
     private val margin: Int = 0
 ) : ViewAbility, AttachObserver, DrawObserver, LayoutObserver, DrawableObserver {
@@ -47,14 +43,6 @@ class MimeTypeLogoViewAbility(
         logoDrawable?.draw(canvas)
     }
 
-    override fun onDrawForegroundBefore(canvas: Canvas) {
-
-    }
-
-    override fun onDrawForeground(canvas: Canvas) {
-
-    }
-
     private fun reset() {
         logoDrawable = null
         val host = host ?: return
@@ -76,10 +64,10 @@ class MimeTypeLogoViewAbility(
 }
 
 
-fun ViewAbilityOwner.showMimeTypeLogo(mimeTypeLogoViewAbility: MimeTypeLogoViewAbility?) {
+fun ViewAbilityOwner.showMimeTypeLogo(mimeTypeLogoAbility: MimeTypeLogoAbility?) {
     removeMimeTypeLogo()
-    if (mimeTypeLogoViewAbility != null) {
-        addViewAbility(mimeTypeLogoViewAbility)
+    if (mimeTypeLogoAbility != null) {
+        addViewAbility(mimeTypeLogoAbility)
     }
 }
 
@@ -88,7 +76,7 @@ fun ViewAbilityOwner.showMimeTypeLogoWith(
     margin: Int = 0
 ) {
     val mimeTypeLogoViewAbility = if (mimeTypeIconMap?.isNotEmpty() == true) {
-        MimeTypeLogoViewAbility(mimeTypeIconMap, margin)
+        MimeTypeLogoAbility(mimeTypeIconMap, margin)
     } else {
         null
     }
@@ -103,7 +91,7 @@ fun ViewAbilityOwner.showMimeTypeLogoWithDrawable(
         val newMap = mimeTypeIconMap.mapValues {
             MimeTypeLogo(it.value)
         }
-        MimeTypeLogoViewAbility(newMap, margin)
+        MimeTypeLogoAbility(newMap, margin)
     } else {
         null
     }
@@ -118,7 +106,7 @@ fun ViewAbilityOwner.showMimeTypeLogoWithResId(
         val newMap = mimeTypeIconMap.mapValues {
             MimeTypeLogo(it.value)
         }
-        MimeTypeLogoViewAbility(newMap, margin)
+        MimeTypeLogoAbility(newMap, margin)
     } else {
         null
     }
@@ -127,7 +115,7 @@ fun ViewAbilityOwner.showMimeTypeLogoWithResId(
 
 fun ViewAbilityOwner.removeMimeTypeLogo() {
     viewAbilityList
-        .find { it is MimeTypeLogoViewAbility }
+        .find { it is MimeTypeLogoAbility }
         ?.let { removeViewAbility(it) }
 }
 

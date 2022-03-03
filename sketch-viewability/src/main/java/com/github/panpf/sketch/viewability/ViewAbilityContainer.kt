@@ -13,7 +13,6 @@ import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 
-// todo 拆分出单独的 ImageViewAbilityContainer
 interface ViewAbilityContainer {
 
     val viewAbilityList: List<ViewAbility>

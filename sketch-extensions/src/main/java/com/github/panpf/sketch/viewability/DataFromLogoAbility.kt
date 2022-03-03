@@ -5,15 +5,11 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.getLastDrawable
-import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawableObserver
-import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
 
-class DataFromLogoViewAbility(
+class DataFromLogoAbility(
     sizeDp: Float = DEFAULT_SIZE_DP
 ) : ViewAbility, AttachObserver, DrawObserver, LayoutObserver, DrawableObserver {
 
@@ -61,14 +57,6 @@ class DataFromLogoViewAbility(
         canvas.drawPath(path, paint)
     }
 
-    override fun onDrawForegroundBefore(canvas: Canvas) {
-
-    }
-
-    override fun onDrawForeground(canvas: Canvas) {
-
-    }
-
     private fun reset(): Boolean {
         // Execute first, path will remain empty if subsequent conditions are not met, and the onDraw method will not execute
         path.reset()
@@ -76,8 +64,7 @@ class DataFromLogoViewAbility(
 
         val lastDrawable = host.drawable?.getLastDrawable() ?: return false
         if (lastDrawable !is SketchDrawable) return false
-        val dataFrom = lastDrawable.dataFrom ?: return false
-        when (dataFrom) {
+        when (lastDrawable.dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
             DataFrom.MEMORY -> paint.color = FROM_FLAG_COLOR_MEMORY
             DataFrom.RESULT_DISK_CACHE -> paint.color = FROM_FLAG_COLOR_RESULT_DISK_CACHE
@@ -107,13 +94,13 @@ class DataFromLogoViewAbility(
     }
 }
 
-fun ViewAbilityOwner.showDataFromLogo(sizeDp: Float = DataFromLogoViewAbility.DEFAULT_SIZE_DP) {
+fun ViewAbilityOwner.showDataFromLogo(sizeDp: Float = DataFromLogoAbility.DEFAULT_SIZE_DP) {
     removeDataFromLogo()
-    addViewAbility(DataFromLogoViewAbility(sizeDp))
+    addViewAbility(DataFromLogoAbility(sizeDp))
 }
 
 fun ViewAbilityOwner.removeDataFromLogo() {
     viewAbilityList
-        .find { it is DataFromLogoViewAbility }
+        .find { it is DataFromLogoAbility }
         ?.let { removeViewAbility(it) }
 }

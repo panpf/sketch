@@ -23,19 +23,19 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getLastDrawable
 import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
+import com.github.panpf.sketch.viewability.AttachObserver
+import com.github.panpf.sketch.viewability.DrawObserver
+import com.github.panpf.sketch.viewability.DrawableObserver
 import com.github.panpf.sketch.viewability.Host
+import com.github.panpf.sketch.viewability.ScaleTypeObserver
+import com.github.panpf.sketch.viewability.SizeChangeObserver
+import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
-import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawableObserver
-import com.github.panpf.sketch.viewability.ViewAbility.ScaleTypeObserver
-import com.github.panpf.sketch.viewability.ViewAbility.SizeChangeObserver
-import com.github.panpf.sketch.viewability.ViewAbility.TouchEventObserver
-import com.github.panpf.sketch.viewability.ViewAbility.VisibilityChangedObserver
+import com.github.panpf.sketch.viewability.VisibilityChangedObserver
 import com.github.panpf.sketch.zoom.block.Blocks
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 
-class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
+class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
     DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver {
 
     companion object {
@@ -60,7 +60,7 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
     override var host: Host? = null
 
     init {
-        addOnMatrixChangeListener{
+        addOnMatrixChangeListener {
             blocks?.onMatrixChanged()
         }
     }
@@ -100,14 +100,6 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
         zoomer?.onDraw(canvas)
     }
 
-    override fun onDrawForegroundBefore(canvas: Canvas) {
-
-    }
-
-    override fun onDrawForeground(canvas: Canvas) {
-
-    }
-
     override fun onTouchEvent(event: MotionEvent): Boolean =
         zoomer?.onTouchEvent(event) ?: false
 
@@ -127,16 +119,16 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
         val host = host ?: return
         host.superScaleType = MATRIX
         val newZoomer = tryNewZoomer()?.apply {
-            scrollBarEnabled = this@ZoomViewAbility.scrollBarEnabled
-            zoomAnimationDuration = this@ZoomViewAbility.zoomAnimationDuration
-            zoomInterpolator = this@ZoomViewAbility.zoomInterpolator
-            allowParentInterceptOnEdge = this@ZoomViewAbility.allowParentInterceptOnEdge
-            onViewLongPressListener = this@ZoomViewAbility.onViewLongPressListener
-            onViewTapListener = this@ZoomViewAbility.onViewTapListener
-            onMatrixChangeListenerList = this@ZoomViewAbility.onMatrixChangeListenerList
-            onScaleChangeListenerList = this@ZoomViewAbility.onScaleChangeListenerList
-            onRotateChangeListenerList = this@ZoomViewAbility.onRotateChangeListenerList
-            onDragFlingListenerList = this@ZoomViewAbility.onDragFlingListenerList
+            scrollBarEnabled = this@ZoomAbility.scrollBarEnabled
+            zoomAnimationDuration = this@ZoomAbility.zoomAnimationDuration
+            zoomInterpolator = this@ZoomAbility.zoomInterpolator
+            allowParentInterceptOnEdge = this@ZoomAbility.allowParentInterceptOnEdge
+            onViewLongPressListener = this@ZoomAbility.onViewLongPressListener
+            onViewTapListener = this@ZoomAbility.onViewTapListener
+            onMatrixChangeListenerList = this@ZoomAbility.onMatrixChangeListenerList
+            onScaleChangeListenerList = this@ZoomAbility.onScaleChangeListenerList
+            onRotateChangeListenerList = this@ZoomAbility.onRotateChangeListenerList
+            onDragFlingListenerList = this@ZoomAbility.onDragFlingListenerList
         }
         this.zoomer = newZoomer
         this.blocks = newZoomer?.let { tryNewBlocks(it) }
