@@ -18,22 +18,25 @@
  */
 package com.github.panpf.sketch.zoom.new.scale
 
+import android.content.Context
 import android.graphics.RectF
 import android.widget.OverScroller
 import androidx.core.view.ViewCompat.postOnAnimation
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.zoom.internal.ImageZoomer
 import com.github.panpf.sketch.zoom.new.Zoomer
 import kotlin.math.roundToInt
 
-internal class NewFlingRunner(
-    private val imageZoomer: Zoomer,
+internal class NewFlingRunner constructor(
+    val context: Context,
+    private val zoomer: Zoomer,
     private val scaleDragHelper: NewScaleDragHelper
 ) : Runnable {
 
-    private val scroller: OverScroller = OverScroller(imageZoomer.context)
+    private val logger = context.sketch.logger
+    private val scroller: OverScroller = OverScroller(context)
     private var currentX = 0
     private var currentY = 0
-    private val logger = imageZoomer.sketch.logger
 
     fun fling(velocityX: Int, velocityY: Int) {
         val drawRectF = RectF()
@@ -41,7 +44,7 @@ internal class NewFlingRunner(
         if (drawRectF.isEmpty) {
             return
         }
-        val viewSize = imageZoomer.viewSize
+        val viewSize = zoomer.viewSize
         val imageViewWidth = viewSize.width
         val imageViewHeight = viewSize.height
         val startX = (-drawRectF.left).roundToInt()
@@ -77,8 +80,8 @@ internal class NewFlingRunner(
                 maxX, minY, maxY, 0, 0
             )
         }
-        imageZoomer.view.removeCallbacks(this)
-        imageZoomer.view.post(this)
+        zoomer.view.removeCallbacks(this)
+        zoomer.view.post(this)
     }
 
     override fun run() {
@@ -97,12 +100,12 @@ internal class NewFlingRunner(
         currentX = newX
         currentY = newY
 
-        postOnAnimation(imageZoomer.view, this)
+        postOnAnimation(zoomer.view, this)
     }
 
     fun cancelFling() {
         logger.v(ImageZoomer.MODULE) { "cancel fling" }
         scroller.forceFinished(true)
-        imageZoomer.view.removeCallbacks(this)
+        zoomer.view.removeCallbacks(this)
     }
 }

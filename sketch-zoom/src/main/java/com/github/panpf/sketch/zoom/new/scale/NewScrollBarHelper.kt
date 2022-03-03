@@ -24,14 +24,19 @@ import android.os.Handler
 import android.os.Looper
 import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.zoom.internal.ImageZoomer
 import com.github.panpf.sketch.zoom.internal.dp2px
 import com.github.panpf.sketch.zoom.new.Zoomer
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-internal class NewScrollBarHelper(private val zoomer: Zoomer) {
+internal class NewScrollBarHelper constructor(
+    context: Context,
+    private val zoomer: Zoomer
+) {
 
+    private val logger = context.sketch.logger
     private val scrollBarPaint: Paint = Paint()
     private val scrollBarSize: Int
     private val scrollBarMargin: Int
@@ -42,7 +47,6 @@ internal class NewScrollBarHelper(private val zoomer: Zoomer) {
     private val handler: Handler
     private val hiddenScrollBarRunner: HiddenScrollBarRunner
     private val fadeScrollBarRunner: FadeScrollBarRunner
-    private val logger = zoomer.sketch.logger
 
     init {
         scrollBarPaint.color = Color.parseColor("#000000")
@@ -52,7 +56,7 @@ internal class NewScrollBarHelper(private val zoomer: Zoomer) {
         scrollBarRadius = (scrollBarSize / 2).toFloat().roundToInt()
         handler = Handler(Looper.getMainLooper())
         hiddenScrollBarRunner = HiddenScrollBarRunner()
-        fadeScrollBarRunner = FadeScrollBarRunner(zoomer.context)
+        fadeScrollBarRunner = FadeScrollBarRunner(context)
     }
 
     fun onDraw(canvas: Canvas) {

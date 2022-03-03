@@ -15,9 +15,11 @@
  */
 package com.github.panpf.sketch.zoom.new.scale
 
+import android.content.Context
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Scroller
 import androidx.core.view.ViewCompat.postOnAnimation
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.zoom.internal.ImageZoomer
 import com.github.panpf.sketch.zoom.new.Zoomer
 
@@ -25,14 +27,15 @@ import com.github.panpf.sketch.zoom.new.Zoomer
  * 定位执行器
  */
 internal class NewLocationRunner(
-    private val imageZoomer: Zoomer,
+    val context: Context,
+    private val zoomer: Zoomer,
     private val scaleDragHelper: NewScaleDragHelper
 ) : Runnable {
 
-    private val scroller = Scroller(imageZoomer.context, AccelerateDecelerateInterpolator())
+    private val scroller = Scroller(context, AccelerateDecelerateInterpolator())
     private var currentX = 0
     private var currentY = 0
-    private val logger = imageZoomer.sketch.logger
+    private val logger = context.sketch.logger
 
     val isRunning: Boolean
         get() = !scroller.isFinished
@@ -44,8 +47,8 @@ internal class NewLocationRunner(
         currentX = startX
         currentY = startY
         scroller.startScroll(startX, startY, endX - startX, endY - startY, 300)
-        imageZoomer.view.removeCallbacks(this)
-        imageZoomer.view.post(this)
+        zoomer.view.removeCallbacks(this)
+        zoomer.view.post(this)
     }
 
     override fun run() {
@@ -66,11 +69,11 @@ internal class NewLocationRunner(
         currentX = newX
         currentY = newY
 
-        postOnAnimation(imageZoomer.view, this)
+        postOnAnimation(zoomer.view, this)
     }
 
     fun cancel() {
         scroller.forceFinished(true)
-        imageZoomer.view.removeCallbacks(this)
+        zoomer.view.removeCallbacks(this)
     }
 }

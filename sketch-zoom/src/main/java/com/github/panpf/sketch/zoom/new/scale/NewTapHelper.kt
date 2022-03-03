@@ -15,15 +15,17 @@
  */
 package com.github.panpf.sketch.zoom.new.scale
 
+import android.content.Context
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.zoom.new.Zoomer
 
-internal class NewTapHelper(private val zoomer: Zoomer) : SimpleOnGestureListener() {
+internal class NewTapHelper constructor(context: Context, private val zoomer: Zoomer) :
+    SimpleOnGestureListener() {
 
-    private val tapGestureDetector: GestureDetector = GestureDetector(zoomer.context, this)
+    private val tapGestureDetector: GestureDetector = GestureDetector(context, this)
 
     fun onTouchEvent(event: MotionEvent): Boolean {
         return tapGestureDetector.onTouchEvent(event)
@@ -34,13 +36,14 @@ internal class NewTapHelper(private val zoomer: Zoomer) : SimpleOnGestureListene
     }
 
     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-        zoomer.view.performClick()
-        return false
+        return zoomer.onViewTapListener?.onViewTap(zoomer.view, e.x, e.y) != null
+                || zoomer.view.performClick()
     }
 
     override fun onLongPress(e: MotionEvent) {
         super.onLongPress(e)
-        zoomer.view.performLongClick()
+        zoomer.onViewLongPressListener?.onViewLongPress(zoomer.view, e.x, e.y)
+            ?: zoomer.view.performLongClick()
     }
 
     override fun onDoubleTap(ev: MotionEvent): Boolean {

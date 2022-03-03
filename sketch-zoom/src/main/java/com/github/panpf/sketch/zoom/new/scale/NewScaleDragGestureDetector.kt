@@ -15,23 +15,25 @@
  */
 package com.github.panpf.sketch.zoom.new.scale
 
+import android.content.Context
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.zoom.internal.getPointerIndex
-import com.github.panpf.sketch.zoom.new.Zoomer
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-open class NewScaleDragGestureDetector constructor(val zoomer: Zoomer) {
+open class NewScaleDragGestureDetector constructor(context: Context) {
 
     companion object {
         private const val NAME = "ScaleDragGestureDetector"
         private const val INVALID_POINTER_ID = -1
     }
 
+    private val logger = context.sketch.logger
     private val mTouchSlop: Float
     private val mMinimumVelocity: Float
     private val mDetector: ScaleGestureDetector
@@ -44,13 +46,12 @@ open class NewScaleDragGestureDetector constructor(val zoomer: Zoomer) {
         private set
     private var mActivePointerId = INVALID_POINTER_ID
     private var mActivePointerIndex = 0
-    private val logger = zoomer.sketch.logger
 
     init {
-        val configuration = ViewConfiguration.get(zoomer.context)
+        val configuration = ViewConfiguration.get(context)
         mMinimumVelocity = configuration.scaledMinimumFlingVelocity.toFloat()
         mTouchSlop = configuration.scaledTouchSlop.toFloat()
-        mDetector = ScaleGestureDetector(zoomer.context, object : OnScaleGestureListener {
+        mDetector = ScaleGestureDetector(context, object : OnScaleGestureListener {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
                 val scaleFactor = detector.scaleFactor
                 if (java.lang.Float.isNaN(scaleFactor) || java.lang.Float.isInfinite(scaleFactor)) return false
