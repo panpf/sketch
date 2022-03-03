@@ -27,10 +27,9 @@ import com.github.panpf.sketch.viewability.ViewAbility.ScaleTypeObserver
 import com.github.panpf.sketch.viewability.ViewAbility.SizeChangeObserver
 import com.github.panpf.sketch.viewability.ViewAbility.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility.VisibilityChangedObserver
-import com.github.panpf.sketch.zoom.newapi.block.Blocks
-import com.github.panpf.sketch.zoom.newapi.zoom.NewAdaptiveTwoLevelScales
-import com.github.panpf.sketch.zoom.newapi.zoom.NewZoomScales
-import com.github.panpf.sketch.zoom.newapi.zoom.Zoomer
+import com.github.panpf.sketch.zoom.block.Blocks
+import com.github.panpf.sketch.zoom.internal.NewAdaptiveTwoLevelScales
+import com.github.panpf.sketch.zoom.internal.Zoomer
 
 class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
     DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver {
@@ -42,16 +41,6 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
     private var zoomer: Zoomer? = null
 
     private var blocks: Blocks? = null
-    private var readModeDecider: ReadModeDecider? = null
-        set(value) {
-            field = value
-            zoomer?.readModeDecider = value
-        }
-    private var zoomScales: NewZoomScales = NewAdaptiveTwoLevelScales()
-        set(value) {
-            field = value
-            zoomer?.zoomScales = value
-        }
     private val lifecycleEventObserver = LifecycleEventObserver { _, event ->
         when (event) {
             ON_PAUSE -> blocks?.setPause(true)
@@ -62,22 +51,35 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
     override var host: Host? = null
 
-    var enabledScrollBar: Boolean = true
+    var scrollBarEnabled: Boolean = true
         set(value) {
             field = value
             zoomer?.enabledScrollBar = value
         }
 
-    val isEnabledReadMode: Boolean
-        get() = readModeDecider != null
-
-    fun enabledReadMode(readModeDecider: ReadModeDecider = defaultReadModeDecider()) {
-        this.readModeDecider = readModeDecider
-    }
-
-    fun disabledReadMode() {
-        this.readModeDecider = null
-    }
+    var readModeEnabled: Boolean = true
+        set(value) {
+            if (field != value) {
+                field = value
+                zoomer?.readModeDecider = if (value) readModeDecider else null
+            }
+        }
+    var readModeDecider: ReadModeDecider = DefaultReadModeDecider()
+        set(value) {
+            if (field != value) {
+                field = value
+                if (readModeEnabled) {
+                    zoomer?.readModeDecider = value
+                }
+            }
+        }
+    var zoomScales: NewZoomScales = NewAdaptiveTwoLevelScales()
+        set(value) {
+            if (field != value) {
+                field = value
+                zoomer?.zoomScales = value
+            }
+        }
 
     override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
         val host = host ?: return
@@ -141,7 +143,7 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
         val host = host ?: return
         host.superScaleType = MATRIX
         val newZoomer = tryNewZoomer()?.apply {
-            enabledScrollBar = this@ZoomViewAbility.enabledScrollBar
+            enabledScrollBar = this@ZoomViewAbility.scrollBarEnabled
         }
         this.zoomer = newZoomer
         this.blocks = newZoomer?.let { tryNewBlocks(it) }
@@ -192,7 +194,7 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
             imageSize = imageSize,
             drawableSize = drawableSize,
             scaleType = scaleType,
-            readModeDecider = readModeDecider,
+            readModeDecider = if (readModeEnabled) readModeDecider else null,
             zoomScales = zoomScales,
         ) { matrix ->
             host.imageMatrix = matrix
