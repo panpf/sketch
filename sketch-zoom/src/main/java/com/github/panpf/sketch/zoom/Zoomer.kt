@@ -41,8 +41,7 @@ class Zoomer constructor(
             listener.onMatrixChanged(this)
         }
     }
-    private var scrollBarHelper: ScrollBarHelper? =
-        ScrollBarHelper(context, this)
+    private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, this)
 
     private var _rotateDegrees = 0
     private var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
@@ -82,7 +81,7 @@ class Zoomer constructor(
             }
         }
 
-    var enabledScrollBar: Boolean
+    var scrollBarEnabled: Boolean
         get() = scrollBarHelper != null
         set(value) {
             val enabled = scrollBarHelper != null
@@ -98,16 +97,16 @@ class Zoomer constructor(
         }
 
     var zoomAnimationDuration = 200
-        set(milliseconds) {
-            if (milliseconds > 0) {
-                field = milliseconds
+        set(value) {
+            if (value > 0 && field != value) {
+                field = value
             }
         }
 
     var zoomInterpolator: Interpolator = AccelerateDecelerateInterpolator()
 
     /** Allows the parent ViewGroup to intercept events while sliding to an edge */
-    var isAllowParentInterceptOnEdge: Boolean = true
+    var allowParentInterceptOnEdge: Boolean = true
 
     var onViewLongPressListener: OnViewLongPressListener? = null
 
@@ -264,14 +263,14 @@ class Zoomer constructor(
     }
 
 
-    val rotateDegrees
+    val rotateDegrees: Int
         get() = _rotateDegrees
 
-    val canScrollHorizontally: Boolean
-        get() = scaleDragHelper.canScrollHorizontally()
+    fun canScrollHorizontally(direction: Int): Boolean =
+        scaleDragHelper.canScrollHorizontally(direction)
 
-    val canScrollVertically: Boolean
-        get() = scaleDragHelper.canScrollVertically()
+    fun canScrollVertically(direction: Int): Boolean =
+        scaleDragHelper.canScrollVertically(direction)
 
     val horScrollEdge: Int
         get() = scaleDragHelper.horScrollEdge

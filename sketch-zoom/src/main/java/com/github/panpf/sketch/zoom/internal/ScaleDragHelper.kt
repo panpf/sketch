@@ -119,10 +119,10 @@ internal class ScaleDragHelper constructor(
         logger.v(Zoomer.MODULE) { "drag. dx: $dx, dy: $dy" }
         supportMatrix.postTranslate(dx, dy)
         checkAndApplyMatrix()
-        if (!zoomer.isAllowParentInterceptOnEdge || scaleDragGestureDetector.isScaling || disallowParentInterceptTouchEvent) {
+        if (!zoomer.allowParentInterceptOnEdge || scaleDragGestureDetector.isScaling || disallowParentInterceptTouchEvent) {
             logger.v(Zoomer.MODULE) {
                 "disallow parent intercept touch event. onDrag. allowParentInterceptOnEdge=%s, scaling=%s, tempDisallowParentInterceptTouchEvent=%s".format(
-                    zoomer.isAllowParentInterceptOnEdge,
+                    zoomer.allowParentInterceptOnEdge,
                     scaleDragGestureDetector.isScaling,
                     disallowParentInterceptTouchEvent
                 )
@@ -550,21 +550,33 @@ internal class ScaleDragHelper constructor(
     }
 
     /**
-     * 可以横向滚动
+     * 是否可以在指定方向上横向滚动
+     *
+     * @param direction 为负值时表示左边，为正值时表示右边
      */
-    fun canScrollHorizontally(): Boolean {
-        return horScrollEdge != EDGE_BOTH
+    fun canScrollHorizontally(direction: Int): Boolean {
+        return if (direction < 0) {
+            horScrollEdge != EDGE_START && horScrollEdge != EDGE_NONE
+        } else {
+            horScrollEdge != EDGE_END && horScrollEdge != EDGE_NONE
+        }
     }
 
     /**
-     * 可以垂直滚动
+     * 是否可以在指定方向上垂直滚动
+     *
+     * @param direction 为负值时表示上边，为正值时表示下边
      */
-    fun canScrollVertically(): Boolean {
-        return verScrollEdge != EDGE_BOTH
+    fun canScrollVertically(direction: Int): Boolean {
+        return if (direction < 0) {
+            verScrollEdge != EDGE_START && horScrollEdge != EDGE_NONE
+        } else {
+            verScrollEdge != EDGE_END && horScrollEdge != EDGE_NONE
+        }
     }
 
     companion object {
-        private const val EDGE_NONE = -1
+        const val EDGE_NONE = -1
         private const val EDGE_START = 0
         private const val EDGE_END = 1
         private const val EDGE_BOTH = 2
