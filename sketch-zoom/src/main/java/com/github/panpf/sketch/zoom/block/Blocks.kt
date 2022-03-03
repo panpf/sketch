@@ -12,13 +12,13 @@ import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
-import com.github.panpf.sketch.zoom.internal.getScale
-import com.github.panpf.sketch.zoom.block.internal.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.Zoomer
 import com.github.panpf.sketch.zoom.block.internal.BlockDecoder
 import com.github.panpf.sketch.zoom.block.internal.BlockExecutor
 import com.github.panpf.sketch.zoom.block.internal.BlockManager
+import com.github.panpf.sketch.zoom.block.internal.DecodeHandler.DecodeErrorException
 import com.github.panpf.sketch.zoom.block.internal.ImageRegionDecoder
-import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.internal.getScale
 
 class Blocks constructor(
     context: Context,
@@ -84,10 +84,6 @@ class Blocks constructor(
         matrix = Matrix()
         drawBlockPaint = Paint()
 
-        zoomer.addOnMatrixChangeListener {
-            onMatrixChanged()
-        }
-
         blockDecoder.setImage(imageUri, exifOrientation)
     }
 
@@ -141,7 +137,7 @@ class Blocks constructor(
         }
     }
 
-    private fun onMatrixChanged() {
+    fun onMatrixChanged() {
         if (!isReady && !isInitializing) {
             logger.v(NAME) { "Blocks not available. onMatrixChanged. $imageUri" }
             return

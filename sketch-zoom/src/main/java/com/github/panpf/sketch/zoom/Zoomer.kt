@@ -42,119 +42,67 @@ class Zoomer constructor(
         }
     }
     private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, this)
-
     private var _rotateDegrees = 0
-    private var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
-    private var onRotateChangeListenerList: MutableSet<OnRotateChangeListener>? = null
+
+    /** Allows the parent ViewGroup to intercept events while sliding to an edge */
+    internal var allowParentInterceptOnEdge: Boolean = true
+    internal var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
+    internal var onRotateChangeListenerList: MutableSet<OnRotateChangeListener>? = null
     internal var onDragFlingListenerList: MutableSet<OnDragFlingListener>? = null
     internal var onScaleChangeListenerList: MutableSet<OnScaleChangeListener>? = null
-
+    internal var zoomInterpolator: Interpolator = AccelerateDecelerateInterpolator()
+    internal var onViewLongPressListener: OnViewLongPressListener? = null
+    internal var onViewTapListener: OnViewTapListener? = null
     var viewSize: Size = viewSize
-        set(value) {
+        internal set(value) {
             if (field != value) {
                 field = value
                 reset()
             }
         }
-
     var scaleType: ScaleType = scaleType
-        set(value) {
+        internal set(value) {
             if (field != value) {
                 field = value
                 reset()
             }
         }
-
     var readModeDecider: ReadModeDecider? = readModeDecider
-        set(value) {
+        internal set(value) {
             if (field != value) {
                 field = value
                 reset()
             }
         }
-
     var zoomScales: ZoomScales = zoomScales
-        set(value) {
+        internal set(value) {
             if (field != value) {
                 field = value
                 reset()
             }
         }
-
     var scrollBarEnabled: Boolean
         get() = scrollBarHelper != null
-        set(value) {
+        internal set(value) {
             val enabled = scrollBarHelper != null
             if (enabled != value) {
                 scrollBarHelper = if (value) {
-                    ScrollBarHelper(context, this).apply {
-                        reset()
-                    }
+                    ScrollBarHelper(context, this).apply { reset() }
                 } else {
                     null
                 }
             }
         }
-
-    var zoomAnimationDuration = 200
-        set(value) {
+    var zoomAnimationDuration: Int = 200
+        internal set(value) {
             if (value > 0 && field != value) {
                 field = value
             }
         }
 
-    var zoomInterpolator: Interpolator = AccelerateDecelerateInterpolator()
-
-    /** Allows the parent ViewGroup to intercept events while sliding to an edge */
-    var allowParentInterceptOnEdge: Boolean = true
-
-    var onViewLongPressListener: OnViewLongPressListener? = null
-
-    var onViewTapListener: OnViewTapListener? = null
-
 
     init {
         reset()
-    }
-
-    fun addOnMatrixChangeListener(listener: OnMatrixChangeListener) {
-        this.onMatrixChangeListenerList = (onMatrixChangeListenerList ?: LinkedHashSet()).apply {
-            add(listener)
-        }
-    }
-
-    fun removeOnMatrixChangeListener(listener: OnMatrixChangeListener): Boolean {
-        return onMatrixChangeListenerList?.remove(listener) == true
-    }
-
-    fun addOnRotateChangeListener(listener: OnRotateChangeListener) {
-        this.onRotateChangeListenerList = (onRotateChangeListenerList ?: LinkedHashSet()).apply {
-            add(listener)
-        }
-    }
-
-    fun removeOnRotateChangeListener(listener: OnRotateChangeListener): Boolean {
-        return onRotateChangeListenerList?.remove(listener) == true
-    }
-
-    fun addOnDragFlingListener(listener: OnDragFlingListener) {
-        this.onDragFlingListenerList = (onDragFlingListenerList ?: LinkedHashSet()).apply {
-            add(listener)
-        }
-    }
-
-    fun removeOnDragFlingListener(listener: OnDragFlingListener): Boolean {
-        return onDragFlingListenerList?.remove(listener) == true
-    }
-
-    fun addOnScaleChangeListener(listener: OnScaleChangeListener) {
-        this.onScaleChangeListenerList = (onScaleChangeListenerList ?: LinkedHashSet()).apply {
-            add(listener)
-        }
-    }
-
-    fun removeOnScaleChangeListener(listener: OnScaleChangeListener): Boolean {
-        return onScaleChangeListenerList?.remove(listener) == true
     }
 
 
@@ -174,6 +122,12 @@ class Zoomer constructor(
     internal fun recycle() {
         zoomScales.clean()
         scaleDragHelper.recycle()
+        onViewLongPressListener = null
+        onViewTapListener = null
+        onMatrixChangeListenerList = null
+        onScaleChangeListenerList = null
+        onRotateChangeListenerList = null
+        onDragFlingListenerList = null
     }
 
     internal fun onDraw(canvas: Canvas) {

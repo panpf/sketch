@@ -59,6 +59,12 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
     override var host: Host? = null
 
+    init {
+        addOnMatrixChangeListener{
+            blocks?.onMatrixChanged()
+        }
+    }
+
     override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
         val host = host ?: return
         destroyZoomer()
@@ -127,18 +133,10 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
             allowParentInterceptOnEdge = this@ZoomViewAbility.allowParentInterceptOnEdge
             onViewLongPressListener = this@ZoomViewAbility.onViewLongPressListener
             onViewTapListener = this@ZoomViewAbility.onViewTapListener
-            onMatrixChangeListenerList?.forEach {
-                addOnMatrixChangeListener(it)
-            }
-            onScaleChangeListenerList?.forEach {
-                addOnScaleChangeListener(it)
-            }
-            onRotateChangeListenerList?.forEach {
-                addOnRotateChangeListener(it)
-            }
-            onDragFlingListenerList?.forEach {
-                addOnDragFlingListener(it)
-            }
+            onMatrixChangeListenerList = this@ZoomViewAbility.onMatrixChangeListenerList
+            onScaleChangeListenerList = this@ZoomViewAbility.onScaleChangeListenerList
+            onRotateChangeListenerList = this@ZoomViewAbility.onRotateChangeListenerList
+            onDragFlingListenerList = this@ZoomViewAbility.onDragFlingListenerList
         }
         this.zoomer = newZoomer
         this.blocks = newZoomer?.let { tryNewBlocks(it) }
@@ -158,28 +156,42 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
     private fun tryNewZoomer(): Zoomer? {
         val host = host ?: return null
+        val logger = host.context.sketch.logger
         val view = host.view
 
         val viewWidth = view.width - view.paddingLeft - view.paddingRight
         val viewHeight = view.height - view.paddingTop - view.paddingBottom
         if (viewWidth <= 0 || viewHeight <= 0) {
+            logger.d(MODULE) { "View size error" }
             return null
         }
         val viewSize = Size(viewWidth, viewHeight)
 
         val previewDrawable = host.drawable?.getLastDrawable()
         if (previewDrawable !is SketchDrawable) {
+            logger.d(MODULE) { "Can't use Blocks" }
             return null
         }
         val previewWidth = previewDrawable.intrinsicWidth
         val previewHeight = previewDrawable.intrinsicHeight
-        val originWidth = previewDrawable.imageInfo.width
-        val originHeight = previewDrawable.imageInfo.height
-        if (previewWidth <= 0 || previewHeight <= 0 || originWidth <= 0 || originHeight <= 0) {
+        val imageWidth = previewDrawable.imageInfo.width
+        val imageHeight = previewDrawable.imageInfo.height
+        val mimeType = previewDrawable.imageInfo.mimeType
+        val key = previewDrawable.requestKey
+        if (previewWidth <= 0 || previewHeight <= 0 || imageWidth <= 0 || imageHeight <= 0) {
+            logger.d(MODULE) {
+                "imageSize or previewSize error. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+            }
             return null
         }
-        val drawableSize = Size(previewWidth, previewHeight)
-        val imageSize = Size(originWidth, originHeight)
+        val previewSize = Size(previewWidth, previewHeight)
+        val imageSize = Size(imageWidth, imageHeight)
+
+        logger.d(MODULE) {
+            "Use Zoomer. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+        }
 
         val scaleType = host.superScaleType
         return Zoomer(
@@ -187,7 +199,7 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
             view = host.view,
             viewSize = viewSize,
             imageSize = imageSize,
-            drawableSize = drawableSize,
+            drawableSize = previewSize,
             scaleType = scaleType,
             readModeDecider = if (readModeEnabled) readModeDecider else null,
             zoomScales = zoomScales,
@@ -202,6 +214,7 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
         val previewDrawable = host.drawable?.getLastDrawable()
         if (previewDrawable !is SketchDrawable || previewDrawable is Animatable) {
+            logger.d(MODULE) { "Can't use Blocks" }
             return null
         }
 
@@ -214,16 +227,14 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
         if (previewWidth >= imageWidth && previewHeight >= imageHeight) {
             logger.d(MODULE) {
-                ("Don't need to use Blocks. previewSize: %dx%d, " +
-                        "imageSize: %dx%d, mimeType: %s. %s")
+                "Don't need to use Blocks. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                     .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
         if (ImageFormat.valueOfMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
-                ("MimeType does not support Blocks. previewSize: %dx%d, " +
-                        "imageSize: %dx%d, mimeType: %s. %s")
+                "MimeType does not support Blocks. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                     .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null

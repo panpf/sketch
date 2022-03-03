@@ -24,7 +24,7 @@ class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
         super.onInitViews(binding, savedInstanceState)
         binding.imageFragmentZoomImageView.apply {
             showRingProgressIndicator()
-            readModeEnabled = true
+            zoomViewAbility.readModeEnabled = true
         }
     }
 
