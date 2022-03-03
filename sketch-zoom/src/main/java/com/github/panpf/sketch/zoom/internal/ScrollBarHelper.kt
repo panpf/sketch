@@ -25,10 +25,11 @@ import android.os.Looper
 import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.zoom.Zoomer
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-internal class NewScrollBarHelper constructor(
+internal class ScrollBarHelper constructor(
     context: Context,
     private val zoomer: Zoomer
 ) {

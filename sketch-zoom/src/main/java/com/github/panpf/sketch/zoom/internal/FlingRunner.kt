@@ -23,12 +23,13 @@ import android.graphics.RectF
 import android.widget.OverScroller
 import androidx.core.view.ViewCompat.postOnAnimation
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.zoom.Zoomer
 import kotlin.math.roundToInt
 
-internal class NewFlingRunner constructor(
+internal class FlingRunner constructor(
     val context: Context,
     private val zoomer: Zoomer,
-    private val scaleDragHelper: NewScaleDragHelper
+    private val scaleDragHelper: ScaleDragHelper
 ) : Runnable {
 
     private val logger = context.sketch.logger

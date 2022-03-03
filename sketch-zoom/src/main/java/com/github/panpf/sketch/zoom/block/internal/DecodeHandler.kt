@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.block.internal
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -25,12 +25,13 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.zoom.block.Block
 import java.lang.ref.WeakReference
 
 /**
  * 解码处理器，运行在解码线程中，负责解码
  */
-class NewDecodeHandler constructor(val context: Context, looper: Looper, executor: NewBlockExecutor) :
+class DecodeHandler constructor(val context: Context, looper: Looper, executor: BlockExecutor) :
     Handler(looper) {
 
     companion object {
@@ -39,7 +40,7 @@ class NewDecodeHandler constructor(val context: Context, looper: Looper, executo
     }
 
     private var disableInBitmap = false
-    private val reference: WeakReference<NewBlockExecutor> = WeakReference(executor)
+    private val reference: WeakReference<BlockExecutor> = WeakReference(executor)
     private val bitmapPool: BitmapPool = context.sketch.bitmapPool
     private val logger  = context.sketch.logger
 
@@ -47,19 +48,19 @@ class NewDecodeHandler constructor(val context: Context, looper: Looper, executo
         val decodeExecutor = reference.get()
         decodeExecutor?.callbackHandler?.cancelDelayDestroyThread()
         if (msg.what == WHAT_DECODE) {
-            decode(decodeExecutor, msg.arg1, msg.obj as NewBlock)
+            decode(decodeExecutor, msg.arg1, msg.obj as Block)
         }
         decodeExecutor?.callbackHandler?.postDelayRecycleDecodeThread()
     }
 
-    fun postDecode(key: Int, block: NewBlock) {
+    fun postDecode(key: Int, block: Block) {
         val message = obtainMessage(WHAT_DECODE)
         message.arg1 = key
         message.obj = block
         message.sendToTarget()
     }
 
-    private fun decode(executor: NewBlockExecutor?, key: Int, block: NewBlock) {
+    private fun decode(executor: BlockExecutor?, key: Int, block: Block) {
         if (executor == null) {
             logger.w(NAME, "weak reference break. key: $key, block=${block.info}")
             return

@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.zoom.internal
+package com.github.panpf.sketch.zoom
 
 import android.content.Context
 import android.graphics.Canvas
@@ -12,14 +12,9 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.NewZoomScales
-import com.github.panpf.sketch.zoom.OnDragFlingListener
-import com.github.panpf.sketch.zoom.OnMatrixChangeListener
-import com.github.panpf.sketch.zoom.OnRotateChangeListener
-import com.github.panpf.sketch.zoom.OnScaleChangeListener
-import com.github.panpf.sketch.zoom.OnViewLongPressListener
-import com.github.panpf.sketch.zoom.OnViewTapListener
-import com.github.panpf.sketch.zoom.ReadModeDecider
+import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
+import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
+import com.github.panpf.sketch.zoom.internal.TapHelper
 import kotlin.math.abs
 
 class Zoomer constructor(
@@ -30,7 +25,7 @@ class Zoomer constructor(
     val drawableSize: Size,
     scaleType: ScaleType,
     readModeDecider: ReadModeDecider?,
-    zoomScales: NewZoomScales = NewAdaptiveTwoLevelScales(),
+    zoomScales: ZoomScales = AdaptiveTwoLevelScales(),
     val updateMatrix: (Matrix) -> Unit,
 ) {
 
@@ -38,16 +33,16 @@ class Zoomer constructor(
         const val MODULE = "Zoomer"
     }
 
-    private val tapHelper = NewTapHelper(context, this)
-    private val scaleDragHelper = NewScaleDragHelper(context, this) { matrix ->
+    private val tapHelper = TapHelper(context, this)
+    private val scaleDragHelper = ScaleDragHelper(context, this) { matrix ->
         scrollBarHelper?.onMatrixChanged()
         updateMatrix(matrix)
         onMatrixChangeListenerList?.forEach { listener ->
             listener.onMatrixChanged(this)
         }
     }
-    private var scrollBarHelper: NewScrollBarHelper? =
-        NewScrollBarHelper(context, this)
+    private var scrollBarHelper: ScrollBarHelper? =
+        ScrollBarHelper(context, this)
 
     private var _rotateDegrees = 0
     private var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
@@ -79,7 +74,7 @@ class Zoomer constructor(
             }
         }
 
-    var zoomScales: NewZoomScales = zoomScales
+    var zoomScales: ZoomScales = zoomScales
         set(value) {
             if (field != value) {
                 field = value
@@ -93,7 +88,7 @@ class Zoomer constructor(
             val enabled = scrollBarHelper != null
             if (enabled != value) {
                 scrollBarHelper = if (value) {
-                    NewScrollBarHelper(context, this).apply {
+                    ScrollBarHelper(context, this).apply {
                         reset()
                     }
                 } else {

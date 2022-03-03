@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.block.internal
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,14 +21,14 @@ import android.os.Build
 import android.os.HandlerThread
 import android.os.Looper
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.zoom.block.NewDecodeHandler.DecodeErrorException
-import com.github.panpf.sketch.zoom.block.internal.KeyCounter
+import com.github.panpf.sketch.zoom.block.Block
+import com.github.panpf.sketch.zoom.block.internal.DecodeHandler.DecodeErrorException
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * 碎片解码执行器，负责初始化解码器以及管理解码线程
  */
-class NewBlockExecutor constructor(val context: Context, val callback: Callback) {
+class BlockExecutor constructor(val context: Context, val callback: Callback) {
 
     companion object {
         private const val NAME = "BlockExecutor"
@@ -37,36 +37,36 @@ class NewBlockExecutor constructor(val context: Context, val callback: Callback)
 
     private val handlerThreadLock = Any()
 
-    var callbackHandler: NewCallbackHandler = NewCallbackHandler(
+    var callbackHandler: CallbackHandler = CallbackHandler(
         Looper.getMainLooper(),
         this,
         context.sketch.bitmapPool,
         context.sketch.logger
     )
     private var handlerThread: HandlerThread? = null
-    private var initHandler: NewInitHandler? = null
-    private var decodeHandler: NewDecodeHandler? = null
+    private var initHandler: InitHandler? = null
+    private var decodeHandler: DecodeHandler? = null
     private val logger = context.sketch.logger
 
     /**
      * 安装解码线程
      */
     private fun installHandlerThread() {
-        if (this@NewBlockExecutor.handlerThread == null) {
+        if (this@BlockExecutor.handlerThread == null) {
             synchronized(handlerThreadLock) {
-                if (this@NewBlockExecutor.handlerThread == null) {
+                if (this@BlockExecutor.handlerThread == null) {
                     if (THREAD_NUMBER.get() >= Int.MAX_VALUE) {
                         THREAD_NUMBER.set(0)
                     }
                     val handlerThread =
                         HandlerThread("ImageRegionDecodeThread" + THREAD_NUMBER.addAndGet(1))
-                    this@NewBlockExecutor.handlerThread = handlerThread
+                    this@BlockExecutor.handlerThread = handlerThread
                     handlerThread.start()
                     logger.v(NAME) {
                         "image region decode thread '${handlerThread.name}' started"
                     }
-                    decodeHandler = NewDecodeHandler(context, handlerThread.looper, this)
-                    initHandler = NewInitHandler(context, handlerThread.looper, this)
+                    decodeHandler = DecodeHandler(context, handlerThread.looper, this)
+                    initHandler = InitHandler(context, handlerThread.looper, this)
                     callbackHandler.postDelayRecycleDecodeThread()
                 }
             }
@@ -93,7 +93,7 @@ class NewBlockExecutor constructor(val context: Context, val callback: Callback)
     /**
      * 提交一个解码请求
      */
-    fun submitDecodeBlock(key: Int, block: NewBlock) {
+    fun submitDecodeBlock(key: Int, block: Block) {
         installHandlerThread()
         decodeHandler?.postDecode(key, block)
     }
@@ -118,7 +118,7 @@ class NewBlockExecutor constructor(val context: Context, val callback: Callback)
         initHandler?.clean("recycleDecodeThread")
         decodeHandler?.clean("recycleDecodeThread")
         synchronized(handlerThreadLock) {
-            val handlerThread = this@NewBlockExecutor.handlerThread
+            val handlerThread = this@BlockExecutor.handlerThread
             if (handlerThread != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     handlerThread.quitSafely()
@@ -128,16 +128,16 @@ class NewBlockExecutor constructor(val context: Context, val callback: Callback)
                 logger.v(NAME) {
                     "image region decode thread '${handlerThread.name}' quit"
                 }
-                this@NewBlockExecutor.handlerThread = null
+                this@BlockExecutor.handlerThread = null
             }
         }
     }
 
     interface Callback {
         val context: Context
-        fun onInitCompleted(imageUri: String, decoder: NewImageRegionDecoder)
+        fun onInitCompleted(imageUri: String, decoder: ImageRegionDecoder)
         fun onInitError(imageUri: String, e: Exception)
-        fun onDecodeCompleted(block: NewBlock, bitmap: Bitmap, useTime: Int)
-        fun onDecodeError(block: NewBlock, exception: DecodeErrorException)
+        fun onDecodeCompleted(block: Block, bitmap: Bitmap, useTime: Int)
+        fun onDecodeError(block: Block, exception: DecodeErrorException)
     }
 }

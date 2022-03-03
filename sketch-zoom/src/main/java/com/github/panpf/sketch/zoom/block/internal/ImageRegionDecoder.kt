@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.block.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -33,7 +33,7 @@ import java.io.IOException
 /**
  * 图片碎片解码器，支持纠正图片方向
  */
-class NewImageRegionDecoder constructor(
+class ImageRegionDecoder constructor(
     val imageUri: String,
     val imageSize: Size,
     val imageFormat: ImageFormat?,
@@ -63,7 +63,7 @@ class NewImageRegionDecoder constructor(
             imageUri: String,
             exifOrientation: Int,
             sketch: Sketch
-        ): NewImageRegionDecoder {
+        ): ImageRegionDecoder {
             val request = LoadRequest(sketch.context, imageUri) // todo 请求要从 view 中去
             val fetch = sketch.componentRegistry.newFetcher(sketch, request)
             val fetchResult = runBlocking {
@@ -84,7 +84,7 @@ class NewImageRegionDecoder constructor(
                 }
             } ?: throw Exception("Unsupported image format.  $imageUri")
             val imageType = ImageFormat.valueOfMimeType(imageInfo.mimeType)
-            return NewImageRegionDecoder(
+            return ImageRegionDecoder(
                 imageUri,
                 imageSize,
                 imageType,

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.block.internal
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -23,10 +23,11 @@ import com.github.panpf.sketch.decode.internal.calculateInSampleSize
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.byteCountCompat
-import com.github.panpf.sketch.zoom.block.internal.ObjectPool
+import com.github.panpf.sketch.zoom.block.Block
 import com.github.panpf.sketch.zoom.internal.isCross
-import com.github.panpf.sketch.zoom.block.NewBlock.Companion.blockListToString
-import com.github.panpf.sketch.zoom.block.NewDecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.block.Block.Companion.blockListToString
+import com.github.panpf.sketch.zoom.block.Blocks
+import com.github.panpf.sketch.zoom.block.internal.DecodeHandler.DecodeErrorException
 import java.util.Collections
 import java.util.LinkedList
 import kotlin.math.abs
@@ -37,7 +38,7 @@ import kotlin.math.roundToInt
  */
 // TODO: 2016/12/17 优化碎片计算规则，尽量保证每块碎片的尺寸都是一样的，这样就能充分利用inBitmap功能减少内存分配提高流畅度
 // todo 重构
-class NewBlockManager(
+class BlockManager(
     context: Context,
     private val blockDisplayer: Blocks,
 ) {
@@ -48,7 +49,7 @@ class NewBlockManager(
 
     private val visibleRect = Rect() // 可见区域，当前用户真正能看见的区域
     private val bitmapPool: BitmapPool = context.sketch.bitmapPool
-    private val blockPool: ObjectPool<NewBlock> = ObjectPool({ NewBlock() }, 60)
+    private val blockPool: ObjectPool<Block> = ObjectPool({ Block() }, 60)
     private val rectPool: ObjectPool<Rect> = ObjectPool({ Rect() }, 20)
     private val logger = context.sketch.logger
 
@@ -57,7 +58,7 @@ class NewBlockManager(
     var decodeRect = Rect() // 解码区域，真正需要解码的区域，是以绘制区域为基础，滑动时哪边不够了就在扩展哪边，解码区域一定比绘制区域大
     var drawSrcRect = Rect()
     var decodeSrcRect = Rect()
-    var blockList: MutableList<NewBlock> = LinkedList()
+    var blockList: MutableList<Block> = LinkedList()
 
     fun update(
         newVisibleRect: Rect,
@@ -423,7 +424,7 @@ class NewBlockManager(
      * @param blockList 已知碎片
      * @return 所有空白的碎片
      */
-    private fun findEmptyRect(rect: Rect, blockList: MutableList<NewBlock>?): List<Rect>? {
+    private fun findEmptyRect(rect: Rect, blockList: MutableList<Block>?): List<Rect>? {
         if (rect.isEmpty) {
             return null
         }
@@ -437,7 +438,7 @@ class NewBlockManager(
         }
 
         // 按离左上角的距离排序
-        val blockComparator = Comparator<NewBlock> { o1, o2 -> // 同一行比较left，不同行比较top
+        val blockComparator = Comparator<Block> { o1, o2 -> // 同一行比较left，不同行比较top
             if (o1.drawRect.top <= o2.drawRect.top && o1.drawRect.bottom >= o2.drawRect.bottom
                 || o1.drawRect.top >= o2.drawRect.top && o1.drawRect.bottom <= o2.drawRect.bottom
             ) {
@@ -475,8 +476,8 @@ class NewBlockManager(
         var top = rect.top
         var right = 0
         var bottom = -1
-        var lastRect: NewBlock? = null
-        var childRect: NewBlock
+        var lastRect: Block? = null
+        var childRect: Block
         val rectIterator = blockList.iterator()
         while (rectIterator.hasNext()) {
             childRect = rectIterator.next()
@@ -574,8 +575,8 @@ class NewBlockManager(
     /**
      * 回收哪些已经超出绘制区域的碎片
      */
-    private fun recycleBlocks(blockList: MutableList<NewBlock>, drawRect: Rect) {
-        var block: NewBlock
+    private fun recycleBlocks(blockList: MutableList<Block>, drawRect: Rect) {
+        var block: Block
         val blockIterator = blockList.iterator()
         while (blockIterator.hasNext()) {
             block = blockIterator.next()
@@ -660,7 +661,7 @@ class NewBlockManager(
         }
     }
 
-    fun decodeCompleted(block: NewBlock, bitmap: Bitmap, useTime: Int) {
+    fun decodeCompleted(block: Block, bitmap: Bitmap, useTime: Int) {
         logger.v(
             MODULE
         ) {
@@ -677,7 +678,7 @@ class NewBlockManager(
         onBlockChangedListener?.onBlockChanged(blockDisplayer)
     }
 
-    fun decodeError(block: NewBlock, exception: DecodeErrorException) {
+    fun decodeError(block: Block, exception: DecodeErrorException) {
         logger.w(
             MODULE, "decode failed. %s. block=%s, blocks=%d".format(
                 exception.causeMessage, block.info, blockList.size

@@ -25,7 +25,7 @@ import com.github.panpf.sketch.sketch
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-open class NewScaleDragGestureDetector constructor(context: Context) {
+open class ScaleDragGestureDetector constructor(context: Context) {
 
     companion object {
         private const val NAME = "ScaleDragGestureDetector"

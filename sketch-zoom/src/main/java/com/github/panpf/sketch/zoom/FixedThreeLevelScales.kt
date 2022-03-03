@@ -1,15 +1,13 @@
-package com.github.panpf.sketch.zoom.internal
+package com.github.panpf.sketch.zoom
 
 import android.content.Context
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.NewZoomScales
-import com.github.panpf.sketch.zoom.ReadModeDecider
 
 /**
  * 固定的三级缩放比例
  */
-class NewFixedThreeLevelScales : NewZoomScales {
+class FixedThreeLevelScales : ZoomScales {
 
     private val scales = floatArrayOf(1.0f, 2.0f, 3.0f)
     private var fullZoomScaleCache = 0f  // 能够看到图片全貌的缩放比例

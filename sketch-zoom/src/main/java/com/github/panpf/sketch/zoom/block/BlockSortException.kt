@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.zoom.block
 
-class NewBlockSortException(
+class BlockSortException(
     cause: IllegalArgumentException,
-    val blockList: List<NewBlock>,
+    val blockList: List<Block>,
     val isUseLegacyMergeSort: Boolean
 ) : Exception(cause) {
 

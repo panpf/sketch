@@ -21,11 +21,12 @@ package com.github.panpf.sketch.zoom.internal
 import android.content.Context
 import androidx.core.view.ViewCompat.postOnAnimation
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.zoom.Zoomer
 
-internal class NewZoomRunner(
+internal class ZoomRunner(
     context: Context,
     private val zoomer: Zoomer,
-    private val scaleDragHelper: NewScaleDragHelper,
+    private val scaleDragHelper: ScaleDragHelper,
     currentZoom: Float,
     targetZoom: Float,
     private val mFocalX: Float,

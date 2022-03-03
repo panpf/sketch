@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal
+package com.github.panpf.sketch.zoom
 
 import android.content.Context
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.NewZoomScales
-import com.github.panpf.sketch.zoom.ReadModeDecider
 
 /**
  * 根据预览图尺寸、原始图尺寸和 ImageView 尺寸计算出两级缩放比例
  */
-class NewAdaptiveTwoLevelScales : NewZoomScales {
+class AdaptiveTwoLevelScales : ZoomScales {
 
     companion object {
         private const val DEFAULT_MAXIMIZE_SCALE = 1.75f

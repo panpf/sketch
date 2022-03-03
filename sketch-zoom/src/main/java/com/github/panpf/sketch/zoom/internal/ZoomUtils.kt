@@ -6,10 +6,10 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.view.MotionEvent
 
-val Float.dp2px: Int
+internal val Float.dp2px: Int
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
-val Int.dp2px: Int
+internal val Int.dp2px: Int
     get() = (this.toFloat() * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
 internal fun getPointerIndex(action: Int): Int {
@@ -19,7 +19,7 @@ internal fun getPointerIndex(action: Int): Int {
 private val MATRIX_VALUES = FloatArray(9)
 
 
-fun Rect.isCross(rect2: Rect): Boolean {
+internal fun Rect.isCross(rect2: Rect): Boolean {
     return this.left < rect2.right && rect2.left < this.right && this.top < rect2.bottom && rect2.top < this.bottom
 }
 

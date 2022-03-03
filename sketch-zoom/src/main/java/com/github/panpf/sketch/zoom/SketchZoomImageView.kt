@@ -47,7 +47,7 @@ open class SketchZoomImageView @JvmOverloads constructor(
         set(value) {
             zoomerViewAbility.readModeDecider = value
         }
-    var zoomScales: NewZoomScales
+    var zoomScales: ZoomScales
         get() = zoomerViewAbility.zoomScales
         set(value) {
             zoomerViewAbility.zoomScales = value

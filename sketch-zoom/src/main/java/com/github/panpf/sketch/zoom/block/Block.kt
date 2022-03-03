@@ -18,12 +18,13 @@ package com.github.panpf.sketch.zoom.block
 import android.graphics.Bitmap
 import android.graphics.Rect
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.zoom.block.internal.ImageRegionDecoder
 import com.github.panpf.sketch.zoom.block.internal.KeyCounter
 
 /**
  * 碎片
  */
-class NewBlock {
+class Block {
     @JvmField
     var drawRect = Rect()
 
@@ -37,7 +38,7 @@ class NewBlock {
     var scale = -1f
 
     @JvmField
-    var decoder: NewImageRegionDecoder? = null
+    var decoder: ImageRegionDecoder? = null
 
     @JvmField
     var bitmap: Bitmap? = null
@@ -104,7 +105,7 @@ class NewBlock {
          * 将一个碎片列表转换成字符串
          */
         @JvmStatic
-        fun blockListToString(blockList: List<NewBlock>?): String? {
+        fun blockListToString(blockList: List<Block>?): String? {
             if (blockList == null) {
                 return null
             }

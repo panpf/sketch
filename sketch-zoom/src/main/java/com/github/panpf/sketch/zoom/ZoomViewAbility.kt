@@ -28,8 +28,6 @@ import com.github.panpf.sketch.viewability.ViewAbility.SizeChangeObserver
 import com.github.panpf.sketch.viewability.ViewAbility.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility.VisibilityChangedObserver
 import com.github.panpf.sketch.zoom.block.Blocks
-import com.github.panpf.sketch.zoom.internal.NewAdaptiveTwoLevelScales
-import com.github.panpf.sketch.zoom.internal.Zoomer
 
 class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
     DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver {
@@ -73,7 +71,7 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
                 }
             }
         }
-    var zoomScales: NewZoomScales = NewAdaptiveTwoLevelScales()
+    var zoomScales: ZoomScales = AdaptiveTwoLevelScales()
         set(value) {
             if (field != value) {
                 field = value

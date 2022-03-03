@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.block.internal
 
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.zoom.block.internal.KeyCounter
 import java.lang.ref.WeakReference
 
 /**
- * 运行在解码线程中，负责初始化 [NewBlockDecoder]
+ * 运行在解码线程中，负责初始化 [BlockDecoder]
  */
-internal class NewInitHandler(
+internal class InitHandler(
     val context: Context,
     looper: Looper,
-    decodeExecutor: NewBlockExecutor,
+    decodeExecutor: BlockExecutor,
 ) : Handler(looper) {
 
     companion object {
@@ -37,7 +36,7 @@ internal class NewInitHandler(
         private const val WHAT_INIT = 1002
     }
 
-    private val reference: WeakReference<NewBlockExecutor> = WeakReference(decodeExecutor)
+    private val reference: WeakReference<BlockExecutor> = WeakReference(decodeExecutor)
     private val logger = context.sketch.logger
 
     override fun handleMessage(msg: Message) {
@@ -70,7 +69,7 @@ internal class NewInitHandler(
     }
 
     private fun init(
-        decodeExecutor: NewBlockExecutor?,
+        decodeExecutor: BlockExecutor?,
         imageUri: String,
         exifOrientation: Int,
         key: Int,
@@ -88,8 +87,8 @@ internal class NewInitHandler(
             )
             return
         }
-        val decoder: NewImageRegionDecoder = try {
-            NewImageRegionDecoder.build(imageUri, exifOrientation, context.sketch)
+        val decoder: ImageRegionDecoder = try {
+            ImageRegionDecoder.build(imageUri, exifOrientation, context.sketch)
         } catch (e: Exception) {
             e.printStackTrace()
             decodeExecutor.callbackHandler.postInitError(e, imageUri, key, keyCounter)

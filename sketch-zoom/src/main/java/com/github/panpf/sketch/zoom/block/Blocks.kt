@@ -13,8 +13,12 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.zoom.internal.getScale
-import com.github.panpf.sketch.zoom.block.NewDecodeHandler.DecodeErrorException
-import com.github.panpf.sketch.zoom.internal.Zoomer
+import com.github.panpf.sketch.zoom.block.internal.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.block.internal.BlockDecoder
+import com.github.panpf.sketch.zoom.block.internal.BlockExecutor
+import com.github.panpf.sketch.zoom.block.internal.BlockManager
+import com.github.panpf.sketch.zoom.block.internal.ImageRegionDecoder
+import com.github.panpf.sketch.zoom.Zoomer
 
 class Blocks constructor(
     context: Context,
@@ -29,9 +33,9 @@ class Blocks constructor(
 
     private val tempDrawMatrix = Matrix()
     private val tempVisibleRect = Rect()
-    internal val blockExecutor: NewBlockExecutor
-    internal val blockDecoder: NewBlockDecoder
-    private val blockManager: NewBlockManager
+    internal val blockExecutor: BlockExecutor
+    internal val blockDecoder: BlockDecoder
+    private val blockManager: BlockManager
     private val appContext = context.applicationContext
     private val bitmapPool = context.sketch.bitmapPool
     private val logger = context.sketch.logger
@@ -74,9 +78,9 @@ class Blocks constructor(
     var onBlockChangedListener: OnBlockChangedListener? = null
 
     init {
-        blockExecutor = NewBlockExecutor(context, ExecutorCallback())
-        blockManager = NewBlockManager(context, this)
-        blockDecoder = NewBlockDecoder(context, this)
+        blockExecutor = BlockExecutor(context, ExecutorCallback())
+        blockManager = BlockManager(context, this)
+        blockDecoder = BlockDecoder(context, this)
         matrix = Matrix()
         drawBlockPaint = Paint()
 
@@ -137,7 +141,7 @@ class Blocks constructor(
         }
     }
 
-    fun onMatrixChanged() {
+    private fun onMatrixChanged() {
         if (!isReady && !isInitializing) {
             logger.v(NAME) { "Blocks not available. onMatrixChanged. $imageUri" }
             return
@@ -287,7 +291,7 @@ class Blocks constructor(
     /**
      * 获取碎片列表
      */
-    val blockList: List<NewBlock>
+    val blockList: List<Block>
         get() = blockManager.blockList
 
     /**
@@ -308,7 +312,7 @@ class Blocks constructor(
     val blockBaseNumber: Int
         get() = blockManager.blockBaseNumber
 
-    fun getBlockByDrawablePoint(drawableX: Int, drawableY: Int): NewBlock? {
+    fun getBlockByDrawablePoint(drawableX: Int, drawableY: Int): Block? {
         for (block in blockManager.blockList) {
             if (block.drawRect.contains(drawableX, drawableY)) {
                 return block
@@ -317,7 +321,7 @@ class Blocks constructor(
         return null
     }
 
-    fun getBlockByImagePoint(imageX: Int, imageY: Int): NewBlock? {
+    fun getBlockByImagePoint(imageX: Int, imageY: Int): Block? {
         for (block in blockManager.blockList) {
             if (block.srcRect.contains(imageX, imageY)) {
                 return block
@@ -330,11 +334,11 @@ class Blocks constructor(
         fun onBlockChanged(blockDisplayer: Blocks)
     }
 
-    private inner class ExecutorCallback : NewBlockExecutor.Callback {
+    private inner class ExecutorCallback : BlockExecutor.Callback {
 
         override val context = appContext
 
-        override fun onInitCompleted(imageUri: String, decoder: NewImageRegionDecoder) {
+        override fun onInitCompleted(imageUri: String, decoder: ImageRegionDecoder) {
             if (!running) {
                 logger.w(NAME, "stop running. initCompleted. $imageUri")
                 return
@@ -351,7 +355,7 @@ class Blocks constructor(
             blockDecoder.initError(imageUri, e)
         }
 
-        override fun onDecodeCompleted(block: NewBlock, bitmap: Bitmap, useTime: Int) {
+        override fun onDecodeCompleted(block: Block, bitmap: Bitmap, useTime: Int) {
             if (!running) {
                 logger.w(NAME, "stop running. decodeCompleted. block=${block.info}")
                 bitmapPool.free(bitmap)
@@ -360,7 +364,7 @@ class Blocks constructor(
             blockManager.decodeCompleted(block, bitmap, useTime)
         }
 
-        override fun onDecodeError(block: NewBlock, exception: DecodeErrorException) {
+        override fun onDecodeError(block: Block, exception: DecodeErrorException) {
             if (!running) {
                 logger.w(NAME, "stop running. decodeError. block=${block.info}")
                 return

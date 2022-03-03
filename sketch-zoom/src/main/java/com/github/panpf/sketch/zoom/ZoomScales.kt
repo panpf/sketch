@@ -20,7 +20,7 @@ import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.ReadModeDecider
 
-interface NewZoomScales {
+interface ZoomScales {
 
     /**
      * 最小缩放比例

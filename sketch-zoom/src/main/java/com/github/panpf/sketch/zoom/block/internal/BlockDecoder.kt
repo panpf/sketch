@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.block.internal
 
 import android.content.Context
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.zoom.block.internal.KeyCounter
+import com.github.panpf.sketch.zoom.block.Block
+import com.github.panpf.sketch.zoom.block.Blocks
 
 /**
  * 碎片解码器
  */
-class NewBlockDecoder constructor(
+class BlockDecoder constructor(
     context: Context,
     private val blockDisplayer: Blocks,
 ) {
@@ -32,7 +33,7 @@ class NewBlockDecoder constructor(
     }
 
     private val initKeyCounter: KeyCounter = KeyCounter()
-    var decoder: NewImageRegionDecoder? = null
+    var decoder: ImageRegionDecoder? = null
         private set
     private var running = false
     private var initializing = false
@@ -62,7 +63,7 @@ class NewBlockDecoder constructor(
     /**
      * 解码
      */
-    fun decodeBlock(block: NewBlock) {
+    fun decodeBlock(block: Block) {
         if (!isReady) {
             logger.w(NAME, "not ready. decodeBlock. ${block.info}")
             return
@@ -81,7 +82,7 @@ class NewBlockDecoder constructor(
         decoder?.recycle()
     }
 
-    fun initCompleted(imageUri: String, decoder: NewImageRegionDecoder) {
+    fun initCompleted(imageUri: String, decoder: ImageRegionDecoder) {
         logger.v(NAME) { "init completed. $imageUri" }
         initializing = false
         this.decoder = decoder

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.block.internal
 
 import android.graphics.Bitmap
 import android.os.Handler
@@ -21,14 +21,14 @@ import android.os.Looper
 import android.os.Message
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.zoom.block.NewDecodeHandler.DecodeErrorException
-import com.github.panpf.sketch.zoom.block.internal.KeyCounter
+import com.github.panpf.sketch.zoom.block.Block
+import com.github.panpf.sketch.zoom.block.internal.DecodeHandler.DecodeErrorException
 import java.lang.ref.WeakReference
 
 /**
  * 运行在主线程，负责将执行器的结果发送到主线程
  */
-class NewCallbackHandler constructor(looper: Looper, executor: NewBlockExecutor, val bitmapPool: BitmapPool, val logger: Logger) :
+class CallbackHandler constructor(looper: Looper, executor: BlockExecutor, val bitmapPool: BitmapPool, val logger: Logger) :
     Handler(looper) {
 
     companion object {
@@ -40,7 +40,7 @@ class NewCallbackHandler constructor(looper: Looper, executor: NewBlockExecutor,
         private const val WHAT_DECODE_FAILED = 2005
     }
 
-    private val executorReference: WeakReference<NewBlockExecutor> = WeakReference(executor)
+    private val executorReference: WeakReference<BlockExecutor> = WeakReference(executor)
 
     override fun handleMessage(msg: Message) {
         when (msg.what) {
@@ -101,7 +101,7 @@ class NewCallbackHandler constructor(looper: Looper, executor: NewBlockExecutor,
     }
 
     fun postInitCompleted(
-        decoder: NewImageRegionDecoder,
+        decoder: ImageRegionDecoder,
         imageUri: String,
         initKey: Int,
         keyCounter: KeyCounter
@@ -119,14 +119,14 @@ class NewCallbackHandler constructor(looper: Looper, executor: NewBlockExecutor,
         message.sendToTarget()
     }
 
-    fun postDecodeCompleted(key: Int, block: NewBlock, bitmap: Bitmap, useTime: Int) {
+    fun postDecodeCompleted(key: Int, block: Block, bitmap: Bitmap, useTime: Int) {
         val message = obtainMessage(WHAT_DECODE_COMPLETED)
         message.arg1 = key
         message.obj = DecodeResult(bitmap, block, useTime)
         message.sendToTarget()
     }
 
-    fun postDecodeError(key: Int, block: NewBlock, exception: DecodeErrorException) {
+    fun postDecodeError(key: Int, block: Block, exception: DecodeErrorException) {
         val message = obtainMessage(WHAT_DECODE_FAILED)
         message.arg1 = key
         message.obj = DecodeErrorResult(block, exception)
@@ -134,7 +134,7 @@ class NewCallbackHandler constructor(looper: Looper, executor: NewBlockExecutor,
     }
 
     private fun initCompleted(
-        decoder: NewImageRegionDecoder,
+        decoder: ImageRegionDecoder,
         imageUri: String,
         key: Int,
         keyCounter: KeyCounter
@@ -179,7 +179,7 @@ class NewCallbackHandler constructor(looper: Looper, executor: NewBlockExecutor,
         executor.callback.onInitError(imageUri, exception)
     }
 
-    private fun decodeCompleted(key: Int, block: NewBlock, bitmap: Bitmap, useTime: Int) {
+    private fun decodeCompleted(key: Int, block: Block, bitmap: Bitmap, useTime: Int) {
         val executor = executorReference.get()
         if (executor == null) {
             logger.w(NAME, "weak reference break. decodeCompleted. key: $key, block=${block.info}")
@@ -197,7 +197,7 @@ class NewCallbackHandler constructor(looper: Looper, executor: NewBlockExecutor,
         }
     }
 
-    private fun decodeError(key: Int, block: NewBlock, exception: DecodeErrorException) {
+    private fun decodeError(key: Int, block: Block, exception: DecodeErrorException) {
         val executor = executorReference.get()
         if (executor == null) {
             logger.w(NAME, "weak reference break. decodeError. key: $key, block=${block.info}")
@@ -208,17 +208,17 @@ class NewCallbackHandler constructor(looper: Looper, executor: NewBlockExecutor,
 
     private class DecodeResult(
         var bitmap: Bitmap,
-        var block: NewBlock,
+        var block: Block,
         var useTime: Int
     )
 
     private class DecodeErrorResult(
-        var block: NewBlock,
+        var block: Block,
         var exception: DecodeErrorException
     )
 
     private class InitResult(
-        var imageRegionDecoder: NewImageRegionDecoder,
+        var imageRegionDecoder: ImageRegionDecoder,
         var imageUrl: String,
         var keyCounter: KeyCounter
     )

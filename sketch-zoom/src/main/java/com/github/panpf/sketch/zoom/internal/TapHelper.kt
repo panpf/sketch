@@ -20,8 +20,9 @@ import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import com.github.panpf.sketch.util.format
+import com.github.panpf.sketch.zoom.Zoomer
 
-internal class NewTapHelper constructor(context: Context, private val zoomer: Zoomer) :
+internal class TapHelper constructor(context: Context, private val zoomer: Zoomer) :
     SimpleOnGestureListener() {
 
     private val tapGestureDetector: GestureDetector = GestureDetector(context, this)
