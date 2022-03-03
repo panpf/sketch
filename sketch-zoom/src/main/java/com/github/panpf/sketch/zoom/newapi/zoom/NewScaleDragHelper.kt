@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.new.scale
+package com.github.panpf.sketch.zoom.newapi.zoom
 
 import android.content.Context
 import android.graphics.Matrix
@@ -27,9 +27,8 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.zoom.internal.getScale
-import com.github.panpf.sketch.zoom.new.Zoomer
-import com.github.panpf.sketch.zoom.new.scale.NewScaleDragGestureDetector.ActionListener
-import com.github.panpf.sketch.zoom.new.scale.NewScaleDragGestureDetector.OnScaleDragGestureListener
+import com.github.panpf.sketch.zoom.newapi.zoom.NewScaleDragGestureDetector.ActionListener
+import com.github.panpf.sketch.zoom.newapi.zoom.NewScaleDragGestureDetector.OnScaleDragGestureListener
 import kotlin.math.abs
 import kotlin.math.roundToInt
 

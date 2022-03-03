@@ -4,14 +4,19 @@ import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageView.ScaleType
 import android.widget.ImageView.ScaleType.MATRIX
+import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
+import androidx.lifecycle.Lifecycle.Event.ON_RESUME
+import androidx.lifecycle.LifecycleEventObserver
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getLastDrawable
+import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ViewAbility
@@ -21,13 +26,14 @@ import com.github.panpf.sketch.viewability.ViewAbility.DrawableObserver
 import com.github.panpf.sketch.viewability.ViewAbility.ScaleTypeObserver
 import com.github.panpf.sketch.viewability.ViewAbility.SizeChangeObserver
 import com.github.panpf.sketch.viewability.ViewAbility.TouchEventObserver
-import com.github.panpf.sketch.zoom.new.Blocks
-import com.github.panpf.sketch.zoom.new.Zoomer
-import com.github.panpf.sketch.zoom.new.scale.NewAdaptiveTwoLevelScales
-import com.github.panpf.sketch.zoom.new.scale.NewZoomScales
+import com.github.panpf.sketch.viewability.ViewAbility.VisibilityChangedObserver
+import com.github.panpf.sketch.zoom.newapi.block.Blocks
+import com.github.panpf.sketch.zoom.newapi.zoom.NewAdaptiveTwoLevelScales
+import com.github.panpf.sketch.zoom.newapi.zoom.NewZoomScales
+import com.github.panpf.sketch.zoom.newapi.zoom.Zoomer
 
 class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
-    DrawableObserver, TouchEventObserver, SizeChangeObserver {
+    DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver {
 
     companion object {
         private const val MODULE = "ZoomViewAbility"
@@ -35,7 +41,7 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
     private var zoomer: Zoomer? = null
 
-    //    private var blockDisplayer: Blocks? = null
+    private var blocks: Blocks? = null
     private var readModeDecider: ReadModeDecider? = null
         set(value) {
             field = value
@@ -46,6 +52,13 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
             field = value
             zoomer?.zoomScales = value
         }
+    private val lifecycleEventObserver = LifecycleEventObserver { _, event ->
+        when (event) {
+            ON_PAUSE -> blocks?.setPause(true)
+            ON_RESUME -> blocks?.setPause(false)
+            else -> {}
+        }
+    }
 
     override var host: Host? = null
 
@@ -54,6 +67,17 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
             field = value
             zoomer?.enabledScrollBar = value
         }
+
+    val isEnabledReadMode: Boolean
+        get() = readModeDecider != null
+
+    fun enabledReadMode(readModeDecider: ReadModeDecider = defaultReadModeDecider()) {
+        this.readModeDecider = readModeDecider
+    }
+
+    fun disabledReadMode() {
+        this.readModeDecider = null
+    }
 
     override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
         val host = host ?: return
@@ -65,10 +89,12 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
     override fun onAttachedToWindow() {
         createZoomer()
+        host?.context?.getLifecycle()?.addObserver(lifecycleEventObserver)
     }
 
     override fun onDetachedFromWindow() {
         destroyZoomer()
+        host?.context?.getLifecycle()?.removeObserver(lifecycleEventObserver)
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
@@ -84,6 +110,7 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
     }
 
     override fun onDraw(canvas: Canvas) {
+        blocks?.onDraw(canvas)
         zoomer?.onDraw(canvas)
     }
 
@@ -106,16 +133,18 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
     override fun getScaleType(): ScaleType? = zoomer?.scaleType
 
+    override fun onVisibilityChanged(changedView: View, visibility: Int) {
+        blocks?.setPause(visibility != View.VISIBLE)
+    }
+
     private fun createZoomer() {
         val host = host ?: return
         host.superScaleType = MATRIX
-        val zoomer = tryNewZoomer()?.apply {
+        val newZoomer = tryNewZoomer()?.apply {
             enabledScrollBar = this@ZoomViewAbility.enabledScrollBar
         }
-        // todo drawable 未改变时不重建 blockDisplayer
-//        val blockDisplayer = tryNewBlockDisplayer(zoomer)
-        this.zoomer = zoomer
-//        this.blockDisplayer = blockDisplayer
+        this.zoomer = newZoomer
+        this.blocks = newZoomer?.let { tryNewBlocks(it) }
     }
 
     private fun destroyZoomer() {
@@ -125,19 +154,9 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
             host.superScaleType = scaleType
         }
         zoomer = null
-//        blockDisplayer?.recycle("destroyZoomer")
-//        blockDisplayer = null
-    }
 
-    val isEnabledReadMode: Boolean
-        get() = readModeDecider != null
-
-    fun enabledReadMode(readModeDecider: ReadModeDecider = defaultReadModeDecider()) {
-        this.readModeDecider = readModeDecider
-    }
-
-    fun disabledReadMode() {
-        this.readModeDecider = null
+        blocks?.recycle("destroyZoomer")
+        blocks = null
     }
 
     private fun tryNewZoomer(): Zoomer? {
@@ -180,7 +199,7 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
         }
     }
 
-    private fun tryNewBlockDisplayer(imageZoomer: Zoomer): Blocks? {
+    private fun tryNewBlocks(zoomer: Zoomer): Blocks? {
         val host = host ?: return null
         val logger = host.context.sketch.logger
 
@@ -191,34 +210,34 @@ class ZoomViewAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObse
 
         val previewWidth = previewDrawable.bitmapInfo.width
         val previewHeight = previewDrawable.bitmapInfo.height
-        val originWidth = previewDrawable.imageInfo.width
-        val originHeight = previewDrawable.imageInfo.height
+        val imageWidth = previewDrawable.imageInfo.width
+        val imageHeight = previewDrawable.imageInfo.height
         val mimeType = previewDrawable.imageInfo.mimeType
         val key = previewDrawable.requestKey
 
-        if (previewWidth >= originWidth && previewHeight >= originHeight) {
+        if (previewWidth >= imageWidth && previewHeight >= imageHeight) {
             logger.d(MODULE) {
                 ("Don't need to use Blocks. previewSize: %dx%d, " +
-                        "originSize: %dx%d, mimeType: %s. %s")
-                    .format(previewWidth, previewHeight, originWidth, originHeight, mimeType, key)
+                        "imageSize: %dx%d, mimeType: %s. %s")
+                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
         if (ImageFormat.valueOfMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
                 ("MimeType does not support Blocks. previewSize: %dx%d, " +
-                        "originSize: %dx%d, mimeType: %s. %s")
-                    .format(previewWidth, previewHeight, originWidth, originHeight, mimeType, key)
+                        "imageSize: %dx%d, mimeType: %s. %s")
+                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
 
         logger.d(MODULE) {
-            "Use Blocks. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                .format(previewWidth, previewHeight, originWidth, originHeight, mimeType, key)
+            "Use Blocks. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
         }
         val exifOrientation: Int = previewDrawable.imageExifOrientation
         val imageUri = previewDrawable.requestUri
-        return Blocks(host.context, imageZoomer, imageUri, exifOrientation)
+        return Blocks(host.context, zoomer, imageUri, exifOrientation)
     }
 }

@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.zoom.new
+package com.github.panpf.sketch.zoom.newapi.zoom
 
 import android.content.Context
 import android.graphics.Canvas
@@ -12,20 +12,8 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.ReadModeDecider
-import com.github.panpf.sketch.zoom.internal.ImageZoomer.OnDragFlingListener
-import com.github.panpf.sketch.zoom.internal.ImageZoomer.OnMatrixChangeListener
-import com.github.panpf.sketch.zoom.internal.ImageZoomer.OnRotateChangeListener
-import com.github.panpf.sketch.zoom.internal.ImageZoomer.OnScaleChangeListener
-import com.github.panpf.sketch.zoom.internal.ImageZoomer.OnViewLongPressListener
-import com.github.panpf.sketch.zoom.internal.ImageZoomer.OnViewTapListener
-import com.github.panpf.sketch.zoom.new.scale.NewAdaptiveTwoLevelScales
-import com.github.panpf.sketch.zoom.new.scale.NewScaleDragHelper
-import com.github.panpf.sketch.zoom.new.scale.NewScrollBarHelper
-import com.github.panpf.sketch.zoom.new.scale.NewTapHelper
-import com.github.panpf.sketch.zoom.new.scale.NewZoomScales
 import kotlin.math.abs
 
 class Zoomer constructor(
@@ -337,7 +325,7 @@ class Zoomer constructor(
     }
 
     fun interface OnMatrixChangeListener {
-        fun onMatrixChanged(imageZoomer: Zoomer)
+        fun onMatrixChanged(zoomer: Zoomer)
     }
 
     fun interface OnScaleChangeListener {
@@ -349,6 +337,6 @@ class Zoomer constructor(
     }
 
     fun interface OnRotateChangeListener {
-        fun onRotateChanged(imageZoomer: Zoomer)
+        fun onRotateChanged(zoomer: Zoomer)
     }
 }

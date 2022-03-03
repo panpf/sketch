@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.new.scale
+package com.github.panpf.sketch.zoom.newapi.zoom
 
 import android.content.Context
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import com.github.panpf.sketch.util.format
-import com.github.panpf.sketch.zoom.new.Zoomer
 
 internal class NewTapHelper constructor(context: Context, private val zoomer: Zoomer) :
     SimpleOnGestureListener() {

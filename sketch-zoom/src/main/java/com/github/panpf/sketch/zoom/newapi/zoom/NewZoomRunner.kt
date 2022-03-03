@@ -16,13 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.new.scale
+package com.github.panpf.sketch.zoom.newapi.zoom
 
 import android.content.Context
 import androidx.core.view.ViewCompat.postOnAnimation
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.zoom.internal.ImageZoomer
-import com.github.panpf.sketch.zoom.new.Zoomer
 
 internal class NewZoomRunner(
     context: Context,
