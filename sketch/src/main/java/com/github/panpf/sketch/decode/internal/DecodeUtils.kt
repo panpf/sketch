@@ -49,14 +49,22 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+val maxBitmapSize: Size by lazy {
+    OpenGLTextureHelper.maxSize?.let {
+        Size(it, it)
+    } ?: Canvas().let {
+        Size(it.maximumBitmapWidth, it.maximumBitmapHeight)
+    }
+}
+
 /*
  * The width and height limit cannot be greater than the maximum size allowed by OpenGL
  */
-fun limitedOpenGLTextureMaxSize(@Px imageWidth: Int, @Px imageHeight: Int, inSampleSize: Int): Int {
-    val openGLTextureMaxSize = OpenGLTextureHelper.maxSize ?: return inSampleSize
+fun limitedMaxBitmapSize(@Px imageWidth: Int, @Px imageHeight: Int, inSampleSize: Int): Int {
+    val maximumBitmapSize = maxBitmapSize
     var finalInSampleSize = inSampleSize.coerceAtLeast(1)
-    while ((calculateSamplingSize(imageWidth, finalInSampleSize) > openGLTextureMaxSize)
-        || (calculateSamplingSize(imageHeight, finalInSampleSize) > openGLTextureMaxSize)
+    while ((calculateSamplingSize(imageWidth, finalInSampleSize) > maximumBitmapSize.width)
+        || (calculateSamplingSize(imageHeight, finalInSampleSize) > maximumBitmapSize.height)
     ) {
         finalInSampleSize *= 2
     }
@@ -87,15 +95,15 @@ fun calculateInSampleSize(
             inSampleSize *= 2
         }
     }
-    return limitedOpenGLTextureMaxSize(imageWidth, imageHeight, inSampleSize)
+    return limitedMaxBitmapSize(imageWidth, imageHeight, inSampleSize)
 }
 
 fun calculateSamplingSize(value1: Int, inSampleSize: Int): Int {
-    return ceil((value1 / inSampleSize.toFloat()).toDouble()).toInt()
+    return ceil((value1 / inSampleSize.toFloat())).toInt()
 }
 
 fun calculateSamplingSizeForRegion(value1: Int, inSampleSize: Int): Int {
-    return floor((value1 / inSampleSize.toFloat()).toDouble()).toInt()
+    return floor((value1 / inSampleSize.toFloat())).toInt()
 }
 
 fun computeSizeMultiplier(

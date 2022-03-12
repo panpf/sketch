@@ -10,7 +10,6 @@ import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.decode.internal.OpenGLTextureHelper
 import com.github.panpf.sketch.decode.internal.calculateInSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSamplingSize
 import com.github.panpf.sketch.decode.internal.calculateSamplingSizeForRegion
@@ -19,7 +18,8 @@ import com.github.panpf.sketch.decode.internal.decodeBitmapWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
-import com.github.panpf.sketch.decode.internal.limitedOpenGLTextureMaxSize
+import com.github.panpf.sketch.decode.internal.limitedMaxBitmapSize
+import com.github.panpf.sketch.decode.internal.maxBitmapSize
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
@@ -38,23 +38,20 @@ import java.io.IOException
 class DecodeUtilsTest {
 
     @Test
-    fun testLimitedOpenGLTextureMaxSize() {
-        val maxSize = OpenGLTextureHelper.maxSize
-        if (maxSize != null) {
+    fun testLimitedMaxBitmapSize() {
+        val maxSize = maxBitmapSize.width
+        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize - 1, maxSize, 1))
+        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize, maxSize - 1, 1))
+        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize - 1, maxSize - 1, 1))
+        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize, maxSize, 1))
+        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize + 1, maxSize, 1))
+        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize, maxSize + 1, 1))
+        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize + 1, maxSize + 1, 1))
 
-            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize - 1, maxSize, 1))
-            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize, maxSize - 1, 1))
-            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize - 1, maxSize - 1, 1))
-            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize, maxSize, 1))
-            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize + 1, maxSize, 1))
-            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize, maxSize + 1, 1))
-            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize + 1, maxSize + 1, 1))
-
-            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize, maxSize, 0))
-            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize, maxSize, -1))
-            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize + 1, maxSize + 1, -1))
-            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize + 1, maxSize + 1, 0))
-        }
+        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize, maxSize, 0))
+        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize, maxSize, -1))
+        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize + 1, maxSize + 1, -1))
+        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize + 1, maxSize + 1, 0))
     }
 
     @Test
