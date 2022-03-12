@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block.internal
+package com.github.panpf.sketch.zoom.tile
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -31,10 +31,9 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredWorkThread
-import com.github.panpf.sketch.zoom.block.Block
 import kotlinx.coroutines.runBlocking
 
-class NewBlockDecoder private constructor(
+class TileDecoder private constructor(
     private val context: Context,
     val imageUri: String,
     val imageSize: Size,
@@ -51,17 +50,10 @@ class NewBlockDecoder private constructor(
     private var disableInBitmap = false
 
     @WorkerThread
-    fun decodeBlock(key: Int, block: Block): Bitmap? {
-        if (block.isDecodeParamEmpty) {
-            return null
-        }
+    fun decode(srcRect: Rect, inSampleSize: Int): Bitmap? {
         val bitmap = synchronized(this) {
             val regionDecoder = regionDecoder ?: return null
-            decodeRegion(regionDecoder, block.srcRect, block.inSampleSize) ?: return null
-        }
-        if (block.isExpired(key)) {
-            bitmapPool.free(bitmap)
-            return null
+            decodeRegion(regionDecoder, srcRect, inSampleSize) ?: return null
         }
         return applyExifOrientation(bitmap)
     }
@@ -69,13 +61,13 @@ class NewBlockDecoder private constructor(
     @WorkerThread
     private fun decodeRegion(
         regionDecoder: BitmapRegionDecoder,
-        blockSrcRect: Rect,
-        blockInSampleSize: Int
+        srcRect: Rect,
+        inSampleSize: Int
     ): Bitmap? {
         val imageSize = imageSize
-        val srcRect = exifOrientationHelper.addToRect(blockSrcRect, imageSize)
+        val srcRect = exifOrientationHelper.addToRect(srcRect, imageSize)
         val options = BitmapFactory.Options().apply {
-            this.inSampleSize = blockInSampleSize
+            this.inSampleSize = inSampleSize
             if (!disableInBitmap) {
                 bitmapPool.setInBitmapForRegionDecoder(this, srcRect.width(), srcRect.height())
             }
@@ -133,7 +125,7 @@ class NewBlockDecoder private constructor(
     class Factory {
 
         @WorkerThread
-        fun create(context: Context, imageUri: String, exifOrientation: Int): NewBlockDecoder? {
+        fun create(context: Context, imageUri: String, exifOrientation: Int): TileDecoder? {
             requiredWorkThread()
 
             val sketch = context.sketch
@@ -156,7 +148,7 @@ class NewBlockDecoder private constructor(
             val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
             val imageSize =
                 exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
-            return NewBlockDecoder(
+            return TileDecoder(
                 context = context,
                 imageUri = imageUri,
                 imageSize = imageSize,

@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block.internal
+package com.github.panpf.sketch.zoom.tile
 
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.requiredMainThread
-import com.github.panpf.sketch.zoom.block.Block
+import com.github.panpf.sketch.zoom.tile.TileDecoder.Factory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.LinkedList
 
-class NewDecodeExecutor constructor(
+class DecodeExecutor constructor(
     val context: Context,
     val imageUri: String,
     val exifOrientation: Int
@@ -35,16 +35,16 @@ class NewDecodeExecutor constructor(
     private var destroyed = false
     private val decoderPool = DecoderPool()
     private val bitmapPool = context.sketch.bitmapPool
-    private val decoderFactory = NewBlockDecoder.Factory()
-    private val blockDecodeDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
+    private val decoderFactory = Factory()
+    private val decodeDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
 
     @MainThread
-    suspend fun decodeBlock(key: Int, block: Block): Bitmap? {
+    suspend fun decode(key: Int, tile: Tile): Bitmap? {
         requiredMainThread()
-        if (destroyed || block.isExpired(key)) return null
+        if (destroyed || tile.isExpired(key)) return null
 
-        return withContext(blockDecodeDispatcher) {
-            if (block.isExpired(key)) {
+        return withContext(decodeDispatcher) {
+            if (tile.isExpired(key)) {
                 return@withContext null
             }
 
@@ -52,9 +52,9 @@ class NewDecodeExecutor constructor(
                 ?: decoderFactory.create(context, imageUri, exifOrientation)
                 ?: return@withContext null
 
-            val bitmap = decoder.decodeBlock(key, block)
+            val bitmap = decoder.decode(tile.srcRect, tile.inSampleSize)
             decoderPool.put(decoder)
-            if (block.isExpired(key)) {
+            if (tile.isExpired(key)) {
                 bitmapPool.free(bitmap)
                 return@withContext null
             }
@@ -70,10 +70,10 @@ class NewDecodeExecutor constructor(
 
     private class DecoderPool {
 
-        private val pool = LinkedList<NewBlockDecoder>()
+        private val pool = LinkedList<TileDecoder>()
         private var destroyed = false
 
-        fun poll(): NewBlockDecoder? =
+        fun poll(): TileDecoder? =
             synchronized(this) {
                 if (destroyed) {
                     null
@@ -82,7 +82,7 @@ class NewDecodeExecutor constructor(
                 }
             }
 
-        fun put(decoder: NewBlockDecoder) {
+        fun put(decoder: TileDecoder) {
             synchronized(this) {
                 if (destroyed) {
                     decoder.recycle()
