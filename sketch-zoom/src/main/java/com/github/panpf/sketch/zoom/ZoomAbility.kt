@@ -131,7 +131,9 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             onDragFlingListenerList = this@ZoomAbility.onDragFlingListenerList
         }
         this.zoomer = newZoomer
-        this.blocks = newZoomer?.let { tryNewBlocks(it) }
+        this.blocks = newZoomer?.let { tryNewBlocks(it) }?.apply {
+            isShowBlockBounds = this@ZoomAbility.showBlockBounds
+        }
     }
 
     private fun destroyZoomer() {
@@ -308,6 +310,14 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             if (field != value) {
                 field = value
                 zoomer?.onViewTapListener = value
+            }
+        }
+
+    var showBlockBounds: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                blocks?.isShowBlockBounds = value
             }
         }
 
