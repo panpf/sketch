@@ -3,7 +3,7 @@ package com.github.panpf.sketch.zoom.tile
 import android.graphics.Bitmap
 import android.graphics.Rect
 
-class Tile(val srcRect: Rect, val inSampleSize: Int) {
+class Tile constructor(val srcRect: Rect, val inSampleSize: Int) {
 
     var drawRect: Rect? = null
 
@@ -21,6 +21,9 @@ class Tile(val srcRect: Rect, val inSampleSize: Int) {
     fun refreshKey() {
         keyCounter.refresh()
     }
+
+    val key: Int
+        get() = keyCounter.key
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

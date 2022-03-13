@@ -1,41 +1,51 @@
-//package com.github.panpf.sketch.zoom.block.newapi
-//
-//import android.content.Context
-//import android.graphics.Canvas
-//import android.graphics.Color
-//import android.graphics.Matrix
-//import android.graphics.Paint
-//import android.graphics.Rect
-//import com.github.panpf.sketch.sketch
-//import com.github.panpf.sketch.util.Size
-//import com.github.panpf.sketch.util.format
-//import com.github.panpf.sketch.zoom.Zoomer
-//import com.github.panpf.sketch.zoom.block.Blocks.OnBlockChangedListener
-//import com.github.panpf.sketch.zoom.block.internal.BlockDecoder
-//import com.github.panpf.sketch.zoom.block.internal.BlockExecutor
-//import com.github.panpf.sketch.zoom.internal.getScale
-//
-//class NewBlocks constructor(
-//    context: Context,
-//    private val zoomer: Zoomer,
-//    private val imageUri: String,
-//    private val imageSize: Size,
-//    exifOrientation: Int
-//) {
-//
-//    companion object {
-//        private const val NAME = "Blocks"
-//    }
-//
-//    private val tempDrawMatrix = Matrix()
+package com.github.panpf.sketch.zoom.tile
+
+import android.content.Context
+import android.graphics.Bitmap
+import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.block.Blocks.OnBlockChangedListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+class Tiles constructor(
+    private val context: Context,
+    private val zoomer: Zoomer,
+    private val imageUri: String,
+    private val imageSize: Size,
+    viewSize: Size,
+    private val exifOrientation: Int
+) {
+
+    companion object {
+        private const val NAME = "Blocks"
+    }
+
+    //    private val tempDrawMatrix = Matrix()
 //    private val tempVisibleRect = Rect()
-//    internal val blockExecutor: BlockExecutor
-//    internal val blockDecoder: BlockDecoder
-//    private val blockManager: NewBlockManager
-//    private val appContext = context.applicationContext
-//    private val bitmapPool = context.sketch.bitmapPool
-//    private val logger = context.sketch.logger
-//
+    private var tileDecoder: TileDecoder? = null
+    private val tileManager: TileManager = TileManager(context, imageSize, viewSize, ::decodeTile)
+    private val appContext = context.applicationContext
+    private val bitmapPool = context.sketch.bitmapPool
+    private val logger = context.sketch.logger
+    private val scope: CoroutineScope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main.immediate
+    )
+    var viewSize: Size = viewSize
+        internal set(value) {
+            if (field != value) {
+                field = value
+                // todo
+//                reset()
+            }
+        }
+
 //    /** 当前缩放比例 */
 //    var zoomScale = 0f
 //        private set
@@ -76,61 +86,74 @@
 //                }
 //            }
 //        }
-//
-//    /**
-//     * 是否显示碎片的范围（红色表示已加载，蓝色表示正在加载）
-//     */
-//    var isShowBlockBounds = false
-//        set(value) {
-//            field = value
-//            invalidateView()
-//        }
-//
-//    /**
-//     * 碎片变化监听器
-//     */
-//    var onBlockChangedListener: OnBlockChangedListener? = null
-//
-//    init {
-//        blockExecutor = BlockExecutor(context, ExecutorCallback())
-//        blockManager = NewBlockManager(context, this)
-//        blockDecoder = NewBlockDecoder(context, this)
-//        matrix = Matrix()
-//        drawBlockPaint = Paint()
-//
-//        blockDecoder.setImage(imageUri, exifOrientation)
-//    }
-//
-//    /**
+
+    /**
+     * 是否显示碎片的范围（红色表示已加载，蓝色表示正在加载）
+     */
+    var isShowBlockBounds = false
+        set(value) {
+            field = value
+            invalidateView()
+        }
+
+    /**
+     * 碎片变化监听器
+     */
+    var onBlockChangedListener: OnBlockChangedListener? = null
+    private var decoderInitializing: Job? = null
+
+    private suspend fun decodeTile(tile: Tile): Bitmap? {
+        requiredMainThread()
+
+        val tileDecoder = tileDecoder
+        return if (tileDecoder != null) {
+            tileDecoder.decode(tile.key, tile)
+        } else {
+            if (decoderInitializing?.isActive != true) {
+                decoderInitializing = scope.launch {
+                    this@Tiles.tileDecoder = withContext(Dispatchers.IO) {
+                        TileDecoder.Factory(context, imageUri, exifOrientation).create()
+                    }
+                }
+            }
+            null
+        }
+    }
+
+    //    /**
 //     * 回收资源，回收后就不能再用了
 //     */
-//    fun destroy(why: String) {
+    fun destroy(why: String) {
 //        destroyed = true
 //        clean(why)
-//        blockExecutor.recycle(why)
-//        blockManager.recycle(why)
+        tileDecoder?.destroy()
+        tileDecoder = null
+//        tileManager.cleanMemory()
 //        blockDecoder.recycle(why)
-//    }
-//
+//        decoderInitializing?.cancel()
+//        scope.cancel()
+    }
+
+    //
 //    /**
 //     * 清理资源，不影响继续使用
 //     */
 //    private fun clean(why: String) {
-//        blockExecutor.cleanDecode(why)
+//        tileDecoder.cleanDecode(why)
 //        matrix.reset()
 //        lastZoomScale = 0f
 //        zoomScale = 0f
-//        blockManager.clean(why)
+//        tileManager.clean(why)
 //        invalidateView()
 //    }
 //
 //    /* -----------回调方法----------- */
 //    fun onDraw(canvas: Canvas) {
-//        if(destroyed) return
-//        if (blockManager.blockList.size > 0) {
+//        if (destroyed) return
+//        if (tileManager.blockList.size > 0) {
 //            val saveCount = canvas.save()
 //            canvas.concat(matrix)
-//            for (block in blockManager.blockList) {
+//            for (block in tileManager.blockList) {
 //                val bitmap = block.bitmap
 //                if (!block.isEmpty && bitmap != null) {
 //                    canvas.drawBitmap(
@@ -153,7 +176,7 @@
 //    }
 //
 //    fun onMatrixChanged() {
-//        if(destroyed) return
+//        if (destroyed) return
 //        if (!isReady && !isInitializing) {
 //            logger.v(NAME) { "Blocks not available. onMatrixChanged. $imageUri" }
 //            return
@@ -217,11 +240,11 @@
 //        matrix.set(drawMatrix)
 //        zoomScale = matrix.getScale().format(2)
 //        invalidateView()
-//        blockManager.update(newVisibleRect, drawableSize, viewSize, imageSize!!, zooming)
+//        tileManager.update(newVisibleRect, drawableSize, viewSize, imageSize!!, zooming)
 //    }
 //
-//    /* -----------其它方法----------- */
-//    fun invalidateView() {
-//        zoomer.view.invalidate()
-//    }
-//}
+    /* -----------其它方法----------- */
+    fun invalidateView() {
+        zoomer.view.invalidate()
+    }
+}

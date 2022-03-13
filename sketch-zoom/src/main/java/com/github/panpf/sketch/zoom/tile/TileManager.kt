@@ -16,24 +16,50 @@
 package com.github.panpf.sketch.zoom.tile
 
 import android.content.Context
-import java.util.LinkedList
+import android.graphics.Bitmap
+import android.graphics.Rect
+import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.util.Size
 
-/**
- * 碎片管理器
- */
-// 将
-// 如何确定每个 block 的大小?, 根据 blockBaseNumber 将 visibleRect 区域横向竖向等分
-// 然后根据 block 大小，确定将原图分成多少块
-class TileManager(
-    context: Context,
-    val blockBaseNumber: Int = 3
-) {
+class TileManager constructor(context: Context, imageSize: Size, viewSize: Size, val decodeTile: suspend (tile: Tile) -> Bitmap?) {
 
+    val tileMap = initializeTileMap(imageSize, viewSize)
+    val bitmapPool = context.sketch.bitmapPool
+    val memoryCache = context.sketch.memoryCache
 
-    val tileList = LinkedList<Tile>()
+    init {
 
-    interface Callback {
-        fun decodeBlock(block: Tile)
-        fun recycleBlock(block: Tile)
     }
+
+    fun onMatrixChanged(
+        newVisibleRect: Rect,
+        drawableSize: Size,
+        viewSize: Size,
+        imageSize: Size,
+        zooming: Boolean
+    ) {
+
+    }
+
+    fun onDraw() {
+
+    }
+
+    fun cleanMemory() {
+        tileMap.values.forEach { tileList ->
+            tileList.forEach { tile ->
+                // todo memory cache
+                bitmapPool.free(tile.bitmap)
+                tile.bitmap = null
+            }
+        }
+    }
+
+//    private fun getCacheKey(){
+//
+//
+//        val memoryCacheKey: String by lazy {
+//            "${imageUri}_${exifOrientation}_${srcRect.toShortString()}_${inSampleSize}"
+//        }
+//    }
 }
