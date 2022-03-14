@@ -33,9 +33,9 @@ dependencies {
     api("androidx.core:core-ktx:${property("ANDROIDX_CORE")}")
     api("io.github.panpf.tools4a:tools4a-network-ktx:${property("TOOLS4A")}")
 
-    testImplementation("junit:junit:${property("JUNIT")}")
-    androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
-    androidTestImplementation("com.android.support.test:rules:${property("ANDROIDX_TEST_RULES")}")
+    androidTestImplementation("junit:junit:${property("JUNIT")}")
+    androidTestImplementation("androidx.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
+    androidTestImplementation("androidx.test:rules:${property("ANDROIDX_TEST_RULES")}")
 }
 
 /**

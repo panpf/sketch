@@ -35,9 +35,9 @@ dependencies {
     api("com.github.wseemann:FFmpegMediaMetadataRetriever-native:${property("FFMPEG_MEDIA_METADATA_RETRIEVER")}")
     api(project(":sketch-video"))
 
-    testImplementation("junit:junit:${property("JUNIT")}")
-    androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
-    androidTestImplementation("com.android.support.test:rules:${property("ANDROIDX_TEST_RULES")}")
+    androidTestImplementation("junit:junit:${property("JUNIT")}")
+    androidTestImplementation("androidx.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
+    androidTestImplementation("androidx.test:rules:${property("ANDROIDX_TEST_RULES")}")
 }
 
 /**

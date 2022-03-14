@@ -35,12 +35,12 @@ dependencies {
     api("androidx.exifinterface:exifinterface:${property("ANDROIDX_EXIFINTERFACE")}")
     api("androidx.lifecycle:lifecycle-runtime:${property("ANDROIDX_LIFECYCLE")}")
 
-    testImplementation("junit:junit:${property("JUNIT")}")
-    testImplementation("io.github.panpf.tools4j:tools4j-test-ktx:${property("TOOLS4J")}")
+    androidTestImplementation("junit:junit:${property("JUNIT")}")
+    androidTestImplementation("io.github.panpf.tools4j:tools4j-test-ktx:${property("TOOLS4J")}")
     androidTestImplementation("io.github.panpf.tools4j:tools4j-test-ktx:${property("TOOLS4J")}")
     androidTestImplementation("io.github.panpf.tools4a:tools4a-dimen-ktx:${property("TOOLS4A")}")
-    androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
-    androidTestImplementation("com.android.support.test:rules:${property("ANDROIDX_TEST_RULES")}")
+    androidTestImplementation("androidx.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
+    androidTestImplementation("androidx.test:rules:${property("ANDROIDX_TEST_RULES")}")
 }
 
 /**

@@ -32,9 +32,9 @@ dependencies {
     api("pl.droidsonroids.gif:android-gif-drawable:${property("ANDROID_GIF_DRAWABLE")}")
     api(project(":sketch-gif-movie"))
 
-    testImplementation("junit:junit:${property("JUNIT")}")
-    androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
-    androidTestImplementation("com.android.support.test:rules:${property("ANDROIDX_TEST_RULES")}")
+    androidTestImplementation("junit:junit:${property("JUNIT")}")
+    androidTestImplementation("androidx.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
+    androidTestImplementation("androidx.test:rules:${property("ANDROIDX_TEST_RULES")}")
 }
 
 /**
