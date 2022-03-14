@@ -116,7 +116,7 @@ class TilesUtilsTest {
         Assert.assertEquals(32, findSampleSize(imageSize, sampledSize(9798, 6988, 17), scale = 1f))
         Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 16), scale = 1f))
         Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 15), scale = 1f))
-        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988,  14), scale = 1f))
+        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 14), scale = 1f))
         Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 13), scale = 1f))
         Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 12), scale = 1f))
         Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 11), scale = 1f))
@@ -153,6 +153,12 @@ class TilesUtilsTest {
         Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 15f))
         Assert.assertEquals(1, findSampleSize(imageSize, previewSize, scale = 16f))
         Assert.assertEquals(1, findSampleSize(imageSize, previewSize, scale = 17f))
+    }
+
+    private fun findSampleSize(imageSize: Size, previewSize: Size, scale: Float): Int {
+        return findSampleSize(
+            imageSize.width, imageSize.height, previewSize.width, previewSize.height, scale
+        )
     }
 
     private fun checkTiles(tileList: List<Tile>, expectedSize: Int, imageSize: Size) {
@@ -193,10 +199,16 @@ class TilesUtilsTest {
     }
 
     private fun sampledSize(width: Int, height: Int, sampleSize: Int): Size {
-        return Size(calculateSamplingSize(width, sampleSize), calculateSamplingSize(height, sampleSize))
+        return Size(
+            calculateSamplingSize(width, sampleSize),
+            calculateSamplingSize(height, sampleSize)
+        )
     }
 
     private fun sampledSize(width: Int, height: Int, sampleSize: Double): Size {
-        return Size(calculateSamplingSize(width, sampleSize), calculateSamplingSize(height, sampleSize))
+        return Size(
+            calculateSamplingSize(width, sampleSize),
+            calculateSamplingSize(height, sampleSize)
+        )
     }
 }
