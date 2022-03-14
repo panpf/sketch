@@ -87,18 +87,12 @@ class Tiles constructor(
 //            }
 //        }
 
-    /**
-     * 是否显示碎片的范围（红色表示已加载，蓝色表示正在加载）
-     */
     var isShowBlockBounds = false
         set(value) {
             field = value
             invalidateView()
         }
 
-    /**
-     * 碎片变化监听器
-     */
     var onBlockChangedListener: OnBlockChangedListener? = null
     private var decoderInitializing: Job? = null
 

@@ -21,7 +21,12 @@ import android.graphics.Rect
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 
-class TileManager constructor(context: Context, imageSize: Size, viewSize: Size, val decodeTile: suspend (tile: Tile) -> Bitmap?) {
+class TileManager constructor(
+    context: Context,
+    imageSize: Size,
+    viewSize: Size,
+    val decodeTile: suspend (tile: Tile) -> Bitmap?
+) {
 
     val tileMap = initializeTileMap(imageSize, viewSize)
     val bitmapPool = context.sketch.bitmapPool
@@ -62,4 +67,8 @@ class TileManager constructor(context: Context, imageSize: Size, viewSize: Size,
 //            "${imageUri}_${exifOrientation}_${srcRect.toShortString()}_${inSampleSize}"
 //        }
 //    }
+
+    private fun findTileListByScale() {
+
+    }
 }

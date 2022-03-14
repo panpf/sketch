@@ -3,13 +3,15 @@ package com.github.panpf.sketch.zoom.tile
 import android.graphics.Rect
 import com.github.panpf.sketch.decode.internal.maxBitmapSize
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.format
 import kotlin.math.ceil
+import kotlin.math.roundToInt
 
-internal fun initializeTileMap(imageSize: Size, viewSize: Size): Map<Int, List<Tile>> {
+internal fun initializeTileMap(imageSize: Size, sampleTileSize: Size): Map<Int, List<Tile>> {
     /* The core rules are: The size of each tile does not exceed viewSize */
     val maximumBitmapSize = maxBitmapSize
-    val sampleTileMaxWith = viewSize.width.coerceAtMost(maximumBitmapSize.width)
-    val sampleTileMaxHeight = viewSize.height.coerceAtMost(maximumBitmapSize.height)
+    val sampleTileMaxWith = sampleTileSize.width.coerceAtMost(maximumBitmapSize.width)
+    val sampleTileMaxHeight = sampleTileSize.height.coerceAtMost(maximumBitmapSize.height)
     val tileMap = HashMap<Int, List<Tile>>()
 
     var sampleSize = 1
@@ -57,4 +59,21 @@ internal fun initializeTileMap(imageSize: Size, viewSize: Size): Map<Int, List<T
         }
     }
     return tileMap
+}
+
+internal fun findSampleSize(imageSize: Size, previewSize: Size, scale: Float): Int {
+    val widthRatio = (imageSize.width / previewSize.width.toFloat()).format(1)
+    val heightRatio = (imageSize.height / previewSize.height.toFloat()).format(1)
+    require(widthRatio == heightRatio) {
+        "imageSize(${imageSize}} and previewSize(${previewSize}) must have the same aspect ratio)"
+    }
+
+    val scaledPreviewWidth = (previewSize.width * scale)
+    val scaledWidthRatio = (imageSize.width / scaledPreviewWidth)
+
+    var sampleSize = 1
+    while (scaledWidthRatio > sampleSize) {
+        sampleSize *= 2
+    }
+    return sampleSize
 }
