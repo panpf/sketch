@@ -10,7 +10,8 @@ import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.decode.internal.calculateInSampleSize
+import com.github.panpf.sketch.decode.internal.calculateSampleSize
+import com.github.panpf.sketch.decode.internal.calculateSampleSizeWithTolerance
 import com.github.panpf.sketch.decode.internal.calculateSamplingSize
 import com.github.panpf.sketch.decode.internal.calculateSamplingSizeForRegion
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
@@ -55,13 +56,33 @@ class DecodeUtilsTest {
     }
 
     @Test
-    fun testCalculateInSampleSize() {
-        Assert.assertEquals(1, calculateInSampleSize(1000, 1000, 1100, 1100))
-        Assert.assertEquals(1, calculateInSampleSize(1000, 1000, 1000, 1000))
-        Assert.assertEquals(2, calculateInSampleSize(1000, 1000, 500, 500))
-        Assert.assertEquals(2, calculateInSampleSize(1000, 1000, 480, 480))
-        Assert.assertEquals(4, calculateInSampleSize(1000, 1000, 250, 250))
-        Assert.assertEquals(4, calculateInSampleSize(1000, 1000, 240, 240))
+    fun testCalculateSampleSize() {
+        Assert.assertEquals(1, calculateSampleSize(1000, 1000, 1100, 1100))
+        Assert.assertEquals(1, calculateSampleSize(1000, 1000, 1000, 1000))
+        Assert.assertEquals(2, calculateSampleSize(1000, 1000, 900, 900))
+
+        Assert.assertEquals(2, calculateSampleSize(1000, 1000, 520, 520))
+        Assert.assertEquals(2, calculateSampleSize(1000, 1000, 500, 500))
+        Assert.assertEquals(4, calculateSampleSize(1000, 1000, 480, 480))
+
+        Assert.assertEquals(4, calculateSampleSize(1000, 1000, 260, 260))
+        Assert.assertEquals(4, calculateSampleSize(1000, 1000, 250, 250))
+        Assert.assertEquals(8, calculateSampleSize(1000, 1000, 240, 240))
+    }
+
+    @Test
+    fun testCalculateSampleSizeWithTolerance() {
+        Assert.assertEquals(1, calculateSampleSizeWithTolerance(1000, 1000, 1020, 1020))
+        Assert.assertEquals(1, calculateSampleSizeWithTolerance(1000, 1000, 1000, 1000))
+        Assert.assertEquals(1, calculateSampleSizeWithTolerance(1000, 1000, 980, 980))
+
+        Assert.assertEquals(2, calculateSampleSizeWithTolerance(1000, 1000, 520, 520))
+        Assert.assertEquals(2, calculateSampleSizeWithTolerance(1000, 1000, 500, 500))
+        Assert.assertEquals(2, calculateSampleSizeWithTolerance(1000, 1000, 480, 480))
+
+        Assert.assertEquals(4, calculateSampleSizeWithTolerance(1000, 1000, 260, 260))
+        Assert.assertEquals(4, calculateSampleSizeWithTolerance(1000, 1000, 250, 250))
+        Assert.assertEquals(4, calculateSampleSizeWithTolerance(1000, 1000, 240, 240))
     }
 
     @Test

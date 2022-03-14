@@ -72,38 +72,63 @@ fun limitedMaxBitmapSize(@Px imageWidth: Int, @Px imageHeight: Int, inSampleSize
 }
 
 /**
- * Calculate the inSampleSize for [BitmapFactory.Options]
+ * Calculate the sample size for [BitmapFactory.Options]
  */
-fun calculateInSampleSize(
+private fun _calculateSampleSize(
     @Px imageWidth: Int,
     @Px imageHeight: Int,
     @Px targetWidth: Int,
     @Px targetHeight: Int,
+    targetPixelsScale: Float = 1f
 ): Int {
-    val newTargetWidth: Int = targetWidth
-    val newTargetHeight: Int = targetHeight
-
-    val targetScale = 1.1f
-    val targetPixels = newTargetWidth.times(newTargetHeight).times(targetScale).roundToInt()
-    var inSampleSize = 1
+    val targetPixels = targetWidth.times(targetHeight).times(targetPixelsScale).roundToInt()
+    var sampleSize = 1
     while (true) {
-        val sampledWidth = calculateSamplingSize(imageWidth, inSampleSize)
-        val sampledHeight = calculateSamplingSize(imageHeight, inSampleSize)
+        val sampledWidth = calculateSamplingSize(imageWidth, sampleSize)
+        val sampledHeight = calculateSamplingSize(imageHeight, sampleSize)
         if (sampledWidth.times(sampledHeight) <= targetPixels) {
             break
         } else {
-            inSampleSize *= 2
+            sampleSize *= 2
         }
     }
-    return limitedMaxBitmapSize(imageWidth, imageHeight, inSampleSize)
+    return limitedMaxBitmapSize(imageWidth, imageHeight, sampleSize)
 }
 
-fun calculateSamplingSize(value1: Int, inSampleSize: Int): Int {
-    return ceil((value1 / inSampleSize.toFloat())).toInt()
+/**
+ * Calculate the sample size for [BitmapFactory.Options]
+ */
+fun calculateSampleSize(
+    @Px imageWidth: Int,
+    @Px imageHeight: Int,
+    @Px targetWidth: Int,
+    @Px targetHeight: Int,
+): Int = _calculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1f)
+
+/**
+ * Calculate the sample size for [BitmapFactory.Options]. 10% tolerance
+ */
+fun calculateSampleSizeWithTolerance(
+    @Px imageWidth: Int,
+    @Px imageHeight: Int,
+    @Px targetWidth: Int,
+    @Px targetHeight: Int,
+): Int = _calculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1.1f)
+
+fun calculateSamplingSize(size: Int, sampleSize: Double): Int {
+    return ceil((size / sampleSize)).toInt()
 }
 
-fun calculateSamplingSizeForRegion(value1: Int, inSampleSize: Int): Int {
-    return floor((value1 / inSampleSize.toFloat())).toInt()
+fun calculateSamplingSize(size: Int, sampleSize: Int): Int {
+    return calculateSamplingSize(size, sampleSize.toDouble())
+}
+
+fun calculateSamplingSizeForRegion(size: Int, sampleSize: Double): Int {
+    return floor((size / sampleSize)).toInt()
+}
+
+fun calculateSamplingSizeForRegion(size: Int, sampleSize: Int): Int {
+    return calculateSamplingSizeForRegion(size, sampleSize.toDouble())
 }
 
 fun computeSizeMultiplier(
@@ -170,7 +195,7 @@ fun realDecode(
             exactlySize = precision == EXACTLY
         )
         // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
-        decodeConfig.inSampleSize = calculateInSampleSize(
+        decodeConfig.inSampleSize = calculateSampleSizeWithTolerance(
             resizeMapping.srcRect.width(),
             resizeMapping.srcRect.height(),
             addedResize.width,
@@ -186,7 +211,7 @@ fun realDecode(
     } else {
         resizeTransformed = null
         decodeConfig.inSampleSize = addedResize?.let {
-            calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
+            calculateSampleSizeWithTolerance(imageInfo.width, imageInfo.height, it.width, it.height)
         } ?: 1
         decodeFull(decodeConfig)
     }

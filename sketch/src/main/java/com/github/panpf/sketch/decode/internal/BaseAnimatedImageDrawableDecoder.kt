@@ -80,7 +80,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
             imageInfo = ImageInfo(info.size.width, info.size.height, info.mimeType)
             val resize = request.resize
             if (resize != null) {
-                inSampleSize = calculateInSampleSize(
+                inSampleSize = calculateSampleSizeWithTolerance(
                     info.size.width, info.size.height, resize.width, resize.height
                 )
                 decoder.setTargetSampleSize(inSampleSize)

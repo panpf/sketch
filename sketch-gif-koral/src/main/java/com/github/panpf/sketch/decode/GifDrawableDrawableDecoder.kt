@@ -10,7 +10,7 @@ import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
-import com.github.panpf.sketch.decode.internal.calculateInSampleSize
+import com.github.panpf.sketch.decode.internal.calculateSampleSizeWithTolerance
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isGif
@@ -55,7 +55,7 @@ class GifDrawableDrawableDecoder(
         var inSampleSize = 1
         if (resize != null) {
             inSampleSize =
-                calculateInSampleSize(imageWidth, imageHeight, resize.width, resize.height)
+                calculateSampleSizeWithTolerance(imageWidth, imageHeight, resize.width, resize.height)
             gifInfoHandleCompat.setOptions(GifOptions().apply {
                 setInSampleSize(inSampleSize)
             })
