@@ -24,12 +24,14 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
+import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.LoadRequest
@@ -202,7 +204,11 @@ class TileDecoder private constructor(
         }
     }
 
-    class Factory(val context: Context, val imageUri: String, val exifOrientation: Int) {
+    class Factory(
+        val context: Context,
+        val imageUri: String,
+        val disabledExifOrientation: Boolean
+    ) {
 
         @WorkerThread
         fun create(): TileDecoder? {
@@ -217,6 +223,11 @@ class TileDecoder private constructor(
 
             val imageInfo = fetchResult.dataSource.readImageInfoWithBitmapFactoryOrNull()
                 ?: throw Exception("Unsupported image format.  $imageUri")
+            val exifOrientation = if (!disabledExifOrientation) {
+                fetchResult.dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
+            } else {
+                ExifInterface.ORIENTATION_UNDEFINED
+            }
             val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
             val imageSize =
                 exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))

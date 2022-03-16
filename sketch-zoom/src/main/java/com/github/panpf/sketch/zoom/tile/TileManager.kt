@@ -20,15 +20,27 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.zoom.tile.TileDecoder.Factory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TileManager constructor(
     context: Context,
-    imageSize: Size,
     viewSize: Size,
-    val decodeTile: suspend (tile: Tile) -> Bitmap?
+    private val decoder: TileDecoder,
 ) {
+    var viewSize: Size = viewSize
+        internal set(value) {
+            if (field != value) {
+                field = value
+                // todo
+//                reset()
+            }
+        }
 
-    val tileMap = initializeTileMap(imageSize, viewSize)
+    val tileMap = initializeTileMap(decoder.imageSize, viewSize)
     val bitmapPool = context.sketch.bitmapPool
     val memoryCache = context.sketch.memoryCache
 
@@ -48,6 +60,31 @@ class TileManager constructor(
 
     fun onDraw() {
 
+    }
+
+
+
+//    private suspend fun decodeTile(tile: Tile): Bitmap? {
+//        requiredMainThread()
+//
+//        val tileDecoder = tileDecoder
+//        return if (tileDecoder != null) {
+//            tileDecoder.decode(tile.key, tile)
+//        } else {
+//            if (decoderInitializing?.isActive != true) {
+//                decoderInitializing = scope.launch {
+//                    this@Tiles.tileDecoder = withContext(Dispatchers.IO) {
+//                        Factory(context, imageUri, exifOrientation).create()
+//                    }
+//                }
+//            }
+//            null
+//        }
+//    }
+
+    fun destroy(){
+        cleanMemory()
+        decoder.destroy()
     }
 
     fun cleanMemory() {
