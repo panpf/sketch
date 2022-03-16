@@ -1,11 +1,14 @@
 package com.github.panpf.sketch.zoom.test
 
+import android.graphics.Rect
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.calculateSamplingSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.tile.Tile
+import com.github.panpf.sketch.zoom.tile.findIntersectionTilesByRect
 import com.github.panpf.sketch.zoom.tile.findSampleSize
 import com.github.panpf.sketch.zoom.tile.initializeTileMap
+import com.github.panpf.sketch.zoom.tile.isIntersection
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,7 +20,7 @@ class TilesUtilsTest {
 
     @Test
     fun testInitializeTileMap() {
-        initializeTileMap(imageSize = Size(8000, 8000), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(8000, 8000), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(4, size)
             checkTiles(tileList = get(1)!!, expectedSize = 40, imageSize = Size(8000, 8000))
             checkTiles(tileList = get(2)!!, expectedSize = 12, imageSize = Size(8000, 8000))
@@ -25,7 +28,7 @@ class TilesUtilsTest {
             checkTiles(tileList = get(8)!!, expectedSize = 1, imageSize = Size(8000, 8000))
         }
 
-        initializeTileMap(imageSize = Size(8000, 3000), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(8000, 3000), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(4, size)
             checkTiles(tileList = get(1)!!, expectedSize = 16, imageSize = Size(8000, 3000))
             checkTiles(tileList = get(2)!!, expectedSize = 4, imageSize = Size(8000, 3000))
@@ -33,7 +36,7 @@ class TilesUtilsTest {
             checkTiles(tileList = get(8)!!, expectedSize = 1, imageSize = Size(8000, 3000))
         }
 
-        initializeTileMap(imageSize = Size(3000, 8000), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(3000, 8000), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(4, size)
             checkTiles(tileList = get(1)!!, expectedSize = 15, imageSize = Size(3000, 8000))
             checkTiles(tileList = get(2)!!, expectedSize = 6, imageSize = Size(3000, 8000))
@@ -42,30 +45,30 @@ class TilesUtilsTest {
         }
 
 
-        initializeTileMap(imageSize = Size(1500, 1500), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(1500, 1500), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(2, size)
             checkTiles(tileList = get(1)!!, expectedSize = 2, imageSize = Size(1500, 1500))
             checkTiles(tileList = get(2)!!, expectedSize = 1, imageSize = Size(1500, 1500))
         }
 
-        initializeTileMap(imageSize = Size(1000, 1500), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(1000, 1500), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(1, size)
             checkTiles(tileList = get(1)!!, expectedSize = 1, imageSize = Size(1000, 1500))
         }
 
-        initializeTileMap(imageSize = Size(1500, 1000), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(1500, 1000), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(2, size)
             checkTiles(tileList = get(1)!!, expectedSize = 2, imageSize = Size(1500, 1000))
             checkTiles(tileList = get(2)!!, expectedSize = 1, imageSize = Size(1500, 1000))
         }
 
-        initializeTileMap(imageSize = Size(1000, 1000), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(1000, 1000), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(1, size)
             checkTiles(tileList = get(1)!!, expectedSize = 1, imageSize = Size(1000, 1000))
         }
 
 
-        initializeTileMap(imageSize = Size(30000, 926), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(30000, 926), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(6, size)
             checkTiles(tileList = get(1)!!, expectedSize = 28, imageSize = Size(30000, 926))
             checkTiles(tileList = get(2)!!, expectedSize = 14, imageSize = Size(30000, 926))
@@ -75,7 +78,7 @@ class TilesUtilsTest {
             checkTiles(tileList = get(32)!!, expectedSize = 1, imageSize = Size(30000, 926))
         }
 
-        initializeTileMap(imageSize = Size(690, 12176), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(690, 12176), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(4, size)
             checkTiles(tileList = get(1)!!, expectedSize = 7, imageSize = Size(690, 12176))
             checkTiles(tileList = get(2)!!, expectedSize = 4, imageSize = Size(690, 12176))
@@ -83,7 +86,7 @@ class TilesUtilsTest {
             checkTiles(tileList = get(8)!!, expectedSize = 1, imageSize = Size(690, 12176))
         }
 
-        initializeTileMap(imageSize = Size(7557, 5669), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(7557, 5669), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(4, size)
             checkTiles(tileList = get(1)!!, expectedSize = 21, imageSize = Size(7557, 5669))
             checkTiles(tileList = get(2)!!, expectedSize = 8, imageSize = Size(7557, 5669))
@@ -91,7 +94,7 @@ class TilesUtilsTest {
             checkTiles(tileList = get(8)!!, expectedSize = 1, imageSize = Size(7557, 5669))
         }
 
-        initializeTileMap(imageSize = Size(9798, 6988), sampleTileSize = Size(1080, 1920)).apply {
+        initializeTileMap(imageSize = Size(9798, 6988), tileMaxSize = Size(1080, 1920)).apply {
             Assert.assertEquals(5, size)
             checkTiles(tileList = get(1)!!, expectedSize = 40, imageSize = Size(9798, 6988))
             checkTiles(tileList = get(2)!!, expectedSize = 10, imageSize = Size(9798, 6988))
@@ -153,6 +156,216 @@ class TilesUtilsTest {
         Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 15f))
         Assert.assertEquals(1, findSampleSize(imageSize, previewSize, scale = 16f))
         Assert.assertEquals(1, findSampleSize(imageSize, previewSize, scale = 17f))
+    }
+
+    @Test
+    fun testFindIntersectionTilesByRect() {
+        /*
+        * 0  20  40  60  80  100
+        * 20
+        * 40
+        * 60
+        * 80
+        * 100
+         */
+        val tiles = initializeTileMap(imageSize = Size(100, 100), tileMaxSize = Size(20, 20))[1]!!
+
+        // all tile
+        Assert.assertEquals(
+            tiles.map { it.srcRect },
+            findIntersectionTilesByRect(tiles, Rect(0, 0, 100, 100)).first.map { it.srcRect }
+        )
+
+        // single tile
+        Assert.assertEquals(
+            listOf(Rect(0, 0, 20, 20)),
+            findIntersectionTilesByRect(tiles, Rect(0, 0, 20, 20)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(Rect(80, 0, 100, 20)),
+            findIntersectionTilesByRect(tiles, Rect(80, 0, 100, 20)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(Rect(0, 80, 20, 100)),
+            findIntersectionTilesByRect(tiles, Rect(0, 80, 20, 100)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(Rect(80, 80, 100, 100)),
+            findIntersectionTilesByRect(tiles, Rect(80, 80, 100, 100)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(Rect(40, 40, 60, 60)),
+            findIntersectionTilesByRect(tiles, Rect(40, 40, 60, 60)).first.map { it.srcRect }
+        )
+
+        // multi not welt tile
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60), Rect(60, 40, 80, 60),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(30, 45, 70, 55)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(
+                Rect(40, 20, 60, 40),
+                Rect(40, 40, 60, 60),
+                Rect(40, 60, 60, 80),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(45, 30, 55, 70)).first.map { it.srcRect }
+        )
+
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 20, 40, 40), Rect(40, 20, 60, 40), Rect(60, 20, 80, 40),
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60), Rect(60, 40, 80, 60),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(30, 30, 70, 50)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 20, 40, 40), Rect(40, 20, 60, 40),
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60),
+                Rect(20, 60, 40, 80), Rect(40, 60, 60, 80),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(30, 30, 50, 70)).first.map { it.srcRect }
+        )
+
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 20, 40, 40), Rect(40, 20, 60, 40), Rect(60, 20, 80, 40),
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60), Rect(60, 40, 80, 60),
+                Rect(20, 60, 40, 80), Rect(40, 60, 60, 80), Rect(60, 60, 80, 80),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(30, 30, 70, 70)).first.map { it.srcRect }
+        )
+
+        // multi welt tile
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60), Rect(60, 40, 80, 60),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(20, 40, 80, 60)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(
+                Rect(40, 20, 60, 40),
+                Rect(40, 40, 60, 60),
+                Rect(40, 60, 60, 80),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(40, 20, 60, 80)).first.map { it.srcRect }
+        )
+
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 20, 40, 40), Rect(40, 20, 60, 40), Rect(60, 20, 80, 40),
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60), Rect(60, 40, 80, 60),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(20, 20, 80, 60)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 20, 40, 40), Rect(40, 20, 60, 40),
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60),
+                Rect(20, 60, 40, 80), Rect(40, 60, 60, 80),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(20, 20, 60, 80)).first.map { it.srcRect }
+        )
+
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 20, 40, 40), Rect(40, 20, 60, 40), Rect(60, 20, 80, 40),
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60), Rect(60, 40, 80, 60),
+                Rect(20, 60, 40, 80), Rect(40, 60, 60, 80), Rect(60, 60, 80, 80),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(20, 20, 80, 80)).first.map { it.srcRect }
+        )
+
+        // multi hybrid welt tile
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60), Rect(60, 40, 80, 60),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(20, 40, 70, 55)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(
+                Rect(40, 20, 60, 40),
+                Rect(40, 40, 60, 60),
+                Rect(40, 60, 60, 80),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(40, 20, 55, 70)).first.map { it.srcRect }
+        )
+
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 20, 40, 40), Rect(40, 20, 60, 40), Rect(60, 20, 80, 40),
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60), Rect(60, 40, 80, 60),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(30, 30, 80, 60)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 20, 40, 40), Rect(40, 20, 60, 40),
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60),
+                Rect(20, 60, 40, 80), Rect(40, 60, 60, 80),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(30, 30, 60, 80)).first.map { it.srcRect }
+        )
+
+        Assert.assertEquals(
+            listOf(
+                Rect(20, 20, 40, 40), Rect(40, 20, 60, 40), Rect(60, 20, 80, 40),
+                Rect(20, 40, 40, 60), Rect(40, 40, 60, 60), Rect(60, 40, 80, 60),
+                Rect(20, 60, 40, 80), Rect(40, 60, 60, 80), Rect(60, 60, 80, 80),
+            ),
+            findIntersectionTilesByRect(tiles, Rect(20, 30, 70, 80)).first.map { it.srcRect }
+        )
+
+        // empty
+        Assert.assertEquals(
+            listOf<Rect>(),
+            findIntersectionTilesByRect(tiles, Rect(-10, 30, 0, 80)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf<Rect>(),
+            findIntersectionTilesByRect(tiles, Rect(20, -10, 70, 0)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf<Rect>(),
+            findIntersectionTilesByRect(tiles, Rect(100, 30, 110, 80)).first.map { it.srcRect }
+        )
+        Assert.assertEquals(
+            listOf<Rect>(),
+            findIntersectionTilesByRect(tiles, Rect(20, 100, 70, 110)).first.map { it.srcRect }
+        )
+    }
+
+    @Test
+    fun testIsOverlap() {
+        // same
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 40, 60, 60)))
+
+        // outside
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(20, 20, 60, 60)))
+
+        // inside
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 40, 50, 50)))
+
+        // no cross
+        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(40, 20, 60, 40)))
+        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(20, 40, 40, 60)))
+        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(60, 40, 80, 60)))
+        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(40, 60, 60, 80)))
+
+        // cross
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(30, 30, 50, 50)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(50, 30, 70, 50)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(30, 50, 50, 70)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(50, 50, 70, 70)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(30, 40, 50, 60)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 30, 60, 50)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(50, 40, 70, 60)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 50, 60, 70)))
     }
 
     private fun findSampleSize(imageSize: Size, previewSize: Size, scale: Float): Int {

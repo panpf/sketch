@@ -6,11 +6,11 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import kotlin.math.ceil
 
-internal fun initializeTileMap(imageSize: Size, sampleTileSize: Size): Map<Int, List<Tile>> {
+internal fun initializeTileMap(imageSize: Size, tileMaxSize: Size): Map<Int, List<Tile>> {
     /* The core rules are: The size of each tile does not exceed viewSize */
-    val maximumBitmapSize = maxBitmapSize
-    val sampleTileMaxWith = sampleTileSize.width.coerceAtMost(maximumBitmapSize.width)
-    val sampleTileMaxHeight = sampleTileSize.height.coerceAtMost(maximumBitmapSize.height)
+    val maxBitmapSize = maxBitmapSize
+    val tileMaxWith = tileMaxSize.width.coerceAtMost(maxBitmapSize.width)
+    val tileMaxHeight = tileMaxSize.height.coerceAtMost(maxBitmapSize.height)
     val tileMap = HashMap<Int, List<Tile>>()
 
     var sampleSize = 1
@@ -22,7 +22,7 @@ internal fun initializeTileMap(imageSize: Size, sampleTileSize: Size): Map<Int, 
             xTiles += 1
             sourceTileWidth = ceil(imageSize.width / xTiles.toFloat()).toInt()
             sampleTileWidth = ceil(sourceTileWidth / sampleSize.toFloat()).toInt()
-        } while (sampleTileWidth > sampleTileMaxWith)
+        } while (sampleTileWidth > tileMaxWith)
 
         var yTiles = 0
         var sourceTileHeight: Int
@@ -31,7 +31,7 @@ internal fun initializeTileMap(imageSize: Size, sampleTileSize: Size): Map<Int, 
             yTiles += 1
             sourceTileHeight = ceil(imageSize.height / yTiles.toFloat()).toInt()
             sampleTileHeight = ceil(sourceTileHeight / sampleSize.toFloat()).toInt()
-        } while (sampleTileHeight > sampleTileMaxHeight)
+        } while (sampleTileHeight > tileMaxHeight)
 
         val tileList = ArrayList<Tile>(xTiles * yTiles)
         var left = 0
@@ -79,4 +79,74 @@ internal fun findSampleSize(
         sampleSize *= 2
     }
     return sampleSize
+}
+
+internal fun findIntersectionTilesByRect(tiles: List<Tile>, rect: Rect): Pair<List<Tile>, List<Tile>> {
+    return tiles.partition { tile -> tile.srcRect.isIntersection(rect) }
+}
+
+/**
+ * Returns true if the current Rect has an intersection with [otherRect]. Support boundary overlap
+ */
+internal fun Rect.isIntersection(otherRect: Rect): Boolean {
+    val thisRect = this
+    when {
+        otherRect.right <= thisRect.left || otherRect.bottom <= thisRect.top || otherRect.left >= thisRect.right || otherRect.top >= thisRect.bottom -> {
+            // No intersection
+            return false
+        }
+        otherRect == thisRect -> {
+            // same
+            return true
+        }
+        otherRect.left <= thisRect.left && otherRect.top <= thisRect.top && otherRect.right >= thisRect.right && otherRect.bottom >= thisRect.bottom -> {
+            // outside
+            return true
+        }
+        otherRect.left >= thisRect.left && otherRect.top >= thisRect.top && otherRect.right <= thisRect.right && otherRect.bottom <= thisRect.bottom -> {
+            // inside
+            return true
+        }
+        (otherRect.left >= thisRect.left && otherRect.left < thisRect.right) || (otherRect.right >= thisRect.left && otherRect.right < thisRect.right) -> {
+            when {
+                otherRect.top <= thisRect.top && otherRect.bottom >= thisRect.bottom -> {
+                    return true
+                }
+                otherRect.top >= thisRect.top && otherRect.bottom <= thisRect.bottom -> {
+                    return true
+                }
+                otherRect.top >= thisRect.top && otherRect.top < thisRect.bottom -> {
+                    return true
+                }
+                otherRect.bottom >= thisRect.top && otherRect.bottom < thisRect.bottom -> {
+                    return true
+                }
+                else -> {
+                    return false
+                }
+            }
+        }
+        (otherRect.top >= thisRect.top && otherRect.top < thisRect.bottom) || (otherRect.bottom >= thisRect.top && otherRect.bottom < thisRect.bottom) -> {
+            return when {
+                otherRect.left <= thisRect.left && otherRect.right >= thisRect.right -> {
+                    true
+                }
+                otherRect.left >= thisRect.left && otherRect.right <= thisRect.right -> {
+                    true
+                }
+                otherRect.left >= thisRect.left && otherRect.left < thisRect.right -> {
+                    true
+                }
+                otherRect.right >= thisRect.left && otherRect.right < thisRect.right -> {
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+        else -> {
+            return false
+        }
+    }
 }
