@@ -5,7 +5,6 @@ import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.calculateSamplingSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.tile.Tile
-import com.github.panpf.sketch.zoom.tile.findIntersectionTilesByRect
 import com.github.panpf.sketch.zoom.tile.findSampleSize
 import com.github.panpf.sketch.zoom.tile.initializeTileMap
 import com.github.panpf.sketch.zoom.tile.isIntersection
@@ -159,7 +158,33 @@ class TilesUtilsTest {
     }
 
     @Test
-    fun testFindIntersectionTilesByRect() {
+    fun testIsOverlap() {
+        // same
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 40, 60, 60)))
+
+        // outside
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(20, 20, 60, 60)))
+
+        // inside
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 40, 50, 50)))
+
+        // no cross
+        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(40, 20, 60, 40)))
+        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(20, 40, 40, 60)))
+        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(60, 40, 80, 60)))
+        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(40, 60, 60, 80)))
+
+        // cross
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(30, 30, 50, 50)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(50, 30, 70, 50)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(30, 50, 50, 70)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(50, 50, 70, 70)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(30, 40, 50, 60)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 30, 60, 50)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(50, 40, 70, 60)))
+        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 50, 60, 70)))
+
+
         /*
         * 0  20  40  60  80  100
         * 20
@@ -340,32 +365,8 @@ class TilesUtilsTest {
         )
     }
 
-    @Test
-    fun testIsOverlap() {
-        // same
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 40, 60, 60)))
-
-        // outside
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(20, 20, 60, 60)))
-
-        // inside
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 40, 50, 50)))
-
-        // no cross
-        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(40, 20, 60, 40)))
-        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(20, 40, 40, 60)))
-        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(60, 40, 80, 60)))
-        Assert.assertFalse(Rect(40, 40, 60, 60).isIntersection(Rect(40, 60, 60, 80)))
-
-        // cross
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(30, 30, 50, 50)))
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(50, 30, 70, 50)))
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(30, 50, 50, 70)))
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(50, 50, 70, 70)))
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(30, 40, 50, 60)))
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 30, 60, 50)))
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(50, 40, 70, 60)))
-        Assert.assertTrue(Rect(40, 40, 60, 60).isIntersection(Rect(40, 50, 60, 70)))
+    private fun findIntersectionTilesByRect(tiles: List<Tile>, rect: Rect): Pair<List<Tile>, List<Tile>> {
+        return tiles.partition { tile -> tile.srcRect.isIntersection(rect) }
     }
 
     private fun findSampleSize(imageSize: Size, previewSize: Size, scale: Float): Int {

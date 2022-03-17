@@ -81,10 +81,6 @@ internal fun findSampleSize(
     return sampleSize
 }
 
-internal fun findIntersectionTilesByRect(tiles: List<Tile>, rect: Rect): Pair<List<Tile>, List<Tile>> {
-    return tiles.partition { tile -> tile.srcRect.isIntersection(rect) }
-}
-
 /**
  * Returns true if the current Rect has an intersection with [otherRect]. Support boundary overlap
  */

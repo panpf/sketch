@@ -16,21 +16,45 @@
 package com.github.panpf.sketch.zoom.tile
 
 import android.content.Context
-import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Matrix
+import android.graphics.Paint
 import android.graphics.Rect
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.requiredMainThread
-import com.github.panpf.sketch.zoom.tile.TileDecoder.Factory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.github.panpf.sketch.util.format
+import com.github.panpf.sketch.zoom.internal.getScale
+import kotlin.math.roundToInt
 
 class TileManager constructor(
     context: Context,
+    private val imageUri: String,
     viewSize: Size,
     private val decoder: TileDecoder,
 ) {
+
+    companion object {
+        private const val MODULE = "TileManager"
+    }
+
+    private val logger = context.sketch.logger
+
+    //    private var lastZoomScale = 0f
+    private val drawBlockRectPaint: Paint by lazy {
+        Paint().apply { color = Color.parseColor("#880000FF") }
+    }
+    private val drawLoadingBlockRectPaint: Paint by lazy {
+        Paint().apply { color = Color.parseColor("#88FF0000") }
+    }
+    private val tileMap: Map<Int, List<Tile>> = initializeTileMap(decoder.imageSize, viewSize)
+    private val bitmapPool: BitmapPool = context.sketch.bitmapPool
+    private val memoryCache: MemoryCache = context.sketch.memoryCache
+    private var currentTileList: List<Tile>? = null
+    private var currentSampleSize: Int? = null
+
     var viewSize: Size = viewSize
         internal set(value) {
             if (field != value) {
@@ -40,28 +64,68 @@ class TileManager constructor(
             }
         }
 
-    val tileMap = initializeTileMap(decoder.imageSize, viewSize)
-    val bitmapPool = context.sketch.bitmapPool
-    val memoryCache = context.sketch.memoryCache
-
     init {
 
     }
 
-    fun onMatrixChanged(
-        newVisibleRect: Rect,
+    fun refreshTiles(
+        visibleRect: Rect,
         drawableSize: Size,
-        viewSize: Size,
-        imageSize: Size,
-        zooming: Boolean
+        drawMatrix: Matrix,
     ) {
-
+        val newZoomScale = drawMatrix.getScale().format(2)
+        val newSampleSize = findSampleSize(
+            decoder.imageSize.width,
+            decoder.imageSize.height,
+            drawableSize.width,
+            drawableSize.height,
+            newZoomScale
+        )
+        if (newSampleSize != currentSampleSize) {
+            currentTileList?.forEach { freeTile(it) }
+            currentTileList = tileMap[newSampleSize]
+        }
+        val tileList = currentTileList
+        val sourceVisibleRect = Rect(
+            (visibleRect.left * newZoomScale).roundToInt(),
+            (visibleRect.top * newZoomScale).roundToInt(),
+            (visibleRect.right * newZoomScale).roundToInt(),
+            (visibleRect.bottom * newZoomScale).roundToInt()
+        )
+        tileList?.forEach {
+            if (it.srcRect.isIntersection(sourceVisibleRect)) {
+                loadTile(it)
+            } else {
+                freeTile(it)
+            }
+        }
     }
 
-    fun onDraw() {
-
+    fun onDraw(canvas: Canvas) {
+//        if (tileManager.blockList.size > 0) {
+//            val saveCount = canvas.save()
+//            canvas.concat(matrix)
+//            for (block in tileManager.blockList) {
+//                val bitmap = block.bitmap
+//                if (!block.isEmpty && bitmap != null) {
+//                    canvas.drawBitmap(
+//                        bitmap,
+//                        block.bitmapDrawSrcRect,
+//                        block.drawRect,
+//                        drawBlockPaint
+//                    )
+//                    if (isShowBlockBounds) {
+//                        canvas.drawRect(block.drawRect, drawBlockRectPaint)
+//                    }
+//                } else if (!block.isDecodeParamEmpty) {
+//                    if (isShowBlockBounds) {
+//                        canvas.drawRect(block.drawRect, drawLoadingBlockRectPaint)
+//                    }
+//                }
+//            }
+//            canvas.restoreToCount(saveCount)
+//        }
     }
-
 
 
 //    private suspend fun decodeTile(tile: Tile): Bitmap? {
@@ -82,7 +146,7 @@ class TileManager constructor(
 //        }
 //    }
 
-    fun destroy(){
+    fun destroy() {
         cleanMemory()
         decoder.destroy()
     }
@@ -106,6 +170,14 @@ class TileManager constructor(
 //    }
 
     private fun findTileListByScale() {
+
+    }
+
+    private fun freeTile(tile: Tile) {
+
+    }
+
+    private fun loadTile(tile: Tile) {
 
     }
 }

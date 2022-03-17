@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.zoom.tile
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Rect
 import com.github.panpf.sketch.sketch
@@ -28,11 +29,11 @@ class Tiles constructor(
 
     private val tempDrawMatrix = Matrix()
     private val tempVisibleRect = Rect()
-    private val appContext = context.applicationContext
     private val logger = context.sketch.logger
     private val scope: CoroutineScope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )
+    private val lastVisibleRect = Rect()
 
     private var _destroyed: Boolean = false
     private var tileManager: TileManager? = null
@@ -61,7 +62,7 @@ class Tiles constructor(
                     cleanMemory()
                 } else {
                     logger.v(MODULE) { "resume. $imageUri" }
-                    refresh()
+                    refreshTiles()
                 }
             }
         }
@@ -71,11 +72,19 @@ class Tiles constructor(
             val tileDecoder = withContext(Dispatchers.IO) {
                 TileDecoder.Factory(context, imageUri, disabledExifOrientation).create()
             } ?: return@launch
-            this@Tiles.tileManager = TileManager(context, viewSize, tileDecoder)
-            refresh()
+            this@Tiles.tileManager = TileManager(context, imageUri, viewSize, tileDecoder)
+            refreshTiles()
         }
 
-//        zoomer.addonMatrixChangeListenerList
+        zoomer.addOnMatrixChangeListener {
+            if (zoomer.rotateDegrees % 90 != 0) {
+                logger.w(MODULE, "rotate degrees must be in multiples of 90. $imageUri")
+                return@addOnMatrixChangeListener
+            }
+            zoomer.getDrawMatrix(tempDrawMatrix)
+            zoomer.getVisibleRect(tempVisibleRect)
+            refreshTiles()
+        }
     }
 
     fun destroy() {
@@ -89,7 +98,7 @@ class Tiles constructor(
         tileManager?.cleanMemory()
     }
 
-    fun refresh() {
+    private fun refreshTiles() {
         requiredMainThread()
         if (destroyed) {
             logger.d(MODULE) { "Destroyed. $imageUri" }
@@ -108,105 +117,51 @@ class Tiles constructor(
         val drawableSize = zoomer.drawableSize
         val zooming = zoomer.isZooming
         val drawMatrix = tempDrawMatrix
-        val newVisibleRect = tempVisibleRect
+        val visibleRect = tempVisibleRect
 
-//        // 传进来的参数不能用就什么也不显示
-//        if (newVisibleRect.isEmpty || drawableSize.isEmpty || viewSize.isEmpty) {
-//            logger.w(
-//                MODULE,
-//                "update params is empty. update. newVisibleRect=%s, drawableSize=%s, viewSize=%s. %s"
-//                    .format(
-//                        newVisibleRect.toShortString(),
-//                        drawableSize.toString(),
-//                        viewSize.toString(),
-//                        imageUri
-//                    )
-//            )
-//            clean("update param is empty")
-//            return
-//        }
-//
-//        // 如果当前完整显示预览图的话就清空什么也不显示
-//        if (newVisibleRect.width() == drawableSize.width && newVisibleRect.height() == drawableSize.height) {
-//            logger.v(MODULE) {
-//                "full display. update. newVisibleRect=${newVisibleRect.toShortString()}. $imageUri"
-//            }
-//            clean("full display")
-//            return
-//        }
-//
-//        // 更新Matrix
-//        lastZoomScale = zoomScale
-//        matrix.set(drawMatrix)
-//        zoomScale = matrix.getScale().format(2)
-//        invalidateView()
-//        tileManager.update(newVisibleRect, drawableSize, viewSize, imageSize!!, zooming)
-    }
-
-    //    /* -----------回调方法----------- */
-//    fun onDraw(canvas: Canvas) {
-//        if (destroyed) return
-//        if (tileManager.blockList.size > 0) {
-//            val saveCount = canvas.save()
-//            canvas.concat(matrix)
-//            for (block in tileManager.blockList) {
-//                val bitmap = block.bitmap
-//                if (!block.isEmpty && bitmap != null) {
-//                    canvas.drawBitmap(
-//                        bitmap,
-//                        block.bitmapDrawSrcRect,
-//                        block.drawRect,
-//                        drawBlockPaint
-//                    )
-//                    if (isShowBlockBounds) {
-//                        canvas.drawRect(block.drawRect, drawBlockRectPaint)
-//                    }
-//                } else if (!block.isDecodeParamEmpty) {
-//                    if (isShowBlockBounds) {
-//                        canvas.drawRect(block.drawRect, drawLoadingBlockRectPaint)
-//                    }
-//                }
-//            }
-//            canvas.restoreToCount(saveCount)
-//        }
-//    }
-
-    fun onMatrixChanged() {
-        if (zoomer.rotateDegrees % 90 != 0) {
-            logger.w(MODULE, "rotate degrees must be in multiples of 90. $imageUri")
+        if (visibleRect.isEmpty || drawableSize.isEmpty || viewSize.isEmpty) {
+            logger.w(MODULE) {
+                "params is empty. visibleRect=${visibleRect}, drawableSize=$drawableSize, viewSize=$viewSize. $imageUri"
+            }
+            cleanMemory()
             return
         }
-        zoomer.getDrawMatrix(tempDrawMatrix)
-        zoomer.getVisibleRect(tempVisibleRect)
-        refresh()
+
+        if (zooming) {
+            logger.d(MODULE) {
+                "zooming. visibleRect=${visibleRect}. $imageUri"
+            }
+            return
+        }
+
+        if (visibleRect.width() == drawableSize.width && visibleRect.height() == drawableSize.height) {
+            logger.d(MODULE) {
+                "full display. visibleRect=${visibleRect}, drawableSize=$drawableSize. $imageUri"
+            }
+            cleanMemory()
+            return
+        }
+        if (lastVisibleRect == visibleRect) {
+            logger.d(MODULE) {
+                "visible rect no changed. visibleRect=$visibleRect. $imageUri"
+            }
+            return
+        } else {
+            lastVisibleRect.set(visibleRect)
+        }
+
+        tileManager?.refreshTiles(visibleRect, drawableSize, drawMatrix)
+    }
+
+    fun onDraw(canvas: Canvas) {
+        if (destroyed) return
+        tileManager?.onDraw(canvas)
     }
 
     val destroyed: Boolean
         get() = _destroyed
 
-    //    /** 当前缩放比例 */
-//    var zoomScale = 0f
-//        private set
-//
-//    /** 上次的缩放比例 */
-//    var lastZoomScale = 0f
-//        private set
-//    private val drawBlockPaint: Paint
-//    private val drawBlockRectPaint: Paint by lazy {
-//        Paint().apply {
-//            color = Color.parseColor("#88FF0000")
-//        }
-//    }
-//    private val drawLoadingBlockRectPaint: Paint by lazy {
-//        Paint().apply {
-//            color = Color.parseColor("#880000FF")
-//        }
-//    }
-//    private val matrix: Matrix
-//    private var destroyed = false
-//
-    /* -----------其它方法----------- */
-    fun invalidateView() {
+    internal fun invalidateView() {
         zoomer.view.invalidate()
     }
 }
