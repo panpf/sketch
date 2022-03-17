@@ -26,7 +26,6 @@ class Zoomer constructor(
     scaleType: ScaleType,
     readModeDecider: ReadModeDecider?,
     zoomScales: ZoomScales = AdaptiveTwoLevelScales(),
-    val updateMatrix: (Matrix) -> Unit,
 ) {
 
     companion object {
@@ -34,25 +33,38 @@ class Zoomer constructor(
     }
 
     private val tapHelper = TapHelper(context, this)
-    private val scaleDragHelper = ScaleDragHelper(context, this) { matrix ->
-        scrollBarHelper?.onMatrixChanged()
-        updateMatrix(matrix)
-        onMatrixChangeListenerList?.forEach { listener ->
-            listener.onMatrixChanged(this)
-        }
-    }
+    private val scaleDragHelper = ScaleDragHelper(
+        context,
+        this,
+        onUpdateMatrix = {
+            scrollBarHelper?.onMatrixChanged()
+            onMatrixChangeListenerList?.forEach { listener ->
+                listener.onMatrixChanged(this)
+            }
+        },
+        onDragFling = { startX: Float, startY: Float, velocityX: Float, velocityY: Float ->
+            onDragFlingListenerList?.forEach {
+                it.onFling(startX, startY, velocityX, velocityY)
+            }
+        },
+        onScaleChanged = { scaleFactor: Float, focusX: Float, focusY: Float ->
+            onScaleChangeListenerList?.forEach {
+                it.onScaleChanged(scaleFactor, focusX, focusY)
+            }
+        })
     private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, this)
     private var _rotateDegrees = 0
 
+    private var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
+    private var onRotateChangeListenerList: MutableSet<OnRotateChangeListener>? = null
+    private var onDragFlingListenerList: MutableSet<OnDragFlingListener>? = null
+    private var onScaleChangeListenerList: MutableSet<OnScaleChangeListener>? = null
+
     /** Allows the parent ViewGroup to intercept events while sliding to an edge */
-    internal var allowParentInterceptOnEdge: Boolean = true
-    internal var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
-    internal var onRotateChangeListenerList: MutableSet<OnRotateChangeListener>? = null
-    internal var onDragFlingListenerList: MutableSet<OnDragFlingListener>? = null
-    internal var onScaleChangeListenerList: MutableSet<OnScaleChangeListener>? = null
-    internal var zoomInterpolator: Interpolator = AccelerateDecelerateInterpolator()
-    internal var onViewLongPressListener: OnViewLongPressListener? = null
-    internal var onViewTapListener: OnViewTapListener? = null
+    var allowParentInterceptOnEdge: Boolean = true
+    var zoomInterpolator: Interpolator = AccelerateDecelerateInterpolator()
+    var onViewLongPressListener: OnViewLongPressListener? = null
+    var onViewTapListener: OnViewTapListener? = null
     var viewSize: Size = viewSize
         internal set(value) {
             if (field != value) {
@@ -101,10 +113,11 @@ class Zoomer constructor(
         }
 
 
+    /**************************************** Internal ********************************************/
+
     init {
         reset()
     }
-
 
     private fun reset() {
         zoomScales.reset(
@@ -140,6 +153,8 @@ class Zoomer constructor(
         return scaleAndDragConsumed || tapConsumed
     }
 
+
+    /*************************************** Interaction ******************************************/
 
     /**
      * Locate to the location specified on the preview image. You don't have to worry about scaling and rotation
@@ -217,6 +232,8 @@ class Zoomer constructor(
     }
 
 
+    /***************************************** Information ****************************************/
+
     val rotateDegrees: Int
         get() = _rotateDegrees
 
@@ -265,10 +282,50 @@ class Zoomer constructor(
     val isZooming: Boolean
         get() = scaleDragHelper.isZooming
 
-    fun getDrawMatrix(matrix: Matrix) = matrix.set(scaleDragHelper.drawMatrix)
+    fun getDrawMatrix(matrix: Matrix) = matrix.set(scaleDragHelper.getDrawMatrix())
 
     fun getDrawRect(rectF: RectF) = scaleDragHelper.getDrawRect(rectF)
 
     /** Gets the area that the user can see on the preview (not affected by rotation) */
     fun getVisibleRect(rect: Rect) = scaleDragHelper.getVisibleRect(rect)
+
+    fun addOnMatrixChangeListener(listener: OnMatrixChangeListener) {
+        this.onMatrixChangeListenerList = (onMatrixChangeListenerList ?: LinkedHashSet()).apply {
+            add(listener)
+        }
+    }
+
+    fun removeOnMatrixChangeListener(listener: OnMatrixChangeListener): Boolean {
+        return onMatrixChangeListenerList?.remove(listener) == true
+    }
+
+    fun addOnRotateChangeListener(listener: OnRotateChangeListener) {
+        this.onRotateChangeListenerList = (onRotateChangeListenerList ?: LinkedHashSet()).apply {
+            add(listener)
+        }
+    }
+
+    fun removeOnRotateChangeListener(listener: OnRotateChangeListener): Boolean {
+        return onRotateChangeListenerList?.remove(listener) == true
+    }
+
+    fun addOnDragFlingListener(listener: OnDragFlingListener) {
+        this.onDragFlingListenerList = (onDragFlingListenerList ?: LinkedHashSet()).apply {
+            add(listener)
+        }
+    }
+
+    fun removeOnDragFlingListener(listener: OnDragFlingListener): Boolean {
+        return onDragFlingListenerList?.remove(listener) == true
+    }
+
+    fun addOnScaleChangeListener(listener: OnScaleChangeListener) {
+        this.onScaleChangeListenerList = (onScaleChangeListenerList ?: LinkedHashSet()).apply {
+            add(listener)
+        }
+    }
+
+    fun removeOnScaleChangeListener(listener: OnScaleChangeListener): Boolean {
+        return onScaleChangeListenerList?.remove(listener) == true
+    }
 }

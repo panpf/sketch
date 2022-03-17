@@ -85,6 +85,10 @@ class Blocks constructor(
         drawBlockPaint = Paint()
 
         blockDecoder.setImage(imageUri, exifOrientation)
+
+        zoomer.addOnMatrixChangeListener{
+            onMatrixChanged()
+        }
     }
 
     /**
@@ -137,7 +141,7 @@ class Blocks constructor(
         }
     }
 
-    fun onMatrixChanged() {
+    private fun onMatrixChanged() {
         if (!isReady && !isInitializing) {
             logger.v(NAME) { "Blocks not available. onMatrixChanged. $imageUri" }
             return

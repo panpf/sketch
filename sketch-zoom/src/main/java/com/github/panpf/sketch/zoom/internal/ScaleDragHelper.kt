@@ -38,13 +38,15 @@ import kotlin.math.roundToInt
 internal class ScaleDragHelper constructor(
     private val context: Context,
     private val zoomer: Zoomer,
-    val updateMatrix: (Matrix) -> Unit
+    val onUpdateMatrix: () -> Unit,
+    val onDragFling: (startX: Float, startY: Float, velocityX: Float, velocityY: Float) -> Unit,
+    val onScaleChanged: (scaleFactor: Float, focusX: Float, focusY: Float) -> Unit,
 ) : OnScaleDragGestureListener, ActionListener {
 
     private val logger = context.sketch.logger
     private val baseMatrix = Matrix() // 存储默认的缩放和位移信息
     private val supportMatrix = Matrix() // 存储用户通过触摸事件产生的缩放、位移和外部设置的旋转信息
-    internal val drawMatrix = Matrix() // 存储 baseMatrix 和 supportMatrix 融合后的信息，用于绘制
+    private val drawMatrix = Matrix() // 存储 baseMatrix 和 supportMatrix 融合后的信息，用于绘制
     private var flingRunner: FlingRunner? = null // 执行飞速滚动
     private var locationRunner: LocationRunner? = null // 定位执行器
     private val scaleDragGestureDetector = ScaleDragGestureDetector(context) // 缩放和拖拽手势识别器
@@ -156,9 +158,7 @@ internal class ScaleDragHelper constructor(
     override fun onFling(startX: Float, startY: Float, velocityX: Float, velocityY: Float) {
         flingRunner = FlingRunner(context, zoomer, this@ScaleDragHelper)
         flingRunner!!.fling(velocityX.toInt(), velocityY.toInt())
-        zoomer.onDragFlingListenerList?.forEach {
-            it.onFling(startX, startY, velocityX, velocityY)
-        }
+        onDragFling(startX, startY, velocityX, velocityY)
     }
 
     override fun onScale(scaleFactor: Float, focusX: Float, focusY: Float) {
@@ -197,9 +197,7 @@ internal class ScaleDragHelper constructor(
         }
         supportMatrix.postScale(newScaleFactor, newScaleFactor, focusX, focusY)
         checkAndApplyMatrix()
-        zoomer.onScaleChangeListenerList?.forEach {
-            it.onScaleChanged(newScaleFactor, focusX, focusY)
-        }
+        onScaleChanged(newScaleFactor, focusX, focusY)
     }
 
     override fun onScaleBegin(): Boolean {
@@ -215,7 +213,7 @@ internal class ScaleDragHelper constructor(
         val overMaxZoomScale = currentScale > zoomer.maxZoomScale.format(2)
         if (!overMinZoomScale && !overMaxZoomScale) {
             isZooming = false
-            updateMatrix(getDrawMatrix())
+            onUpdateMatrix()
         }
     }
 
@@ -309,7 +307,7 @@ internal class ScaleDragHelper constructor(
         }
 //        val imageView = zoomer.view
 //        check(ScaleType.MATRIX == imageView.scaleType) { "ImageView scaleType must be is MATRIX" }
-        updateMatrix(getDrawMatrix())
+        onUpdateMatrix()
     }
 
     private fun checkMatrixBounds(): Boolean {
