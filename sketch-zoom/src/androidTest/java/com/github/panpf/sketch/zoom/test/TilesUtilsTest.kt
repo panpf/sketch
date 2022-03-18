@@ -115,46 +115,42 @@ class TilesUtilsTest {
             findSampleSize(imageSize, error1PreviewSize, scale = 1f)
         }
 
-        Assert.assertEquals(32, findSampleSize(imageSize, sampledSize(9798, 6988, 17), scale = 1f))
-        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 16), scale = 1f))
-        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 15), scale = 1f))
-        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 14), scale = 1f))
-        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 13), scale = 1f))
-        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 12), scale = 1f))
-        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 11), scale = 1f))
-        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 10), scale = 1f))
-        Assert.assertEquals(16, findSampleSize(imageSize, sampledSize(9798, 6988, 9), scale = 1f))
-        Assert.assertEquals(8, findSampleSize(imageSize, sampledSize(9798, 6988, 8), scale = 1f))
-        Assert.assertEquals(8, findSampleSize(imageSize, sampledSize(9798, 6988, 7), scale = 1f))
-        Assert.assertEquals(8, findSampleSize(imageSize, sampledSize(9798, 6988, 6), scale = 1f))
-        Assert.assertEquals(8, findSampleSize(imageSize, sampledSize(9798, 6988, 5), scale = 1f))
-        Assert.assertEquals(4, findSampleSize(imageSize, sampledSize(9798, 6988, 4), scale = 1f))
-        Assert.assertEquals(4, findSampleSize(imageSize, sampledSize(9798, 6988, 3), scale = 1f))
-        Assert.assertEquals(2, findSampleSize(imageSize, sampledSize(9798, 6988, 2), scale = 1f))
-        Assert.assertEquals(1, findSampleSize(imageSize, sampledSize(9798, 6988, 1), scale = 1f))
-        Assert.assertEquals(1, findSampleSize(imageSize, sampledSize(9798, 6988, 0.9), scale = 1f))
-        Assert.assertEquals(1, findSampleSize(imageSize, sampledSize(9798, 6988, 0.1), scale = 1f))
+        Assert.assertEquals(16, findSampleSize(Size(800, 800), Size(50, 50), 1f))
+        Assert.assertEquals(8, findSampleSize(Size(800, 800), Size(51, 51), 1f))
+        Assert.assertEquals(8, findSampleSize(Size(800, 800), Size(99, 99), 1f))
+        Assert.assertEquals(8, findSampleSize(Size(800, 800), Size(100, 100), 1f))
+        Assert.assertEquals(4, findSampleSize(Size(800, 800), Size(101, 101), 1f))
+        Assert.assertEquals(4, findSampleSize(Size(800, 800), Size(199, 199), 1f))
+        Assert.assertEquals(4, findSampleSize(Size(800, 800), Size(200, 200), 1f))
+        Assert.assertEquals(2, findSampleSize(Size(800, 800), Size(201, 201), 1f))
+        Assert.assertEquals(2, findSampleSize(Size(800, 800), Size(399, 399), 1f))
+        Assert.assertEquals(2, findSampleSize(Size(800, 800), Size(400, 400), 1f))
+        Assert.assertEquals(1, findSampleSize(Size(800, 800), Size(401, 401), 1f))
+        Assert.assertEquals(1, findSampleSize(Size(800, 800), Size(799, 799), 1f))
+        Assert.assertEquals(1, findSampleSize(Size(800, 800), Size(800, 800), 1f))
+        Assert.assertEquals(1, findSampleSize(Size(800, 800), Size(801, 801), 1f))
+        Assert.assertEquals(1, findSampleSize(Size(800, 800), Size(10000, 10000), 1f))
 
-        val previewSize = sampledSize(9798, 6988, 16)
-        Assert.assertEquals(256, findSampleSize(imageSize, previewSize, scale = 0.1f))
-        Assert.assertEquals(32, findSampleSize(imageSize, previewSize, scale = 0.9f))
-        Assert.assertEquals(16, findSampleSize(imageSize, previewSize, scale = 1f))
-        Assert.assertEquals(8, findSampleSize(imageSize, previewSize, scale = 2f))
-        Assert.assertEquals(8, findSampleSize(imageSize, previewSize, scale = 3f))
-        Assert.assertEquals(4, findSampleSize(imageSize, previewSize, scale = 4f))
-        Assert.assertEquals(4, findSampleSize(imageSize, previewSize, scale = 5f))
-        Assert.assertEquals(4, findSampleSize(imageSize, previewSize, scale = 6f))
-        Assert.assertEquals(4, findSampleSize(imageSize, previewSize, scale = 7f))
-        Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 8f))
-        Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 9f))
-        Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 10f))
-        Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 11f))
-        Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 12f))
-        Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 13f))
-        Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 14f))
-        Assert.assertEquals(2, findSampleSize(imageSize, previewSize, scale = 15f))
-        Assert.assertEquals(1, findSampleSize(imageSize, previewSize, scale = 16f))
-        Assert.assertEquals(1, findSampleSize(imageSize, previewSize, scale = 17f))
+        Assert.assertEquals(
+            findSampleSize(Size(800, 800), Size(200, 200), 1f),
+            findSampleSize(Size(800, 800), Size(100, 100), 2f)
+        )
+        Assert.assertEquals(
+            findSampleSize(Size(800, 800), Size(300, 300), 1f),
+            findSampleSize(Size(800, 800), Size(100, 100), 3f)
+        )
+        Assert.assertEquals(
+            findSampleSize(Size(800, 800), Size(400, 400), 1f),
+            findSampleSize(Size(800, 800), Size(100, 100), 4f)
+        )
+        Assert.assertEquals(
+            findSampleSize(Size(800, 800), Size(700, 700), 1f),
+            findSampleSize(Size(800, 800), Size(100, 100), 7f)
+        )
+        Assert.assertEquals(
+            findSampleSize(Size(800, 800), Size(800, 800), 1f),
+            findSampleSize(Size(800, 800), Size(100, 100), 8f)
+        )
     }
 
     @Test
@@ -365,7 +361,10 @@ class TilesUtilsTest {
         )
     }
 
-    private fun findIntersectionTilesByRect(tiles: List<Tile>, rect: Rect): Pair<List<Tile>, List<Tile>> {
+    private fun findIntersectionTilesByRect(
+        tiles: List<Tile>,
+        rect: Rect
+    ): Pair<List<Tile>, List<Tile>> {
         return tiles.partition { tile -> tile.srcRect.isIntersection(rect) }
     }
 

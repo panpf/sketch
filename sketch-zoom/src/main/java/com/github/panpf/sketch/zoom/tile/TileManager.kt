@@ -23,6 +23,7 @@ import android.graphics.Paint
 import android.graphics.Paint.Style.STROKE
 import android.graphics.Rect
 import androidx.annotation.MainThread
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.withSave
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CountBitmap
@@ -40,7 +41,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.roundToInt
 
 class TileManager constructor(
     context: Context,
@@ -77,14 +77,12 @@ class TileManager constructor(
 //                reset()
             }
         }
-    var showTileBounds = false
-        set(value) {
-            field = value
-            tiles.invalidateView()
-        }
 
     init {
-
+        logger.d(Tiles.MODULE) {
+            val tileMapInfos = tileMap.keys.sortedDescending().map { "${it}:${tileMap[it]?.size}" }
+            "tileMap. $tileMapInfos"
+        }
     }
 
     fun refreshTiles(previewSize: Size, previewVisibleRect: Rect, drawMatrix: Matrix) {
@@ -100,6 +98,11 @@ class TileManager constructor(
             lastTileList?.forEach { freeTile(it) }
             lastTileList = tileMap[sampleSize]
             lastSampleSize = sampleSize
+            if (lastTileList?.size == 1) {
+                // Tiles are not required when the current is a minimal preview
+                lastTileList = null
+                lastSampleSize = null
+            }
         }
         val tileList = lastTileList
         if (tileList == null) {
@@ -143,6 +146,7 @@ class TileManager constructor(
             return
         }
         val previewScaled = imageSize.width / previewSize.width.toFloat()
+        // todo 错位
         val imageVisibleRect = Rect(
             floor(previewVisibleRect.left * previewScaled).toInt(),
             floor(previewVisibleRect.top * previewScaled).toInt(),
@@ -171,12 +175,13 @@ class TileManager constructor(
                         )
                     }
 
-                    if (showTileBounds) {
-                        tileBoundsPaint.color = when {
+                    if (tiles.showTileBounds) {
+                        val boundsColor = when {
                             tileBitmap != null -> Color.GREEN
                             tile.loadJob?.isActive == true -> Color.RED
                             else -> Color.YELLOW
                         }
+                        tileBoundsPaint.color = ColorUtils.setAlphaComponent(boundsColor, 60)
                         canvas.drawRect(tileDrawRect, tileBoundsPaint)
                     }
                 }

@@ -75,7 +75,7 @@ internal fun findSampleSize(
 
     val scaledWidthRatio = (imageWidth / (previewWidth * scale))
     var sampleSize = 1
-    while (scaledWidthRatio > sampleSize) {
+    while (scaledWidthRatio >= sampleSize * 2) {
         sampleSize *= 2
     }
     return sampleSize
@@ -87,7 +87,10 @@ internal fun findSampleSize(
 internal fun Rect.isIntersection(otherRect: Rect): Boolean {
     val thisRect = this
     when {
-        otherRect.right <= thisRect.left || otherRect.bottom <= thisRect.top || otherRect.left >= thisRect.right || otherRect.top >= thisRect.bottom -> {
+        otherRect.right <= thisRect.left
+                || otherRect.bottom <= thisRect.top
+                || otherRect.left >= thisRect.right
+                || otherRect.top >= thisRect.bottom -> {
             // No intersection
             return false
         }
@@ -95,15 +98,22 @@ internal fun Rect.isIntersection(otherRect: Rect): Boolean {
             // same
             return true
         }
-        otherRect.left <= thisRect.left && otherRect.top <= thisRect.top && otherRect.right >= thisRect.right && otherRect.bottom >= thisRect.bottom -> {
+        otherRect.left <= thisRect.left
+                && otherRect.top <= thisRect.top
+                && otherRect.right >= thisRect.right
+                && otherRect.bottom >= thisRect.bottom -> {
             // outside
             return true
         }
-        otherRect.left >= thisRect.left && otherRect.top >= thisRect.top && otherRect.right <= thisRect.right && otherRect.bottom <= thisRect.bottom -> {
+        otherRect.left >= thisRect.left
+                && otherRect.top >= thisRect.top
+                && otherRect.right <= thisRect.right
+                && otherRect.bottom <= thisRect.bottom -> {
             // inside
             return true
         }
-        (otherRect.left >= thisRect.left && otherRect.left < thisRect.right) || (otherRect.right >= thisRect.left && otherRect.right < thisRect.right) -> {
+        (otherRect.left >= thisRect.left && otherRect.left < thisRect.right)
+                || (otherRect.right >= thisRect.left && otherRect.right < thisRect.right) -> {
             when {
                 otherRect.top <= thisRect.top && otherRect.bottom >= thisRect.bottom -> {
                     return true
@@ -122,7 +132,8 @@ internal fun Rect.isIntersection(otherRect: Rect): Boolean {
                 }
             }
         }
-        (otherRect.top >= thisRect.top && otherRect.top < thisRect.bottom) || (otherRect.bottom >= thisRect.top && otherRect.bottom < thisRect.bottom) -> {
+        (otherRect.top >= thisRect.top && otherRect.top < thisRect.bottom)
+                || (otherRect.bottom >= thisRect.top && otherRect.bottom < thisRect.bottom) -> {
             return when {
                 otherRect.left <= thisRect.left && otherRect.right >= thisRect.right -> {
                     true

@@ -34,7 +34,6 @@ class Tiles constructor(
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )
-    private val lastPreviewVisibleRect = Rect()
 
     private var _destroyed: Boolean = false
     private var tileManager: TileManager? = null
@@ -46,7 +45,7 @@ class Tiles constructor(
     var showTileBounds = false
         set(value) {
             field = value
-            tileManager?.showTileBounds = value
+            invalidateView()
         }
     var viewSize: Size = viewSize
         internal set(value) {
@@ -77,19 +76,11 @@ class Tiles constructor(
                 TileDecoder.Factory(context, imageUri, disabledExifOrientation).create()
             } ?: return@launch
             this@Tiles.tileManager =
-                TileManager(context, imageUri, viewSize, tileDecoder, this@Tiles).apply {
-                    this.showTileBounds = this@Tiles.showTileBounds
-                }
+                TileManager(context, imageUri, viewSize, tileDecoder, this@Tiles)
             refreshTiles()
         }
 
         zoomer.addOnMatrixChangeListener {
-            if (zoomer.rotateDegrees % 90 != 0) {
-                logger.w(MODULE, "rotate degrees must be in multiples of 90. $imageUri")
-                return@addOnMatrixChangeListener
-            }
-            zoomer.getDrawMatrix(tempDrawMatrix)
-            zoomer.getVisibleRect(tempVisibleRect)
             refreshTiles()
         }
     }
@@ -120,11 +111,19 @@ class Tiles constructor(
             logger.d(MODULE) { "refreshTiles. initializing. $imageUri" }
             return
         }
+        if (zoomer.rotateDegrees % 90 != 0) {
+            logger.w(MODULE, "rotate degrees must be in multiples of 90. $imageUri")
+            return
+        }
 
         val previewSize = zoomer.drawableSize
         val zooming = zoomer.isZooming
-        val drawMatrix = tempDrawMatrix
-        val previewVisibleRect = tempVisibleRect
+        val drawMatrix = tempDrawMatrix.apply {
+            zoomer.getDrawMatrix(this)
+        }
+        val previewVisibleRect = tempVisibleRect.apply {
+            zoomer.getVisibleRect(this)
+        }
 
         if (previewVisibleRect.isEmpty) {
             logger.w(MODULE) {
@@ -139,22 +138,6 @@ class Tiles constructor(
                 "refreshTiles. zooming. $imageUri"
             }
             return
-        }
-
-        if (previewVisibleRect.width() == previewSize.width && previewVisibleRect.height() == previewSize.height) {
-            logger.d(MODULE) {
-                "refreshTiles. full display. previewSize=$previewSize, previewVisibleRect=${previewVisibleRect}. $imageUri"
-            }
-            cleanMemory()
-            return
-        }
-        if (lastPreviewVisibleRect == previewVisibleRect) {
-            logger.d(MODULE) {
-                "refreshTiles. previewVisibleRect no changed. previewVisibleRect=$previewVisibleRect. $imageUri"
-            }
-            return
-        } else {
-            lastPreviewVisibleRect.set(previewVisibleRect)
         }
 
         tileManager?.refreshTiles(previewSize, previewVisibleRect, drawMatrix)
