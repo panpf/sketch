@@ -34,5 +34,8 @@ class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
         binding.imageFragmentZoomImageView.displayImage(imageDetail.firstMiddenUrl) {
             placeholderImage(StateImage.memoryCache(imageDetail.placeholderImageMemoryKey, null))
         }
+        binding.imageFragmentZoomImageView.apply {
+            zoomAbility.useTiles = imageDetail.firstMiddenUrl.contains("sample_huge_card.png")
+        }
     }
 }

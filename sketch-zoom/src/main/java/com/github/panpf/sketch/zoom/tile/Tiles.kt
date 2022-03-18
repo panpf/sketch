@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Rect
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.zoom.Zoomer
@@ -24,25 +25,28 @@ class Tiles constructor(
 ) {
 
     companion object {
-        private const val MODULE = "Tiles"
+        internal const val MODULE = "Tiles"
     }
 
     private val tempDrawMatrix = Matrix()
     private val tempVisibleRect = Rect()
-    private val logger = context.sketch.logger
-    private val scope: CoroutineScope = CoroutineScope(
+    private val logger: Logger = context.sketch.logger
+    private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )
-    private val lastVisibleRect = Rect()
+    private val lastPreviewVisibleRect = Rect()
 
     private var _destroyed: Boolean = false
     private var tileManager: TileManager? = null
-    internal var onTileChangedListenerList: List<OnTileChangedListener>? = null
+    private var onTileChangedListenerList: List<OnTileChangedListener>? = null
 
-    var isShowTileBounds = false
+    val destroyed: Boolean
+        get() = _destroyed
+
+    var showTileBounds = false
         set(value) {
             field = value
-            invalidateView()
+            tileManager?.showTileBounds = value
         }
     var viewSize: Size = viewSize
         internal set(value) {
@@ -72,7 +76,10 @@ class Tiles constructor(
             val tileDecoder = withContext(Dispatchers.IO) {
                 TileDecoder.Factory(context, imageUri, disabledExifOrientation).create()
             } ?: return@launch
-            this@Tiles.tileManager = TileManager(context, imageUri, viewSize, tileDecoder)
+            this@Tiles.tileManager =
+                TileManager(context, imageUri, viewSize, tileDecoder, this@Tiles).apply {
+                    this.showTileBounds = this@Tiles.showTileBounds
+                }
             refreshTiles()
         }
 
@@ -101,27 +108,27 @@ class Tiles constructor(
     private fun refreshTiles() {
         requiredMainThread()
         if (destroyed) {
-            logger.d(MODULE) { "Destroyed. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. destroyed. $imageUri" }
             return
         }
         if (paused) {
-            logger.d(MODULE) { "Paused. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. paused. $imageUri" }
             return
         }
         val manager = tileManager
         if (manager == null) {
-            logger.d(MODULE) { "Initializing. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. initializing. $imageUri" }
             return
         }
 
-        val drawableSize = zoomer.drawableSize
+        val previewSize = zoomer.drawableSize
         val zooming = zoomer.isZooming
         val drawMatrix = tempDrawMatrix
-        val visibleRect = tempVisibleRect
+        val previewVisibleRect = tempVisibleRect
 
-        if (visibleRect.isEmpty || drawableSize.isEmpty || viewSize.isEmpty) {
+        if (previewVisibleRect.isEmpty) {
             logger.w(MODULE) {
-                "params is empty. visibleRect=${visibleRect}, drawableSize=$drawableSize, viewSize=$viewSize. $imageUri"
+                "refreshTiles. previewVisibleRect is empty. previewVisibleRect=${previewVisibleRect}. $imageUri"
             }
             cleanMemory()
             return
@@ -129,37 +136,37 @@ class Tiles constructor(
 
         if (zooming) {
             logger.d(MODULE) {
-                "zooming. visibleRect=${visibleRect}. $imageUri"
+                "refreshTiles. zooming. $imageUri"
             }
             return
         }
 
-        if (visibleRect.width() == drawableSize.width && visibleRect.height() == drawableSize.height) {
+        if (previewVisibleRect.width() == previewSize.width && previewVisibleRect.height() == previewSize.height) {
             logger.d(MODULE) {
-                "full display. visibleRect=${visibleRect}, drawableSize=$drawableSize. $imageUri"
+                "refreshTiles. full display. previewSize=$previewSize, previewVisibleRect=${previewVisibleRect}. $imageUri"
             }
             cleanMemory()
             return
         }
-        if (lastVisibleRect == visibleRect) {
+        if (lastPreviewVisibleRect == previewVisibleRect) {
             logger.d(MODULE) {
-                "visible rect no changed. visibleRect=$visibleRect. $imageUri"
+                "refreshTiles. previewVisibleRect no changed. previewVisibleRect=$previewVisibleRect. $imageUri"
             }
             return
         } else {
-            lastVisibleRect.set(visibleRect)
+            lastPreviewVisibleRect.set(previewVisibleRect)
         }
 
-        tileManager?.refreshTiles(visibleRect, drawableSize, drawMatrix)
+        tileManager?.refreshTiles(previewSize, previewVisibleRect, drawMatrix)
     }
 
     fun onDraw(canvas: Canvas) {
         if (destroyed) return
-        tileManager?.onDraw(canvas)
+        val previewSize = zoomer.drawableSize
+        val drawMatrix = tempDrawMatrix
+        val previewVisibleRect = tempVisibleRect
+        tileManager?.onDraw(canvas, previewSize, previewVisibleRect, drawMatrix)
     }
-
-    val destroyed: Boolean
-        get() = _destroyed
 
     internal fun invalidateView() {
         zoomer.view.invalidate()

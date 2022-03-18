@@ -12,7 +12,7 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
-import android.widget.ImageView.ScaleType.MATRIX
+import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.LifecycleEventObserver
@@ -35,6 +35,7 @@ import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
 import com.github.panpf.sketch.zoom.block.Blocks
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
+import com.github.panpf.sketch.zoom.tile.Tiles
 
 class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
     DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver {
@@ -44,11 +45,19 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     }
 
     private var zoomer: Zoomer? = null
+
     private var blocks: Blocks? = null
+    private var tiles: Tiles? = null
     private val lifecycleEventObserver = LifecycleEventObserver { _, event ->
         when (event) {
-            ON_PAUSE -> blocks?.setPause(true)
-            ON_RESUME -> blocks?.setPause(false)
+            ON_PAUSE -> {
+                blocks?.setPause(true)
+                tiles?.paused = true
+            }
+            ON_RESUME -> {
+                blocks?.setPause(false)
+                tiles?.paused = false
+            }
             else -> {}
         }
     }
@@ -60,6 +69,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override var host: Host? = null
 
+    var useTiles: Boolean = false
     var scrollBarEnabled: Boolean = true
         set(value) {
             field = value
@@ -128,6 +138,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             if (field != value) {
                 field = value
                 blocks?.isShowBlockBounds = value
+                tiles?.showTileBounds = value
             }
         }
 
@@ -333,6 +344,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override fun onDraw(canvas: Canvas) {
         blocks?.onDraw(canvas)
+        tiles?.onDraw(canvas)
         zoomer?.onDraw(canvas)
     }
 
@@ -349,12 +361,13 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         blocks?.setPause(visibility != View.VISIBLE)
+        tiles?.paused = visibility != View.VISIBLE
     }
 
     private fun initialize() {
         val host = host ?: return
         this.zoomer = tryNewZoomer()?.apply {
-            host.superScaleType = MATRIX
+            host.superScaleType = ScaleType.MATRIX
 
             scrollBarEnabled = this@ZoomAbility.scrollBarEnabled
             zoomAnimationDuration = this@ZoomAbility.zoomAnimationDuration
@@ -375,8 +388,14 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
                 addOnDragFlingListener(it)
             }
         }
-        this.blocks = zoomer?.let { tryNewBlocks(it) }?.apply {
-            isShowBlockBounds = this@ZoomAbility.showBlockBounds
+        if (useTiles) {
+            this.tiles = zoomer?.let { tryNewTiles(it) }?.apply {
+                showTileBounds = this@ZoomAbility.showBlockBounds
+            }
+        } else {
+            this.blocks = zoomer?.let { tryNewBlocks(it) }?.apply {
+                isShowBlockBounds = this@ZoomAbility.showBlockBounds
+            }
         }
     }
 
@@ -390,6 +409,9 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
         blocks?.recycle("destroy")
         blocks = null
+
+        tiles?.destroy()
+        tiles = null
     }
 
     private fun tryNewZoomer(): Zoomer? {
@@ -486,5 +508,61 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val exifOrientation: Int = previewDrawable.imageExifOrientation
         val imageUri = previewDrawable.requestUri
         return Blocks(host.context, zoomer, imageUri, exifOrientation)
+    }
+
+    private fun tryNewTiles(zoomer: Zoomer): Tiles? {
+        val host = host ?: return null
+        val logger = host.context.sketch.logger
+        val view = host.view
+
+        val viewWidth = view.width - view.paddingLeft - view.paddingRight
+        val viewHeight = view.height - view.paddingTop - view.paddingBottom
+        if (viewWidth <= 0 || viewHeight <= 0) {
+            logger.d(MODULE) { "View size error" }
+            return null
+        }
+        val viewSize = Size(viewWidth, viewHeight)
+
+        val previewDrawable = host.drawable?.getLastDrawable()
+        if (previewDrawable !is SketchDrawable || previewDrawable is Animatable) {
+            logger.d(MODULE) { "Can't use Blocks" }
+            return null
+        }
+
+        val previewWidth = previewDrawable.bitmapInfo.width
+        val previewHeight = previewDrawable.bitmapInfo.height
+        val imageWidth = previewDrawable.imageInfo.width
+        val imageHeight = previewDrawable.imageInfo.height
+        val mimeType = previewDrawable.imageInfo.mimeType
+        val key = previewDrawable.requestKey
+
+        if (previewWidth >= imageWidth && previewHeight >= imageHeight) {
+            logger.d(MODULE) {
+                "Don't need to use Blocks. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+            }
+            return null
+        }
+        if (ImageFormat.valueOfMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
+            logger.d(MODULE) {
+                "MimeType does not support Blocks. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+            }
+            return null
+        }
+
+        logger.d(MODULE) {
+            "Use Blocks. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+        }
+        val exifOrientation: Int = previewDrawable.imageExifOrientation
+        val imageUri = previewDrawable.requestUri
+        return Tiles(
+            host.context,
+            zoomer,
+            imageUri,
+            viewSize,
+            exifOrientation != ExifInterface.ORIENTATION_UNDEFINED
+        )
     }
 }
