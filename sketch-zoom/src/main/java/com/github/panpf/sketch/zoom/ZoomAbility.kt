@@ -34,6 +34,7 @@ import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
 import com.github.panpf.sketch.zoom.block.Blocks
+import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 import com.github.panpf.sketch.zoom.tile.Tiles
 
@@ -109,7 +110,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         set(value) {
             if (field != value) {
                 field = value
-                zoomer?.scalesFactory = value ?: AdaptiveTwoLevelScalesFactory()
+                zoomer?.scalesFactory = value ?: DefaultScalesFactory()
             }
         }
     var zoomAnimationDuration: Int = 200

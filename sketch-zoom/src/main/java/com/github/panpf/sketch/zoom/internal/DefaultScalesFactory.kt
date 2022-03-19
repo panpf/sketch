@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom
+package com.github.panpf.sketch.zoom.internal
 
 import android.content.Context
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.zoom.ReadModeDecider
+import com.github.panpf.sketch.zoom.Scales
+import com.github.panpf.sketch.zoom.ScalesFactory
 
-/**
- * 根据预览图尺寸、原始图尺寸和 ImageView 尺寸计算出两级缩放比例
- */
-class AdaptiveTwoLevelScalesFactory : ScalesFactory {
+class DefaultScalesFactory : ScalesFactory {
 
     override fun create(
         context: Context,
@@ -118,7 +118,7 @@ class AdaptiveTwoLevelScalesFactory : ScalesFactory {
         val zoomScales: FloatArray = floatArrayOf(minZoomScale, maxZoomScale) // 双击缩放所使用的比例
         return Scales(
             min = minZoomScale,
-            max = maxZoomScale,
+            max = maxZoomScale.times(2f),
             init = initZoomScale,
             full = fullZoomScale,
             fill = fillZoomScale,

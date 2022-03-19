@@ -12,6 +12,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
 import com.github.panpf.sketch.zoom.internal.TapHelper
@@ -97,7 +98,7 @@ class Zoomer constructor(
                 reset()
             }
         }
-    var scalesFactory: ScalesFactory = AdaptiveTwoLevelScalesFactory()
+    var scalesFactory: ScalesFactory = DefaultScalesFactory()
         internal set(value) {
             if (field != value) {
                 field = value

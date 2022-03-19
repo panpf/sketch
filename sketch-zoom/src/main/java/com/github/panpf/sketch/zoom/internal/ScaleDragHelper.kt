@@ -418,7 +418,7 @@ internal class ScaleDragHelper constructor(
         val scale = zoomScale.format(2)
         val fullZoomScale = zoomer.fullZoomScale.format(2)
         if (scale == fullZoomScale) {
-            zoom(zoomer.maxZoomScale, newX, newY, false)
+            zoom(zoomer.originZoomScale, newX, newY, false)
         }
         val drawRectF = RectF()
         getDrawRect(drawRectF)
