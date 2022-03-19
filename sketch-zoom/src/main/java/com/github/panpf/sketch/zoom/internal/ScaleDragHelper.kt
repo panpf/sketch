@@ -241,17 +241,12 @@ internal class ScaleDragHelper constructor(
     private fun resetBaseMatrix() {
         baseMatrix.reset()
         val viewSize = zoomer.viewSize
-        val imageSize = zoomer.imageSize
         val drawableSize = zoomer.drawableSize
         val scaleType = zoomer.scaleType
         val drawableWidth =
             if (zoomer.rotateDegrees % 180 == 0) drawableSize.width else drawableSize.height
         val drawableHeight =
             if (zoomer.rotateDegrees % 180 == 0) drawableSize.height else drawableSize.width
-        val imageWidth =
-            if (zoomer.rotateDegrees % 180 == 0) imageSize.width else imageSize.height
-        val imageHeight =
-            if (zoomer.rotateDegrees % 180 == 0) imageSize.height else imageSize.width
         val imageThanViewLarge = drawableWidth > viewSize.width || drawableHeight > viewSize.height
         val finalScaleType: ScaleType = if (scaleType == ScaleType.MATRIX) {
             ScaleType.FIT_CENTER
@@ -261,9 +256,9 @@ internal class ScaleDragHelper constructor(
             scaleType
         }
         val initScale = zoomer.zoomScales.initZoomScale
-        if (zoomer.readModeDecider?.shouldUseByHeight(imageWidth, imageHeight) == true) {
+        if (zoomer.readModeDecider?.shouldUseByHeight(drawableWidth, drawableHeight) == true) {
             baseMatrix.postScale(initScale, initScale)
-        } else if (zoomer.readModeDecider?.shouldUseByWidth(imageWidth, imageHeight) == true) {
+        } else if (zoomer.readModeDecider?.shouldUseByWidth(drawableWidth, drawableHeight) == true) {
             baseMatrix.postScale(initScale, initScale)
         } else if (finalScaleType == ScaleType.CENTER) {
             baseMatrix.postScale(initScale, initScale)

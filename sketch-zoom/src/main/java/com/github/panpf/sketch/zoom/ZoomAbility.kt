@@ -68,6 +68,20 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private val imageMatrix = Matrix()
 
     override var host: Host? = null
+        set(value) {
+            val oldZoomer = zoomer
+            if (oldZoomer != null) {
+                field?.superScaleType = oldZoomer.scaleType
+                oldZoomer.recycle()
+            }
+
+            field = value
+            val newZoomer = if (value != null) newZoomer(value) else null
+            zoomer = newZoomer
+            if (newZoomer != null) {
+                field?.superScaleType = ScaleType.MATRIX
+            }
+        }
 
     var useTiles: Boolean = false
     var scrollBarEnabled: Boolean = true
@@ -365,10 +379,40 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     }
 
     private fun initialize() {
-        val host = host ?: return
-        this.zoomer = tryNewZoomer()?.apply {
-            host.superScaleType = ScaleType.MATRIX
+        setZoomerDrawable()
+        if (useTiles) {
+            tiles?.destroy()
+            this.tiles = zoomer?.let { tryNewTiles(it) }?.apply {
+                showTileBounds = this@ZoomAbility.showBlockBounds
+            }
+        } else {
+            blocks?.recycle("replace")
+            this.blocks = zoomer?.let { tryNewBlocks(it) }?.apply {
+                isShowBlockBounds = this@ZoomAbility.showBlockBounds
+            }
+        }
+    }
 
+    private fun destroy() {
+        zoomer?.recycle()
+        blocks?.recycle("destroy")
+        blocks = null
+        tiles?.destroy()
+        tiles = null
+    }
+
+    private fun newZoomer(host: Host): Zoomer {
+        val scaleType = host.superScaleType
+        require(scaleType != ScaleType.MATRIX) {
+            "ScaleType cannot be MATRIX"
+        }
+        return Zoomer(
+            host.context,
+            view = host.view,
+            scaleType = scaleType,
+            readModeDecider = if (readModeEnabled) readModeDecider else null,
+            zoomScales = zoomScales,
+        ).apply {
             scrollBarEnabled = this@ZoomAbility.scrollBarEnabled
             zoomAnimationDuration = this@ZoomAbility.zoomAnimationDuration
             zoomInterpolator = this@ZoomAbility.zoomInterpolator
@@ -388,85 +432,18 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
                 addOnDragFlingListener(it)
             }
         }
-        if (useTiles) {
-            this.tiles = zoomer?.let { tryNewTiles(it) }?.apply {
-                showTileBounds = this@ZoomAbility.showBlockBounds
-            }
-        } else {
-            this.blocks = zoomer?.let { tryNewBlocks(it) }?.apply {
-                isShowBlockBounds = this@ZoomAbility.showBlockBounds
-            }
-        }
     }
 
-    private fun destroy() {
+    private fun setZoomerDrawable() {
         val host = host ?: return
-        zoomer?.apply {
-            recycle()
-            host.superScaleType = scaleType
-        }
-        zoomer = null
-
-        blocks?.recycle("destroy")
-        blocks = null
-
-        tiles?.destroy()
-        tiles = null
-    }
-
-    private fun tryNewZoomer(): Zoomer? {
-        val host = host ?: return null
-        val logger = host.context.sketch.logger
-        val view = host.view
-
-        val viewWidth = view.width - view.paddingLeft - view.paddingRight
-        val viewHeight = view.height - view.paddingTop - view.paddingBottom
-        if (viewWidth <= 0 || viewHeight <= 0) {
-            logger.d(MODULE) { "View size error" }
-            return null
-        }
-        val viewSize = Size(viewWidth, viewHeight)
-
+        val zoomer = zoomer ?: return
         val previewDrawable = host.drawable?.getLastDrawable()
-        if (previewDrawable !is SketchDrawable) {
-            logger.d(MODULE) { "Can't use Blocks" }
-            return null
+        zoomer.drawableSize =
+            Size(previewDrawable?.intrinsicWidth ?: 0, previewDrawable?.intrinsicHeight ?: 0)
+        if (previewDrawable is SketchDrawable) {
+            zoomer.imageSize =
+                Size(previewDrawable.imageInfo.width, previewDrawable.imageInfo.height)
         }
-        val previewWidth = previewDrawable.intrinsicWidth
-        val previewHeight = previewDrawable.intrinsicHeight
-        val imageWidth = previewDrawable.imageInfo.width
-        val imageHeight = previewDrawable.imageInfo.height
-        val mimeType = previewDrawable.imageInfo.mimeType
-        val key = previewDrawable.requestKey
-        if (previewWidth <= 0 || previewHeight <= 0 || imageWidth <= 0 || imageHeight <= 0) {
-            logger.d(MODULE) {
-                "imageSize or previewSize error. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
-            }
-            return null
-        }
-        val previewSize = Size(previewWidth, previewHeight)
-        val imageSize = Size(imageWidth, imageHeight)
-
-        logger.d(MODULE) {
-            "Use Zoomer. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
-        }
-
-        val scaleType = host.superScaleType
-        require(scaleType != ScaleType.MATRIX) {
-            "ScaleType cannot be MATRIX"
-        }
-        return Zoomer(
-            host.context,
-            view = host.view,
-            viewSize = viewSize,
-            imageSize = imageSize,
-            drawableSize = previewSize,
-            scaleType = scaleType,
-            readModeDecider = if (readModeEnabled) readModeDecider else null,
-            zoomScales = zoomScales,
-        )
     }
 
     private fun tryNewBlocks(zoomer: Zoomer): Blocks? {

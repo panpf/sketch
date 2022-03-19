@@ -86,7 +86,11 @@ class Tiles constructor(
     }
 
     fun destroy() {
+        if (_destroyed) return
         _destroyed = true
+        zoomer.removeOnMatrixChangeListener() {
+            refreshTiles()
+        }
         scope.cancel()
         tileManager?.destroy()
         tileManager = null

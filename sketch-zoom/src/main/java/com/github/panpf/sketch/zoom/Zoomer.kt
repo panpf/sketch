@@ -20,9 +20,7 @@ import kotlin.math.abs
 class Zoomer constructor(
     val context: Context,
     val view: View,
-    viewSize: Size,
-    val imageSize: Size,
-    val drawableSize: Size,
+//    viewSize: Size,
     scaleType: ScaleType,
     readModeDecider: ReadModeDecider?,
     zoomScales: ZoomScales = AdaptiveTwoLevelScales(),
@@ -54,6 +52,20 @@ class Zoomer constructor(
         })
     private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, this)
     private var _rotateDegrees = 0
+    var imageSize = Size(0, 0)
+        internal set(value) {
+            if (field != value) {
+                field = value
+                reset()
+            }
+        }
+    var drawableSize = Size(0, 0)
+        internal set(value) {
+            if (field != value) {
+                field = value
+                reset()
+            }
+        }
 
     private var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
     private var onRotateChangeListenerList: MutableSet<OnRotateChangeListener>? = null
@@ -65,7 +77,7 @@ class Zoomer constructor(
     var zoomInterpolator: Interpolator = AccelerateDecelerateInterpolator()
     var onViewLongPressListener: OnViewLongPressListener? = null
     var onViewTapListener: OnViewTapListener? = null
-    var viewSize: Size = viewSize
+    var viewSize = Size(0, 0)
         internal set(value) {
             if (field != value) {
                 field = value
@@ -133,14 +145,14 @@ class Zoomer constructor(
     }
 
     internal fun recycle() {
-        zoomScales.clean()
+//        zoomScales.clean()
         scaleDragHelper.recycle()
-        onViewLongPressListener = null
-        onViewTapListener = null
-        onMatrixChangeListenerList = null
-        onScaleChangeListenerList = null
-        onRotateChangeListenerList = null
-        onDragFlingListenerList = null
+//        onViewLongPressListener = null
+//        onViewTapListener = null
+//        onMatrixChangeListenerList = null
+//        onScaleChangeListenerList = null
+//        onRotateChangeListenerList = null
+//        onDragFlingListenerList = null
     }
 
     internal fun onDraw(canvas: Canvas) {
