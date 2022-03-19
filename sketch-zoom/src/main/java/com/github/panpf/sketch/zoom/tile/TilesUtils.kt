@@ -81,79 +81,9 @@ internal fun findSampleSize(
     return sampleSize
 }
 
-/**
- * Returns true if the current Rect has an intersection with [otherRect]. Support boundary overlap
- */
-internal fun Rect.isIntersection(otherRect: Rect): Boolean {
-    val thisRect = this
-    when {
-        otherRect.right <= thisRect.left
-                || otherRect.bottom <= thisRect.top
-                || otherRect.left >= thisRect.right
-                || otherRect.top >= thisRect.bottom -> {
-            // No intersection
-            return false
-        }
-        otherRect == thisRect -> {
-            // same
-            return true
-        }
-        otherRect.left <= thisRect.left
-                && otherRect.top <= thisRect.top
-                && otherRect.right >= thisRect.right
-                && otherRect.bottom >= thisRect.bottom -> {
-            // outside
-            return true
-        }
-        otherRect.left >= thisRect.left
-                && otherRect.top >= thisRect.top
-                && otherRect.right <= thisRect.right
-                && otherRect.bottom <= thisRect.bottom -> {
-            // inside
-            return true
-        }
-        (otherRect.left >= thisRect.left && otherRect.left < thisRect.right)
-                || (otherRect.right >= thisRect.left && otherRect.right < thisRect.right) -> {
-            when {
-                otherRect.top <= thisRect.top && otherRect.bottom >= thisRect.bottom -> {
-                    return true
-                }
-                otherRect.top >= thisRect.top && otherRect.bottom <= thisRect.bottom -> {
-                    return true
-                }
-                otherRect.top >= thisRect.top && otherRect.top < thisRect.bottom -> {
-                    return true
-                }
-                otherRect.bottom >= thisRect.top && otherRect.bottom < thisRect.bottom -> {
-                    return true
-                }
-                else -> {
-                    return false
-                }
-            }
-        }
-        (otherRect.top >= thisRect.top && otherRect.top < thisRect.bottom)
-                || (otherRect.bottom >= thisRect.top && otherRect.bottom < thisRect.bottom) -> {
-            return when {
-                otherRect.left <= thisRect.left && otherRect.right >= thisRect.right -> {
-                    true
-                }
-                otherRect.left >= thisRect.left && otherRect.right <= thisRect.right -> {
-                    true
-                }
-                otherRect.left >= thisRect.left && otherRect.left < thisRect.right -> {
-                    true
-                }
-                otherRect.right >= thisRect.left && otherRect.right < thisRect.right -> {
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
-        }
-        else -> {
-            return false
-        }
-    }
+internal fun Rect.crossWith(other: Rect): Boolean {
+    return this.left < other.right
+            && this.right > other.left
+            && this.top < other.bottom
+            && this.bottom > other.top
 }

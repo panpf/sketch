@@ -115,20 +115,12 @@ fun calculateSampleSizeWithTolerance(
     @Px targetHeight: Int,
 ): Int = _calculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1.1f)
 
-fun calculateSamplingSize(size: Int, sampleSize: Double): Int {
-    return ceil((size / sampleSize)).toInt()
-}
-
 fun calculateSamplingSize(size: Int, sampleSize: Int): Int {
-    return calculateSamplingSize(size, sampleSize.toDouble())
-}
-
-fun calculateSamplingSizeForRegion(size: Int, sampleSize: Double): Int {
-    return floor((size / sampleSize)).toInt()
+    return ceil((size / sampleSize.toDouble())).toInt()
 }
 
 fun calculateSamplingSizeForRegion(size: Int, sampleSize: Int): Int {
-    return calculateSamplingSizeForRegion(size, sampleSize.toDouble())
+    return floor((size / sampleSize.toDouble())).toInt()
 }
 
 fun computeSizeMultiplier(

@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.zoom.tile
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
@@ -57,7 +58,7 @@ class TileManager constructor(
     private val tileBoundsPaint: Paint by lazy {
         Paint().apply {
             style = STROKE
-            strokeWidth = 1f
+            strokeWidth = 1f * Resources.getSystem().displayMetrics.density + 0.5f
         }
     }
     private val tileMap: Map<Int, List<Tile>> = initializeTileMap(decoder.imageSize, viewSize)
@@ -127,7 +128,7 @@ class TileManager constructor(
                     "zoomScale=$zoomScale, sampleSize=$sampleSize. $imageUri"
         }
         tileList.forEach {
-            if (it.srcRect.isIntersection(imageVisibleRect)) {
+            if (it.srcRect.crossWith(imageVisibleRect)) {
                 loadTile(it)
             } else {
                 freeTile(it)
@@ -157,7 +158,7 @@ class TileManager constructor(
         canvas.withSave {
             canvas.concat(drawMatrix)
             tileList.forEach { tile ->
-                if (tile.srcRect.isIntersection(imageVisibleRect)) {
+                if (tile.srcRect.crossWith(imageVisibleRect)) {
                     val tileBitmap = tile.bitmap
                     val tileSrcRect = tile.srcRect
                     val tileDrawRect = Rect(
