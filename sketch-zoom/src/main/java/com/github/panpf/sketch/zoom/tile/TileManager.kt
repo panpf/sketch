@@ -38,6 +38,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -230,7 +231,11 @@ class TileManager constructor(
         }
 
         tile.loadJob = scope.async(decodeDispatcher) {
-            val bitmap = decoder.decode(tile.key, tile)
+            val bitmap = decoder.decode(tile)
+            if (!isActive) {
+                bitmapPool.free(bitmap)
+                return@async
+            }
             withContext(Dispatchers.Main) {
                 if (bitmap != null) {
                     logger.d(Tiles.MODULE) {

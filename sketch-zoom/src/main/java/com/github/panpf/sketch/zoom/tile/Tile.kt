@@ -17,22 +17,6 @@ class Tile constructor(val srcRect: Rect, val inSampleSize: Int) {
         get() = countBitmap?.bitmap
     var loadJob: Job? = null
 
-    // 用来取消解码任务，开始解码这个碎片的时候会获取当时的key
-    // 然后在解码过程的各个环节都会检验key是否已经失效
-    // 因此如果想取消解码这个碎片，只需刷新key即可
-    private val keyCounter = KeyCounter()
-
-    fun isExpired(key: Int): Boolean {
-        return keyCounter.key != key
-    }
-
-    fun refreshKey() {
-        keyCounter.refresh()
-    }
-
-    val key: Int
-        get() = keyCounter.key
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -42,7 +26,6 @@ class Tile constructor(val srcRect: Rect, val inSampleSize: Int) {
         if (srcRect != other.srcRect) return false
         if (inSampleSize != other.inSampleSize) return false
         if (bitmap != other.bitmap) return false
-        if (keyCounter != other.keyCounter) return false
 
         return true
     }
@@ -51,11 +34,10 @@ class Tile constructor(val srcRect: Rect, val inSampleSize: Int) {
         var result = srcRect.hashCode()
         result = 31 * result + inSampleSize
         result = 31 * result + (bitmap?.hashCode() ?: 0)
-        result = 31 * result + keyCounter.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Tile(srcRect=$srcRect, inSampleSize=$inSampleSize, key=${keyCounter.key}, bitmap=${bitmap})"
+        return "Tile(srcRect=$srcRect, inSampleSize=$inSampleSize, bitmap=${bitmap})"
     }
 }

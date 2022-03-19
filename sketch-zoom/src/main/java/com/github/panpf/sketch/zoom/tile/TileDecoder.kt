@@ -51,9 +51,9 @@ class TileDecoder private constructor(
 ) {
 
     private val logger: Logger = context.sketch.logger
-    private var _destroyed: Boolean = false
     private val bitmapPool: BitmapPool = context.sketch.bitmapPool
-    private val decoderPool: BitmapRegionDecoderPool = BitmapRegionDecoderPool()
+    private val decoderPool = LinkedList<BitmapRegionDecoder>()
+    private var _destroyed: Boolean = false
     private var disableInBitmap: Boolean = false
 
     val imageSize: Size by lazy {
@@ -62,35 +62,15 @@ class TileDecoder private constructor(
     val destroyed: Boolean
         get() = _destroyed
 
-    private fun createBitmapRegionDecoder(): BitmapRegionDecoder? =
-        dataSource.newInputStream().use {
-            if (VERSION.SDK_INT >= VERSION_CODES.S) {
-                BitmapRegionDecoder.newInstance(it)
-            } else {
-                @Suppress("DEPRECATION")
-                BitmapRegionDecoder.newInstance(it, false)
+    @WorkerThread
+    fun decode(tile: Tile): Bitmap? {
+        requiredWorkThread()
+        if (_destroyed) return null
+        return useDecoder { decoder ->
+            decodeRegion(decoder, tile.srcRect, tile.inSampleSize)?.let {
+                applyExifOrientation(it)
             }
         }
-
-    @WorkerThread
-    fun decode(key: Int, tile: Tile): Bitmap? {
-        requiredWorkThread()
-        if (_destroyed || tile.isExpired(key)) return null
-
-        val bitmapRegionDecoder = decoderPool.poll()
-            ?: createBitmapRegionDecoder()
-            ?: return null
-
-        val bitmap = decodeRegion(bitmapRegionDecoder, tile.srcRect, tile.inSampleSize)?.let {
-            applyExifOrientation(it)
-        }
-        decoderPool.put(bitmapRegionDecoder)
-        if (tile.isExpired(key)) {
-            bitmapPool.free(bitmap)
-            return null
-        }
-
-        return bitmap
     }
 
     @WorkerThread
@@ -117,7 +97,11 @@ class TileDecoder private constructor(
             val inBitmap = options.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
                 disableInBitmap = true
-                logger.e(Tiles.MODULE, throwable, "decodeRegion. Bitmap region decode inBitmap error. $imageUri")
+                logger.e(
+                    Tiles.MODULE,
+                    throwable,
+                    "decodeRegion. Bitmap region decode inBitmap error. $imageUri"
+                )
 
                 options.inBitmap = null
                 bitmapPool.free(inBitmap)
@@ -153,43 +137,47 @@ class TileDecoder private constructor(
     }
 
     fun destroy() {
-        _destroyed = true
-        decoderPool.destroy()
+        synchronized(decoderPool) {
+            _destroyed = true
+            decoderPool.forEach {
+                it.recycle()
+            }
+            decoderPool.clear()
+        }
     }
 
-    private class BitmapRegionDecoderPool {
+    @WorkerThread
+    private fun useDecoder(block: (decoder: BitmapRegionDecoder) -> Bitmap?): Bitmap? {
+        requiredWorkThread()
 
-        private val pool = LinkedList<BitmapRegionDecoder>()
-        private var destroyed = false
-
-        fun poll(): BitmapRegionDecoder? =
-            synchronized(this) {
-                if (destroyed) {
-                    null
-                } else {
-                    pool.poll()
-                }
-            }
-
-        fun put(decoder: BitmapRegionDecoder) {
-            synchronized(this) {
-                if (destroyed) {
-                    decoder.recycle()
-                } else {
-                    pool.add(decoder)
-                }
+        synchronized(decoderPool) {
+            if (destroyed) {
+                return null
             }
         }
 
-        fun destroy() {
-            synchronized(this) {
-                destroyed = true
-                pool.forEach {
-                    it.recycle()
-                }
-                pool.clear()
+        val bitmapRegionDecoder = synchronized(decoderPool) {
+            decoderPool.poll()
+        } ?: dataSource.newInputStream().use {
+            if (VERSION.SDK_INT >= VERSION_CODES.S) {
+                BitmapRegionDecoder.newInstance(it)
+            } else {
+                @Suppress("DEPRECATION")
+                BitmapRegionDecoder.newInstance(it, false)
+            }
+        } ?: return null
+
+        val bitmap = block(bitmapRegionDecoder)
+
+        synchronized(decoderPool) {
+            if (destroyed) {
+                bitmapRegionDecoder.recycle()
+            } else {
+                decoderPool.add(bitmapRegionDecoder)
             }
         }
+
+        return bitmap
     }
 
     class Factory(
