@@ -105,11 +105,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
                 }
             }
         }
-    var zoomScales: ZoomScales = AdaptiveTwoLevelScales()
+    var scalesFactory: ScalesFactory? = null
         set(value) {
             if (field != value) {
                 field = value
-                zoomer?.zoomScales = value
+                zoomer?.scalesFactory = value ?: AdaptiveTwoLevelScalesFactory()
             }
         }
     var zoomAnimationDuration: Int = 200
@@ -411,7 +411,6 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             view = host.view,
             scaleType = scaleType,
             readModeDecider = if (readModeEnabled) readModeDecider else null,
-            zoomScales = zoomScales,
         ).apply {
             scrollBarEnabled = this@ZoomAbility.scrollBarEnabled
             zoomAnimationDuration = this@ZoomAbility.zoomAnimationDuration
@@ -430,6 +429,9 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             }
             onDragFlingListenerList?.forEach {
                 addOnDragFlingListener(it)
+            }
+            this@ZoomAbility.scalesFactory?.let {
+                this@apply.scalesFactory = it
             }
         }
     }

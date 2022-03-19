@@ -23,7 +23,6 @@ class Zoomer constructor(
 //    viewSize: Size,
     scaleType: ScaleType,
     readModeDecider: ReadModeDecider?,
-    zoomScales: ZoomScales = AdaptiveTwoLevelScales(),
 ) {
 
     companion object {
@@ -98,7 +97,7 @@ class Zoomer constructor(
                 reset()
             }
         }
-    var zoomScales: ZoomScales = zoomScales
+    var scalesFactory: ScalesFactory = AdaptiveTwoLevelScalesFactory()
         internal set(value) {
             if (field != value) {
                 field = value
@@ -124,6 +123,17 @@ class Zoomer constructor(
             }
         }
 
+    var scales: Scales = scalesFactory.create(
+        context,
+        viewSize,
+        drawableSize,
+        _rotateDegrees,
+        imageSize,
+        scaleType,
+        readModeDecider
+    )
+        private set
+
 
     /**************************************** Internal ********************************************/
 
@@ -132,14 +142,14 @@ class Zoomer constructor(
     }
 
     private fun reset() {
-        zoomScales.reset(
+        scales = scalesFactory.create(
             context,
             viewSize,
-            imageSize,
             drawableSize,
+            _rotateDegrees,
+            imageSize,
             scaleType,
-            _rotateDegrees.toFloat(),
-            readModeDecider,
+            readModeDecider
         )
         scaleDragHelper.reset()
     }
@@ -186,8 +196,8 @@ class Zoomer constructor(
      */
     fun zoom(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
         val finalScale = scale
-            .coerceAtLeast(zoomScales.minZoomScale)
-            .coerceAtMost(zoomScales.maxZoomScale)
+            .coerceAtLeast(scales.min)
+            .coerceAtMost(scales.max)
         scaleDragHelper.zoom(finalScale, focalX, focalY, animate)
     }
 
@@ -272,24 +282,24 @@ class Zoomer constructor(
 
     /** Zoom ratio that makes the image fully visible */
     val fullZoomScale: Float
-        get() = zoomScales.fullZoomScale
+        get() = scales.full
 
     /** Gets the zoom that fills the image with the ImageView display */
     val fillZoomScale: Float
-        get() = zoomScales.fillZoomScale
+        get() = scales.fill
 
     /** Gets the scale that allows the image to be displayed at scale to scale */
     val originZoomScale: Float
-        get() = zoomScales.originZoomScale
+        get() = scales.origin
 
     val minZoomScale: Float
-        get() = zoomScales.minZoomScale
+        get() = scales.min
 
     val maxZoomScale: Float
-        get() = zoomScales.maxZoomScale
+        get() = scales.max
 
     val doubleClickZoomScales: FloatArray
-        get() = zoomScales.zoomScales
+        get() = scales.doubleClicks
 
     val isZooming: Boolean
         get() = scaleDragHelper.isZooming

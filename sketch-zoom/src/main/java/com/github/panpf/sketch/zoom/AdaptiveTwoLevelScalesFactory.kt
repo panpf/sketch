@@ -22,47 +22,25 @@ import com.github.panpf.sketch.util.Size
 /**
  * 根据预览图尺寸、原始图尺寸和 ImageView 尺寸计算出两级缩放比例
  */
-class AdaptiveTwoLevelScales : ZoomScales {
+class AdaptiveTwoLevelScalesFactory : ScalesFactory {
 
-    companion object {
-        private const val DEFAULT_MAXIMIZE_SCALE = 1.75f
-        private const val DEFAULT_MINIMUM_SCALE = 1.0f
-        private val DEFAULT_DOUBLE_CLICK_ZOOM_SCALES =
-            floatArrayOf(DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE)
-    }
-
-    override var minZoomScale = DEFAULT_MINIMUM_SCALE
-        private set
-    override var maxZoomScale = DEFAULT_MAXIMIZE_SCALE
-        private set
-    override var zoomScales = DEFAULT_DOUBLE_CLICK_ZOOM_SCALES // 双击缩放所使用的比例
-        private set
-    override var fullZoomScale = 0f
-        private set
-    override var fillZoomScale = 0f
-        private set
-    override var originZoomScale = 0f
-        private set
-    override var initZoomScale = 0f
-        private set
-
-    override fun reset(
+    override fun create(
         context: Context,
         viewSize: Size,
-        imageSize: Size,
         drawableSize: Size,
+        rotateDegrees: Int,
+        imageSize: Size,
         scaleType: ScaleType,
-        rotateDegrees: Float,
         readModeDecider: ReadModeDecider?,
-    ) {
+    ): Scales {
         val drawableWidth =
-            if (rotateDegrees % 180 == 0f) drawableSize.width else drawableSize.height
+            if (rotateDegrees % 180 == 0) drawableSize.width else drawableSize.height
         val drawableHeight =
-            if (rotateDegrees % 180 == 0f) drawableSize.height else drawableSize.width
+            if (rotateDegrees % 180 == 0) drawableSize.height else drawableSize.width
         val imageWidth =
-            if (rotateDegrees % 180 == 0f) imageSize.width else imageSize.height
+            if (rotateDegrees % 180 == 0) imageSize.width else imageSize.height
         val imageHeight =
-            if (rotateDegrees % 180 == 0f) imageSize.height else imageSize.width
+            if (rotateDegrees % 180 == 0) imageSize.height else imageSize.width
         val widthScale = viewSize.width.toFloat() / drawableWidth
         val heightScale = viewSize.height.toFloat() / drawableHeight
         val imageThanViewLarge =
@@ -75,12 +53,23 @@ class AdaptiveTwoLevelScales : ZoomScales {
             scaleType
         }
 
+
+        var minZoomScale: Float
+        var maxZoomScale: Float
+
         // 小的是完整显示比例，大的是充满比例
-        fullZoomScale = widthScale.coerceAtMost(heightScale)
-        fillZoomScale = widthScale.coerceAtLeast(heightScale)
-        originZoomScale =
+        val fullZoomScale = widthScale.coerceAtMost(heightScale)
+        val fillZoomScale = widthScale.coerceAtLeast(heightScale)
+        val originZoomScale =
             (imageWidth.toFloat() / drawableWidth).coerceAtLeast(imageHeight.toFloat() / drawableHeight)
-        initZoomScale = getInitScale(viewSize, imageSize, drawableSize, finalScaleType, rotateDegrees, readModeDecider)
+        val initZoomScale = getInitScale(
+            viewSize,
+            imageSize,
+            drawableSize,
+            finalScaleType,
+            rotateDegrees,
+            readModeDecider
+        )
         if (readModeDecider?.shouldUseByHeight(imageWidth, imageHeight) == true) {
             // 阅读模式下保证阅读效果最重要
             minZoomScale = fullZoomScale
@@ -126,7 +115,16 @@ class AdaptiveTwoLevelScales : ZoomScales {
         }
 
         // 双击缩放比例始终由最小缩放比例和最大缩放比例组成
-        zoomScales = floatArrayOf(minZoomScale, maxZoomScale)
+        val zoomScales: FloatArray = floatArrayOf(minZoomScale, maxZoomScale) // 双击缩放所使用的比例
+        return Scales(
+            min = minZoomScale,
+            max = maxZoomScale,
+            init = initZoomScale,
+            full = fullZoomScale,
+            fill = fillZoomScale,
+            origin = originZoomScale,
+            doubleClicks = zoomScales
+        )
     }
 
     private fun getInitScale(
@@ -134,17 +132,17 @@ class AdaptiveTwoLevelScales : ZoomScales {
         imageSize: Size,
         drawableSize: Size,
         scaleType: ScaleType,
-        rotateDegrees: Float,
+        rotateDegrees: Int,
         readModeDecider: ReadModeDecider?,
     ): Float {
         val drawableWidth =
-            if (rotateDegrees % 180 == 0f) drawableSize.width else drawableSize.height
+            if (rotateDegrees % 180 == 0) drawableSize.width else drawableSize.height
         val drawableHeight =
-            if (rotateDegrees % 180 == 0f) drawableSize.height else drawableSize.width
+            if (rotateDegrees % 180 == 0) drawableSize.height else drawableSize.width
         val imageWidth =
-            if (rotateDegrees % 180 == 0f) imageSize.width else imageSize.height
+            if (rotateDegrees % 180 == 0) imageSize.width else imageSize.height
         val imageHeight =
-            if (rotateDegrees % 180 == 0f) imageSize.height else imageSize.width
+            if (rotateDegrees % 180 == 0) imageSize.height else imageSize.width
         val widthScale = viewSize.width.toFloat() / drawableWidth
         val heightScale = viewSize.height.toFloat() / drawableHeight
         val imageThanViewLarge =
@@ -156,33 +154,16 @@ class AdaptiveTwoLevelScales : ZoomScales {
         } else {
             scaleType
         }
-        return if (readModeDecider?.shouldUseByHeight(imageWidth, imageHeight) == true) {
-            widthScale
-        } else if (readModeDecider?.shouldUseByWidth(imageWidth, imageHeight) == true) {
-            heightScale
-        } else if (finalScaleType == ScaleType.CENTER) {
-            1.0f
-        } else if (finalScaleType == ScaleType.CENTER_CROP) {
-            widthScale.coerceAtLeast(heightScale)
-        } else if (finalScaleType == ScaleType.FIT_START) {
-            widthScale.coerceAtMost(heightScale)
-        } else if (finalScaleType == ScaleType.FIT_END) {
-            widthScale.coerceAtMost(heightScale)
-        } else if (finalScaleType == ScaleType.FIT_CENTER) {
-            widthScale.coerceAtMost(heightScale)
-        } else if (finalScaleType == ScaleType.FIT_XY) {
-            1.0f
-        } else {
-            1.0f
+        return when {
+            readModeDecider?.shouldUseByHeight(imageWidth, imageHeight) == true -> widthScale
+            readModeDecider?.shouldUseByWidth(imageWidth, imageHeight) == true -> heightScale
+            finalScaleType == ScaleType.CENTER -> 1.0f
+            finalScaleType == ScaleType.CENTER_CROP -> widthScale.coerceAtLeast(heightScale)
+            finalScaleType == ScaleType.FIT_START -> widthScale.coerceAtMost(heightScale)
+            finalScaleType == ScaleType.FIT_END -> widthScale.coerceAtMost(heightScale)
+            finalScaleType == ScaleType.FIT_CENTER -> widthScale.coerceAtMost(heightScale)
+            finalScaleType == ScaleType.FIT_XY -> 1.0f
+            else -> 1.0f
         }
-    }
-
-    override fun clean() {
-        originZoomScale = 1f
-        fillZoomScale = originZoomScale
-        fullZoomScale = fillZoomScale
-        minZoomScale = DEFAULT_MINIMUM_SCALE
-        maxZoomScale = DEFAULT_MAXIMIZE_SCALE
-        zoomScales = DEFAULT_DOUBLE_CLICK_ZOOM_SCALES
     }
 }

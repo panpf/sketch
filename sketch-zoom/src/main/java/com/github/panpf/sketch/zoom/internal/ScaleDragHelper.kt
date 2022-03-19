@@ -255,39 +255,48 @@ internal class ScaleDragHelper constructor(
         } else {
             scaleType
         }
-        val initScale = zoomer.zoomScales.initZoomScale
-        if (zoomer.readModeDecider?.shouldUseByHeight(drawableWidth, drawableHeight) == true) {
-            baseMatrix.postScale(initScale, initScale)
-        } else if (zoomer.readModeDecider?.shouldUseByWidth(drawableWidth, drawableHeight) == true) {
-            baseMatrix.postScale(initScale, initScale)
-        } else if (finalScaleType == ScaleType.CENTER) {
-            baseMatrix.postScale(initScale, initScale)
-            baseMatrix.postTranslate(
-                (viewSize.width - drawableWidth) / 2f,
-                (viewSize.height - drawableHeight) / 2f
-            )
-        } else if (finalScaleType == ScaleType.CENTER_CROP) {
-            baseMatrix.postScale(initScale, initScale)
-            baseMatrix.postTranslate(
-                (viewSize.width - drawableWidth * initScale) / 2f,
-                (viewSize.height - drawableHeight * initScale) / 2f
-            )
-        } else if (finalScaleType == ScaleType.FIT_START) {
-            baseMatrix.postScale(initScale, initScale)
-            baseMatrix.postTranslate(0f, 0f)
-        } else if (finalScaleType == ScaleType.FIT_END) {
-            baseMatrix.postScale(initScale, initScale)
-            baseMatrix.postTranslate(0f, viewSize.height - drawableHeight * initScale)
-        } else if (finalScaleType == ScaleType.FIT_CENTER) {
-            baseMatrix.postScale(initScale, initScale)
-            baseMatrix.postTranslate(0f, (viewSize.height - drawableHeight * initScale) / 2f)
-        } else if (finalScaleType == ScaleType.FIT_XY) {
-            val mTempSrc = RectF(0f, 0f, drawableWidth.toFloat(), drawableHeight.toFloat())
-            val mTempDst = RectF(
-                0f, 0f, viewSize.width.toFloat(), viewSize.height
-                    .toFloat()
-            )
-            baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.FILL)
+        val initScale = zoomer.scales.init
+        when {
+            zoomer.readModeDecider?.shouldUseByHeight(drawableWidth, drawableHeight) == true -> {
+                baseMatrix.postScale(initScale, initScale)
+            }
+            zoomer.readModeDecider?.shouldUseByWidth(drawableWidth, drawableHeight) == true -> {
+                baseMatrix.postScale(initScale, initScale)
+            }
+            finalScaleType == ScaleType.CENTER -> {
+                baseMatrix.postScale(initScale, initScale)
+                baseMatrix.postTranslate(
+                    (viewSize.width - drawableWidth) / 2f,
+                    (viewSize.height - drawableHeight) / 2f
+                )
+            }
+            finalScaleType == ScaleType.CENTER_CROP -> {
+                baseMatrix.postScale(initScale, initScale)
+                baseMatrix.postTranslate(
+                    (viewSize.width - drawableWidth * initScale) / 2f,
+                    (viewSize.height - drawableHeight * initScale) / 2f
+                )
+            }
+            finalScaleType == ScaleType.FIT_START -> {
+                baseMatrix.postScale(initScale, initScale)
+                baseMatrix.postTranslate(0f, 0f)
+            }
+            finalScaleType == ScaleType.FIT_END -> {
+                baseMatrix.postScale(initScale, initScale)
+                baseMatrix.postTranslate(0f, viewSize.height - drawableHeight * initScale)
+            }
+            finalScaleType == ScaleType.FIT_CENTER -> {
+                baseMatrix.postScale(initScale, initScale)
+                baseMatrix.postTranslate(0f, (viewSize.height - drawableHeight * initScale) / 2f)
+            }
+            finalScaleType == ScaleType.FIT_XY -> {
+                val mTempSrc = RectF(0f, 0f, drawableWidth.toFloat(), drawableHeight.toFloat())
+                val mTempDst = RectF(
+                    0f, 0f, viewSize.width.toFloat(), viewSize.height
+                        .toFloat()
+                )
+                baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.FILL)
+            }
         }
     }
 
