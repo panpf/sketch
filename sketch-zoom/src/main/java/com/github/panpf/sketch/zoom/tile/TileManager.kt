@@ -146,7 +146,6 @@ class TileManager constructor(
             return
         }
         val previewScaled = imageSize.width / previewSize.width.toFloat()
-        // todo 错位
         val imageVisibleRect = Rect(
             floor(previewVisibleRect.left * previewScaled).toInt(),
             floor(previewVisibleRect.top * previewScaled).toInt(),
@@ -163,8 +162,8 @@ class TileManager constructor(
                     val tileDrawRect = Rect(
                         floor(tileSrcRect.left / targetScale).toInt(),
                         floor(tileSrcRect.top / targetScale).toInt(),
-                        ceil(tileSrcRect.right / targetScale).toInt(),
-                        ceil(tileSrcRect.bottom / targetScale).toInt()
+                        floor(tileSrcRect.right / targetScale).toInt(),
+                        floor(tileSrcRect.bottom / targetScale).toInt()
                     )
                     if (tileBitmap != null) {
                         canvas.drawBitmap(
