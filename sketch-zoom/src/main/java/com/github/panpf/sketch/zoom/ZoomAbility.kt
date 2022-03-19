@@ -558,11 +558,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val exifOrientation: Int = previewDrawable.imageExifOrientation
         val imageUri = previewDrawable.requestUri
         return Tiles(
-            host.context,
-            zoomer,
-            imageUri,
-            viewSize,
-            exifOrientation != ExifInterface.ORIENTATION_UNDEFINED
+            context = host.context,
+            zoomer = zoomer,
+            imageUri = imageUri,
+            viewSize = viewSize,
+            disabledExifOrientation = exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
         )
     }
 }
