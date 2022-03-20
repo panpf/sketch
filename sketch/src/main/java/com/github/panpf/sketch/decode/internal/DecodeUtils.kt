@@ -204,7 +204,7 @@ fun realDecode(
         resizeTransformed = null
         decodeConfig.inSampleSize = addedResize?.let {
             calculateSampleSizeWithTolerance(imageInfo.width, imageInfo.height, it.width, it.height)
-        } ?: 1
+        } ?: limitedMaxBitmapSize(imageInfo.width, imageInfo.height, 1)
         decodeFull(decodeConfig)
     }
 
