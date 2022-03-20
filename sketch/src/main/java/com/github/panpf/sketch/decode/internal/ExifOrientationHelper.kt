@@ -199,10 +199,10 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
                 imageSize.height - srcRect.top
             )
             ExifInterface.ORIENTATION_FLIP_VERTICAL -> Rect(
-                imageSize.width - srcRect.right,
-                imageSize.height - srcRect.bottom,
                 srcRect.left,
-                srcRect.top,
+                imageSize.height - srcRect.bottom,
+                srcRect.right,
+                imageSize.height - srcRect.top,
             )
             ExifInterface.ORIENTATION_ROTATE_270 -> Rect(
                 imageSize.height - srcRect.bottom,

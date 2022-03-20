@@ -9,11 +9,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.resize.Scale.FILL
-import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.readExifOrientation
@@ -21,6 +16,11 @@ import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.resize.Scale.FILL
+import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
@@ -962,7 +962,7 @@ class ExifOrientationHelperTest {
                 .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
         Assert.assertEquals(
-            Rect(50, 20, 40, 10),
+            Rect(40, 20, 50, 40),
             ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL)
                 .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
