@@ -90,17 +90,29 @@ interface ViewSizeResolver<T : View> : SizeResolver {
         return Size(width, height)
     }
 
-    private fun getWidth() = getDimension(
+    private fun getWidth(): Int? = getDimension(
         paramSize = view.layoutParams?.width ?: -1,
         viewSize = view.width,
         paddingSize = if (subtractPadding) view.paddingLeft + view.paddingRight else 0
-    )
+    )?.let {
+        if (it != -1) {
+            it
+        } else {
+            view.resources.displayMetrics.widthPixels
+        }
+    }
 
-    private fun getHeight() = getDimension(
+    private fun getHeight(): Int? = getDimension(
         paramSize = view.layoutParams?.height ?: -1,
         viewSize = view.height,
         paddingSize = if (subtractPadding) view.paddingTop + view.paddingBottom else 0
-    )
+    )?.let {
+        if (it != -1) {
+            it
+        } else {
+            view.resources.displayMetrics.heightPixels
+        }
+    }
 
     private fun getDimension(paramSize: Int, viewSize: Int, paddingSize: Int): Int? {
         // If the dimension is set to WRAP_CONTENT, use the original dimension of the image.
