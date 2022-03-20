@@ -60,8 +60,8 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                     Link("Giphy GIF", NavMainDirections.actionGlobalGiphyGifsFragment()),
                     Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
                     Link("Local Video", NavMainDirections.actionGlobalLocalVideoListFragment()),
-//                    Link("Huge Image", NavMainDirections.actionGlobalHugeImageFragment()),
-//
+                    Link("Huge Image", NavMainDirections.actionGlobalHugeImagePagerFragment()),
+
                     ListSeparator("Test"),
                     Link("Image Format", NavMainDirections.actionGlobalImageFormatFragment()),
                     Link("Fetcher", NavMainDirections.actionGlobalFetcherFragment()),

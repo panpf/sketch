@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.github.panpf.sketch.sample.widget.MyZoomImageView
         android:id="@+id/imageFragmentZoomImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/app_name" />
+
+    <com.github.panpf.sketch.sample.widget.TileMapImageView
+        android:id="@+id/imageFragmentTileMapImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|start|bottom"
+        tools:ignore="RtlHardcoded" />
 </FrameLayout>

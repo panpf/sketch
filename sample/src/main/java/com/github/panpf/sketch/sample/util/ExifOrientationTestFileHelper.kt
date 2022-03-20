@@ -9,7 +9,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class ExifOrientationTestFileHelper(val context: Context, val assetFileName: String) {
+class ExifOrientationTestFileHelper(val context: Context, private val assetFileName: String) {
 
     private val cacheDir: File = File(
         context.getExternalFilesDir(null) ?: context.filesDir,
@@ -89,5 +89,5 @@ class ExifOrientationTestFileHelper(val context: Context, val assetFileName: Str
         val file = File(cacheDir, "${name}.jpeg")
     }
 
-    class TestFile(val title: String, val file: File, val exifOrientation: Int)
+    class TestFile(val title: String, val file: File, @Suppress("unused") val exifOrientation: Int)
 }

@@ -39,6 +39,10 @@
         android:name="com.github.panpf.sketch.sample.ui.ImageFormatFragment"
         android:label="ImageFormatFragment" />
     <fragment
+        android:id="@+id/hugeImagePagerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.HugeImagePagerFragment"
+        android:label="HugeImagePagerFragment" />
+    <fragment
         android:id="@+id/imageViewerFragment"
         android:name="com.github.panpf.sketch.sample.ui.ImageViewerFragment"
         android:label="ImageViewerFragment">
@@ -63,6 +67,11 @@
         <argument
             android:name="imageDetailJson"
             app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="showTileMap"
+            android:defaultValue="false"
+            app:argType="boolean"
             app:nullable="false" />
     </fragment>
     <fragment
@@ -162,6 +171,13 @@
     <action
         android:id="@+id/action_global_settingsFragment"
         app:destination="@id/settingsFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_hugeImagePagerFragment"
+        app:destination="@id/hugeImagePagerFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

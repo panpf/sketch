@@ -36,13 +36,15 @@ import com.github.panpf.sketch.viewability.VisibilityChangedObserver
 import com.github.panpf.sketch.zoom.block.Blocks
 import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
+import com.github.panpf.sketch.zoom.tile.OnTileChangedListener
+import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
 
 class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
     DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver {
 
     companion object {
-        private const val MODULE = "ZoomViewAbility"
+        private const val MODULE = "ZoomAbility"
     }
 
     private var zoomer: Zoomer? = null
@@ -66,6 +68,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private var onRotateChangeListenerList: MutableSet<OnRotateChangeListener>? = null
     private var onDragFlingListenerList: MutableSet<OnDragFlingListener>? = null
     private var onScaleChangeListenerList: MutableSet<OnScaleChangeListener>? = null
+    private var onTileChangedListenerList: MutableSet<OnTileChangedListener>? = null
     private val imageMatrix = Matrix()
 
     override var host: Host? = null
@@ -276,6 +279,15 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     /** Gets the area that the user can see on the preview (not affected by rotation) */
     fun getVisibleRect(rect: Rect) = zoomer?.getVisibleRect(rect)
 
+    val tileList: List<Tile>?
+        get() = tiles?.tileList
+
+    val imageSize: Size?
+        get() = zoomer?.imageSize ?: tiles?.imageSize
+
+    val previewSize: Size?
+        get() = zoomer?.drawableSize
+
     fun addOnMatrixChangeListener(listener: OnMatrixChangeListener) {
         this.onMatrixChangeListenerList = (onMatrixChangeListenerList ?: LinkedHashSet()).apply {
             add(listener)
@@ -322,6 +334,18 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     fun removeOnScaleChangeListener(listener: OnScaleChangeListener): Boolean {
         zoomer?.removeOnScaleChangeListener(listener)
         return onScaleChangeListenerList?.remove(listener) == true
+    }
+
+    fun addOnTileChangedListener(listener: OnTileChangedListener) {
+        this.onTileChangedListenerList = (onTileChangedListenerList ?: LinkedHashSet()).apply {
+            add(listener)
+        }
+        tiles?.addOnTileChangedListener(listener)
+    }
+
+    fun removeOnTileChangedListener(listener: OnTileChangedListener): Boolean {
+        tiles?.removeOnTileChangedListener(listener)
+        return onTileChangedListenerList?.remove(listener) == true
     }
 
 
@@ -543,6 +567,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             imageUri = imageUri,
             viewSize = viewSize,
             disabledExifOrientation = exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
-        )
+        ).apply {
+            this@ZoomAbility.onTileChangedListenerList?.forEach {
+                addOnTileChangedListener(it)
+            }
+        }
     }
 }

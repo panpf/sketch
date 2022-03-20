@@ -8,7 +8,9 @@ import com.github.panpf.sketch.sample.ui.ImageDetailFragmentArgs
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class ImageDetailFragmentItemFactory : FragmentItemFactory<ImageDetail>(ImageDetail::class) {
+class ImageDetailFragmentItemFactory(
+    private val showTileMap: Boolean = false
+) : FragmentItemFactory<ImageDetail>(ImageDetail::class) {
 
     override fun createFragment(
         bindingAdapterPosition: Int,
@@ -17,7 +19,7 @@ class ImageDetailFragmentItemFactory : FragmentItemFactory<ImageDetail>(ImageDet
     ): Fragment {
         return ImageDetailFragment().apply {
             arguments = ImageDetailFragmentArgs(
-                Json.encodeToString(data),
+                Json.encodeToString(data), showTileMap
             ).toBundle()
         }
     }

@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.base.BindingFragment
@@ -31,11 +32,25 @@ class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
 
     override fun onInitData(binding: FragmentImageDetailBinding, savedInstanceState: Bundle?) {
         val imageDetail = Json.decodeFromString<ImageDetail>(args.imageDetailJson)
-        binding.imageFragmentZoomImageView.displayImage(imageDetail.firstMiddenUrl) {
-            placeholderImage(StateImage.memoryCache(imageDetail.placeholderImageMemoryKey, null))
-        }
+
         binding.imageFragmentZoomImageView.apply {
             zoomAbility.useTiles = true
+            displayImage(imageDetail.firstMiddenUrl) {
+                placeholderImage(
+                    StateImage.memoryCache(
+                        imageDetail.placeholderImageMemoryKey,
+                        null
+                    )
+                )
+            }
+        }
+
+        binding.imageFragmentTileMapImageView.apply {
+            isVisible = args.showTileMap
+            if (args.showTileMap) {
+                setZoomImageView(binding.imageFragmentZoomImageView)
+                displayImage(imageDetail.firstMiddenUrl)
+            }
         }
     }
 }

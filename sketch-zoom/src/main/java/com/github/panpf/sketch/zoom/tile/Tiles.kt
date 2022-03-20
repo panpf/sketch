@@ -37,10 +37,14 @@ class Tiles constructor(
 
     private var _destroyed: Boolean = false
     private var tileManager: TileManager? = null
-    private var onTileChangedListenerList: List<OnTileChangedListener>? = null
+    internal var onTileChangedListenerList: MutableSet<OnTileChangedListener>? = null
 
     val destroyed: Boolean
         get() = _destroyed
+    val tileList: List<Tile>?
+        get() = tileManager?.tileList
+    val imageSize: Size?
+        get() = tileManager?.imageSize
 
     var showTileBounds = false
         set(value) {
@@ -75,8 +79,7 @@ class Tiles constructor(
             val tileDecoder = withContext(Dispatchers.IO) {
                 TileDecoder.Factory(context, imageUri, disabledExifOrientation).create()
             } ?: return@launch
-            this@Tiles.tileManager =
-                TileManager(context, imageUri, viewSize, tileDecoder, this@Tiles)
+            tileManager = TileManager(context, imageUri, viewSize, tileDecoder, this@Tiles)
             refreshTiles()
         }
 
@@ -157,5 +160,15 @@ class Tiles constructor(
 
     internal fun invalidateView() {
         zoomer.view.invalidate()
+    }
+
+    fun addOnTileChangedListener(listener: OnTileChangedListener) {
+        this.onTileChangedListenerList = (onTileChangedListenerList ?: LinkedHashSet()).apply {
+            add(listener)
+        }
+    }
+
+    fun removeOnTileChangedListener(listener: OnTileChangedListener): Boolean {
+        return onTileChangedListenerList?.remove(listener) == true
     }
 }

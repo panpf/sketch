@@ -81,7 +81,7 @@ internal fun findSampleSize(
     return sampleSize
 }
 
-internal fun Rect.crossWith(other: Rect): Boolean {
+fun Rect.crossWith(other: Rect): Boolean {
     return this.left < other.right
             && this.right > other.left
             && this.top < other.bottom

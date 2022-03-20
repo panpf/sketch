@@ -53,7 +53,6 @@ class TileManager constructor(
 ) {
 
     private val logger = context.sketch.logger
-    private val imageSize = decoder.imageSize
 
     private val tileBoundsPaint: Paint by lazy {
         Paint().apply {
@@ -70,6 +69,8 @@ class TileManager constructor(
     private val decodeDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
     private var lastTileList: List<Tile>? = null
     private var lastSampleSize: Int? = null
+    private val imageVisibleRect = Rect()
+    private val tileDrawRect = Rect()
 
     var viewSize: Size = viewSize
         internal set(value) {
@@ -79,6 +80,9 @@ class TileManager constructor(
 //                reset()
             }
         }
+    val tileList: List<Tile>?
+        get() = lastTileList
+    val imageSize = decoder.imageSize
 
     init {
         logger.d(Tiles.MODULE) {
@@ -148,12 +152,14 @@ class TileManager constructor(
             return
         }
         val previewScaled = imageSize.width / previewSize.width.toFloat()
-        val imageVisibleRect = Rect(
-            floor(previewVisibleRect.left * previewScaled).toInt(),
-            floor(previewVisibleRect.top * previewScaled).toInt(),
-            ceil(previewVisibleRect.right * previewScaled).toInt(),
-            ceil(previewVisibleRect.bottom * previewScaled).toInt()
-        )
+        val imageVisibleRect = imageVisibleRect.apply {
+            set(
+                floor(previewVisibleRect.left * previewScaled).toInt(),
+                floor(previewVisibleRect.top * previewScaled).toInt(),
+                ceil(previewVisibleRect.right * previewScaled).toInt(),
+                ceil(previewVisibleRect.bottom * previewScaled).toInt()
+            )
+        }
         val targetScale = (imageSize.width / previewSize.width.toFloat())
         canvas.withSave {
             canvas.concat(drawMatrix)
@@ -161,12 +167,14 @@ class TileManager constructor(
                 if (tile.srcRect.crossWith(imageVisibleRect)) {
                     val tileBitmap = tile.bitmap
                     val tileSrcRect = tile.srcRect
-                    val tileDrawRect = Rect(
-                        floor(tileSrcRect.left / targetScale).toInt(),
-                        floor(tileSrcRect.top / targetScale).toInt(),
-                        floor(tileSrcRect.right / targetScale).toInt(),
-                        floor(tileSrcRect.bottom / targetScale).toInt()
-                    )
+                    val tileDrawRect = tileDrawRect.apply {
+                        set(
+                            floor(tileSrcRect.left / targetScale).toInt(),
+                            floor(tileSrcRect.top / targetScale).toInt(),
+                            floor(tileSrcRect.right / targetScale).toInt(),
+                            floor(tileSrcRect.bottom / targetScale).toInt()
+                        )
+                    }
                     if (tileBitmap != null) {
                         canvas.drawBitmap(
                             tileBitmap,
@@ -179,8 +187,8 @@ class TileManager constructor(
                     if (tiles.showTileBounds) {
                         val boundsColor = when {
                             tileBitmap != null -> Color.GREEN
-                            tile.loadJob?.isActive == true -> Color.RED
-                            else -> Color.YELLOW
+                            tile.loadJob?.isActive == true -> Color.YELLOW
+                            else -> Color.RED
                         }
                         tileBoundsPaint.color = ColorUtils.setAlphaComponent(boundsColor, 60)
                         canvas.drawRect(tileDrawRect, tileBoundsPaint)
@@ -204,8 +212,11 @@ class TileManager constructor(
         tiles.invalidateView()
     }
 
-    private fun makeTileMemoryCache(tile: Tile): String =
-        "${imageUri}_tile_${tile.srcRect}_${tile.inSampleSize}"
+    private fun notifyTileChanged() {
+        tiles.onTileChangedListenerList?.forEach {
+            it.onTileChanged(tiles)
+        }
+    }
 
     @MainThread
     private fun loadTile(tile: Tile) {
@@ -220,7 +231,7 @@ class TileManager constructor(
             return
         }
 
-        val memoryCacheKey = makeTileMemoryCache(tile)
+        val memoryCacheKey = "${imageUri}_tile_${tile.srcRect}_${tile.inSampleSize}"
         val countBitmap = memoryCache[memoryCacheKey]
         if (countBitmap != null) {
             logger.d(Tiles.MODULE) {
@@ -228,6 +239,7 @@ class TileManager constructor(
             }
             tile.countBitmap = countBitmap
             tiles.invalidateView()
+            notifyTileChanged()
             return
         }
 
@@ -255,6 +267,7 @@ class TileManager constructor(
                     memoryCache.put(memoryCacheKey, newCountBitmap)
                     tile.countBitmap = newCountBitmap
                     tiles.invalidateView()
+                    notifyTileChanged()
                 } else {
                     logger.e(Tiles.MODULE) {
                         "loadTile. null. $tile"
@@ -271,6 +284,7 @@ class TileManager constructor(
         tile.loadJob = null
         if (tile.countBitmap != null) {
             tile.countBitmap = null
+            notifyTileChanged()
             logger.d(Tiles.MODULE) {
                 "freeTile. $tile"
             }
