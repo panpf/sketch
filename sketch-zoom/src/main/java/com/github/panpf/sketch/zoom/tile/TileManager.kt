@@ -57,7 +57,7 @@ class TileManager constructor(
     private val tileBoundsPaint: Paint by lazy {
         Paint().apply {
             style = STROKE
-            strokeWidth = 1f * Resources.getSystem().displayMetrics.density + 0.5f
+            strokeWidth = 1f * Resources.getSystem().displayMetrics.density
         }
     }
     private val tileMap: Map<Int, List<Tile>> = initializeTileMap(decoder.imageSize, viewSize)
@@ -163,6 +163,7 @@ class TileManager constructor(
         val targetScale = (imageSize.width / previewSize.width.toFloat())
         canvas.withSave {
             canvas.concat(drawMatrix)
+            val strokeHalfWidth = ((tileBoundsPaint.strokeWidth) / 2)
             tileList.forEach { tile ->
                 if (tile.srcRect.crossWith(imageVisibleRect)) {
                     val tileBitmap = tile.bitmap
@@ -190,7 +191,13 @@ class TileManager constructor(
                             tile.loadJob?.isActive == true -> Color.YELLOW
                             else -> Color.RED
                         }
-                        tileBoundsPaint.color = ColorUtils.setAlphaComponent(boundsColor, 60)
+                        tileBoundsPaint.color = ColorUtils.setAlphaComponent(boundsColor, 100)
+                        tileDrawRect.set(
+                            floor((tileDrawRect.left) + strokeHalfWidth).toInt(),
+                            floor((tileDrawRect.top) + strokeHalfWidth).toInt(),
+                            floor((tileDrawRect.right) - strokeHalfWidth).toInt(),
+                            floor((tileDrawRect.bottom) - strokeHalfWidth).toInt()
+                        )
                         canvas.drawRect(tileDrawRect, tileBoundsPaint)
                     }
                 }

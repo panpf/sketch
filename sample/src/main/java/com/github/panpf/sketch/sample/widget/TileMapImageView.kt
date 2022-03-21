@@ -30,7 +30,6 @@ import android.view.MotionEvent
 import android.view.ViewGroup.LayoutParams
 import androidx.core.view.updateLayoutParams
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.crossWith
 import com.github.panpf.tools4a.dimen.ktx.dp2pxF
 import kotlin.math.ceil
@@ -86,38 +85,29 @@ class TileMapImageView @JvmOverloads constructor(
             )
         }
 
-        val drawTileBounds: (Tile, Boolean) -> Unit = { tile, cross ->
+        val strokeHalfWidth = tileBoundsPaint.strokeWidth / 2
+        tileList.forEach { tile ->
             val tileBitmap = tile.bitmap
             val tileSrcRect = tile.srcRect
             val tileDrawRect = tileDrawRect.apply {
                 set(
-                    floor(tileSrcRect.left / targetScale).toInt(),
-                    floor(tileSrcRect.top / targetScale).toInt(),
-                    floor(tileSrcRect.right / targetScale).toInt(),
-                    floor(tileSrcRect.bottom / targetScale).toInt()
+                    floor((tileSrcRect.left / targetScale) + strokeHalfWidth).toInt(),
+                    floor((tileSrcRect.top / targetScale) + strokeHalfWidth).toInt(),
+                    ceil((tileSrcRect.right / targetScale) - strokeHalfWidth).toInt(),
+                    ceil((tileSrcRect.bottom / targetScale) - strokeHalfWidth).toInt()
                 )
             }
-            val boundsColor = if (cross) {
+            val boundsColor = if (tile.srcRect.crossWith(imageVisibleRect)) {
                 when {
                     tileBitmap != null -> Color.GREEN
                     tile.loadJob?.isActive == true -> Color.YELLOW
                     else -> Color.RED
                 }
             } else {
-                Color.BLUE
+                Color.parseColor("#00BFFF")
             }
             tileBoundsPaint.color = boundsColor
             canvas.drawRect(tileDrawRect, tileBoundsPaint)
-        }
-        tileList.forEach { tile ->
-            if (!tile.srcRect.crossWith(imageVisibleRect)) {
-                drawTileBounds(tile, false)
-            }
-        }
-        tileList.forEach { tile ->
-            if (tile.srcRect.crossWith(imageVisibleRect)) {
-                drawTileBounds(tile, true)
-            }
         }
 
         val mapScaled = imageSize.width / viewWidth.toFloat()
@@ -129,7 +119,7 @@ class TileMapImageView @JvmOverloads constructor(
                 ceil(imageVisibleRect.bottom / mapScaled).toInt()
             )
         }
-        tileBoundsPaint.color = Color.parseColor("#800080")
+        tileBoundsPaint.color = Color.parseColor("#FF00FF")
         canvas.drawRect(mapPreviewVisibleRect, tileBoundsPaint)
     }
 
@@ -163,14 +153,16 @@ class TileMapImageView @JvmOverloads constructor(
         val zoomViewWidth = zoomView.width
         val zoomViewHeight = zoomView.height
         if ((zoomViewWidth / drawableWidth.toFloat()) < (zoomViewHeight / drawableHeight.toFloat())) {
-            val viewWidth = zoomViewWidth / (if (zoomViewWidth < zoomViewHeight) 3 else 2)
+            val viewWidth =
+                (zoomViewWidth * (if (zoomViewWidth < zoomViewHeight) 0.4f else 0.55f)).roundToInt()
             val viewHeight = (drawableHeight * (viewWidth / drawableWidth.toFloat())).roundToInt()
             updateLayoutParams<LayoutParams> {
                 width = viewWidth
                 height = viewHeight
             }
         } else {
-            val viewHeight = zoomViewHeight / (if (zoomViewWidth < zoomViewHeight) 2 else 3)
+            val viewHeight =
+                (zoomViewHeight * (if (zoomViewWidth < zoomViewHeight) 0.55f else 0.4f)).roundToInt()
             val viewWidth = (drawableWidth * (viewHeight / drawableHeight.toFloat())).roundToInt()
             updateLayoutParams<LayoutParams> {
                 width = viewWidth
