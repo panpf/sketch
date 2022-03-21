@@ -163,7 +163,7 @@ class TileManager constructor(
         val targetScale = (imageSize.width / previewSize.width.toFloat())
         canvas.withSave {
             canvas.concat(drawMatrix)
-            val strokeHalfWidth = ((tileBoundsPaint.strokeWidth) / 2)
+            val strokeHalfWidth = (tileBoundsPaint.strokeWidth) / 2
             tileList.forEach { tile ->
                 if (tile.srcRect.crossWith(imageVisibleRect)) {
                     val tileBitmap = tile.bitmap
@@ -193,10 +193,10 @@ class TileManager constructor(
                         }
                         tileBoundsPaint.color = ColorUtils.setAlphaComponent(boundsColor, 100)
                         tileDrawRect.set(
-                            floor((tileDrawRect.left) + strokeHalfWidth).toInt(),
-                            floor((tileDrawRect.top) + strokeHalfWidth).toInt(),
-                            floor((tileDrawRect.right) - strokeHalfWidth).toInt(),
-                            floor((tileDrawRect.bottom) - strokeHalfWidth).toInt()
+                            floor(tileDrawRect.left + strokeHalfWidth).toInt(),
+                            floor(tileDrawRect.top + strokeHalfWidth).toInt(),
+                            ceil(tileDrawRect.right - strokeHalfWidth).toInt(),
+                            ceil(tileDrawRect.bottom - strokeHalfWidth).toInt()
                         )
                         canvas.drawRect(tileDrawRect, tileBoundsPaint)
                     }
