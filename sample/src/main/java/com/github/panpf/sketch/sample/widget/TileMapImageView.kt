@@ -153,16 +153,24 @@ class TileMapImageView @JvmOverloads constructor(
         val zoomViewWidth = zoomView.width
         val zoomViewHeight = zoomView.height
         if ((zoomViewWidth / drawableWidth.toFloat()) < (zoomViewHeight / drawableHeight.toFloat())) {
-            val viewWidth =
-                (zoomViewWidth * (if (zoomViewWidth < zoomViewHeight) 0.4f else 0.55f)).roundToInt()
+            val ratio = when {
+                drawableWidth / drawableHeight > 4 -> 0.7f
+                zoomViewWidth >= zoomViewHeight -> 0.55f
+                else -> 0.4f
+            }
+            val viewWidth = (zoomViewWidth * ratio).roundToInt()
             val viewHeight = (drawableHeight * (viewWidth / drawableWidth.toFloat())).roundToInt()
             updateLayoutParams<LayoutParams> {
                 width = viewWidth
                 height = viewHeight
             }
         } else {
-            val viewHeight =
-                (zoomViewHeight * (if (zoomViewWidth < zoomViewHeight) 0.55f else 0.4f)).roundToInt()
+            val ratio = when {
+                drawableHeight / drawableWidth > 4 -> 0.7f
+                zoomViewWidth < zoomViewHeight -> 0.55f
+                else -> 0.4f
+            }
+            val viewHeight = (zoomViewHeight * ratio).roundToInt()
             val viewWidth = (drawableWidth * (viewHeight / drawableHeight.toFloat())).roundToInt()
             updateLayoutParams<LayoutParams> {
                 width = viewWidth
