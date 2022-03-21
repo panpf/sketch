@@ -7,7 +7,7 @@ import com.github.panpf.sketch.util.format
 import kotlin.math.ceil
 
 internal fun initializeTileMap(imageSize: Size, tileMaxSize: Size): Map<Int, List<Tile>> {
-    /* The core rules are: The size of each tile does not exceed viewSize */
+    /* The core rules are: The size of each tile does not exceed tileMaxSize */
     val maxBitmapSize = maxBitmapSize
     val tileMaxWith = tileMaxSize.width.coerceAtMost(maxBitmapSize.width)
     val tileMaxHeight = tileMaxSize.height.coerceAtMost(maxBitmapSize.height)
