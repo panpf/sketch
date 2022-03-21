@@ -58,7 +58,11 @@ internal class TapHelper constructor(context: Context, private val zoomer: Zoome
                     break
                 }
             }
-            zoomer.zoom(finalScale, true)
+            if (finalScale > currentScaleFormat) {
+                zoomer.zoom(finalScale, ev.x, ev.y, true)
+            } else {
+                zoomer.zoom(finalScale, true)
+            }
         } catch (e: ArrayIndexOutOfBoundsException) {
             // Can sometimes happen when getX() and getY() is called
         }

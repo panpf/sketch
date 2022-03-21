@@ -2,7 +2,6 @@ package com.github.panpf.sketch.zoom
 
 import android.graphics.Canvas
 import android.graphics.Matrix
-import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Animatable
@@ -212,13 +211,6 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
      */
     fun rotateBy(addDegrees: Int) {
         zoomer?.rotateBy(addDegrees)
-    }
-
-    /**
-     * The touch points on the view are converted to the corresponding points on the drawable
-     */
-    fun viewTouchPointToDrawablePoint(touchX: Int, touchY: Int): Point? {
-        return zoomer?.viewTouchPointToDrawablePoint(touchX, touchY)
     }
 
 

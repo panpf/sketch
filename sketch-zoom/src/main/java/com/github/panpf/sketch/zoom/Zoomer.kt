@@ -3,7 +3,6 @@ package com.github.panpf.sketch.zoom
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Matrix
-import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
 import android.view.MotionEvent
@@ -16,7 +15,6 @@ import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
 import com.github.panpf.sketch.zoom.internal.TapHelper
-import kotlin.math.abs
 
 class Zoomer constructor(
     val context: Context,
@@ -192,8 +190,8 @@ class Zoomer constructor(
     /**
      * Scale to the specified scale. You don't have to worry about rotation degrees
      *
-     * @param focalX  Scale the x coordinate of the center point on the preview image
-     * @param focalY  Scale the y coordinate of the center point on the preview image
+     * @param focalX  Scale the x coordinate of the center point on the view
+     * @param focalY  Scale the y coordinate of the center point on the view
      */
     fun zoom(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
         val finalScale = scale
@@ -236,22 +234,6 @@ class Zoomer constructor(
      */
     fun rotateBy(addDegrees: Int) {
         return rotateTo(_rotateDegrees + addDegrees)
-    }
-
-    /**
-     * The touch points on the view are converted to the corresponding points on the drawable
-     */
-    fun viewTouchPointToDrawablePoint(touchX: Int, touchY: Int): Point? {
-        val drawRect = RectF()
-        getDrawRect(drawRect)
-        if (!drawRect.contains(touchX.toFloat(), touchY.toFloat())) {
-            return null
-        }
-
-        val zoomScale = zoomScale
-        val drawableX = ((abs(drawRect.left) + touchX) / zoomScale).toInt()
-        val drawableY = ((abs(drawRect.top) + touchY) / zoomScale).toInt()
-        return Point(drawableX, drawableY)
     }
 
 
