@@ -14,7 +14,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 @RunWith(AndroidJUnit4::class)
-class TilesUtilsTest {
+class TileUtilsTest {
 
     @Test
     fun testInitializeTileMap() {

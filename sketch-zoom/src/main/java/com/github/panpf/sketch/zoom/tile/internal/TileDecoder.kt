@@ -22,6 +22,7 @@ import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
@@ -38,14 +39,55 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
 import kotlinx.coroutines.runBlocking
 import java.util.LinkedList
 
-class TileDecoder private constructor(
-    private val context: Context,
+
+@WorkerThread
+fun createTileDecoder(
+    context: Context,
+    imageUri: String,
+    disabledExifOrientation: Boolean
+): TileDecoder? {
+    requiredWorkThread()
+
+    val sketch = context.sketch
+    val request = LoadRequest(context, imageUri)
+    val fetch = sketch.componentRegistry.newFetcher(sketch, request)
+    val fetchResult = runBlocking {
+        fetch.fetch()
+    }
+
+    val imageInfo = fetchResult.dataSource.readImageInfoWithBitmapFactoryOrNull()
+        ?: throw Exception("Unsupported image format.  $imageUri")
+    val exifOrientation = if (!disabledExifOrientation) {
+        fetchResult.dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
+    } else {
+        ExifInterface.ORIENTATION_UNDEFINED
+    }
+    val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
+    val imageSize =
+        exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
+    val imageFormat = ImageFormat.valueOfMimeType(imageInfo.mimeType)
+    if (imageFormat?.supportBitmapRegionDecoder() != true) {
+        return null
+    }
+
+    return TileDecoder(
+        context = context,
+        imageUri = imageUri,
+        imageInfo = ImageInfo(imageSize.width, imageSize.height, imageInfo.mimeType),
+        exifOrientationHelper = exifOrientationHelper,
+        dataSource = fetchResult.dataSource,
+    )
+}
+
+class TileDecoder internal constructor(
+    context: Context,
     val imageUri: String,
     val imageInfo: ImageInfo,
     val exifOrientationHelper: ExifOrientationHelper,
@@ -67,6 +109,7 @@ class TileDecoder private constructor(
     @WorkerThread
     fun decode(tile: Tile): Bitmap? {
         requiredWorkThread()
+
         if (_destroyed) return null
         return useDecoder { decoder ->
             decodeRegion(decoder, tile.srcRect, tile.inSampleSize)?.let {
@@ -81,6 +124,8 @@ class TileDecoder private constructor(
         srcRect: Rect,
         inSampleSize: Int
     ): Bitmap? {
+        requiredWorkThread()
+
         val imageSize = imageSize
         val newSrcRect = exifOrientationHelper.addToRect(srcRect, imageSize)
         val options = BitmapFactory.Options().apply {
@@ -129,6 +174,8 @@ class TileDecoder private constructor(
 
     @WorkerThread
     private fun applyExifOrientation(bitmap: Bitmap): Bitmap {
+        requiredWorkThread()
+
         val newBitmap = exifOrientationHelper.applyToBitmap(bitmap, bitmapPool)
         return if (newBitmap != null && newBitmap != bitmap) {
             bitmapPool.free(bitmap)
@@ -138,7 +185,10 @@ class TileDecoder private constructor(
         }
     }
 
+    @MainThread
     fun destroy() {
+        requiredMainThread()
+
         synchronized(decoderPool) {
             _destroyed = true
             decoderPool.forEach {
@@ -180,47 +230,5 @@ class TileDecoder private constructor(
         }
 
         return bitmap
-    }
-
-    class Factory(
-        val context: Context,
-        val imageUri: String,
-        val disabledExifOrientation: Boolean
-    ) {
-
-        @WorkerThread
-        fun create(): TileDecoder? {
-            requiredWorkThread()
-
-            val sketch = context.sketch
-            val request = LoadRequest(context, imageUri)
-            val fetch = sketch.componentRegistry.newFetcher(sketch, request)
-            val fetchResult = runBlocking {
-                fetch.fetch()
-            }
-
-            val imageInfo = fetchResult.dataSource.readImageInfoWithBitmapFactoryOrNull()
-                ?: throw Exception("Unsupported image format.  $imageUri")
-            val exifOrientation = if (!disabledExifOrientation) {
-                fetchResult.dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
-            } else {
-                ExifInterface.ORIENTATION_UNDEFINED
-            }
-            val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
-            val imageSize =
-                exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
-            val imageFormat = ImageFormat.valueOfMimeType(imageInfo.mimeType)
-            if (imageFormat?.supportBitmapRegionDecoder() != true) {
-                return null
-            }
-
-            return TileDecoder(
-                context = context,
-                imageUri = imageUri,
-                imageInfo = ImageInfo(imageSize.width, imageSize.height, imageInfo.mimeType),
-                exifOrientationHelper = exifOrientationHelper,
-                dataSource = fetchResult.dataSource,
-            )
-        }
     }
 }
