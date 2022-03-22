@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.tile
+package com.github.panpf.sketch.zoom.tile.internal
 
 import android.content.Context
 import android.content.res.Resources
@@ -34,6 +34,8 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.zoom.internal.getScale
+import com.github.panpf.sketch.zoom.tile.Tile
+import com.github.panpf.sketch.zoom.tile.Tiles
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -19,7 +19,6 @@ import com.github.panpf.sketch.zoom.internal.TapHelper
 class Zoomer constructor(
     val context: Context,
     val view: View,
-//    viewSize: Size,
     scaleType: ScaleType,
     readModeDecider: ReadModeDecider?,
 ) {

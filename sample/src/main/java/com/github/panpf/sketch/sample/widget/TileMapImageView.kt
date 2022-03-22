@@ -30,7 +30,6 @@ import android.view.MotionEvent
 import android.view.ViewGroup.LayoutParams
 import androidx.core.view.updateLayoutParams
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.zoom.tile.crossWith
 import com.github.panpf.tools4a.dimen.ktx.dp2pxF
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -194,5 +193,12 @@ class TileMapImageView @JvmOverloads constructor(
         val realY = y * heightScale
 
         zoomView.zoomAbility.location(realX, realY, animate = true)
+    }
+
+    private fun Rect.crossWith(other: Rect): Boolean {
+        return this.left < other.right
+                && this.right > other.left
+                && this.top < other.bottom
+                && this.bottom > other.top
     }
 }

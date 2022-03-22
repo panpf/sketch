@@ -9,6 +9,8 @@ import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.tile.internal.TileDecoder
+import com.github.panpf.sketch.zoom.tile.internal.TileManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

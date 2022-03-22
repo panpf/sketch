@@ -34,7 +34,6 @@ class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
         val imageDetail = Json.decodeFromString<ImageDetail>(args.imageDetailJson)
 
         binding.imageFragmentZoomImageView.apply {
-            zoomAbility.useTiles = true
             displayImage(imageDetail.firstMiddenUrl) {
                 placeholderImage(
                     StateImage.memoryCache(
