@@ -68,6 +68,9 @@ class AppSettingsService(val context: Context) {
     val showDataFromLogo by lazy {
         BooleanPrefsData(context, "showDataFrom", true)
     }
+    val showTileBoundsInHugeImagePage by lazy {
+        BooleanPrefsData(context, "showTileBoundsInHugeImagePage", true)
+    }
 
 //    val readModeEnabled by lazy {
 //        BooleanPrefsData(context, "readModeEnabled", true)

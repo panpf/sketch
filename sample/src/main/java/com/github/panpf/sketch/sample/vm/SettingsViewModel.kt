@@ -218,6 +218,13 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             )
         )
         add(
+            SwitchMenu(
+                title = "Show tile bounds in 'Huge Image' page",
+                data = appSettingsService.showTileBoundsInHugeImagePage,
+                desc = null
+            )
+        )
+        add(
             MultiSelectMenu(
                 "Logger level",
                 null,

@@ -150,7 +150,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
                 zoomer?.onViewTapListener = value
             }
         }
-    var showBlockBounds: Boolean = false
+    var showTileBounds: Boolean = false
         set(value) {
             if (field != value) {
                 field = value
@@ -404,12 +404,12 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         if (useTiles) {
             tiles?.destroy()
             this.tiles = zoomer?.let { tryNewTiles(it) }?.apply {
-                showTileBounds = this@ZoomAbility.showBlockBounds
+                showTileBounds = this@ZoomAbility.showTileBounds
             }
         } else {
             blocks?.recycle("replace")
             this.blocks = zoomer?.let { tryNewBlocks(it) }?.apply {
-                isShowBlockBounds = this@ZoomAbility.showBlockBounds
+                isShowBlockBounds = this@ZoomAbility.showTileBounds
             }
         }
     }

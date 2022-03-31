@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.BindingFragment
 import com.github.panpf.sketch.sample.bean.ImageDetail
 import com.github.panpf.sketch.sample.databinding.FragmentImageDetailBinding
@@ -26,7 +27,7 @@ class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
         binding.imageFragmentZoomImageView.apply {
             showRingProgressIndicator()
             zoomAbility.readModeEnabled = true
-            zoomAbility.showBlockBounds = true
+            zoomAbility.showTileBounds = args.showTileMap && appSettingsService.showTileBoundsInHugeImagePage.value
         }
     }
 
