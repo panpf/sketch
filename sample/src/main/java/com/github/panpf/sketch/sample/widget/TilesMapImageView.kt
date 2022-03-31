@@ -30,13 +30,12 @@ import android.view.MotionEvent
 import android.view.ViewGroup.LayoutParams
 import androidx.core.view.updateLayoutParams
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.zoom.tile.crossWith
 import com.github.panpf.tools4a.dimen.ktx.dp2pxF
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
-class TileMapImageView @JvmOverloads constructor(
+class TilesMapImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : SketchImageView(context, attrs, defStyle) {
 
@@ -44,9 +43,9 @@ class TileMapImageView @JvmOverloads constructor(
         style = Paint.Style.STROKE
         strokeWidth = 1.5f.dp2pxF
     }
+    private val strokeHalfWidth = tileBoundsPaint.strokeWidth / 2
     private val previewVisibleRect = Rect()
-    private val imageVisibleRect = Rect()
-    private val mapPreviewVisibleRect = Rect()
+    private val mapVisibleRect = Rect()
     private val tileDrawRect = Rect()
     private var zoomView: MyZoomImageView? = null
 
@@ -65,28 +64,16 @@ class TileMapImageView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val zoomAbility = zoomView?.zoomAbility ?: return
-        val imageSize = zoomAbility.imageSize ?: return
-        val tileList = zoomAbility.tileList?.takeIf { it.isNotEmpty() } ?: return
         val viewWidth = width.takeIf { it > 0 } ?: return
+        val zoomAbility = zoomView?.zoomAbility ?: return
+        val imageSize = zoomAbility.imageSize?.takeIf { !it.isEmpty } ?: return
+        val previewSize = zoomAbility.previewSize?.takeIf { !it.isEmpty } ?: return
         val previewVisibleRect = previewVisibleRect
             .apply { zoomAbility.getVisibleRect(this) }
             .takeIf { !it.isEmpty } ?: return
-        val previewSize = zoomAbility.previewSize ?: return
         val targetScale = imageSize.width.toFloat() / viewWidth
 
-        val previewScaled = imageSize.width / previewSize.width.toFloat()
-        val imageVisibleRect = imageVisibleRect.apply {
-            set(
-                floor(previewVisibleRect.left * previewScaled).toInt(),
-                floor(previewVisibleRect.top * previewScaled).toInt(),
-                ceil(previewVisibleRect.right * previewScaled).toInt(),
-                ceil(previewVisibleRect.bottom * previewScaled).toInt()
-            )
-        }
-
-        val strokeHalfWidth = tileBoundsPaint.strokeWidth / 2
-        tileList.forEach { tile ->
+        zoomAbility.eachTileList { tile, load ->
             val tileBitmap = tile.bitmap
             val tileSrcRect = tile.srcRect
             val tileDrawRect = tileDrawRect.apply {
@@ -97,30 +84,27 @@ class TileMapImageView @JvmOverloads constructor(
                     ceil((tileSrcRect.bottom / targetScale) - strokeHalfWidth).toInt()
                 )
             }
-            val boundsColor = if (tile.srcRect.crossWith(imageVisibleRect)) {
-                when {
-                    tileBitmap != null -> Color.GREEN
-                    tile.loadJob?.isActive == true -> Color.YELLOW
-                    else -> Color.RED
-                }
-            } else {
-                Color.parseColor("#00BFFF")
+            val boundsColor = when {
+                !load -> Color.parseColor("#00BFFF")
+                tileBitmap != null -> Color.GREEN
+                tile.loadJob?.isActive == true -> Color.YELLOW
+                else -> Color.RED
             }
             tileBoundsPaint.color = boundsColor
             canvas.drawRect(tileDrawRect, tileBoundsPaint)
         }
 
-        val mapScaled = imageSize.width / viewWidth.toFloat()
-        val mapPreviewVisibleRect = mapPreviewVisibleRect.apply {
+        val mapVisibleRect = mapVisibleRect.apply {
+            val mapScaled = previewSize.width / viewWidth.toFloat()
             set(
-                floor(imageVisibleRect.left / mapScaled).toInt(),
-                floor(imageVisibleRect.top / mapScaled).toInt(),
-                ceil(imageVisibleRect.right / mapScaled).toInt(),
-                ceil(imageVisibleRect.bottom / mapScaled).toInt()
+                floor(previewVisibleRect.left / mapScaled).toInt(),
+                floor(previewVisibleRect.top / mapScaled).toInt(),
+                ceil(previewVisibleRect.right / mapScaled).toInt(),
+                ceil(previewVisibleRect.bottom / mapScaled).toInt()
             )
         }
         tileBoundsPaint.color = Color.parseColor("#FF00FF")
-        canvas.drawRect(mapPreviewVisibleRect, tileBoundsPaint)
+        canvas.drawRect(mapVisibleRect, tileBoundsPaint)
     }
 
     override fun setImageDrawable(drawable: Drawable?) {

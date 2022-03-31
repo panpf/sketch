@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/app_name" />
 
-    <com.github.panpf.sketch.sample.widget.TileMapImageView
+    <com.github.panpf.sketch.sample.widget.TilesMapImageView
         android:id="@+id/imageFragmentTileMapImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
