@@ -502,14 +502,12 @@ internal class ScaleDragHelper constructor(
      * 获取预览图上用户可以看到的区域（不受旋转影响）
      */
     fun getVisibleRect(rect: Rect) {
-        val drawRectF = RectF()
-        getDrawRect(drawRectF)
-        if (drawRectF.isEmpty) {
-            rect.setEmpty()
-            return
-        }
-        val viewSize = zoomer.viewSize
-        val drawableSize = zoomer.drawableSize
+        rect.setEmpty()
+        val drawRectF = RectF().apply {
+            getDrawRect(this)
+        }.takeIf { !it.isEmpty } ?: return
+        val viewSize = zoomer.viewSize.takeIf { !it.isEmpty } ?: return
+        val drawableSize = zoomer.drawableSize.takeIf { !it.isEmpty } ?: return
         val displayWidth = drawRectF.width()
         val displayHeight = drawRectF.height()
         val drawableWidth =
