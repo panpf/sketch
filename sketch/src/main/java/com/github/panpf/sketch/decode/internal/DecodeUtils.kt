@@ -271,6 +271,8 @@ fun BitmapDecodeResult.applyResize(
     }
 }
 
+
+@Throws(IOException::class)
 fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
@@ -283,6 +285,7 @@ fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
     )
 }
 
+@Throws(IOException::class)
 fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {
     val imageInfo = readImageInfoWithBitmapFactory()
     val width = imageInfo.width
@@ -295,9 +298,15 @@ fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {
 }
 
 fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
-    readImageInfoWithBitmapFactory().takeIf {
-        it.width > 0 && it.height > 0 && it.mimeType.isNotEmpty()
+    try {
+        readImageInfoWithBitmapFactory().takeIf {
+            it.width > 0 && it.height > 0 && it.mimeType.isNotEmpty()
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+        null
     }
+
 
 @Throws(IOException::class)
 fun DataSource.decodeBitmapWithBitmapFactory(options: BitmapFactory.Options? = null): Bitmap? =
