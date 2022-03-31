@@ -60,7 +60,12 @@ class TileManager constructor(
             strokeWidth = 1f * Resources.getSystem().displayMetrics.density
         }
     }
-    private val tileMap: Map<Int, List<Tile>> = initializeTileMap(decoder.imageSize, viewSize)
+    private val strokeHalfWidth by lazy { (tileBoundsPaint.strokeWidth) / 2 }
+
+    private val tileMaxSize = viewSize.let {
+        Size(it.width / 2, it.height / 2)
+    }
+    private val tileMap: Map<Int, List<Tile>> = initializeTileMap(decoder.imageSize, tileMaxSize)
     private val bitmapPool: BitmapPool = context.sketch.bitmapPool
     private val memoryCache: MemoryCache = context.sketch.memoryCache
     private val scope: CoroutineScope = CoroutineScope(
@@ -70,6 +75,7 @@ class TileManager constructor(
     private var lastTileList: List<Tile>? = null
     private var lastSampleSize: Int? = null
     private val imageVisibleRect = Rect()
+    private val imageLoadRect = Rect()
     private val tileDrawRect = Rect()
 
     var viewSize: Size = viewSize
@@ -113,29 +119,34 @@ class TileManager constructor(
         val tileList = lastTileList
         if (tileList == null) {
             logger.w(Tiles.MODULE) {
-                "refreshTiles. no tileList. imageSize=${imageSize}, previewSize=$previewSize, " +
-                        "previewVisibleRect=${previewVisibleRect}, zoomScale=$zoomScale, sampleSize=$sampleSize. $imageUri"
+                "refreshTiles. no tileList. " +
+                        "imageSize=${imageSize}, " +
+                        "previewSize=$previewSize, " +
+                        "previewVisibleRect=${previewVisibleRect}, " +
+                        "zoomScale=$zoomScale, " +
+                        "sampleSize=$lastSampleSize. " +
+                        imageUri
             }
             return
         }
-        val previewScaled = imageSize.width / previewSize.width.toFloat()
-        val imageVisibleRect = Rect(
-            floor(previewVisibleRect.left * previewScaled).toInt(),
-            floor(previewVisibleRect.top * previewScaled).toInt(),
-            ceil(previewVisibleRect.right * previewScaled).toInt(),
-            ceil(previewVisibleRect.bottom * previewScaled).toInt()
-        )
+        resetVisibleAndLoadRect(previewSize, previewVisibleRect)
 
         logger.d(Tiles.MODULE) {
-            "refreshTiles. successful. imageSize=${imageSize}, imageVisibleRect=$imageVisibleRect, " +
-                    "previewSize=$previewSize, previewVisibleRect=${previewVisibleRect}, " +
-                    "zoomScale=$zoomScale, sampleSize=$sampleSize. $imageUri"
+            "refreshTiles. successful. " +
+                    "imageSize=${imageSize}, " +
+                    "imageVisibleRect=$imageVisibleRect, " +
+                    "imageLoadRect=$imageLoadRect, " +
+                    "previewSize=$previewSize, " +
+                    "previewVisibleRect=${previewVisibleRect}, " +
+                    "zoomScale=$zoomScale, " +
+                    "sampleSize=$lastSampleSize. " +
+                    imageUri
         }
-        tileList.forEach {
-            if (it.srcRect.crossWith(imageVisibleRect)) {
-                loadTile(it)
+        tileList.forEach { tile ->
+            if (tile.srcRect.crossWith(imageLoadRect)) {
+                loadTile(tile)
             } else {
-                freeTile(it)
+                freeTile(tile)
             }
         }
         tiles.invalidateView()
@@ -151,21 +162,12 @@ class TileManager constructor(
             }
             return
         }
-        val previewScaled = imageSize.width / previewSize.width.toFloat()
-        val imageVisibleRect = imageVisibleRect.apply {
-            set(
-                floor(previewVisibleRect.left * previewScaled).toInt(),
-                floor(previewVisibleRect.top * previewScaled).toInt(),
-                ceil(previewVisibleRect.right * previewScaled).toInt(),
-                ceil(previewVisibleRect.bottom * previewScaled).toInt()
-            )
-        }
+        resetVisibleAndLoadRect(previewSize, previewVisibleRect)
         val targetScale = (imageSize.width / previewSize.width.toFloat())
         canvas.withSave {
             canvas.concat(drawMatrix)
-            val strokeHalfWidth = (tileBoundsPaint.strokeWidth) / 2
             tileList.forEach { tile ->
-                if (tile.srcRect.crossWith(imageVisibleRect)) {
+                if (tile.srcRect.crossWith(imageLoadRect)) {
                     val tileBitmap = tile.bitmap
                     val tileSrcRect = tile.srcRect
                     val tileDrawRect = tileDrawRect.apply {
@@ -295,6 +297,41 @@ class TileManager constructor(
             logger.d(Tiles.MODULE) {
                 "freeTile. $tile"
             }
+        }
+    }
+
+    fun eachTileList(
+        previewSize: Size,
+        previewVisibleRect: Rect,
+        action: (tile: Tile, load: Boolean) -> Unit
+    ) {
+        val tileList = lastTileList ?: return
+        resetVisibleAndLoadRect(previewSize, previewVisibleRect)
+        tileList.forEach {
+            action(it, it.srcRect.crossWith(imageLoadRect))
+        }
+    }
+
+    private fun resetVisibleAndLoadRect(previewSize: Size, previewVisibleRect: Rect) {
+        val previewScaled = imageSize.width / previewSize.width.toFloat()
+        imageVisibleRect.apply {
+            set(
+                floor(previewVisibleRect.left * previewScaled).toInt(),
+                floor(previewVisibleRect.top * previewScaled).toInt(),
+                ceil(previewVisibleRect.right * previewScaled).toInt(),
+                ceil(previewVisibleRect.bottom * previewScaled).toInt()
+            )
+        }
+        // Increase the visible area as the loading area,
+        // this preloads tiles around the visible area,
+        // the user will no longer feel the loading process while sliding slowly
+        imageLoadRect.apply {
+            set(
+                imageVisibleRect.left - tileMaxSize.width / 2,
+                imageVisibleRect.top - tileMaxSize.height / 2,
+                imageVisibleRect.right + tileMaxSize.width / 2,
+                imageVisibleRect.bottom + tileMaxSize.height / 2
+            )
         }
     }
 }

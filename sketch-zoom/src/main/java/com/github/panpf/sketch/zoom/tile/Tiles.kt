@@ -171,4 +171,12 @@ class Tiles constructor(
     fun removeOnTileChangedListener(listener: OnTileChangedListener): Boolean {
         return onTileChangedListenerList?.remove(listener) == true
     }
+
+    fun eachTileList(action: (tile: Tile, load: Boolean) -> Unit) {
+        val previewSize = zoomer.drawableSize.takeIf { !it.isEmpty } ?: return
+        val previewVisibleRect = tempVisibleRect.apply {
+            zoomer.getVisibleRect(this)
+        }.takeIf { !it.isEmpty } ?: return
+        tileManager?.eachTileList(previewSize, previewVisibleRect, action)
+    }
 }

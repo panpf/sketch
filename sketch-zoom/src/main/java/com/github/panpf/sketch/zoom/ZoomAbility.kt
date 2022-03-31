@@ -271,6 +271,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     /** Gets the area that the user can see on the preview (not affected by rotation) */
     fun getVisibleRect(rect: Rect) = zoomer?.getVisibleRect(rect)
 
+    fun eachTileList(action: (tile: Tile, load: Boolean) -> Unit) {
+        tiles?.eachTileList(action)
+    }
+
     val tileList: List<Tile>?
         get() = tiles?.tileList
 
