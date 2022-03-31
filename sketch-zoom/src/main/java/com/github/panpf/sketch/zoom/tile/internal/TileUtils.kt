@@ -1,9 +1,10 @@
-package com.github.panpf.sketch.zoom.tile
+package com.github.panpf.sketch.zoom.tile.internal
 
 import android.graphics.Rect
 import com.github.panpf.sketch.decode.internal.maxBitmapSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
+import com.github.panpf.sketch.zoom.tile.Tile
 import kotlin.math.ceil
 
 internal fun initializeTileMap(imageSize: Size, tileMaxSize: Size): Map<Int, List<Tile>> {
@@ -81,7 +82,7 @@ internal fun findSampleSize(
     return sampleSize
 }
 
-fun Rect.crossWith(other: Rect): Boolean {
+internal fun Rect.crossWith(other: Rect): Boolean {
     return this.left < other.right
             && this.right > other.left
             && this.top < other.bottom

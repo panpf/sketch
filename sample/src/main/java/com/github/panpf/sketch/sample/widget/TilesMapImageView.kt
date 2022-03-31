@@ -179,4 +179,11 @@ class TilesMapImageView @JvmOverloads constructor(
 
         zoomView.zoomAbility.location(realX, realY, animate = true)
     }
+
+    private fun Rect.crossWith(other: Rect): Boolean {
+        return this.left < other.right
+                && this.right > other.left
+                && this.top < other.bottom
+                && this.bottom > other.top
+    }
 }

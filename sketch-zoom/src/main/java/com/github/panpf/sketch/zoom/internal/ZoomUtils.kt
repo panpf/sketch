@@ -1,27 +1,14 @@
 package com.github.panpf.sketch.zoom.internal
 
-import android.content.res.Resources
 import android.graphics.Matrix
 import android.graphics.PointF
-import android.graphics.Rect
 import android.view.MotionEvent
-
-internal val Float.dp2px: Int
-    get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
-
-internal val Int.dp2px: Int
-    get() = (this.toFloat() * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
 internal fun getPointerIndex(action: Int): Int {
     return action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT
 }
 
 private val MATRIX_VALUES = FloatArray(9)
-
-
-internal fun Rect.isCross(rect2: Rect): Boolean {
-    return this.left < rect2.right && rect2.left < this.right && this.top < rect2.bottom && rect2.top < this.bottom
-}
 
 /**
  * 获取矩阵中指定位置的值

@@ -1,12 +1,12 @@
-package com.github.panpf.sketch.zoom.test
+package com.github.panpf.sketch.zoom.test.internal
 
 import android.graphics.Rect
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.tile.Tile
-import com.github.panpf.sketch.zoom.tile.crossWith
-import com.github.panpf.sketch.zoom.tile.findSampleSize
-import com.github.panpf.sketch.zoom.tile.initializeTileMap
+import com.github.panpf.sketch.zoom.tile.internal.crossWith
+import com.github.panpf.sketch.zoom.tile.internal.findSampleSize
+import com.github.panpf.sketch.zoom.tile.internal.initializeTileMap
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,7 +14,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 @RunWith(AndroidJUnit4::class)
-class TilesUtilsTest {
+class TileUtilsTest {
 
     @Test
     fun testInitializeTileMap() {

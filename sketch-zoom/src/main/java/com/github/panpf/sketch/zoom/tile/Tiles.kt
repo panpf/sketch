@@ -4,11 +4,15 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Rect
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.zoom.OnMatrixChangeListener
 import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.tile.internal.TileManager
+import com.github.panpf.sketch.zoom.tile.internal.createTileDecoder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,11 +33,14 @@ class Tiles constructor(
     }
 
     private val tempDrawMatrix = Matrix()
-    private val tempVisibleRect = Rect()
+    private val tempPreviewVisibleRect = Rect()
     private val logger: Logger = context.sketch.logger
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )
+    private val onMatrixChangeListener = OnMatrixChangeListener {
+        refreshTiles()
+    }
 
     private var _destroyed: Boolean = false
     private var tileManager: TileManager? = null
@@ -66,7 +73,7 @@ class Tiles constructor(
                 field = value
                 if (value) {
                     logger.v(MODULE) { "pause. $imageUri" }
-                    cleanMemory()
+                    tileManager?.freeAllTile()
                 } else {
                     logger.v(MODULE) { "resume. $imageUri" }
                     refreshTiles()
@@ -77,34 +84,19 @@ class Tiles constructor(
     init {
         scope.launch(Dispatchers.Main) {
             val tileDecoder = withContext(Dispatchers.IO) {
-                TileDecoder.Factory(context, imageUri, disabledExifOrientation).create()
+                createTileDecoder(context, imageUri, disabledExifOrientation)
             } ?: return@launch
             tileManager = TileManager(context, imageUri, viewSize, tileDecoder, this@Tiles)
             refreshTiles()
         }
 
-        zoomer.addOnMatrixChangeListener {
-            refreshTiles()
-        }
+        zoomer.addOnMatrixChangeListener(onMatrixChangeListener)
     }
 
-    fun destroy() {
-        if (_destroyed) return
-        _destroyed = true
-        zoomer.removeOnMatrixChangeListener() {
-            refreshTiles()
-        }
-        scope.cancel()
-        tileManager?.destroy()
-        tileManager = null
-    }
-
-    fun cleanMemory() {
-        tileManager?.cleanMemory()
-    }
-
+    @MainThread
     private fun refreshTiles() {
         requiredMainThread()
+
         if (destroyed) {
             logger.d(MODULE) { "refreshTiles. destroyed. $imageUri" }
             return
@@ -128,7 +120,7 @@ class Tiles constructor(
         val drawMatrix = tempDrawMatrix.apply {
             zoomer.getDrawMatrix(this)
         }
-        val previewVisibleRect = tempVisibleRect.apply {
+        val previewVisibleRect = tempPreviewVisibleRect.apply {
             zoomer.getVisibleRect(this)
         }
 
@@ -136,7 +128,7 @@ class Tiles constructor(
             logger.w(MODULE) {
                 "refreshTiles. previewVisibleRect is empty. previewVisibleRect=${previewVisibleRect}. $imageUri"
             }
-            cleanMemory()
+            tileManager?.freeAllTile()
             return
         }
 
@@ -150,15 +142,21 @@ class Tiles constructor(
         tileManager?.refreshTiles(previewSize, previewVisibleRect, drawMatrix)
     }
 
+    @MainThread
     fun onDraw(canvas: Canvas) {
+        requiredMainThread()
+
         if (destroyed) return
         val previewSize = zoomer.drawableSize
         val drawMatrix = tempDrawMatrix
-        val previewVisibleRect = tempVisibleRect
+        val previewVisibleRect = tempPreviewVisibleRect
         tileManager?.onDraw(canvas, previewSize, previewVisibleRect, drawMatrix)
     }
 
+    @MainThread
     internal fun invalidateView() {
+        requiredMainThread()
+
         zoomer.view.invalidate()
     }
 
@@ -174,9 +172,21 @@ class Tiles constructor(
 
     fun eachTileList(action: (tile: Tile, load: Boolean) -> Unit) {
         val previewSize = zoomer.drawableSize.takeIf { !it.isEmpty } ?: return
-        val previewVisibleRect = tempVisibleRect.apply {
+        val previewVisibleRect = tempPreviewVisibleRect.apply {
             zoomer.getVisibleRect(this)
         }.takeIf { !it.isEmpty } ?: return
         tileManager?.eachTileList(previewSize, previewVisibleRect, action)
+    }
+
+    @MainThread
+    fun destroy() {
+        requiredMainThread()
+
+        if (_destroyed) return
+        _destroyed = true
+        zoomer.removeOnMatrixChangeListener(onMatrixChangeListener)
+        scope.cancel()
+        tileManager?.destroy()
+        tileManager = null
     }
 }

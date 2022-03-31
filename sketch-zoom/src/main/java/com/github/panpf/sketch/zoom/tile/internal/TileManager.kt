@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.tile
+package com.github.panpf.sketch.zoom.tile.internal
 
 import android.content.Context
 import android.content.res.Resources
@@ -34,6 +34,8 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.zoom.internal.getScale
+import com.github.panpf.sketch.zoom.tile.Tile
+import com.github.panpf.sketch.zoom.tile.Tiles
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,8 +84,7 @@ class TileManager constructor(
         internal set(value) {
             if (field != value) {
                 field = value
-                // todo
-//                reset()
+                // todo apply view size change
             }
         }
     val tileList: List<Tile>?
@@ -92,19 +93,24 @@ class TileManager constructor(
 
     init {
         logger.d(Tiles.MODULE) {
-            val tileMapInfos = tileMap.keys.sortedDescending().map { "${it}:${tileMap[it]?.size}" }
-            "tileMap. $tileMapInfos"
+            val tileMapInfoList = tileMap.keys.sortedDescending().map {
+                "${it}:${tileMap[it]?.size}"
+            }
+            "tileMap. $tileMapInfoList"
         }
     }
 
+    @MainThread
     fun refreshTiles(previewSize: Size, previewVisibleRect: Rect, drawMatrix: Matrix) {
+        requiredMainThread()
+
         val zoomScale = drawMatrix.getScale().format(2)
         val sampleSize = findSampleSize(
-            imageSize.width,
-            imageSize.height,
-            previewSize.width,
-            previewSize.height,
-            zoomScale
+            imageWidth = imageSize.width,
+            imageHeight = imageSize.height,
+            previewWidth = previewSize.width,
+            previewHeight = previewSize.height,
+            scale = zoomScale
         )
         if (sampleSize != lastSampleSize) {
             lastTileList?.forEach { freeTile(it) }
@@ -152,7 +158,10 @@ class TileManager constructor(
         tiles.invalidateView()
     }
 
+    @MainThread
     fun onDraw(canvas: Canvas, previewSize: Size, previewVisibleRect: Rect, drawMatrix: Matrix) {
+        requiredMainThread()
+
         val tileList = lastTileList
         if (tileList == null) {
             if (lastSampleSize != null) {
@@ -207,21 +216,10 @@ class TileManager constructor(
         }
     }
 
-    fun destroy() {
-        cleanMemory()
-        decoder.destroy()
-    }
-
-    fun cleanMemory() {
-        tileMap.values.forEach { tileList ->
-            tileList.forEach { tile ->
-                freeTile(tile)
-            }
-        }
-        tiles.invalidateView()
-    }
-
+    @MainThread
     private fun notifyTileChanged() {
+        requiredMainThread()
+
         tiles.onTileChangedListenerList?.forEach {
             it.onTileChanged(tiles)
         }
@@ -288,10 +286,14 @@ class TileManager constructor(
 
     @MainThread
     private fun freeTile(tile: Tile) {
-        requiredMainThread()
-        tile.loadJob?.cancel()
-        tile.loadJob = null
-        if (tile.countBitmap != null) {
+        tile.loadJob?.run {
+            if (isActive) {
+                cancel()
+            }
+            tile.loadJob = null
+        }
+
+        tile.countBitmap?.run {
             tile.countBitmap = null
             notifyTileChanged()
             logger.d(Tiles.MODULE) {
@@ -333,5 +335,25 @@ class TileManager constructor(
                 imageVisibleRect.bottom + tileMaxSize.height / 2
             )
         }
+    }
+
+    @MainThread
+    fun freeAllTile() {
+        requiredMainThread()
+
+        tileMap.values.forEach { tileList ->
+            tileList.forEach { tile ->
+                freeTile(tile)
+            }
+        }
+        tiles.invalidateView()
+    }
+
+    @MainThread
+    fun destroy() {
+        requiredMainThread()
+
+        freeAllTile()
+        decoder.destroy()
     }
 }

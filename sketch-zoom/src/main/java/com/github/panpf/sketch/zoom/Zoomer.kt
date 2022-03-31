@@ -19,7 +19,6 @@ import com.github.panpf.sketch.zoom.internal.TapHelper
 class Zoomer constructor(
     val context: Context,
     val view: View,
-//    viewSize: Size,
     scaleType: ScaleType,
     readModeDecider: ReadModeDecider?,
 ) {
@@ -50,20 +49,6 @@ class Zoomer constructor(
         })
     private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, this)
     private var _rotateDegrees = 0
-    var imageSize = Size(0, 0)
-        internal set(value) {
-            if (field != value) {
-                field = value
-                reset()
-            }
-        }
-    var drawableSize = Size(0, 0)
-        internal set(value) {
-            if (field != value) {
-                field = value
-                reset()
-            }
-        }
 
     private var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
     private var onRotateChangeListenerList: MutableSet<OnRotateChangeListener>? = null
@@ -76,6 +61,20 @@ class Zoomer constructor(
     var onViewLongPressListener: OnViewLongPressListener? = null
     var onViewTapListener: OnViewTapListener? = null
     var viewSize = Size(0, 0)
+        internal set(value) {
+            if (field != value) {
+                field = value
+                reset()
+            }
+        }
+    var imageSize = Size(0, 0)
+        internal set(value) {
+            if (field != value) {
+                field = value
+                reset()
+            }
+        }
+    var drawableSize = Size(0, 0)
         internal set(value) {
             if (field != value) {
                 field = value
@@ -121,7 +120,6 @@ class Zoomer constructor(
                 field = value
             }
         }
-
     var scales: Scales = scalesFactory.create(
         context,
         viewSize,
