@@ -38,29 +38,10 @@ class ListMenuViewModel(
 
     private fun assembleMenuList(): List<MenuItemInfoGroup> = buildList {
         add(MenuItemInfoGroup(buildList {
-            if (showLayoutModeMenu) {
-                add(SwitchMenuItemInfo(
-                    values = arrayOf(
-                        LayoutMode.GRID,
-                        LayoutMode.STAGGERED_GRID,
-                    ),
-                    initValue = application1.appSettingsService.photoListLayoutMode.value!!,
-                    titles = null,
-                    iconResIds = arrayOf(
-                        R.drawable.ic_layout_grid_staggered,
-                        R.drawable.ic_layout_grid,
-                    ),
-                    showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
-                ) { _, newValue ->
-                    application1.appSettingsService.photoListLayoutMode.postValue(newValue)
-                    menuList.postValue(menuList.value)
-                })
-            }
-
             if (showPlayMenu) {
                 add(SwitchMenuItemInfo(
                     values = arrayOf(true, false),
-                    initValue = application1.appSettingsService.disabledAnimatableDrawableInList.value!!,
+                    initValue = application1.appSettingsService.disabledAnimatableDrawableInList.value,
                     titles = null,
                     iconResIds = arrayOf(
                         R.drawable.ic_pause,
@@ -75,14 +56,24 @@ class ListMenuViewModel(
                 })
             }
 
-//            add(
-//                NavMenuItemInfo(
-//                    title = "Settings",
-//                    iconResId = R.drawable.ic_settings,
-//                    showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS,
-//                    navDirections = NavMainDirections.actionGlobalSettingsFragment()
-//                )
-//            )
+            if (showLayoutModeMenu) {
+                add(SwitchMenuItemInfo(
+                    values = arrayOf(
+                        LayoutMode.GRID,
+                        LayoutMode.STAGGERED_GRID,
+                    ),
+                    initValue = application1.appSettingsService.photoListLayoutMode.value,
+                    titles = null,
+                    iconResIds = arrayOf(
+                        R.drawable.ic_layout_grid,
+                        R.drawable.ic_layout_grid_staggered,
+                    ),
+                    showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
+                ) { _, newValue ->
+                    application1.appSettingsService.photoListLayoutMode.postValue(newValue)
+                    menuList.postValue(menuList.value)
+                })
+            }
 
             add(
                 DialogFragmentItemInfo(
