@@ -73,3 +73,5 @@ interface DataSource {
         }.file
     }
 }
+
+interface UnavailableDataSource : DataSource

@@ -4,9 +4,9 @@ object AssetImages {
     val FORMATS = arrayOf(
         "asset://sample.jpeg",
         "asset://sample.png",
+        "asset://sample.webp",
         "asset://sample.bmp",
         "asset://sample.svg",
-        "asset://sample.webp",
         "asset://sample.heic",
         "asset://sample_anim.gif",
         "asset://sample_anim.webp",

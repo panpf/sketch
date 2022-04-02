@@ -1,10 +1,10 @@
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.datasource.UnavailableDataSource
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.UriInvalidException
@@ -60,7 +60,7 @@ class AppIconUriFetcher(
         override val dataFrom: DataFrom,
         val packageName: String,
         val versionCode: Int,
-    ) : DataSource {
+    ) : UnavailableDataSource {
         override fun length(): Long =
             throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
 
