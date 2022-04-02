@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class GiphyGIFFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
+class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val giphyGifListViewModel by viewModels<GiphyGifListViewModel>()
     private val listMenuViewModel by viewModels<ListMenuViewModel> {
@@ -98,10 +98,14 @@ class GiphyGIFFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         toolbar.title = "Giphy GIF"
 
         binding.recyclerRecyclerFragmentContent.apply {
+            val gridDivider = (context.resources.getDimensionPixelSize(R.dimen.grid_divider) / 2)
+            setPadding(gridDivider, gridDivider, gridDivider, gridDivider)
+            clipToPadding = false
+
             appSettingsService.photoListLayoutMode.observe(viewLifecycleOwner) {
-                (0 until itemDecorationCount).forEach { index ->
-                    removeItemDecorationAt(index)
-                }
+//                (0 until itemDecorationCount).forEach { index ->
+//                    removeItemDecorationAt(index)
+//                }
                 when (it) {
                     GRID -> {
                         layoutManager =
@@ -111,14 +115,14 @@ class GiphyGIFFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                                     ItemSpan.fullSpan()
                                 )
                             }
-                        addAssemblyGridDividerItemDecoration {
-                            val gridDivider =
-                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
-                            divider(Divider.space(gridDivider))
-                            sideDivider(Divider.space(gridDivider))
-                            useDividerAsHeaderAndFooterDivider()
-                            useSideDividerAsSideHeaderAndFooterDivider()
-                        }
+//                        addAssemblyGridDividerItemDecoration {
+//                            val gridDivider =
+//                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+//                            divider(Divider.space(gridDivider))
+//                            sideDivider(Divider.space(gridDivider))
+//                            useDividerAsHeaderAndFooterDivider()
+//                            useSideDividerAsSideHeaderAndFooterDivider()
+//                        }
                     }
                     STAGGERED_GRID -> {
                         layoutManager = newAssemblyStaggeredGridLayoutManager(
@@ -127,14 +131,14 @@ class GiphyGIFFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                         ) {
                             fullSpanByItemFactory(LoadStateItemFactory::class)
                         }
-                        addAssemblyStaggeredGridDividerItemDecoration {
-                            val gridDivider =
-                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
-                            divider(Divider.space(gridDivider))
-                            sideDivider(Divider.space(gridDivider))
-                            useDividerAsHeaderAndFooterDivider()
-                            useSideDividerAsSideHeaderAndFooterDivider()
-                        }
+//                        addAssemblyStaggeredGridDividerItemDecoration {
+//                            val gridDivider =
+//                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+//                            divider(Divider.space(gridDivider))
+//                            sideDivider(Divider.space(gridDivider))
+//                            useDividerAsHeaderAndFooterDivider()
+//                            useSideDividerAsSideHeaderAndFooterDivider()
+//                        }
                     }
                     else -> {
                         throw IllegalArgumentException("Unsupported layout mode: $it")

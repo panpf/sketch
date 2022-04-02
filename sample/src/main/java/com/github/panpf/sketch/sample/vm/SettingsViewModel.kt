@@ -57,7 +57,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         )
         add(
             SwitchMenu(
-                title = "Pause load when scroll",
+                title = "Pause load when scrolling",
                 data = appSettingsService.pauseLoadWhenScrollInList,
                 desc = "No image is loaded during list scrolling to improve the smoothness of list sliding"
             )

@@ -17,10 +17,6 @@
         android:name="com.github.panpf.sketch.sample.ui.PexelsPhotosFragment"
         android:label="PexelsPhotosFragment" />
     <fragment
-        android:id="@+id/pexelsPhotosFragment2"
-        android:name="com.github.panpf.sketch.sample.ui.PexelsPhotosFragment2"
-        android:label="PexelsPhotosFragment2" />
-    <fragment
         android:id="@+id/imageFragment"
         android:name="com.github.panpf.sketch.sample.ui.ImageFragment"
         android:label="ImageFragment">
@@ -76,7 +72,7 @@
     </fragment>
     <fragment
         android:id="@+id/giphyGifsFragment"
-        android:name="com.github.panpf.sketch.sample.ui.GiphyGIFFragment"
+        android:name="com.github.panpf.sketch.sample.ui.GiphyGifsFragment"
         android:label="GiphyGifsFragment" />
     <fragment
         android:id="@+id/localVideoListFragment"
@@ -94,13 +90,6 @@
     <action
         android:id="@+id/action_global_pexelsPhotosFragment"
         app:destination="@id/pexelsPhotosFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_pexelsPhotosFragment2"
-        app:destination="@id/pexelsPhotosFragment2"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
