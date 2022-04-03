@@ -5,9 +5,7 @@ import android.graphics.Point
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.marginLeft
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -68,13 +66,6 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
         item: BindingItem<Photo, ItemImageBinding>
     ) {
         binding.imageItemImageView.apply {
-            updateLayoutParams<MarginLayoutParams> {
-                val gridDivider = (context.resources.getDimensionPixelSize(R.dimen.grid_divider) / 2)
-                leftMargin = gridDivider
-                topMargin = gridDivider
-                rightMargin = gridDivider
-                bottomMargin = gridDivider
-            }
             setClickRedisplayAndIgnoreSaveCellularTraffic(true)
             updateDisplayOptions {
                 placeholderImage(

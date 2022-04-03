@@ -18,6 +18,7 @@ allprojects {
         maven { setUrl("https://mirrors.huaweicloud.com/repository/maven/") }
         mavenCentral()
         google()
+        mavenLocal()
     }
 }
 

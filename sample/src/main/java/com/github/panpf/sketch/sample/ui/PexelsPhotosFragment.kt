@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
+import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyStaggeredGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.newAssemblyStaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
@@ -95,14 +98,10 @@ class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         toolbar.title = "Pexels Photos"
 
         binding.recyclerRecyclerFragmentContent.apply {
-            val gridDivider = (context.resources.getDimensionPixelSize(R.dimen.grid_divider) / 2)
-            setPadding(gridDivider, gridDivider, gridDivider, gridDivider)
-            clipToPadding = false
-
             appSettingsService.photoListLayoutMode.observe(viewLifecycleOwner) {
-//                (0 until itemDecorationCount).forEach { index ->
-//                    removeItemDecorationAt(index)
-//                }
+                (0 until itemDecorationCount).forEach { index ->
+                    removeItemDecorationAt(index)
+                }
                 when (it) {
                     GRID -> {
                         layoutManager =
@@ -112,14 +111,14 @@ class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                                     ItemSpan.fullSpan()
                                 )
                             }
-//                        addAssemblyGridDividerItemDecoration {
-//                            val gridDivider =
-//                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
-//                            divider(Divider.space(gridDivider))
-//                            sideDivider(Divider.space(gridDivider))
-//                            useDividerAsHeaderAndFooterDivider()
-//                            useSideDividerAsSideHeaderAndFooterDivider()
-//                        }
+                        addAssemblyGridDividerItemDecoration {
+                            val gridDivider =
+                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+                            divider(Divider.space(gridDivider))
+                            sideDivider(Divider.space(gridDivider))
+                            useDividerAsHeaderAndFooterDivider()
+                            useSideDividerAsSideHeaderAndFooterDivider()
+                        }
                     }
                     STAGGERED_GRID -> {
                         layoutManager = newAssemblyStaggeredGridLayoutManager(
@@ -128,14 +127,14 @@ class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                         ) {
                             fullSpanByItemFactory(LoadStateItemFactory::class)
                         }
-//                        addAssemblyStaggeredGridDividerItemDecoration {
-//                            val gridDivider =
-//                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
-//                            divider(Divider.space(gridDivider))
-//                            sideDivider(Divider.space(gridDivider))
-//                            useDividerAsHeaderAndFooterDivider()
-//                            useSideDividerAsSideHeaderAndFooterDivider()
-//                        }
+                        addAssemblyStaggeredGridDividerItemDecoration {
+                            val gridDivider =
+                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+                            divider(Divider.space(gridDivider))
+                            sideDivider(Divider.space(gridDivider))
+                            useDividerAsHeaderAndFooterDivider()
+                            useSideDividerAsSideHeaderAndFooterDivider()
+                        }
                     }
                     else -> {
                         throw IllegalArgumentException("Unsupported layout mode: $it")
