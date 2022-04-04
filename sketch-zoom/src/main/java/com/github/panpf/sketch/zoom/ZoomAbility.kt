@@ -32,7 +32,7 @@ import com.github.panpf.sketch.viewability.SizeChangeObserver
 import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
-import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
+import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 import com.github.panpf.sketch.zoom.tile.OnTileChangedListener
 import com.github.panpf.sketch.zoom.tile.Tile
@@ -106,7 +106,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         set(value) {
             if (field != value) {
                 field = value
-                zoomer?.scalesFactory = value ?: DefaultScalesFactory()
+                zoomer?.scalesFactory = value ?: ScalesFactoryImpl()
             }
         }
     var zoomAnimationDuration: Int = 200
@@ -466,7 +466,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
         val previewDrawable = host.drawable?.getLastDrawable()
         if (previewDrawable !is SketchDrawable || previewDrawable is Animatable) {
-            logger.d(MODULE) { "Can't use Blocks" }
+            logger.d(MODULE) { "Can't use Tiles" }
             return null
         }
 
@@ -479,21 +479,21 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
         if (previewWidth >= imageWidth && previewHeight >= imageHeight) {
             logger.d(MODULE) {
-                "Don't need to use Blocks. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                "Don't need to use Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                     .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
         if (ImageFormat.valueOfMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
-                "MimeType does not support Blocks. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                "MimeType does not support Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                     .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
 
         logger.d(MODULE) {
-            "Use Blocks. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+            "Use Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                 .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
         }
         val exifOrientation: Int = previewDrawable.imageExifOrientation

@@ -3,8 +3,14 @@ package com.github.panpf.sketch.zoom
 import android.content.Context
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.format
 
 data class Scales(
+    /**
+     * Maximum initial scaling ratio
+     */
+    val init: Float,
+
     /**
      * Minimum scale
      */
@@ -14,11 +20,6 @@ data class Scales(
      * Maximum scale
      */
     val max: Float,
-
-    /**
-     * Maximum initial scaling ratio
-     */
-    val init: Float,
 
     /**
      * You can see the full scale of the picture
@@ -46,9 +47,9 @@ data class Scales(
 
         other as Scales
 
+        if (init != other.init) return false
         if (min != other.min) return false
         if (max != other.max) return false
-        if (init != other.init) return false
         if (full != other.full) return false
         if (fill != other.fill) return false
         if (origin != other.origin) return false
@@ -58,14 +59,29 @@ data class Scales(
     }
 
     override fun hashCode(): Int {
-        var result = min.hashCode()
+        var result = init.hashCode()
+        result = 31 * result + min.hashCode()
         result = 31 * result + max.hashCode()
-        result = 31 * result + init.hashCode()
         result = 31 * result + full.hashCode()
         result = 31 * result + fill.hashCode()
         result = 31 * result + origin.hashCode()
         result = 31 * result + doubleClicks.contentHashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return "Scales(" +
+                "init=${init.format(2)}, " +
+                "min=${min.format(2)}, " +
+                "max=${max.format(2)}, " +
+                "full=${full.format(2)}, " +
+                "fill=${fill.format(2)}, " +
+                "origin=${origin.format(2)}, " +
+                "doubleClicks=${
+                    doubleClicks.joinToString(prefix = "[", postfix = "]") {
+                        it.format(2).toString()
+                    }
+                }})"
     }
 }
 

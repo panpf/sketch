@@ -10,8 +10,9 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
+import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
 import com.github.panpf.sketch.zoom.internal.TapHelper
@@ -27,6 +28,7 @@ class Zoomer constructor(
         const val MODULE = "Zoomer"
     }
 
+    private val logger = context.sketch.logger
     private val tapHelper = TapHelper(context, this)
     private val scaleDragHelper = ScaleDragHelper(
         context,
@@ -95,7 +97,7 @@ class Zoomer constructor(
                 reset()
             }
         }
-    var scalesFactory: ScalesFactory = DefaultScalesFactory()
+    var scalesFactory: ScalesFactory = ScalesFactoryImpl()
         internal set(value) {
             if (field != value) {
                 field = value
@@ -149,6 +151,9 @@ class Zoomer constructor(
             readModeDecider
         )
         scaleDragHelper.reset()
+        logger.d(MODULE) {
+            "reset. scales=$scales"
+        }
     }
 
     internal fun recycle() {

@@ -5,12 +5,9 @@ class DefaultReadModeDecider(
     private val differenceByHeight: Float = 2f
 ) : ReadModeDecider {
 
-    override fun shouldUseByWidth(imageWidth: Int, imageHeight: Int): Boolean {
-        return imageWidth > imageHeight * differenceByWidth
-    }
-
-    override fun shouldUseByHeight(imageWidth: Int, imageHeight: Int): Boolean {
-        return imageHeight > imageWidth * differenceByHeight
+    override fun should(imageWidth: Int, imageHeight: Int): Boolean {
+        return imageWidth >= imageHeight * differenceByWidth
+                || imageHeight >= imageWidth * differenceByHeight
     }
 
     override fun equals(other: Any?): Boolean {
@@ -38,7 +35,5 @@ class DefaultReadModeDecider(
 
 interface ReadModeDecider {
 
-    fun shouldUseByWidth(imageWidth: Int, imageHeight: Int): Boolean
-
-    fun shouldUseByHeight(imageWidth: Int, imageHeight: Int): Boolean
+    fun should(imageWidth: Int, imageHeight: Int): Boolean
 }

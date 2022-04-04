@@ -247,49 +247,44 @@ internal class ScaleDragHelper constructor(
             if (zoomer.rotateDegrees % 180 == 0) drawableSize.width else drawableSize.height
         val drawableHeight =
             if (zoomer.rotateDegrees % 180 == 0) drawableSize.height else drawableSize.width
-        val imageThanViewLarge = drawableWidth > viewSize.width || drawableHeight > viewSize.height
-        val finalScaleType: ScaleType = if (scaleType == ScaleType.MATRIX) {
-            ScaleType.FIT_CENTER
-        } else if (scaleType == ScaleType.CENTER_INSIDE) {
-            if (imageThanViewLarge) ScaleType.FIT_CENTER else ScaleType.CENTER
-        } else {
-            scaleType
-        }
-        val initScale = zoomer.scales.init
+        val drawableThanViewLarge = drawableWidth > viewSize.width || drawableHeight > viewSize.height
+        val initZoomScale = zoomer.scales.init
         when {
-            zoomer.readModeDecider?.shouldUseByHeight(drawableWidth, drawableHeight) == true -> {
-                baseMatrix.postScale(initScale, initScale)
+            zoomer.readModeDecider?.should(drawableWidth, drawableHeight) == true -> {
+                baseMatrix.postScale(initZoomScale, initZoomScale)
             }
-            zoomer.readModeDecider?.shouldUseByWidth(drawableWidth, drawableHeight) == true -> {
-                baseMatrix.postScale(initScale, initScale)
-            }
-            finalScaleType == ScaleType.CENTER -> {
-                baseMatrix.postScale(initScale, initScale)
+            scaleType == ScaleType.CENTER
+                    || (scaleType == ScaleType.CENTER_INSIDE && !drawableThanViewLarge) -> {
+                baseMatrix.postScale(initZoomScale, initZoomScale)
                 baseMatrix.postTranslate(
                     (viewSize.width - drawableWidth) / 2f,
                     (viewSize.height - drawableHeight) / 2f
                 )
             }
-            finalScaleType == ScaleType.CENTER_CROP -> {
-                baseMatrix.postScale(initScale, initScale)
+            scaleType == ScaleType.CENTER_CROP -> {
+                baseMatrix.postScale(initZoomScale, initZoomScale)
                 baseMatrix.postTranslate(
-                    (viewSize.width - drawableWidth * initScale) / 2f,
-                    (viewSize.height - drawableHeight * initScale) / 2f
+                    (viewSize.width - drawableWidth * initZoomScale) / 2f,
+                    (viewSize.height - drawableHeight * initZoomScale) / 2f
                 )
             }
-            finalScaleType == ScaleType.FIT_START -> {
-                baseMatrix.postScale(initScale, initScale)
+            scaleType == ScaleType.FIT_START -> {
+                baseMatrix.postScale(initZoomScale, initZoomScale)
                 baseMatrix.postTranslate(0f, 0f)
             }
-            finalScaleType == ScaleType.FIT_END -> {
-                baseMatrix.postScale(initScale, initScale)
-                baseMatrix.postTranslate(0f, viewSize.height - drawableHeight * initScale)
+            scaleType == ScaleType.FIT_END -> {
+                baseMatrix.postScale(initZoomScale, initZoomScale)
+                baseMatrix.postTranslate(0f, viewSize.height - drawableHeight * initZoomScale)
             }
-            finalScaleType == ScaleType.FIT_CENTER -> {
-                baseMatrix.postScale(initScale, initScale)
-                baseMatrix.postTranslate(0f, (viewSize.height - drawableHeight * initScale) / 2f)
+            scaleType == ScaleType.FIT_CENTER
+                    || (scaleType == ScaleType.CENTER_INSIDE && drawableThanViewLarge) -> {
+                baseMatrix.postScale(initZoomScale, initZoomScale)
+                baseMatrix.postTranslate(
+                    0f,
+                    (viewSize.height - drawableHeight * initZoomScale) / 2f
+                )
             }
-            finalScaleType == ScaleType.FIT_XY -> {
+            scaleType == ScaleType.FIT_XY -> {
                 val mTempSrc = RectF(0f, 0f, drawableWidth.toFloat(), drawableHeight.toFloat())
                 val mTempDst = RectF(
                     0f, 0f, viewSize.width.toFloat(), viewSize.height
