@@ -29,7 +29,7 @@ import java.io.OutputStream
 interface DiskCache {
 
     companion object {
-        const val DEFAULT_DIR_NAME = "sketch"
+        const val DEFAULT_DIR_NAME = "sketch3"
         const val DEFAULT_MAX_SIZE = 512L * 1024 * 1024
     }
 
