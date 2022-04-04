@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.http
 
-import android.os.Build
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DownloadRequest
 import java.io.IOException
@@ -90,11 +89,7 @@ class HurlStack(
         override val message: String? by lazy { connection.responseMessage }
 
         override val contentLength: Long by lazy {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                connection.contentLengthLong
-            } else {
-                getHeaderFieldLong("content-length", -1)
-            }
+            connection.getHeaderField("content-length").toLongOrNull() ?: -1
         }
 
         override val contentType: String? by lazy {
@@ -105,48 +100,8 @@ class HurlStack(
         override val content: InputStream
             get() = connection.inputStream
 
-        override val isContentChunked: Boolean by lazy {
-            var transferEncodingValue = connection.getHeaderField("Transfer-Encoding")
-            if (transferEncodingValue != null) {
-                transferEncodingValue = transferEncodingValue.trim { it <= ' ' }
-            }
-            "chunked".equals(transferEncodingValue, ignoreCase = true)
-        }
-
-        override val contentEncoding: String? by lazy {
-            connection.contentEncoding
-        }
-
-        override val headersString: String? by lazy {
-            connection.headerFields
-                .toList()
-                .joinToString(prefix = "[", postfix = "]") {
-                    "{${it.first}:${it.second.joinToString(prefix = "[", postfix = "]", separator = ",")}}"
-                }
-        }
-
-        override fun releaseConnection() {
-            try {
-                content.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-
         override fun getHeaderField(name: String): String? {
             return connection.getHeaderField(name)
-        }
-
-        override fun getHeaderFieldInt(name: String, defaultValue: Int): Int {
-            return connection.getHeaderFieldInt(name, defaultValue)
-        }
-
-        override fun getHeaderFieldLong(name: String, defaultValue: Long): Long {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                connection.getHeaderFieldLong(name, defaultValue)
-            } else {
-                connection.getHeaderField(name).toLongOrNull() ?: defaultValue
-            }
         }
     }
 

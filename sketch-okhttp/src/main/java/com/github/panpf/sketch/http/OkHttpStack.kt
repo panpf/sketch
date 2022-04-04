@@ -42,44 +42,11 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
         override val contentType: String? by lazy {
             response.header("content-type")
         }
-        override val isContentChunked: Boolean by lazy {
-            var transferEncodingValue = response.header("Transfer-Encoding")
-            if (transferEncodingValue != null) {
-                transferEncodingValue = transferEncodingValue.trim { it <= ' ' }
-            }
-            "chunked".equals(transferEncodingValue, ignoreCase = true)
-        }
-        override val contentEncoding: String? by lazy {
-            response.header("content-encoding")
-        }
 
         override fun getHeaderField(name: String): String? = response.header(name)
 
-        override fun getHeaderFieldInt(name: String, defaultValue: Int): Int =
-            response.header(name)?.toIntOrNull() ?: defaultValue
-
-        override fun getHeaderFieldLong(name: String, defaultValue: Long): Long =
-            response.header(name)?.toLongOrNull() ?: defaultValue
-
-        override val headersString: String? by lazy {
-            val headers = response.headers()
-            headers.names().joinToString(prefix = "[", postfix = "]") { name ->
-                "{${name}:${
-                    headers.values(name).joinToString(prefix = "[", postfix = "]", separator = ",")
-                }}"
-            }
-        }
-
         override val content: InputStream
             get() = response.body()?.byteStream()!!
-
-        override fun releaseConnection() {
-            try {
-                response.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
     }
 
     class Builder {

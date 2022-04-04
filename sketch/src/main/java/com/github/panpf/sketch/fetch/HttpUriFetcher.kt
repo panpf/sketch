@@ -4,17 +4,16 @@ import android.webkit.MimeTypeMap
 import androidx.annotation.VisibleForTesting
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.http.ProgressListenerDelegate
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.http.ProgressListenerDelegate
 import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import kotlinx.coroutines.CoroutineScope
@@ -239,7 +238,14 @@ class HttpUriFetcher(
                 }
             }
             val contentType = response.contentType
-            if (!response.isContentChunked && readLength == response.contentLength) {
+            val isContentChunked: Boolean by lazy {
+                var transferEncodingValue = response.getHeaderField("Transfer-Encoding")
+                if (transferEncodingValue != null) {
+                    transferEncodingValue = transferEncodingValue.trim { it <= ' ' }
+                }
+                "chunked".equals(transferEncodingValue, ignoreCase = true)
+            }
+            if (!isContentChunked && readLength == response.contentLength) {
                 diskCacheEditor.commit()
                 if (contentType?.isNotEmpty() == true && contentType.isNotBlank()) {
                     val contentTypeEditor = diskCache.edit(contentTypeDiskCacheKey)
