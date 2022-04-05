@@ -26,7 +26,7 @@ class LocalVideoItemFactory :
         binding: ItemVideoBinding,
         item: BindingItem<VideoInfo, ItemVideoBinding>
     ) {
-        binding.videoItemIconImage.updateDisplayOptions {
+        binding.videoItemIconImage.updateDisplayImageOptions {
             placeholderImage(R.drawable.im_placeholder)
             errorImage(R.drawable.im_error) {
                 saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)

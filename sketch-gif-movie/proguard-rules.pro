@@ -15,11 +15,3 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
--keep public class pl.droidsonroids.gif.GifIOException{<init>(int, java.lang.String);}
-#Prevents warnings for consumers not using AndroidX
--dontwarn androidx.annotation.**
-
-# sketch 就以这两个类是否存在判断是否可以使用 gif
--keep class com.github.panpf.sketch.gif.BuildConfig
--keep class pl.droidsonroids.gif.GifDrawable

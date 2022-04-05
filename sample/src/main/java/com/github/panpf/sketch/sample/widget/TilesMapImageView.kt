@@ -50,7 +50,7 @@ class TilesMapImageView @JvmOverloads constructor(
     private var zoomView: MyZoomImageView? = null
 
     init {
-        updateDisplayOptions {
+        updateDisplayImageOptions {
             resizeSize(600, 600)
         }
     }

@@ -159,8 +159,8 @@ interface DisplayRequest : LoadRequest {
             this.target = target
 
             this.viewOptions = target.asOrNull<ViewTarget<*>>()
-                ?.view.asOrNull<DisplayOptionsProvider>()
-                ?.displayOptions
+                ?.view.asOrNull<DisplayImageOptionsProvider>()
+                ?.displayImageOptions
             this.globalOptions = context.sketch.globalDisplayOptions
         }
 

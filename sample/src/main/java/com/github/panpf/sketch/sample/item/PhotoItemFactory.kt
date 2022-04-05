@@ -67,7 +67,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
     ) {
         binding.imageItemImageView.apply {
             setClickRedisplayAndIgnoreSaveCellularTraffic(true)
-            updateDisplayOptions {
+            updateDisplayImageOptions {
                 placeholderImage(
                     IconResStateImage(
                         R.drawable.ic_image_outline,
