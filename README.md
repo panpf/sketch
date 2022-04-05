@@ -12,7 +12,7 @@ Compose 等功能
 ## 关于 3.0 版本
 
 * 3.0 版本全部用 kotlin 重写，并且 maven groupId 和包名已经变更所以与 2.0 版本完全不冲突，两者可以共存
-* 3.0 版本参考 [coil][coil] 并结合 sketch 原有功能实现，相较于 [coil][coil] sketch 最低支持到 API 16，而 [coil][coil] 是 21
+* 3.0 版本参考 [coil][coil] 2.0.0-alpha05 版本并结合 sketch 原有功能实现，相较于 [coil][coil] sketch 最低支持到 API 16，而 [coil][coil] 是 21
 
 ## 简介
 
@@ -84,13 +84,13 @@ sketch 自己不需要配置任何混淆规则，但你可能需要为间接依�
 
 ```kotlin
 // url
-imageView.dislplayImage("https://www.sample.com/image.jpg")
+imageView.displayImage("https://www.sample.com/image.jpg")
 
 // File
-imageView.dislplayImage("/sdcard/download/image.jpeg")
+imageView.displayImage("/sdcard/download/image.jpeg")
 
 // asset
-imageView.dislplayImage("asset://image.jpg")
+imageView.displayImage("asset://image.jpg")
 
 // There is a lot more...
 ```
@@ -98,7 +98,7 @@ imageView.dislplayImage("asset://image.jpg")
 还可以通过尾随的 lambda 函数配置请求：
 
 ```kotlin
-imageView.dislplayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://www.sample.com/image.jpg") {
     placeholderImage(R.drawable.placeholder)
     errorImage(R.drawable.error)
     transformations(CircleCropTransformation())
