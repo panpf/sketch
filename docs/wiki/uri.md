@@ -1,5 +1,18 @@
 # URI 类型及使用指南
 
+#### 支持的 URI
+
+|Type|Scheme|
+|:---|:---|
+|File in network|http://, https:// |
+|File in SDCard|/, file:// |
+|Content Resolver|content://|
+|Asset Resource|asset:// |
+|Drawable Resource|drawable:// |
+|Android Resource|android.resource:// |
+|Base64|data:image/, data:img/ |
+|App Icon|app.icon:// |
+
 Sketch 一共内置支持了 9 种类型的 uri，你还可以通过 [UriModel] 扩展 uri，详情请参考 [UriModel 详解及扩展 URI][uri_model]，下面就一一详解内置的几种 uri
 
 ### http or https uri
