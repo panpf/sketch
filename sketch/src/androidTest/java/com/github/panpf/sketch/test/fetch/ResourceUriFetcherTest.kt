@@ -3,14 +3,14 @@ package com.github.panpf.sketch.test.fetch
 import android.widget.ImageView
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.test.R.drawable
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.R.drawable
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -44,7 +44,7 @@ class ResourceUriFetcherTest {
     fun testFactory() {
         val context = InstrumentationRegistry.getContext()
         val testAppPackage = context.packageName
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val fetcherFactory = ResourceUriFetcher.Factory()
         val androidResUriByName =
             newResourceUri(testAppPackage, "drawable", "ic_launcher")
@@ -65,8 +65,18 @@ class ResourceUriFetcherTest {
         fetcherFactory.create(sketch, DisplayRequest(androidResUriById, imageView))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(context, androidResUriByName)))
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(context, androidResUriById)))
+        Assert.assertNull(
+            fetcherFactory.create(
+                sketch,
+                DownloadRequest(context, androidResUriByName)
+            )
+        )
+        Assert.assertNull(
+            fetcherFactory.create(
+                sketch,
+                DownloadRequest(context, androidResUriById)
+            )
+        )
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, httpUri)))
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }
@@ -74,14 +84,15 @@ class ResourceUriFetcherTest {
     @Test
     fun testFetch() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
         val androidResUriByName =
             newResourceUri(testAppPackage, "drawable", "ic_launcher")
         val androidResUriById = newResourceUri(testAppPackage, drawable.ic_launcher)
 
-        val fetcherByName = fetcherFactory.create(sketch, LoadRequest(context, androidResUriByName))!!
+        val fetcherByName =
+            fetcherFactory.create(sketch, LoadRequest(context, androidResUriByName))!!
         val sourceByName = runBlocking {
             fetcherByName.fetch().dataSource
         }

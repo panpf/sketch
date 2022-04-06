@@ -13,6 +13,7 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.target.Target
 import org.junit.Assert
 import org.junit.Test
@@ -26,7 +27,7 @@ class GifMovieDrawableDecoderTest {
     @Test
     fun testFactory() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         // normal
         val request = DisplayRequest(context, newAssetUri("sample_anim.gif"), TestTarget())

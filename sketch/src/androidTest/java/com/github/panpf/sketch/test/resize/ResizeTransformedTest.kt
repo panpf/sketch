@@ -33,7 +33,10 @@ class ResizeTransformedTest {
             Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),CENTER_CROP)", key)
         }
         ResizeTransformed(Resize(100, 50, precision = KEEP_ASPECT_RATIO)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(KEEP_ASPECT_RATIO),CENTER_CROP)", key)
+            Assert.assertEquals(
+                "ResizeTransformed(100x50,Fixed(KEEP_ASPECT_RATIO),CENTER_CROP)",
+                key
+            )
         }
         ResizeTransformed(Resize(100, 50, precision = EXACTLY)).apply {
             Assert.assertEquals(

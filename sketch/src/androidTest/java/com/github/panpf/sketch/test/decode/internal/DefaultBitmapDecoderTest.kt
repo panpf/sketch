@@ -9,12 +9,14 @@ import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
+import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -24,9 +26,7 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.getResizeTransformed
 import com.github.panpf.sketch.resize.longImageClipPrecision
-import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.util.format
@@ -42,7 +42,7 @@ class DefaultBitmapDecoderTest {
     @Test
     fun testDefault() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         LoadRequest(context, newAssetUri("sample.jpeg")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
@@ -87,7 +87,7 @@ class DefaultBitmapDecoderTest {
     @Test
     fun testBitmapConfig() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         LoadRequest(context, newAssetUri("sample.jpeg")) {
             bitmapConfig(RGB_565)
@@ -121,7 +121,7 @@ class DefaultBitmapDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         LoadRequest(context, newAssetUri("sample.jpeg")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
@@ -179,7 +179,7 @@ class DefaultBitmapDecoderTest {
     @Test
     fun testResize() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         // precision = LESS_PIXELS
         LoadRequest(context, newAssetUri("sample.jpeg")) {
@@ -440,7 +440,7 @@ class DefaultBitmapDecoderTest {
     @Test
     fun testResizeNoRegion() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         // precision = LESS_PIXELS
         LoadRequest(context, newAssetUri("sample.bmp")) {
@@ -690,7 +690,7 @@ class DefaultBitmapDecoderTest {
     @Test
     fun testResizeExif() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         val testFile = ExifOrientationTestFileHelper(context, "sample.jpeg").files()
             .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!
@@ -954,7 +954,7 @@ class DefaultBitmapDecoderTest {
     @Test
     fun testResizeExifIgnore() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         val testFile = ExifOrientationTestFileHelper(context, "sample.jpeg").files()
             .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!

@@ -3,13 +3,13 @@ package com.github.panpf.sketch.test.decode
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.runner.AndroidJUnit4
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.transform.CircleCropTransformed
 import com.github.panpf.sketch.transform.RotateTransformed
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +48,7 @@ class BitmapDecodeResultTest {
             result.transformedList?.joinToString()
         )
 
-        val result2 = result.new(newBitmap){
+        val result2 = result.new(newBitmap) {
             addTransformed(CircleCropTransformed(CENTER_CROP))
         }
         Assert.assertEquals(

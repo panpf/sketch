@@ -2,10 +2,10 @@ package com.github.panpf.sketch.test.datasource
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.sketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,7 +16,7 @@ class ByteArrayDataSourceTest {
     @Test
     fun testConstructor() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val request = LoadRequest(context, "http://sample.jpeg")
         ByteArrayDataSource(
             sketch = sketch,
@@ -34,7 +34,7 @@ class ByteArrayDataSourceTest {
     @Test
     fun testNewFileDescriptor() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         ByteArrayDataSource(
             sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
@@ -48,7 +48,7 @@ class ByteArrayDataSourceTest {
     @Test
     fun testNewInputStream() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         ByteArrayDataSource(
             sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
@@ -62,7 +62,7 @@ class ByteArrayDataSourceTest {
     @Test
     fun testToString() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         ByteArrayDataSource(
             sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),

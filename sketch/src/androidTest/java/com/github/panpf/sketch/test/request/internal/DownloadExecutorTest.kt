@@ -29,9 +29,9 @@ class DownloadExecutorTest {
         /*
          * success
          */
-        val normalSketch = Sketch.new(context) {
+        val normalSketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context))
-        }
+        }.build()
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalListenerActionList = normalDownloadListenerSupervisor.callbackActionList
         val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
@@ -47,16 +47,16 @@ class DownloadExecutorTest {
         /*
          * cancel
          */
-        val slowSketch = Sketch.new(context) {
+        val slowSketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context, readDelayMillis = 1000))
-        }
+        }.build()
         val cancelDownloadListenerSupervisor = DownloadListenerSupervisor()
         val cancelListenerList = cancelDownloadListenerSupervisor.callbackActionList
         val cancelRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
             networkContentDiskCachePolicy(CachePolicy.DISABLED)
             listener(cancelDownloadListenerSupervisor)
         }
-        runBlocking(Dispatchers.Main){
+        runBlocking(Dispatchers.Main) {
             val job = launch {
                 DownloadExecutor(slowSketch).execute(cancelRequest)
             }
@@ -75,7 +75,7 @@ class DownloadExecutorTest {
             networkContentDiskCachePolicy(CachePolicy.DISABLED)
             listener(errorDownloadListenerSupervisor)
         }
-        runBlocking(Dispatchers.Main){
+        runBlocking(Dispatchers.Main) {
             DownloadExecutor(slowSketch).execute(errorRequest)
         }.apply {
             Assert.assertTrue(this is DownloadResult.Error)

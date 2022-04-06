@@ -27,9 +27,9 @@ class SketchTest {
         /*
          * success
          */
-        val normalSketch = Sketch.new(context) {
+        val normalSketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context))
-        }
+        }.build()
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalCallbackActionList = normalDownloadListenerSupervisor.callbackActionList
         val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
@@ -47,9 +47,9 @@ class SketchTest {
         /*
          * cancel
          */
-        val slowSketch = Sketch.new(context) {
+        val slowSketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context, readDelayMillis = 1000))
-        }
+        }.build()
         val cancelDownloadListenerSupervisor = DownloadListenerSupervisor()
         val cancelCallbackActionList = cancelDownloadListenerSupervisor.callbackActionList
         val cancelRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
@@ -92,9 +92,9 @@ class SketchTest {
         /*
          * success
          */
-        val normalSketch = Sketch.new(context) {
+        val normalSketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context))
-        }
+        }.build()
         val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString)
         runBlocking {
             normalSketch.executeDownload(normalRequest)
@@ -105,9 +105,9 @@ class SketchTest {
         /*
          * cancel
          */
-        val slowSketch = Sketch.new(context) {
+        val slowSketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context, readDelayMillis = 1000))
-        }
+        }.build()
         val cancelRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
             networkContentDiskCachePolicy(CachePolicy.DISABLED)
         }

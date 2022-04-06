@@ -5,7 +5,6 @@ import android.graphics.Rect
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
@@ -21,6 +20,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
@@ -39,7 +39,7 @@ class ExifOrientationHelperTest {
     @Test
     fun testReadExifOrientation() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
@@ -58,7 +58,11 @@ class ExifOrientationHelperTest {
         ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             Assert.assertEquals(
                 it.exifOrientation,
-                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file).readExifOrientation()
+                FileDataSource(
+                    sketch,
+                    LoadRequest(context, it.file.path),
+                    it.file
+                ).readExifOrientation()
             )
         }
 
@@ -76,7 +80,7 @@ class ExifOrientationHelperTest {
     @Test
     fun testReadExifOrientationWithMimeType() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,

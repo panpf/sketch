@@ -19,7 +19,8 @@ package com.github.panpf.sketch.compose.sample
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.multidex.MultiDexApplication
-import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.Configurator
+import com.github.panpf.sketch.Sketch.Builder
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
@@ -37,39 +38,41 @@ import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 
-class MyApplication : MultiDexApplication(), Sketch.Factory {
+class MyApplication : MultiDexApplication(), Configurator {
 
-    override fun createSketch(): Sketch = Sketch.new(this) {
-        logger(Logger(DEBUG))
-        httpStack(OkHttpStack.Builder().build())
-        addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
-        addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
-        components {
-            addFetcher(AppIconUriFetcher.Factory())
+    override fun configSketch(builder: Builder) {
+        builder.apply {
+            logger(Logger(DEBUG))
+            httpStack(OkHttpStack.Builder().build())
+            addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
+            addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
+            components {
+                addFetcher(AppIconUriFetcher.Factory())
 
-            addBitmapDecoder(SvgBitmapDecoder.Factory())
-            addBitmapDecoder(ApkIconBitmapDecoder.Factory())
-            addBitmapDecoder(AppIconBitmapDecoder.Factory())
-            addBitmapDecoder(
-                if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
-                    VideoFrameDecoder.Factory()
-                } else {
-                    FFmpegVideoFrameDecoder.Factory()
+                addBitmapDecoder(SvgBitmapDecoder.Factory())
+                addBitmapDecoder(ApkIconBitmapDecoder.Factory())
+                addBitmapDecoder(AppIconBitmapDecoder.Factory())
+                addBitmapDecoder(
+                    if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
+                        VideoFrameDecoder.Factory()
+                    } else {
+                        FFmpegVideoFrameDecoder.Factory()
+                    }
+                )
+
+                addDrawableDecoder(
+                    when {
+                        VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
+                        VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
+                        else -> GifDrawableDrawableDecoder.Factory()
+                    }
+                )
+                if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                    addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
                 }
-            )
-
-            addDrawableDecoder(
-                when {
-                    VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
-                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
-                    else -> GifDrawableDrawableDecoder.Factory()
+                if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                    addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
                 }
-            )
-            if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
-            }
-            if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
             }
         }
     }

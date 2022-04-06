@@ -4,7 +4,6 @@ import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.res.Configuration
 import androidx.annotation.AnyThread
-import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CountDrawablePendingManager
 import com.github.panpf.sketch.cache.DiskCache
@@ -63,9 +62,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlin.math.roundToLong
-
-val Context.sketch: Sketch
-    get() = SketchSingleton.sketch(this)
 
 // todo Monitor system callbacks, TrimMemory and networking
 class Sketch private constructor(
@@ -210,19 +206,7 @@ class Sketch private constructor(
             job.await()
         }
 
-
-    companion object {
-        fun new(context: Context, configBlock: (Builder.() -> Unit)? = null): Sketch =
-            Builder(context).apply {
-                configBlock?.invoke(this)
-            }.build()
-    }
-
-    fun interface Factory {
-        fun createSketch(): Sketch
-    }
-
-    class Builder(context: Context) {
+    class Builder internal constructor(context: Context) {
 
         private val appContext: Context = context.applicationContext
         private var logger: Logger? = null
@@ -322,7 +306,7 @@ class Sketch private constructor(
             this.globalDownloadOptions = globalDownloadOptions
         }
 
-        fun build(): Sketch {
+        internal fun build(): Sketch {
             val logger = logger ?: Logger()
             val httpStack = httpStack ?: HurlStack.new()
 
@@ -379,30 +363,6 @@ class Sketch private constructor(
                 globalLoadOptions = globalLoadOptions,
                 globalDownloadOptions = globalDownloadOptions,
             )
-        }
-    }
-
-    internal object SketchSingleton {
-
-        private var sketch: Sketch? = null
-
-        @JvmStatic
-        fun sketch(context: Context): Sketch =
-            sketch ?: synchronized(this) {
-                sketch ?: synchronized(this) {
-                    newSketch(context).apply {
-                        sketch = this
-                    }
-                }
-            }
-
-        private fun newSketch(context: Context): Sketch {
-            val appContext = context.applicationContext
-            return if (appContext is Factory) {
-                appContext.createSketch()
-            } else {
-                new(appContext)
-            }
         }
     }
 }

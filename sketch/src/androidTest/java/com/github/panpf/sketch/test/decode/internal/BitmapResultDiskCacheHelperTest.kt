@@ -5,21 +5,21 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheHelper.MetaData
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.internal.newBitmapResultDiskCacheHelper
+import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
-import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.sketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +30,7 @@ class BitmapResultDiskCacheHelperTest {
     @Test
     fun testNewBitmapResultCacheHelper() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         Assert.assertNotNull(
@@ -61,7 +61,7 @@ class BitmapResultDiskCacheHelperTest {
     @Test
     fun testRead() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         sketch.diskCache.clear()
@@ -102,7 +102,7 @@ class BitmapResultDiskCacheHelperTest {
     @Test
     fun testWrite() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         sketch.diskCache.clear()
