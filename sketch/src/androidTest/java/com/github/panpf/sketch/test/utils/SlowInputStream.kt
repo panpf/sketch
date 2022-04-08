@@ -2,7 +2,8 @@ package com.github.panpf.sketch.test.utils
 
 import java.io.InputStream
 
-class SlowInputStream(private val inputStream: InputStream, val readDelayMillis: Long) : InputStream() {
+class SlowInputStream(private val inputStream: InputStream, val readDelayMillis: Long) :
+    InputStream() {
 
     override fun read(): Int {
         Thread.sleep(readDelayMillis)

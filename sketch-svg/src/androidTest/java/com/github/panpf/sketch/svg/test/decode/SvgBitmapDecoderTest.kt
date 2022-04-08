@@ -10,9 +10,10 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.sketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,7 +26,7 @@ class SvgBitmapDecoderTest {
     @Test
     fun testFactory() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         // normal
         val request = LoadRequest(context, newAssetUri("sample.svg"))

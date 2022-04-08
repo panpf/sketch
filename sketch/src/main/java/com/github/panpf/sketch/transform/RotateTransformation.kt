@@ -9,7 +9,7 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.Transformed
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import org.json.JSONObject
 
 class RotateTransformation(val degrees: Int) : Transformation {
@@ -18,7 +18,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
 
     override suspend fun transform(
         sketch: Sketch,
-        request: LoadRequest,
+        request: ImageRequest,
         input: Bitmap
     ): TransformResult? {
         if (degrees % 360 == 0) return null

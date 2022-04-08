@@ -2,12 +2,13 @@ package com.github.panpf.sketch.transition
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.Target
 
 /**
  * A [Target] that supports applying [Transition]s.
  */
-interface TransitionTarget : Target {
+interface TransitionTarget : DisplayTarget {
 
     /**
      * The [View] used by this [Target].

@@ -29,7 +29,7 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.getLastDrawable
 import kotlinx.coroutines.Dispatchers
-import com.github.panpf.sketch.target.Target as SketchTarget
+import com.github.panpf.sketch.target.DisplayTarget as SketchTarget
 
 @Composable
 fun rememberAsyncImagePainter(
@@ -108,7 +108,7 @@ class AsyncImagePainter(
 //            if (request.defined.sizeResolver == null) {
 //                resizeSize(DrawSizeResolver())
 //            }
-            disposable = sketch.enqueueDisplay(request)
+            disposable = sketch.enqueue(request)
         }
     }
 
@@ -161,7 +161,10 @@ class AsyncImagePainter(
         resizeScale: Scale,
         target: SketchTarget
     ): DisplayRequest =
-        DisplayRequest(context, imageUri, target, configBlock).run {
+        DisplayRequest(context, imageUri) {
+            target(target)
+            configBlock?.invoke(this)
+        }.run {
             val resetSizeResolver = resizeSize == null && definedOptions.resizeSizeResolver == null
             val resetScale = definedOptions.resizeScale == null
             if (resetSizeResolver || resetScale) {

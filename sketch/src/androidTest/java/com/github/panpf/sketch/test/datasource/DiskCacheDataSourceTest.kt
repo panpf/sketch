@@ -2,12 +2,12 @@ package com.github.panpf.sketch.test.datasource
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.sketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -19,7 +19,7 @@ class DiskCacheDataSourceTest {
     @Test
     fun testConstructor() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
@@ -47,7 +47,7 @@ class DiskCacheDataSourceTest {
     @Test
     fun testNewFileDescriptor() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
@@ -71,7 +71,7 @@ class DiskCacheDataSourceTest {
     @Test
     fun testNewInputStream() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
@@ -95,7 +95,7 @@ class DiskCacheDataSourceTest {
     @Test
     fun testFile() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
@@ -125,7 +125,7 @@ class DiskCacheDataSourceTest {
     @Test
     fun testToString() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(

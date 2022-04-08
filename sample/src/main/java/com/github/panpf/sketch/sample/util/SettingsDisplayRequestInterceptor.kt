@@ -4,21 +4,26 @@ import android.os.Build
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.widget.MyListImageView
 import com.github.panpf.sketch.target.ViewTarget
 
-class SettingsDisplayRequestInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
+class SettingsDisplayRequestInterceptor : RequestInterceptor {
 
     @MainThread
-    override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
-        val newRequest = chain.request.newDisplayRequest {
+    override suspend fun intercept(chain: Chain): ImageData {
+        val request = chain.request
+        if (request !is DisplayRequest) {
+            return chain.proceed(request)
+        }
+
+        val newRequest = request.newDisplayRequest {
             val appSettings = chain.sketch.context.appSettingsService
             if (appSettings.disabledBitmapMemoryCache.value) {
                 bitmapMemoryCachePolicy(DISABLED)

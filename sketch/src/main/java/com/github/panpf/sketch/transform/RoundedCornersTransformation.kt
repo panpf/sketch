@@ -12,6 +12,7 @@ import androidx.annotation.Keep
 import androidx.annotation.Px
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
@@ -54,7 +55,7 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
 
     override suspend fun transform(
         sketch: Sketch,
-        request: LoadRequest,
+        request: ImageRequest,
         input: Bitmap
     ): TransformResult {
         val bitmapPool = sketch.bitmapPool

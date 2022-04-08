@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.request.internal.ImageRequest
 
 fun interface ProgressListener<REQUEST : ImageRequest> {
     @MainThread

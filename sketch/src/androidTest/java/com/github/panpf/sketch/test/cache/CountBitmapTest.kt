@@ -9,6 +9,7 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transform.RotateTransformed
 import com.github.panpf.sketch.util.toHexString
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,7 @@ class CountBitmapTest {
     @Test
     fun testRequestKey() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100, requestKey = "requestKey1").apply {
             Assert.assertEquals("requestKey1", requestKey)
@@ -37,7 +38,7 @@ class CountBitmapTest {
     @Test
     fun testImageUri() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertEquals("image1", imageUri)
@@ -51,7 +52,7 @@ class CountBitmapTest {
     @Test
     fun testImageInfo() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(
             sketch,
@@ -77,7 +78,7 @@ class CountBitmapTest {
     @Test
     fun testTransformedList() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertNull(transformedList)
@@ -100,7 +101,7 @@ class CountBitmapTest {
     @Test
     fun testBitmap() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertEquals(100, bitmap!!.width)
@@ -114,7 +115,7 @@ class CountBitmapTest {
 
         createCountBitmap(sketch, "image1", 120, 300).apply {
             Assert.assertNotNull(bitmap)
-            runBlocking(Dispatchers.Main){
+            runBlocking(Dispatchers.Main) {
                 setIsPending("test", true)
                 setIsPending("test", false)
             }
@@ -125,7 +126,7 @@ class CountBitmapTest {
     @Test
     fun testIsRecycled() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertFalse(isRecycled)
@@ -145,7 +146,7 @@ class CountBitmapTest {
     @Test
     fun testByteCount() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertEquals(100 * 100 * 4, byteCount)
@@ -165,7 +166,7 @@ class CountBitmapTest {
     @Test
     fun testInfo() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertEquals(
@@ -185,7 +186,7 @@ class CountBitmapTest {
     @Test
     fun testSetIsDisplayed() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertFalse(isRecycled)
@@ -215,7 +216,7 @@ class CountBitmapTest {
     @Test
     fun testSetIsCached() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertFalse(isRecycled)
@@ -237,7 +238,7 @@ class CountBitmapTest {
     @Test
     fun testSetIsPending() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertFalse(isRecycled)

@@ -4,7 +4,6 @@ import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.res.Configuration
 import androidx.annotation.AnyThread
-import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CountDrawablePendingManager
 import com.github.panpf.sketch.cache.DiskCache
@@ -16,11 +15,11 @@ import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
-import com.github.panpf.sketch.decode.internal.BitmapDecodeEngineInterceptor
-import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.DrawableDecodeEngineInterceptor
+import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -30,30 +29,21 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.request.DisplayData
-import com.github.panpf.sketch.request.DisplayOptions
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
-import com.github.panpf.sketch.request.DownloadData
-import com.github.panpf.sketch.request.DownloadOptions
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
-import com.github.panpf.sketch.request.LoadData
-import com.github.panpf.sketch.request.LoadOptions
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.internal.DisplayEngineInterceptor
-import com.github.panpf.sketch.request.internal.DisplayExecutor
-import com.github.panpf.sketch.request.internal.DownloadEngineInterceptor
-import com.github.panpf.sketch.request.internal.DownloadExecutor
-import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
-import com.github.panpf.sketch.request.internal.LoadExecutor
+import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.transform.internal.TransformationInterceptor
+import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -64,9 +54,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlin.math.roundToLong
 
-val Context.sketch: Sketch
-    get() = SketchSingleton.sketch(this)
-
 // todo Monitor system callbacks, TrimMemory and networking
 class Sketch private constructor(
     val context: Context,
@@ -76,23 +63,17 @@ class Sketch private constructor(
     val bitmapPool: BitmapPool,
     val componentRegistry: ComponentRegistry,
     val httpStack: HttpStack,
-    val downloadInterceptors: List<RequestInterceptor<DownloadRequest, DownloadData>>,
-    val loadInterceptors: List<RequestInterceptor<LoadRequest, LoadData>>,
-    val displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>>,
-    val bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>>,
-    val drawableDecodeInterceptors: List<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>,
-    val globalDisplayOptions: DisplayOptions?,
-    val globalLoadOptions: LoadOptions?,
-    val globalDownloadOptions: DownloadOptions?,
+    val requestInterceptors: List<RequestInterceptor>,
+    val bitmapDecodeInterceptors: List<DecodeInterceptor<BitmapDecodeResult>>,
+    val drawableDecodeInterceptors: List<DecodeInterceptor<DrawableDecodeResult>>,
+    val globalImageOptions: ImageOptions?,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
             logger.e("scope", throwable, "exception")
         }
     )
-    private val downloadExecutor = DownloadExecutor(this)
-    private val loadExecutor = LoadExecutor(this)
-    private val displayExecutor = DisplayExecutor(this)
+    private val imageExecutor = RequestExecutor(this)
 
     val countDrawablePendingManager = CountDrawablePendingManager(logger)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
@@ -126,7 +107,6 @@ class Sketch private constructor(
                 val bitmapDecoders = componentRegistry.bitmapDecoderFactoryList.joinToString(",")
                 val drawableDecoders =
                     componentRegistry.drawableDecoderFactoryList.joinToString(",")
-                val displayInterceptors = displayInterceptors.joinToString(",")
                 val bitmapDecodeInterceptors = bitmapDecodeInterceptors.joinToString(",")
                 val drawableDecodeInterceptors = drawableDecodeInterceptors.joinToString(",")
                 append("\n").append("logger: $logger")
@@ -137,9 +117,7 @@ class Sketch private constructor(
                 append("\n").append("fetchers: $fetchers")
                 append("\n").append("bitmapDecoders: $bitmapDecoders")
                 append("\n").append("drawableDecoders: $drawableDecoders")
-                append("\n").append("downloadInterceptors: ${downloadInterceptors.joinToString()}")
-                append("\n").append("loadInterceptors: ${loadInterceptors.joinToString(",")}")
-                append("\n").append("displayInterceptors: $displayInterceptors")
+                append("\n").append("imageInterceptors: ${requestInterceptors.joinToString(",")}")
                 append("\n").append("bitmapDecodeInterceptors: $bitmapDecodeInterceptors")
                 append("\n").append("drawableDecodeInterceptors: $drawableDecodeInterceptors")
             }
@@ -147,82 +125,66 @@ class Sketch private constructor(
     }
 
 
-    /***************************************** Display ********************************************/
-
     @AnyThread
-    fun enqueueDisplay(request: DisplayRequest): Disposable<DisplayResult> {
+    fun enqueue(request: DisplayRequest): Disposable<DisplayResult> {
         val job = scope.async(Dispatchers.Main.immediate) {
-            displayExecutor.execute(request)
+            imageExecutor.execute(request) as DisplayResult
         }
-        return if (request.target is ViewTarget<*>) {
-            (request.target as ViewTarget<*>).view.requestManager.getDisposable(job)
+        val target = request.target
+        return if (target is ViewTarget<*>) {
+            target.view.requestManager.getDisposable(job)
         } else {
             OneShotDisposable(job)
         }
     }
 
-    suspend fun executeDisplay(request: DisplayRequest): DisplayResult =
+    suspend fun execute(request: DisplayRequest): DisplayResult =
         coroutineScope {
             val job = async(Dispatchers.Main.immediate) {
-                displayExecutor.execute(request)
+                imageExecutor.execute(request) as DisplayResult
             }
             // Update the current request attached to the view and await the result.
-            if (request.target is ViewTarget<*>) {
-                (request.target as ViewTarget<*>).view.requestManager.getDisposable(job)
+            val target = request.target
+            if (target is ViewTarget<*>) {
+                target.view.requestManager.getDisposable(job)
             }
             job.await()
         }
 
 
-    /****************************************** Load **********************************************/
-
     @AnyThread
-    fun enqueueLoad(request: LoadRequest): Disposable<LoadResult> {
+    fun enqueue(request: LoadRequest): Disposable<LoadResult> {
         val job = scope.async(Dispatchers.Main.immediate) {
-            loadExecutor.execute(request)
+            imageExecutor.execute(request) as LoadResult
         }
         return OneShotDisposable(job)
     }
 
-    suspend fun executeLoad(request: LoadRequest): LoadResult = coroutineScope {
+    suspend fun execute(request: LoadRequest): LoadResult = coroutineScope {
         val job = async(Dispatchers.Main.immediate) {
-            loadExecutor.execute(request)
+            imageExecutor.execute(request) as LoadResult
         }
         job.await()
     }
 
 
-    /**************************************** Download ********************************************/
-
     @AnyThread
-    fun enqueueDownload(request: DownloadRequest): Disposable<DownloadResult> {
+    fun enqueue(request: DownloadRequest): Disposable<DownloadResult> {
         val job = scope.async(Dispatchers.Main.immediate) {
-            downloadExecutor.execute(request)
+            imageExecutor.execute(request) as DownloadResult
         }
         return OneShotDisposable(job)
     }
 
-    suspend fun executeDownload(request: DownloadRequest): DownloadResult =
+    suspend fun execute(request: DownloadRequest): DownloadResult =
         coroutineScope {
             val job = async(Dispatchers.Main.immediate) {
-                downloadExecutor.execute(request)
+                imageExecutor.execute(request) as DownloadResult
             }
             job.await()
         }
 
-
-    companion object {
-        fun new(context: Context, configBlock: (Builder.() -> Unit)? = null): Sketch =
-            Builder(context).apply {
-                configBlock?.invoke(this)
-            }.build()
-    }
-
-    fun interface Factory {
-        fun createSketch(): Sketch
-    }
-
-    class Builder(context: Context) {
+    class Builder internal constructor(context: Context) {
 
         private val appContext: Context = context.applicationContext
         private var logger: Logger? = null
@@ -231,19 +193,13 @@ class Sketch private constructor(
         private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
-        private var downloadInterceptors: MutableList<RequestInterceptor<DownloadRequest, DownloadData>>? =
+        private var requestInterceptors: MutableList<RequestInterceptor>? =
             null
-        private var loadInterceptors: MutableList<RequestInterceptor<LoadRequest, LoadData>>? =
+        private var bitmapDecodeInterceptors: MutableList<DecodeInterceptor<BitmapDecodeResult>>? =
             null
-        private var displayInterceptors: MutableList<RequestInterceptor<DisplayRequest, DisplayData>>? =
+        private var drawableDecodeInterceptors: MutableList<DecodeInterceptor<DrawableDecodeResult>>? =
             null
-        private var bitmapDecodeInterceptors: MutableList<DecodeInterceptor<LoadRequest, BitmapDecodeResult>>? =
-            null
-        private var drawableDecodeInterceptors: MutableList<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>? =
-            null
-        private var globalDisplayOptions: DisplayOptions? = null
-        private var globalLoadOptions: LoadOptions? = null
-        private var globalDownloadOptions: DownloadOptions? = null
+        private var globalImageOptions: ImageOptions? = null
 
         fun logger(logger: Logger?): Builder = apply {
             this.logger = logger
@@ -273,28 +229,14 @@ class Sketch private constructor(
             this.httpStack = httpStack
         }
 
-        fun addDownloadInterceptor(interceptor: RequestInterceptor<DownloadRequest, DownloadData>): Builder =
+        fun addRequestInterceptor(interceptor: RequestInterceptor): Builder =
             apply {
-                this.downloadInterceptors = (downloadInterceptors ?: mutableListOf()).apply {
+                this.requestInterceptors = (requestInterceptors ?: mutableListOf()).apply {
                     add(interceptor)
                 }
             }
 
-        fun addLoadInterceptor(interceptor: RequestInterceptor<LoadRequest, LoadData>): Builder =
-            apply {
-                this.loadInterceptors = (loadInterceptors ?: mutableListOf()).apply {
-                    add(interceptor)
-                }
-            }
-
-        fun addDisplayInterceptor(interceptor: RequestInterceptor<DisplayRequest, DisplayData>): Builder =
-            apply {
-                this.displayInterceptors = (displayInterceptors ?: mutableListOf()).apply {
-                    add(interceptor)
-                }
-            }
-
-        fun addBitmapDecodeInterceptor(bitmapDecodeInterceptor: DecodeInterceptor<LoadRequest, BitmapDecodeResult>): Builder =
+        fun addBitmapDecodeInterceptor(bitmapDecodeInterceptor: DecodeInterceptor<BitmapDecodeResult>): Builder =
             apply {
                 this.bitmapDecodeInterceptors =
                     (bitmapDecodeInterceptors ?: mutableListOf()).apply {
@@ -302,7 +244,7 @@ class Sketch private constructor(
                     }
             }
 
-        fun addDrawableDecodeInterceptor(drawableDecodeInterceptor: DecodeInterceptor<DisplayRequest, DrawableDecodeResult>): Builder =
+        fun addDrawableDecodeInterceptor(drawableDecodeInterceptor: DecodeInterceptor<DrawableDecodeResult>): Builder =
             apply {
                 this.drawableDecodeInterceptors =
                     (drawableDecodeInterceptors ?: mutableListOf()).apply {
@@ -310,19 +252,11 @@ class Sketch private constructor(
                     }
             }
 
-        fun globalDisplayOptions(globalDisplayOptions: DisplayOptions): Builder = apply {
-            this.globalDisplayOptions = globalDisplayOptions
+        fun globalImageOptions(globalImageOptions: ImageOptions?): Builder = apply {
+            this.globalImageOptions = globalImageOptions
         }
 
-        fun globalLoadOptions(globalLoadOptions: DisplayOptions): Builder = apply {
-            this.globalLoadOptions = globalLoadOptions
-        }
-
-        fun globalDownloadOptions(globalDownloadOptions: DisplayOptions): Builder = apply {
-            this.globalDownloadOptions = globalDownloadOptions
-        }
-
-        fun build(): Sketch {
+        internal fun build(): Sketch {
             val logger = logger ?: Logger()
             val httpStack = httpStack ?: HurlStack.new()
 
@@ -347,20 +281,16 @@ class Sketch private constructor(
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
                     }.build()
 
-            val downloadInterceptors: List<RequestInterceptor<DownloadRequest, DownloadData>> =
-                (downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
-            val loadInterceptors: List<RequestInterceptor<LoadRequest, LoadData>> =
-                (loadInterceptors ?: listOf()) + LoadEngineInterceptor()
-            val displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>> =
-                (displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
+            val requestInterceptors: List<RequestInterceptor> =
+                (requestInterceptors ?: listOf()) + EngineRequestInterceptor()
 
-            val bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>> =
+            val bitmapDecodeInterceptors: List<DecodeInterceptor<BitmapDecodeResult>> =
                 (bitmapDecodeInterceptors ?: listOf()) +
-                        BitmapResultDiskCacheInterceptor() +
-                        TransformationInterceptor() +
-                        BitmapDecodeEngineInterceptor()
-            val drawableDecodeInterceptors: List<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>> =
-                (drawableDecodeInterceptors ?: listOf()) + DrawableDecodeEngineInterceptor()
+                        BitmapResultDiskCacheDecodeInterceptor() +
+                        BitmapTransformationDecodeInterceptor() +
+                        BitmapEngineDecodeInterceptor()
+            val drawableDecodeInterceptors: List<DecodeInterceptor<DrawableDecodeResult>> =
+                (drawableDecodeInterceptors ?: listOf()) + DrawableEngineDecodeInterceptor()
 
             return Sketch(
                 context = appContext,
@@ -370,39 +300,11 @@ class Sketch private constructor(
                 bitmapPool = bitmapPool,
                 componentRegistry = componentRegistry,
                 httpStack = httpStack,
-                downloadInterceptors = downloadInterceptors,
-                loadInterceptors = loadInterceptors,
-                displayInterceptors = displayInterceptors,
+                requestInterceptors = requestInterceptors,
                 bitmapDecodeInterceptors = bitmapDecodeInterceptors,
                 drawableDecodeInterceptors = drawableDecodeInterceptors,
-                globalDisplayOptions = globalDisplayOptions,
-                globalLoadOptions = globalLoadOptions,
-                globalDownloadOptions = globalDownloadOptions,
+                globalImageOptions = globalImageOptions,
             )
-        }
-    }
-
-    internal object SketchSingleton {
-
-        private var sketch: Sketch? = null
-
-        @JvmStatic
-        fun sketch(context: Context): Sketch =
-            sketch ?: synchronized(this) {
-                sketch ?: synchronized(this) {
-                    newSketch(context).apply {
-                        sketch = this
-                    }
-                }
-            }
-
-        private fun newSketch(context: Context): Sketch {
-            val appContext = context.applicationContext
-            return if (appContext is Factory) {
-                appContext.createSketch()
-            } else {
-                new(appContext)
-            }
         }
     }
 }

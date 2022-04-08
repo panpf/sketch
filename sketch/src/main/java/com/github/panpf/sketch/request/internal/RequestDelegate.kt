@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.util.removeAndAddObserver
@@ -19,14 +20,14 @@ import kotlinx.coroutines.Job
  */
 internal fun requestDelegate(
     sketch: Sketch,
-    initialRequest: DisplayRequest,
+    initialRequest: ImageRequest,
     job: Job
 ): RequestDelegate {
     val lifecycle = initialRequest.lifecycle
     return when (val target = initialRequest.target) {
         is ViewTarget<*> -> ViewTargetRequestDelegate(
             sketch,
-            initialRequest,
+            initialRequest as DisplayRequest,
             target,
             lifecycle,
             job
@@ -91,7 +92,7 @@ class ViewTargetRequestDelegate(
     /** Repeat this request with the same [ImageRequest]. */
     @MainThread
     fun restart() {
-        sketch.enqueueDisplay(initialRequest)
+        sketch.enqueue(initialRequest)
     }
 
     override fun assertActive() {

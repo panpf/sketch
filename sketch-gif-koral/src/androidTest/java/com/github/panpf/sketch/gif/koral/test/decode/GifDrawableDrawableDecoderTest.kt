@@ -4,16 +4,16 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
-import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.sketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,17 +26,18 @@ class GifDrawableDrawableDecoderTest {
     @Test
     fun testFactory() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         // normal
-        val request = DisplayRequest(context, newAssetUri("sample_anim.gif"), TestTarget())
+        val request = DisplayRequest(context, newAssetUri("sample_anim.gif"))
         val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample_anim.gif"), null)
         Assert.assertNotNull(
-            GifDrawableDrawableDecoder.Factory().create(sketch, request, RequestExtras(), fetchResult)
+            GifDrawableDrawableDecoder.Factory()
+                .create(sketch, request, RequestExtras(), fetchResult)
         )
 
         // not gif
-        val request1 = DisplayRequest(context, newAssetUri("sample.png"), TestTarget())
+        val request1 = DisplayRequest(context, newAssetUri("sample.png"))
         val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
         Assert.assertNull(
             GifDrawableDrawableDecoder.Factory()
@@ -44,7 +45,7 @@ class GifDrawableDrawableDecoderTest {
         )
 
         // disabledAnimationDrawable true
-        val request2 = DisplayRequest(context, newAssetUri("sample_anim.gif"), TestTarget()) {
+        val request2 = DisplayRequest(context, newAssetUri("sample_anim.gif")) {
             disabledAnimationDrawable()
         }
         val fetchResult2 = FetchResult(ErrorDataSource(sketch, request2, LOCAL), null)
@@ -54,7 +55,7 @@ class GifDrawableDrawableDecoderTest {
         )
 
         // mimeType error
-        val request3 = DisplayRequest(context, newAssetUri("sample_anim.gif"), TestTarget())
+        val request3 = DisplayRequest(context, newAssetUri("sample_anim.gif"))
         val fetchResult3 = FetchResult(
             AssetDataSource(sketch, request3, "sample_anim.gif"),
             "image/jpeg",
@@ -69,8 +70,6 @@ class GifDrawableDrawableDecoderTest {
     fun testDecodeDrawable() {
         // todo Write test cases
     }
-
-    private class TestTarget : Target
 
     private class ErrorDataSource(
         override val sketch: Sketch,

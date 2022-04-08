@@ -11,9 +11,8 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.ProgressListenerDelegate
-import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestDepth
-import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +30,7 @@ import kotlin.coroutines.cancellation.CancellationException
  */
 class HttpUriFetcher(
     val sketch: Sketch,
-    val request: DownloadRequest,
+    val request: ImageRequest,
     val url: String
 ) : Fetcher {
 
@@ -151,9 +150,8 @@ class HttpUriFetcher(
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? =
-            if (request is DownloadRequest
-                && (SCHEME.equals(request.uri.scheme, ignoreCase = true)
-                        || SCHEME1.equals(request.uri.scheme, ignoreCase = true))
+            if (SCHEME.equals(request.uri.scheme, ignoreCase = true)
+                        || SCHEME1.equals(request.uri.scheme, ignoreCase = true)
             ) {
                 HttpUriFetcher(sketch, request, request.uriString)
             } else {
@@ -165,7 +163,7 @@ class HttpUriFetcher(
 
     private class HttpDiskCacheHelper(
         val sketch: Sketch,
-        val request: DownloadRequest,
+        val request: ImageRequest,
         val diskCache: DiskCache,
         val dataDiskCacheKey: String,
         val contentTypeDiskCacheKey: String,
@@ -285,7 +283,7 @@ class HttpUriFetcher(
         }
 
         companion object {
-            fun from(sketch: Sketch, request: DownloadRequest): HttpDiskCacheHelper? {
+            fun from(sketch: Sketch, request: ImageRequest): HttpDiskCacheHelper? {
                 val cachePolicy = request.networkContentDiskCachePolicy
                 return if (cachePolicy.isReadOrWrite) {
                     val diskCache = sketch.diskCache

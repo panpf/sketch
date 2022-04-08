@@ -15,15 +15,15 @@ import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.transform.asPostProcessor
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.transform.asPostProcessor
 import java.nio.ByteBuffer
 
 /**
@@ -46,7 +46,7 @@ import java.nio.ByteBuffer
 @RequiresApi(Build.VERSION_CODES.P)
 abstract class BaseAnimatedImageDrawableDecoder(
     private val sketch: Sketch,
-    private val request: DisplayRequest,
+    private val request: ImageRequest,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
 
@@ -76,7 +76,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
 
         var imageInfo: ImageInfo? = null
         var inSampleSize = 1
-        val drawable = ImageDecoder.decodeDrawable(source) { decoder, info, source ->
+        val drawable = ImageDecoder.decodeDrawable(source) { decoder, info, _ ->
             imageInfo = ImageInfo(info.size.width, info.size.height, info.mimeType)
             val resize = request.resize
             if (resize != null) {

@@ -3,15 +3,14 @@ package com.github.panpf.sketch.fetch
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.ImageRequest
 
 /**
  * Support 'content://sample.jpg' uri
  */
 class ContentUriFetcher(
     val sketch: Sketch,
-    val request: LoadRequest,
+    val request: ImageRequest,
     val contentUri: Uri,
 ) : Fetcher {
 
@@ -26,7 +25,7 @@ class ContentUriFetcher(
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? =
-            if (request is LoadRequest && SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
+            if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 ContentUriFetcher(sketch, request, request.uri)
             } else {
                 null

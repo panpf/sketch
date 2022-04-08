@@ -9,6 +9,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
 import org.junit.Test
@@ -31,7 +32,7 @@ class LruMemoryCacheTest {
     @Test
     fun testSize() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
@@ -46,7 +47,7 @@ class LruMemoryCacheTest {
     @Test
     fun testPutRemoveGet() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertNull(get("image1"))
             Assert.assertTrue(putBitmap(sketch, "image1", 1))
@@ -71,7 +72,7 @@ class LruMemoryCacheTest {
     @Test
     fun testLRU() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
@@ -129,7 +130,7 @@ class LruMemoryCacheTest {
     @Test
     fun testTrim() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)
@@ -174,7 +175,7 @@ class LruMemoryCacheTest {
     @Test
     fun testClear() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)

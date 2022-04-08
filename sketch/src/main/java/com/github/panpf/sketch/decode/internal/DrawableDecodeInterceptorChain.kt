@@ -5,18 +5,18 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.requiredWorkThread
 
 internal class DrawableDecodeInterceptorChain constructor(
-    val interceptors: List<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>,
+    val interceptors: List<DecodeInterceptor<DrawableDecodeResult>>,
     val index: Int,
     override val sketch: Sketch,
-    override val request: DisplayRequest,
+    override val request: ImageRequest,
     override val requestExtras: RequestExtras,
     override val fetchResult: FetchResult?,
-) : DecodeInterceptor.Chain<DisplayRequest, DrawableDecodeResult> {
+) : DecodeInterceptor.Chain<DrawableDecodeResult> {
 
     @WorkerThread
     override suspend fun proceed(): DrawableDecodeResult {

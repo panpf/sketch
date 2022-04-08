@@ -8,9 +8,10 @@ import android.graphics.PorterDuffXfermode
 import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.calculateResizeMapping
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 
@@ -18,10 +19,10 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
 
     override val key: String = "CircleCropTransformation($scale)"
 
-    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): TransformResult {
+    override suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult {
         val newSize = input.width.coerceAtMost(input.height)
         val resizeMapping = calculateResizeMapping(
-            input.width, input.height, newSize, newSize, scale, false
+            input.width, input.height, newSize, newSize, KEEP_ASPECT_RATIO, scale
         )
 
         val circleBitmap = sketch.bitmapPool.getOrCreate(

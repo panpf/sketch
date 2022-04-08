@@ -3,11 +3,10 @@ package com.github.panpf.sketch.fetch
 import android.util.Base64
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.BASE64_IDENTIFIER
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.SCHEME
-import com.github.panpf.sketch.datasource.DataFrom.MEMORY
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.UriInvalidException
 
 /**
@@ -21,7 +20,7 @@ fun newBase64Uri(mimeType: String, imageDataBase64String: String): String =
  */
 class Base64UriFetcher(
     val sketch: Sketch,
-    val request: LoadRequest,
+    val request: ImageRequest,
     val mimeType: String,
     val imageDataBase64StringLazy: Lazy<String>,
 ) : Fetcher {
@@ -38,7 +37,7 @@ class Base64UriFetcher(
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? =
-            if (request is LoadRequest && SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
+            if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 val base64ImageString = request.uriString
                 val mimeTypeStartSymbolIndex = base64ImageString.indexOf(":")
                 val mimeTypeEndSymbolIndex = base64ImageString.indexOf(";")

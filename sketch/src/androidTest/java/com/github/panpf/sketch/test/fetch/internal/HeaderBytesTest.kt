@@ -2,7 +2,6 @@ package com.github.panpf.sketch.test.fetch.internal
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
@@ -13,6 +12,7 @@ import com.github.panpf.sketch.fetch.internal.isHeif
 import com.github.panpf.sketch.fetch.internal.isWebP
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.sketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -158,7 +158,7 @@ class HeaderBytesTest {
     @Test
     fun testIsGif() {
         val context = InstrumentationRegistry.getContext()
-        val sketch = Sketch.new(context)
+        val sketch = context.sketch
 
         // normal
         val request = LoadRequest(context, newAssetUri("sample_anim.gif"))

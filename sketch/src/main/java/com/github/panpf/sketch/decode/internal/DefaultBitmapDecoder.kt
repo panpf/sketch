@@ -12,12 +12,12 @@ import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
 open class DefaultBitmapDecoder(
     sketch: Sketch,
-    private val request: LoadRequest,
+    private val request: ImageRequest,
     private val dataSource: DataSource,
 ) : BitmapDecoder {
 
@@ -146,7 +146,7 @@ open class DefaultBitmapDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: LoadRequest,
+            request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, fetchResult.dataSource)

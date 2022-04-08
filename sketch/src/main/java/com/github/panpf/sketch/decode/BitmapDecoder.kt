@@ -5,6 +5,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
@@ -20,7 +21,7 @@ interface BitmapDecoder {
 
         fun create(
             sketch: Sketch,
-            request: LoadRequest,
+            request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): BitmapDecoder?

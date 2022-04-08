@@ -3,13 +3,12 @@ package com.github.panpf.sketch.decode.internal
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
-import com.github.panpf.sketch.request.DisplayRequest
 
-class DrawableDecodeEngineInterceptor : DecodeInterceptor<DisplayRequest, DrawableDecodeResult> {
+class DrawableEngineDecodeInterceptor : DecodeInterceptor<DrawableDecodeResult> {
 
     @WorkerThread
     override suspend fun intercept(
-        chain: DecodeInterceptor.Chain<DisplayRequest, DrawableDecodeResult>,
+        chain: DecodeInterceptor.Chain<DrawableDecodeResult>,
     ): DrawableDecodeResult {
         val request = chain.request
         val componentRegistry = chain.sketch.componentRegistry
@@ -20,5 +19,5 @@ class DrawableDecodeEngineInterceptor : DecodeInterceptor<DisplayRequest, Drawab
             .decode()
     }
 
-    override fun toString(): String = "DrawableDecodeEngineInterceptor"
+    override fun toString(): String = "DrawableEngineDecodeInterceptor"
 }

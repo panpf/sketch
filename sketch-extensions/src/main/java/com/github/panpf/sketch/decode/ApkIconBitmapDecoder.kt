@@ -3,16 +3,16 @@ package com.github.panpf.sketch.decode
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.readApkIcon
 
 class ApkIconBitmapDecoder(
     private val sketch: Sketch,
-    private val request: LoadRequest,
+    private val request: ImageRequest,
     private val fetchResult: FetchResult
 ) : BitmapDecoder {
 
@@ -42,7 +42,7 @@ class ApkIconBitmapDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: LoadRequest,
+            request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): BitmapDecoder? = if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {

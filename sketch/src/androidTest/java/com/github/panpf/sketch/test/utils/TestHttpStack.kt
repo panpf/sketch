@@ -3,7 +3,7 @@ package com.github.panpf.sketch.test.utils
 import android.content.Context
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import java.io.InputStream
 
 class TestHttpStack(private val context: Context, val readDelayMillis: Long? = null) : HttpStack {
@@ -17,7 +17,11 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
         )
     }
 
-    override fun getResponse(sketch: Sketch, request: DownloadRequest, url: String): HttpStack.Response {
+    override fun getResponse(
+        sketch: Sketch,
+        request: ImageRequest,
+        url: String
+    ): HttpStack.Response {
         return TestResponse(context, url.substring(url.lastIndexOf("/") + 1), readDelayMillis)
     }
 
@@ -35,25 +39,10 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
             get() = 540456
         override val contentType: String
             get() = "image/jpeg"
-        override val isContentChunked: Boolean
-            get() = false
-        override val contentEncoding: String?
-            get() = null
 
         override fun getHeaderField(name: String): String? {
             return null
         }
-
-        override fun getHeaderFieldInt(name: String, defaultValue: Int): Int {
-            return defaultValue
-        }
-
-        override fun getHeaderFieldLong(name: String, defaultValue: Long): Long {
-            return defaultValue
-        }
-
-        override val headersString: String?
-            get() = null
         override val content: InputStream
             get() = context.assets.open(assetFileName).run {
                 if (readDelayMillis != null) {
@@ -62,9 +51,6 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
                     this
                 }
             }
-
-        override fun releaseConnection() {
-        }
     }
 
     class TestUri(val uriString: String, val contentLength: Long)

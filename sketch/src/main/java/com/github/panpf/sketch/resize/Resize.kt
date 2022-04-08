@@ -72,7 +72,7 @@ data class Resize constructor(
                 imageAspectRatio != resizeAspectRatio
             }
             Precision.EXACTLY -> imageWidth != width || imageHeight != height
-            Precision.LESS_PIXELS -> false
+            Precision.LESS_PIXELS -> imageWidth * imageHeight > width * height
         }
 
     @Keep

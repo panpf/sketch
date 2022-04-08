@@ -8,7 +8,7 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
 /**
@@ -31,7 +31,7 @@ import com.github.panpf.sketch.request.internal.RequestExtras
 @RequiresApi(Build.VERSION_CODES.P)
 class WebpAnimatedDrawableDecoder(
     sketch: Sketch,
-    request: DisplayRequest,
+    request: ImageRequest,
     dataSource: DataSource,
 ) : BaseAnimatedImageDrawableDecoder(sketch, request, dataSource) {
 
@@ -40,7 +40,7 @@ class WebpAnimatedDrawableDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: DisplayRequest,
+            request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): WebpAnimatedDrawableDecoder? {

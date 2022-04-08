@@ -1,20 +1,18 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.util.SketchException
 
 sealed interface DownloadResult : ImageResult {
-    val request: DownloadRequest
 
     class Success constructor(
-        override val request: DownloadRequest,
+        override val request: ImageRequest,
         val data: DownloadData,
         val dataFrom: DataFrom
-    ) : DownloadResult
+    ) : DownloadResult, ImageResult.Success
 
     class Error constructor(
-        override val request: DownloadRequest,
-        val exception: SketchException,
-    ) : DownloadResult
+        override val request: ImageRequest,
+        override val exception: SketchException,
+    ) : DownloadResult, ImageResult.Error
 }

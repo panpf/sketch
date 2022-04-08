@@ -9,6 +9,7 @@ import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.request.internal.putCountDrawablePendingManagerKey
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,7 @@ import kotlinx.coroutines.withContext
 
 class DefaultDrawableDecoder(
     private val sketch: Sketch,
-    private val request: DisplayRequest,
+    private val request: ImageRequest,
     private val requestExtras: RequestExtras,
     private val fetchResult: FetchResult
 ) : DrawableDecoder {
@@ -69,7 +70,7 @@ class DefaultDrawableDecoder(
     class Factory : DrawableDecoder.Factory {
         override fun create(
             sketch: Sketch,
-            request: DisplayRequest,
+            request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): DrawableDecoder = DefaultDrawableDecoder(

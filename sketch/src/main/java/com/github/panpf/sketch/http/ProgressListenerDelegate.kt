@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.http
 
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.internal.ImageRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers

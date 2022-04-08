@@ -17,13 +17,13 @@ package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
 class DrawableStateImage(private val drawable: Drawable) : StateImage {
 
     override fun getDrawable(
-        sketch: Sketch, request: DisplayRequest, throwable: SketchException?
+        sketch: Sketch, request: ImageRequest, throwable: SketchException?
     ): Drawable {
         return drawable.mutate()
     }

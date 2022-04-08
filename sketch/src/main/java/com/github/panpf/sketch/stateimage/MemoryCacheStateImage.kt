@@ -19,7 +19,7 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
 class MemoryCacheStateImage(
@@ -28,7 +28,7 @@ class MemoryCacheStateImage(
 ) : StateImage {
 
     override fun getDrawable(
-        sketch: Sketch, request: DisplayRequest, throwable: SketchException?
+        sketch: Sketch, request: ImageRequest, throwable: SketchException?
     ): Drawable? {
         val memoryCache = sketch.memoryCache
         val cachedCountBitmap = memoryCacheKey?.let { memoryCache[it] }
