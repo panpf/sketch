@@ -38,7 +38,6 @@ class FileUriFetcherTest {
         val filePath = "/sdcard/sample.jpg"
         val ftpUri = "ftp:///sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
-        val imageView = ImageView(context)
 
         val httpUriFetcherFactory = FileUriFetcher.Factory()
         httpUriFetcherFactory.create(sketch, LoadRequest(context, fileUri))!!.apply {
@@ -47,14 +46,18 @@ class FileUriFetcherTest {
         httpUriFetcherFactory.create(sketch, LoadRequest(context, filePath))!!.apply {
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DisplayRequest(fileUri, imageView))!!.apply {
+        httpUriFetcherFactory.create(sketch, DisplayRequest(context, fileUri))!!.apply {
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DisplayRequest(filePath, imageView))!!.apply {
+        httpUriFetcherFactory.create(sketch, DisplayRequest(context, filePath))!!.apply {
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest(context, fileUri)))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest(context, filePath)))
+        httpUriFetcherFactory.create(sketch, DownloadRequest(context, fileUri))!!.apply {
+            Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
+        }
+        httpUriFetcherFactory.create(sketch, DownloadRequest(context, filePath))!!.apply {
+            Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
+        }
         Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, ftpUri)))
         Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }

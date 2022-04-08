@@ -17,7 +17,7 @@ package com.github.panpf.sketch.datasource
 
 import android.content.Context
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext

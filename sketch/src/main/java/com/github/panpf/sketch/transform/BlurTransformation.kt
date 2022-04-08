@@ -7,6 +7,7 @@ import androidx.annotation.IntRange
 import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import org.json.JSONObject
 
@@ -35,7 +36,7 @@ class BlurTransformation(
 
     override suspend fun transform(
         sketch: Sketch,
-        request: LoadRequest,
+        request: ImageRequest,
         input: Bitmap
     ): TransformResult? {
         // blur handle

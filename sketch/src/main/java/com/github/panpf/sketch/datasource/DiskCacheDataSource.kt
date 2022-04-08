@@ -17,7 +17,7 @@ package com.github.panpf.sketch.datasource
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
 import java.io.FileDescriptor
 import java.io.IOException

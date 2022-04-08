@@ -65,6 +65,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
         binding: ItemImageBinding,
         item: BindingItem<Photo, ItemImageBinding>
     ) {
+
         binding.imageItemImageView.apply {
             setClickRedisplayAndIgnoreSaveCellularTraffic(true)
             updateDisplayImageOptions {

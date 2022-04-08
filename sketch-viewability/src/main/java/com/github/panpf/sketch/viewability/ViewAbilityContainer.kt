@@ -8,8 +8,7 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 
@@ -21,7 +20,7 @@ interface ViewAbilityContainer {
 
     fun removeViewAbility(viewAbility: ViewAbility): ViewAbilityContainer
 
-    fun getRequestListener(): Listener<DisplayRequest, Success, Error>?
+    fun getRequestListener(): Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?
 
     fun getRequestProgressListener(): ProgressListener<DisplayRequest>?
 

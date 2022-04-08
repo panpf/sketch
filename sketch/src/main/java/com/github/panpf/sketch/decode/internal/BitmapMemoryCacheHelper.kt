@@ -10,7 +10,7 @@ import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.formatFileSize
@@ -18,7 +18,7 @@ import kotlinx.coroutines.sync.Mutex
 
 suspend fun <R> tryLockBitmapMemoryCache(
     sketch: Sketch,
-    request: DisplayRequest,
+    request: ImageRequest,
     block: suspend (helper: BitmapMemoryCacheHelper?) -> R
 ): R {
     val helper = newBitmapMemoryCacheHelper(sketch, request)
@@ -38,7 +38,7 @@ suspend fun <R> tryLockBitmapMemoryCache(
 
 fun newBitmapMemoryCacheHelper(
     sketch: Sketch,
-    request: DisplayRequest
+    request: ImageRequest
 ): BitmapMemoryCacheHelper? {
     val cachePolicy = request.bitmapMemoryCachePolicy
     if (!cachePolicy.isReadOrWrite) return null
@@ -57,7 +57,7 @@ class BitmapMemoryCacheHelper internal constructor(
     private val cachePolicy: CachePolicy,
     private val cacheKey: String,
     private val logger: Logger,
-    private val request: DisplayRequest,
+    private val request: ImageRequest,
     private val bitmapPool: BitmapPool,
 ) {
 

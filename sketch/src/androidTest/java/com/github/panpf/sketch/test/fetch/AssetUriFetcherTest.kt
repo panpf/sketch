@@ -38,15 +38,16 @@ class AssetUriFetcherTest {
         val assetUri = newAssetUri("sample.jpeg")
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
-        val imageView = ImageView(context)
 
         fetcherFactory.create(sketch, LoadRequest(context, assetUri))!!.apply {
             Assert.assertEquals("sample.jpeg", assetFileName)
         }
-        fetcherFactory.create(sketch, DisplayRequest(assetUri, imageView))!!.apply {
+        fetcherFactory.create(sketch, DisplayRequest(context, assetUri))!!.apply {
             Assert.assertEquals("sample.jpeg", assetFileName)
         }
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(context, assetUri)))
+        fetcherFactory.create(sketch, DownloadRequest(context, assetUri))!!.apply {
+            Assert.assertEquals("sample.jpeg", assetFileName)
+        }
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, httpUri)))
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }

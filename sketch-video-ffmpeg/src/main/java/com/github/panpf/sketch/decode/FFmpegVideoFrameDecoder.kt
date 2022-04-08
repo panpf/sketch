@@ -13,7 +13,7 @@ import com.github.panpf.sketch.decode.internal.applyExifOrientation
 import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
@@ -29,7 +29,7 @@ import kotlin.math.roundToInt
  */
 class FFmpegVideoFrameDecoder(
     private val sketch: Sketch,
-    private val request: LoadRequest,
+    private val request: ImageRequest,
     private val dataSource: DataSource,
     private val mimeType: String,
 ) : BitmapDecoder {
@@ -137,7 +137,7 @@ class FFmpegVideoFrameDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: LoadRequest,
+            request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): FFmpegVideoFrameDecoder? {

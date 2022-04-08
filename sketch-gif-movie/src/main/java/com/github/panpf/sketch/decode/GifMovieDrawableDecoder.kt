@@ -19,7 +19,7 @@ import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isGif
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
@@ -45,7 +45,7 @@ import com.github.panpf.sketch.request.repeatCount
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifMovieDrawableDecoder constructor(
     private val sketch: Sketch,
-    private val request: DisplayRequest,
+    private val request: ImageRequest,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
 
@@ -114,7 +114,7 @@ class GifMovieDrawableDecoder constructor(
 
         override fun create(
             sketch: Sketch,
-            request: DisplayRequest,
+            request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): GifMovieDrawableDecoder? {

@@ -36,7 +36,7 @@ class SketchTest {
             listener(normalDownloadListenerSupervisor)
         }
         val normalDisposable =
-            normalSketch.enqueueDownload(normalRequest)
+            normalSketch.enqueue(normalRequest)
         runBlocking {
             normalDisposable.job.await()
         }.apply {
@@ -57,7 +57,7 @@ class SketchTest {
             listener(cancelDownloadListenerSupervisor)
         }
         val cancelDisposable =
-            slowSketch.enqueueDownload(cancelRequest)
+            slowSketch.enqueue(cancelRequest)
         runBlocking {
             delay(1000)
             cancelDisposable.dispose()
@@ -76,7 +76,7 @@ class SketchTest {
             listener(errorDownloadListenerSupervisor)
         }
         val errorDisposable =
-            slowSketch.enqueueDownload(errorRequest)
+            slowSketch.enqueue(errorRequest)
         runBlocking {
             errorDisposable.job.await()
         }.apply {
@@ -97,7 +97,7 @@ class SketchTest {
         }.build()
         val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString)
         runBlocking {
-            normalSketch.executeDownload(normalRequest)
+            normalSketch.execute(normalRequest)
         }.apply {
             Assert.assertTrue(this is DownloadResult.Success)
         }
@@ -113,7 +113,7 @@ class SketchTest {
         }
         runBlocking {
             val job = launch {
-                slowSketch.executeDownload(cancelRequest)
+                slowSketch.execute(cancelRequest)
             }
             delay(1000)
             job.cancelAndJoin()
@@ -127,7 +127,7 @@ class SketchTest {
             networkContentDiskCachePolicy(CachePolicy.DISABLED)
         }
         runBlocking {
-            slowSketch.executeDownload(errorRequest)
+            slowSketch.execute(errorRequest)
         }.apply {
             Assert.assertTrue(this is DownloadResult.Error)
         }

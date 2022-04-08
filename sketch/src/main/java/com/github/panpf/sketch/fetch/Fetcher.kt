@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.ImageRequest
 
 fun interface Fetcher {
 

@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ProgressListener
 
 class CombinedProgressListener<REQUEST : ImageRequest>(

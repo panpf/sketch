@@ -6,8 +6,8 @@ import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.requiredWorkThread
 
@@ -43,7 +43,7 @@ class ComponentRegistry private constructor(
     @WorkerThread
     fun newBitmapDecoder(
         sketch: Sketch,
-        request: LoadRequest,
+        request: ImageRequest,
         requestExtras: RequestExtras,
         fetchResult: FetchResult,
     ): BitmapDecoder {
@@ -58,7 +58,7 @@ class ComponentRegistry private constructor(
 
     fun newDrawableDecoder(
         sketch: Sketch,
-        request: DisplayRequest,
+        request: ImageRequest,
         requestExtras: RequestExtras,
         fetchResult: FetchResult,
     ): DrawableDecoder = drawableDecoderFactoryList.firstNotNullOfOrNull {

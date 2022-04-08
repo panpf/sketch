@@ -9,8 +9,7 @@ import android.webkit.MimeTypeMap
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import java.io.FileNotFoundException
 
@@ -42,7 +41,7 @@ fun Context.newResourceUri(drawableResId: Int): String = newResourceUri(packageN
  */
 class ResourceUriFetcher(
     val sketch: Sketch,
-    val request: LoadRequest,
+    val request: ImageRequest,
     val contentUri: Uri,
 ) : Fetcher {
 
@@ -94,7 +93,7 @@ class ResourceUriFetcher(
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? =
-            if (request is LoadRequest && SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
+            if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 ResourceUriFetcher(sketch, request, request.uri)
             } else {
                 null

@@ -15,7 +15,7 @@ fun DisplayRequest.Builder.saveCellularTraffic(enabled: Boolean = true) = apply 
     }
 }
 
-fun DisplayOptions.Builder.saveCellularTraffic(enabled: Boolean = true) = apply {
+fun ImageOptions.Builder.saveCellularTraffic(enabled: Boolean = true) = apply {
     if (enabled) {
         setParameter(ENABLED_KEY, true, null)
     } else {
@@ -26,7 +26,7 @@ fun DisplayOptions.Builder.saveCellularTraffic(enabled: Boolean = true) = apply 
 val DisplayRequest.isSaveCellularTraffic: Boolean
     get() = parameters?.value<Boolean>(ENABLED_KEY) == true
 
-val DisplayOptions.isSaveCellularTraffic: Boolean
+val ImageOptions.isSaveCellularTraffic: Boolean
     get() = parameters?.value<Boolean>(ENABLED_KEY) == true
 
 
@@ -38,7 +38,7 @@ fun DisplayRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true) = a
     }
 }
 
-fun DisplayOptions.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true) = apply {
+fun ImageOptions.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true) = apply {
     if (ignore) {
         setParameter(IGNORE_KEY, true, null)
     } else {
@@ -49,7 +49,7 @@ fun DisplayOptions.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true) = a
 val DisplayRequest.isIgnoredSaveCellularTraffic: Boolean
     get() = parameters?.value<Boolean>(IGNORE_KEY) == true
 
-val DisplayOptions.isIgnoredSaveCellularTraffic: Boolean
+val ImageOptions.isIgnoredSaveCellularTraffic: Boolean
     get() = parameters?.value<Boolean>(IGNORE_KEY) == true
 
 
@@ -57,14 +57,14 @@ internal fun DisplayRequest.Builder.setDepthFromSaveCellularTraffic() {
     depthFrom(KEY)
 }
 
-internal fun DisplayOptions.Builder.setDepthFromSaveCellularTraffic() {
+internal fun ImageOptions.Builder.setDepthFromSaveCellularTraffic() {
     depthFrom(KEY)
 }
 
 val DisplayRequest.isDepthFromSaveCellularTraffic: Boolean
     get() = depthFrom == KEY
 
-val DisplayOptions.isDepthFromSaveCellularTraffic: Boolean
+val ImageOptions.isDepthFromSaveCellularTraffic: Boolean
     get() = depthFrom == KEY
 
 

@@ -5,19 +5,19 @@ import androidx.annotation.WorkerThread
 import androidx.core.content.res.ResourcesCompat
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.drawableToBitmap
 
 class XmlDrawableBitmapDecoder(
     private val sketch: Sketch,
-    private val request: LoadRequest,
+    private val request: ImageRequest,
     private val resources: Resources,
     private val drawableResId: Int
 ) : BitmapDecoder {
@@ -47,7 +47,7 @@ class XmlDrawableBitmapDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: LoadRequest,
+            request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): BitmapDecoder? {

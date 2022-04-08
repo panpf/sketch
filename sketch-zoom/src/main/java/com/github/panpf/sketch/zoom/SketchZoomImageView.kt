@@ -34,7 +34,7 @@ open class SketchZoomImageView @JvmOverloads constructor(
     }
 
     override fun submitRequest(request: DisplayRequest) {
-        context.sketch.enqueueDisplay(request)
+        context.sketch.enqueue(request)
     }
 
     override fun canScrollHorizontally(direction: Int): Boolean =

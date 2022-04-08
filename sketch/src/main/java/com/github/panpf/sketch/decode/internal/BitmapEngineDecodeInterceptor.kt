@@ -3,13 +3,12 @@ package com.github.panpf.sketch.decode.internal
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeInterceptor
-import com.github.panpf.sketch.request.LoadRequest
 
-class BitmapDecodeEngineInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
+class BitmapEngineDecodeInterceptor : DecodeInterceptor<BitmapDecodeResult> {
 
     @WorkerThread
     override suspend fun intercept(
-        chain: DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult>,
+        chain: DecodeInterceptor.Chain<BitmapDecodeResult>,
     ): BitmapDecodeResult {
         val sketch = chain.sketch
         val request = chain.request
@@ -21,5 +20,5 @@ class BitmapDecodeEngineInterceptor : DecodeInterceptor<LoadRequest, BitmapDecod
             .decode()
     }
 
-    override fun toString(): String = "BitmapDecodeEngineInterceptor"
+    override fun toString(): String = "BitmapEngineDecodeInterceptor"
 }

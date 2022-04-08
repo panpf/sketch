@@ -9,8 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.viewability.internal.RealViewAbilityContainer
@@ -139,7 +138,7 @@ abstract class AbsAbilityImageView @JvmOverloads constructor(
         return super.getDrawable()
     }
 
-    override fun getListener(): Listener<DisplayRequest, Success, Error>? {
+    override fun getListener(): Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>? {
         return viewAbilityContainer?.getRequestListener()
     }
 

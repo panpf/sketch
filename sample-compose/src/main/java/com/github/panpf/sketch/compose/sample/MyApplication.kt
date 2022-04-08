@@ -44,8 +44,8 @@ class MyApplication : MultiDexApplication(), Configurator {
         builder.apply {
             logger(Logger(DEBUG))
             httpStack(OkHttpStack.Builder().build())
-            addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
-            addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
+            addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+            addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
             components {
                 addFetcher(AppIconUriFetcher.Factory())
 

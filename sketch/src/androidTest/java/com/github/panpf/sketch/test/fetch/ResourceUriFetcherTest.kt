@@ -51,7 +51,6 @@ class ResourceUriFetcherTest {
         val androidResUriById = newResourceUri(testAppPackage, drawable.ic_launcher)
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
-        val imageView = ImageView(context)
 
         fetcherFactory.create(sketch, LoadRequest(context, androidResUriByName))!!.apply {
             Assert.assertEquals(androidResUriByName, this.contentUri.toString())
@@ -59,24 +58,18 @@ class ResourceUriFetcherTest {
         fetcherFactory.create(sketch, LoadRequest(context, androidResUriById))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DisplayRequest(androidResUriByName, imageView))!!.apply {
+        fetcherFactory.create(sketch, DisplayRequest(context, androidResUriByName))!!.apply {
             Assert.assertEquals(androidResUriByName, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DisplayRequest(androidResUriById, imageView))!!.apply {
+        fetcherFactory.create(sketch, DisplayRequest(context, androidResUriById))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        Assert.assertNull(
-            fetcherFactory.create(
-                sketch,
-                DownloadRequest(context, androidResUriByName)
-            )
-        )
-        Assert.assertNull(
-            fetcherFactory.create(
-                sketch,
-                DownloadRequest(context, androidResUriById)
-            )
-        )
+        fetcherFactory.create(sketch, DownloadRequest(context, androidResUriByName))!!.apply {
+            Assert.assertEquals(androidResUriByName, this.contentUri.toString())
+        }
+        fetcherFactory.create(sketch, DownloadRequest(context, androidResUriById))!!.apply {
+            Assert.assertEquals(androidResUriById, this.contentUri.toString())
+        }
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, httpUri)))
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }

@@ -28,7 +28,7 @@ fun DisplayRequest.Builder.repeatCount(repeatCount: Int): DisplayRequest.Builder
 /**
  * Get the number of times to repeat the animation if the result is an animated [Drawable].
  */
-fun DisplayRequest.repeatCount(): Int? = parameters?.value(ANIMATION_REPEAT_COUNT_KEY)
+fun ImageRequest.repeatCount(): Int? = parameters?.value(ANIMATION_REPEAT_COUNT_KEY)
 
 /**
  * Set the callback to be invoked at the start of the animation if the result is an animated [Drawable].
@@ -40,7 +40,7 @@ fun DisplayRequest.Builder.onAnimationStart(callback: (() -> Unit)?): DisplayReq
 /**
  * Get the callback to be invoked at the start of the animation if the result is an animated [Drawable].
  */
-fun DisplayRequest.animationStartCallback(): (() -> Unit)? =
+fun ImageRequest.animationStartCallback(): (() -> Unit)? =
     parameters?.value(ANIMATION_START_CALLBACK_KEY)
 
 /**
@@ -53,7 +53,7 @@ fun DisplayRequest.Builder.onAnimationEnd(callback: (() -> Unit)?): DisplayReque
 /**
  * Get the callback to be invoked at the end of the animation if the result is an animated [Drawable].
  */
-fun DisplayRequest.animationEndCallback(): (() -> Unit)? =
+fun ImageRequest.animationEndCallback(): (() -> Unit)? =
     parameters?.value(ANIMATION_END_CALLBACK_KEY)
 
 /**
@@ -71,7 +71,7 @@ fun DisplayRequest.Builder.animatedTransformation(animatedTransformation: Animat
 /**
  * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
  */
-fun DisplayRequest.animatedTransformation(): AnimatedTransformation? =
+fun ImageRequest.animatedTransformation(): AnimatedTransformation? =
     parameters?.value(ANIMATED_TRANSFORMATION_KEY)
 
 

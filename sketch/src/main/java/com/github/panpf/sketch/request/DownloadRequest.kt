@@ -1,43 +1,66 @@
 package com.github.panpf.sketch.request
 
 import android.content.Context
-import android.net.Uri
+import android.graphics.Bitmap.Config
+import android.graphics.ColorSpace
+import android.graphics.drawable.Drawable
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
+import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
+import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.http.merge
-import com.github.panpf.sketch.request.DownloadRequest.Builder
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
-import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ImageResult
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.request.ImageRequest.BaseImageRequest
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.target.DownloadTarget
+import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.transition.Transition.Factory
+import com.github.panpf.sketch.util.Size
 
 fun DownloadRequest(
     context: Context,
-    uriString: String,
-    configBlock: (Builder.() -> Unit)? = null
-): DownloadRequest = Builder(context, uriString).apply {
+    uriString: String?,
+    configBlock: (DownloadRequest.Builder.() -> Unit)? = null
+): DownloadRequest = DownloadRequest.Builder(context, uriString).apply {
     configBlock?.invoke(this)
 }.build()
 
 fun DownloadRequestBuilder(
     context: Context,
-    uriString: String,
-    configBlock: (Builder.() -> Unit)? = null
-): Builder = Builder(context, uriString).apply {
+    uriString: String?,
+    configBlock: (DownloadRequest.Builder.() -> Unit)? = null
+): DownloadRequest.Builder = DownloadRequest.Builder(context, uriString).apply {
     configBlock?.invoke(this)
 }
 
 interface DownloadRequest : ImageRequest {
 
-    val networkContentDiskCacheKey: String
+    override fun newBuilder(
+        context: Context,
+        configBlock: (ImageRequest.Builder.() -> Unit)?
+    ): Builder = Builder(context, this).apply {
+        configBlock?.invoke(this)
+    }
 
-    val httpHeaders: HttpHeaders?
-    val networkContentDiskCachePolicy: CachePolicy
-    val progressListener: ProgressListener<ImageRequest>?
+    override fun newRequest(
+        context: Context,
+        configBlock: (ImageRequest.Builder.() -> Unit)?
+    ): ImageRequest = Builder(context, this).apply {
+        configBlock?.invoke(this)
+    }.build()
 
-    val globalOptions: DownloadOptions?
-    val definedOptions: DownloadOptions
+    fun newDownloadBuilder(
+        context: Context = this.context,
+        configBlock: (Builder.() -> Unit)? = null
+    ): Builder = Builder(context, this).apply {
+        configBlock?.invoke(this)
+    }
 
     fun newDownloadRequest(
         context: Context = this.context,
@@ -46,52 +69,17 @@ interface DownloadRequest : ImageRequest {
         configBlock?.invoke(this)
     }.build()
 
-    fun newDownloadRequestBuilder(
-        context: Context = this.context,
-        configBlock: (Builder.() -> Unit)? = null
-    ): Builder = Builder(context, this).apply {
-        configBlock?.invoke(this)
-    }
+    class Builder : ImageRequest.Builder {
 
-    open class Builder {
+        //        constructor(context: Context, uriString: String?) : super(context, DOWNLOAD, uriString)
+        constructor(context: Context, uriString: String?) : super(context, uriString)
 
-        private val context: Context
-        private val uriString: String
-        private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
-        private var progressListener: ProgressListener<ImageRequest>? = null
-
-        private var globalOptions: DownloadOptions? = null
-
-        private var depth: RequestDepth? = null
-        private var parametersBuilder: Parameters.Builder? = null
-        private var httpHeaders: HttpHeaders.Builder? = null
-        private var networkContentDiskCachePolicy: CachePolicy? = null
-
-        constructor(context: Context, uriString: String) {
-            this.context = context.applicationContext
-            this.uriString = uriString
-
-            this.globalOptions = context.sketch.globalDownloadOptions
-        }
-
-        internal constructor(context: Context, request: DownloadRequest) {
-            this.context = context.applicationContext
-            this.uriString = request.uriString
-            this.listener = request.listener
-            this.progressListener = request.progressListener
-
-            this.globalOptions = request.globalOptions
-
-            this.depth = request.depth
-            this.parametersBuilder = request.parameters?.newBuilder()
-            this.httpHeaders = request.httpHeaders?.newBuilder()
-            this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
-        }
+        constructor(context: Context, request: DownloadRequest) : super(context, request)
 
         fun listener(listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>?): Builder =
             apply {
                 @Suppress("UNCHECKED_CAST")
-                this.listener = listener as Listener<ImageRequest, ImageResult, ImageResult>?
+                super.listener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?)
             }
 
         /**
@@ -102,187 +90,255 @@ interface DownloadRequest : ImageRequest {
             crossinline onCancel: (request: DownloadRequest) -> Unit = {},
             crossinline onError: (request: DownloadRequest, result: DownloadResult.Error) -> Unit = { _, _ -> },
             crossinline onSuccess: (request: DownloadRequest, result: DownloadResult.Success) -> Unit = { _, _ -> }
-        ): Builder = listener(object :
-            Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
-            override fun onStart(request: DownloadRequest) = onStart(request)
-            override fun onCancel(request: DownloadRequest) = onCancel(request)
-            override fun onError(request: DownloadRequest, result: DownloadResult.Error) =
-                onError(request, result)
+        ): Builder =
+            listener(object :
+                Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
+                override fun onStart(request: DownloadRequest) = onStart(request)
+                override fun onCancel(request: DownloadRequest) = onCancel(request)
+                override fun onError(request: DownloadRequest, result: DownloadResult.Error) =
+                    onError(request, result)
 
-            override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) =
-                onSuccess(request, result)
-        })
+                override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) =
+                    onSuccess(request, result)
+            })
 
-        fun progressListener(progressListener: ProgressListener<DownloadRequest>?): Builder =
+        fun target(target: DownloadTarget): Builder = apply {
+            super.target(target)
+        }
+
+        override fun build(): DownloadRequest {
+            return super.build() as DownloadRequest
+        }
+
+
+        override fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
+            super.lifecycle(lifecycle)
+        }
+
+        override fun depth(depth: RequestDepth?): Builder = apply {
+            super.depth(depth)
+        }
+
+        override fun depthFrom(from: String?): Builder = apply {
+            super.depthFrom(from)
+        }
+
+        override fun parameters(parameters: Parameters?): Builder = apply {
+            super.parameters(parameters)
+        }
+
+        override fun setParameter(key: String, value: Any?, cacheKey: String?): Builder = apply {
+            super.setParameter(key, value, cacheKey)
+        }
+
+        override fun removeParameter(key: String): Builder = apply {
+            super.removeParameter(key)
+        }
+
+        override fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
+            super.httpHeaders(httpHeaders)
+        }
+
+        override fun addHttpHeader(name: String, value: String): Builder = apply {
+            super.addHttpHeader(name, value)
+        }
+
+        override fun setHttpHeader(name: String, value: String): Builder = apply {
+            super.setHttpHeader(name, value)
+        }
+
+        override fun removeHttpHeader(name: String): Builder = apply {
+            super.removeHttpHeader(name)
+        }
+
+        override fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
             apply {
-                @Suppress("UNCHECKED_CAST")
-                this.progressListener =
-                    progressListener as ProgressListener<ImageRequest>?
+                super.networkContentDiskCachePolicy(networkContentDiskCachePolicy)
             }
 
-        fun depth(depth: RequestDepth?): Builder = apply {
-            this.depth = depth
-        }
-
-        fun depthFrom(from: String?): Builder = apply {
-            if (from != null) {
-                setParameter(ImageRequest.REQUEST_DEPTH_FROM, from, null)
-            } else {
-                removeParameter(ImageRequest.REQUEST_DEPTH_FROM)
-            }
-        }
-
-        fun parameters(parameters: Parameters?): Builder = apply {
-            this.parametersBuilder = parameters?.newBuilder()
-        }
-
-        /**
-         * Set a parameter for this request.
-         *
-         * @see Parameters.Builder.set
-         */
-        @JvmOverloads
-        fun setParameter(key: String, value: Any?, cacheKey: String? = value?.toString()): Builder =
+        override fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder =
             apply {
-                this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
-                    set(key, value, cacheKey)
-                }
+                super.bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy)
             }
 
-        /**
-         * Remove a parameter from this request.
-         *
-         * @see Parameters.Builder.remove
-         */
-        fun removeParameter(key: String): Builder = apply {
-            this.parametersBuilder?.remove(key)
+        override fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
+            super.bitmapConfig(bitmapConfig)
         }
 
-        fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
-            this.httpHeaders = httpHeaders?.newBuilder()
+        override fun bitmapConfig(bitmapConfig: Config?): Builder = apply {
+            super.bitmapConfig(bitmapConfig)
         }
 
-        /**
-         * Add a header for any network operations performed by this request.
-         */
-        fun addHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
-                add(name, value)
-            }
+        override fun lowQualityBitmapConfig(): Builder = apply {
+            super.lowQualityBitmapConfig()
         }
 
-        /**
-         * Set a header for any network operations performed by this request.
-         */
-        fun setHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
-                set(name, value)
+        override fun middenQualityBitmapConfig(): Builder = apply {
+            super.middenQualityBitmapConfig()
+        }
+
+        override fun highQualityBitmapConfig(): Builder = apply {
+            super.highQualityBitmapConfig()
+        }
+
+        override fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                super.colorSpace(colorSpace)
             }
         }
 
-        /**
-         * Remove all network headers with the key [name].
-         */
-        fun removeHttpHeader(name: String): Builder = apply {
-            this.httpHeaders?.removeAll(name)
+        @Suppress("OverridingDeprecatedMember")
+        override fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
+            @Suppress("DEPRECATION")
+            super.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
-        fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
+        override fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
+            super.resizeSizeResolver(sizeResolver)
+        }
+
+        override fun resizeSize(size: Size?): Builder = apply {
+            super.resizeSize(size)
+        }
+
+        override fun resizeSize(width: Int, height: Int): Builder = apply {
+            super.resizeSize(width, height)
+        }
+
+        override fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
+            super.resizePrecision(precisionDecider)
+        }
+
+        override fun resizePrecision(precision: Precision): Builder = apply {
+            super.resizePrecision(precision)
+        }
+
+        override fun resizeScale(scale: Scale): Builder = apply {
+            super.resizeScale(scale)
+        }
+
+        override fun transformations(transformations: List<Transformation>?): Builder = apply {
+            super.transformations(transformations)
+        }
+
+        override fun transformations(vararg transformations: Transformation): Builder = apply {
+            super.transformations(*transformations)
+        }
+
+        override fun addTransformations(transformations: List<Transformation>): Builder = apply {
+            super.addTransformations(transformations)
+        }
+
+        override fun addTransformations(vararg transformations: Transformation): Builder = apply {
+            super.addTransformations(*transformations)
+        }
+
+        override fun removeTransformations(removeTransformations: List<Transformation>): Builder =
             apply {
-                this.networkContentDiskCachePolicy = networkContentDiskCachePolicy
+                super.removeTransformations(removeTransformations)
             }
 
-        fun options(options: DownloadOptions, requestFirst: Boolean = false): Builder = apply {
-            if (!requestFirst || this.depth == null) {
-                options.depth?.let {
-                    this.depth = it
-                }
+        override fun removeTransformations(vararg removeTransformations: Transformation): Builder =
+            apply {
+                super.removeTransformations(*removeTransformations)
             }
-            options.parameters?.takeIf { it.isNotEmpty() }?.let {
-                it.forEach { entry ->
-                    if (!requestFirst || parametersBuilder?.exist(entry.first) != true) {
-                        setParameter(entry.first, entry.second.value, entry.second.cacheKey)
-                    }
-                }
-            }
-            options.httpHeaders?.takeIf { !it.isEmpty() }?.let { headers ->
-                headers.addList.forEach {
-                    addHttpHeader(it.first, it.second)
-                }
-                headers.setList.forEach {
-                    if (!requestFirst || httpHeaders?.setExist(it.first) != true) {
-                        setHttpHeader(it.first, it.second)
-                    }
-                }
-            }
-            if (!requestFirst || this.networkContentDiskCachePolicy == null) {
-                options.networkContentDiskCachePolicy?.let {
-                    this.networkContentDiskCachePolicy = it
-                }
-            }
+
+        override fun disabledBitmapPool(disabledBitmapPool: Boolean?): Builder = apply {
+            super.disabledBitmapPool(disabledBitmapPool)
         }
 
-        fun build(): DownloadRequest = DownloadRequestImpl(
-            context = context,
-            uriString = uriString,
-            listener = listener,
-            progressListener = progressListener,
-            globalOptions = globalOptions,
-            definedOptions = DownloadOptions {
-                depth(depth)
-                parameters(parametersBuilder?.build())
-                httpHeaders(httpHeaders?.build())
-                networkContentDiskCachePolicy(networkContentDiskCachePolicy)
-            },
-            depth = depth
-                ?: globalOptions?.depth
-                ?: NETWORK,
-            parameters = parametersBuilder?.build()
-                .merge(globalOptions?.parameters),
-            httpHeaders = httpHeaders?.build()
-                .merge(globalOptions?.httpHeaders),
-            networkContentDiskCachePolicy = networkContentDiskCachePolicy
-                ?: globalOptions?.networkContentDiskCachePolicy
-                ?: ENABLED,
-        )
+        override fun ignoreExifOrientation(ignoreExifOrientation: Boolean?): Builder = apply {
+            super.ignoreExifOrientation(ignoreExifOrientation)
+        }
+
+        override fun bitmapMemoryCachePolicy(bitmapMemoryCachePolicy: CachePolicy?): Builder =
+            apply {
+                super.bitmapMemoryCachePolicy(bitmapMemoryCachePolicy)
+            }
+
+        override fun disabledAnimationDrawable(disabledAnimationDrawable: Boolean?): Builder =
+            apply {
+                super.disabledAnimationDrawable(disabledAnimationDrawable)
+            }
+
+        override fun placeholderImage(placeholderImage: StateImage?): Builder = apply {
+            super.placeholderImage(placeholderImage)
+        }
+
+        override fun placeholderImage(placeholderDrawable: Drawable?): Builder = apply {
+            super.placeholderImage(placeholderDrawable)
+        }
+
+        override fun placeholderImage(placeholderDrawableResId: Int?): Builder = apply {
+            super.placeholderImage(placeholderDrawableResId)
+        }
+
+        override fun errorImage(
+            errorImage: StateImage?,
+            configBlock: (ErrorStateImage.Builder.() -> Unit)?
+        ): Builder = apply {
+            super.errorImage(errorImage, configBlock)
+        }
+
+        override fun errorImage(
+            errorDrawable: Drawable?,
+            configBlock: (ErrorStateImage.Builder.() -> Unit)?
+        ): Builder = apply {
+            super.errorImage(errorDrawable, configBlock)
+        }
+
+        override fun errorImage(
+            errorDrawableResId: Int?,
+            configBlock: (ErrorStateImage.Builder.() -> Unit)?
+        ): Builder = apply {
+            super.errorImage(errorDrawableResId, configBlock)
+        }
+
+        override fun transition(transition: Factory?): Builder = apply {
+            super.transition(transition)
+        }
+
+        override fun crossfadeTransition(
+            durationMillis: Int,
+            preferExactIntrinsicSize: Boolean
+        ): Builder = apply {
+            super.crossfadeTransition(durationMillis, preferExactIntrinsicSize)
+        }
+
+        override fun options(options: ImageOptions, requestFirst: Boolean): Builder = apply {
+            super.options(options, requestFirst)
+        }
     }
 
-    private class DownloadRequestImpl(
+    class DownloadRequestImpl internal constructor(
         override val context: Context,
         override val uriString: String,
-        override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
-        override val progressListener: ProgressListener<ImageRequest>?,
-        override val globalOptions: DownloadOptions?,
-        override val definedOptions: DownloadOptions,
-        override val depth: RequestDepth,
+        override val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?,
         override val parameters: Parameters?,
+        override val depth: RequestDepth,
         override val httpHeaders: HttpHeaders?,
         override val networkContentDiskCachePolicy: CachePolicy,
-    ) : DownloadRequest {
-
-        override val uri: Uri by lazy { Uri.parse(uriString) }
-
-        override val networkContentDiskCacheKey: String = uriString
-
-        override val key: String by lazy {
-            buildString {
-                append("Download")
-                append("_").append(uriString)
-                depth.takeIf { it != NETWORK }?.let {
-                    append("_").append("RequestDepth(${it})")
-                }
-                parameters?.key?.takeIf { it.isNotEmpty() }?.let {
-                    append("_").append(it)
-                }
-                httpHeaders?.takeIf { !it.isEmpty() }?.let {
-                    append("_").append(it)
-                }
-                networkContentDiskCachePolicy.takeIf { it == ENABLED }?.let {
-                    append("_").append("networkContentDiskCachePolicy($it)")
-                }
-            }
-        }
-
-        override fun toString(): String = key
-    }
+        override val progressListener: ProgressListener<ImageRequest>?,
+        override val bitmapConfig: BitmapConfig?,
+        override val colorSpace: ColorSpace?,
+        @Suppress("OverridingDeprecatedMember") override val preferQualityOverSpeed: Boolean,
+        override val resizeSize: Size?,
+        override val resizeSizeResolver: SizeResolver,
+        override val resizePrecisionDecider: PrecisionDecider,
+        override val resizeScale: Scale,
+        override val transformations: List<Transformation>?,
+        override val disabledBitmapPool: Boolean,
+        override val ignoreExifOrientation: Boolean,
+        override val bitmapResultDiskCachePolicy: CachePolicy,
+        override val target: Target?,
+        override val lifecycle: Lifecycle?,
+        override val disabledAnimationDrawable: Boolean,
+        override val bitmapMemoryCachePolicy: CachePolicy,
+        override val placeholderImage: StateImage?,
+        override val errorImage: StateImage?,
+        override val transition: Factory?,
+        override val viewOptions: ImageOptions?,
+        override val definedOptions: ImageOptions,
+        override val globalOptions: ImageOptions?
+    ) : BaseImageRequest(), DownloadRequest
 }

@@ -3,7 +3,7 @@ package com.github.panpf.sketch.test.utils
 import android.content.Context
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import java.io.InputStream
 
 class TestHttpStack(private val context: Context, val readDelayMillis: Long? = null) : HttpStack {
@@ -19,7 +19,7 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
 
     override fun getResponse(
         sketch: Sketch,
-        request: DownloadRequest,
+        request: ImageRequest,
         url: String
     ): HttpStack.Response {
         return TestResponse(context, url.substring(url.lastIndexOf("/") + 1), readDelayMillis)

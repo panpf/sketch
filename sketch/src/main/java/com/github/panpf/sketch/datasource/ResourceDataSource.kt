@@ -19,14 +19,14 @@ import android.content.res.Resources
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
 class ResourceDataSource constructor(
     override val sketch: Sketch,
-    override val request: LoadRequest,
+    override val request: ImageRequest,
     val resources: Resources,
     @RawRes @DrawableRes val drawableId: Int
 ) : DataSource {

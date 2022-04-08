@@ -5,15 +5,13 @@ import android.graphics.BitmapFactory
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_DISK_CACHE
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONArray
@@ -21,7 +19,7 @@ import org.json.JSONObject
 
 suspend fun <R> tryLockBitmapResultDiskCache(
     sketch: Sketch,
-    request: LoadRequest,
+    request: ImageRequest,
     block: suspend (helper: BitmapResultDiskCacheHelper?) -> R
 ): R {
     val helper = newBitmapResultDiskCacheHelper(sketch, request)
@@ -41,7 +39,7 @@ suspend fun <R> tryLockBitmapResultDiskCache(
 
 fun newBitmapResultDiskCacheHelper(
     sketch: Sketch,
-    request: LoadRequest
+    request: ImageRequest
 ): BitmapResultDiskCacheHelper? {
     val cachePolicy = request.bitmapResultDiskCachePolicy
     if (!cachePolicy.isReadOrWrite) return null
@@ -57,7 +55,7 @@ fun newBitmapResultDiskCacheHelper(
 }
 
 class BitmapResultDiskCacheHelper internal constructor(
-    private val request: LoadRequest,
+    private val request: ImageRequest,
     private val diskCache: DiskCache,
     private val cachePolicy: CachePolicy,
     private val bitmapDataDiskCacheKey: String,

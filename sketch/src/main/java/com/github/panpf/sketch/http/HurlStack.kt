@@ -17,6 +17,7 @@ package com.github.panpf.sketch.http
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -37,7 +38,7 @@ class HurlStack(
     @Throws(IOException::class)
     override fun getResponse(
         sketch: Sketch,
-        request: DownloadRequest,
+        request: ImageRequest,
         url: String
     ): HttpStack.Response {
         var newUri = url

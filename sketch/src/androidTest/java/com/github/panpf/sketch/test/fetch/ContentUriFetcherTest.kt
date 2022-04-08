@@ -24,15 +24,16 @@ class ContentUriFetcherTest {
         val fetcherFactory = ContentUriFetcher.Factory()
         val contentUri = "content://sample_app/sample"
         val httpUri = "http://sample.com/sample.jpg"
-        val imageView = ImageView(context)
 
         fetcherFactory.create(sketch, LoadRequest(context, contentUri))!!.apply {
             Assert.assertEquals(contentUri, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DisplayRequest(contentUri, imageView))!!.apply {
+        fetcherFactory.create(sketch, DisplayRequest(context, contentUri))!!.apply {
             Assert.assertEquals(contentUri, this.contentUri.toString())
         }
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(context, contentUri)))
+        fetcherFactory.create(sketch, DownloadRequest(context, contentUri))!!.apply {
+            Assert.assertEquals(contentUri, this.contentUri.toString())
+        }
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, httpUri)))
     }
 

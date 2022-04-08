@@ -2,26 +2,24 @@ package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.internal.ImageData
-import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
-interface RequestInterceptor<REQUEST : ImageRequest, DATA : ImageData> {
+interface RequestInterceptor {
 
     @MainThread
-    suspend fun intercept(chain: Chain<REQUEST, DATA>): DATA
+    suspend fun intercept(chain: Chain): ImageData
 
-    interface Chain<REQUEST : ImageRequest, RESULT> {
+    interface Chain {
 
         val sketch: Sketch
 
-        val initialRequest: REQUEST
+        val initialRequest: ImageRequest
 
-        val request: REQUEST
+        val request: ImageRequest
 
         val requestExtras: RequestExtras
 
         @MainThread
-        suspend fun proceed(request: REQUEST): RESULT
+        suspend fun proceed(request: ImageRequest): ImageData
     }
 }

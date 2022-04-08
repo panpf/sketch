@@ -53,7 +53,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
 
     private suspend fun readLocalPhotos(startPosition: Int, pageSize: Int): List<String> =
         withToIO {
-            val cursor = context.contentResolver.query(
+            @Suppress("DEPRECATION") val cursor = context.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 arrayOf(
                     MediaStore.Images.Media.TITLE,
@@ -69,7 +69,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
             ArrayList<String>(cursor?.count ?: 0).apply {
                 cursor?.use {
                     while (cursor.moveToNext()) {
-                        val uri =
+                        @Suppress("DEPRECATION") val uri =
                             cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
                         add(uri)
                     }

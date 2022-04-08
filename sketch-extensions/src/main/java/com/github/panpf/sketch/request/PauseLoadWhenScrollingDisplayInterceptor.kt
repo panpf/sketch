@@ -1,10 +1,9 @@
 package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
-class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
+class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
 
     companion object {
         var scrolling = false
@@ -13,8 +12,12 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor<DisplayReque
     var enabled = true
 
     @MainThread
-    override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
+    override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
+        if (request !is DisplayRequest) {
+            return chain.proceed(request)
+        }
+
         val requestDepth = request.depth
         val finalRequest = if (
             enabled

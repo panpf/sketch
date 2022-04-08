@@ -34,8 +34,8 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
@@ -156,7 +156,7 @@ fun computeSizeMultiplier(
 }
 
 fun realDecode(
-    request: LoadRequest,
+    request: ImageRequest,
     dataFrom: DataFrom,
     imageInfo: ImageInfo,
     exifOrientation: Int,
@@ -354,3 +354,20 @@ fun isSrcRectError(throwable: Throwable): Boolean =
 
 val Bitmap.logString: String
     get() = "${width}x${height}/${config}@${toHexString()}"
+
+fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
+    DecodeConfig().apply {
+        @Suppress("DEPRECATION")
+        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
+            inPreferQualityOverSpeed = true
+        }
+
+        val newConfig = bitmapConfig?.getConfigByMimeType(mimeType)
+        if (newConfig != null) {
+            inPreferredConfig = newConfig
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != null) {
+            inPreferredColorSpace = colorSpace
+        }
+    }

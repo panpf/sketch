@@ -9,6 +9,7 @@ import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isAnimatedHeif
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
 /**
@@ -31,7 +32,7 @@ import com.github.panpf.sketch.request.internal.RequestExtras
 @RequiresApi(Build.VERSION_CODES.P)
 class GifAnimatedDrawableDecoder(
     sketch: Sketch,
-    request: DisplayRequest,
+    request: ImageRequest,
     dataSource: DataSource,
 ) : BaseAnimatedImageDrawableDecoder(sketch, request, dataSource) {
 
@@ -40,7 +41,7 @@ class GifAnimatedDrawableDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: DisplayRequest,
+            request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): GifAnimatedDrawableDecoder? {
