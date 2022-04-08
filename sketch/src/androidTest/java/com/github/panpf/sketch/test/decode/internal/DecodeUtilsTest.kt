@@ -34,9 +34,10 @@ import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resize.Precision.EXACTLY
+import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.fixedPrecision
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.R
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -121,20 +122,21 @@ class DecodeUtilsTest {
     fun testApplyResize() {
         val context = InstrumentationRegistry.getContext()
         val sketch = context.sketch
-        val bitmap = Bitmap.createBitmap(100, 50, ARGB_8888)
-        val result = BitmapDecodeResult(
-            bitmap = bitmap,
-            imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/png"),
-            exifOrientation = 0,
-            dataFrom = MEMORY,
-            transformedList = null
-        )
-        var resize: Resize?
+        val newResult: () -> BitmapDecodeResult = {
+            BitmapDecodeResult(
+                bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
+                imageInfo = ImageInfo(80, 50, "image/png"),
+                exifOrientation = 0,
+                dataFrom = MEMORY,
+                transformedList = null
+            )
+        }
 
         /*
          * null
          */
-        resize = null
+        var resize: Resize? = null
+        var result: BitmapDecodeResult = newResult()
         result.applyResize(sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this === result)
         }
@@ -143,13 +145,15 @@ class DecodeUtilsTest {
          * LESS_PIXELS
          */
         // small
-        resize = Resize(50, 50, LESS_PIXELS)
+        resize = Resize(40, 20, LESS_PIXELS)
+        result = newResult()
         result.applyResize(sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("71x35", this.bitmap.sizeString)
+            Assert.assertEquals("36x22", this.bitmap.sizeString)
         }
         // big
-        resize = Resize(50, 110, LESS_PIXELS)
+        resize = Resize(50, 150, LESS_PIXELS)
+        result = newResult()
         result.applyResize(sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this === result)
         }
@@ -157,12 +161,38 @@ class DecodeUtilsTest {
         /*
          * KEEP_ASPECT_RATIO
          */
+        // small
+        resize = Resize(40, 20, KEEP_ASPECT_RATIO)
+        result = newResult()
+        result.applyResize(sketch.bitmapPool, resize).apply {
+            Assert.assertTrue(this !== result)
+            Assert.assertEquals("40x20", this.bitmap.sizeString)
+        }
+        // big
+        resize = Resize(50, 150, KEEP_ASPECT_RATIO)
+        result = newResult()
+        result.applyResize(sketch.bitmapPool, resize).apply {
+            Assert.assertTrue(this !== result)
+            Assert.assertEquals("17x50", this.bitmap.sizeString)
+        }
 
         /*
          * EXACTLY
          */
-
-        TODO("Wait for the implementation")
+        // small
+        resize = Resize(40, 20, EXACTLY)
+        result = newResult()
+        result.applyResize(sketch.bitmapPool, resize).apply {
+            Assert.assertTrue(this !== result)
+            Assert.assertEquals("40x20", this.bitmap.sizeString)
+        }
+        // big
+        resize = Resize(50, 150, EXACTLY)
+        result = newResult()
+        result.applyResize(sketch.bitmapPool, resize).apply {
+            Assert.assertTrue(this !== result)
+            Assert.assertEquals("50x150", this.bitmap.sizeString)
+        }
     }
 
     @Test

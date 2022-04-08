@@ -61,19 +61,19 @@ class ResizeMappingTest {
     fun testCalculatorResizeMappingKeepAspectRatio() {
         /* resize < imageSize */
         Assert.assertEquals(
-            ResizeMapping(Rect(0, 0, 125, 50), Rect(0, 0, 40, 20)),
+            ResizeMapping(Rect(0, 0, 100, 50), Rect(0, 0, 40, 20)),
             calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
-            ResizeMapping(Rect(0, 0, 20, 40), Rect(0, 0, 20, 40)),
+            ResizeMapping(Rect(0, 0, 25, 50), Rect(0, 0, 20, 40)),
             calculateResizeMapping(200, 50, 20, 40, KEEP_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
-            ResizeMapping(Rect(0, 0, 40, 20), Rect(0, 0, 40, 20)),
+            ResizeMapping(Rect(0, 0, 50, 25), Rect(0, 0, 40, 20)),
             calculateResizeMapping(50, 200, 40, 20, KEEP_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
-            ResizeMapping(Rect(0, 0, 50, 125), Rect(0, 0, 20, 40)),
+            ResizeMapping(Rect(0, 0, 50, 100), Rect(0, 0, 20, 40)),
             calculateResizeMapping(50, 200, 20, 40, KEEP_ASPECT_RATIO, START_CROP)
         )
 
@@ -100,19 +100,19 @@ class ResizeMappingTest {
     fun testCalculatorResizeMappingExactly() {
         /* resize < imageSize */
         Assert.assertEquals(
-            ResizeMapping(Rect(0, 0, 125, 50), Rect(0, 0, 40, 20)),
+            ResizeMapping(Rect(0, 0, 100, 50), Rect(0, 0, 40, 20)),
             calculateResizeMapping(200, 50, 40, 20, EXACTLY, START_CROP)
         )
         Assert.assertEquals(
-            ResizeMapping(Rect(0, 0, 20, 40), Rect(0, 0, 20, 40)),
+            ResizeMapping(Rect(0, 0, 25, 50), Rect(0, 0, 20, 40)),
             calculateResizeMapping(200, 50, 20, 40, EXACTLY, START_CROP)
         )
         Assert.assertEquals(
-            ResizeMapping(Rect(0, 0, 40, 20), Rect(0, 0, 40, 20)),
+            ResizeMapping(Rect(0, 0, 50, 25), Rect(0, 0, 40, 20)),
             calculateResizeMapping(50, 200, 40, 20, EXACTLY, START_CROP)
         )
         Assert.assertEquals(
-            ResizeMapping(Rect(0, 0, 50, 125), Rect(0, 0, 20, 40)),
+            ResizeMapping(Rect(0, 0, 50, 100), Rect(0, 0, 20, 40)),
             calculateResizeMapping(50, 200, 20, 40, EXACTLY, START_CROP)
         )
 
@@ -137,256 +137,65 @@ class ResizeMappingTest {
 
     @Test
     fun testCalculatorResizeMappingStartCrop() {
-        TODO("Wait for the implementation")
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 56, 14)),
+            calculateResizeMapping(200, 50, 40, 20, LESS_PIXELS, START_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 100, 50), Rect(0, 0, 40, 20)),
+            calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, START_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 100, 50), Rect(0, 0, 40, 20)),
+            calculateResizeMapping(200, 50, 40, 20, EXACTLY, START_CROP)
+        )
     }
 
     @Test
     fun testCalculatorResizeMappingCenterCrop() {
-        TODO("Wait for the implementation")
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 56, 14)),
+            calculateResizeMapping(200, 50, 40, 20, LESS_PIXELS, CENTER_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(50, 0, 150, 50), Rect(0, 0, 40, 20)),
+            calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, CENTER_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(50, 0, 150, 50), Rect(0, 0, 40, 20)),
+            calculateResizeMapping(200, 50, 40, 20, EXACTLY, CENTER_CROP)
+        )
     }
 
     @Test
     fun testCalculatorResizeMappingEndCrop() {
-        TODO("Wait for the implementation")
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 56, 14)),
+            calculateResizeMapping(200, 50, 40, 20, LESS_PIXELS, END_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(100, 0, 200, 50), Rect(0, 0, 40, 20)),
+            calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, END_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(100, 0, 200, 50), Rect(0, 0, 40, 20)),
+            calculateResizeMapping(200, 50, 40, 20, EXACTLY, END_CROP)
+        )
     }
 
     @Test
     fun testCalculatorResizeMappingFill() {
-        TODO("Wait for the implementation")
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 56, 14)),
+            calculateResizeMapping(200, 50, 40, 20, LESS_PIXELS, FILL)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 40, 20)),
+            calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, FILL)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 40, 20)),
+            calculateResizeMapping(200, 50, 40, 20, EXACTLY, FILL)
+        )
     }
-
-//    /**
-//     * resizeWidth <= imageWidth && resizeHeight <= imageHeight
-//     */
-//    @Test
-//    fun testCalculatorResizeMappingResizeSmall() {
-//        // todo Refactoring， 宽高换为 200 50
-//        /**
-//         * resizeWidth > resizeHeight
-//         */
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 40), Rect(0, 0, 50, 20)),
-//            calculateResizeMapping(100, 100, 50, 20, KEEP_ASPECT_RATIO, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 30, 100, 70), Rect(0, 0, 50, 20)),
-//            calculateResizeMapping(100, 100, 50, 20, CENTER_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 60, 100, 100), Rect(0, 0, 50, 20)),
-//            calculateResizeMapping(100, 100, 50, 20, END_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 50, 20)),
-//            calculateResizeMapping(100, 100, 50, 20, FILL, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 40), Rect(0, 0, 50, 20)),
-//            calculateResizeMapping(100, 100, 50, 20, EXACTLY, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 30, 100, 70), Rect(0, 0, 50, 20)),
-//            calculateResizeMapping(100, 100, 50, 20, CENTER_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 60, 100, 100), Rect(0, 0, 50, 20)),
-//            calculateResizeMapping(100, 100, 50, 20, END_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 50, 20)),
-//            calculateResizeMapping(100, 100, 50, 20, FILL, EXACTLY)
-//        )
-//
-//        /**
-//         * resizeWidth < resizeHeight
-//         */
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 40, 100), Rect(0, 0, 20, 50)),
-//            calculateResizeMapping(100, 100, 20, 50, KEEP_ASPECT_RATIO, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(30, 0, 70, 100), Rect(0, 0, 20, 50)),
-//            calculateResizeMapping(100, 100, 20, 50, CENTER_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(60, 0, 100, 100), Rect(0, 0, 20, 50)),
-//            calculateResizeMapping(100, 100, 20, 50, END_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 20, 50)),
-//            calculateResizeMapping(100, 100, 20, 50, FILL, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 40, 100), Rect(0, 0, 20, 50)),
-//            calculateResizeMapping(100, 100, 20, 50, EXACTLY, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(30, 0, 70, 100), Rect(0, 0, 20, 50)),
-//            calculateResizeMapping(100, 100, 20, 50, CENTER_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(60, 0, 100, 100), Rect(0, 0, 20, 50)),
-//            calculateResizeMapping(100, 100, 20, 50, END_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 20, 50)),
-//            calculateResizeMapping(100, 100, 20, 50, FILL, EXACTLY)
-//        )
-//    }
-//
-//    /**
-//     * resizeWidth >= imageWidth && resizeHeight >= imageHeight
-//     */
-//    @Test
-//    fun testCalculatorResizeMappingResizeBig() {
-//        /**
-//         * resizeWidth > resizeHeight
-//         */
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 40), Rect(0, 0, 100, 40)),
-//            calculateResizeMapping(100, 100, 500, 200, KEEP_ASPECT_RATIO, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 30, 100, 70), Rect(0, 0, 100, 40)),
-//            calculateResizeMapping(100, 100, 500, 200, CENTER_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 60, 100, 100), Rect(0, 0, 100, 40)),
-//            calculateResizeMapping(100, 100, 500, 200, END_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 100, 40)),
-//            calculateResizeMapping(100, 100, 500, 200, FILL, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 40), Rect(0, 0, 500, 200)),
-//            calculateResizeMapping(100, 100, 500, 200, EXACTLY, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 30, 100, 70), Rect(0, 0, 500, 200)),
-//            calculateResizeMapping(100, 100, 500, 200, CENTER_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 60, 100, 100), Rect(0, 0, 500, 200)),
-//            calculateResizeMapping(100, 100, 500, 200, END_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 500, 200)),
-//            calculateResizeMapping(100, 100, 500, 200, FILL, EXACTLY)
-//        )
-//
-//        /**
-//         * resizeWidth < resizeHeight
-//         */
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 40, 100), Rect(0, 0, 40, 100)),
-//            calculateResizeMapping(100, 100, 200, 500, KEEP_ASPECT_RATIO, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(30, 0, 70, 100), Rect(0, 0, 40, 100)),
-//            calculateResizeMapping(100, 100, 200, 500, CENTER_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(60, 0, 100, 100), Rect(0, 0, 40, 100)),
-//            calculateResizeMapping(100, 100, 200, 500, END_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 40, 100)),
-//            calculateResizeMapping(100, 100, 200, 500, FILL, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 40, 100), Rect(0, 0, 200, 500)),
-//            calculateResizeMapping(100, 100, 200, 500, EXACTLY, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(30, 0, 70, 100), Rect(0, 0, 200, 500)),
-//            calculateResizeMapping(100, 100, 200, 500, CENTER_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(60, 0, 100, 100), Rect(0, 0, 200, 500)),
-//            calculateResizeMapping(100, 100, 200, 500, END_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 200, 500)),
-//            calculateResizeMapping(100, 100, 200, 500, FILL, EXACTLY)
-//        )
-//    }
-//
-//    /**
-//     * resizeWidth >= imageWidth && resizeHeight <= imageHeight
-//     */
-//    @Test
-//    fun testCalculatorResizeMappingResizeWidthBig() {
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 4), Rect(0, 0, 100, 4)),
-//            calculateResizeMapping(100, 100, 500, 20, KEEP_ASPECT_RATIO, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 48, 100, 52), Rect(0, 0, 100, 4)),
-//            calculateResizeMapping(100, 100, 500, 20, CENTER_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 96, 100, 100), Rect(0, 0, 100, 4)),
-//            calculateResizeMapping(100, 100, 500, 20, END_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 100, 4)),
-//            calculateResizeMapping(100, 100, 500, 20, FILL, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 4), Rect(0, 0, 500, 20)),
-//            calculateResizeMapping(100, 100, 500, 20, EXACTLY, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 48, 100, 52), Rect(0, 0, 500, 20)),
-//            calculateResizeMapping(100, 100, 500, 20, CENTER_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 96, 100, 100), Rect(0, 0, 500, 20)),
-//            calculateResizeMapping(100, 100, 500, 20, END_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 500, 20)),
-//            calculateResizeMapping(100, 100, 500, 20, FILL, EXACTLY)
-//        )
-//    }
-//
-//    /**
-//     * resizeWidth <= imageWidth && resizeHeight >= imageHeight
-//     */
-//    @Test
-//    fun testCalculatorResizeMappingResizeHeightBig() {
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 4, 100), Rect(0, 0, 4, 100)),
-//            calculateResizeMapping(100, 100, 20, 500, KEEP_ASPECT_RATIO, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(48, 0, 52, 100), Rect(0, 0, 4, 100)),
-//            calculateResizeMapping(100, 100, 20, 500, CENTER_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(96, 0, 100, 100), Rect(0, 0, 4, 100)),
-//            calculateResizeMapping(100, 100, 20, 500, END_CROP, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 4, 100)),
-//            calculateResizeMapping(100, 100, 20, 500, FILL, KEEP_ASPECT_RATIO)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 4, 100), Rect(0, 0, 20, 500)),
-//            calculateResizeMapping(100, 100, 20, 500, EXACTLY, START_CROP)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(48, 0, 52, 100), Rect(0, 0, 20, 500)),
-//            calculateResizeMapping(100, 100, 20, 500, CENTER_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(96, 0, 100, 100), Rect(0, 0, 20, 500)),
-//            calculateResizeMapping(100, 100, 20, 500, END_CROP, EXACTLY)
-//        )
-//        Assert.assertEquals(
-//            ResizeMapping(Rect(0, 0, 100, 100), Rect(0, 0, 20, 500)),
-//            calculateResizeMapping(100, 100, 20, 500, FILL, EXACTLY)
-//        )
-//    }
 }
