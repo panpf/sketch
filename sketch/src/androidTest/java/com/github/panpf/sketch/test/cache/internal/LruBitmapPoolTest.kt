@@ -7,8 +7,8 @@ import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.util.formatFileSize
@@ -95,7 +95,7 @@ class LruBitmapPoolTest {
             Assert.assertEquals("3MB", size.formatFileSize())
 
             // !bitmap.isMutable
-            val resources = InstrumentationRegistry.getContext().resources
+            val resources = InstrumentationRegistry.getInstrumentation().context.resources
             Assert.assertFalse(put(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)))
             Assert.assertEquals("3MB", size.formatFileSize())
 
@@ -308,7 +308,7 @@ class LruBitmapPoolTest {
 
             Assert.assertFalse(free(Bitmap.createBitmap(100, 100, ARGB_8888).apply { recycle() }))
 
-            val resources = InstrumentationRegistry.getContext().resources
+            val resources = InstrumentationRegistry.getInstrumentation().context.resources
             Assert.assertFalse(
                 free(
                     BitmapFactory.decodeResource(

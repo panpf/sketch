@@ -6,7 +6,7 @@ import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.SMPTE_C
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.DecodeConfig
 import org.junit.Assert
 import org.junit.Test

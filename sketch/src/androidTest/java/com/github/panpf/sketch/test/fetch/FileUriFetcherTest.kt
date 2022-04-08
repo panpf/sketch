@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.test.fetch
 
 import android.widget.ImageView
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.newFileUri
@@ -32,7 +32,7 @@ class FileUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val fileUri = "file:///sdcard/sample.jpg"
         val filePath = "/sdcard/sample.jpg"
@@ -64,7 +64,7 @@ class FileUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val fetcherFactory = FileUriFetcher.Factory()
         val fileUri = "file:///sdcard/sample.jpg"

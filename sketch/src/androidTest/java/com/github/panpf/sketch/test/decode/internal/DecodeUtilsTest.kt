@@ -6,8 +6,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
@@ -110,17 +110,17 @@ class DecodeUtilsTest {
 
     @Test
     fun testRealDecode() {
-        TODO("Wait for the implementation")
+        // todo Write test cases
     }
 
     @Test
     fun testApplyExifOrientation() {
-        TODO("Wait for the implementation")
+        // todo Write test cases
     }
 
     @Test
     fun testApplyResize() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val newResult: () -> BitmapDecodeResult = {
             BitmapDecodeResult(
@@ -215,7 +215,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactory() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
@@ -247,7 +247,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrThrow() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
@@ -276,7 +276,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrNull() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
@@ -305,7 +305,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeBitmapWithBitmapFactory() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
@@ -339,7 +339,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeRegionBitmap() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")

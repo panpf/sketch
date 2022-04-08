@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.svg.test.fetch.internal
 
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isSvg
@@ -17,7 +17,7 @@ class SvgExtensionsTest {
 
     @Test
     fun test() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         // normal

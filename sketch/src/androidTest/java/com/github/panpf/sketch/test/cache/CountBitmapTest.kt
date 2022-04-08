@@ -2,8 +2,8 @@ package com.github.panpf.sketch.test.cache
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.decode.ImageInfo
@@ -23,7 +23,7 @@ class CountBitmapTest {
 
     @Test
     fun testRequestKey() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100, requestKey = "requestKey1").apply {
@@ -37,7 +37,7 @@ class CountBitmapTest {
 
     @Test
     fun testImageUri() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
@@ -51,7 +51,7 @@ class CountBitmapTest {
 
     @Test
     fun testImageInfo() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(
@@ -77,7 +77,7 @@ class CountBitmapTest {
 
     @Test
     fun testTransformedList() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
@@ -100,7 +100,7 @@ class CountBitmapTest {
 
     @Test
     fun testBitmap() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
@@ -125,7 +125,7 @@ class CountBitmapTest {
 
     @Test
     fun testIsRecycled() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
@@ -145,7 +145,7 @@ class CountBitmapTest {
 
     @Test
     fun testByteCount() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
@@ -165,7 +165,7 @@ class CountBitmapTest {
 
     @Test
     fun testInfo() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
@@ -185,7 +185,7 @@ class CountBitmapTest {
 
     @Test
     fun testSetIsDisplayed() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
@@ -215,7 +215,7 @@ class CountBitmapTest {
 
     @Test
     fun testSetIsCached() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
@@ -237,7 +237,7 @@ class CountBitmapTest {
 
     @Test
     fun testSetIsPending() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         createCountBitmap(sketch, "image1", 100, 100).apply {

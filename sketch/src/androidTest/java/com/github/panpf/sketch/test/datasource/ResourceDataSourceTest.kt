@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.test.datasource
 
 import android.content.res.Resources
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.newResourceUri
@@ -19,7 +19,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher))
         ResourceDataSource(
@@ -37,7 +37,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testLength() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         ResourceDataSource(
             sketch = sketch,
@@ -62,7 +62,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         ResourceDataSource(
             sketch = sketch,
@@ -87,7 +87,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         ResourceDataSource(
             sketch = sketch,
@@ -112,7 +112,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testToString() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         ResourceDataSource(
             sketch = sketch,

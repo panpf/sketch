@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.zoom.test.internal
 
 import android.graphics.Rect
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.internal.crossWith

@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.test
 
 import android.os.Looper
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.DownloadRequest
@@ -22,7 +22,7 @@ class SketchTest {
 
     @Test
     fun testEnqueueDownload() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         /*
          * success
@@ -87,7 +87,7 @@ class SketchTest {
 
     @Test
     fun testExecuteDownload() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         /*
          * success
@@ -135,7 +135,7 @@ class SketchTest {
 
     @Test
     fun test() {
-        TODO("Write test cases")
+        // todo Write test cases
     }
 
     private class DownloadListenerSupervisor :

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.test.resize
 
 import android.graphics.Rect
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS

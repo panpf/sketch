@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.extensions.test.fetch
 
 import android.widget.ImageView
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Factory
@@ -33,7 +33,7 @@ class AppIconUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val fetcherFactory = Factory()
         val appIconUri = "app.icon://packageName/12412"
@@ -56,7 +56,7 @@ class AppIconUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val fetcherFactory = Factory()
         val appIconUri = newAppIconUri(

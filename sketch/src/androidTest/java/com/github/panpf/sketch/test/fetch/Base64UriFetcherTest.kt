@@ -2,8 +2,8 @@ package com.github.panpf.sketch.test.fetch
 
 import android.util.Base64
 import android.widget.ImageView
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.newBase64Uri
@@ -33,7 +33,7 @@ class Base64UriFetcherTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val fetcherFactory = Base64UriFetcher.Factory()
         val base64Uri = "data:image/png;base64,4y2u1412421089084901240129"
@@ -56,7 +56,7 @@ class Base64UriFetcherTest {
 
     @Test
     fun testFetch() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val fetcherFactory = Base64UriFetcher.Factory()
         val imageData = "4y2u1412421089084901240129".toByteArray()

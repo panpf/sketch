@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.test.cache.internal
 
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.util.MD5Utils
@@ -17,7 +17,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testMaxSize() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         LruDiskCache(context).use {
             Assert.assertEquals("512MB", it.maxSize.formatFileSize())
         }
@@ -29,7 +29,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testVersion() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         LruDiskCache(context).use {
             it.clear()
@@ -61,7 +61,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testDirectory() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         LruDiskCache(context).use {
             val defaultCacheDir =
@@ -83,7 +83,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testSize() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         LruDiskCache(context).use {
             it.clear()
@@ -103,7 +103,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testPutRemoveGetExist() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         LruDiskCache(context).use {
             it.clear()
@@ -141,7 +141,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testLRU() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         LruDiskCache(context).use {
             it.clear()
@@ -204,7 +204,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testClear() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         LruDiskCache(context).use {
             it.clear()
@@ -234,7 +234,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testEditLock() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         LruDiskCache(context, 10L * 1024 * 1024).use {
             Assert.assertNotNull(it.editLock("file1"))
             Assert.assertNotNull(it.editLock("file2"))
@@ -245,7 +245,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testToString() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         val defaultCacheDir =
             File(context.externalCacheDir ?: context.cacheDir, DiskCache.DEFAULT_DIR_NAME)
@@ -267,7 +267,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testSnapshot() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val defaultCacheDir =
             File(context.externalCacheDir ?: context.cacheDir, DiskCache.DEFAULT_DIR_NAME)
 
@@ -303,7 +303,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testEditor() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         LruDiskCache(context).use {
             it.clear()

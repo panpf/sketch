@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.test.cache.internal
 
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.KeyMapperCache
 import com.github.panpf.sketch.util.MD5Utils
 import org.junit.Assert

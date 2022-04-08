@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.test.fetch
 
 import android.widget.ImageView
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.fetch.ContentUriFetcher
 import com.github.panpf.sketch.request.DisplayRequest
@@ -19,7 +19,7 @@ class ContentUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val fetcherFactory = ContentUriFetcher.Factory()
         val contentUri = "content://sample_app/sample"
@@ -39,7 +39,7 @@ class ContentUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val fetcherFactory = ContentUriFetcher.Factory()
         val contentUri = "content://sample_app/sample"

@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.test.resize
 
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -91,12 +91,12 @@ class ResizeTest {
     fun testShouldClip() {
         Resize(100, 100).apply {
             Assert.assertFalse(shouldClip(100, 50))
-            Assert.assertFalse(shouldClip(100, 150))
+            Assert.assertTrue(shouldClip(100, 150))
             Assert.assertFalse(shouldClip(50, 100))
-            Assert.assertFalse(shouldClip(150, 100))
+            Assert.assertTrue(shouldClip(150, 100))
             Assert.assertFalse(shouldClip(100, 100))
             Assert.assertFalse(shouldClip(50, 50))
-            Assert.assertFalse(shouldClip(150, 150))
+            Assert.assertTrue(shouldClip(150, 150))
         }
 
         Resize(100, 100, precision = KEEP_ASPECT_RATIO).apply {
@@ -121,12 +121,12 @@ class ResizeTest {
 
         Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertTrue(shouldClip(100, 50))
-            Assert.assertFalse(shouldClip(100, 150))
+            Assert.assertTrue(shouldClip(100, 150))
             Assert.assertTrue(shouldClip(50, 100))
-            Assert.assertFalse(shouldClip(150, 100))
+            Assert.assertTrue(shouldClip(150, 100))
             Assert.assertFalse(shouldClip(100, 100))
             Assert.assertFalse(shouldClip(50, 50))
-            Assert.assertFalse(shouldClip(150, 150))
+            Assert.assertTrue(shouldClip(150, 150))
         }
     }
 

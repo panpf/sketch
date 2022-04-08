@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.test.fetch
 
 import android.widget.ImageView
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newResourceUri
@@ -42,7 +42,7 @@ class ResourceUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val testAppPackage = context.packageName
         val sketch = context.sketch
         val fetcherFactory = ResourceUriFetcher.Factory()
@@ -76,7 +76,7 @@ class ResourceUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()

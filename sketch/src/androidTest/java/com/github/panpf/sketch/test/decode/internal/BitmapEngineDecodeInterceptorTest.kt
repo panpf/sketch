@@ -1,11 +1,11 @@
 package com.github.panpf.sketch.test.decode.internal
 
 import androidx.exifinterface.media.ExifInterface
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
+import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
@@ -20,7 +20,7 @@ class BitmapEngineDecodeInterceptorTest {
 
     @Test
     fun testIntercept() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val interceptors = listOf(BitmapEngineDecodeInterceptor())
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
@@ -44,7 +44,7 @@ class BitmapEngineDecodeInterceptorTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "BitmapDecodeEngineInterceptor",
+            "BitmapEngineDecodeInterceptor",
             BitmapEngineDecodeInterceptor().toString()
         )
     }

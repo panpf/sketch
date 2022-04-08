@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.test.cache
 
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.isReadAndWrite
 import com.github.panpf.sketch.cache.isReadOrWrite

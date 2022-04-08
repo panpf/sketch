@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.test.datasource
 
 import android.net.Uri
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataFrom
@@ -22,7 +22,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val contentUri = runBlocking {
             val file = AssetDataSource(
@@ -47,7 +47,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testLength() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val contentUri = runBlocking {
             val file = AssetDataSource(
@@ -81,7 +81,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val contentUri = runBlocking {
             val file = AssetDataSource(
@@ -115,7 +115,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val contentUri = runBlocking {
             val file = AssetDataSource(
@@ -149,7 +149,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testFile() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val contentUri = runBlocking {
             val file = AssetDataSource(
@@ -190,7 +190,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testToString() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val contentUri = runBlocking {
             val file = AssetDataSource(

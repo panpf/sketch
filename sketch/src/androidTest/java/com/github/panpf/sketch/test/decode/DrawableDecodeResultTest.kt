@@ -2,7 +2,7 @@ package com.github.panpf.sketch.test.decode
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo

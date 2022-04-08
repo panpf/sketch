@@ -5,7 +5,7 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGBA_F16
 import android.graphics.Bitmap.Config.RGB_565
 import android.os.Build
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.BitmapConfig
 import org.junit.Assert
 import org.junit.Test

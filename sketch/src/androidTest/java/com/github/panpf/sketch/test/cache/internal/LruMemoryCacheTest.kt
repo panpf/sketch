@@ -3,8 +3,8 @@ package com.github.panpf.sketch.test.cache.internal
 import android.content.ComponentCallbacks2
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
@@ -31,7 +31,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testSize() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
@@ -46,7 +46,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testPutRemoveGet() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertNull(get("image1"))
@@ -71,7 +71,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testLRU() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
@@ -129,7 +129,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testTrim() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
@@ -174,7 +174,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testClear() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())

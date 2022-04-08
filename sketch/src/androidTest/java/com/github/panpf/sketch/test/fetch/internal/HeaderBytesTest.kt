@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.test.fetch.internal
 
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
@@ -73,7 +73,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsWebP() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         HeaderBytes(context.assets.open("sample.webp").use {
             ByteArray(1024).apply { it.read(this) }
@@ -94,7 +94,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsAnimatedWebP() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         HeaderBytes(context.assets.open("sample_anim.webp").use {
             ByteArray(1024).apply { it.read(this) }
@@ -115,7 +115,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsHeif() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         HeaderBytes(context.assets.open("sample.heic").use {
             ByteArray(1024).apply { it.read(this) }
@@ -136,7 +136,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsAnimatedHeif() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
 
         HeaderBytes(context.assets.open("sample.heic").use {
             ByteArray(1024).apply { it.read(this) }
@@ -157,7 +157,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsGif() {
-        val context = InstrumentationRegistry.getContext()
+        val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         // normal
