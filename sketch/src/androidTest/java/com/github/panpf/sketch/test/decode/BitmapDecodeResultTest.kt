@@ -48,7 +48,7 @@ class BitmapDecodeResultTest {
             result.transformedList?.joinToString()
         )
 
-        val result2 = result.new(newBitmap) {
+        val result2 = result.newResult(newBitmap) {
             addTransformed(CircleCropTransformed(CENTER_CROP))
         }
         Assert.assertEquals(

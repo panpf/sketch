@@ -33,7 +33,7 @@ class BitmapTransformationDecodeInterceptor : DecodeInterceptor<BitmapDecodeResu
         }
         val newBitmap = transformedBitmap
         return if (newBitmap != null) {
-            result.new(newBitmap) {
+            result.newResult(newBitmap) {
                 transformedList.forEach {
                     addTransformed(it)
                 }

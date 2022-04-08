@@ -14,7 +14,7 @@ data class BitmapDecodeResult constructor(
     override val transformedList: List<Transformed>? = null
 ) : DecodeResult {
 
-    fun new(bitmap: Bitmap, block: (Builder.() -> Unit)? = null): BitmapDecodeResult =
+    fun newResult(bitmap: Bitmap, block: (Builder.() -> Unit)? = null): BitmapDecodeResult =
         Builder(
             bitmap = bitmap,
             imageInfo = imageInfo,
