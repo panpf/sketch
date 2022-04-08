@@ -1,5 +1,7 @@
 package com.github.panpf.sketch.test.decode.internal
 
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.os.Build.VERSION
@@ -8,7 +10,11 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeWithTolerance
 import com.github.panpf.sketch.decode.internal.calculateSamplingSize
@@ -23,10 +29,14 @@ import com.github.panpf.sketch.decode.internal.maxBitmapSize
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
+import com.github.panpf.sketch.decode.internal.sizeString
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.fixedPrecision
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.R
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -109,6 +119,49 @@ class DecodeUtilsTest {
 
     @Test
     fun testApplyResize() {
+        val context = InstrumentationRegistry.getContext()
+        val sketch = context.sketch
+        val bitmap = Bitmap.createBitmap(100, 50, ARGB_8888)
+        val result = BitmapDecodeResult(
+            bitmap = bitmap,
+            imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/png"),
+            exifOrientation = 0,
+            dataFrom = MEMORY,
+            transformedList = null
+        )
+        var resize: Resize?
+
+        /*
+         * null
+         */
+        resize = null
+        result.applyResize(sketch.bitmapPool, resize).apply {
+            Assert.assertTrue(this === result)
+        }
+
+        /*
+         * LESS_PIXELS
+         */
+        // small
+        resize = Resize(50, 50, LESS_PIXELS)
+        result.applyResize(sketch.bitmapPool, resize).apply {
+            Assert.assertTrue(this !== result)
+            Assert.assertEquals("71x35", this.bitmap.sizeString)
+        }
+        // big
+        resize = Resize(50, 110, LESS_PIXELS)
+        result.applyResize(sketch.bitmapPool, resize).apply {
+            Assert.assertTrue(this === result)
+        }
+
+        /*
+         * KEEP_ASPECT_RATIO
+         */
+
+        /*
+         * EXACTLY
+         */
+
         TODO("Wait for the implementation")
     }
 

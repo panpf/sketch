@@ -35,8 +35,6 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.calculateResizeMapping
@@ -74,7 +72,7 @@ fun limitedMaxBitmapSize(@Px imageWidth: Int, @Px imageHeight: Int, inSampleSize
 /**
  * Calculate the sample size for [BitmapFactory.Options]
  */
-private fun _calculateSampleSize(
+private fun realCalculateSampleSize(
     @Px imageWidth: Int,
     @Px imageHeight: Int,
     @Px targetWidth: Int,
@@ -103,7 +101,7 @@ fun calculateSampleSize(
     @Px imageHeight: Int,
     @Px targetWidth: Int,
     @Px targetHeight: Int,
-): Int = _calculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1f)
+): Int = realCalculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1f)
 
 /**
  * Calculate the sample size for [BitmapFactory.Options]. 10% tolerance
@@ -113,7 +111,7 @@ fun calculateSampleSizeWithTolerance(
     @Px imageHeight: Int,
     @Px targetWidth: Int,
     @Px targetHeight: Int,
-): Int = _calculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1.1f)
+): Int = realCalculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1.1f)
 
 fun calculateSamplingSize(size: Int, sampleSize: Int): Int {
     return ceil((size / sampleSize.toDouble())).toInt()
@@ -184,14 +182,14 @@ fun realDecode(
             resizeWidth = addedResize.width,
             resizeHeight = addedResize.height,
             resizeScale = addedResize.scale,
-            exactlySize = precision == EXACTLY
+            precision = precision
         )
         // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
         decodeConfig.inSampleSize = calculateSampleSizeWithTolerance(
             resizeMapping.srcRect.width(),
             resizeMapping.srcRect.height(),
-            addedResize.width,
-            addedResize.height
+            resizeMapping.destRect.width(),
+            resizeMapping.destRect.height(),
         )
         if (decodeRegion != null) {
             resizeTransformed = ResizeTransformed(resize)
@@ -231,7 +229,7 @@ fun BitmapDecodeResult.applyExifOrientation(
     val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, bitmapPool)
     return if (newBitmap != null) {
         bitmapPool.free(inBitmap)
-        new(newBitmap) {
+        newResult(newBitmap) {
             addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
             val newSize = exifOrientationHelper.applyToSize(
                 Size(imageInfo.width, imageInfo.height)
@@ -256,14 +254,14 @@ fun BitmapDecodeResult.applyResize(
             resizeWidth = resize.width,
             resizeHeight = resize.height,
             resizeScale = resize.scale,
-            exactlySize = precision == EXACTLY
+            precision = precision
         )
         val config = inBitmap.config ?: ARGB_8888
         val newBitmap = bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config)
         val canvas = Canvas(newBitmap)
         canvas.drawBitmap(inBitmap, mapping.srcRect, mapping.destRect, null)
         bitmapPool.free(inBitmap)
-        new(newBitmap) {
+        newResult(newBitmap) {
             addTransformed(ResizeTransformed(resize))
         }
     } else {
@@ -354,6 +352,9 @@ fun isSrcRectError(throwable: Throwable): Boolean =
 
 val Bitmap.logString: String
     get() = "${width}x${height}/${config}@${toHexString()}"
+
+val Bitmap.sizeString: String
+    get() = "${width}x${height}"
 
 fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
     DecodeConfig().apply {

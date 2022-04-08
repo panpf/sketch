@@ -11,7 +11,7 @@ import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.calculateResizeMapping
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 
@@ -22,7 +22,7 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
     override suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult {
         val newSize = input.width.coerceAtMost(input.height)
         val resizeMapping = calculateResizeMapping(
-            input.width, input.height, newSize, newSize, scale, false
+            input.width, input.height, newSize, newSize, scale, KEEP_ASPECT_RATIO
         )
 
         val circleBitmap = sketch.bitmapPool.getOrCreate(
