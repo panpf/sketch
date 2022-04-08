@@ -52,7 +52,7 @@ internal fun ImageRequest.newKey(): String = buildString {
         httpHeaders?.takeIf { !it.isEmpty() }?.let {
             append("_").append(it)
         }
-        networkContentDiskCachePolicy.takeIf { it == ENABLED }?.let {
+        networkContentDiskCachePolicy.takeIf { it != ENABLED }?.let {
             append("_").append("networkContentDiskCachePolicy($it)")
         }
     }
@@ -87,7 +87,7 @@ internal fun ImageRequest.newKey(): String = buildString {
         if (ignoreExifOrientation) {
             append("_").append("ignoreExifOrientation")
         }
-        bitmapResultDiskCachePolicy.takeIf { it == ENABLED }?.let {
+        bitmapResultDiskCachePolicy.takeIf { it != ENABLED }?.let {
             append("_").append("bitmapResultDiskCachePolicy($it)")
         }
     }
@@ -95,7 +95,7 @@ internal fun ImageRequest.newKey(): String = buildString {
         if (disabledAnimationDrawable) {
             append("_").append("disabledAnimationDrawable")
         }
-        bitmapMemoryCachePolicy.takeIf { it == ENABLED }?.let {
+        bitmapMemoryCachePolicy.takeIf { it != ENABLED }?.let {
             append("_").append("bitmapMemoryCachePolicy($it)")
         }
     }
