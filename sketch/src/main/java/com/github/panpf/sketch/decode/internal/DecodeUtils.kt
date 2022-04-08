@@ -181,8 +181,8 @@ fun realDecode(
             imageHeight = imageInfo.height,
             resizeWidth = addedResize.width,
             resizeHeight = addedResize.height,
+            precision = precision,
             resizeScale = addedResize.scale,
-            precision = precision
         )
         // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
         decodeConfig.inSampleSize = calculateSampleSizeWithTolerance(
@@ -253,8 +253,8 @@ fun BitmapDecodeResult.applyResize(
             imageHeight = inBitmap.height,
             resizeWidth = resize.width,
             resizeHeight = resize.height,
+            precision = precision,
             resizeScale = resize.scale,
-            precision = precision
         )
         val config = inBitmap.config ?: ARGB_8888
         val newBitmap = bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config)

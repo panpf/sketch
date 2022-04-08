@@ -37,8 +37,8 @@ fun calculateResizeMapping(
     imageHeight: Int,
     resizeWidth: Int,
     resizeHeight: Int,
+    precision: Precision,
     resizeScale: Scale,
-    precision: Precision
 ): ResizeMapping {
     if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
         return ResizeMapping(
