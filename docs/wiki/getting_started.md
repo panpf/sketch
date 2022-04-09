@@ -17,7 +17,7 @@
 
 ### 支持的图片类型
 
-|Type|API Limit|Module|
+|Type|API Limit|Additional Module|
 |:---|:---|:---|
 |jpeg|None|None|
 |png|None|None|
