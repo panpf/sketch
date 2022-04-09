@@ -24,7 +24,7 @@ internal object SketchSingleton {
         val appContext = context.applicationContext
         val builder = Builder(appContext)
         if (appContext is SketchConfigurator) {
-            appContext.configSketch(builder)
+            appContext.createSketchConfig().invoke(builder)
         }
         return builder.build()
     }
