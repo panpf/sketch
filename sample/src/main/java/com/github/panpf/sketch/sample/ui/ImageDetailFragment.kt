@@ -36,7 +36,7 @@ class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
 
         binding.imageFragmentZoomImageView.apply {
             displayImage(imageDetail.firstMiddenUrl) {
-                placeholderImage(
+                placeholder(
                     StateImage.memoryCache(
                         imageDetail.placeholderImageMemoryKey,
                         null

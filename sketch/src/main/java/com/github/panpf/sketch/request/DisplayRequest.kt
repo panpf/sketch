@@ -284,48 +284,48 @@ interface DisplayRequest : ImageRequest {
                 super.disabledAnimationDrawable(disabledAnimationDrawable)
             }
 
-        override fun placeholderImage(placeholderImage: StateImage?): Builder = apply {
-            super.placeholderImage(placeholderImage)
+        override fun placeholder(placeholderImage: StateImage?): Builder = apply {
+            super.placeholder(placeholderImage)
         }
 
-        override fun placeholderImage(placeholderDrawable: Drawable?): Builder = apply {
-            super.placeholderImage(placeholderDrawable)
+        override fun placeholder(placeholderDrawable: Drawable?): Builder = apply {
+            super.placeholder(placeholderDrawable)
         }
 
-        override fun placeholderImage(placeholderDrawableResId: Int?): Builder = apply {
-            super.placeholderImage(placeholderDrawableResId)
+        override fun placeholder(placeholderDrawableResId: Int?): Builder = apply {
+            super.placeholder(placeholderDrawableResId)
         }
 
-        override fun errorImage(
+        override fun error(
             errorImage: StateImage?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
-            super.errorImage(errorImage, configBlock)
+            super.error(errorImage, configBlock)
         }
 
-        override fun errorImage(
+        override fun error(
             errorDrawable: Drawable?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
-            super.errorImage(errorDrawable, configBlock)
+            super.error(errorDrawable, configBlock)
         }
 
-        override fun errorImage(
+        override fun error(
             errorDrawableResId: Int?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
-            super.errorImage(errorDrawableResId, configBlock)
+            super.error(errorDrawableResId, configBlock)
         }
 
         override fun transition(transition: Factory?): Builder = apply {
             super.transition(transition)
         }
 
-        override fun crossfadeTransition(
+        override fun crossfade(
             durationMillis: Int,
             preferExactIntrinsicSize: Boolean
         ): Builder = apply {
-            super.crossfadeTransition(durationMillis, preferExactIntrinsicSize)
+            super.crossfade(durationMillis, preferExactIntrinsicSize)
         }
 
         override fun options(options: ImageOptions, requestFirst: Boolean): Builder = apply {

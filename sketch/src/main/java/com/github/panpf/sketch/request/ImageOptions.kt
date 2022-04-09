@@ -370,25 +370,25 @@ interface ImageOptions {
                 this.disabledAnimationDrawable = disabledAnimationDrawable
             }
 
-        fun placeholderImage(placeholderImage: StateImage?): Builder =
+        fun placeholder(placeholderImage: StateImage?): Builder =
             apply {
                 this.placeholderImage = placeholderImage
             }
 
-        fun placeholderImage(placeholderDrawable: Drawable?): Builder =
+        fun placeholder(placeholderDrawable: Drawable?): Builder =
             apply {
                 this.placeholderImage =
                     if (placeholderDrawable != null) StateImage.drawable(placeholderDrawable) else null
             }
 
-        fun placeholderImage(@DrawableRes placeholderDrawableResId: Int?): Builder =
+        fun placeholder(@DrawableRes placeholderDrawableResId: Int?): Builder =
             apply {
                 this.placeholderImage = if (placeholderDrawableResId != null) {
                     StateImage.drawableRes(placeholderDrawableResId)
                 } else null
             }
 
-        fun errorImage(
+        fun error(
             errorImage: StateImage?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
@@ -401,7 +401,7 @@ interface ImageOptions {
             }
         }
 
-        fun errorImage(
+        fun error(
             errorDrawable: Drawable?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
@@ -414,7 +414,7 @@ interface ImageOptions {
             }
         }
 
-        fun errorImage(
+        fun error(
             errorDrawableResId: Int?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
@@ -432,7 +432,7 @@ interface ImageOptions {
                 this.transition = transition
             }
 
-        fun crossfadeTransition(
+        fun crossfade(
             durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
             preferExactIntrinsicSize: Boolean = false
         ): Builder = apply {

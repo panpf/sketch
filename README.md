@@ -12,7 +12,8 @@ Compose 等功能
 ## 关于 3.0 版本
 
 * 3.0 版本全部用 kotlin 重写，并且 maven groupId 和包名已经变更所以与 2.0 版本完全不冲突，两者可以共存
-* 3.0 版本参考 [coil][coil] 2.0.0-alpha05 版本并结合 sketch 原有功能实现，相较于 [coil][coil] sketch 最低支持到 API 16，而 [coil][coil] 是 21
+* 3.0 版本参考 [coil][coil] 2.0.0-alpha05 版本并结合 sketch 原有功能实现，相较于 [coil][coil] sketch 最低支持到 API
+  16，而 [coil][coil] 是 21
 
 ## 简介
 
@@ -31,7 +32,7 @@ Compose 等功能
 
 ## 导入
 
-`该库已发布到 mavenCentral`
+`已发布到 mavenCentral`
 
 ```kotlin
 dependencies {
@@ -99,10 +100,10 @@ imageView.displayImage("asset://image.jpg")
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    placeholderImage(R.drawable.placeholder)
-    errorImage(R.drawable.error)
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
     transformations(CircleCropTransformation())
-    crossfadeTransition()
+    crossfade()
     // There is a lot more...
 }
 ```
@@ -118,10 +119,10 @@ AsyncImage(
     contentScale = ContentScale.Crop,
     contentDescription = ""
 ) {
-    placeholderImage(R.drawable.placeholder)
-    errorImage(R.drawable.error)
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
     transformations(CircleCropTransformation())
-    crossfadeTransition()
+    crossfade()
     // There is a lot more...
 }
 ```
@@ -144,6 +145,7 @@ AsyncImage(
 * 将 http 网络部分替换成 okhttp
 
 特色小功能
+
 * 使用 SketchImageView 显示下载进度、图片类型角标
 * 使用手势缩放功能的阅读模式提升体验
 * 使用 resize 的长图裁剪功能提升超大图片在列表中的清晰度
@@ -268,6 +270,8 @@ AsyncImage(
     See the License for the specific language governing permissions and
     limitations under the License.
 
+[comment]: <> (header)
+
 [logo_image]: docs/res/logo.png
 
 [platform_image]: https://img.shields.io/badge/Platform-Android-brightgreen.svg
@@ -286,13 +290,8 @@ AsyncImage(
 
 [qq_group_image]: https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg
 
-[CHANGELOG.md]: CHANGELOG.md
 
-[sample_app_download_qrcode]: docs/sketch-sample.png
-
-[sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk
-
-[UriModel]: sketch/src/main/java/com/github/panpf/sketch/uri/UriModel.java
+[comment]: <> (wiki)
 
 [uri]: docs/wiki/uri.md
 
@@ -356,8 +355,6 @@ AsyncImage(
 
 [cancel_request]: docs/wiki/cancel_request.md
 
-[error_tracker]: docs/wiki/error_tracker.md
-
 [log]: docs/wiki/log.md
 
 [initializer]: docs/wiki/initializer.md
@@ -365,6 +362,9 @@ AsyncImage(
 [proguard_config]: docs/wiki/proguard_config.md
 
 [options_filter]: docs/wiki/options_filter.md
+
+
+[comment]: <> (links)
 
 [koral--]: https://github.com/koral--
 
@@ -391,3 +391,12 @@ AsyncImage(
 [OkHttp]: https://github.com/square/okhttp/blob/master/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro
 
 [Okio]: https://github.com/square/okio/blob/master/okio/src/jvmMain/resources/META-INF/proguard/okio.pro
+
+
+[comment]: <> (footer)
+
+[CHANGELOG.md]: CHANGELOG.md
+
+[sample_app_download_qrcode]: docs/sketch-sample.png
+
+[sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk

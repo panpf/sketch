@@ -7,6 +7,7 @@ import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.videoFramePercentDuration
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.bean.VideoInfo
 import com.github.panpf.sketch.sample.databinding.ItemVideoBinding
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingErrorImage
@@ -27,9 +28,9 @@ class LocalVideoItemFactory :
         item: BindingItem<VideoInfo, ItemVideoBinding>
     ) {
         binding.videoItemIconImage.updateDisplayImageOptions {
-            placeholderImage(R.drawable.im_placeholder)
-            errorImage(R.drawable.im_error) {
-                saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
+            placeholder(R.drawable.im_placeholder)
+            error(drawable.im_error) {
+                saveCellularTrafficErrorImage(drawable.im_save_cellular_traffic)
                 pauseLoadWhenScrollingErrorImage()
             }
             videoFramePercentDuration(0.5f)

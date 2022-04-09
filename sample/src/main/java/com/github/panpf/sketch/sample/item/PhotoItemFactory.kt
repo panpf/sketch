@@ -69,13 +69,13 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
         binding.imageItemImageView.apply {
             setClickRedisplayAndIgnoreSaveCellularTraffic(true)
             updateDisplayImageOptions {
-                placeholderImage(
+                placeholder(
                     IconResStateImage(
                         R.drawable.ic_image_outline,
                         ResourcesCompat.getColor(resources, color.placeholder_bg, null)
                     )
                 )
-                errorImage(
+                error(
                     IconResStateImage(
                         R.drawable.ic_error,
                         ResourcesCompat.getColor(resources, color.placeholder_bg, null)
@@ -90,7 +90,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                     pauseLoadWhenScrollingErrorImage()
                 }
 //                svgBackgroundColor(Color.WHITE)
-                crossfadeTransition(preferExactIntrinsicSize = true)
+                crossfade(preferExactIntrinsicSize = true)
             }
         }
     }

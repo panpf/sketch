@@ -25,6 +25,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.sample.base.ToolbarFragment
 import com.github.panpf.sketch.compose.sample.R
+import com.github.panpf.sketch.compose.sample.R.drawable
 
 class ComposeFragment : ToolbarFragment() {
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View =
@@ -34,8 +35,8 @@ class ComposeFragment : ToolbarFragment() {
                     "https://i0.hdslb.com/bfs/album/c8cf4ec6849dff7115a368e980b6fd52878cf213.jpg@1036w.webp",
                     contentDescription = ""
                 ) {
-                    placeholderImage(R.drawable.im_placeholder)
-                    errorImage(R.drawable.im_error)
+                    placeholder(R.drawable.im_placeholder)
+                    error(drawable.im_error)
                     bitmapMemoryCachePolicy(DISABLED)
                     bitmapResultDiskCachePolicy(DISABLED)
                     networkContentDiskCachePolicy(DISABLED)

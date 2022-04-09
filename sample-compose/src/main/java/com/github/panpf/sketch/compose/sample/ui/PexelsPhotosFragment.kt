@@ -23,6 +23,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.sample.NavMainDirections
 import com.github.panpf.sketch.compose.sample.R
+import com.github.panpf.sketch.compose.sample.R.color
 import com.github.panpf.sketch.compose.sample.R.drawable
 import com.github.panpf.sketch.compose.sample.base.ToolbarFragment
 import com.github.panpf.sketch.compose.sample.bean.Photo
@@ -76,18 +77,18 @@ fun PhotoContent(index: Int, photo: Photo) {
         contentScale = ContentScale.Crop,
         contentDescription = ""
     ) {
-        placeholderImage(
+        placeholder(
             IconResStateImage(
                 drawable.ic_image_outline,
                 ResourcesCompat.getColor(resources, R.color.placeholder_bg, null)
             )
         )
-        errorImage(
+        error(
             IconResStateImage(
                 drawable.ic_error,
-                ResourcesCompat.getColor(resources, R.color.placeholder_bg, null)
+                ResourcesCompat.getColor(resources, color.placeholder_bg, null)
             )
         )
-        crossfadeTransition()
+        crossfade()
     }
 }
