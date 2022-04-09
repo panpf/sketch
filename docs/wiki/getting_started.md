@@ -1,27 +1,5 @@
 ## 入门
 
-### Sketch
-
-[Sketch] 类用来执行 [ImageRequest]，并处理图片下载、缓存、解码、转换、请求管理、内存管理等功能。
-
-[Sketch] 类是单例的，可以通过 Context 的扩展函数获取，如下：
-
-```kotlin
-val sketch = context.sketch
-```
-
-你可以在你的 Application 类上实现 [SketchConfigurator] 接口来配置 [Sketch] ，如下：
-
-```kotlin
-class MyApplication : Application(), SketchConfigurator {
-
-    override fun configSketch(builder: Builder) {
-        builder.logger(Logger(DEBUG))
-        builder.httpStack(OkHttpStack.Builder().build())
-    }
-}
-```
-
 ### 支持的 URI
 
 |Type|Scheme|
@@ -52,11 +30,33 @@ class MyApplication : Application(), SketchConfigurator {
 |heif Animated|Android 11+|None|
 |video frames|None|sketch-video,sketch-video-ffmpeg|
 
+### Sketch
+
+[Sketch] 类用来执行 [ImageRequest]，并处理图片下载、缓存、解码、转换、请求管理、内存管理等功能。
+
+[Sketch] 类是单例的，可以通过 Context 的扩展函数获取，如下：
+
+```kotlin
+val sketch = context.sketch
+```
+
+你可以在你的 Application 类上实现 [SketchConfigurator] 接口来配置 [Sketch] ，如下：
+
+```kotlin
+class MyApplication : Application(), SketchConfigurator {
+
+    override fun configSketch(builder: Builder) {
+        builder.logger(Logger(DEBUG))
+        builder.httpStack(OkHttpStack.Builder().build())
+    }
+}
+```
+
 [点击查看如何扩展新的图片类型][decoder]
 
 ### ImageRequest
 
-[ImageRequest] 接口定义了显示图片所需的全部参数，例如 url、ImageView、转换配置、调整尺寸等。
+[ImageRequest] 接口定义了显示图片所需的全部参数，例如 URI、ImageView、转换配置、调整尺寸等。
 
 [ImageRequest] 分为以下三种：
 

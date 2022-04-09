@@ -96,7 +96,7 @@ imageView.displayImage("asset://image.jpg")
 // There is a lot more...
 ```
 
-还可以通过尾随的 lambda 函数配置请求：
+还可以通过尾随的 lambda 函数配置参数：
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
