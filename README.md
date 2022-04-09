@@ -129,10 +129,9 @@ AsyncImage(
 
 ## 文档
 
-* 如何配置 Sketch
-* 如何配置图片请求
-* 支持的 URI 类型及自定义
-* 支持的图片类型及自定义
+* [入门][getting_started]
+* 扩展新的 URI 类型
+* 扩展新的图片类型
 * 播放 GIF、webp、heif 等动图
 * 使用手势缩放及分块显示超大图功能
 * 使用 resize 修改图片尺寸
@@ -292,6 +291,8 @@ AsyncImage(
 
 
 [comment]: <> (wiki)
+
+[getting_started]: docs/wiki/getting_started.md
 
 [uri]: docs/wiki/uri.md
 

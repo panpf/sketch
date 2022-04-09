@@ -19,8 +19,8 @@ package com.github.panpf.sketch.sample
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.multidex.MultiDexApplication
-import com.github.panpf.sketch.Configurator
 import com.github.panpf.sketch.Sketch.Builder
+import com.github.panpf.sketch.SketchConfigurator
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
@@ -39,7 +39,7 @@ import com.github.panpf.sketch.sample.util.SettingsDisplayRequestInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 
-class MyApplication : MultiDexApplication(), Configurator {
+class MyApplication : MultiDexApplication(), SketchConfigurator {
 
     override fun configSketch(builder: Builder) {
         builder.apply {
