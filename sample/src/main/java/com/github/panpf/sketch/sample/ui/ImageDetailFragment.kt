@@ -27,7 +27,8 @@ class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
         binding.imageFragmentZoomImageView.apply {
             showRingProgressIndicator()
             zoomAbility.readModeEnabled = true
-            zoomAbility.showTileBounds = args.showTileMap && appSettingsService.showTileBoundsInHugeImagePage.value
+            zoomAbility.showTileBounds =
+                args.showTileMap && appSettingsService.showTileBoundsInHugeImagePage.value
         }
     }
 
@@ -36,6 +37,8 @@ class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
 
         binding.imageFragmentZoomImageView.apply {
             displayImage(imageDetail.firstMiddenUrl) {
+                // todo 加了 viewLifecycleOwner.lifecycle 后不会自动播放了
+//                lifecycle(viewLifecycleOwner.lifecycle)
                 placeholder(
                     StateImage.memoryCache(
                         imageDetail.placeholderImageMemoryKey,

@@ -132,7 +132,7 @@ AsyncImage(
 * [入门][getting_started]
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
 * [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
-* 播放 GIF、webp、heif 等动图
+* [播放 gif、webp、heif 动图][animated_image]
 * SketchZoomImageView：使用手势缩放及分块显示超大图功能
 * Resize：修改图片尺寸
 * Transformation：转换图片
@@ -225,6 +225,8 @@ AsyncImage(
 [fetcher]: docs/wiki/fetcher.md
 
 [decoder]: docs/wiki/decoder.md
+
+[animated_image]: docs/wiki/animated_image.md
 
 
 [comment]: <> (links)

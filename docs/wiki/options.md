@@ -129,7 +129,7 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener(){...}
 [max_size]: max_size.md
 [resize]: resize.md
 [image_processor]: image_processor.md
-[play_gif_image]: play_gif_image.md
+[play_gif_image]: animated_image.md
 [cache_processed_image_in_disk]: cache_processed_image_in_disk.md.md
 [bitmap_pool]: bitmap_pool.md
 [correct_image_orientation]: correct_image_orientation.md.md

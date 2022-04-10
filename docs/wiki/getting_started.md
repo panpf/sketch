@@ -25,9 +25,9 @@
 |bmp|None|_|
 |webp|None|_|
 |svg|None|sketch-svg|
-|heif|Android 8.0+|_|
+|heif|Android 9+|_|
 |gif|None|sketch-gif-movie<br>sketch-gif-koral|
-|webp Animated|Android 9.0+|_|
+|webp Animated|Android 9+|_|
 |heif Animated|Android 11+|_|
 |video frames|None|sketch-video<br>sketch-video-ffmpeg|
 

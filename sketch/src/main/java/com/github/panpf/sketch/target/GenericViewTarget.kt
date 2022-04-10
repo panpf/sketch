@@ -37,6 +37,7 @@ abstract class GenericViewTarget<T : View> : ViewTarget<T>, TransitionTarget,
     }
 
     override fun onStop(owner: LifecycleOwner) {
+        // todo 在列表中不会自动停止播放了
         isStarted = false
         updateAnimation()
     }

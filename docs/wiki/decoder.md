@@ -5,25 +5,26 @@ Decoder 用于解码图片文件得到一个 Bitmap 或 Drawable，因此 Sketch
 * [BitmapDecoder]：用于解码图片文件并将其转成 Bitmap
     * [ApkIconBitmapDecoder][ApkIconBitmapDecoder]：解码 Apk 文件的图标
     * [AppIconBitmapDecoder][AppIconBitmapDecoder]：解码已安装 App 的图标
-    * [DefaultBitmapDecoder][DefaultBitmapDecoder]：最后的 Bitmap 解码器，采用 Android 内置的 BitmapFactory 解码图片
+    * [DefaultBitmapDecoder][DefaultBitmapDecoder]：最后的 Bitmap 解码器，采用 Android 内置的 [BitmapFactory]
+      解码图片
     * [FFmpegVideoFrameBitmapDecoder][FFmpegVideoFrameBitmapDecoder]：使用 [wseemann]
-      /[FFmpegMediaMetadataRetriever] 库的 FFmpegMediaMetadataRetriever 类解码视频文件的帧
+      /[FFmpegMediaMetadataRetriever-project] 库的 [FFmpegMediaMetadataRetriever] 类解码视频文件的帧
     * [SvgBitmapDecoder][SvgBitmapDecoder]：使用 [BigBadaboom]/[androidsvg] 库解码静态 svg 文件
-    * [VideoFrameBitmapDecoder][VideoFrameBitmapDecoder]：使用 Android 内置的 MediaMetadataRetriever
+    * [VideoFrameBitmapDecoder][VideoFrameBitmapDecoder]：使用 Android 内置的 [MediaMetadataRetriever]
       类解码视频文件的帧
     * [XmlDrawableBitmapDecoder][XmlDrawableBitmapDecoder]：解码 vector、shape 等 Android 支持的 xml
       drawable 图片
 * [DrawableDecoder]： 用于解码图片文件并将其转成 Drawable
     * [DefaultDrawableDecoder][DefaultDrawableDecoder]：最后的 Drawable 解码器，调用 BitmapDecoder 得到 Bitmap
       再封装成 BitmapDrawable
-    * [GifAnimatedDrawableDecoder][GifAnimatedDrawableDecoder]：使用 Android 内置的 ImageDecoder 类解码 gif
+    * [GifAnimatedDrawableDecoder][GifAnimatedDrawableDecoder]：使用 Android 内置的 [ImageDecoder] 类解码 gif
       图片
     * [GifDrawableDrawableDecoder][GifDrawableDrawableDecoder]：使用 [koral--]/[android-gif-drawable]
-      库的 GifDrawable 类解码 gif 图片
-    * [GifMovieDrawableDecoder][GifMovieDrawableDecoder]：使用 Android 内置的 Movie 类解码 gif 图片
-    * [HeifAnimatedDrawableDecoder][HeifAnimatedDrawableDecoder]：使用 Android 内置的 ImageDecoder 类解码
+      库的 [GifDrawable] 类解码 gif 图片
+    * [GifMovieDrawableDecoder][GifMovieDrawableDecoder]：使用 Android 内置的 [Movie] 类解码 gif 图片
+    * [HeifAnimatedDrawableDecoder][HeifAnimatedDrawableDecoder]：使用 Android 内置的 [ImageDecoder] 类解码
       heif 动图
-    * [WebpAnimatedDrawableDecoder][WebpAnimatedDrawableDecoder]：使用 Android 内置的 ImageDecoder 类解码
+    * [WebpAnimatedDrawableDecoder][WebpAnimatedDrawableDecoder]：使用 Android 内置的 [ImageDecoder] 类解码
       webp 动图
 
 [BitmapDecoder] 和 [DrawableDecoder] 各有一个 Decoder 列表，需要解码时 Sketch 会根据 [ImageRequest] 的类型依次遍历对应的
@@ -123,7 +124,9 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
 
 [wseemann]: https://github.com/wseemann
 
-[FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
+[FFmpegMediaMetadataRetriever-project]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
+
+[FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever/blob/master/core/src/main/java/wseemann/media/FFmpegMediaMetadataRetriever.java
 
 [BigBadaboom]: https://github.com/BigBadaboom
 
@@ -132,3 +135,13 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
 [koral--]: https://github.com/koral--
 
 [android-gif-drawable]: https://github.com/koral--/android-gif-drawable
+
+[GifDrawable]: https://github.com/koral--/android-gif-drawable/blob/dev/android-gif-drawable/src/main/java/pl/droidsonroids/gif/GifDrawable.java
+
+[Movie]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/Movie.java
+
+[ImageDecoder]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/ImageDecoder.java
+
+[BitmapFactory]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/BitmapFactory.java
+
+[MediaMetadataRetriever]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/media/java/android/media/MediaMetadataRetriever.java
