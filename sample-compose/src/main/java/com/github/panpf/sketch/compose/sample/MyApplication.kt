@@ -23,13 +23,13 @@ import com.github.panpf.sketch.Sketch.Builder
 import com.github.panpf.sketch.SketchConfigurator
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
-import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
+import com.github.panpf.sketch.decode.FFmpegVideoFrameBitmapDecoder
 import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
 import com.github.panpf.sketch.decode.GifMovieDrawableDecoder
 import com.github.panpf.sketch.decode.HeifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
-import com.github.panpf.sketch.decode.VideoFrameDecoder
+import com.github.panpf.sketch.decode.VideoFrameBitmapDecoder
 import com.github.panpf.sketch.decode.WebpAnimatedDrawableDecoder
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.http.OkHttpStack
@@ -53,9 +53,9 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
             addBitmapDecoder(AppIconBitmapDecoder.Factory())
             addBitmapDecoder(
                 if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
-                    VideoFrameDecoder.Factory()
+                    VideoFrameBitmapDecoder.Factory()
                 } else {
-                    FFmpegVideoFrameDecoder.Factory()
+                    FFmpegVideoFrameBitmapDecoder.Factory()
                 }
             )
 

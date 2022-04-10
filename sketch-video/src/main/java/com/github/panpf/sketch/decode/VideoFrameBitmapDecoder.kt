@@ -31,7 +31,7 @@ import kotlin.math.roundToInt
  * The bitmapConfig attribute takes effect only on Android 30 or later
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)
-class VideoFrameDecoder(
+class VideoFrameBitmapDecoder(
     private val sketch: Sketch,
     private val request: ImageRequest,
     private val dataSource: DataSource,
@@ -166,10 +166,10 @@ class VideoFrameDecoder(
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
-        ): VideoFrameDecoder? {
+        ): VideoFrameBitmapDecoder? {
             val mimeType = fetchResult.mimeType
             if (mimeType?.startsWith("video/") == true) {
-                return VideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
+                return VideoFrameBitmapDecoder(sketch, request, fetchResult.dataSource, mimeType)
             }
             return null
         }

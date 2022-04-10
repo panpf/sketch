@@ -27,7 +27,7 @@ import kotlin.math.roundToInt
  *
  * Notes：LoadRequest's preferQualityOverSpeed, bitmapConfig, colorSpace attributes will not take effect
  */
-class FFmpegVideoFrameDecoder(
+class FFmpegVideoFrameBitmapDecoder(
     private val sketch: Sketch,
     private val request: ImageRequest,
     private val dataSource: DataSource,
@@ -140,10 +140,10 @@ class FFmpegVideoFrameDecoder(
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
-        ): FFmpegVideoFrameDecoder? {
+        ): FFmpegVideoFrameBitmapDecoder? {
             val mimeType = fetchResult.mimeType
             if (mimeType?.startsWith("video/") == true) {
-                return FFmpegVideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
+                return FFmpegVideoFrameBitmapDecoder(sketch, request, fetchResult.dataSource, mimeType)
             }
             return null
         }
