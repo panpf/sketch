@@ -61,15 +61,15 @@ sketch.enqueue(request)
 
 ## 控制播放/停止
 
-动图相关的 DrawableDecoder 统一返回 SketchAnimatableDrawable
+动图相关的 [DrawableDecoder] 统一返回 [SketchAnimatableDrawable]
 
 ##### 初始状态
 
-Sketch 在将 SketchAnimatableDrawable 显示到 ImageView 上之后会根据 lifecycle 的状态决定是否开始播放
+Sketch 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会根据 lifecycle 的状态决定是否开始播放
 
 ##### 手动控制
 
-你可以通过 SketchAnimatableDrawable 的 start() 和 stop() 方法控制开始播放和停止播放
+你可以通过 [SketchAnimatableDrawable] 的 start() 和 stop() 方法控制开始播放和停止播放
 
 ##### 自动控制
 
@@ -96,5 +96,7 @@ Sketch 会监听 lifecycle 的状态自动的播放或停止动图
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
 [SketchConfigurator]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchConfigurator.kt
+
+[SketchAnimatableDrawable]: ../../sketch/src/main/java/com/github/panpf/sketch/drawable/SketchAnimatableDrawable.kt
 
 [Movie]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/Movie.java
