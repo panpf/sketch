@@ -15,7 +15,7 @@ internal fun ImageRequest.newCacheKey(): String = buildString {
     newQualityKey()?.let {
         append("_").append(it)
     }
-    if (disabledAnimationDrawable) {
+    if (disabledAnimatedImage) {
         append("_").append("DisabledAnimationDrawable")
     }
 }
@@ -92,8 +92,8 @@ internal fun ImageRequest.newKey(): String = buildString {
         }
     }
     val display: () -> Unit = {
-        if (disabledAnimationDrawable) {
-            append("_").append("disabledAnimationDrawable")
+        if (disabledAnimatedImage) {
+            append("_").append("disabledAnimatedImage")
         }
         bitmapMemoryCachePolicy.takeIf { it != ENABLED }?.let {
             append("_").append("bitmapMemoryCachePolicy($it)")

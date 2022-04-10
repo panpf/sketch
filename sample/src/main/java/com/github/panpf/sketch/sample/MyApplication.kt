@@ -71,7 +71,7 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
             if (VERSION.SDK_INT >= VERSION_CODES.P) {
                 addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
             }
-            if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            if (VERSION.SDK_INT >= VERSION_CODES.R) {
                 addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
             }
         }

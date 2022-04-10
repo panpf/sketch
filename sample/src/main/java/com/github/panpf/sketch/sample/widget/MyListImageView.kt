@@ -53,7 +53,7 @@ class MyListImageView @JvmOverloads constructor(
                 val observer = Listener<Any> {
                     postValue(1)
                 }
-                addSource(disabledAnimatableDrawableInList.liveEvent, observer)
+                addSource(disabledAnimatedImageInList.liveEvent, observer)
                 addSource(pauseLoadWhenScrollInList.liveEvent, observer)
                 addSource(saveCellularTrafficInList.liveEvent, observer)
             }

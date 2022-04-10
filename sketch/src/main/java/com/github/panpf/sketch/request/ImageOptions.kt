@@ -59,7 +59,7 @@ interface ImageOptions {
     val disabledBitmapPool: Boolean?
     val ignoreExifOrientation: Boolean?
     val bitmapResultDiskCachePolicy: CachePolicy?
-    val disabledAnimationDrawable: Boolean?
+    val disabledAnimatedImage: Boolean?
     val bitmapMemoryCachePolicy: CachePolicy?
     val placeholderImage: StateImage?
     val errorImage: StateImage?
@@ -96,7 +96,7 @@ interface ImageOptions {
             && disabledBitmapPool == null
             && ignoreExifOrientation == null
             && bitmapResultDiskCachePolicy == null
-            && disabledAnimationDrawable == null
+            && disabledAnimatedImage == null
             && bitmapMemoryCachePolicy == null
             && placeholderImage == null
             && errorImage == null
@@ -124,7 +124,7 @@ interface ImageOptions {
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
 
         private var bitmapMemoryCachePolicy: CachePolicy? = null
-        private var disabledAnimationDrawable: Boolean? = null
+        private var disabledAnimatedImage: Boolean? = null
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
@@ -154,7 +154,7 @@ interface ImageOptions {
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
 
             this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
-            this.disabledAnimationDrawable = request.disabledAnimationDrawable
+            this.disabledAnimatedImage = request.disabledAnimatedImage
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
@@ -365,9 +365,9 @@ interface ImageOptions {
                 this.bitmapMemoryCachePolicy = bitmapMemoryCachePolicy
             }
 
-        fun disabledAnimationDrawable(disabledAnimationDrawable: Boolean? = true): Builder =
+        fun disabledAnimatedImage(disabledAnimatedImage: Boolean? = true): Builder =
             apply {
-                this.disabledAnimationDrawable = disabledAnimationDrawable
+                this.disabledAnimatedImage = disabledAnimatedImage
             }
 
         fun placeholder(placeholderImage: StateImage?): Builder =
@@ -457,7 +457,7 @@ interface ImageOptions {
             disabledBitmapPool = disabledBitmapPool,
             ignoreExifOrientation = ignoreExifOrientation,
             bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-            disabledAnimationDrawable = disabledAnimationDrawable,
+            disabledAnimatedImage = disabledAnimatedImage,
             placeholderImage = placeholderImage,
             errorImage = errorImage,
             transition = transition,
@@ -483,7 +483,7 @@ interface ImageOptions {
         override val disabledBitmapPool: Boolean?,
         override val ignoreExifOrientation: Boolean?,
         override val bitmapResultDiskCachePolicy: CachePolicy?,
-        override val disabledAnimationDrawable: Boolean?,
+        override val disabledAnimatedImage: Boolean?,
         override val bitmapMemoryCachePolicy: CachePolicy?,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,

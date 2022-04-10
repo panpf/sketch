@@ -113,7 +113,7 @@ interface ImageRequest {
     val target: Target?
     val lifecycle: Lifecycle?
 
-    val disabledAnimationDrawable: Boolean
+    val disabledAnimatedImage: Boolean
     val bitmapMemoryCachePolicy: CachePolicy
     val placeholderImage: StateImage?
     val errorImage: StateImage?
@@ -197,7 +197,7 @@ interface ImageRequest {
         private var ignoreExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
         private var bitmapMemoryCachePolicy: CachePolicy? = null
-        private var disabledAnimationDrawable: Boolean? = null
+        private var disabledAnimatedImage: Boolean? = null
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
@@ -244,7 +244,7 @@ interface ImageRequest {
             this.ignoreExifOrientation = request.ignoreExifOrientation
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
             this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
-            this.disabledAnimationDrawable = request.disabledAnimationDrawable
+            this.disabledAnimatedImage = request.disabledAnimatedImage
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
@@ -497,9 +497,9 @@ interface ImageRequest {
             this.bitmapMemoryCachePolicy = bitmapMemoryCachePolicy
         }
 
-        open fun disabledAnimationDrawable(disabledAnimationDrawable: Boolean? = true): Builder =
+        open fun disabledAnimatedImage(disabledAnimatedImage: Boolean? = true): Builder =
             apply {
-                this.disabledAnimationDrawable = disabledAnimationDrawable
+                this.disabledAnimatedImage = disabledAnimatedImage
             }
 
         open fun placeholder(placeholderImage: StateImage?): Builder = apply {
@@ -643,9 +643,9 @@ interface ImageRequest {
                 }
             }
 
-            if (!requestFirst || this.disabledAnimationDrawable == null) {
-                options.disabledAnimationDrawable?.let {
-                    this.disabledAnimationDrawable = it
+            if (!requestFirst || this.disabledAnimatedImage == null) {
+                options.disabledAnimatedImage?.let {
+                    this.disabledAnimatedImage = it
                 }
             }
             if (!requestFirst || this.bitmapMemoryCachePolicy == null) {
@@ -693,7 +693,7 @@ interface ImageRequest {
                 disabledBitmapPool(disabledBitmapPool)
                 ignoreExifOrientation(ignoreExifOrientation)
                 bitmapMemoryCachePolicy(bitmapMemoryCachePolicy)
-                disabledAnimationDrawable(disabledAnimationDrawable)
+                disabledAnimatedImage(disabledAnimatedImage)
                 placeholder(placeholderImage)
                 error(errorImage)
                 transition(transition)
@@ -758,9 +758,9 @@ interface ImageRequest {
                 ?: viewOptions?.bitmapMemoryCachePolicy
                 ?: globalOptions?.bitmapMemoryCachePolicy
                 ?: ENABLED
-            val disabledAnimationDrawable = disabledAnimationDrawable
-                ?: viewOptions?.disabledAnimationDrawable
-                ?: globalOptions?.disabledAnimationDrawable
+            val disabledAnimatedImage = disabledAnimatedImage
+                ?: viewOptions?.disabledAnimatedImage
+                ?: globalOptions?.disabledAnimatedImage
                 ?: false
             val placeholderImage = placeholderImage
                 ?: viewOptions?.placeholderImage
@@ -800,7 +800,7 @@ interface ImageRequest {
                         disabledBitmapPool = disabledBitmapPool,
                         ignoreExifOrientation = ignoreExifOrientation,
                         bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-                        disabledAnimationDrawable = disabledAnimationDrawable,
+                        disabledAnimatedImage = disabledAnimatedImage,
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
@@ -833,7 +833,7 @@ interface ImageRequest {
                         disabledBitmapPool = disabledBitmapPool,
                         ignoreExifOrientation = ignoreExifOrientation,
                         bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-                        disabledAnimationDrawable = disabledAnimationDrawable,
+                        disabledAnimatedImage = disabledAnimatedImage,
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
@@ -866,7 +866,7 @@ interface ImageRequest {
                         disabledBitmapPool = disabledBitmapPool,
                         ignoreExifOrientation = ignoreExifOrientation,
                         bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-                        disabledAnimationDrawable = disabledAnimationDrawable,
+                        disabledAnimatedImage = disabledAnimatedImage,
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,

@@ -45,7 +45,7 @@ class GifAnimatedDrawableDecoder(
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): GifAnimatedDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !request.disabledAnimationDrawable) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !request.disabledAnimatedImage) {
                 val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
                 if (imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isAnimatedHeif()) {

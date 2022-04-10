@@ -19,8 +19,8 @@ class AppSettingsService(val context: Context) {
             { it.name }
         )
     }
-    val disabledAnimatableDrawableInList by lazy {
-        BooleanPrefsData(context, "disabledAnimatableDrawableInList", false)
+    val disabledAnimatedImageInList by lazy {
+        BooleanPrefsData(context, "disabledAnimatedImageInList", false)
     }
 
     val showMimeTypeLogoInLIst by lazy {

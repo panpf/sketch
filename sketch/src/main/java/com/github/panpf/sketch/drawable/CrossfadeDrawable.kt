@@ -157,6 +157,7 @@ open class CrossfadeDrawable @JvmOverloads constructor(
 
     override fun onBoundsChange(bounds: Rect) {
         start?.let { updateBounds(it, bounds) }
+        // todo 以 start 尺寸为准，避免 start drawable 在开始过渡的一瞬间放大或缩小
         end?.let { updateBounds(it, bounds) }
     }
 
