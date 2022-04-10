@@ -150,9 +150,9 @@ interface LoadRequest : ImageRequest {
             super.removeHttpHeader(name)
         }
 
-        override fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
+        override fun downloadDiskCachePolicy(downloadDiskCachePolicy: CachePolicy?): Builder =
             apply {
-                super.networkContentDiskCachePolicy(networkContentDiskCachePolicy)
+                super.downloadDiskCachePolicy(downloadDiskCachePolicy)
             }
 
         override fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder =
@@ -316,7 +316,7 @@ interface LoadRequest : ImageRequest {
         override val parameters: Parameters?,
         override val depth: RequestDepth,
         override val httpHeaders: HttpHeaders?,
-        override val networkContentDiskCachePolicy: CachePolicy,
+        override val downloadDiskCachePolicy: CachePolicy,
         override val progressListener: ProgressListener<ImageRequest>?,
         override val bitmapConfig: BitmapConfig?,
         override val colorSpace: ColorSpace?,

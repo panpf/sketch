@@ -44,7 +44,7 @@ interface ImageOptions {
     val parameters: Parameters?
 
     val httpHeaders: HttpHeaders?
-    val networkContentDiskCachePolicy: CachePolicy?
+    val downloadDiskCachePolicy: CachePolicy?
 
     val bitmapConfig: BitmapConfig?
     val colorSpace: ColorSpace?
@@ -84,7 +84,7 @@ interface ImageOptions {
     fun isEmpty(): Boolean = depth == null
             && parameters?.isEmpty() != false
             && httpHeaders == null
-            && networkContentDiskCachePolicy == null
+            && downloadDiskCachePolicy == null
             && bitmapConfig == null
             && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
             && preferQualityOverSpeed == null
@@ -108,7 +108,7 @@ interface ImageOptions {
         private var parametersBuilder: Parameters.Builder? = null
 
         private var httpHeaders: HttpHeaders.Builder? = null
-        private var networkContentDiskCachePolicy: CachePolicy? = null
+        private var downloadDiskCachePolicy: CachePolicy? = null
 
         private var bitmapConfig: BitmapConfig? = null
 
@@ -136,7 +136,7 @@ interface ImageOptions {
             this.parametersBuilder = request.parameters?.newBuilder()
 
             this.httpHeaders = request.httpHeaders?.newBuilder()
-            this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
+            this.downloadDiskCachePolicy = request.downloadDiskCachePolicy
 
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -247,9 +247,9 @@ interface ImageOptions {
                 this.httpHeaders?.removeAll(name)
             }
 
-        fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
+        fun downloadDiskCachePolicy(downloadDiskCachePolicy: CachePolicy?): Builder =
             apply {
-                this.networkContentDiskCachePolicy = networkContentDiskCachePolicy
+                this.downloadDiskCachePolicy = downloadDiskCachePolicy
             }
 
         fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder =
@@ -444,7 +444,7 @@ interface ImageOptions {
             depth = depth,
             parameters = parametersBuilder?.build(),
             httpHeaders = httpHeaders?.build(),
-            networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+            downloadDiskCachePolicy = downloadDiskCachePolicy,
             bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
             bitmapConfig = bitmapConfig,
             colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
@@ -469,7 +469,7 @@ interface ImageOptions {
         override val parameters: Parameters?,
 
         override val httpHeaders: HttpHeaders?,
-        override val networkContentDiskCachePolicy: CachePolicy?,
+        override val downloadDiskCachePolicy: CachePolicy?,
 
         override val bitmapConfig: BitmapConfig?,
         override val colorSpace: ColorSpace?,

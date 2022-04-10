@@ -65,7 +65,7 @@ interface ImageRequest {
     val parameters: Parameters?
     val depth: RequestDepth
     val httpHeaders: HttpHeaders?
-    val networkContentDiskCachePolicy: CachePolicy
+    val downloadDiskCachePolicy: CachePolicy
     val progressListener: ProgressListener<ImageRequest>?
 
     /**
@@ -133,7 +133,7 @@ interface ImageRequest {
     val depthFrom: String?
         get() = parameters?.value(REQUEST_DEPTH_FROM)
 
-    val networkContentDiskCacheKey: String
+    val downloadDiskCacheKey: String
         get() = uriString
 
     val resize: Resize?
@@ -184,7 +184,7 @@ interface ImageRequest {
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var httpHeaders: HttpHeaders.Builder? = null
-        private var networkContentDiskCachePolicy: CachePolicy? = null
+        private var downloadDiskCachePolicy: CachePolicy? = null
         private var bitmapConfig: BitmapConfig? = null
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
@@ -230,7 +230,7 @@ interface ImageRequest {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.httpHeaders = request.httpHeaders?.newBuilder()
-            this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
+            this.downloadDiskCachePolicy = request.downloadDiskCachePolicy
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) this.colorSpace = request.colorSpace
             @Suppress("DEPRECATION")
@@ -372,9 +372,9 @@ interface ImageRequest {
             this.httpHeaders?.removeAll(name)
         }
 
-        open fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
+        open fun downloadDiskCachePolicy(downloadDiskCachePolicy: CachePolicy?): Builder =
             apply {
-                this.networkContentDiskCachePolicy = networkContentDiskCachePolicy
+                this.downloadDiskCachePolicy = downloadDiskCachePolicy
             }
 
         open fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder =
@@ -590,9 +590,9 @@ interface ImageRequest {
                     }
                 }
             }
-            if (!requestFirst || this.networkContentDiskCachePolicy == null) {
-                options.networkContentDiskCachePolicy?.let {
-                    this.networkContentDiskCachePolicy = it
+            if (!requestFirst || this.downloadDiskCachePolicy == null) {
+                options.downloadDiskCachePolicy?.let {
+                    this.downloadDiskCachePolicy = it
                 }
             }
 
@@ -679,7 +679,7 @@ interface ImageRequest {
                 depth(depth)
                 parameters(parametersBuilder?.build())
                 httpHeaders(httpHeaders?.build())
-                networkContentDiskCachePolicy(networkContentDiskCachePolicy)
+                downloadDiskCachePolicy(downloadDiskCachePolicy)
                 bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy)
                 bitmapConfig(bitmapConfig)
                 if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace(colorSpace)
@@ -708,9 +708,9 @@ interface ImageRequest {
             val httpHeaders = httpHeaders?.build()
                 .merge(viewOptions?.httpHeaders)
                 .merge(globalOptions?.httpHeaders)
-            val networkContentDiskCachePolicy = networkContentDiskCachePolicy
-                ?: viewOptions?.networkContentDiskCachePolicy
-                ?: globalOptions?.networkContentDiskCachePolicy
+            val downloadDiskCachePolicy = downloadDiskCachePolicy
+                ?: viewOptions?.downloadDiskCachePolicy
+                ?: globalOptions?.downloadDiskCachePolicy
                 ?: ENABLED
             val bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
                 ?: viewOptions?.bitmapResultDiskCachePolicy
@@ -787,7 +787,7 @@ interface ImageRequest {
                         depth = depth,
                         parameters = parameters,
                         httpHeaders = httpHeaders,
-                        networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                        downloadDiskCachePolicy = downloadDiskCachePolicy,
                         bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
@@ -820,7 +820,7 @@ interface ImageRequest {
                         depth = depth,
                         parameters = parameters,
                         httpHeaders = httpHeaders,
-                        networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                        downloadDiskCachePolicy = downloadDiskCachePolicy,
                         bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
@@ -853,7 +853,7 @@ interface ImageRequest {
                         depth = depth,
                         parameters = parameters,
                         httpHeaders = httpHeaders,
-                        networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                        downloadDiskCachePolicy = downloadDiskCachePolicy,
                         bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,

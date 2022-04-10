@@ -39,7 +39,7 @@ class ComposeFragment : ToolbarFragment() {
                     error(drawable.im_error)
                     bitmapMemoryCachePolicy(DISABLED)
                     bitmapResultDiskCachePolicy(DISABLED)
-                    networkContentDiskCachePolicy(DISABLED)
+                    downloadDiskCachePolicy(DISABLED)
                 }
             }
         }

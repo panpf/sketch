@@ -52,8 +52,8 @@ internal fun ImageRequest.newKey(): String = buildString {
         httpHeaders?.takeIf { !it.isEmpty() }?.let {
             append("_").append(it)
         }
-        networkContentDiskCachePolicy.takeIf { it != ENABLED }?.let {
-            append("_").append("networkContentDiskCachePolicy($it)")
+        downloadDiskCachePolicy.takeIf { it != ENABLED }?.let {
+            append("_").append("downloadDiskCachePolicy($it)")
         }
     }
     val load: () -> Unit = {

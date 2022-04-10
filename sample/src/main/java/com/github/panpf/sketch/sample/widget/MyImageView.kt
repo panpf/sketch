@@ -32,7 +32,7 @@ open class MyImageView @JvmOverloads constructor(
                     postValue(1)
                 }
                 addSource(disabledBitmapMemoryCache.liveEvent, observer)
-                addSource(disabledNetworkContentDiskCache.liveEvent, observer)
+                addSource(disabledDownloadDiskCache.liveEvent, observer)
                 addSource(disabledBitmapResultDiskCache.liveEvent, observer)
                 addSource(disabledBitmapPool.liveEvent, observer)
                 addSource(inPreferQualityOverSpeed.liveEvent, observer)

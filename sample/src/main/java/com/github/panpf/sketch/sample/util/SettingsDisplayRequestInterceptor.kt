@@ -28,8 +28,8 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
             if (appSettings.disabledBitmapMemoryCache.value) {
                 bitmapMemoryCachePolicy(DISABLED)
             }
-            if (appSettings.disabledNetworkContentDiskCache.value) {
-                networkContentDiskCachePolicy(DISABLED)
+            if (appSettings.disabledDownloadDiskCache.value) {
+                downloadDiskCachePolicy(DISABLED)
             }
             if (appSettings.disabledBitmapResultDiskCache.value) {
                 bitmapResultDiskCachePolicy(DISABLED)

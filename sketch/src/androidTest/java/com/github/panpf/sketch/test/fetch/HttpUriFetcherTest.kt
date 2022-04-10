@@ -149,7 +149,7 @@ class HttpUriFetcherTest {
         // CachePolicy.ENABLED
         runBlocking {
             val request = DownloadRequest(context, testUri.uriString) {
-                networkContentDiskCachePolicy(CachePolicy.ENABLED)
+                downloadDiskCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher =
                 httpUriFetcherFactory.create(sketch, request)!!
@@ -180,7 +180,7 @@ class HttpUriFetcherTest {
         // CachePolicy.DISABLED
         runBlocking {
             val request = DownloadRequest(context, testUri.uriString) {
-                networkContentDiskCachePolicy(CachePolicy.DISABLED)
+                downloadDiskCachePolicy(CachePolicy.DISABLED)
             }
             val httpUriFetcher =
                 httpUriFetcherFactory.create(sketch, request)!!
@@ -211,7 +211,7 @@ class HttpUriFetcherTest {
         // CachePolicy.READ_ONLY
         runBlocking {
             val request = DownloadRequest(context, testUri.uriString) {
-                networkContentDiskCachePolicy(CachePolicy.READ_ONLY)
+                downloadDiskCachePolicy(CachePolicy.READ_ONLY)
             }
             val httpUriFetcher =
                 httpUriFetcherFactory.create(sketch, request)!!
@@ -239,7 +239,7 @@ class HttpUriFetcherTest {
             Assert.assertNull(diskCache[diskCacheKey])
 
             val request2 = DownloadRequest(context, testUri.uriString) {
-                networkContentDiskCachePolicy(CachePolicy.ENABLED)
+                downloadDiskCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher2 =
                 httpUriFetcherFactory.create(sketch, request2)!!
@@ -259,7 +259,7 @@ class HttpUriFetcherTest {
         // CachePolicy.WRITE_ONLY
         runBlocking {
             val request = DownloadRequest(context, testUri.uriString) {
-                networkContentDiskCachePolicy(CachePolicy.WRITE_ONLY)
+                downloadDiskCachePolicy(CachePolicy.WRITE_ONLY)
             }
             val httpUriFetcher =
                 httpUriFetcherFactory.create(sketch, request)!!

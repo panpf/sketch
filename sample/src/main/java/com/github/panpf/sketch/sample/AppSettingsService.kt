@@ -58,8 +58,8 @@ class AppSettingsService(val context: Context) {
     val disabledBitmapResultDiskCache by lazy {
         BooleanPrefsData(context, "disabledBitmapResultDiskCache", false)
     }
-    val disabledNetworkContentDiskCache by lazy {
-        BooleanPrefsData(context, "disabledNetworkContentDiskCache", false)
+    val disabledDownloadDiskCache by lazy {
+        BooleanPrefsData(context, "disabledDownloadDiskCache", false)
     }
     val disabledBitmapPool by lazy {
         BooleanPrefsData(context, "disabledBitmapPool", false)

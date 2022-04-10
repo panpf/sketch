@@ -178,7 +178,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             SwitchMenu(
                 title = "Network content disk cache",
                 desc = null,
-                data = appSettingsService.disabledNetworkContentDiskCache,
+                data = appSettingsService.disabledDownloadDiskCache,
                 reverse = true
             )
         )
