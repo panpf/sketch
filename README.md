@@ -130,18 +130,22 @@ AsyncImage(
 ## 文档
 
 * [入门][getting_started]
-* 扩展新的 URI 类型
-* 扩展新的图片类型
+* [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
+* [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
 * 播放 GIF、webp、heif 等动图
-* 使用手势缩放及分块显示超大图功能
-* 使用 resize 修改图片尺寸
-* 使用 Transformation 转换图片
-* 使用 Transition 用不同的效果显示图片
-* 设置占位图和错误图片
+* SketchZoomImageView：使用手势缩放及分块显示超大图功能
+* Resize：修改图片尺寸
+* Transformation：转换图片
+* Transition：用炫酷效果显示图片
+* StateImage：设置占位图和错误图片
 * 监听请求状态和下载进度
 * 配置下载、转换结果、内存三级缓存
 * 显示 svg 图片和视频帧
 * 将 http 网络部分替换成 okhttp
+* 预加载图片到内存
+* 仅加载图片获取 Bitmap
+* 仅下载图片到磁盘
+* Exif 纠正图片方向
 
 特色小功能
 
@@ -150,92 +154,15 @@ AsyncImage(
 * 使用 resize 的长图裁剪功能提升超大图片在列表中的清晰度
 * 蜂窝数据网络下暂停下载图片节省流量
 * 列表滑动时暂停加载图片，提升列表滑动流畅度
-* 仅加载图片到内存或仅下载图片到磁盘
 * 显示 apk 文件或已安装 app 的图标
+* 设置日志级别
+* 通过 ImageOptions 统一配置参数
 
-[comment]: <> (基础功能：)
+[comment]: <> (## 示例 APP)
 
-[comment]: <> (* [URI 类型及使用指南][uri])
+[comment]: <> (![sample_app_download_qrcode])
 
-[comment]: <> (* [SketchImageView 使用指南][sketch_image_view])
-
-[comment]: <> (* [使用 Options 配置图片][options])
-
-[comment]: <> (* [播放 GIF 图片][play_gif_image])
-
-[comment]: <> (* [手势缩放、旋转图片][zoom])
-
-[comment]: <> (* [分块显示超大图片][block_display])
-
-[comment]: <> (* [使用 ShapeSize 在绘制时改变图片的尺寸][shape_size])
-
-[comment]: <> (* [使用 ImageShaper 在绘制时改变图片的形状][image_shaper])
-
-[comment]: <> (* [使用 ImageProcessor 在解码后改变图片][image_processor])
-
-[comment]: <> (* [使用 ImageDisplayer 以动画的方式显示图片][image_displayer])
-
-[comment]: <> (* [使用 MaxSize 读取合适尺寸的缩略图，节省内存][max_size])
-
-[comment]: <> (* [使用 Resize 精确修改图片的尺寸][resize])
-
-[comment]: <> (* [使用 StateImage 设置占位图片和状态图片][state_image])
-
-[comment]: <> (* [监听开始、成功、失败以及下载进度][listener])
-
-[comment]: <> (提升用户体验：)
-
-[comment]: <> (* [使用 TransitionImageDisplayer 以自然过渡渐的变方式显示图片][transition_image_displayer])
-
-[comment]: <> (* [使用 thumbnailMode 属性显示更清晰的缩略图][thumbnail_mode])
-
-[comment]: <> (* [使用 cacheProcessedImageInDisk 属性缓存需要复杂处理的图片，提升显示速度][cache_processed_image_in_disk])
-
-[comment]: <> (* [使用 MemoryCacheStateImage 先显示已缓存的较模糊的图片，然后再显示清晰的图片][memory_cache_state_image])
-
-[comment]: <> (* [移动数据或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download])
-
-[comment]: <> (* [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load])
-
-[comment]: <> (更多：)
-
-[comment]: <> (* [UriModel 详解及扩展 URI][uri_model])
-
-[comment]: <> (* [统一修改 Options][options_filter])
-
-[comment]: <> (* [显示视频缩略图][display_video_thumbnail])
-
-[comment]: <> (* [管理多个 Options][options_manage])
-
-[comment]: <> (* [只加载或下载图片][load_and_download])
-
-[comment]: <> (* [显示 APK 或已安装 APP 的图标][display_apk_or_app_icon])
-
-[comment]: <> (* [自动纠正图片方向][correct_image_orientation])
-
-[comment]: <> (* [复用 Bitmap 降低 GC 频率，减少卡顿][bitmap_pool])
-
-[comment]: <> (* [在内存中缓存 Bitmap 提升显示速度][memory_cache])
-
-[comment]: <> (* [在磁盘上缓存图片原文件，避免重复下载][disk_cache])
-
-[comment]: <> (* [发送 HTTP 请求][http_stack])
-
-[comment]: <> (* [取消请求][cancel_request])
-
-[comment]: <> (* [监控 Sketch 的异常][error_tracker])
-
-[comment]: <> (* [日志][log])
-
-[comment]: <> (* [延迟并统一配置 Sketch][initializer])
-
-[comment]: <> (* [配置混淆（Proguard）][proguard_config])
-
-## 示例 APP
-
-![sample_app_download_qrcode]
-
-扫描二维码下载或[点我下载][sample_app_download_link]
+[comment]: <> (扫描二维码下载或[点我下载][sample_app_download_link])
 
 ## 更新日志
 
@@ -248,6 +175,7 @@ AsyncImage(
 * [chrisbanes]/[PhotoView]: Zoom
 * [koral--]/[android-gif-drawable]: gif-koral
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
+* [BigBadaboom]/[androidsvg]: svg
 
 ## 交流群
 
@@ -294,75 +222,9 @@ AsyncImage(
 
 [getting_started]: docs/wiki/getting_started.md
 
-[uri]: docs/wiki/uri.md
+[fetcher]: docs/wiki/fetcher.md
 
-[sketch_image_view]: docs/wiki/sketch_image_view.md
-
-[options]: docs/wiki/options.md
-
-[options_manage]: docs/wiki/options_manage.md
-
-[load_and_download]: docs/wiki/load_and_download.md
-
-[play_gif_image]: docs/wiki/play_gif_image.md
-
-[zoom]: docs/wiki/zoom.md
-
-[block_display]: docs/wiki/block_display.md
-
-[shape_size]: docs/wiki/shape_size.md
-
-[image_shaper]: docs/wiki/image_shaper.md
-
-[image_processor]: docs/wiki/image_processor.md
-
-[image_displayer]: docs/wiki/image_displayer.md
-
-[max_size]: docs/wiki/max_size.md
-
-[resize]: docs/wiki/resize.md
-
-[state_image]: docs/wiki/state_image.md
-
-[transition_image_displayer]: docs/wiki/transition_image_displayer.md
-
-[thumbnail_mode]: docs/wiki/thumbnail_mode.md
-
-[cache_processed_image_in_disk]: docs/wiki/cache_processed_image_in_disk.md
-
-[pause_download]: docs/wiki/pause_download.md
-
-[pause_load]: docs/wiki/pause_load.md
-
-[display_apk_or_app_icon]: docs/wiki/display_apk_or_app_icon.md
-
-[memory_cache_state_image]: docs/wiki/memory_cache_state_image.md
-
-[uri_model]: docs/wiki/uri_model.md
-
-[display_video_thumbnail]: docs/wiki/display_video_thumbnail.md
-
-[correct_image_orientation]: docs/wiki/correct_image_orientation.md
-
-[bitmap_pool]: docs/wiki/bitmap_pool.md
-
-[memory_cache]: docs/wiki/memory_cache.md
-
-[disk_cache]: docs/wiki/disk_cache.md
-
-[http_stack]: docs/wiki/http_stack.md
-
-[listener]: docs/wiki/listener.md
-
-[cancel_request]: docs/wiki/cancel_request.md
-
-[log]: docs/wiki/log.md
-
-[initializer]: docs/wiki/initializer.md
-
-[proguard_config]: docs/wiki/proguard_config.md
-
-[options_filter]: docs/wiki/options_filter.md
+[decoder]: docs/wiki/decoder.md
 
 
 [comment]: <> (links)
@@ -386,6 +248,10 @@ AsyncImage(
 [wseemann]: https://github.com/wseemann
 
 [FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
+
+[BigBadaboom]: https://github.com/BigBadaboom
+
+[androidsvg]: https://github.com/BigBadaboom/androidsvg
 
 [Kotlin Coroutines]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro
 

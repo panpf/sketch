@@ -1,36 +1,39 @@
-## 入门
+# 入门
 
-### 支持的 URI
+## 支持的 URI
 
-|Type|Scheme|
-|:---|:---|
-|File in network|http://, https:// |
-|File in SDCard|/, file:// |
-|Content Resolver|content://|
-|Asset Resource|asset:// |
-|Drawable Resource|drawable:// |
-|Android Resource|android.resource:// |
-|Base64|data:image/, data:img/ |
-|App Icon|app.icon:// |
+|Scheme|Describe|Creator|
+|:---|:---|:---|
+|http://, https:// |File in network|_|
+|/, file:// |File in SDCard|newFileUri()|
+|content://|Content Resolver|_|
+|asset:// |Asset Resource|newAssetUri()|
+|android.resource:// |Android Resource|newResourceUri()|
+|data:image/, data:img/ |Base64|newBase64Uri()|
+|app.icon:// |App Icon|newAppIconUri()|
 
-[点击查看如何扩展新的 URI][fetcher]
+> 上表中的 `Creator` 列展示了 Sketch 对部分 URI 提供的便捷创建函数
 
-### 支持的图片类型
+每一种 URI 都有对应的 Fetcher 对其提供支持，[点击查看更多 Fetcher 介绍以及如何扩展新的 URI][fetcher]
+
+## 支持的图片类型
 
 |Type|API Limit|Additional Module|
 |:---|:---|:---|
-|jpeg|None|None|
-|png|None|None|
-|bmp|None|None|
-|webp|None|None|
+|jpeg|None|_|
+|png|None|_|
+|bmp|None|_|
+|webp|None|_|
 |svg|None|sketch-svg|
-|heif|Android 8.0+|None|
-|gif|None|sketch-gif-movie, sketch-gif-koral|
-|webp Animated|Android 9.0+|None|
-|heif Animated|Android 11+|None|
-|video frames|None|sketch-video,sketch-video-ffmpeg|
+|heif|Android 8.0+|_|
+|gif|None|sketch-gif-movie<br>sketch-gif-koral|
+|webp Animated|Android 9.0+|_|
+|heif Animated|Android 11+|_|
+|video frames|None|sketch-video<br>sketch-video-ffmpeg|
 
-### Sketch
+[点击查看如何扩展新的图片类型][decoder]
+
+## Sketch
 
 [Sketch] 类用来执行 [ImageRequest]，并处理图片下载、缓存、解码、转换、请求管理、内存管理等功能。
 
@@ -45,16 +48,16 @@ val sketch = context.sketch
 ```kotlin
 class MyApplication : Application(), SketchConfigurator {
 
-    override fun configSketch(builder: Builder) {
-        builder.logger(Logger(DEBUG))
-        builder.httpStack(OkHttpStack.Builder().build())
+    override fun createSketchConfig(): Builder.() -> Unit = {
+        logger(Logger(DEBUG))
+        httpStack(OkHttpStack.Builder().build())
     }
 }
 ```
 
-[点击查看如何扩展新的图片类型][decoder]
+更多可配置参数请参考 [Sketch].Builder 类
 
-### ImageRequest
+## ImageRequest
 
 [ImageRequest] 接口定义了显示图片所需的全部参数，例如 URI、ImageView、转换配置、调整尺寸等。
 
@@ -64,7 +67,7 @@ class MyApplication : Application(), SketchConfigurator {
 * [LoadRequest]：请求结果是 Bitmap，用于需要 Bitmap 的场景，例如 Notification、桌面壁纸
 * [DownloadRequest]：请求结果是 [DiskCache].Snapshot 或 Byte[]，用于提前下载图片或保存图片到相册
 
-##### 创建请求
+### 创建请求
 
 `以 DisplayRequest 为例，另外两种大同小异`
 
@@ -97,7 +100,9 @@ val request1 = DisplayRequest("https://www.example.com/image.jpg", imageView) {
 
 你可以通过 Builder 提供的链式方法或同名函数提供的尾随 lambda 配置各种参数
 
-##### 执行请求
+更多可配置参数请参考 [DisplayRequest].Builder 类
+
+### 执行请求
 
 [ImageRequest] 创建好后交给 [Sketch] 执行，有两种执行方式：
 
@@ -124,7 +129,7 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-##### 取消请求
+### 取消请求
 
 [ImageRequest] 会在下列情况下自动取消:
 
@@ -141,7 +146,7 @@ val disposable = sketch.enqueue(request)
 disposable.dispose()
 ```
 
-### ImageView 扩展
+## ImageView 扩展
 
 [Sketch] 给 ImageView 提供了一个扩展函数，用于便捷的将 URL 指向的图片显示到 ImageView 上，如下:
 
