@@ -170,7 +170,7 @@ class AsyncImagePainter(
             if (resetSizeResolver || resetScale) {
                 newDisplayRequest {
                     if (resetSizeResolver) {
-                        resizeSizeResolver(ConstraintsSizeResolver())
+                        resizeSize(ConstraintsSizeResolver())
                     }
                     if (resetScale) {
                         resizeScale(resizeScale)

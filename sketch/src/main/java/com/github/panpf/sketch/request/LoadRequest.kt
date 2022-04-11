@@ -192,8 +192,8 @@ interface LoadRequest : ImageRequest {
             super.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
-        override fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
-            super.resizeSizeResolver(sizeResolver)
+        override fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+            super.resizeSize(sizeResolver)
         }
 
         override fun resizeSize(size: Size?): Builder = apply {

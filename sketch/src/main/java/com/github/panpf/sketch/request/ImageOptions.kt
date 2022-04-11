@@ -320,7 +320,7 @@ interface ImageOptions {
             this.resizeSize = Size(width, height)
         }
 
-        fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder =
+        fun resizeSize(sizeResolver: SizeResolver?): Builder =
             apply {
                 this.resizeSizeResolver = sizeResolver
             }

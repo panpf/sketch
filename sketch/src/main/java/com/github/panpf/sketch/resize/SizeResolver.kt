@@ -6,7 +6,7 @@ import com.github.panpf.sketch.util.Size
 /**
  * An interface for measuring the target size for an image request.
  *
- * @see com.github.panpf.sketch.request.ImageRequest.Builder.resizeSizeResolver
+ * @see com.github.panpf.sketch.request.ImageRequest.Builder.resizeSize
  */
 fun interface SizeResolver {
 

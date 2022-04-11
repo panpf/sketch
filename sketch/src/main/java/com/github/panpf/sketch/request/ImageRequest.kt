@@ -426,7 +426,7 @@ interface ImageRequest {
             }
         }
 
-        open fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
+        open fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
             this.resizeSizeResolver = sizeResolver
             resetResolvedValues()
         }
@@ -686,7 +686,7 @@ interface ImageRequest {
                 @Suppress("DEPRECATION")
                 preferQualityOverSpeed(preferQualityOverSpeed)
                 resizeSize(resizeSize)
-                resizeSizeResolver(resizeSizeResolver)
+                resizeSize(resizeSizeResolver)
                 resizePrecision(resizePrecisionDecider)
                 resizeScale(resizeScale)
                 transformations(transformations?.toList())
