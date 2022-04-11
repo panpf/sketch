@@ -45,18 +45,31 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
 }
 ```
 
-## 禁用动图
+## 配置
 
-当你注册了动图相关的 [DrawableDecoder] 后，解码动图文件时将返回可播放的 Drawable
-
-在列表场景下我们可能不需要播放动图，用户点击进入详情页的时候才需要播放动图，这时候就需要在列表中禁用动图，我们通过 [ImageRequest].disabledAnimatedImage
-属性即可实现此需求，如下：
+[ImageRequest] 和 [ImageOptions] 都提供了相关方法用于动图相关配置，如下：
 
 ```kotlin
-val request = DisplayRequest("https://www.example.com/image.jpg", imageView) {
+imageView.displayImage("https://www.example.com/image.gif") {
+    // 禁用动图。有些情况下列表中需要禁用动图播放，点击进入详情页的时候才可以播放
     disabledAnimatedImage()
+
+    // 配置动图播放 1 次就停止，默认无限循环播放
+    repeatCount(1)
+
+    // 监听动图开始和停止播放
+    onAnimationStart {
+        // ...
+    }
+    onAnimationEnd {
+        // ...
+    }
+
+    // 对动图的每一帧在绘制时进行转换 
+    animatedTransformation { canvas ->
+        // ...
+    }
 }
-sketch.enqueue(request)
 ```
 
 ## 控制播放/停止
@@ -100,3 +113,7 @@ Sketch 会监听 lifecycle 的状态自动的播放或停止动图
 [SketchAnimatableDrawable]: ../../sketch/src/main/java/com/github/panpf/sketch/drawable/SketchAnimatableDrawable.kt
 
 [Movie]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/Movie.java
+
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+
+[ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt

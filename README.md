@@ -133,23 +133,24 @@ AsyncImage(
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
 * [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
 * [播放 gif、webp、heif 动图][animated_image]
-* SketchZoomImageView：使用手势缩放及分块显示超大图功能
-* Resize：修改图片尺寸
-* Transformation：转换图片
-* Transition：用炫酷效果显示图片
-* StateImage：设置占位图和错误图片
-* 监听请求状态和下载进度
-* 配置下载、转换结果、内存三级缓存
-* 显示 svg 图片和视频帧
-* 将 http 网络部分替换成 okhttp
+* [Resize：修改图片尺寸][resize]
+* [Transformation：转换图片][transformation]
+* [Transition：用炫酷的过渡方式显示图片][transition]
+* [StateImage：占位图和错误图][state_image]
+* Listener：监听请求状态和下载进度
+* Cache：配置下载、转换结果、内存三级缓存
+* HttpStack：将 http 网络部分替换成 okhttp
+* 解码 svg 图片
+* 解码视频帧
 * 预加载图片到内存
 * 仅加载图片获取 Bitmap
 * 仅下载图片到磁盘
-* Exif 纠正图片方向
+* ExifInterface 纠正图片方向
 
 特色小功能
 
-* 使用 SketchImageView 显示下载进度、图片类型角标
+* SketchImageView：显示下载进度、图片类型角标
+* SketchZoomImageView：使用手势缩放及分块显示超大图功能
 * 使用手势缩放功能的阅读模式提升体验
 * 使用 resize 的长图裁剪功能提升超大图片在列表中的清晰度
 * 蜂窝数据网络下暂停下载图片节省流量
@@ -176,10 +177,6 @@ AsyncImage(
 * [koral--]/[android-gif-drawable]: gif-koral
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
 * [BigBadaboom]/[androidsvg]: svg
-
-## 交流群
-
-![QQ Group][qq_group_image]
 
 ## License
 
@@ -227,6 +224,14 @@ AsyncImage(
 [decoder]: docs/wiki/decoder.md
 
 [animated_image]: docs/wiki/animated_image.md
+
+[resize]: docs/wiki/resize.md
+
+[transformation]: docs/wiki/transformation.md
+
+[transition]: docs/wiki/transition.md
+
+[state_image]: docs/wiki/state_image.md
 
 
 [comment]: <> (links)

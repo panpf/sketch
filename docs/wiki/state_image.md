@@ -1,39 +1,63 @@
-# 使用 StateImage 设置占位图片和状态图片
+# StateImage
 
-Sketch 支持不同的状态显示不同的占位图片：
+StateImage 是一种状态图片，用来设置加载状态占位图和错误状态图，有以下几种实现：
 
-* loadingImage：正在加载时显示的占位图
-* errorImage：加载失败时显示的占位图
-* pauseDownloadImage：暂停下载时现实的占位图
+* [ColorResStateImage]：给定一个颜色资源 Id 作为状态图片
+* [ColorStateImage]：给定一个颜色值作为状态图片
+* [DrawableResStateImage]：给定一个 Drawable 资源 Id 作为状态图片
+* [DrawableStateImage]：给定一个 Drawable 作为状态图片
+* [ErrorStateImage]：专门用于错误状态，会根据错误类型选择不同的状态图
+* [IconDrawableResStateImage]：给定一个小的图标 Drawable 资源 ID 和背景色作为状态图，无论目标 View 的大小多大，图标始终居中且大小不变
+* [IconDrawableStateImage]：给定一个小的图标 Drawable 和背景色作为状态图，无论目标 View 的大小多大，图标始终居中且大小不变
+* [MemoryCacheStateImage]：给定一个 bitmap 内存缓存的 key，将尝试使用此 key 从内存缓存中获取 bitmap 作为状态图片
 
-这三种属性都可以在 [DisplayOptions] 和 [DisplayHelper] 中配置
+### 配置
 
-通过 [StateImage] 你可以灵活的使用各种来源的图片为上述三种状态提供占位图
+[ImageRequest] 和 [ImageOptions] 都提供了 placeholder() 和 error() 方法用于配置 [StateImage]，如下：
 
-### StateImage
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    placeholder(R.drawable.placeholder)
+    placeholder(resources.getDrawable(R.drawable.placeholder))
+    placeholder(ColorResStateImage(R.color.placeholder))
+    placeholder(ColorStateImage(Color.RED))
+    placeholder(DrawableResStateImage(R.drawable.placeholder))
+    placeholder(DrawableStateImage(resources.getDrawable(R.drawable.placeholder)))
+    placeholder(IconDrawableResStateImage(R.drawable.placeholder_icon, Color.GRAY))
+    placeholder(
+        IconDrawableStateImage(resources.getDrawable(R.drawable.placeholder_icon), Color.GRAY)
+    )
 
-目前内置了一下几种 [StateImage]
-
-* [DrawableStateImage]：给什么图片显示什么图片，支持 [ShapeSize] 和 [ImageShaper]
-* [MakerStateImage]：可以利用 [DisplayOptions] 中配置的 [ImageProcessor] 和 [Resize] 修改指定的图片然后再作为状态图片，同样支持 [ShapeSize] 和 [ImageShaper]
-* [OldStateImage]：使用当前正在显示的图片作为状态图片
-* [MemoryCacheStateImage]：从内存缓存中获取图片作为状态图片，支持 [ShapeSize] 和 [ImageShaper]，更详细的使用方法请参考 [使用 MemoryCacheStateImage 先显示已缓存的较模糊的图片，然后再显示清晰的图片][memory_cache_state_image]
+    // error 内部用 ErrorStateImage 实现，因此多了一个可以配置具体错误情况的 lambda 函数
+    // 并且 placeholder() 方法能用的 error() 也都能用故不再赘述
+    error(R.drawable.error) {
+        uriEmptyError(DrawableResStateImage(R.drawable.uri_empty))
+    }
+}
+```
 
 ### 自定义
 
-实现 [StateImage] 接口，最起码你要支持 [ShapeSize] 和 [ImageShaper]，具体可参考 [DrawableStateImage] 或 [MakerStateImage]
+可参考现有 [StateImage] 的实现
 
-通过 [DisplayOptions].setLoadingImage(StateImage) 方法 或 [DisplayHelper].loadingImage(StateImage) 方法使用即可
+[StateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/StateImage.kt
 
-[StateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/StateImage.java
-[DisplayOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayOptions.java
-[DisplayHelper]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayHelper.java
-[ShapeSize]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ShapeSize.java
-[ImageShaper]: ../../sketch/src/main/java/com/github/panpf/sketch/shaper/ImageShaper.java
-[memory_cache_state_image]: memory_cache_state_image.md
-[ImageProcessor]: image_processor.md
-[Resize]: resize.md
-[DrawableStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/DrawableStateImage.java
-[MakerStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/MakerStateImage.java
-[OldStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/OldStateImage.java
-[MemoryCacheStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/MemoryCacheStateImage.java
+[ColorResStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ColorResStateImage.kt
+
+[ColorStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ColorStateImage.kt
+
+[DrawableResStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/DrawableResStateImage.kt
+
+[DrawableStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/DrawableStateImage.kt
+
+[ErrorStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
+
+[IconDrawableResStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/IconDrawableResStateImage.kt
+
+[IconDrawableStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/IconDrawableStateImage.kt
+
+[MemoryCacheStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/MemoryCacheStateImage.kt
+
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+
+[ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt

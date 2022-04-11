@@ -1,69 +1,65 @@
-# 使用 Resize 精确修改图片的尺寸
+# Resize
 
-[Resize] 用来在解码时调整图片的尺寸和宽高比例
+[Resize] 用来在解码时以及解码后调整图片的尺寸，解码时参与计算 inSampleSize，解码后如果尺寸依然不符合 [Resize] 要求就会再次调整
 
-有的时候我们需要固定尺寸或固定宽高比的图片，例如将图片用作页面头部的背景，设计图上有标好的尺寸，但是图片的尺寸我们不能控制，这时候就可以用 [Resize] 用来解决问题
+[Resize] 由以下几部分构成：
 
-### 使用
+* width、height：期望的宽和高
+* [Precision]：精度。决定如何使用 width 和 height 去调整图片的尺寸
+    * LESS_PIXELS（默认）：只要最终 Bitmap 的像素数（宽乘以高）约等于 [Resize] 的像素数即可，允许有 10% 的误差
+    * KEEP_ASPECT_RATIO：在 LESS_PIXELS 的基础上要求 Bitmap 的宽高比和 [Resize] 的宽高比一致
+    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样
+* [PrecisionDecider]：精度决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Precision]
+    * [FixedPrecisionDecider]：始终使用指定的 [Precision]
+    * [LongImageClipPrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
+* [Scale]：缩放。需要对原图进行裁剪时决定如何裁剪原图
+    * START_CROP：保留头部部分
+    * CENTER_CROP：保留中间部分
+    * END_CROP：保留尾部部分
+    * FILL：全部保留，但会变形
 
-假如设计图上标明的图片尺寸是 720x385，那么我们如实配置即可
+> 如何判定是长图？图片的宽高比和 resize 的宽高比相差超过 1 倍
 
-```java
-SketchImageView sketchImageView = ...;
-sketchImageView.getOptions().setResize(720, 385);
-sketchImageView.displayImage("http://t.cn/RShdS1f");
+### 配置
+
+[ImageRequest] 和 [ImageOptions] 都提供了 resizeSize、resizePrecision、resizeScale 方法用于配置 [Resize]
+
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    resizeSize(100, 100)
+
+    resizePrecision(Precision.KEEP_ASPECT_RATIO)
+    // 或
+    resizePrecision(longImageClipPrecision(Precision.KEEP_ASPECT_RATIO))
+
+    resizeScale(Scale.END_CROP)
+}
 ```
 
-注意，[Resize] 有两种模式：
-* ASPECT_RATIO_SAME: 新图片的尺寸不会比 resize 大，但宽高比一定会一样
-* EXACTLY_SAME: 即使原图尺寸比 resize 小，也会得到一个跟 resize 尺寸一样的 bitmap
+### 默认值
 
-[Resize] 默认采用 ASPECT_RATIO_SAME 模式，这样的好处是会比较节省内存，因此通过上面的配置你会得到一张宽高比一定是 720/385 的图片，但尺寸可能会比 720x385 小的图片
+当你什么都不配置的情况下默认值为：
 
-如果你必须要求返回图片的尺寸跟 [Resize] 一模一样，那么你可以使用 EXACTLY_SAME 模式
+* width、height：如果 target 是 [ViewTarget] 就取 view 的宽高，否则取屏幕的宽高
+* [Precision]：LESS_PIXELS
+* [Scale]：CENTER_CROP
 
-```java
-SketchImageView sketchImageView = ...;
-sketchImageView.getOptions().setResize(new Resize(720, 385, Resize.EXACTLY_SAME));
-sketchImageView.displayImage("http://t.cn/RShdS1f");
-```
+> 注意：如果 view 的宽高到 draw 阶段还是 0，那么请求不会继续执行
 
-### 调整尺寸时的裁剪规则
+[Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Resize.kt
 
-当 [Resize] 的尺寸和原图片的尺寸不一致时就会对原图片进行裁剪，具体的裁剪规则是根据 [Resize] 的 scaleType 属性决定的。
+[Scale]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Scale.kt
 
-默认从 ImageView 获取，你也可以强制指定，如下：
+[FixedPrecisionDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/FixedPrecisionDecider.kt
 
-```java
-SketchImageView sketchImageView = ...;
-sketchImageView.getOptions().setResize(new Resize(720, 385, ScaleType.CENTER_CROP));
-sketchImageView.displayImage("http://t.cn/RShdS1f");
-```
+[LongImageClipPrecisionDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/LongImageClipPrecisionDecider.kt
 
-### 使用 ImageView 的固定尺寸作为 Resize
+[PrecisionDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
-当 ImageView 已经设置了固定尺寸的话，我们就可以使用 ImageView 的固定尺寸作为 [Resize]，如下：
+[Precision]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Precision.kt
 
-```java
-SketchImageView sketchImageView = ...;
-sketchImageView.getOptions().setResize(Resize.byViewFixedSize());
-sketchImageView.displayImage("http://t.cn/RShdS1f");
-```
+[ViewTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ViewTarget.kt
 
-[Resize].byViewFixedSize() 方法也可以设置 [Resize].Mode，如下：
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-```java
-SketchImageView sketchImageView = ...;
-sketchImageView.getOptions().setResize(Resize.byViewFixedSize(Resize.EXACTLY_SAME));
-sketchImageView.displayImage("http://t.cn/RShdS1f");
-```
-
-但是当你使用了此功能而 ImageView 却没有设置固定尺寸的话就会抛出异常，如下：
-
-```java
-IllegalStateException: ImageView's width and height are not fixed, can not be applied with the Resize.byViewFixedSize() function
-```
-
-[Resize].byViewFixedSize() 只能用于 display 请求
-
-[Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/request/Resize.java
+[ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
