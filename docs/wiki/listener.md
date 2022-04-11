@@ -1,110 +1,73 @@
-# 监听开始、成功、失败以及下载进度事件
+# Listener
 
-Sketch 支持对 `开始`、`完成`、`失败`、`取消` 以及 `下载进度` 进行监听
+[ImageRequest] 通过 [Listener] 和 [ProgressListener] 可以监听开始、完成、错误、取消、进度状态，如下：
 
-注意：
-* listener 默认在主线程回调，但是当 Sketch.load() 和 Sketch.download() 开启了同步后其 listener 就在运行线程回调，可能是主线程，也可能是非主线程
-* onStarted() 方法只有在需要进入非主线程加载或下载图片时才会被回调，因此有可能不回调 onStarted() 方法而直接回调其它方法
+```kotlin
+DisplayRequest(context, "https://www.sample.com/image.jpg") {
+    listener(object : Listener {
+        override fun onStart(request: DisplayRequest) {
+            // ...
+        }
 
-#### SketchImageView
+        override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) {
+            // ...
+        }
 
-```java
-SketchImageView sketchImageView = ...;
+        override fun onError(request: DisplayRequest, result: DisplayResult.Error) {
+            // ...
+        }
 
-// setDisplayListener() 一定要在 displayImage() 之前
-sketchImageView.setDisplayListener(new DisplayListener() {
-    @Override
-    public void onStarted() {
-        // 只有在需要进入非主线程加载图片时才会回调 onStarted() 方法
-    }
-
-    @Override
-    public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
-
-    }
-
-    @Override
-    public void onError(ErrorCause errorCause) {
-
-    }
-
-    @Override
-    public void onCanceled(CancelCause cancelCause) {
-
-    }
-});
-
-// setDownloadProgressListener() 一定要在 displayImage() 之前
-sketchImageView.setDownloadProgressListener(new DownloadProgressListener() {
-    @Override
-    public void onUpdateDownloadProgress(int totalLength, int completedLength) {
-
-    }
-});
-
-sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
+        override fun onCancel(request: DisplayRequest) {
+            // ...
+        }
+    })
+}
 ```
 
-``Sketch.display() 不支持设置 listener 和 downloadProgressListener``
+还支持 kotlin 函数方式监听状态：
 
-#### Sketch.load()
-
-```java
-Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {
-    @Override
-    public void onStarted() {
-        // 只有在需要进入非主线程加载图片时才会回调 onStarted() 方法
-    }
-
-    @Override
-    public void onCompleted(LoadResult loadResult) {
-
-    }
-
-    @Override
-    public void onError(ErrorCause errorCause) {
-
-    }
-
-    @Override
-    public void onCanceled(CancelCause cancelCause) {
-
-    }
-}).downloadProgressListener(new DownloadProgressListener() {
-    @Override
-    public void onUpdateDownloadProgress(int totalLength, int completedLength) {
-
-    }
-}).maxSize(100, 100).commit();
+```kotlin
+DisplayRequest(context, "https://www.sample.com/image.jpg") {
+    listener(
+        onStart = { request: DisplayRequest ->
+            // ...
+        },
+        onSuccess = { request: DisplayRequest, result: DisplayResult.Success ->
+            // ...
+        },
+        onError = { request: DisplayRequest, result: DisplayResult.Error ->
+            // ...
+        },
+        onCancel = { request: DisplayRequest ->
+            // ...
+        },
+    )
+}
 ```
 
-#### Sketch.download()
+监听下载进度：
 
-```java
-Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
-    @Override
-    public void onStarted() {
-        // 只有在需要进入非主线程下载图片时才会回调 onStarted() 方法
+```kotlin
+DisplayRequest(context, "https://www.sample.com/image.jpg") {
+    progressListener { request: DisplayRequest, totalLength: Long, completedLength: Long ->
+        // ...
     }
-
-    @Override
-    public void onCompleted(DownloadResult downloadResult) {
-
-    }
-
-    @Override
-    public void onError(ErrorCause errorCause) {
-
-    }
-
-    @Override
-    public void onCanceled(CancelCause cancelCause) {
-
-    }
-}).downloadProgressListener(new DownloadProgressListener() {
-    @Override
-    public void onUpdateDownloadProgress(int totalLength, int completedLength) {
-
-    }
-}).commit();
+}
 ```
+
+> 注意：
+> 1. 所有方法都将在主线程回调
+> 2. [LoadRequest] 和 [DownloadRequest] 同 [DisplayRequest] 用法一模一样，只是回调方法的 Request 和 Result 的类型不一样，这是因为他们需要的结果不一样
+
+
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+
+[LoadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
+
+[DownloadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
+
+[DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
+
+[Listener]: ../../sketch/src/main/java/com/github/panpf/sketch/request/Listener.kt
+
+[ProgressListener]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ProgressListener.kt

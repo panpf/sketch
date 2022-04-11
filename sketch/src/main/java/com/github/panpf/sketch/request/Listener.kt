@@ -15,10 +15,10 @@ interface Listener<REQUEST : ImageRequest, SUCCESS : ImageResult.Success, ERROR 
     }
 
     /**
-     * Called if the request is cancelled.
+     * Called if the request completes successfully.
      */
     @MainThread
-    fun onCancel(request: REQUEST) {
+    fun onSuccess(request: REQUEST, result: SUCCESS) {
     }
 
     /**
@@ -29,9 +29,9 @@ interface Listener<REQUEST : ImageRequest, SUCCESS : ImageResult.Success, ERROR 
     }
 
     /**
-     * Called if the request completes successfully.
+     * Called if the request is cancelled.
      */
     @MainThread
-    fun onSuccess(request: REQUEST, result: SUCCESS) {
+    fun onCancel(request: REQUEST) {
     }
 }

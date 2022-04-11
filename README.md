@@ -129,16 +129,19 @@ AsyncImage(
 
 ## 文档
 
+基础功能：
+
 * [入门][getting_started]
-* [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
-* [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
 * [播放 gif、webp、heif 动图][animated_image]
 * [Resize：修改图片尺寸][resize]
 * [Transformation：转换图片][transformation]
 * [Transition：用炫酷的过渡方式显示图片][transition]
 * [StateImage：占位图和错误图][state_image]
-* Listener：监听请求状态和下载进度
-* Cache：配置下载、转换结果、内存三级缓存
+* [Listener：监听请求状态和下载进度][listener]
+* [Cache：了解下载、结果、内存缓存][cache]
+* [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
+* [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
+* Target：将加载结果应用到指定的目标上
 * HttpStack：将 http 网络部分替换成 okhttp
 * 解码 svg 图片
 * 解码视频帧
@@ -146,8 +149,9 @@ AsyncImage(
 * 仅加载图片获取 Bitmap
 * 仅下载图片到磁盘
 * ExifInterface 纠正图片方向
+* ImageOptions：统一管理图片配置
 
-特色小功能
+特色功能：
 
 * SketchImageView：显示下载进度、图片类型角标
 * SketchZoomImageView：使用手势缩放及分块显示超大图功能
@@ -232,6 +236,10 @@ AsyncImage(
 [transition]: docs/wiki/transition.md
 
 [state_image]: docs/wiki/state_image.md
+
+[listener]: docs/wiki/listener.md
+
+[cache]: docs/wiki/cache.md
 
 
 [comment]: <> (links)

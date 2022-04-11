@@ -122,7 +122,7 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener(){...}
 
 [RequestLevel]: ../../sketch/src/main/java/com/github/panpf/sketch/request/RequestLevel.java
 [load_android_download]: load_android_download.md
-[disk_cache]: disk_cache.md
+[disk_cache]: cache.md
 [memory_cache]: memory_cache.md
 [thumbnail_mode]: thumbnail_mode.md
 [ImageType]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/ImageType.java

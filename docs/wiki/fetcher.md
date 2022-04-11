@@ -1,16 +1,16 @@
 # Fetcher
 
-[Fetcher] 用于从 uri 获取数据，交由 [BitmapDecoder] 解码 Bitmap 或 [DrawableDecoder] 解码 Drawable。
+[Fetcher] 用于从 uri 获取数据，返回 [FetchResult]，交由 Decoder 使用。
 
 [Sketch] 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下几种：
 
-* [AssetUriFetcher][AssetUriFetcher]
-* [Base64UriFetcher][Base64UriFetcher]
-* [ContentUriFetcher][ContentUriFetcher]
-* [FileUriFetcher][FileUriFetcher]
-* [HttpUriFetcher][HttpUriFetcher]
-* [ResourceUriFetcher][ResourceUriFetcher]
-* [AppIconUriFetcher][AppIconUriFetcher]
+* [AssetUriFetcher][AssetUriFetcher]：从 app 的 assets 目录加载图片
+* [Base64UriFetcher][Base64UriFetcher]：从 uri 本身加载 base 64 格式的图片
+* [ContentUriFetcher][ContentUriFetcher]：从 ContentResolver 加载图片
+* [FileUriFetcher][FileUriFetcher]：从本地文件加载图片
+* [HttpUriFetcher][HttpUriFetcher]：从 http uri 加载图片
+* [ResourceUriFetcher][ResourceUriFetcher]：从 Android Resource 中加载图片
+* [AppIconUriFetcher][AppIconUriFetcher]：从已安装 app 加载其图标
 
 ## 扩展新的 Fetcher
 
@@ -63,6 +63,8 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
 [DrawableDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/DrawableDecoder.kt
 
 [Fetcher]: ../../sketch/src/main/java/com/github/panpf/sketch/fetch/Fetcher.kt
+
+[FetchResult]: ../../sketch/src/main/java/com/github/panpf/sketch/fetch/FetchResult.kt
 
 [AssetUriFetcher]: ../../sketch/src/main/java/com/github/panpf/sketch/fetch/AssetUriFetcher.kt
 
