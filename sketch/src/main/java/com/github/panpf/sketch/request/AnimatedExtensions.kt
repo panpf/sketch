@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.request
 
-import android.graphics.ImageDecoder
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
@@ -60,9 +59,6 @@ fun ImageRequest.animationEndCallback(): (() -> Unit)? =
  * Set the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
  *
  * Default: `null`
- *
- * @see MovieDrawable.setAnimatedTransformation
- * @see ImageDecoder.setPostProcessor
  */
 fun DisplayRequest.Builder.animatedTransformation(animatedTransformation: AnimatedTransformation): DisplayRequest.Builder {
     return setParameter(ANIMATED_TRANSFORMATION_KEY, animatedTransformation)

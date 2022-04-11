@@ -10,8 +10,8 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.bean.VideoInfo
 import com.github.panpf.sketch.sample.databinding.ItemVideoBinding
-import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingErrorImage
-import com.github.panpf.sketch.stateimage.saveCellularTrafficErrorImage
+import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
+import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 
 class LocalVideoItemFactory :
     BindingItemFactory<VideoInfo, ItemVideoBinding>(VideoInfo::class) {
@@ -30,8 +30,8 @@ class LocalVideoItemFactory :
         binding.videoItemIconImage.updateDisplayImageOptions {
             placeholder(R.drawable.im_placeholder)
             error(drawable.im_error) {
-                saveCellularTrafficErrorImage(drawable.im_save_cellular_traffic)
-                pauseLoadWhenScrollingErrorImage()
+                saveCellularTrafficError(drawable.im_save_cellular_traffic)
+                pauseLoadWhenScrollingError()
             }
             videoFramePercentDuration(0.5f)
         }

@@ -6,26 +6,26 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
 import com.github.panpf.sketch.util.SketchException
 
-fun ErrorStateImage.Builder.pauseLoadWhenScrollingErrorImage(): ErrorStateImage.Builder = apply {
+fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(): ErrorStateImage.Builder = apply {
     addMatcher(PauseLoadWhenScrollingMatcher(null))
 }
 
-fun ErrorStateImage.Builder.pauseLoadWhenScrollingErrorImage(
+fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(
     stateImage: StateImage
 ): ErrorStateImage.Builder = apply {
     addMatcher(PauseLoadWhenScrollingMatcher(stateImage))
 }
 
-fun ErrorStateImage.Builder.pauseLoadWhenScrollingErrorImage(
+fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(
     drawable: Drawable
 ): ErrorStateImage.Builder = apply {
-    addMatcher(PauseLoadWhenScrollingMatcher(StateImage.drawable(drawable)))
+    addMatcher(PauseLoadWhenScrollingMatcher(DrawableStateImage(drawable)))
 }
 
-fun ErrorStateImage.Builder.pauseLoadWhenScrollingErrorImage(
+fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(
     resId: Int
 ): ErrorStateImage.Builder = apply {
-    addMatcher(PauseLoadWhenScrollingMatcher(StateImage.drawableRes(resId)))
+    addMatcher(PauseLoadWhenScrollingMatcher(DrawableResStateImage(resId)))
 }
 
 private class PauseLoadWhenScrollingMatcher(val pauseLoadWhenScrollingImage: StateImage?) :

@@ -16,9 +16,6 @@
 package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
@@ -26,18 +23,4 @@ import com.github.panpf.sketch.util.SketchException
 interface StateImage {
 
     fun getDrawable(sketch: Sketch, request: ImageRequest, throwable: SketchException?): Drawable?
-
-    companion object {
-
-        fun drawable(drawable: Drawable): StateImage = DrawableStateImage(drawable)
-
-        fun drawableRes(@DrawableRes resId: Int): StateImage = DrawableResStateImage(resId)
-
-        fun color(@ColorInt color: Int): StateImage = ColorStateImage(color)
-
-        fun colorRes(@ColorRes colorResId: Int): StateImage = ColorResStateImage(colorResId)
-
-        fun memoryCache(memoryCacheKey: String?, defaultImage: StateImage?): StateImage =
-            MemoryCacheStateImage(memoryCacheKey, defaultImage)
-    }
 }

@@ -40,8 +40,11 @@ import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewSizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.stateimage.DrawableResStateImage
+import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.stateimage.newErrorStateImage
 import com.github.panpf.sketch.target.ListenerProvider
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
@@ -508,12 +511,12 @@ interface ImageRequest {
 
         open fun placeholder(placeholderDrawable: Drawable?): Builder = apply {
             this.placeholderImage =
-                if (placeholderDrawable != null) StateImage.drawable(placeholderDrawable) else null
+                if (placeholderDrawable != null) DrawableStateImage(placeholderDrawable) else null
         }
 
         open fun placeholder(@DrawableRes placeholderDrawableResId: Int?): Builder = apply {
             this.placeholderImage = if (placeholderDrawableResId != null) {
-                StateImage.drawableRes(placeholderDrawableResId)
+                DrawableResStateImage(placeholderDrawableResId)
             } else null
         }
 
@@ -523,7 +526,7 @@ interface ImageRequest {
         ): Builder = apply {
             this.errorImage = errorImage?.let {
                 if (configBlock != null) {
-                    ErrorStateImage.new(it, configBlock)
+                    newErrorStateImage(it, configBlock)
                 } else {
                     it
                 }
@@ -536,9 +539,9 @@ interface ImageRequest {
         ): Builder = apply {
             this.errorImage = errorDrawable?.let {
                 if (configBlock != null) {
-                    ErrorStateImage.new(StateImage.drawable(it), configBlock)
+                    newErrorStateImage(DrawableStateImage(it), configBlock)
                 } else {
-                    StateImage.drawable(it)
+                    DrawableStateImage(it)
                 }
             }
         }
@@ -549,9 +552,9 @@ interface ImageRequest {
         ): Builder = apply {
             this.errorImage = errorDrawableResId?.let {
                 if (configBlock != null) {
-                    ErrorStateImage.new(StateImage.drawableRes(it), configBlock)
+                    newErrorStateImage(DrawableResStateImage(it), configBlock)
                 } else {
-                    StateImage.drawableRes(it)
+                    DrawableResStateImage(it)
                 }
             }
         }
@@ -567,6 +570,7 @@ interface ImageRequest {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
         }
 
+        // todo 考虑这个方法的用处，感觉不是很优雅
         open fun options(options: ImageOptions, requestFirst: Boolean = false): Builder = apply {
             if (!requestFirst || this.depth == null) {
                 options.depth?.let {
@@ -722,6 +726,7 @@ interface ImageRequest {
             val colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O)
                 colorSpace ?: viewOptions?.colorSpace
                 ?: globalOptions?.colorSpace else null
+
             @Suppress("DEPRECATION")
             val preferQualityOverSpeed = preferQualityOverSpeed
                 ?: viewOptions?.preferQualityOverSpeed

@@ -22,9 +22,9 @@ import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.ItemImageBinding
-import com.github.panpf.sketch.stateimage.IconResStateImage
-import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingErrorImage
-import com.github.panpf.sketch.stateimage.saveCellularTrafficErrorImage
+import com.github.panpf.sketch.stateimage.IconDrawableResStateImage
+import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
+import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import com.github.panpf.sketch.viewability.setClickRedisplayAndIgnoreSaveCellularTraffic
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
@@ -70,24 +70,24 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
             setClickRedisplayAndIgnoreSaveCellularTraffic(true)
             updateDisplayImageOptions {
                 placeholder(
-                    IconResStateImage(
+                    IconDrawableResStateImage(
                         R.drawable.ic_image_outline,
                         ResourcesCompat.getColor(resources, color.placeholder_bg, null)
                     )
                 )
                 error(
-                    IconResStateImage(
+                    IconDrawableResStateImage(
                         R.drawable.ic_error,
                         ResourcesCompat.getColor(resources, color.placeholder_bg, null)
                     )
                 ) {
-                    saveCellularTrafficErrorImage(
-                        IconResStateImage(
+                    saveCellularTrafficError(
+                        IconDrawableResStateImage(
                             R.drawable.ic_signal_cellular,
                             ResourcesCompat.getColor(resources, color.placeholder_bg, null)
                         )
                     )
-                    pauseLoadWhenScrollingErrorImage()
+                    pauseLoadWhenScrollingError()
                 }
 //                svgBackgroundColor(Color.WHITE)
                 crossfade(preferExactIntrinsicSize = true)

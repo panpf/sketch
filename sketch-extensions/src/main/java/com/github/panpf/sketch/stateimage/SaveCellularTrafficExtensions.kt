@@ -7,22 +7,22 @@ import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 import com.github.panpf.sketch.util.SketchException
 
 
-fun ErrorStateImage.Builder.saveCellularTrafficErrorImage(saveCellularTrafficImage: StateImage): ErrorStateImage.Builder =
+fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImage: StateImage): ErrorStateImage.Builder =
     apply {
         addMatcher(SaveCellularTrafficMatcher(saveCellularTrafficImage))
     }
 
-fun ErrorStateImage.Builder.saveCellularTrafficErrorImage(saveCellularTrafficDrawable: Drawable): ErrorStateImage.Builder =
+fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficDrawable: Drawable): ErrorStateImage.Builder =
     apply {
         addMatcher(
-            SaveCellularTrafficMatcher(StateImage.drawable(saveCellularTrafficDrawable))
+            SaveCellularTrafficMatcher(DrawableStateImage(saveCellularTrafficDrawable))
         )
     }
 
-fun ErrorStateImage.Builder.saveCellularTrafficErrorImage(saveCellularTrafficImageResId: Int): ErrorStateImage.Builder =
+fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageResId: Int): ErrorStateImage.Builder =
     apply {
         addMatcher(
-            SaveCellularTrafficMatcher(StateImage.drawableRes(saveCellularTrafficImageResId))
+            SaveCellularTrafficMatcher(DrawableResStateImage(saveCellularTrafficImageResId))
         )
     }
 

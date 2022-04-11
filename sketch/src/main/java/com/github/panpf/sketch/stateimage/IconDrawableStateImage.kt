@@ -7,7 +7,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.stateimage.internal.IconStateDrawable
 import com.github.panpf.sketch.util.SketchException
 
-class IconStateImage(
+class IconDrawableStateImage(
     private val iconDrawable: Drawable,
     @ColorInt private val backgroundColor: Int? = null
 ) : StateImage {

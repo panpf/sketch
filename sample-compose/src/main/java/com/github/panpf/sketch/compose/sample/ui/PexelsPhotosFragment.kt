@@ -28,7 +28,7 @@ import com.github.panpf.sketch.compose.sample.R.drawable
 import com.github.panpf.sketch.compose.sample.base.ToolbarFragment
 import com.github.panpf.sketch.compose.sample.bean.Photo
 import com.github.panpf.sketch.compose.sample.vm.PexelsImageListViewModel
-import com.github.panpf.sketch.stateimage.IconResStateImage
+import com.github.panpf.sketch.stateimage.IconDrawableResStateImage
 import com.github.panpf.tools4a.dimen.ktx.px2dp
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlinx.coroutines.flow.Flow
@@ -78,13 +78,13 @@ fun PhotoContent(index: Int, photo: Photo) {
         contentDescription = ""
     ) {
         placeholder(
-            IconResStateImage(
+            IconDrawableResStateImage(
                 drawable.ic_image_outline,
                 ResourcesCompat.getColor(resources, R.color.placeholder_bg, null)
             )
         )
         error(
-            IconResStateImage(
+            IconDrawableResStateImage(
                 drawable.ic_error,
                 ResourcesCompat.getColor(resources, color.placeholder_bg, null)
             )

@@ -2,11 +2,11 @@ package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.stateimage.saveCellularTrafficErrorImage
+import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
 
 /**
- * To save cellular traffic. Prohibit downloading images from the Internet if the current network is cellular, Then can also cooperate with [saveCellularTrafficErrorImage] custom error image display
+ * To save cellular traffic. Prohibit downloading images from the Internet if the current network is cellular, Then can also cooperate with [saveCellularTrafficError] custom error image display
  */
 class SaveCellularTrafficDisplayInterceptor : RequestInterceptor {
 

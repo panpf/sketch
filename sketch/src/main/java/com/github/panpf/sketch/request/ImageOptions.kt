@@ -19,8 +19,11 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.stateimage.DrawableResStateImage
+import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.stateimage.newErrorStateImage
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
@@ -378,13 +381,13 @@ interface ImageOptions {
         fun placeholder(placeholderDrawable: Drawable?): Builder =
             apply {
                 this.placeholderImage =
-                    if (placeholderDrawable != null) StateImage.drawable(placeholderDrawable) else null
+                    if (placeholderDrawable != null) DrawableStateImage(placeholderDrawable) else null
             }
 
         fun placeholder(@DrawableRes placeholderDrawableResId: Int?): Builder =
             apply {
                 this.placeholderImage = if (placeholderDrawableResId != null) {
-                    StateImage.drawableRes(placeholderDrawableResId)
+                    DrawableResStateImage(placeholderDrawableResId)
                 } else null
             }
 
@@ -394,7 +397,7 @@ interface ImageOptions {
         ): Builder = apply {
             this.errorImage = errorImage?.let {
                 if (configBlock != null) {
-                    ErrorStateImage.new(it, configBlock)
+                    newErrorStateImage(it, configBlock)
                 } else {
                     it
                 }
@@ -407,9 +410,9 @@ interface ImageOptions {
         ): Builder = apply {
             this.errorImage = errorDrawable?.let {
                 if (configBlock != null) {
-                    ErrorStateImage.new(StateImage.drawable(it), configBlock)
+                    newErrorStateImage(DrawableStateImage(it), configBlock)
                 } else {
-                    StateImage.drawable(it)
+                    DrawableStateImage(it)
                 }
             }
         }
@@ -420,9 +423,9 @@ interface ImageOptions {
         ): Builder = apply {
             this.errorImage = errorDrawableResId?.let {
                 if (configBlock != null) {
-                    ErrorStateImage.new(StateImage.drawableRes(it), configBlock)
+                    newErrorStateImage(DrawableResStateImage(it), configBlock)
                 } else {
-                    StateImage.drawableRes(it)
+                    DrawableResStateImage(it)
                 }
             }
         }
