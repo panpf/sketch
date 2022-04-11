@@ -13,13 +13,13 @@ import org.json.JSONObject
 
 class BlurTransformation(
     /**
-     * 模糊半径
+     * Blur radius
      */
     @IntRange(from = 0, to = 100)
     val radius: Int = 15,
 
     /**
-     * 在模糊后的图片上覆盖一层颜色
+     * Overlay the blurred image with a layer of color, often useful when using images as a background
      */
     @ColorInt
     val maskColor: Int? = null

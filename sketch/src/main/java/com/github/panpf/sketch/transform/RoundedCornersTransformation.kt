@@ -13,7 +13,6 @@ import androidx.annotation.Px
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 
@@ -51,7 +50,8 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
         }
     }
 
-    override val key: String = "RoundedCornersTransformation(${radiusArray.joinToString(separator = ",")})"
+    override val key: String =
+        "RoundedCornersTransformation(${radiusArray.joinToString(separator = ",")})"
 
     override suspend fun transform(
         sketch: Sketch,
@@ -67,7 +67,7 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
         canvas.drawARGB(0, 0, 0, 0)
         paint.color = -0x10000
 
-        // 绘制圆角的罩子
+        // Draw a rounded mask
         val path = Path()
         path.addRoundRect(
             RectF(0f, 0f, input.width.toFloat(), input.height.toFloat()),
@@ -76,7 +76,7 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
         )
         canvas.drawPath(path, paint)
 
-        // 应用遮罩模式并绘制图片
+        // Apply mask mode and draw the image
         paint.xfermode = PorterDuffXfermode(SRC_IN)
         val rect = Rect(0, 0, input.width, input.height)
         canvas.drawBitmap(input, rect, rect, paint)

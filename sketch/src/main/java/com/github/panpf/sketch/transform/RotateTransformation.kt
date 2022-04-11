@@ -33,13 +33,12 @@ class RotateTransformation(val degrees: Int) : Transformation {
             val matrix = Matrix()
             matrix.setRotate(degrees.toFloat())
 
-            // 根据旋转角度计算新的图片的尺寸
             val newRect = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
             matrix.mapRect(newRect)
             val newWidth = newRect.width().toInt()
             val newHeight = newRect.height().toInt()
 
-            // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
+            // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
             var config = bitmap.config ?: Bitmap.Config.ARGB_8888
             if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
                 config = Bitmap.Config.ARGB_8888
