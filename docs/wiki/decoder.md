@@ -68,10 +68,10 @@ class MyBitmapDecoder : BitmapDecoder {
 }
 ```
 
-2.然后在配置 [Sketch] 时通过 components 方法将其 Factory 注册到 [Sketch]，如下：
+2.然后在配置 Sketch 时通过 components 方法将其 Factory 注册到 Sketch，如下：
 
 ```kotlin
-class MyApplication : MultiDexApplication(), SketchConfigurator {
+class MyApplication : Application(), SketchConfigurator {
 
     override fun createSketchConfig(): Builder.() -> Unit = {
         components {
@@ -83,13 +83,11 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
 
 > 注意：自定义 Decoder 需要应用 ImageRequest 中的很多与图片质量和尺寸相关的属性，例如 bitmapConfig、resize、colorSpace 等，可参考其它 Decoder 实现
 
-3.自定义 [DrawableDecoder] 和 [BitmapDecoder] 流程一样，唯一区别在于注册到 [Sketch] 时要调用 addDrawableDecoder() 方法
+3.自定义 [DrawableDecoder] 和 [BitmapDecoder] 流程一样，唯一区别在于注册到 Sketch 时要调用 addDrawableDecoder() 方法
 > 注意 :如果你自定义的 [DrawableDecoder] 是解码动图的话一定要判断 [ImageRequest].disabledAnimatedImage 参数
 
 
 [comment]: <> (class)
-
-[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
 
 [BitmapDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/BitmapDecoder.kt
 

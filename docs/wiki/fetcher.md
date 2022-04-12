@@ -2,7 +2,7 @@
 
 [Fetcher] 用于从 uri 获取数据，返回 [FetchResult]，交由 Decoder 使用。
 
-[Sketch] 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下几种：
+Sketch 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下几种：
 
 * [AssetUriFetcher][AssetUriFetcher]：从 app 的 assets 目录加载图片
 * [Base64UriFetcher][Base64UriFetcher]：从 uri 本身加载 base 64 格式的图片
@@ -41,10 +41,10 @@ class MyFetcher : Fetcher {
 }
 ```
 
-2.然后在配置 [Sketch] 时通过 components 方法将其 Factory 注册到 [Sketch]，如下：
+2.然后在配置 Sketch 时通过 components 方法将其 Factory 注册到 Sketch，如下：
 
 ```kotlin
-class MyApplication : MultiDexApplication(), SketchConfigurator {
+class MyApplication : Application(), SketchConfigurator {
 
     override fun createSketchConfig(): Builder.() -> Unit = {
         components {
@@ -55,8 +55,6 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
 ```
 
 [comment]: <> (class)
-
-[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
 
 [BitmapDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/BitmapDecoder.kt
 

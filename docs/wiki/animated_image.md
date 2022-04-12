@@ -23,7 +23,7 @@ Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你将需�
 通过在 Application 类实现 [SketchConfigurator] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，如下：
 
 ```kotlin
-class MyApplication : MultiDexApplication(), SketchConfigurator {
+class MyApplication : Application(), SketchConfigurator {
 
     override fun createSketchConfig(): Builder.() -> Unit = {
         components {

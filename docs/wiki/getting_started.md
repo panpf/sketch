@@ -43,7 +43,7 @@
 val sketch = context.sketch
 ```
 
-你可以在你的 Application 类上实现 [SketchConfigurator] 接口来配置 [Sketch] ，如下：
+你可以在你的 Application 类上实现 [SketchConfigurator] 接口来配置 Sketch ，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchConfigurator {
@@ -148,7 +148,7 @@ disposable.dispose()
 
 ## ImageView 扩展
 
-[Sketch] 给 ImageView 提供了一个扩展函数，用于便捷的将 URL 指向的图片显示到 ImageView 上，如下:
+Sketch 给 ImageView 提供了一个扩展函数，用于便捷的将 URL 指向的图片显示到 ImageView 上，如下:
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.jpg")

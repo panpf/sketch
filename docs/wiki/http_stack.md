@@ -1,26 +1,94 @@
-# 发送 HTTP 请求
+# HttpStack
 
-[HttpStack] 用来发起网络请求，然后返回响应，默认的实现是 [HurlStack]
+[HttpStack] 用来发起 HTTP 网络请求并获取响应然后交由 [HttpUriFetcher] 下载图片，默认的实现是 [HurlStack]
 
-#### 相关配置：
-* setMaxRetryCount(int maxRetryCount)：设置连接超时后重试次数，默认0（不重试）
-* setConnectTimeout(int connectTimeout)：设置连接超时时间，默认 7 秒
-* setReadTimeout(int readTimeout)：设置读取超时时间，默认 7 秒
-* setUserAgent(String userAgent)：设置 User-Agent，为空的话不设置
-* setExtraHeaders(Map<String, String> extraHeaders)：设置一些通用的请求头属性，不可重复
-* addExtraHeaders(Map<String, String> extraHeaders)：添加一些通用的请求头属性，可重复
+### HurlStack
 
+[HurlStack] 采用 HttpURLConnection 实现，支持以下配置：
 
-#### 自定义：
+```kotlin
+class MyApplication : Application(), SketchConfigurator {
 
-首先实现 [HttpStack] 接口定义自己的 [HttpStack]
+    override fun createSketchConfig(): Builder.() -> Unit = {
+        httpStack(HurlStack.Builder().apply {
+            // 连接超时。默认 7000
+            connectTimeout(Int)
 
-然后通过 [Configuration] 使用即可，如下：
+            // 读取超时。默认 7000
+            readTimeout(Int)
 
-```java
-Sketch.with(context).getConfiguration().setHttpStack(new MyHttpStack());
+            // User-Agent。默认 null
+            userAgent(String)
+
+            // 添加一些不可重复的 header。默认 null
+            extraHeaders(Map<String, String>)
+
+            // 添加一些可重复的 header。默认 null
+            addExtraHeaders(Map<String, String>)
+
+            // HttpURLConnection 在 执行 connect 直线交由此方法处理一下。默认 null
+            processRequest { url: String, connection: HttpURLConnection ->
+
+            }
+        }.build())
+    }
+}
 ```
 
-[HttpStack]: ../../sketch/src/main/java/com/github/panpf/sketch/http/HttpStack.java
-[HurlStack]: ../../sketch/src/main/java/com/github/panpf/sketch/http/HurlStack.java
-[Configuration]: ../../sketch/src/main/java/com/github/panpf/sketch/Configuration.java
+### OkHttpStack
+
+Sketch 还提供了 [HttpStack] 的 [OkHttpStack] 实现，使用之前需要先导入 `sketch-okhttp` 模块，然后在初始化 Sketch 通过 httpStack()
+方法注册即可，如下：
+
+```kotlin
+class MyApplication : Application(), SketchConfigurator {
+
+    override fun createSketchConfig(): Builder.() -> Unit = {
+        httpStack(OkHttpStack.Builder().apply {
+            // 连接超时。默认 7000
+            connectTimeout(Int)
+
+            // 读取超时。默认 7000
+            readTimeout(Int)
+
+            // User-Agent。默认 null
+            userAgent(String)
+
+            // 添加一些不可重复的 header。默认 null
+            extraHeaders(Map<String, String>)
+
+            // 添加一些可重复的 header。默认 null
+            addExtraHeaders(Map<String, String>)
+
+            // 拦截器。默认 null
+            interceptors(Interceptor)
+
+            // 网络拦截器。默认 null
+            networkInterceptors(Interceptor)
+        }.build())
+    }
+}
+```
+
+> 注意：由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app 最低版本较高，那么你可以使用较新版本的 OkHttp 自定一个 HttpStack
+
+### 自定义：
+
+实现 [HttpStack] 接口定义自己的 HttpStack，然后在初始化 Sketch 通过 httpStack() 方法注册即可：
+
+```kotlin
+class MyApplication : Application(), SketchConfigurator {
+
+    override fun createSketchConfig(): Builder.() -> Unit = {
+        httpStack(MyHttpStack())
+    }
+}
+```
+
+[HttpStack]: ../../sketch/src/main/java/com/github/panpf/sketch/http/HttpStack.kt
+
+[HurlStack]: ../../sketch/src/main/java/com/github/panpf/sketch/http/HurlStack.kt
+
+[OkHttpStack]: ../../sketch-okhttp/src/main/java/com/github/panpf/sketch/http/OkHttpStack.kt
+
+[HttpUriFetcher]: ../../sketch/src/main/java/com/github/panpf/sketch/fetch/HttpUriFetcher.kt

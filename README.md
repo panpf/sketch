@@ -141,8 +141,8 @@ AsyncImage(
 * [Cache：了解下载、结果、内存缓存][cache]
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
 * [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
-* Target：将加载结果应用到指定的目标上
-* HttpStack：将 http 网络部分替换成 okhttp
+* [Target：将加载结果应用到目标上][target]
+* [HttpStack：了解 http 部分及使用 okhttp][http_stack]
 * 解码 svg 图片
 * 解码视频帧
 * 预加载图片到内存
@@ -240,6 +240,10 @@ AsyncImage(
 [listener]: docs/wiki/listener.md
 
 [cache]: docs/wiki/cache.md
+
+[target]: docs/wiki/target.md
+
+[http_stack]: docs/wiki/http_stack.md
 
 
 [comment]: <> (links)

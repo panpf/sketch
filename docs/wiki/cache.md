@@ -10,7 +10,7 @@ Sketch 为了提高图片的加载速度引入了下载缓存、Bitmap 结果缓
 
 * 根据最少使用原则清除旧的缓存
 * 默认最大容量是 500MB
-* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3`，另外为了兼容多进程，当在非主进程使用 [Sketch]
+* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3`，另外为了兼容多进程，当在非主进程使用 Sketch
   时缓存目录名称后会加上进程名，例如 "sketch3:push"
 
 > 你可以在初始化 Sketch 时创建 [LruDiskCache] 并修改最大容量或缓存目录，然后通过 diskCache() 方法注册
@@ -77,45 +77,68 @@ try {
 
 ## 下载缓存
 
-## Bitmap 结果缓存# 使用 cacheProcessedImageInDisk 属性缓存需要复杂处理的图片，提升显示速度
+Sketch 默认会将 Http uri 的内容缓存到磁盘缓存，避免重复下载，以提高加载速度
 
-一张图片要经过读取（或缩略图模式读取）和 ImageProcessor 处理才能显示在页面上，这两步通常也是整个显示过程中最耗时的，为了加快显示速度，减少用户等待时间我们可以将最终经过
-inSampleSize 缩小的、缩略图模式读取的或 [ImageProcessor] 处理过的图片缓存在磁盘中，下次就可以读取后直接使用
+你可以通过 [ImageRequest] 或 [ImageOptions] 的 downloadDiskCachePolicy 属性控制下载缓存:
 
-### 如何开启：
-
-```java
-DisplayOptions displayOptions=new DisplayOptions();
-
-        displayOptions.setCacheProcessedImageInDisk(true);
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    // 禁用
+    downloadDiskCachePolicy(CachePolicy.DISABLED)
+    // 只读
+    downloadDiskCachePolicy(CachePolicy.READ_ONLY)
+    // 只写
+    downloadDiskCachePolicy(CachePolicy.WRITE_ONLY)
+}
 ```
 
-### 使用条件
+## Bitmap 结果缓存
 
-并不是你只要开启了就一定会将最终的图片缓存在磁盘缓存中，还需要满足以下任一条件：
+Sketch 默认会在以下情况将 Bitmap 缓存到磁盘缓存中，避免重复解码和转换，以提高加载速度：
 
-* 有 maxSize 并且最终计算得出的 inSampleSize 大于等于 8
-* 有 resize
-* 有 ImageProcessor，并且确实生成了一张新的图片
-* thumbnailMode 为 true 并且 resize 不为 null
+* Resize 不为 null 且解码后的 Bitmap 与原图有缩小或尺寸调整
+* 经过 Transformation 转换
 
-### 存在的问题
+你可以通过 [ImageRequest] 或 [ImageOptions] 的 bitmapResultDiskCachePolicy 属性控制 Bitmap 结果缓存:
 
-由于 Android 天然存在的
-BUG，导致读到内存里的图片，再保存到磁盘后图片会发生轻微的色彩变化（通常是发黄并丢失一些细节），因此在使用此功能时还是要慎重考虑此因素带来的影响，参考文章 [Android 中 decode JPG 时建议使用 inPreferQualityOverSpeed][reference_article]
-
-`此功能读取图片时已强制设置 inPreferQualityOverSpeed 为 true`
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    // 禁用
+    bitmapResultDiskCachePolicy(CachePolicy.DISABLED)
+    // 只读
+    bitmapResultDiskCachePolicy(CachePolicy.READ_ONLY)
+    // 只写
+    bitmapResultDiskCachePolicy(CachePolicy.WRITE_ONLY)
+}
+```
 
 ## Bitmap 内存缓存
+
+Sketch 默认会将最终得到的 Bitmap 缓存到内存缓存中，避免重复加载，以提高加载速度：
+
+你可以通过 [ImageRequest] 或 [ImageOptions] 的 bitmapMemoryCachePolicy 属性控制 Bitmap 内存缓存:
+
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    // 禁用
+    bitmapMemoryCachePolicy(CachePolicy.DISABLED)
+    // 只读
+    bitmapMemoryCachePolicy(CachePolicy.READ_ONLY)
+    // 只写
+    bitmapMemoryCachePolicy(CachePolicy.WRITE_ONLY)
+}
+```
 
 [MemoryCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/MemoryCache.kt
 
 [LruMemoryCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/internal/LruMemoryCache.kt
 
-[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
-
 [DiskCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/DiskCache.kt
 
 [LruDiskCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/internal/LruDiskCache.kt
+
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+
+[ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
 
 [reference_article]: http://www.cnblogs.com/zhucai/p/inPreferQualityOverSpeed.html
