@@ -42,6 +42,6 @@ sketchImageView.setClickDisplayOnPauseDownload(true);
 此功能`只作用于当前图片`，并且`只忽略暂停下载功能一次`
 
 [MobileDataPauseDownloadController]: ../../sketch/src/main/java/com/github/panpf/sketch/optionsfilter/MobileDataPauseDownloadController.java
-[sketch_image_view]: sketch_image_view.md
+[sketch_image_view]: todo_view_ability.md
 [DisplayOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayOptions.java
 [SketchImageView]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchImageView.java

@@ -144,9 +144,9 @@ sketchImageView.setClickRetryOnDisplayErrorEnabled(true);
 
 参考 [播放 GIF 图片][play_gif]
 
-[pause_download]: pause_download.md
+[pause_download]: todo_save_cellular_traffic.md
 [play_gif]: play_gif.md
-[zoom]: zoom.md
+[zoom]: todo_zoom_ability.md
 [block_display]: block_display.md
 [uri]: uri.md
 [options]: options.md

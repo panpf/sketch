@@ -18,7 +18,8 @@
     * END_CROP：保留尾部部分
     * FILL：全部保留，但会变形
 
-> 如何判定是长图？图片的宽高比和 resize 的宽高比相差超过 1 倍
+> 1. 如何判定是长图？图片的宽高比和 resize 的宽高比相差超过 1 倍
+> 2. 使用 [LongImageClipPrecisionDecider] 有助于提高长图在网格列表中的清晰度，[点我查看使用方法][long_image_grid_thumbnails]
 
 ### 配置
 
@@ -63,3 +64,5 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
+
+[long_image_grid_thumbnails]: todo_long_image_grid_thumbnails.md
