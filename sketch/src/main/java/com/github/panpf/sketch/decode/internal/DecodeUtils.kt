@@ -81,14 +81,11 @@ private fun realCalculateSampleSize(
 ): Int {
     val targetPixels = targetWidth.times(targetHeight).times(targetPixelsScale).roundToInt()
     var sampleSize = 1
-    while (true) {
-        val sampledWidth = calculateSamplingSize(imageWidth, sampleSize)
-        val sampledHeight = calculateSamplingSize(imageHeight, sampleSize)
-        if (sampledWidth.times(sampledHeight) <= targetPixels) {
-            break
-        } else {
-            sampleSize *= 2
-        }
+    while (
+        calculateSamplingSize(imageWidth, sampleSize)
+            .times(calculateSamplingSize(imageHeight, sampleSize)) > targetPixels
+    ) {
+        sampleSize *= 2
     }
     return limitedMaxBitmapSize(imageWidth, imageHeight, sampleSize)
 }
