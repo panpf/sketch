@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.http
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.IOException
 import java.io.InputStream
@@ -106,52 +105,13 @@ class HurlStack(
         }
     }
 
-    fun newBuilder(
-        configBlock: (Builder.() -> Unit)? = null
-    ): Builder = Builder(this).apply {
-        configBlock?.invoke(this)
-    }
-
-    fun new(
-        configBlock: (Builder.() -> Unit)? = null
-    ): HurlStack = Builder(this).apply {
-        configBlock?.invoke(this)
-    }.build()
-
-    companion object {
-
-        fun new(
-            configBlock: (Builder.() -> Unit)? = null
-        ): HurlStack = Builder().apply {
-            configBlock?.invoke(this)
-        }.build()
-    }
-
     class Builder {
-        private var readTimeout: Int
-        private var connectTimeout: Int
-        private var userAgent: String?
-        private var extraHeaders: MutableMap<String, String>?
-        private var addExtraHeaders: MutableMap<String, String>?
-        private var processRequest: ((url: String, connection: HttpURLConnection) -> Unit)?
-
-        constructor() {
-            this.readTimeout = 0
-            this.connectTimeout = HttpStack.DEFAULT_CONNECT_TIMEOUT
-            this.userAgent = null
-            this.extraHeaders = null
-            this.addExtraHeaders = null
-            this.processRequest = null
-        }
-
-        constructor(hurlStack: HurlStack) {
-            this.readTimeout = hurlStack.readTimeout
-            this.connectTimeout = hurlStack.connectTimeout
-            this.userAgent = hurlStack.userAgent
-            this.extraHeaders = hurlStack.extraHeaders?.toMutableMap()
-            this.addExtraHeaders = hurlStack.addExtraHeaders?.toMutableMap()
-            this.processRequest = hurlStack.processRequest
-        }
+        private var readTimeout: Int = HttpStack.DEFAULT_TIMEOUT
+        private var connectTimeout: Int = HttpStack.DEFAULT_TIMEOUT
+        private var userAgent: String? = null
+        private var extraHeaders: MutableMap<String, String>? = null
+        private var addExtraHeaders: MutableMap<String, String>? = null
+        private var processRequest: ((url: String, connection: HttpURLConnection) -> Unit)? = null
 
         fun connectTimeout(connectTimeout: Int) = apply {
             this.connectTimeout = connectTimeout

@@ -258,7 +258,7 @@ class Sketch private constructor(
 
         internal fun build(): Sketch {
             val logger = logger ?: Logger()
-            val httpStack = httpStack ?: HurlStack.new()
+            val httpStack = httpStack ?: HurlStack.Builder().build()
 
             val defaultMemoryCacheBytes = appContext.defaultMemoryCacheBytes()
             val memoryCache: MemoryCache = memoryCache

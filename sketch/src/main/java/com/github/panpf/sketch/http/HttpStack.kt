@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.http
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.IOException
 import java.io.InputStream
@@ -27,7 +26,7 @@ import java.io.InputStream
 interface HttpStack {
 
     companion object {
-        const val DEFAULT_CONNECT_TIMEOUT = 7 * 1000
+        const val DEFAULT_TIMEOUT = 7 * 1000
     }
 
     @Throws(IOException::class)
