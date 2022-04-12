@@ -318,10 +318,6 @@ interface DownloadRequest : ImageRequest {
         ): Builder = apply {
             super.crossfade(durationMillis, preferExactIntrinsicSize)
         }
-
-        override fun options(options: ImageOptions, requestFirst: Boolean): Builder = apply {
-            super.options(options, requestFirst)
-        }
     }
 
     class DownloadRequestImpl internal constructor(
@@ -351,8 +347,8 @@ interface DownloadRequest : ImageRequest {
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Factory?,
-        override val viewOptions: ImageOptions?,
         override val definedOptions: ImageOptions,
+        override val viewOptions: ImageOptions?,
         override val globalOptions: ImageOptions?
     ) : BaseImageRequest(), DownloadRequest
 }

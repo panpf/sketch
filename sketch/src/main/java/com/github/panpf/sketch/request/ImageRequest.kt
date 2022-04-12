@@ -122,8 +122,8 @@ interface ImageRequest {
     val errorImage: StateImage?
     val transition: Transition.Factory?
 
-    val viewOptions: ImageOptions?
     val definedOptions: ImageOptions
+    val viewOptions: ImageOptions?
     val globalOptions: ImageOptions?
 
     val uri: Uri
@@ -568,110 +568,6 @@ interface ImageRequest {
             preferExactIntrinsicSize: Boolean = false
         ): Builder = apply {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
-        }
-
-        // todo 考虑这个方法的用处，感觉不是很优雅
-        open fun options(options: ImageOptions, requestFirst: Boolean = false): Builder = apply {
-            if (!requestFirst || this.depth == null) {
-                options.depth?.let {
-                    this.depth = it
-                }
-            }
-            options.parameters?.takeIf { it.isNotEmpty() }?.let {
-                it.forEach { entry ->
-                    if (!requestFirst || parametersBuilder?.exist(entry.first) != true) {
-                        setParameter(entry.first, entry.second.value, entry.second.cacheKey)
-                    }
-                }
-            }
-            options.httpHeaders?.takeIf { !it.isEmpty() }?.let { headers ->
-                headers.addList.forEach {
-                    addHttpHeader(it.first, it.second)
-                }
-                headers.setList.forEach {
-                    if (!requestFirst || httpHeaders?.setExist(it.first) != true) {
-                        setHttpHeader(it.first, it.second)
-                    }
-                }
-            }
-            if (!requestFirst || this.downloadDiskCachePolicy == null) {
-                options.downloadDiskCachePolicy?.let {
-                    this.downloadDiskCachePolicy = it
-                }
-            }
-
-            if (!requestFirst || this.bitmapConfig == null) {
-                options.bitmapConfig?.let {
-                    this.bitmapConfig = it
-                }
-            }
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                if (!requestFirst || this.colorSpace == null) {
-                    options.colorSpace?.let {
-                        this.colorSpace = it
-                    }
-                }
-            }
-            if (!requestFirst || this.preferQualityOverSpeed == null) {
-                @Suppress("DEPRECATION")
-                options.preferQualityOverSpeed?.let {
-                    this.preferQualityOverSpeed = it
-                }
-            }
-            if (!requestFirst || this.resizeSize == null) {
-                options.resizeSize?.let {
-                    this.resizeSize = it
-                }
-            }
-            if (!requestFirst || this.resizePrecisionDecider == null) {
-                options.resizePrecisionDecider?.let {
-                    this.resizePrecisionDecider = it
-                }
-            }
-            if (!requestFirst || this.resizeScale == null) {
-                options.resizeScale?.let {
-                    this.resizeScale = it
-                }
-            }
-            options.transformations?.takeIf { it.isNotEmpty() }?.let {
-                addTransformations(it)
-            }
-            if (!requestFirst || this.disabledBitmapPool == null) {
-                options.disabledBitmapPool?.let {
-                    this.disabledBitmapPool = it
-                }
-            }
-            if (!requestFirst || this.bitmapResultDiskCachePolicy == null) {
-                options.bitmapResultDiskCachePolicy?.let {
-                    this.bitmapResultDiskCachePolicy = it
-                }
-            }
-
-            if (!requestFirst || this.disabledAnimatedImage == null) {
-                options.disabledAnimatedImage?.let {
-                    this.disabledAnimatedImage = it
-                }
-            }
-            if (!requestFirst || this.bitmapMemoryCachePolicy == null) {
-                options.bitmapMemoryCachePolicy?.let {
-                    this.bitmapMemoryCachePolicy = it
-                }
-            }
-            if (!requestFirst || this.placeholderImage == null) {
-                options.placeholderImage?.let {
-                    this.placeholderImage = it
-                }
-            }
-            if (!requestFirst || this.errorImage == null) {
-                options.errorImage?.let {
-                    this.errorImage = it
-                }
-            }
-            if (!requestFirst || this.transition == null) {
-                options.transition?.let {
-                    this.transition = it
-                }
-            }
         }
 
         @SuppressLint("NewApi")
