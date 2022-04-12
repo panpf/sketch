@@ -32,8 +32,8 @@ import com.github.panpf.sketch.viewability.SizeChangeObserver
 import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
-import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
+import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.tile.OnTileChangedListener
 import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
@@ -350,6 +350,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override fun onAttachedToWindow() {
         initialize()
+        // todo 让外面可以将 fragment 的 lifecycle 传进来，这样在 viewpager 中可以让非当前 tiles pause
         host?.context?.getLifecycle()?.addObserver(lifecycleEventObserver)
     }
 

@@ -149,20 +149,21 @@ AsyncImage(
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
 * [DecodeInterceptor：拦截 Bitmap 或 Drawable 解码][decode_interceptor]
-* [BitmapPool：重用 Bitmap，减少内存抖动][bitmap_pool]
+* [BitmapPool：复用 Bitmap，减少 GC][bitmap_pool]
 * [DownloadRequest：下载图片到磁盘][download_request]
 * [LoadRequest：加载图片获取 Bitmap][load_request]
 * [预加载图片到内存][preloading]
 
 特色功能：
 
-* [SketchImageView：显示下载进度、图片类型角标][view_ability]
-* [SketchZoomImageView：手势缩放及分块显示超大图][zoom_ability]
-* [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
-* [蜂窝数据网络下暂停下载图片节省流量][save_cellular_traffic]
-* [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load_when_scrolling]
-* [显示 apk 文件或已安装 app 的图标][apk_app_icon]
-* [查看日志][log]
+* [SketchZoomImageView：手势缩放及分块显示超大图][zoom_]
+* [提高长图在网格列表中的清晰度][long_image_grid_thumbnails_]
+* [显示下载进度][show_download_progress_]
+* [显示图片类型角标][show_image_type_]
+* [蜂窝数据网络下暂停下载图片节省流量][save_cellular_traffic_]
+* [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load_when_scrolling_]
+* [显示 apk 文件或已安装 app 的图标][apk_app_icon_]
+* [查看日志][log_]
 
 [comment]: <> (## 示例 APP)
 
@@ -268,9 +269,11 @@ AsyncImage(
 
 [long_image_grid_thumbnails]: docs/wiki/long_image_grid_thumbnails.md
 
-[view_ability]: docs/wiki/view_ability.md
+[show_image_type]: docs/wiki/show_image_type.md
 
-[zoom_ability]: docs/wiki/zoom_ability.md
+[show_download_progress]: docs/wiki/show_download_progress.md
+
+[zoom]: docs/wiki/zoom.md
 
 [save_cellular_traffic]: docs/wiki/save_cellular_traffic.md
 

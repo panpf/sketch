@@ -69,7 +69,7 @@ try {
 
 内存缓存会在以下几种情况下释放：
 
-* 主动调用 MemoryCache 的 trim() 方法
+* 主动调用 MemoryCache 的 trim()、clear() 方法
 * 缓存的 Bitmap 不再被引用
 * 达到最大容量时自动释放较旧的缓存
 * 设备可用内存较低触发了 Application 的 onLowMemory() 方法

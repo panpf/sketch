@@ -65,4 +65,4 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
 
-[long_image_grid_thumbnails]: todo_long_image_grid_thumbnails.md
+[long_image_grid_thumbnails]: long_image_grid_thumbnails.md
