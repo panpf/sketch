@@ -160,7 +160,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             SwitchMenu(
                 title = "Bitmap pool",
                 desc = null,
-                data = appSettingsService.disabledBitmapPool,
+                data = appSettingsService.disabledReuseBitmap,
                 reverse = true
             )
         )

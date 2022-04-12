@@ -59,7 +59,7 @@ interface ImageOptions {
     val resizePrecisionDecider: PrecisionDecider?
     val resizeScale: Scale?
     val transformations: List<Transformation>?
-    val disabledBitmapPool: Boolean?
+    val disabledReuseBitmap: Boolean?
     val ignoreExifOrientation: Boolean?
     val bitmapResultDiskCachePolicy: CachePolicy?
     val disabledAnimatedImage: Boolean?
@@ -96,7 +96,7 @@ interface ImageOptions {
             && resizePrecisionDecider == null
             && resizeScale == null
             && transformations == null
-            && disabledBitmapPool == null
+            && disabledReuseBitmap == null
             && ignoreExifOrientation == null
             && bitmapResultDiskCachePolicy == null
             && disabledAnimatedImage == null
@@ -122,7 +122,7 @@ interface ImageOptions {
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScale: Scale? = null
         private var transformations: List<Transformation>? = null
-        private var disabledBitmapPool: Boolean? = null
+        private var disabledReuseBitmap: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
 
@@ -152,7 +152,7 @@ interface ImageOptions {
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScale = request.resizeScale
             this.transformations = request.transformations
-            this.disabledBitmapPool = request.disabledBitmapPool
+            this.disabledReuseBitmap = request.disabledReuseBitmap
             this.ignoreExifOrientation = request.ignoreExifOrientation
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
 
@@ -353,9 +353,9 @@ interface ImageOptions {
                 this.transformations = transformations.toList()
             }
 
-        fun disabledBitmapPool(disabledBitmapPool: Boolean? = true): Builder =
+        fun disabledReuseBitmap(disabledReuseBitmap: Boolean? = true): Builder =
             apply {
-                this.disabledBitmapPool = disabledBitmapPool
+                this.disabledReuseBitmap = disabledReuseBitmap
             }
 
         fun ignoreExifOrientation(ignoreExifOrientation: Boolean? = true): Builder =
@@ -457,7 +457,7 @@ interface ImageOptions {
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScale = resizeScale,
             transformations = transformations,
-            disabledBitmapPool = disabledBitmapPool,
+            disabledReuseBitmap = disabledReuseBitmap,
             ignoreExifOrientation = ignoreExifOrientation,
             bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
             disabledAnimatedImage = disabledAnimatedImage,
@@ -483,7 +483,7 @@ interface ImageOptions {
         override val resizePrecisionDecider: PrecisionDecider?,
         override val resizeScale: Scale?,
         override val transformations: List<Transformation>?,
-        override val disabledBitmapPool: Boolean?,
+        override val disabledReuseBitmap: Boolean?,
         override val ignoreExifOrientation: Boolean?,
         override val bitmapResultDiskCachePolicy: CachePolicy?,
         override val disabledAnimatedImage: Boolean?,

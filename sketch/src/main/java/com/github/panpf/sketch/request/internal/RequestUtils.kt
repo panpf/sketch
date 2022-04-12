@@ -81,8 +81,8 @@ internal fun ImageRequest.newKey(): String = buildString {
                 })"
             )
         }
-        if (disabledBitmapPool) {
-            append("_").append("disabledBitmapPool")
+        if (disabledReuseBitmap) {
+            append("_").append("disabledReuseBitmap")
         }
         if (ignoreExifOrientation) {
             append("_").append("ignoreExifOrientation")

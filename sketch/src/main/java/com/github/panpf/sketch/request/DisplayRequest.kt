@@ -279,8 +279,8 @@ interface DisplayRequest : ImageRequest {
                 super.removeTransformations(*removeTransformations)
             }
 
-        override fun disabledBitmapPool(disabledBitmapPool: Boolean?): Builder = apply {
-            super.disabledBitmapPool(disabledBitmapPool)
+        override fun disabledReuseBitmap(disabledReuseBitmap: Boolean?): Builder = apply {
+            super.disabledReuseBitmap(disabledReuseBitmap)
         }
 
         override fun ignoreExifOrientation(ignoreExifOrientation: Boolean?): Builder = apply {
@@ -359,7 +359,7 @@ interface DisplayRequest : ImageRequest {
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScale: Scale,
         override val transformations: List<Transformation>?,
-        override val disabledBitmapPool: Boolean,
+        override val disabledReuseBitmap: Boolean,
         override val ignoreExifOrientation: Boolean,
         override val bitmapResultDiskCachePolicy: CachePolicy,
         override val target: Target?,

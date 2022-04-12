@@ -106,7 +106,7 @@ interface ImageRequest {
     val transformations: List<Transformation>?
 
     /** Disabled reuse of Bitmap from [BitmapPool] */
-    val disabledBitmapPool: Boolean
+    val disabledReuseBitmap: Boolean
 
     /** Ignore exif orientation */
     val ignoreExifOrientation: Boolean
@@ -196,7 +196,7 @@ interface ImageRequest {
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScale: Scale? = null
         private var transformations: MutableSet<Transformation>? = null
-        private var disabledBitmapPool: Boolean? = null
+        private var disabledReuseBitmap: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
         private var bitmapMemoryCachePolicy: CachePolicy? = null
@@ -243,7 +243,7 @@ interface ImageRequest {
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScale = request.resizeScale
             this.transformations = request.transformations?.toMutableSet()
-            this.disabledBitmapPool = request.disabledBitmapPool
+            this.disabledReuseBitmap = request.disabledReuseBitmap
             this.ignoreExifOrientation = request.ignoreExifOrientation
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
             this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
@@ -487,8 +487,8 @@ interface ImageRequest {
                 removeTransformations(removeTransformations.toList())
             }
 
-        open fun disabledBitmapPool(disabledBitmapPool: Boolean? = true): Builder = apply {
-            this.disabledBitmapPool = disabledBitmapPool
+        open fun disabledReuseBitmap(disabledReuseBitmap: Boolean? = true): Builder = apply {
+            this.disabledReuseBitmap = disabledReuseBitmap
         }
 
         open fun ignoreExifOrientation(ignoreExifOrientation: Boolean? = true): Builder =
@@ -590,7 +590,7 @@ interface ImageRequest {
                 resizePrecision(resizePrecisionDecider)
                 resizeScale(resizeScale)
                 transformations(transformations?.toList())
-                disabledBitmapPool(disabledBitmapPool)
+                disabledReuseBitmap(disabledReuseBitmap)
                 ignoreExifOrientation(ignoreExifOrientation)
                 bitmapMemoryCachePolicy(bitmapMemoryCachePolicy)
                 disabledAnimatedImage(disabledAnimatedImage)
@@ -647,9 +647,9 @@ interface ImageRequest {
             val transformations = transformations?.toList()
                 .merge(viewOptions?.transformations)
                 .merge(globalOptions?.transformations)
-            val disabledBitmapPool = disabledBitmapPool
-                ?: viewOptions?.disabledBitmapPool
-                ?: globalOptions?.disabledBitmapPool
+            val disabledReuseBitmap = disabledReuseBitmap
+                ?: viewOptions?.disabledReuseBitmap
+                ?: globalOptions?.disabledReuseBitmap
                 ?: false
             val ignoreExifOrientation = ignoreExifOrientation
                 ?: viewOptions?.ignoreExifOrientation
@@ -698,7 +698,7 @@ interface ImageRequest {
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScale = resizeScale,
                         transformations = transformations,
-                        disabledBitmapPool = disabledBitmapPool,
+                        disabledReuseBitmap = disabledReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                         disabledAnimatedImage = disabledAnimatedImage,
@@ -731,7 +731,7 @@ interface ImageRequest {
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScale = resizeScale,
                         transformations = transformations,
-                        disabledBitmapPool = disabledBitmapPool,
+                        disabledReuseBitmap = disabledReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                         disabledAnimatedImage = disabledAnimatedImage,
@@ -764,7 +764,7 @@ interface ImageRequest {
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScale = resizeScale,
                         transformations = transformations,
-                        disabledBitmapPool = disabledBitmapPool,
+                        disabledReuseBitmap = disabledReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                         disabledAnimatedImage = disabledAnimatedImage,
