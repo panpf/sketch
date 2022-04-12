@@ -129,6 +129,19 @@ interface DisplayRequest : ImageRequest {
             super.target(ImageViewTarget(imageView))
         }
 
+        /**
+         * Convenience function to create and set the [DisplayTarget].
+         */
+        inline fun target(
+            crossinline onStart: (placeholder: Drawable?) -> Unit = {},
+            crossinline onError: (error: Drawable?) -> Unit = {},
+            crossinline onSuccess: (result: Drawable) -> Unit = {}
+        ) = target(object : DisplayTarget {
+            override fun onStart(placeholder: Drawable?) = onStart(placeholder)
+            override fun onError(error: Drawable?) = onError(error)
+            override fun onSuccess(result: Drawable) = onSuccess(result)
+        })
+
         override fun build(): DisplayRequest {
             return super.build() as DisplayRequest
         }

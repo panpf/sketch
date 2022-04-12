@@ -22,6 +22,7 @@ import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition.Factory
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.SketchException
 
 fun DownloadRequest(
     context: Context,
@@ -105,6 +106,19 @@ interface DownloadRequest : ImageRequest {
         fun target(target: DownloadTarget): Builder = apply {
             super.target(target)
         }
+
+        /**
+         * Convenience function to create and set the [DownloadTarget].
+         */
+        inline fun target(
+            crossinline onStart: () -> Unit = {},
+            crossinline onError: (exception: SketchException) -> Unit = {},
+            crossinline onSuccess: (result: DownloadData) -> Unit = {}
+        ) = target(object : DownloadTarget {
+            override fun onStart() = onStart()
+            override fun onError(exception: SketchException) = onError(exception)
+            override fun onSuccess(result: DownloadData) = onSuccess(result)
+        })
 
         override fun build(): DownloadRequest {
             return super.build() as DownloadRequest

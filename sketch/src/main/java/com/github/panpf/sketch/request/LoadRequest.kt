@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.request
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
 import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
@@ -22,6 +23,7 @@ import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition.Factory
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.SketchException
 
 fun LoadRequest(
     context: Context,
@@ -104,6 +106,19 @@ interface LoadRequest : ImageRequest {
         fun target(target: LoadTarget): Builder = apply {
             super.target(target)
         }
+
+        /**
+         * Convenience function to create and set the [LoadTarget].
+         */
+        inline fun target(
+            crossinline onStart: () -> Unit = {},
+            crossinline onError: (exception: SketchException) -> Unit = {},
+            crossinline onSuccess: (result: Bitmap) -> Unit = {}
+        ) = target(object : LoadTarget {
+            override fun onStart() = onStart()
+            override fun onError(exception: SketchException) = onError(exception)
+            override fun onSuccess(result: Bitmap) = onSuccess(result)
+        })
 
         override fun build(): LoadRequest {
             return super.build() as LoadRequest
