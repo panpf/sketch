@@ -12,8 +12,10 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
 import androidx.exifinterface.media.ExifInterface
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
+import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleEventObserver
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
@@ -47,7 +49,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     private var zoomer: Zoomer? = null
     private var tiles: Tiles? = null
-    private val lifecycleEventObserver = LifecycleEventObserver { _, event ->
+    private val tilesPauseLifecycleEventObserver = LifecycleEventObserver { _, event ->
         when (event) {
             ON_PAUSE -> {
                 tiles?.paused = true
@@ -65,6 +67,15 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private var onTileChangedListenerList: MutableSet<OnTileChangedListener>? = null
     private val imageMatrix = Matrix()
 
+    var lifecycle: Lifecycle? = null
+        set(value) {
+            if (value != field) {
+                unregisterTilesPauseLifecycleObserver()
+                field = value ?: host?.context.getLifecycle()
+                registerTilesPauseLifecycleObserver()
+            }
+        }
+
     override var host: Host? = null
         set(value) {
             val oldZoomer = zoomer
@@ -79,6 +90,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             if (newZoomer != null) {
                 field?.superScaleType = ScaleType.MATRIX
             }
+
+            lifecycle = value?.context.getLifecycle()
         }
 
     var scrollBarEnabled: Boolean = true
@@ -350,13 +363,24 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override fun onAttachedToWindow() {
         initialize()
-        // todo 让外面可以将 fragment 的 lifecycle 传进来，这样在 viewpager 中可以让非当前 tiles pause
-        host?.context?.getLifecycle()?.addObserver(lifecycleEventObserver)
+        registerTilesPauseLifecycleObserver()
     }
 
     override fun onDetachedFromWindow() {
         destroy()
-        host?.context?.getLifecycle()?.removeObserver(lifecycleEventObserver)
+        unregisterTilesPauseLifecycleObserver()
+    }
+
+    private fun registerTilesPauseLifecycleObserver() {
+        if (host?.view?.isAttachedToWindowCompat == true) {
+            this.lifecycle?.addObserver(tilesPauseLifecycleEventObserver)
+            tiles?.paused = this.lifecycle?.currentState?.isAtLeast(STARTED) == false
+        }
+    }
+
+    private fun unregisterTilesPauseLifecycleObserver() {
+        this.lifecycle?.removeObserver(tilesPauseLifecycleEventObserver)
+        tiles?.paused = false
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
@@ -394,8 +418,9 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private fun initialize() {
         setZoomerDrawable()
         tiles?.destroy()
-        this.tiles = zoomer?.let { tryNewTiles(it) }?.apply {
+        tiles = tryNewTiles(zoomer)?.apply {
             showTileBounds = this@ZoomAbility.showTileBounds
+            paused = this@ZoomAbility.lifecycle?.currentState?.isAtLeast(STARTED) == false
         }
     }
 
@@ -452,7 +477,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         }
     }
 
-    private fun tryNewTiles(zoomer: Zoomer): Tiles? {
+    private fun tryNewTiles(zoomer: Zoomer?): Tiles? {
+        zoomer ?: return null
         val host = host ?: return null
         val logger = host.context.sketch.logger
         val view = host.view

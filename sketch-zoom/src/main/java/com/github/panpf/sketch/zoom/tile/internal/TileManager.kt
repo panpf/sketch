@@ -96,7 +96,7 @@ class TileManager constructor(
             val tileMapInfoList = tileMap.keys.sortedDescending().map {
                 "${it}:${tileMap[it]?.size}"
             }
-            "tileMap. $tileMapInfoList"
+            "tileMap. $tileMapInfoList. $imageUri"
         }
     }
 
@@ -242,7 +242,7 @@ class TileManager constructor(
         val countBitmap = memoryCache[memoryCacheKey]
         if (countBitmap != null) {
             logger.d(Tiles.MODULE) {
-                "loadTile. fromMemory. $tile"
+                "loadTile. fromMemory. $tile. $imageUri"
             }
             tile.countBitmap = countBitmap
             tiles.invalidateView()
@@ -259,7 +259,7 @@ class TileManager constructor(
             withContext(Dispatchers.Main) {
                 if (bitmap != null) {
                     logger.d(Tiles.MODULE) {
-                        "loadTile. decode. $tile"
+                        "loadTile. decode. $tile. $imageUri"
                     }
                     val newCountBitmap = CountBitmap(
                         bitmap,
@@ -277,7 +277,7 @@ class TileManager constructor(
                     notifyTileChanged()
                 } else {
                     logger.e(Tiles.MODULE) {
-                        "loadTile. null. $tile"
+                        "loadTile. null. $tile. $imageUri"
                     }
                 }
             }
@@ -296,8 +296,8 @@ class TileManager constructor(
         tile.countBitmap?.run {
             tile.countBitmap = null
             notifyTileChanged()
-            logger.d(Tiles.MODULE) {
-                "freeTile. $tile"
+            logger.w(Tiles.MODULE) {
+                "freeTile. $tile. $imageUri"
             }
         }
     }

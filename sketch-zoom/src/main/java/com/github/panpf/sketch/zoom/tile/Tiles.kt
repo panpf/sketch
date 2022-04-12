@@ -72,10 +72,10 @@ class Tiles constructor(
             if (field != value) {
                 field = value
                 if (value) {
-                    logger.v(MODULE) { "pause. $imageUri" }
+                    logger.d(MODULE) { "pause. $imageUri" }
                     tileManager?.freeAllTile()
                 } else {
-                    logger.v(MODULE) { "resume. $imageUri" }
+                    logger.d(MODULE) { "resume. $imageUri" }
                     refreshTiles()
                 }
             }
