@@ -21,7 +21,7 @@ Compose 等功能
 * 支持播放 gif、webp、heif 等动图
 * 支持手势缩放及分块显示超大图片
 * 支持下载、转换结果、内存三级缓存
-* 支持通过 ExifInterface 纠正图片方向
+* 支持通过 Exif 纠正图片方向
 * 支持 Base64、视频帧、SVG 图片
 * 支持 Jetpack Compose
 * 支持根据 view 大小自动调整图片尺寸
@@ -132,7 +132,7 @@ AsyncImage(
 基础功能：
 
 * [入门][getting_started]
-* [播放 gif、webp、heif 动图][animated_image]
+* [播放 GIF、WEBP、HEIF 动图][animated_image]
 * [Resize：修改图片尺寸][resize]
 * [Transformation：转换图片][transformation]
 * [Transition：用炫酷的过渡方式显示图片][transition]
@@ -143,13 +143,15 @@ AsyncImage(
 * [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
 * [Target：将加载结果应用到目标上][target]
 * [HttpStack：了解 http 部分及使用 okhttp][http_stack]
-* 解码 svg 图片
-* 解码视频帧
-* 预加载图片到内存
-* 仅加载图片获取 Bitmap
-* 仅下载图片到磁盘
-* ExifInterface 纠正图片方向
-* ImageOptions：统一管理图片配置
+* [SVG：解码 SVG 静态图片][svg]
+* [Video：解码视频帧][video_frame]
+* [Exif：纠正图片方向][exif]
+* [ImageOptions：统一管理图片配置][image_options]
+* [RequestInterceptor：拦截 ImageRequest][request_interceptor]
+* [DecodeInterceptor：拦截 Bitmap 或 Drawable 解码][decode_interceptor]
+* [DownloadRequest：下载图片到磁盘][download_request]
+* [LoadRequest：加载图片获取 Bitmap][load_request]
+* [预加载图片到内存][preloading]
 
 特色功能：
 
@@ -244,6 +246,24 @@ AsyncImage(
 [target]: docs/wiki/target.md
 
 [http_stack]: docs/wiki/http_stack.md
+
+[svg]: docs/wiki/svg.md
+
+[video_frame]: docs/wiki/video_frame.md
+
+[exif]: docs/wiki/exif.md
+
+[image_options]: docs/wiki/image_options.md
+
+[request_interceptor]: docs/wiki/request_interceptor.md
+
+[decode_interceptor]: docs/wiki/decode_interceptor.md
+
+[preloading]: docs/wiki/preloading.md
+
+[download_request]: docs/wiki/download_request.md
+
+[load_request]: docs/wiki/load_request.md
 
 
 [comment]: <> (links)

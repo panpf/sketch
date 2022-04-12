@@ -1,20 +1,20 @@
 # 播放动图
 
-Sketch 支持播放 gif、webp、heif 动图，每一种动图都由相应的 [DrawableDecoder] 提供支持，如下：
+Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都由相应的 [DrawableDecoder] 提供支持，如下：
 
 |Type|Decoder|APi Limit|Additional Module|
 |:---|:---|:---|:---|
-|gif|[GifAnimatedDrawableDecoder]|Android 9+|_|
-|gif|[GifMovieDrawableDecoder]|Android 4.4+|sketch-gif-movie|
-|gif|[GifDrawableDrawableDecoder]|Android 4.1+|sketch-gif-koral|
-|webp Animated|[WebPAnimatedDrawableDecoder]|Android 9+|_|
-|heif Animated|[HeifAnimatedDrawableDecoder]|Android 11+|_|
+|GIF|[GifAnimatedDrawableDecoder]|Android 9+|_|
+|GIF|[GifMovieDrawableDecoder]|Android 4.4+|sketch-gif-movie|
+|GIF|[GifDrawableDrawableDecoder]|Android 4.1+|sketch-gif-koral|
+|WEBP Animated|[WebPAnimatedDrawableDecoder]|Android 9+|_|
+|HEIF Animated|[HeifAnimatedDrawableDecoder]|Android 11+|_|
 
 > 注意：
 > 1. [GifMovieDrawableDecoder] 和 [GifDrawableDrawableDecoder] 需要依赖额外的 module
-> 2. gif 提供了三种个 [DrawableDecoder] 你可以根据你的 app 支持的最低版本选择合适的 [DrawableDecoder]
-> 3. `sketch-gif-movie` 模块使用 Android 自带的 [Movie] 类实现播放 gif，不会额外增加包体积
-> 4. `sketch-gif-koral` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放 gif，包体积会额外增加大概 250 KB
+> 2. GIF 提供了三种 [DrawableDecoder] 可以根据 app 支持的最低版本选择合适的 [DrawableDecoder]
+> 3. `sketch-gif-movie` 模块使用 Android 自带的 [Movie] 类实现播放 GIF，不会额外增加包体积
+> 4. `sketch-gif-koral` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放 gif，库体积大概 250 KB
 
 ## 注册动图解码器
 
