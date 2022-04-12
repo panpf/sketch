@@ -18,6 +18,8 @@ package com.github.panpf.sketch.zoom
 import android.content.Context
 import android.util.AttributeSet
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 
@@ -25,9 +27,11 @@ open class SketchZoomImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
-) : AbsAbilityImageView(context, attrs, defStyle) {
+) : AbsAbilityImageView(context, attrs, defStyle), ImageOptionsProvider {
 
     val zoomAbility = ZoomAbility()
+
+    override var displayImageOptions: ImageOptions? = null
 
     init {
         addViewAbility(zoomAbility)

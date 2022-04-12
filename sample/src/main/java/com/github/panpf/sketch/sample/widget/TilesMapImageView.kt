@@ -30,6 +30,7 @@ import android.view.MotionEvent
 import android.view.ViewGroup.LayoutParams
 import androidx.core.view.updateLayoutParams
 import com.github.panpf.sketch.SketchImageView
+import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.tools4a.dimen.ktx.dp2pxF
 import kotlin.math.ceil
 import kotlin.math.floor

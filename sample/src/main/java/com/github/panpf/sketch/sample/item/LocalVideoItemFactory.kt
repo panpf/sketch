@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.request.videoFramePercentDuration
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.drawable

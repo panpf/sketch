@@ -16,9 +16,4 @@ open class SketchImageView @JvmOverloads constructor(
     override fun submitRequest(request: DisplayRequest) {
         context.sketch.enqueue(request)
     }
-
-    fun updateDisplayImageOptions(configBlock: (ImageOptions.Builder.() -> Unit)) {
-        displayImageOptions =
-            displayImageOptions?.newOptions(configBlock) ?: ImageOptions(configBlock)
-    }
 }
