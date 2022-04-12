@@ -156,7 +156,7 @@ AsyncImage(
 
 特色功能：
 
-* [SketchZoomImageView：手势缩放及分块显示超大图][zoom_]
+* [SketchZoomImageView：手势缩放及分块显示超大图][zoom]
 * [提高长图在网格列表中的清晰度][long_image_grid_thumbnails_]
 * [显示下载进度][show_download_progress_]
 * [显示图片类型角标][show_image_type_]

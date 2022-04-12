@@ -270,6 +270,15 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     val isZooming: Boolean
         get() = zoomer?.isZooming == true
 
+    val tileList: List<Tile>?
+        get() = tiles?.tileList
+
+    val imageSize: Size?
+        get() = zoomer?.imageSize ?: tiles?.imageSize
+
+    val previewSize: Size?
+        get() = zoomer?.drawableSize
+
     fun getDrawMatrix(matrix: Matrix) = zoomer?.getDrawMatrix(matrix)
 
     fun getDrawRect(rectF: RectF) = zoomer?.getDrawRect(rectF)
@@ -280,15 +289,6 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     fun eachTileList(action: (tile: Tile, load: Boolean) -> Unit) {
         tiles?.eachTileList(action)
     }
-
-    val tileList: List<Tile>?
-        get() = tiles?.tileList
-
-    val imageSize: Size?
-        get() = zoomer?.imageSize ?: tiles?.imageSize
-
-    val previewSize: Size?
-        get() = zoomer?.drawableSize
 
     fun addOnMatrixChangeListener(listener: OnMatrixChangeListener) {
         this.onMatrixChangeListenerList = (onMatrixChangeListenerList ?: LinkedHashSet()).apply {
