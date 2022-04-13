@@ -28,9 +28,6 @@ class SaveCellularTrafficDisplayInterceptor : RequestInterceptor {
             && sketch.context.isCellularNetworkConnected()
             && requestDepth < RequestDepth.LOCAL
         ) {
-            request.newRequest {
-
-            }
             request.newDisplayRequest {
                 depth(RequestDepth.LOCAL)
                 setDepthFromSaveCellularTraffic()

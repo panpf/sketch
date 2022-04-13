@@ -7,7 +7,7 @@ import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 
-class SaveCellularTrafficClickForceIgnoreAbility
+class ClickIgnoreSaveCellularTrafficAbility
     : ViewAbility, ClickObserver, RequestListenerObserver {
 
     private var errorFromSaveCellularTraffic = false
@@ -49,11 +49,11 @@ class SaveCellularTrafficClickForceIgnoreAbility
     }
 }
 
-fun ViewAbilityOwner.setClickRedisplayAndIgnoreSaveCellularTraffic(enabled: Boolean) {
+fun ViewAbilityOwner.setClickIgnoreSaveCellularTrafficEnabled(enabled: Boolean) {
     viewAbilityList
-        .find { it is SaveCellularTrafficClickForceIgnoreAbility }
+        .find { it is ClickIgnoreSaveCellularTrafficAbility }
         ?.let { removeViewAbility(it) }
     if (enabled) {
-        addViewAbility(SaveCellularTrafficClickForceIgnoreAbility())
+        addViewAbility(ClickIgnoreSaveCellularTrafficAbility())
     }
 }

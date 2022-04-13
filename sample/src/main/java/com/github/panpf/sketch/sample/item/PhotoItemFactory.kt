@@ -26,7 +26,7 @@ import com.github.panpf.sketch.sample.databinding.ItemImageBinding
 import com.github.panpf.sketch.stateimage.IconDrawableResStateImage
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
-import com.github.panpf.sketch.viewability.setClickRedisplayAndIgnoreSaveCellularTraffic
+import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
@@ -68,7 +68,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
     ) {
 
         binding.imageItemImageView.apply {
-            setClickRedisplayAndIgnoreSaveCellularTraffic(true)
+            setClickIgnoreSaveCellularTrafficEnabled(true)
             updateDisplayImageOptions {
                 placeholder(
                     IconDrawableResStateImage(

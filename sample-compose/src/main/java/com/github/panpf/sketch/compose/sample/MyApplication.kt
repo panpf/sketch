@@ -33,8 +33,6 @@ import com.github.panpf.sketch.decode.VideoFrameBitmapDecoder
 import com.github.panpf.sketch.decode.WebpAnimatedDrawableDecoder
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.http.OkHttpStack
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
-import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 
@@ -43,8 +41,6 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
     override fun createSketchConfig(): Builder.() -> Unit = {
         logger(Logger(DEBUG))
         httpStack(OkHttpStack.Builder().build())
-        addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
-        addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
         components {
             addFetcher(AppIconUriFetcher.Factory())
 
