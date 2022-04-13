@@ -19,7 +19,7 @@ class MyApplication : Application(), SketchConfigurator {
 
     override fun createSketchConfig(): Builder.() -> Unit = {
         components {
-            addBitmapDecoder(FFmpegVideoFrameBitmapDecoder())
+            addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
         }
     }
 }

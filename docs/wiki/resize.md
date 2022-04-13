@@ -7,8 +7,10 @@
 * width、height：期望的宽和高
 * [Precision]：精度。决定如何使用 width 和 height 去调整图片的尺寸
     * LESS_PIXELS（默认）：只要最终 Bitmap 的像素数（宽乘以高）约等于 [Resize] 的像素数即可，允许有 10% 的误差
-    * KEEP_ASPECT_RATIO：在 LESS_PIXELS 的基础上要求 Bitmap 的宽高比和 [Resize] 的宽高比一致
-    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样
+    * KEEP_ASPECT_RATIO：在 LESS_PIXELS 的基础上要求 Bitmap 的宽高比和 [Resize] 的宽高比一致，如果比例不一致会裁剪原图、优先使用
+      BitmapRegionDecoder 裁剪
+    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果比例不一致会裁剪原图、优先使用
+      BitmapRegionDecoder 裁剪
 * [PrecisionDecider]：精度决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Precision]
     * [FixedPrecisionDecider]：始终使用指定的 [Precision]
     * [LongImageClipPrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
@@ -18,8 +20,8 @@
     * END_CROP：保留尾部部分
     * FILL：全部保留，但会变形
 
-> 1. 如何判定是长图？图片的宽高比和 resize 的宽高比相差超过 1 倍
-> 2. 使用 [LongImageClipPrecisionDecider] 有助于提高长图在网格列表中的清晰度，[点我查看使用方法][long_image_grid_thumbnails]
+> 1. 长图的判定规则：[Resize] 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [LongImageClipPrecisionDecider] 的源码
+> 2. 使用 [LongImageClipPrecisionDecider] 有助于提高长图在网格列表中的清晰度，[查看具体介绍][long_image_grid_thumbnails]
 
 ### 配置
 

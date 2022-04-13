@@ -1,55 +1,54 @@
-# 显示 APK 或已安装 APP 的图标
+# 显示 APK 文件或已安装 APP 的图标
 
-### 显示 APK 的图标
+`需要导入 sketch-extensions 模块`
 
-[Sketch] 支持显示 APK 文件的图标，是通过 [ApkIconUriModel] 实现的此功能，uri 如下:
+### 显示 APK 文件的图标
 
-```
-apk.icon:///sdcard/file.apk
-```
+首先在初始化 [Sketch] 时注册 [ApkIconBitmapDecoder]，如下：
 
-[SketchImageView]、[Sketch] 提供了相应的方法可供使用，如下：
+```kotlin
+class MyApplication : Application(), SketchConfigurator {
 
-```java
-Sting apkIconUri = ApkIconUriModel.makeUri("/sdcard/file.apk");
-
-// SketchImageView
-SketchImageView sketchImageView = ...;
-sketchImageView.displayImage(apkIconUri);
-
-// Sketch.display()
-Sketch.with(context).display(apkIconUri, sketchImageView).commit();
-
-// Sketch.load()
-Sketch.with(context).load(apkIconUri, new LoadListener(){...}).commit();
+    override fun createSketchConfig(): Builder.() -> Unit = {
+        components {
+            addBitmapDecoder(ApkIconBitmapDecoder.Factory())
+        }
+    }
+}
 ```
 
-### 显示 APP 的图标
+然后显示图片时传入 apk 文件的路径，如下：
 
-[Sketch] 还支持显示已安装 APP 的图标，是通过 [AppIconUriModel] 实现的此功能，uri 如下:
-
-```
-app.icon://com.github.panpf.sketch.sample/2500
+```kotlin
+imageView.displayImage("/sdcard/sample.apk")
 ```
 
-[SketchImageView]、[Sketch] 提供了相应的方法可供使用，如下：
+### 显示已安装 APP 的图标
 
-```java
-Sting appIconUri = AppIconUriModel.makeUri("com.github.panpf.sketch.sample", 2500);
+首先在初始化 [Sketch] 时注册 [AppIconUriFetcher] 和 [AppIconBitmapDecoder]，如下：
 
-// SketchImageView
-SketchImageView sketchImageView = ...;
-sketchImageView.displayImage(appIconUri);
+```kotlin
+class MyApplication : Application(), SketchConfigurator {
 
-// Sketch.display()
-Sketch.with(context).display(appIconUri, sketchImageView).commit();
-
-// Sketch.load()
-Sketch.with(context).load(appIconUri, new LoadListener(){...}).commit();
+    override fun createSketchConfig(): Builder.() -> Unit = {
+        addFetcher(AppIconUriFetcher.Factory())
+        components {
+            addBitmapDecoder(AppIconBitmapDecoder.Factory())
+        }
+    }
+}
 ```
 
-[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.java
-[ApkIconUriModel]: ../../sketch/src/main/java/com/github/panpf/sketch/uri/ApkIconUriModel.java
-[AppIconUriModel]: ../../sketch/src/main/java/com/github/panpf/sketch/uri/AppIconUriModel.java
-[SketchImageView]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchImageView.java
-[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.java
+然后使用 `newAppIconUri()` 函数创建专用 uri 显示，如下：
+
+```kotlin
+imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", 1))
+```
+
+[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
+
+[AppIconBitmapDecoder]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/decode/AppIconBitmapDecoder.kt
+
+[ApkIconBitmapDecoder]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/decode/ApkIconBitmapDecoder.kt
+
+[AppIconUriFetcher]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt

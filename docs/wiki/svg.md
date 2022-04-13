@@ -11,7 +11,7 @@ class MyApplication : Application(), SketchConfigurator {
 
     override fun createSketchConfig(): Builder.() -> Unit = {
         components {
-            addBitmapDecoder(SvgBitmapDecoder())
+            addBitmapDecoder(SvgBitmapDecoder.Factory())
         }
     }
 }

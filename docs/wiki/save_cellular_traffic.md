@@ -1,47 +1,60 @@
-# 移动数据或有流量限制的 WIFI 下暂停下载图片，节省流量
+# 节省蜂窝流量
 
-现如今移动流量还是比较贵的，图片又是流量大户，因此在移动数据或有流量限制的 WIFI 下暂停下载图片还是很有必要的
+节省蜂窝流量功能可以在检测到当前是蜂窝流量时将 [ImageRequest] 的 depth 参数设置为 [RequestDepth].LOCAL，这样就不会再从网络下载图片
 
-Sketch 支持一键开启全局移动数据或有流量限制的 WIFI 下暂停下载图片功能，暂停后如果磁盘中没有缓存就不下载了，并且可以为暂停下载的图片显示一个专用的提示图片并支持点击强制下载
+### 配置
 
-``暂停下载功能只对 display 和 load 请求有效``
+`需要导入 sketch-extensions 模块`
 
-### 使用
+第 1 步. 在初始化 [Sketch] 时添加 [SaveCellularTrafficDisplayInterceptor] 请求拦截器，如下：
 
-你想要自己控制暂停下载，只需执行如下代码即可：
+```kotlin
+class MyApplication : Application(), SketchConfigurator {
 
-```java
-// 全局暂停下载图片
-Sketch.with(context).getConfiguration().setPauseDownloadEnabled(true);
-
-// 全局恢复下载图片
-Sketch.with(context).getConfiguration().setPauseDownloadEnabled(false);
+    override fun createSketchConfig(): Builder.() -> Unit = {
+        addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+    }
+}
 ```
 
-### 移动数据下暂停下载
+> 注意：[SaveCellularTrafficDisplayInterceptor] 仅对 [DisplayRequest] 有效
 
-Sketch 内置了 [MobileDataPauseDownloadController] 来提移动数据或有流量限制的 WIFI 下自动暂停下载图片的功能并提供了开关，你只需开启即可，如下：
+第 2 步. 针对单个请求开启节省蜂窝流量功能，如下：
 
-```java
-// 开启移动数据下自动暂停下载图片功能
-Sketch.with(getBaseContext()).getConfiguration().setMobileDataPauseDownloadEnabled(true);
-
-// 关闭移动数据下自动暂停下载图片功能
-Sketch.with(getBaseContext()).getConfiguration().setMobileDataPauseDownloadEnabled(false);
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    saveCellularTraffic()
+}
 ```
 
-### 暂停下载时显示相应状态图片并点击强制下载
+第 3 步. 可选. 配置节省蜂窝流量功能专用的错误图片，如下：
 
-Sketch 还在 [DisplayOptions] 中 提供了 pauseDownloadImage 属性，可以在暂停下载时显示相应的状态图片，以提醒用户
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    saveCellularTraffic()
 
-SketchImageView 还提供了暂停下载时候点击强制下载并显示的功能，一句话开启即可
-
-```java
-sketchImageView.setClickDisplayOnPauseDownload(true);
+    error(R.drawable.ic_error) {
+        saveCellularTrafficError(R.drawable.ic_signal_cellular)
+    }
+}
 ```
-此功能`只作用于当前图片`，并且`只忽略暂停下载功能一次`
 
-[MobileDataPauseDownloadController]: ../../sketch/src/main/java/com/github/panpf/sketch/optionsfilter/MobileDataPauseDownloadController.java
-[sketch_image_view]: show_image_type.md
-[DisplayOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayOptions.java
-[SketchImageView]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchImageView.java
+第 4 步. 可选. 开启点击当前图片忽略节省蜂窝流量功能并重新显示图片
+
+此功能需要使用 [SketchImageView]
+
+```kotlin
+sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
+```
+
+[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
+
+[SketchImageView]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/SketchImageView.kt
+
+[SaveCellularTrafficDisplayInterceptor]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/request/SaveCellularTrafficDisplayInterceptor.kt
+
+[DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
+
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+
+[RequestDepth]: ../../sketch/src/main/java/com/github/panpf/sketch/request/RequestDepth.kt

@@ -157,13 +157,13 @@ AsyncImage(
 特色功能：
 
 * [SketchZoomImageView：手势缩放及分块显示超大图][zoom]
-* [提高长图在网格列表中的清晰度][long_image_grid_thumbnails_]
-* [显示下载进度][show_download_progress_]
-* [显示图片类型角标][show_image_type_]
-* [蜂窝数据网络下暂停下载图片节省流量][save_cellular_traffic_]
-* [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load_when_scrolling_]
-* [显示 apk 文件或已安装 app 的图标][apk_app_icon_]
-* [查看日志][log_]
+* [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
+* [显示下载进度][show_download_progress]
+* [显示图片类型角标][show_image_type]
+* [蜂窝数据网络下暂停下载图片节省流量][save_cellular_traffic]
+* [列表滑动中暂停加载图片][pause_load_when_scrolling]
+* [显示 APK 文件或已安装 APP 的图标][apk_app_icon]
+* [查看日志][log]
 
 [comment]: <> (## 示例 APP)
 

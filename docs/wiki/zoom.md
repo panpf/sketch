@@ -77,13 +77,13 @@ sketchZoomImageView.zoomAbility.scrollBarEnabled = false
 
 ## 阅读模式
 
-对于宽高相差特别大的图片（比如长微博图片），如果一开始显示全貌，那么什么也看不清楚，用户必须双击一下放大才能开始阅读
+对于宽高相差特别大的长图，如果一开始显示全貌，那么什么也看不清楚，用户必须双击一下放大才能开始阅读
 
-针对这样的图片 [SketchZoomImageView] 默认开启了阅读模式让其一开始就充满屏幕，这样用户就能直接开始阅读长微博图片的内容了
+针对这样的图片 [SketchZoomImageView] 默认开启了阅读模式让其一开始就充满屏幕，这样用户就能直接开始阅读长图的内容了
 
-如何判定是否使用阅读模式？只有宽是高的 3 倍，或高是宽的 2 倍的图片才能使用阅读模式
+> 长图的判定规则：View 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [DefaultReadModeDecider] 的源码
 
-如果你想修改这个判定你可以实现 [ReadModeDecider] 接口定义你自己的判定类，然后通过 [ZoomAbility] 的 readModeDecider 属性应用接口，如下：
+如果你想修改长图判定规则可以实现 [ReadModeDecider] 接口，然后通过 [ZoomAbility] 的 readModeDecider 属性应用，如下：
 
 ```kotlin
 class MyReadModeDecider : ReadModeDecider {
@@ -183,7 +183,8 @@ class ImageDetailActivity : AppCompatActivity() {
 [SketchZoomImageView] 能够监听 Lifecycle 的状态，在 pause 状态时暂停分块显示超大图并释放所有碎片的 Bitmap，在 resume
 状态时恢复分块显示超大图并重新加载碎片，这样能够在 Fragment 或 Activity 切换到后台或不显示时主动释放内存
 
-[SketchZoomImageView] 默认会从 [SketchZoomImageView].context 上获取 Lifecycle，这样通常获取到的是 Activity 的 Lifecycle
+[SketchZoomImageView] 默认会从 [SketchZoomImageView].context 上获取 Lifecycle，这样通常获取到的是 Activity 的
+Lifecycle
 
 如果 [SketchZoomImageView] 是在 Fragment 中使用那么建议主动将 Fragment 的 viewLifecycleOwner.lifecycle 绑定给
 [SketchZoomImageView]，如下：
@@ -221,3 +222,5 @@ sketchZoomImageView.zoomAbility.addOnTileChangedListener { tiles: Tiles ->
 [ZoomAbility]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ZoomAbility.kt
 
 [ReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt
+
+[DefaultReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt
