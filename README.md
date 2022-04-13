@@ -163,7 +163,7 @@ AsyncImage(
 * [蜂窝数据网络下暂停下载图片节省流量][save_cellular_traffic]
 * [列表滑动中暂停加载图片][pause_load_when_scrolling]
 * [显示 APK 文件或已安装 APP 的图标][apk_app_icon]
-* [查看日志][log]
+* [日志][log]
 
 ## 更新日志
 
