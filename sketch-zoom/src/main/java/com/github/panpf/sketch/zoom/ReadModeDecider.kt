@@ -1,13 +1,19 @@
 package com.github.panpf.sketch.zoom
 
+import com.github.panpf.sketch.util.format
+
 class DefaultReadModeDecider(
-    private val differenceByWidth: Float = 3f,
-    private val differenceByHeight: Float = 2f
+    private val minDifferenceOfAspectRatio: Float = 3f
 ) : ReadModeDecider {
 
-    override fun should(imageWidth: Int, imageHeight: Int): Boolean {
-        return imageWidth >= imageHeight * differenceByWidth
-                || imageHeight >= imageWidth * differenceByHeight
+    override fun should(
+        imageWidth: Int, imageHeight: Int, viewWidth: Int, viewHeight: Int
+    ): Boolean {
+        val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
+        val viewAspectRatio = viewWidth.toFloat().div(viewHeight).format(1)
+        val maxAspectRatio = viewAspectRatio.coerceAtLeast(imageAspectRatio)
+        val minAspectRatio = viewAspectRatio.coerceAtMost(imageAspectRatio)
+        return maxAspectRatio >= (minAspectRatio * minDifferenceOfAspectRatio)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -16,24 +22,21 @@ class DefaultReadModeDecider(
 
         other as DefaultReadModeDecider
 
-        if (differenceByWidth != other.differenceByWidth) return false
-        if (differenceByHeight != other.differenceByHeight) return false
+        if (minDifferenceOfAspectRatio != other.minDifferenceOfAspectRatio) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = differenceByWidth.hashCode()
-        result = 31 * result + differenceByHeight.hashCode()
-        return result
+        return minDifferenceOfAspectRatio.hashCode()
     }
 
     override fun toString(): String {
-        return "DefaultReadModeDecider(differenceByWidth=$differenceByWidth, differenceByHeight=$differenceByHeight)"
+        return "DefaultReadModeDecider($minDifferenceOfAspectRatio)"
     }
 }
 
 interface ReadModeDecider {
 
-    fun should(imageWidth: Int, imageHeight: Int): Boolean
+    fun should(imageWidth: Int, imageHeight: Int, viewWidth: Int, viewHeight: Int): Boolean
 }

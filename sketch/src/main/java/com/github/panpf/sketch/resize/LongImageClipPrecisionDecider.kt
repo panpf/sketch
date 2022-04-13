@@ -27,7 +27,7 @@ data class LongImageClipPrecisionDecider constructor(
 ) : PrecisionDecider {
 
     companion object {
-        const val DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO: Float = 2f
+        const val DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO: Float = 3f
     }
 
     @Keep

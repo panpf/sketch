@@ -240,8 +240,8 @@ internal class ScaleDragHelper constructor(
 
     private fun resetBaseMatrix() {
         baseMatrix.reset()
-        val viewSize = zoomer.viewSize
-        val drawableSize = zoomer.drawableSize
+        val viewSize = zoomer.viewSize.takeIf { !it.isEmpty } ?: return
+        val drawableSize = zoomer.drawableSize.takeIf { !it.isEmpty } ?: return
         val scaleType = zoomer.scaleType
         val drawableWidth =
             if (zoomer.rotateDegrees % 180 == 0) drawableSize.width else drawableSize.height
@@ -250,7 +250,9 @@ internal class ScaleDragHelper constructor(
         val drawableThanViewLarge = drawableWidth > viewSize.width || drawableHeight > viewSize.height
         val initZoomScale = zoomer.scales.init
         when {
-            zoomer.readModeDecider?.should(drawableWidth, drawableHeight) == true -> {
+            zoomer.readModeDecider?.should(
+                drawableWidth, drawableHeight, viewSize.width, viewSize.height
+            ) == true -> {
                 baseMatrix.postScale(initZoomScale, initZoomScale)
             }
             scaleType == ScaleType.CENTER

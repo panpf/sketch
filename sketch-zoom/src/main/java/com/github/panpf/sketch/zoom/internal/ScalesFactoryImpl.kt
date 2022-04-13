@@ -66,7 +66,9 @@ class ScalesFactoryImpl : ScalesFactory {
         val initZoomScale: Float
         val doubleClickBigZoomScale: Float
         when {
-            readModeDecider?.should(imageWidth, imageHeight) == true -> {
+            readModeDecider?.should(
+                imageWidth, imageHeight, viewSize.width, viewSize.height
+            ) == true -> {
                 initZoomScale = fillZoomScale
                 minZoomScale = fullZoomScale
                 doubleClickBigZoomScale = max(originZoomScale, initZoomScale)
