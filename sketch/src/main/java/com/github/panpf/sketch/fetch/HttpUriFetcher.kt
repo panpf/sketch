@@ -10,7 +10,7 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.http.ProgressListenerDelegate
+import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.RequestDepthException
