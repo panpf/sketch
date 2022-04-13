@@ -32,3 +32,5 @@ build/
 
 captures/
 *.hprof
+
+*.jks

@@ -12,13 +12,8 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
-# 不混淆SearchView，因为发现混淆的时候会把SearchView的构造函数给弄丢了，导致无法实例化
--keep class android.support.v7.widget.SearchView { *; }
 
-# 不混淆所有的枚举类，防止使用枚举类的名字来匹配时出问题
 -keep enum * {*;}
-
--keep public class com.tencent.bugly.**{*;}
 
 ##---------------Begain: Retrofit
 -dontwarn okio.**

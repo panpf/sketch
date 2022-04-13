@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -20,35 +18,32 @@ android {
         versionName = "${property("VERSION_NAME")}.${getGitVersion()}"
     }
 
-    val localProperties = Properties().apply {
-        project.file("local.properties").takeIf { it.exists() }
-            ?.inputStream()
-            ?.use { load(it) }
-    }.takeIf { !it.isEmpty }
-    val jksFile = localProperties?.getProperty("sample.storeFile")?.let { file(it) }
-
+    val releaseSigningConfig = readReleaseSigningConfig()
     signingConfigs {
-        create("release") {
-            storeFile = jksFile
-            storePassword = localProperties?.getProperty("sample.storePassword")
-            keyAlias = localProperties?.getProperty("sample.keyAlias")
-            keyPassword = localProperties?.getProperty("sample.keyPassword")
+        if (releaseSigningConfig != null) {
+            create("release") {
+                storeFile = releaseSigningConfig.storeFile
+                storePassword = releaseSigningConfig.storePassword
+                keyAlias = releaseSigningConfig.keyAlias
+                keyPassword = releaseSigningConfig.keyPassword
+            }
         }
     }
-
     buildTypes {
         getByName("debug") {
-            signingConfig =
-                if (jksFile != null && jksFile.exists()) signingConfigs.getByName("release") else signingConfig
+            if (releaseSigningConfig != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             multiDexEnabled = true
         }
 
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            signingConfig =
-                if (jksFile != null && jksFile.exists()) signingConfigs.getByName("release") else signingConfig
+        if (releaseSigningConfig != null) {
+            getByName("release") {
+                isMinifyEnabled = true
+                isShrinkResources = true
+                proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
@@ -70,7 +65,8 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs + "-P" + "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+        freeCompilerArgs =
+            freeCompilerArgs + "-P" + "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
     }
 
     composeOptions {
@@ -140,3 +136,36 @@ fun getGitVersion(): String =
     Runtime.getRuntime().exec("git rev-parse --short HEAD").inputStream.use {
         it.bufferedReader().readText().trim()
     }
+
+fun readReleaseSigningConfig(): ReleaseSigningConfig? {
+    val localProperties = `java.util`.Properties().apply {
+        rootProject.file("local.properties")
+            .takeIf { it.exists() }
+            ?.inputStream().use { this@apply.load(it) }
+    }
+    val jksFile = rootProject.file("release.jks")
+    return if (
+        localProperties.containsKey("signing.storePassword")
+        && localProperties.containsKey("signing.keyAlias")
+        && localProperties.containsKey("signing.keyPassword")
+        && jksFile.exists()
+    ) {
+        println("hasReleaseSigningConfig: true")
+        ReleaseSigningConfig(
+            localProperties.getProperty("signing.storePassword"),
+            localProperties.getProperty("signing.keyAlias"),
+            localProperties.getProperty("signing.keyPassword"),
+            jksFile
+        )
+    } else {
+        println("hasReleaseSigningConfig: false")
+        null
+    }
+}
+
+class ReleaseSigningConfig(
+    val storePassword: String,
+    val keyAlias: String,
+    val keyPassword: String,
+    val storeFile: File,
+)
