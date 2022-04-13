@@ -56,13 +56,13 @@ dependencies {
     implementation("io.github.panpf.sketch3:sketch-okhttp:${LAST_VERSION}")
 
     // 支持 SVG 图片
-    implementation("io.github.panpf.sketch-svg:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch3:sketch-svg:${LAST_VERSION}")
 
     // 通过 Android 内置的 MediaMetadataRetriever 类实现读取视频帧
-    implementation("io.github.panpf.sketch-video:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch3:sketch-video:${LAST_VERSION}")
 
     // 通过 wseemann 的 FFmpegMediaMetadataRetriever 库实现读取视频帧
-    implementation("io.github.panpf.sketch-video-ffmpeg:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch3:sketch-video-ffmpeg:${LAST_VERSION}")
 
     // 支持手势缩放以及分块显示超大图片
     implementation("io.github.panpf.sketch3:sketch-zoom:${LAST_VERSION}")
