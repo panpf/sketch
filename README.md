@@ -11,13 +11,13 @@ Compose 等功能
 
 ## 关于 3.0 版本
 
-* 3.0 版本全部用 kotlin 重写，并且 maven groupId 和包名已经变更所以与 2.0 版本完全不冲突，两者可以共存
-* 3.0 版本参考 [coil][coil] 2.0.0-alpha05 版本并结合 sketch 原有功能实现，相较于 [coil][coil] sketch 最低支持到 API
-  16，而 [coil][coil] 是 21
+* 新版本基于 kotlin 协程重写，API、功能实现全部改变，完全是一个新的库
+* 参考 [coil][coil] `2.0.0-alpha05` 版本并结合 sketch 原有功能实现，[coil][coil] 最低支持 API 21，而 sketch 最低支持 API 16
+* maven groupId 和包名已经变更，所以与 2.0 版本完全不冲突，两者可以共存
 
 ## 简介
 
-* 支持 http、asset、content、drawable 等多种 URI
+* 支持 http、asset、content、android.resource 等多种 URI
 * 支持播放 gif、webp、heif 等动图
 * 支持手势缩放及分块显示超大图片
 * 支持下载、转换结果、内存三级缓存
@@ -52,7 +52,7 @@ dependencies {
     // 支持下载进度蒙层、列表滑动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk 文件和已安装 app 图标等实用功能
     implementation("io.github.panpf.sketch3:sketch-extensions:${LAST_VERSION}")
 
-    // 通过 koral--/android-gif-drawable 库的 GifDrawable 实现 gif 播放
+    // 通过 koral 的 android-gif-drawable 库的 GifDrawable 实现 gif 播放
     implementation("io.github.panpf.sketch3:sketch-gif-koral:${LAST_VERSION}")
 
     // 通过 Android 内置的 Movie 类实现 gif 播放
@@ -64,31 +64,31 @@ dependencies {
     // 支持 SVG 图片
     implementation("io.github.panpf.sketch-svg:${LAST_VERSION}")
 
-    // 通过 Android 内置的 MediaMetadataRetriever 类实现读取视频帧 
+    // 通过 Android 内置的 MediaMetadataRetriever 类实现读取视频帧
     implementation("io.github.panpf.sketch-video:${LAST_VERSION}")
 
     // 通过 wseemann 的 FFmpegMediaMetadataRetriever 库实现读取视频帧
     implementation("io.github.panpf.sketch-video-ffmpeg:${LAST_VERSION}")
 
-    // 支持手势缩放显示图片以及分块显示超大图片
+    // 支持手势缩放以及分块显示超大图片
     implementation("io.github.panpf.sketch3:sketch-zoom:${LAST_VERSION}")
 }
 ```
 
 #### R8 / Proguard
 
-sketch 自己不需要配置任何混淆规则，但你可能需要为间接依赖的 [Kotlin Coroutines], [OkHttp], [Okio] 配置一些规则
+sketch 自己不需要配置任何混淆规则，但你可能需要为间接依赖的 [Kotlin Coroutines], [OkHttp], [Okio] 添加混淆配置
 
 ## 快速上手
 
 #### ImageView
 
 ```kotlin
-// url
+// http
 imageView.displayImage("https://www.sample.com/image.jpg")
 
 // File
-imageView.displayImage("/sdcard/download/image.jpeg")
+imageView.displayImage("/sdcard/download/image.jpg")
 
 // asset
 imageView.displayImage("asset://image.jpg")
@@ -110,7 +110,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 #### Jetpack Compose
 
-需要先导入 `sketch-compose` 模块
+`需要先导入 sketch-compose 模块`
 
 ```kotlin
 AsyncImage(
@@ -164,12 +164,6 @@ AsyncImage(
 * [列表滑动中暂停加载图片][pause_load_when_scrolling]
 * [显示 APK 文件或已安装 APP 的图标][apk_app_icon]
 * [查看日志][log]
-
-[comment]: <> (## 示例 APP)
-
-[comment]: <> (![sample_app_download_qrcode])
-
-[comment]: <> (扫描二维码下载或[点我下载][sample_app_download_link])
 
 ## 更新日志
 
@@ -320,7 +314,3 @@ AsyncImage(
 [comment]: <> (footer)
 
 [CHANGELOG.md]: CHANGELOG.md
-
-[sample_app_download_qrcode]: docs/sketch-sample.png
-
-[sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk
