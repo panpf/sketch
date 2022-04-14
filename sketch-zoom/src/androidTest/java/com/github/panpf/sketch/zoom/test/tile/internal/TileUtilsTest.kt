@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.zoom.test.internal
+package com.github.panpf.sketch.zoom.test.tile.internal
 
 import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -3,6 +3,12 @@ package com.github.panpf.sketch.zoom.internal
 import android.graphics.Matrix
 import android.graphics.PointF
 import android.view.MotionEvent
+import com.github.panpf.sketch.util.requiredMainThread
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.pow
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 internal fun getPointerIndex(action: Int): Int {
     return action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT
@@ -11,73 +17,38 @@ internal fun getPointerIndex(action: Int): Int {
 private val MATRIX_VALUES = FloatArray(9)
 
 /**
- * 获取矩阵中指定位置的值
- *
- * @param matrix     [Matrix]
- * @param whichValue 指定的位置，例如 [Matrix.MSCALE_X]
+ * @param whichValue Example: [Matrix.MSCALE_X]
  */
 internal fun Matrix.getValue(whichValue: Int): Float {
-    // todo 锁的代价比较大，换成限制在主线程即可
-    synchronized(MATRIX_VALUES) {
-        getValues(MATRIX_VALUES)
-        return MATRIX_VALUES[whichValue]
-    }
+    requiredMainThread()
+    getValues(MATRIX_VALUES)
+    return MATRIX_VALUES[whichValue]
 }
 
-/**
- * 从 [Matrix] 中获取缩放比例
- */
 internal fun Matrix.getScale(): Float {
-    synchronized(MATRIX_VALUES) {
-        getValues(MATRIX_VALUES)
-        val scaleX: Float =
-            MATRIX_VALUES.get(Matrix.MSCALE_X)
-        val skewY: Float =
-            MATRIX_VALUES.get(Matrix.MSKEW_Y)
-        return Math.sqrt(
-            (Math.pow(scaleX.toDouble(), 2.0)
-                .toFloat() + Math.pow(skewY.toDouble(), 2.0)
-                .toFloat()).toDouble()
-        ).toFloat()
-    }
+    requiredMainThread()
+    getValues(MATRIX_VALUES)
+    val scaleX: Float = MATRIX_VALUES[Matrix.MSCALE_X]
+    val skewY: Float = MATRIX_VALUES[Matrix.MSKEW_Y]
+    return sqrt(scaleX.toDouble().pow(2.0) + skewY.toDouble().pow(2.0)).toFloat()
 }
 
-/**
- * 从 [Matrix] 中获取旋转角度
- */
 internal fun Matrix.getRotateDegrees(): Int {
-    synchronized(MATRIX_VALUES) {
-        getValues(MATRIX_VALUES)
-        val skewX: Float =
-            MATRIX_VALUES.get(Matrix.MSKEW_X)
-        val scaleX: Float =
-            MATRIX_VALUES.get(Matrix.MSCALE_X)
-        val degrees = Math.round(
-            Math.atan2(
-                skewX.toDouble(),
-                scaleX.toDouble()
-            ) * (180 / Math.PI)
-        )
-            .toInt()
-        return if (degrees < 0) {
-            Math.abs(degrees)
-        } else if (degrees > 0) {
-            360 - degrees
-        } else {
-            0
-        }
+    requiredMainThread()
+    getValues(MATRIX_VALUES)
+    val skewX: Float = MATRIX_VALUES[Matrix.MSKEW_X]
+    val scaleX: Float = MATRIX_VALUES[Matrix.MSCALE_X]
+    val degrees = (atan2(skewX.toDouble(), scaleX.toDouble()) * (180 / Math.PI)).roundToInt()
+    return when {
+        degrees < 0 -> abs(degrees)
+        degrees > 0 -> 360 - degrees
+        else -> 0
     }
 }
 
-/**
- * 从 [Matrix] 中获取偏移位置
- */
 internal fun Matrix.getTranslation(point: PointF) {
-    synchronized(MATRIX_VALUES) {
-        getValues(MATRIX_VALUES)
-        point.x =
-            MATRIX_VALUES[Matrix.MTRANS_X]
-        point.y =
-            MATRIX_VALUES[Matrix.MTRANS_Y]
-    }
+    requiredMainThread()
+    getValues(MATRIX_VALUES)
+    point.x = MATRIX_VALUES[Matrix.MTRANS_X]
+    point.y = MATRIX_VALUES[Matrix.MTRANS_Y]
 }
