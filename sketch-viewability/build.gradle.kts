@@ -4,18 +4,18 @@ plugins {
 }
 
 android {
-    compileSdk = property("COMPILE_SDK").toString().toInt()
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = property("MIN_SDK").toString().toInt()
-        targetSdk = property("TARGET_SDK").toString().toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
 
         consumerProguardFiles("proguard-rules.pro")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "VERSION_NAME", "\"${property("VERSION_NAME")}\"")
-        buildConfigField("int", "VERSION_CODE", "${property("VERSION_CODE")}")
+        buildConfigField("String", "VERSION_NAME", "\"${libs.versions.versionName.get()}\"")
+        buildConfigField("int", "VERSION_CODE", libs.versions.versionCode.get())
     }
 
     buildTypes {
@@ -28,12 +28,9 @@ android {
 
 dependencies {
     api(project(":sketch"))
-    api("androidx.appcompat:appcompat:${property("ANDROIDX_APPCOMPAT")}")
+    api(libs.androidx.appcompat)
 
-    androidTestImplementation("junit:junit:${property("JUNIT")}")
-    androidTestImplementation("androidx.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
-    androidTestImplementation("androidx.test:rules:${property("ANDROIDX_TEST_RULES")}")
-    androidTestImplementation("androidx.test.ext:junit:${property("ANDROIDX_TEST_EXT_JUNIT")}")
+    androidTestImplementation(libs.bundles.test)
 }
 
 /**

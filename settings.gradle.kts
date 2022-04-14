@@ -12,49 +12,11 @@ include(":sketch-video-ffmpeg")
 include(":sketch-viewability")
 include(":sketch-zoom")
 
-//enableFeaturePreview("VERSION_CATALOGS")
-//dependencyResolutionManagement {
-//    versionCatalogs {
-//        create("libs") {
-//            alias("androidx.annotation").to("androidx.annotation:annotation:1.2.0")
-//            alias("ANDROIDX_APPCOMPAT").to("androidx.appcompat:appcompat:1.3.1")
-//            alias("ANDROIDX_CONSTRAINTLAYOUT").to("androidx.constraintlayout:constraintlayout:2.1.0")
-//            alias("ANDROIDX_CORE_KTX").to("androidx.core:core-ktx:1.6.0")
-//            alias("ANDROIDX_EXIFINTERFACE").to("androidx.exifinterface:exifinterface:1.3.3")
-////            alias("ANDROIDX_FRAGMENT").to(":1.3.6")
-//            alias("ANDROIDX_LIFECYCLE").to(":2.4.0")
-//            alias("ANDROIDX_NAVIGATION").to(":2.3.5")
-//            alias("ANDROIDX_PAGING").to(":3.1.0")
-//            alias("ANDROIDX_PAGING_COMPOSE").to(":1.0.0-alpha14")
-//            alias("ANDROIDX_RECYCLERVIEW").to(":1.2.1")
-//            alias("ANDROIDX_SWIPEREFRESHLAYOUT").to(":1.1.0")
-//            alias("ANDROIDX_TEST_RUNNER").to(":1.4.0")
-//            alias("ANDROIDX_TEST_RULES").to(":1.4.0")
-//            alias("ANDROIDX_TEST_EXT_JUNIT").to(":1.1.3")
-//            alias("ANDROIDX_COMPOSE").to(":1.1.0")
-//            alias("ANDROIDX_ACTIVITY_COMPOSE").to(":1.4.0")
-//            alias("ANDROIDX_LIFECYCLE_VIEWMODEL_COMPOSE").to(":1.0.0-alpha07")
-//            alias("JUNIT").to(":4.13.2")
-//            alias("ASSEMBLY_ADAPTER_4").to(":4.1.0-rc01")
-//            alias("PAGER_INDICATOR").to(":1.8.0")
-//            alias("FFMPEG_MEDIA_METADATA_RETRIEVER").to(":1.0.16")
-//            alias("LEAK_CANARY").to(":2.7")
-//            alias("TOOLS4A").to(":1.0.0")
-//            alias("TOOLS4J").to(":1.0.0")
-//            alias("TOOLS4K").to(":1.0.0")
-//            alias("GOOGLE_MATERIAL").to(":1.3.0")
-//            alias("RELINKER").to(":1.3.1")
-//            alias("ANDROID_GIF_DRAWABLE").to(":1.2.8")
-//            alias("TINYPINYIN").to(":2.0.3")
-//            alias("LIVEEVENT").to(":1.0.0")
-//            alias("RETROFIT").to(":2.6.4")
-//            alias("RETROFIT2_KOTLINX_SERIALIZATION_CONVERTER").to(":0.8.0")
-//
-//            // 3.12.9 是最后一个支持 Android 5.0 以下的版本
-//            alias("OKHTTP").to(":3.12.0")
-//            alias("ANDROIDSVG").to(":1.4")
-//            alias("ACTIVITY_MONITOR").to(":1.0.0")
-//            alias("ACCOMPANIST_DRAWABLE_PAINTER").to(":0.20.3")
-//        }
-//    }
-//}
+enableFeaturePreview("VERSION_CATALOGS")
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("libs.versions.toml"))
+        }
+    }
+}
