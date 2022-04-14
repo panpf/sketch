@@ -48,6 +48,7 @@ if (hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.proper
     apply { plugin("com.github.panpf.maven.publish") }
 
     configure<com.github.panpf.maven.publish.MavenPublishPluginExtension> {
+        version = libs.versions.versionName.get()
         sonatypeHost = com.github.panpf.maven.publish.SonatypeHost.S01
         disableAndroidJavaDocsAddReferencesLinks = true
     }
