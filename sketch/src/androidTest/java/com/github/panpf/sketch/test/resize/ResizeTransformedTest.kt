@@ -52,7 +52,7 @@ class ResizeTransformedTest {
             )
         ).apply {
             Assert.assertEquals(
-                "ResizeTransformed(100x50,LongImageClip(KEEP_ASPECT_RATIO,2.0),CENTER_CROP)",
+                "ResizeTransformed(100x50,LongImageClip(KEEP_ASPECT_RATIO,3.0),CENTER_CROP)",
                 key
             )
         }
@@ -64,7 +64,7 @@ class ResizeTransformedTest {
             )
         ).apply {
             Assert.assertEquals(
-                "ResizeTransformed(100x50,LongImageClip(EXACTLY,2.0),CENTER_CROP)",
+                "ResizeTransformed(100x50,LongImageClip(EXACTLY,3.0),CENTER_CROP)",
                 key
             )
         }

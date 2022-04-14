@@ -25,62 +25,62 @@ class LongImageClipPrecisionDeciderTest {
     @Test
     fun testPrecision() {
         longImageClipPrecision(KEEP_ASPECT_RATIO).apply {
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(100, 48, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(100, 49, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(100, 50, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(100, 51, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, precision(100, 52, 50, 50))
+            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(150, 48, 50, 50))
+            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(150, 49, 50, 50))
+            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(150, 50, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, precision(150, 51, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, precision(150, 52, 50, 50))
         }
 
         longImageClipPrecision(EXACTLY).apply {
-            Assert.assertEquals(EXACTLY, precision(100, 48, 50, 50))
-            Assert.assertEquals(EXACTLY, precision(100, 49, 50, 50))
-            Assert.assertEquals(EXACTLY, precision(100, 50, 50, 50))
-            Assert.assertEquals(EXACTLY, precision(100, 51, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, precision(100, 52, 50, 50))
+            Assert.assertEquals(EXACTLY, precision(150, 48, 50, 50))
+            Assert.assertEquals(EXACTLY, precision(150, 49, 50, 50))
+            Assert.assertEquals(EXACTLY, precision(150, 50, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, precision(150, 51, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, precision(150, 52, 50, 50))
         }
 
-        longImageClipPrecision(EXACTLY, minDifferenceOfAspectRatio = 3f).apply {
-            Assert.assertEquals(EXACTLY, precision(100, 32, 50, 50))
-            Assert.assertEquals(EXACTLY, precision(100, 33, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, precision(100, 34, 50, 50))
+        longImageClipPrecision(EXACTLY, minDifferenceOfAspectRatio = 4f).apply {
+            Assert.assertEquals(EXACTLY, precision(100, 24, 50, 50))
+            Assert.assertEquals(EXACTLY, precision(100, 25, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, precision(100, 26, 50, 50))
         }
     }
 
     @Test
     fun testIsLongImage() {
         longImageClipPrecision(KEEP_ASPECT_RATIO).apply {
-            Assert.assertTrue(isLongImage(100, 48, 50, 50))
-            Assert.assertTrue(isLongImage(100, 49, 50, 50))
-            Assert.assertTrue(isLongImage(100, 50, 50, 50))
-            Assert.assertTrue(isLongImage(100, 51, 50, 50))
-            Assert.assertFalse(isLongImage(100, 52, 50, 50))
+            Assert.assertTrue(isLongImage(150, 48, 50, 50))
+            Assert.assertTrue(isLongImage(150, 49, 50, 50))
+            Assert.assertTrue(isLongImage(150, 50, 50, 50))
+            Assert.assertFalse(isLongImage(150, 51, 50, 50))
+            Assert.assertFalse(isLongImage(150, 52, 50, 50))
         }
 
         longImageClipPrecision(EXACTLY).apply {
-            Assert.assertTrue(isLongImage(100, 48, 50, 50))
-            Assert.assertTrue(isLongImage(100, 49, 50, 50))
-            Assert.assertTrue(isLongImage(100, 50, 50, 50))
-            Assert.assertTrue(isLongImage(100, 51, 50, 50))
-            Assert.assertFalse(isLongImage(100, 52, 50, 50))
+            Assert.assertTrue(isLongImage(150, 48, 50, 50))
+            Assert.assertTrue(isLongImage(150, 49, 50, 50))
+            Assert.assertTrue(isLongImage(150, 50, 50, 50))
+            Assert.assertFalse(isLongImage(150, 51, 50, 50))
+            Assert.assertFalse(isLongImage(150, 52, 50, 50))
         }
 
-        longImageClipPrecision(EXACTLY, minDifferenceOfAspectRatio = 3f).apply {
-            Assert.assertTrue(isLongImage(100, 32, 50, 50))
-            Assert.assertTrue(isLongImage(100, 33, 50, 50))
-            Assert.assertFalse(isLongImage(100, 34, 50, 50))
+        longImageClipPrecision(EXACTLY, minDifferenceOfAspectRatio = 4f).apply {
+            Assert.assertTrue(isLongImage(100, 24, 50, 50))
+            Assert.assertTrue(isLongImage(100, 25, 50, 50))
+            Assert.assertFalse(isLongImage(100, 26, 50, 50))
         }
     }
 
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(KEEP_ASPECT_RATIO,2.0)",
+            "LongImageClipPrecisionDecider(KEEP_ASPECT_RATIO,3.0)",
             longImageClipPrecision(KEEP_ASPECT_RATIO).toString()
         )
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(EXACTLY,3.0)",
-            longImageClipPrecision(EXACTLY, 3f).toString()
+            "LongImageClipPrecisionDecider(EXACTLY,4.0)",
+            longImageClipPrecision(EXACTLY, 4f).toString()
         )
     }
 }

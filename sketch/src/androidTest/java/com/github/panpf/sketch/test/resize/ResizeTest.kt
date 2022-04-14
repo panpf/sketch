@@ -68,7 +68,7 @@ class ResizeTest {
         }
         Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(
-                "Resize(100x100,LongImageClip(EXACTLY,2.0),CENTER_CROP)",
+                "Resize(100x100,LongImageClip(EXACTLY,3.0),CENTER_CROP)",
                 key
             )
         }
@@ -120,10 +120,10 @@ class ResizeTest {
         }
 
         Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertTrue(shouldClip(100, 50))
-            Assert.assertTrue(shouldClip(100, 150))
-            Assert.assertTrue(shouldClip(50, 100))
-            Assert.assertTrue(shouldClip(150, 100))
+            Assert.assertTrue(shouldClip(150, 50))
+            Assert.assertTrue(shouldClip(100, 250))
+            Assert.assertTrue(shouldClip(50, 150))
+            Assert.assertTrue(shouldClip(250, 100))
             Assert.assertFalse(shouldClip(100, 100))
             Assert.assertFalse(shouldClip(50, 50))
             Assert.assertTrue(shouldClip(150, 150))
@@ -154,10 +154,10 @@ class ResizeTest {
             Assert.assertEquals(LESS_PIXELS, precision(50, 40))
         }
         Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(EXACTLY, precision(100, 50))
+            Assert.assertEquals(EXACTLY, precision(150, 50))
         }
         Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(EXACTLY, precision(50, 100))
+            Assert.assertEquals(EXACTLY, precision(50, 150))
         }
     }
 }
