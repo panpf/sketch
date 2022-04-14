@@ -99,14 +99,15 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             field = value
             zoomer?.scrollBarEnabled = value
         }
-    var readModeEnabled: Boolean = true
+    var readModeEnabled: Boolean = false
         set(value) {
             if (field != value) {
                 field = value
-                zoomer?.readModeDecider = if (value) readModeDecider else null
+                zoomer?.readModeDecider =
+                    if (value) readModeDecider ?: DefaultReadModeDecider() else null
             }
         }
-    var readModeDecider: ReadModeDecider = DefaultReadModeDecider()
+    var readModeDecider: ReadModeDecider? = null
         set(value) {
             if (field != value) {
                 field = value

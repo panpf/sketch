@@ -79,7 +79,13 @@ sketchZoomImageView.zoomAbility.scrollBarEnabled = false
 
 对于宽高相差特别大的长图，如果一开始显示全貌，那么什么也看不清楚，用户必须双击一下放大才能开始阅读
 
-针对这样的图片 [SketchZoomImageView] 默认开启了阅读模式让其一开始就充满屏幕，这样用户就能直接开始阅读长图的内容了
+针对这样的图片 [SketchZoomImageView] 提供了阅读模式让其一开始就充满屏幕，这样用户就能直接开始阅读长图的内容了
+
+开启阅读模式：
+
+```kotlin
+sketchZoomImageView.zoomAbility.readModeEnabled = true
+```
 
 > 长图的判定规则：View 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [DefaultReadModeDecider] 的源码
 
