@@ -2,13 +2,10 @@
 
 StateImage 是一种状态图片，用来设置加载状态占位图和错误状态图，有以下几种实现：
 
-* [ColorResStateImage]：给定一个颜色资源 Id 作为状态图片
-* [ColorStateImage]：给定一个颜色值作为状态图片
-* [DrawableResStateImage]：给定一个 Drawable 资源 Id 作为状态图片
-* [DrawableStateImage]：给定一个 Drawable 作为状态图片
+* [ColorStateImage]：给定一个颜色值或颜色资源 Id 作为状态图片
+* [DrawableStateImage]：给定一个 Drawable 或 Drawable 资源 Id 作为状态图片
 * [ErrorStateImage]：专门用于错误状态，会根据错误类型选择不同的状态图
-* [IconDrawableResStateImage]：给定一个小的图标 Drawable 资源 ID 和背景色作为状态图，无论目标 View 的大小多大，图标始终居中且大小不变
-* [IconDrawableStateImage]：给定一个小的图标 Drawable 和背景色作为状态图，无论目标 View 的大小多大，图标始终居中且大小不变
+* [IconStateImage]：给定一个小的图标 Drawable 或 Drawable 资源 ID 和背景色作为状态图，无论目标 View 的大小多大，图标始终居中且大小不变
 * [MemoryCacheStateImage]：给定一个 bitmap 内存缓存的 key，将尝试使用此 key 从内存缓存中获取 bitmap 作为状态图片
 
 ### 配置
@@ -19,19 +16,14 @@ StateImage 是一种状态图片，用来设置加载状态占位图和错误状
 imageView.displayImage("https://www.sample.com/image.jpg") {
     placeholder(R.drawable.placeholder)
     placeholder(resources.getDrawable(R.drawable.placeholder))
-    placeholder(ColorResStateImage(R.color.placeholder))
-    placeholder(ColorStateImage(Color.RED))
-    placeholder(DrawableResStateImage(R.drawable.placeholder))
-    placeholder(DrawableStateImage(resources.getDrawable(R.drawable.placeholder)))
-    placeholder(IconDrawableResStateImage(R.drawable.placeholder_icon, Color.GRAY))
-    placeholder(
-        IconDrawableStateImage(resources.getDrawable(R.drawable.placeholder_icon), Color.GRAY)
-    )
+    placeholder(ColorStateImage(IntColor(Color.RED)))
+    placeholder(DrawableStateImage(R.drawable.placeholder))
+    placeholder(IconStateImage(R.drawable.placeholder_icon, IntColor(Color.GRAY)))
 
     // error 内部用 ErrorStateImage 实现，因此多了一个可以配置具体错误情况的 lambda 函数
     // 并且 placeholder() 方法能用的 error() 也都能用故不再赘述
     error(R.drawable.error) {
-        uriEmptyError(DrawableResStateImage(R.drawable.uri_empty))
+        uriEmptyError(DrawableStateImage(R.drawable.uri_empty))
     }
 }
 ```
@@ -42,19 +34,13 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [StateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/StateImage.kt
 
-[ColorResStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ColorResStateImage.kt
-
 [ColorStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ColorStateImage.kt
-
-[DrawableResStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/DrawableResStateImage.kt
 
 [DrawableStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/DrawableStateImage.kt
 
 [ErrorStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
 
-[IconDrawableResStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/IconDrawableResStateImage.kt
-
-[IconDrawableStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/IconDrawableStateImage.kt
+[IconStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/IconStateImage.kt
 
 [MemoryCacheStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/MemoryCacheStateImage.kt
 

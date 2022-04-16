@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.test.stateimage
 
 //@RunWith(AndroidJUnit4::class)
-class ColorResStateImageTest {
+class IconStateImageTest {
     // todo Write test cases
 }

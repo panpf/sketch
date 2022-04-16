@@ -16,15 +16,26 @@
 package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
+import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
-class DrawableStateImage(private val drawable: Drawable) : StateImage {
+class DrawableStateImage : StateImage {
+
+    private val drawable: DrawableFetcher
+
+    constructor(@DrawableRes drawableRes: Int) {
+        this.drawable = ResDrawable(drawableRes)
+    }
+
+    constructor(drawable: Drawable) {
+        this.drawable = RealDrawable(drawable)
+    }
 
     override fun getDrawable(
         sketch: Sketch, request: ImageRequest, throwable: SketchException?
     ): Drawable {
-        return drawable.mutate()
+        return drawable.getDrawable(sketch.context)
     }
 }

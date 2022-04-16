@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.stateimage.internal
+package com.github.panpf.sketch.drawable.internal
 
 import android.annotation.SuppressLint
 import android.graphics.Canvas
@@ -11,19 +11,19 @@ import androidx.annotation.ColorInt
 import androidx.core.graphics.alpha
 
 @SuppressLint("RestrictedApi")
-class IconStateDrawable(
-    val iconDrawable: Drawable,
+class IconDrawable(
+    private val icon: Drawable,
     @param:ColorInt private val backgroundColor: Int? = null
 ) : Drawable(), Drawable.Callback {
 
     init {
-        iconDrawable.callback = this
+        icon.callback = this
     }
 
     private val backgroundPaint = backgroundColor?.let { Paint().apply { color = it } }
 
-    override fun mutate(): IconStateDrawable {
-        return IconStateDrawable(iconDrawable.mutate(), backgroundColor)
+    override fun mutate(): IconDrawable {
+        return IconDrawable(icon.mutate(), backgroundColor)
     }
 
     override fun draw(canvas: Canvas) {
@@ -35,30 +35,32 @@ class IconStateDrawable(
                 canvas.restoreToCount(checkpoint)
             }
         }
-        iconDrawable.draw(canvas)
+        icon.draw(canvas)
     }
 
     override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
-        val iconWidth = iconDrawable.intrinsicWidth
-        val iconHeight = iconDrawable.intrinsicHeight
+        val iconWidth = icon.intrinsicWidth
+        val iconHeight = icon.intrinsicHeight
         val left = bounds.left + (bounds.width() - iconWidth) / 2
         val top = bounds.top + (bounds.height() - iconHeight) / 2
-        iconDrawable.setBounds(left, top, left + iconWidth, top + iconHeight)
+        icon.setBounds(left, top, left + iconWidth, top + iconHeight)
     }
 
     override fun setAlpha(alpha: Int) {
         backgroundPaint?.alpha = alpha
-        iconDrawable.alpha = alpha
+        icon.alpha = alpha
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
         backgroundPaint?.colorFilter = colorFilter
-        iconDrawable.colorFilter = colorFilter
+        icon.colorFilter = colorFilter
     }
 
+    @Suppress("DEPRECATION")
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int =
-        iconDrawable.opacity.takeIf { it != PixelFormat.OPAQUE }
+        icon.opacity.takeIf { it != PixelFormat.OPAQUE }
             ?: when (backgroundColor?.alpha ?: 255) {
                 255 -> PixelFormat.OPAQUE
                 0 -> PixelFormat.TRANSPARENT

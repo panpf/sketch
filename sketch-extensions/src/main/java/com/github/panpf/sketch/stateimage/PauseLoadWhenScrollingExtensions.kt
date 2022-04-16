@@ -25,7 +25,7 @@ fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(
 fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(
     resId: Int
 ): ErrorStateImage.Builder = apply {
-    addMatcher(PauseLoadWhenScrollingMatcher(DrawableResStateImage(resId)))
+    addMatcher(PauseLoadWhenScrollingMatcher(DrawableStateImage(resId)))
 }
 
 private class PauseLoadWhenScrollingMatcher(val pauseLoadWhenScrollingImage: StateImage?) :

@@ -62,7 +62,7 @@ class ErrorStateImage private constructor(private val matcherList: List<Matcher>
         }
 
         fun uriEmptyError(emptyImageResId: Int): Builder = apply {
-            addMatcher(UriEmptyMatcher(DrawableResStateImage(emptyImageResId)))
+            addMatcher(UriEmptyMatcher(DrawableStateImage(emptyImageResId)))
         }
 
         fun build(): ErrorStateImage = ErrorStateImage(matcherList.plus(DefaultMatcher(defaultImage)))

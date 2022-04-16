@@ -40,7 +40,6 @@ import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewSizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.stateimage.DrawableResStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
@@ -519,7 +518,7 @@ interface ImageRequest {
 
         open fun placeholder(@DrawableRes placeholderDrawableResId: Int?): Builder = apply {
             this.placeholderImage = if (placeholderDrawableResId != null) {
-                DrawableResStateImage(placeholderDrawableResId)
+                DrawableStateImage(placeholderDrawableResId)
             } else null
         }
 
@@ -555,9 +554,9 @@ interface ImageRequest {
         ): Builder = apply {
             this.errorImage = errorDrawableResId?.let {
                 if (configBlock != null) {
-                    newErrorStateImage(DrawableResStateImage(it), configBlock)
+                    newErrorStateImage(DrawableStateImage(it), configBlock)
                 } else {
-                    DrawableResStateImage(it)
+                    DrawableStateImage(it)
                 }
             }
         }

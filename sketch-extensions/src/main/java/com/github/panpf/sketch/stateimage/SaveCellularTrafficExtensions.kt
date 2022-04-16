@@ -22,7 +22,7 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficDrawable
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageResId: Int): ErrorStateImage.Builder =
     apply {
         addMatcher(
-            SaveCellularTrafficMatcher(DrawableResStateImage(saveCellularTrafficImageResId))
+            SaveCellularTrafficMatcher(DrawableStateImage(saveCellularTrafficImageResId))
         )
     }
 

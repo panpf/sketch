@@ -15,19 +15,26 @@
  */
 package com.github.panpf.sketch.stateimage
 
-import android.graphics.drawable.ColorDrawable
+import android.content.Context
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorRes
-import androidx.core.content.res.ResourcesCompat
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.SketchException
+import androidx.annotation.DrawableRes
+import androidx.appcompat.content.res.AppCompatResources
 
-class ColorResStateImage(@ColorRes private val colorRes: Int) : StateImage {
+interface DrawableFetcher {
 
-    override fun getDrawable(
-        sketch: Sketch, request: ImageRequest, throwable: SketchException?
-    ): Drawable {
-        return ColorDrawable(ResourcesCompat.getColor(sketch.context.resources, colorRes, null))
+    fun getDrawable(context: Context): Drawable
+}
+
+class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
+
+    override fun getDrawable(context: Context): Drawable {
+        return AppCompatResources.getDrawable(context, drawableRes)!!
+    }
+}
+
+class RealDrawable(val drawable: Drawable) : DrawableFetcher {
+
+    override fun getDrawable(context: Context): Drawable {
+        return drawable.mutate()
     }
 }

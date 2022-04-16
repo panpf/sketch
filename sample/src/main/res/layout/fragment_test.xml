@@ -5,7 +5,7 @@
 
     <com.github.panpf.sketch.sample.widget.MyImageView
         android:id="@+id/testFragmentImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:contentDescription="@string/app_name" />
 </FrameLayout>

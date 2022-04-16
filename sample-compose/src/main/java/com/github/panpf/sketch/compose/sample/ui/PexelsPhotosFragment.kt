@@ -15,7 +15,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
@@ -23,12 +22,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.sample.NavMainDirections
 import com.github.panpf.sketch.compose.sample.R
-import com.github.panpf.sketch.compose.sample.R.color
 import com.github.panpf.sketch.compose.sample.R.drawable
 import com.github.panpf.sketch.compose.sample.base.ToolbarFragment
 import com.github.panpf.sketch.compose.sample.bean.Photo
 import com.github.panpf.sketch.compose.sample.vm.PexelsImageListViewModel
-import com.github.panpf.sketch.stateimage.IconDrawableResStateImage
+import com.github.panpf.sketch.stateimage.IconStateImage
+import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.tools4a.dimen.ktx.px2dp
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlinx.coroutines.flow.Flow
@@ -77,18 +76,9 @@ fun PhotoContent(index: Int, photo: Photo) {
         contentScale = ContentScale.Crop,
         contentDescription = ""
     ) {
-        placeholder(
-            IconDrawableResStateImage(
-                drawable.ic_image_outline,
-                ResourcesCompat.getColor(resources, R.color.placeholder_bg, null)
-            )
-        )
-        error(
-            IconDrawableResStateImage(
-                drawable.ic_error,
-                ResourcesCompat.getColor(resources, color.placeholder_bg, null)
-            )
-        )
-        crossfade()
+        placeholder(IconStateImage(drawable.ic_image_outline, ResColor(R.color.placeholder_bg)))
+        error(IconStateImage(drawable.ic_error, ResColor(R.color.placeholder_bg)))
+        crossfade(durationMillis = 3000)
+        resizeApplyToResultDrawable()
     }
 }
