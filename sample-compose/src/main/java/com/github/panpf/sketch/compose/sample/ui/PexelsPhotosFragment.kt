@@ -78,7 +78,6 @@ fun PhotoContent(index: Int, photo: Photo) {
     ) {
         placeholder(IconStateImage(drawable.ic_image_outline, ResColor(R.color.placeholder_bg)))
         error(IconStateImage(drawable.ic_error, ResColor(R.color.placeholder_bg)))
-        crossfade(durationMillis = 3000)
-        resizeApplyToResultDrawable()
+        crossfade()
     }
 }

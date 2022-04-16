@@ -40,7 +40,7 @@ class TestFragment : BindingFragment<FragmentTestBinding>() {
                 placeholder(
                     IconStateImage(R.drawable.ic_image_outline, ResColor(R.color.placeholder_bg))
                 )
-                crossfade(durationMillis = 3000)
+                crossfade()
                 resizeApplyToResultDrawable()
                 lifecycle(viewLifecycleOwner.lifecycle)
                 bitmapMemoryCachePolicy(DISABLED)
