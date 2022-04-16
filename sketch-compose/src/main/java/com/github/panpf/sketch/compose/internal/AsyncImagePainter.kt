@@ -149,7 +149,9 @@ class AsyncImagePainter(
 
             override fun onError(error: Drawable?) {
                 super.onError(error)
-                state = State.Error(error?.toPainter(filterQuality), error)
+                if (error != null) {
+                    state = State.Error(error.toPainter(filterQuality), error)
+                }
             }
         }
 

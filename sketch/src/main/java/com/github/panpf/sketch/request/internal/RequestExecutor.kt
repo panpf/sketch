@@ -207,6 +207,11 @@ class RequestExecutor(private val sketch: Sketch) {
             return
         }
 
+        if (result.drawable == null) {
+            setDrawable()
+            return
+        }
+
         val transition = result.request.transition?.create(target, result)
         if (transition == null) {
             setDrawable()

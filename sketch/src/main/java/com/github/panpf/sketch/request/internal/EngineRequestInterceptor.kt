@@ -46,11 +46,6 @@ class EngineRequestInterceptor : RequestInterceptor {
                     return result.toDisplayData()
                 }
 
-                val requestDepth = request.depth
-                if (requestDepth >= MEMORY) {
-                    throw RequestDepthException(request, requestDepth, request.depthFrom)
-                }
-
                 if (target is DisplayTarget) {
                     val placeholderDrawable = request.placeholderImage
                         ?.getDrawable(sketch, request, null)
@@ -62,6 +57,11 @@ class EngineRequestInterceptor : RequestInterceptor {
                             }
                         }
                     target.onStart(placeholderDrawable)
+                }
+
+                val requestDepth = request.depth
+                if (requestDepth >= MEMORY) {
+                    throw RequestDepthException(request, requestDepth, request.depthFrom)
                 }
 
                 withContext(sketch.decodeTaskDispatcher) {
