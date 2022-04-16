@@ -15,6 +15,12 @@ import com.github.panpf.sketch.viewability.showRingProgressIndicator
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
+// todo 增加上下滑动退出功能
+// todo 增加进入和退出过渡动画
+// todo 增加保存功能
+// todo 增加设置壁纸功能
+// todo 增加旋转功能
+// todo 增加查看图片信息功能
 class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
 
     private val args by navArgs<ImageDetailFragmentArgs>()

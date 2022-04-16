@@ -29,7 +29,7 @@ data class Resize constructor(
      * Which part of the original picture should be kept when the original topic needs to be cropped.
      * Works only when precision is [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO]
      */
-    val scale: Scale = Scale.CENTER_CROP,
+    val scale: Scale = Scale.CENTER_CROP,   // todo scale 也支持长图
 ) {
 
     constructor(

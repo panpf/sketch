@@ -12,11 +12,12 @@ import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
+import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
 import com.github.panpf.sketch.zoom.internal.TapHelper
 
+// todo 和 ViewPager2 一起使用时，容易被 pager 滑动拦截
 class Zoomer constructor(
     val context: Context,
     val view: View,
