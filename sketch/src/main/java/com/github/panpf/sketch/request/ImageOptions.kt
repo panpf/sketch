@@ -11,7 +11,7 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.drawable.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.ImageOptions.Builder
 import com.github.panpf.sketch.resize.FixedPrecisionDecider

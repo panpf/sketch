@@ -17,10 +17,10 @@ package com.github.panpf.sketch.drawable
 
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.toBitmapInfo
 
@@ -39,11 +39,18 @@ open class SketchBitmapDrawable constructor(
     }
 
     init {
-        // 这一步很重要，让 BitmapDrawable 的 density 和 Bitmap 的 density 保持一致
-        // 这样 getIntrinsicWidth() 和 getIntrinsicHeight() 方法得到的就是 bitmap的 真实的（未经过缩放）尺寸
+        // Let the getIntrinsicWidth() and getIntrinsicHeight() methods get the true (unscaled) size of the bitmap
+        @Suppress("LeakingThis")
         setTargetDensity(bitmap.density)
     }
 
     override fun toString(): String =
-        "SketchBitmapDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$dataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
+        "SketchBitmapDrawable(" +
+                imageInfo.toShortString() +
+                "," + exifOrientationName(imageExifOrientation) +
+                "," + dataFrom +
+                "," + bitmapInfo.toShortString() +
+                "," + transformedList +
+                "," + requestKey +
+                ")"
 }

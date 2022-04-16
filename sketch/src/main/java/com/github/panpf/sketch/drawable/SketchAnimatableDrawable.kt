@@ -164,10 +164,12 @@ class SketchAnimatableDrawable constructor(
     }
 
     override fun toString(): String =
-        "${animatableDrawableName}(${imageInfo.toShortString()}" +
-                ",${exifOrientationName(imageExifOrientation)}" +
-                ",$dataFrom" +
-                ",${bitmapInfo.toShortString()}" +
-                ",${transformedList}" +
-                ",$requestKey)"
+        animatableDrawableName +
+                "(" + imageInfo.toShortString() +
+                "," + exifOrientationName(imageExifOrientation) +
+                "," + dataFrom +
+                "," + bitmapInfo.toShortString() +
+                "," + transformedList +
+                "," + requestKey +
+                ")"
 }

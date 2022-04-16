@@ -23,7 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.drawable.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import kotlinx.coroutines.Deferred

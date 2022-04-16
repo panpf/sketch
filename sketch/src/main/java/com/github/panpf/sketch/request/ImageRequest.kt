@@ -18,7 +18,7 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.drawable.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.merge
 import com.github.panpf.sketch.request.RequestDepth.NETWORK

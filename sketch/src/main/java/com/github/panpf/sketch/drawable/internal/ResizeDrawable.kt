@@ -3,8 +3,6 @@ package com.github.panpf.sketch.drawable.internal
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapper
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
@@ -91,33 +89,5 @@ open class ResizeDrawable(drawable: Drawable, val resize: Resize) : DrawableWrap
             }
         }
         wrappedDrawable.setBounds(wrappedLeft, wrappedTop, wrappedRight, wrappedBottom)
-    }
-}
-
-open class ResizeAnimatableDrawable(val drawable: SketchAnimatableDrawable, resize: Resize) :
-    ResizeDrawable(drawable, resize), Animatable2Compat {
-
-    override fun start() {
-        drawable.start()
-    }
-
-    override fun stop() {
-        drawable.start()
-    }
-
-    override fun isRunning(): Boolean {
-        return drawable.isRunning
-    }
-
-    override fun registerAnimationCallback(callback: AnimationCallback) {
-        drawable.registerAnimationCallback(callback)
-    }
-
-    override fun unregisterAnimationCallback(callback: AnimationCallback): Boolean {
-        return drawable.unregisterAnimationCallback(callback)
-    }
-
-    override fun clearAnimationCallbacks() {
-        drawable.clearAnimationCallbacks()
     }
 }

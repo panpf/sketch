@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.drawable
+package com.github.panpf.sketch.drawable.internal
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList

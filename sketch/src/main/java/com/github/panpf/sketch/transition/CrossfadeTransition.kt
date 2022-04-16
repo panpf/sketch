@@ -3,10 +3,8 @@ package com.github.panpf.sketch.transition
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.drawable.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.SketchCrossfadeDrawable
-import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayResult
 
 /**
@@ -27,26 +25,14 @@ class CrossfadeTransition @JvmOverloads constructor(
     }
 
     override fun transition() {
-        val endDrawable = result.drawable
-        val drawable = if (endDrawable is SketchDrawable) {
-            SketchCrossfadeDrawable(
-                start = target.drawable,
-                _end = endDrawable,
-                fitScale = (target.view as? ImageView)?.fitScale ?: true,
-                durationMillis = durationMillis,
-                fadeStart = target.drawable !is SketchCountBitmapDrawable,    // If the start drawable is a placeholder drawn from the memory cache, the fade in effect is not used
-                preferExactIntrinsicSize = preferExactIntrinsicSize
-            )
-        } else {
-            CrossfadeDrawable(
-                start = target.drawable,
-                end = result.drawable,
-                fitScale = (target.view as? ImageView)?.fitScale ?: true,
-                durationMillis = durationMillis,
-                fadeStart = target.drawable !is SketchCountBitmapDrawable,    // If the start drawable is a placeholder drawn from the memory cache, the fade in effect is not used
-                preferExactIntrinsicSize = preferExactIntrinsicSize
-            )
-        }
+        val drawable = CrossfadeDrawable(
+            start = target.drawable,
+            end = result.drawable,
+            fitScale = (target.view as? ImageView)?.fitScale ?: true,
+            durationMillis = durationMillis,
+            fadeStart = target.drawable !is SketchCountBitmapDrawable,    // If the start drawable is a placeholder drawn from the memory cache, the fade in effect is not used
+            preferExactIntrinsicSize = preferExactIntrinsicSize
+        )
         when (result) {
             is DisplayResult.Success -> target.onSuccess(drawable)
             is DisplayResult.Error -> target.onError(drawable)
