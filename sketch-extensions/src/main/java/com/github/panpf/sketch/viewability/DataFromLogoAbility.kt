@@ -6,8 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.drawable.SketchDrawable
-import com.github.panpf.sketch.util.getLastDrawable
+import com.github.panpf.sketch.util.findSketchDrawable
 
 class DataFromLogoAbility(
     sizeDp: Float = DEFAULT_SIZE_DP
@@ -62,8 +61,7 @@ class DataFromLogoAbility(
         path.reset()
         val host = host ?: return false
 
-        val lastDrawable = host.drawable?.getLastDrawable() ?: return false
-        if (lastDrawable !is SketchDrawable) return false
+        val lastDrawable = host.drawable?.findSketchDrawable() ?: return false
         when (lastDrawable.dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
             DataFrom.MEMORY -> paint.color = FROM_FLAG_COLOR_MEMORY

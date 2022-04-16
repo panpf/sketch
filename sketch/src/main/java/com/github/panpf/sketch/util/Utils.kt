@@ -25,6 +25,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.drawable.SketchDrawable
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
@@ -192,27 +193,56 @@ fun Float.format(newScale: Int): Float {
     return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
 }
 
-fun Drawable.getLastDrawable(): Drawable? =
-    when (val drawable = this) {
-        is LayerDrawable -> {
+fun Drawable.findSketchDrawable(): SketchDrawable? {
+    val drawable = this
+    return when {
+        drawable is SketchDrawable -> drawable
+        drawable is LayerDrawable -> {
             val layerCount = drawable.numberOfLayers
             if (layerCount > 0) {
-                drawable.getDrawable(layerCount - 1).getLastDrawable()
+                drawable.getDrawable(layerCount - 1).findSketchDrawable()
             } else {
                 null
             }
         }
-        is CrossfadeDrawable -> {
-            drawable.end?.getLastDrawable()
+        drawable is CrossfadeDrawable -> {
+            drawable.end?.findSketchDrawable()
         }
-        else -> {
-            drawable
+        drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {
+            drawable.wrappedDrawable?.findSketchDrawable()
+        }
+        VERSION.SDK_INT >= VERSION_CODES.M && drawable is android.graphics.drawable.DrawableWrapper -> {
+            drawable.drawable?.findSketchDrawable()
+        }
+        else -> null
+    }
+}
+
+fun Drawable.foreachSketchCountDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
+    val drawable = this
+    when {
+        drawable is SketchCountBitmapDrawable -> {
+            block(drawable)
+        }
+        drawable is LayerDrawable -> {
+            val layerCount = drawable.numberOfLayers
+            for (index in 0 until layerCount) {
+                drawable.getDrawable(index).foreachSketchCountDrawable(block)
+            }
+        }
+        drawable is CrossfadeDrawable -> {
+            drawable.end?.foreachSketchCountDrawable(block)
+        }
+        drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {
+            drawable.wrappedDrawable?.foreachSketchCountDrawable(block)
+        }
+        VERSION.SDK_INT >= VERSION_CODES.M && drawable is android.graphics.drawable.DrawableWrapper -> {
+            drawable.drawable?.foreachSketchCountDrawable(block)
         }
     }
+}
 
-fun Drawable.findLastCountDrawable(): SketchCountBitmapDrawable? =
-    getLastDrawable() as? SketchCountBitmapDrawable
-
+// todo 可以删除了
 internal fun View.fixedWidth(): Int? {
     val layoutParams = layoutParams?.takeIf { it.width > 0 } ?: return null
     return (layoutParams.width - paddingLeft - paddingRight).takeIf { it > 0 }

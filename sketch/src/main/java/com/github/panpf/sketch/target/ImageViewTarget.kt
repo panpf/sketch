@@ -3,7 +3,7 @@ package com.github.panpf.sketch.target
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
-import com.github.panpf.sketch.util.findLastCountDrawable
+import com.github.panpf.sketch.util.foreachSketchCountDrawable
 
 /**
  * A [Target] that handles setting images on an [ImageView].
@@ -16,9 +16,14 @@ open class ImageViewTarget(override val view: ImageView) : GenericViewTarget<Ima
     override var drawable: Drawable?
         get() = view.drawable
         set(value) {
-            value?.findLastCountDrawable()?.setIsDisplayed("ImageViewTarget:set", true)
-            view.drawable?.findLastCountDrawable()?.setIsDisplayed("ImageViewTarget:set", false)
+            val oldDrawable = view.drawable
+            value?.foreachSketchCountDrawable {
+                it.setIsDisplayed("ImageViewTarget:set", true)
+            }
             view.setImageDrawable(value)
+            oldDrawable?.foreachSketchCountDrawable {
+                it.setIsDisplayed("ImageViewTarget:set", false)
+            }
         }
 
     override fun equals(other: Any?): Boolean {

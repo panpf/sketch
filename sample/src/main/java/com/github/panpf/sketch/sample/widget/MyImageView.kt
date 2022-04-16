@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample.widget
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.app.AlertDialog
 import com.github.panpf.activity.monitor.ActivityMonitor
@@ -13,7 +12,7 @@ import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
-import com.github.panpf.sketch.util.getLastDrawable
+import com.github.panpf.sketch.util.findSketchDrawable
 import com.github.panpf.sketch.viewability.removeDataFromLogo
 import com.github.panpf.sketch.viewability.showDataFromLogo
 
@@ -49,15 +48,14 @@ open class MyImageView @JvmOverloads constructor(
         }
 
         setOnLongClickListener {
-            val drawable = drawable?.getLastDrawable()
+            val drawable = drawable?.findSketchDrawable()
             drawable?.let { it1 -> showDrawableInfo(it1) }
             drawable != null
         }
     }
 
-    private fun showDrawableInfo(drawable: Drawable) {
+    private fun showDrawableInfo(drawable: SketchDrawable) {
         val activity = ActivityMonitor.getLastResumedActivity() ?: return
-        if (drawable !is SketchDrawable) return
         val message = buildString {
             append("${drawable.imageInfo.toShortString()}/${exifOrientationName(drawable.imageExifOrientation)}")
             append("\n").append("\n")

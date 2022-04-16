@@ -19,10 +19,9 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleEventObserver
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
-import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.getLastDrawable
+import com.github.panpf.sketch.util.findSketchDrawable
 import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.viewability.AttachObserver
@@ -469,13 +468,12 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private fun setZoomerDrawable() {
         val host = host ?: return
         val zoomer = zoomer ?: return
-        val previewDrawable = host.drawable?.getLastDrawable()
+        val previewDrawable = host.drawable;
         zoomer.drawableSize =
             Size(previewDrawable?.intrinsicWidth ?: 0, previewDrawable?.intrinsicHeight ?: 0)
-        if (previewDrawable is SketchDrawable) {
-            zoomer.imageSize =
-                Size(previewDrawable.imageInfo.width, previewDrawable.imageInfo.height)
-        }
+        val sketchDrawable = previewDrawable?.findSketchDrawable()
+        zoomer.imageSize =
+            Size(sketchDrawable?.imageInfo?.width ?: 0, sketchDrawable?.imageInfo?.height ?: 0)
     }
 
     private fun tryNewTiles(zoomer: Zoomer?): Tiles? {
@@ -492,18 +490,19 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         }
         val viewSize = Size(viewWidth, viewHeight)
 
-        val previewDrawable = host.drawable?.getLastDrawable()
-        if (previewDrawable !is SketchDrawable || previewDrawable is Animatable) {
+        val previewDrawable = host.drawable
+        val sketchDrawable = previewDrawable?.findSketchDrawable()
+        if (sketchDrawable == null || previewDrawable is Animatable) {
             logger.d(MODULE) { "Can't use Tiles" }
             return null
         }
 
-        val previewWidth = previewDrawable.bitmapInfo.width
-        val previewHeight = previewDrawable.bitmapInfo.height
-        val imageWidth = previewDrawable.imageInfo.width
-        val imageHeight = previewDrawable.imageInfo.height
-        val mimeType = previewDrawable.imageInfo.mimeType
-        val key = previewDrawable.requestKey
+        val previewWidth = sketchDrawable.bitmapInfo.width
+        val previewHeight = sketchDrawable.bitmapInfo.height
+        val imageWidth = sketchDrawable.imageInfo.width
+        val imageHeight = sketchDrawable.imageInfo.height
+        val mimeType = sketchDrawable.imageInfo.mimeType
+        val key = sketchDrawable.requestKey
 
         if (previewWidth >= imageWidth && previewHeight >= imageHeight) {
             logger.d(MODULE) {
@@ -524,8 +523,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             "Use Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                 .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
         }
-        val exifOrientation: Int = previewDrawable.imageExifOrientation
-        val imageUri = previewDrawable.requestUri
+        val exifOrientation: Int = sketchDrawable.imageExifOrientation
+        val imageUri = sketchDrawable.requestUri
         return Tiles(
             context = host.context,
             zoomer = zoomer,

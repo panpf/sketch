@@ -20,14 +20,13 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.internal.AsyncImagePainter.State
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transition.CrossfadeTransition
-import com.github.panpf.sketch.util.getLastDrawable
+import com.github.panpf.sketch.util.findSketchDrawable
 import kotlinx.coroutines.Dispatchers
 import com.github.panpf.sketch.target.DisplayTarget as SketchTarget
 
@@ -233,8 +232,8 @@ private fun updateTransition(imagePainter: AsyncImagePainter) {
 
     // Short circuit if the request isn't successful or if it's returned by the memory cache.
     if (state is State.Success) {
-        val drawable = state.drawable.getLastDrawable()
-        if (drawable is SketchDrawable && drawable.dataFrom != MEMORY_CACHE) {
+        val sketchDrawable = state.drawable.findSketchDrawable()
+        if (sketchDrawable != null && sketchDrawable.dataFrom != MEMORY_CACHE) {
             // Set the crossfade painter.
             imagePainter.painter = rememberCrossfadePainter(
                 key = state,
