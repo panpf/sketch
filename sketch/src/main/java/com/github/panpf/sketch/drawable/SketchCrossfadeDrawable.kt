@@ -9,11 +9,18 @@ import com.github.panpf.sketch.util.BitmapInfo
 class SketchCrossfadeDrawable<END>(
     start: Drawable?,
     private val _end: END,
+    fitScale: Boolean = true,
     durationMillis: Int = DEFAULT_DURATION,
     fadeStart: Boolean = true,
     preferExactIntrinsicSize: Boolean = false,
-) : CrossfadeDrawable(start, _end, durationMillis, fadeStart, preferExactIntrinsicSize),
-    SketchDrawable where END : Drawable, END : SketchDrawable {
+) : CrossfadeDrawable(
+    start = start,
+    end = _end,
+    fitScale = fitScale,
+    durationMillis = durationMillis,
+    fadeStart = fadeStart,
+    preferExactIntrinsicSize = preferExactIntrinsicSize
+), SketchDrawable where END : Drawable, END : SketchDrawable {
 
     override val requestKey: String
         get() = _end.requestKey
