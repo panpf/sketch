@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import com.github.panpf.sketch.Sketch
@@ -35,6 +36,7 @@ fun rememberAsyncImagePainter(
     imageUri: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)?,
     filterQuality: FilterQuality,
+    contentScale: ContentScale,
     resizeScale: Scale,
 ): AsyncImagePainter {
     val context = LocalContext.current
@@ -43,13 +45,14 @@ fun rememberAsyncImagePainter(
     val scope = rememberCoroutineScope { Dispatchers.Main.immediate }
     val imagePainter = remember(scope) {
         AsyncImagePainter(
-            context,
-            sketch,
-            imageUri,
-            configBlock,
-            resizeScale,
-            isPreview,
-            filterQuality
+            context = context,
+            sketch = sketch,
+            imageUri = imageUri,
+            configBlock = configBlock,
+            contentScale = contentScale,
+            resizeScale = resizeScale,
+            isPreview = isPreview,
+            filterQuality = filterQuality
         )
     }
     // Invoke this manually so `painter.state` is up to date immediately.
@@ -65,7 +68,8 @@ class AsyncImagePainter(
     private val sketch: Sketch,
     imageUri: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)?,
-    val resizeScale: Scale,
+    val contentScale: ContentScale,
+    @Suppress("CanBeParameter") val resizeScale: Scale,
     private val isPreview: Boolean,
     private val filterQuality: FilterQuality,
 ) : Painter(), RememberObserver {
@@ -241,6 +245,7 @@ private fun updateTransition(imagePainter: AsyncImagePainter) {
                 key = state,
                 start = loading.value,
                 end = painter,
+                contentScale = imagePainter.contentScale,
                 durationMillis = transition.durationMillis,
                 fadeStart = state.drawable !is SketchCountBitmapDrawable,
                 preferExactIntrinsicSize = transition.preferExactIntrinsicSize

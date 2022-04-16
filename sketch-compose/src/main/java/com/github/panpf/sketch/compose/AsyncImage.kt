@@ -19,9 +19,9 @@ import androidx.compose.ui.layout.times
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.compose.internal.ConstraintsSizeResolver
+import com.github.panpf.sketch.compose.internal.contentScale2ResizeScale
 import com.github.panpf.sketch.compose.internal.rememberAsyncImagePainter
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.resize.Scale
 
 @Composable
 fun AsyncImage(
@@ -35,18 +35,14 @@ fun AsyncImage(
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ) {
-    val resizeScale =
-        if (contentScale == ContentScale.FillBounds || contentScale == ContentScale.FillWidth || contentScale == ContentScale.FillHeight) {
-            Scale.FILL
-        } else {
-            when (alignment) {
-                Alignment.Top, Alignment.TopStart, Alignment.TopEnd -> Scale.START_CROP
-                Alignment.Center, Alignment.CenterStart, Alignment.CenterEnd -> Scale.CENTER_CROP
-                Alignment.Bottom, Alignment.BottomStart, Alignment.BottomEnd -> Scale.END_CROP
-                else -> Scale.CENTER_CROP
-            }
-        }
-    val painter = rememberAsyncImagePainter(imageUri, configBlock, filterQuality, resizeScale)
+    val resizeScale = contentScale2ResizeScale(contentScale, alignment)
+    val painter = rememberAsyncImagePainter(
+        imageUri = imageUri,
+        configBlock = configBlock,
+        filterQuality = filterQuality,
+        contentScale = contentScale,
+        resizeScale = resizeScale
+    )
 
     BoxWithConstraints(modifier, alignment) {
         // Resolve the size for the image request.
