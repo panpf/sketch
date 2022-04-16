@@ -193,26 +193,26 @@ fun Float.format(newScale: Int): Float {
     return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
 }
 
-fun Drawable.findSketchDrawable(): SketchDrawable? {
+fun Drawable.findLastSketchDrawable(): SketchDrawable? {
     val drawable = this
     return when {
-        drawable is SketchDrawable -> drawable
+        drawable is CrossfadeDrawable -> {
+            drawable.end?.findLastSketchDrawable()
+        }
         drawable is LayerDrawable -> {
             val layerCount = drawable.numberOfLayers
             if (layerCount > 0) {
-                drawable.getDrawable(layerCount - 1).findSketchDrawable()
+                drawable.getDrawable(layerCount - 1).findLastSketchDrawable()
             } else {
                 null
             }
         }
-        drawable is CrossfadeDrawable -> {
-            drawable.end?.findSketchDrawable()
-        }
+        drawable is SketchDrawable -> drawable
         drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {
-            drawable.wrappedDrawable?.findSketchDrawable()
+            drawable.wrappedDrawable?.findLastSketchDrawable()
         }
         VERSION.SDK_INT >= VERSION_CODES.M && drawable is android.graphics.drawable.DrawableWrapper -> {
-            drawable.drawable?.findSketchDrawable()
+            drawable.drawable?.findLastSketchDrawable()
         }
         else -> null
     }

@@ -21,7 +21,7 @@ import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.findSketchDrawable
+import com.github.panpf.sketch.util.findLastSketchDrawable
 import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.viewability.AttachObserver
@@ -471,7 +471,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val previewDrawable = host.drawable;
         zoomer.drawableSize =
             Size(previewDrawable?.intrinsicWidth ?: 0, previewDrawable?.intrinsicHeight ?: 0)
-        val sketchDrawable = previewDrawable?.findSketchDrawable()
+        val sketchDrawable = previewDrawable?.findLastSketchDrawable()
         zoomer.imageSize =
             Size(sketchDrawable?.imageInfo?.width ?: 0, sketchDrawable?.imageInfo?.height ?: 0)
     }
@@ -491,7 +491,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val viewSize = Size(viewWidth, viewHeight)
 
         val previewDrawable = host.drawable
-        val sketchDrawable = previewDrawable?.findSketchDrawable()
+        val sketchDrawable = previewDrawable?.findLastSketchDrawable()
         if (sketchDrawable == null || previewDrawable is Animatable) {
             logger.d(MODULE) { "Can't use Tiles" }
             return null

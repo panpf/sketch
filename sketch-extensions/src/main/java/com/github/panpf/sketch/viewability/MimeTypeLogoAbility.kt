@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
-import com.github.panpf.sketch.util.findSketchDrawable
+import com.github.panpf.sketch.util.findLastSketchDrawable
 
 class MimeTypeLogoAbility(
     private val mimeTypeIconMap: Map<String, MimeTypeLogo>,
@@ -46,7 +46,7 @@ class MimeTypeLogoAbility(
         logoDrawable = null
         val host = host ?: return
         val view = host.view
-        val lastDrawable = host.drawable?.findSketchDrawable() ?: return
+        val lastDrawable = host.drawable?.findLastSketchDrawable() ?: return
         val mimeType = lastDrawable.imageInfo.mimeType
         val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return
         if (mimeTypeLogo.hiddenWhenAnimatable && lastDrawable is Animatable) return

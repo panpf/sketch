@@ -12,7 +12,7 @@ import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
-import com.github.panpf.sketch.util.findSketchDrawable
+import com.github.panpf.sketch.util.findLastSketchDrawable
 import com.github.panpf.sketch.viewability.removeDataFromLogo
 import com.github.panpf.sketch.viewability.showDataFromLogo
 
@@ -48,7 +48,7 @@ open class MyImageView @JvmOverloads constructor(
         }
 
         setOnLongClickListener {
-            val drawable = drawable?.findSketchDrawable()
+            val drawable = drawable?.findLastSketchDrawable()
             drawable?.let { it1 -> showDrawableInfo(it1) }
             drawable != null
         }

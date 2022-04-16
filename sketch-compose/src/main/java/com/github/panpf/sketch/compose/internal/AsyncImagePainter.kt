@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transition.CrossfadeTransition
-import com.github.panpf.sketch.util.findSketchDrawable
+import com.github.panpf.sketch.util.findLastSketchDrawable
 import kotlinx.coroutines.Dispatchers
 import com.github.panpf.sketch.target.DisplayTarget as SketchTarget
 
@@ -234,7 +234,7 @@ private fun updateTransition(imagePainter: AsyncImagePainter) {
 
     // Short circuit if the request isn't successful or if it's returned by the memory cache.
     if (state is State.Success) {
-        val sketchDrawable = state.drawable.findSketchDrawable()
+        val sketchDrawable = state.drawable.findLastSketchDrawable()
         if (sketchDrawable != null && sketchDrawable.dataFrom != MEMORY_CACHE) {
             // Set the crossfade painter.
             imagePainter.painter = rememberCrossfadePainter(
