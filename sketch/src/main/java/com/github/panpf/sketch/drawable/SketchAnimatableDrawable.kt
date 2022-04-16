@@ -25,25 +25,24 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.computeByteCount
 
 @SuppressLint("RestrictedApi")
-class SketchAnimatableDrawable<T> constructor(
+class SketchAnimatableDrawable constructor(
     override val requestKey: String,
     override val requestUri: String,
     override val imageInfo: ImageInfo,
     override val imageExifOrientation: Int,
     override val dataFrom: DataFrom,
     override val transformedList: List<Transformed>?,
-    private val animatableDrawable: T,
+    private val animatableDrawable: Drawable,
     private val animatableDrawableName: String,
-) : DrawableWrapper(animatableDrawable),
-    SketchDrawable, Animatable2Compat where T : Drawable, T : Animatable {
+) : DrawableWrapper(animatableDrawable), SketchDrawable, Animatable2Compat {
 
     private var callbacks: MutableList<Animatable2Compat.AnimationCallback>? = null
     private var callbackMap: HashMap<Animatable2Compat.AnimationCallback, Animatable2.AnimationCallback>? =
@@ -129,6 +128,10 @@ class SketchAnimatableDrawable<T> constructor(
     }
 
     override fun start() {
+        val animatableDrawable = animatableDrawable
+        if (animatableDrawable !is Animatable) {
+            throw IllegalArgumentException("Drawable must implement the Animatable interface")
+        }
         animatableDrawable.start()
         if (!(VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2) && animatableDrawable !is Animatable2Compat) {
             val isRunning = isRunning
@@ -139,6 +142,10 @@ class SketchAnimatableDrawable<T> constructor(
     }
 
     override fun stop() {
+        val animatableDrawable = animatableDrawable
+        if (animatableDrawable !is Animatable) {
+            throw IllegalArgumentException("Drawable must implement the Animatable interface")
+        }
         animatableDrawable.stop()
         if (!(VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2) && animatableDrawable !is Animatable2Compat) {
             val isRunning = isRunning
@@ -148,8 +155,19 @@ class SketchAnimatableDrawable<T> constructor(
         }
     }
 
-    override fun isRunning(): Boolean = animatableDrawable.isRunning
+    override fun isRunning(): Boolean {
+        val animatableDrawable = animatableDrawable
+        if (animatableDrawable !is Animatable) {
+            throw IllegalArgumentException("Drawable must implement the Animatable interface")
+        }
+        return animatableDrawable.isRunning
+    }
 
     override fun toString(): String =
-        "${animatableDrawableName}(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$dataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
+        "${animatableDrawableName}(${imageInfo.toShortString()}" +
+                ",${exifOrientationName(imageExifOrientation)}" +
+                ",$dataFrom" +
+                ",${bitmapInfo.toShortString()}" +
+                ",${transformedList}" +
+                ",$requestKey)"
 }

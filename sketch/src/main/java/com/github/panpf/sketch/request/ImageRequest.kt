@@ -121,6 +121,7 @@ interface ImageRequest {
     val placeholderImage: StateImage?
     val errorImage: StateImage?
     val transition: Transition.Factory?
+    val resizeApplyToResultDrawable: Boolean?
 
     val definedOptions: ImageOptions
     val viewOptions: ImageOptions?
@@ -204,6 +205,7 @@ interface ImageRequest {
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
+        private var resizeApplyToResultDrawable: Boolean? = null
 
         private var resolvedLifecycle: Lifecycle? = null
         private var resolvedResizeSizeResolver: SizeResolver? = null
@@ -251,6 +253,7 @@ interface ImageRequest {
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
+            this.resizeApplyToResultDrawable = request.resizeApplyToResultDrawable
 
             // If the context changes, recompute the resolved values.
             if (request.context === context) {
@@ -570,6 +573,10 @@ interface ImageRequest {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
         }
 
+        open fun resizeApplyToResultDrawable(resizeApplyToResultDrawable: Boolean? = true): Builder = apply {
+            this.resizeApplyToResultDrawable = resizeApplyToResultDrawable
+        }
+
         @SuppressLint("NewApi")
         open fun build(): ImageRequest {
             val listener = combinationListener()
@@ -597,6 +604,7 @@ interface ImageRequest {
                 placeholder(placeholderImage)
                 error(errorImage)
                 transition(transition)
+                resizeApplyToResultDrawable(resizeApplyToResultDrawable)
             }
             val depth = depth
                 ?: viewOptions?.depth
@@ -672,6 +680,9 @@ interface ImageRequest {
             val transition = transition
                 ?: viewOptions?.transition
                 ?: globalOptions?.transition
+            val resizeApplyToResultDrawable = resizeApplyToResultDrawable
+                ?: viewOptions?.resizeApplyToResultDrawable
+                ?: globalOptions?.resizeApplyToResultDrawable
 
             return when (this@Builder) {
                 is DisplayRequest.Builder -> {
@@ -705,6 +716,7 @@ interface ImageRequest {
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
+                        resizeApplyToResultDrawable = resizeApplyToResultDrawable,
                     )
                 }
                 is LoadRequest.Builder -> {
@@ -738,6 +750,7 @@ interface ImageRequest {
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
+                        resizeApplyToResultDrawable = resizeApplyToResultDrawable,
                     )
                 }
                 is DownloadRequest.Builder -> {
@@ -771,6 +784,7 @@ interface ImageRequest {
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
+                        resizeApplyToResultDrawable = resizeApplyToResultDrawable,
                     )
                 }
                 else -> throw UnsupportedOperationException("Unsupported ImageRequest.Builder: ${this@Builder::class.java}")

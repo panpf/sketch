@@ -2,6 +2,7 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.drawable.internal.toResizeDrawable
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
@@ -13,6 +14,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
@@ -40,6 +42,7 @@ class RequestExecutor(private val sketch: Sketch) {
         requestDelegate.assertActive()
         val target = request.target
         val requestExtras = RequestExtras()
+        var resize: Resize? = null
 
         try {
             if (request.uriString.isEmpty() || request.uriString.isBlank()) {
@@ -60,6 +63,7 @@ class RequestExecutor(private val sketch: Sketch) {
             } else {
                 request
             }
+            resize = newRequest.resize
 
             val data = RequestInterceptorChain(
                 initialRequest = request,
@@ -73,7 +77,13 @@ class RequestExecutor(private val sketch: Sketch) {
             val successResult = when (data) {
                 is DisplayData -> DisplayResult.Success(
                     request,
-                    data.drawable,
+                    data.drawable.let {
+                        if (newRequest.resizeApplyToResultDrawable == true) {
+                            it.toResizeDrawable(resize)
+                        } else {
+                            it
+                        }
+                    },
                     data.imageInfo,
                     data.dataFrom
                 )
@@ -98,10 +108,20 @@ class RequestExecutor(private val sketch: Sketch) {
                     ?: OtherException(request, throwable.toString(), throwable)
                 val errorResult = when (request) {
                     is DisplayRequest -> {
-                        val errorDrawable =
-                            request.errorImage?.getDrawable(sketch, request, exception)
-                                ?: request.placeholderImage?.getDrawable(sketch, request, null)
-                        DisplayResult.Error(request, errorDrawable, exception)
+                        val errorDrawable = request.errorImage
+                            ?.getDrawable(sketch, request, exception)
+                            ?.let {
+                                if (request.resizeApplyToResultDrawable == true) {
+                                    it.toResizeDrawable(resize)
+                                } else {
+                                    it
+                                }
+                            }
+                        DisplayResult.Error(
+                            request,
+                            errorDrawable,
+                            exception
+                        )
                     }
                     is LoadRequest -> LoadResult.Error(request, exception)
                     is DownloadRequest -> DownloadResult.Error(request, exception)

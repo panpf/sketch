@@ -318,6 +318,10 @@ interface LoadRequest : ImageRequest {
         ): Builder = apply {
             super.crossfade(durationMillis, preferExactIntrinsicSize)
         }
+
+        override fun resizeApplyToResultDrawable(resizeApplyToResultDrawable: Boolean?): Builder = apply {
+            super.resizeApplyToResultDrawable(resizeApplyToResultDrawable)
+        }
     }
 
     class LoadRequestImpl internal constructor(
@@ -331,7 +335,9 @@ interface LoadRequest : ImageRequest {
         override val progressListener: ProgressListener<ImageRequest>?,
         override val bitmapConfig: BitmapConfig?,
         override val colorSpace: ColorSpace?,
-        @Suppress("OverridingDeprecatedMember") override val preferQualityOverSpeed: Boolean,
+        @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
+        @Suppress("OverridingDeprecatedMember")
+        override val preferQualityOverSpeed: Boolean,
         override val resizeSize: Size?,
         override val resizeSizeResolver: SizeResolver,
         override val resizePrecisionDecider: PrecisionDecider,
@@ -347,6 +353,7 @@ interface LoadRequest : ImageRequest {
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Factory?,
+        override val resizeApplyToResultDrawable: Boolean?,
         override val definedOptions: ImageOptions,
         override val viewOptions: ImageOptions?,
         override val globalOptions: ImageOptions?
