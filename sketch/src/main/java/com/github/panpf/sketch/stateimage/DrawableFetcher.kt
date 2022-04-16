@@ -17,8 +17,12 @@ package com.github.panpf.sketch.stateimage
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 
 interface DrawableFetcher {
 
@@ -28,7 +32,13 @@ interface DrawableFetcher {
 class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable {
-        return AppCompatResources.getDrawable(context, drawableRes)!!
+        return AppCompatResources.getDrawable(context, drawableRes)!!.let {
+            if ((VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && it is VectorDrawable) || it is VectorDrawableCompat) {
+                it.mutate()
+            } else {
+                it
+            }
+        }
     }
 }
 
