@@ -11,7 +11,6 @@ enum class Precision {
     /**
      * The size of the new image will not be larger than [Resize], but the aspect ratio will be the same
      */
-    // todo 改名为 SAME_ASPECT_RATIO
     SAME_ASPECT_RATIO,
 
     /**
