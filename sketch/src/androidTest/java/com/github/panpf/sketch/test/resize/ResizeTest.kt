@@ -2,7 +2,7 @@ package com.github.panpf.sketch.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -42,8 +42,8 @@ class ResizeTest {
             Assert.assertEquals("Resize(50x100,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
         }
 
-        Resize(100, 100, KEEP_ASPECT_RATIO).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(KEEP_ASPECT_RATIO),Fixed(CENTER_CROP))", key)
+        Resize(100, 100, SAME_ASPECT_RATIO).apply {
+            Assert.assertEquals("Resize(100x100,Fixed(SAME_ASPECT_RATIO),Fixed(CENTER_CROP))", key)
         }
         Resize(100, 100, EXACTLY).apply {
             Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", key)
@@ -84,7 +84,7 @@ class ResizeTest {
             Assert.assertTrue(shouldClip(150, 150))
         }
 
-        Resize(100, 100, KEEP_ASPECT_RATIO).apply {
+        Resize(100, 100, SAME_ASPECT_RATIO).apply {
             Assert.assertTrue(shouldClip(100, 50))
             Assert.assertTrue(shouldClip(100, 150))
             Assert.assertTrue(shouldClip(50, 100))
@@ -123,8 +123,8 @@ class ResizeTest {
         Resize(100, 30, LESS_PIXELS).apply {
             Assert.assertEquals(LESS_PIXELS, getPrecision(0, 0))
         }
-        Resize(100, 30, KEEP_ASPECT_RATIO).apply {
-            Assert.assertEquals(KEEP_ASPECT_RATIO, getPrecision(0, 0))
+        Resize(100, 30, SAME_ASPECT_RATIO).apply {
+            Assert.assertEquals(SAME_ASPECT_RATIO, getPrecision(0, 0))
         }
         Resize(100, 30, EXACTLY).apply {
             Assert.assertEquals(EXACTLY, getPrecision(0, 0))

@@ -7,7 +7,7 @@ import org.json.JSONObject
 /**
  * The long image uses the specified precision, use the '[Precision.LESS_PIXELS]' for others.
  *
- * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO].
+ * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO].
  */
 fun longImageClipPrecision(
     precision: Precision,
@@ -18,11 +18,11 @@ fun longImageClipPrecision(
 /**
  * The long image uses the specified precision, use the '[Precision.LESS_PIXELS]' for others.
  *
- * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO].
+ * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO].
  */
 @Keep
 data class LongImageClipPrecisionDecider constructor(
-    private val precision: Precision = Precision.KEEP_ASPECT_RATIO,
+    private val precision: Precision = Precision.SAME_ASPECT_RATIO,
     val minDifferenceOfAspectRatio: Float = DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO
 ) : PrecisionDecider {
 
@@ -43,8 +43,8 @@ data class LongImageClipPrecisionDecider constructor(
         }
 
     init {
-        require(precision == Precision.EXACTLY || precision == Precision.KEEP_ASPECT_RATIO) {
-            "precision must be EXACTLY or KEEP_ASPECT_RATIO"
+        require(precision == Precision.EXACTLY || precision == Precision.SAME_ASPECT_RATIO) {
+            "precision must be EXACTLY or SAME_ASPECT_RATIO"
         }
     }
 

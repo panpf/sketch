@@ -13,7 +13,7 @@ import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.longImageClipPrecision
@@ -128,14 +128,14 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                     "LESS_PIXELS" -> {
                         resizePrecision(precision = LESS_PIXELS)
                     }
-                    "KEEP_ASPECT_RATIO" -> {
-                        resizePrecision(precision = KEEP_ASPECT_RATIO)
+                    "SAME_ASPECT_RATIO" -> {
+                        resizePrecision(precision = SAME_ASPECT_RATIO)
                     }
                     "EXACTLY" -> {
                         resizePrecision(precision = EXACTLY)
                     }
                     "LONG_IMAGE_CROP" -> {
-                        resizePrecision(longImageClipPrecision(precision = KEEP_ASPECT_RATIO))
+                        resizePrecision(longImageClipPrecision(precision = SAME_ASPECT_RATIO))
                     }
                     "ORIGINAL" -> {
                         resizeSize(-1, -1)

@@ -2,7 +2,7 @@ package com.github.panpf.sketch.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.fixedPrecision
 import org.junit.Assert
@@ -14,12 +14,12 @@ class FixedPrecisionDeciderTest {
 
     @Test
     fun testPrecision() {
-        fixedPrecision(KEEP_ASPECT_RATIO).apply {
-            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 48, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 49, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 50, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 51, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 52, 50, 50))
+        fixedPrecision(SAME_ASPECT_RATIO).apply {
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 48, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 49, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 50, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 51, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 52, 50, 50))
         }
 
         fixedPrecision(EXACTLY).apply {
@@ -40,8 +40,8 @@ class FixedPrecisionDeciderTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "FixedPrecisionDecider(KEEP_ASPECT_RATIO)",
-            fixedPrecision(KEEP_ASPECT_RATIO).toString()
+            "FixedPrecisionDecider(SAME_ASPECT_RATIO)",
+            fixedPrecision(SAME_ASPECT_RATIO).toString()
         )
         Assert.assertEquals(
             "FixedPrecisionDecider(EXACTLY)",

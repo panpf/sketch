@@ -5,17 +5,17 @@
 1875x60，这张缩略图是极其模糊，无法辨别任何内容
 
 针对这种情况你可用 [LongImageClipPrecisionDecider] 动态计算 [Precision]，[LongImageClipPrecisionDecider] 在遇到长图时会返回
-KEEP_ASPECT_RATIO 或 EXACTLY（由你指定），否则返回 LESS_PIXELS，这样既确保了长图有一个清晰的缩略图，又保证了非长图的快速加载
+SAME_ASPECT_RATIO 或 EXACTLY（由你指定），否则返回 LESS_PIXELS，这样既确保了长图有一个清晰的缩略图，又保证了非长图的快速加载
 
 > 注意：
 > 1. 长图的判定规则：[Resize] 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [LongImageClipPrecisionDecider] 的源码
-> 2. KEEP_ASPECT_RATIO 和 EXACTLY 会使用 BitmapRegionDecoder 对原图进行裁剪，因此可以得到一张较清晰的缩略图
+> 2. SAME_ASPECT_RATIO 和 EXACTLY 会使用 BitmapRegionDecoder 对原图进行裁剪，因此可以得到一张较清晰的缩略图
 
 ### 使用
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    resizePrecision(longImageClipPrecision(Precision.KEEP_ASPECT_RATIO))
+    resizePrecision(longImageClipPrecision(Precision.SAME_ASPECT_RATIO))
 }
 ```
 

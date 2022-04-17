@@ -35,7 +35,7 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.sketch
@@ -159,17 +159,17 @@ class DecodeUtilsTest {
         }
 
         /*
-         * KEEP_ASPECT_RATIO
+         * SAME_ASPECT_RATIO
          */
         // small
-        resize = Resize(40, 20, KEEP_ASPECT_RATIO)
+        resize = Resize(40, 20, SAME_ASPECT_RATIO)
         result = newResult()
         result.applyResize(sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
-        resize = Resize(50, 150, KEEP_ASPECT_RATIO)
+        resize = Resize(50, 150, SAME_ASPECT_RATIO)
         result = newResult()
         result.applyResize(sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this !== result)

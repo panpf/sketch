@@ -3,7 +3,7 @@ package com.github.panpf.sketch.test.resize
 import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.ResizeMapping
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -62,37 +62,37 @@ class ResizeMappingTest {
         /* resize < imageSize */
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 100, 50), Rect(0, 0, 40, 20)),
-            calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, START_CROP)
+            calculateResizeMapping(200, 50, 40, 20, SAME_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 25, 50), Rect(0, 0, 20, 40)),
-            calculateResizeMapping(200, 50, 20, 40, KEEP_ASPECT_RATIO, START_CROP)
+            calculateResizeMapping(200, 50, 20, 40, SAME_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 50, 25), Rect(0, 0, 40, 20)),
-            calculateResizeMapping(50, 200, 40, 20, KEEP_ASPECT_RATIO, START_CROP)
+            calculateResizeMapping(50, 200, 40, 20, SAME_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 50, 100), Rect(0, 0, 20, 40)),
-            calculateResizeMapping(50, 200, 20, 40, KEEP_ASPECT_RATIO, START_CROP)
+            calculateResizeMapping(50, 200, 20, 40, SAME_ASPECT_RATIO, START_CROP)
         )
 
         /* resize > imageSize */
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 33, 50), Rect(0, 0, 33, 50)),
-            calculateResizeMapping(200, 50, 100, 150, KEEP_ASPECT_RATIO, START_CROP)
+            calculateResizeMapping(200, 50, 100, 150, SAME_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 75, 50), Rect(0, 0, 75, 50)),
-            calculateResizeMapping(200, 50, 150, 100, KEEP_ASPECT_RATIO, START_CROP)
+            calculateResizeMapping(200, 50, 150, 100, SAME_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 50, 75), Rect(0, 0, 50, 75)),
-            calculateResizeMapping(50, 200, 100, 150, KEEP_ASPECT_RATIO, START_CROP)
+            calculateResizeMapping(50, 200, 100, 150, SAME_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 50, 33), Rect(0, 0, 50, 33)),
-            calculateResizeMapping(50, 200, 150, 100, KEEP_ASPECT_RATIO, START_CROP)
+            calculateResizeMapping(50, 200, 150, 100, SAME_ASPECT_RATIO, START_CROP)
         )
     }
 
@@ -143,7 +143,7 @@ class ResizeMappingTest {
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 100, 50), Rect(0, 0, 40, 20)),
-            calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, START_CROP)
+            calculateResizeMapping(200, 50, 40, 20, SAME_ASPECT_RATIO, START_CROP)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 100, 50), Rect(0, 0, 40, 20)),
@@ -159,7 +159,7 @@ class ResizeMappingTest {
         )
         Assert.assertEquals(
             ResizeMapping(Rect(50, 0, 150, 50), Rect(0, 0, 40, 20)),
-            calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, CENTER_CROP)
+            calculateResizeMapping(200, 50, 40, 20, SAME_ASPECT_RATIO, CENTER_CROP)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(50, 0, 150, 50), Rect(0, 0, 40, 20)),
@@ -175,7 +175,7 @@ class ResizeMappingTest {
         )
         Assert.assertEquals(
             ResizeMapping(Rect(100, 0, 200, 50), Rect(0, 0, 40, 20)),
-            calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, END_CROP)
+            calculateResizeMapping(200, 50, 40, 20, SAME_ASPECT_RATIO, END_CROP)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(100, 0, 200, 50), Rect(0, 0, 40, 20)),
@@ -191,7 +191,7 @@ class ResizeMappingTest {
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 40, 20)),
-            calculateResizeMapping(200, 50, 40, 20, KEEP_ASPECT_RATIO, FILL)
+            calculateResizeMapping(200, 50, 40, 20, SAME_ASPECT_RATIO, FILL)
         )
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 40, 20)),

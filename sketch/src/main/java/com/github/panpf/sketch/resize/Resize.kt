@@ -27,7 +27,7 @@ data class Resize constructor(
     val precision: PrecisionDecider,
     /**
      * Which part of the original picture should be kept when the original topic needs to be cropped.
-     * Works only when precision is [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO]
+     * Works only when precision is [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
      */
     val scale: ScaleDecider,
 ) {
@@ -115,7 +115,7 @@ data class Resize constructor(
 
     fun shouldClip(imageWidth: Int, imageHeight: Int): Boolean =
         when (getPrecision(imageWidth, imageHeight)) {
-            Precision.KEEP_ASPECT_RATIO -> {
+            Precision.SAME_ASPECT_RATIO -> {
                 val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
                 val resizeAspectRatio = width.toFloat().div(height).format(1)
                 imageAspectRatio != resizeAspectRatio

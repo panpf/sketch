@@ -3,7 +3,7 @@ package com.github.panpf.sketch.test.resize
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
@@ -32,9 +32,9 @@ class ResizeTransformedTest {
         ResizeTransformed(Resize(100, 50, precision = LESS_PIXELS)).apply {
             Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
         }
-        ResizeTransformed(Resize(100, 50, precision = KEEP_ASPECT_RATIO)).apply {
+        ResizeTransformed(Resize(100, 50, precision = SAME_ASPECT_RATIO)).apply {
             Assert.assertEquals(
-                "ResizeTransformed(100x50,Fixed(KEEP_ASPECT_RATIO),Fixed(CENTER_CROP))",
+                "ResizeTransformed(100x50,Fixed(SAME_ASPECT_RATIO),Fixed(CENTER_CROP))",
                 key
             )
         }
@@ -48,11 +48,11 @@ class ResizeTransformedTest {
             Resize(
                 100,
                 50,
-                precision = longImageClipPrecision(KEEP_ASPECT_RATIO)
+                precision = longImageClipPrecision(SAME_ASPECT_RATIO)
             )
         ).apply {
             Assert.assertEquals(
-                "ResizeTransformed(100x50,LongImageClip(KEEP_ASPECT_RATIO,3.0),Fixed(CENTER_CROP))",
+                "ResizeTransformed(100x50,LongImageClip(SAME_ASPECT_RATIO,3.0),Fixed(CENTER_CROP))",
                 key
             )
         }
@@ -95,14 +95,14 @@ class ResizeTransformedTest {
         ResizeTransformed(Resize(100, 50, precision = LESS_PIXELS)).apply {
             Assert.assertEquals(key, toString())
         }
-        ResizeTransformed(Resize(100, 50, precision = KEEP_ASPECT_RATIO)).apply {
+        ResizeTransformed(Resize(100, 50, precision = SAME_ASPECT_RATIO)).apply {
             Assert.assertEquals(key, toString())
         }
         ResizeTransformed(Resize(100, 50, precision = LESS_PIXELS)).apply {
             Assert.assertEquals(key, toString())
         }
         ResizeTransformed(
-            Resize(100, 50, precision = longImageClipPrecision(KEEP_ASPECT_RATIO))
+            Resize(100, 50, precision = longImageClipPrecision(SAME_ASPECT_RATIO))
         ).apply {
             Assert.assertEquals(key, toString())
         }

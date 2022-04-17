@@ -7,7 +7,7 @@
 * width、height：期望的宽和高
 * [Precision]：精度。决定如何使用 width 和 height 去调整图片的尺寸
     * LESS_PIXELS（默认）：只要最终 Bitmap 的像素数（宽乘以高）约等于 [Resize] 的像素数即可，允许有 10% 的误差
-    * KEEP_ASPECT_RATIO：在 LESS_PIXELS 的基础上要求 Bitmap 的宽高比和 [Resize] 的宽高比一致，如果比例不一致会裁剪原图、优先使用
+    * SAME_ASPECT_RATIO：在 LESS_PIXELS 的基础上要求 Bitmap 的宽高比和 [Resize] 的宽高比一致，如果比例不一致会裁剪原图、优先使用
       BitmapRegionDecoder 裁剪
     * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果比例不一致会裁剪原图、优先使用 BitmapRegionDecoder 裁剪
 * [PrecisionDecider]：精度决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Precision]
@@ -33,9 +33,9 @@
 imageView.displayImage("https://www.sample.com/image.jpg") {
     resizeSize(100, 100)
 
-    resizePrecision(Precision.KEEP_ASPECT_RATIO)
+    resizePrecision(Precision.SAME_ASPECT_RATIO)
     // 或
-    resizePrecision(longImageClipPrecision(Precision.KEEP_ASPECT_RATIO))
+    resizePrecision(longImageClipPrecision(Precision.SAME_ASPECT_RATIO))
 
     resizeScale(Scale.END_CROP)
     // 或

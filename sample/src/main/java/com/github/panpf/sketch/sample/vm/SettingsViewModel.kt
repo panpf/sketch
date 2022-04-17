@@ -68,7 +68,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                 desc = null,
                 values = listOf(
                     "LESS_PIXELS",
-                    "KEEP_ASPECT_RATIO",
+                    "SAME_ASPECT_RATIO",
                     "EXACTLY",
                     "LONG_IMAGE_CROP",
                     "ORIGINAL"
@@ -79,7 +79,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                 onSelect = { which ->
                     appSettingsService.resizePrecision.value = when (which) {
                         0 -> "LESS_PIXELS"
-                        1 -> "KEEP_ASPECT_RATIO"
+                        1 -> "SAME_ASPECT_RATIO"
                         2 -> "EXACTLY"
                         3 -> "LONG_IMAGE_CROP"
                         4 -> "ORIGINAL"
