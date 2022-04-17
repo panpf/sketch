@@ -84,7 +84,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                     pauseLoadWhenScrollingError()
                 }
                 crossfade()
-                resizeApplyToResultDrawable()
+                resizeApplyToDrawable()
             }
         }
     }

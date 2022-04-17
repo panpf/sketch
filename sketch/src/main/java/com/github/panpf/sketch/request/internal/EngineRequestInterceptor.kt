@@ -50,7 +50,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                     val placeholderDrawable = request.placeholderImage
                         ?.getDrawable(sketch, request, null)
                         ?.let {
-                            if (request.resizeApplyToResultDrawable == true) {
+                            if (request.resizeApplyToDrawable == true) {
                                 it.toResizeDrawable(request.resize)
                             } else {
                                 it

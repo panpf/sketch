@@ -78,7 +78,7 @@ class RequestExecutor(private val sketch: Sketch) {
                 is DisplayData -> DisplayResult.Success(
                     request,
                     data.drawable.let {
-                        if (newRequest.resizeApplyToResultDrawable == true) {
+                        if (newRequest.resizeApplyToDrawable == true) {
                             it.toResizeDrawable(resize)
                         } else {
                             it
@@ -111,7 +111,7 @@ class RequestExecutor(private val sketch: Sketch) {
                         val errorDrawable = request.errorImage
                             ?.getDrawable(sketch, request, exception)
                             ?.let {
-                                if (request.resizeApplyToResultDrawable == true) {
+                                if (request.resizeApplyToDrawable == true) {
                                     it.toResizeDrawable(resize)
                                 } else {
                                     it

@@ -120,7 +120,7 @@ interface ImageRequest {
     val placeholderImage: StateImage?
     val errorImage: StateImage?
     val transition: Transition.Factory?
-    val resizeApplyToResultDrawable: Boolean?
+    val resizeApplyToDrawable: Boolean?
 
     val definedOptions: ImageOptions
     val viewOptions: ImageOptions?
@@ -204,7 +204,7 @@ interface ImageRequest {
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
-        private var resizeApplyToResultDrawable: Boolean? = null
+        private var resizeApplyToDrawable: Boolean? = null
 
         private var resolvedLifecycle: Lifecycle? = null
         private var resolvedResizeSizeResolver: SizeResolver? = null
@@ -252,7 +252,7 @@ interface ImageRequest {
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
-            this.resizeApplyToResultDrawable = request.resizeApplyToResultDrawable
+            this.resizeApplyToDrawable = request.resizeApplyToDrawable
 
             // If the context changes, recompute the resolved values.
             if (request.context === context) {
@@ -572,8 +572,8 @@ interface ImageRequest {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
         }
 
-        open fun resizeApplyToResultDrawable(resizeApplyToResultDrawable: Boolean? = true): Builder = apply {
-            this.resizeApplyToResultDrawable = resizeApplyToResultDrawable
+        open fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder = apply {
+            this.resizeApplyToDrawable = resizeApplyToDrawable
         }
 
         @SuppressLint("NewApi")
@@ -603,7 +603,7 @@ interface ImageRequest {
                 placeholder(placeholderImage)
                 error(errorImage)
                 transition(transition)
-                resizeApplyToResultDrawable(resizeApplyToResultDrawable)
+                resizeApplyToDrawable(resizeApplyToDrawable)
             }
             val depth = depth
                 ?: viewOptions?.depth
@@ -679,9 +679,9 @@ interface ImageRequest {
             val transition = transition
                 ?: viewOptions?.transition
                 ?: globalOptions?.transition
-            val resizeApplyToResultDrawable = resizeApplyToResultDrawable
-                ?: viewOptions?.resizeApplyToResultDrawable
-                ?: globalOptions?.resizeApplyToResultDrawable
+            val resizeApplyToDrawable = resizeApplyToDrawable
+                ?: viewOptions?.resizeApplyToDrawable
+                ?: globalOptions?.resizeApplyToDrawable
 
             return when (this@Builder) {
                 is DisplayRequest.Builder -> {
@@ -715,7 +715,7 @@ interface ImageRequest {
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
-                        resizeApplyToResultDrawable = resizeApplyToResultDrawable,
+                        resizeApplyToDrawable = resizeApplyToDrawable,
                     )
                 }
                 is LoadRequest.Builder -> {
@@ -749,7 +749,7 @@ interface ImageRequest {
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
-                        resizeApplyToResultDrawable = resizeApplyToResultDrawable,
+                        resizeApplyToDrawable = resizeApplyToDrawable,
                     )
                 }
                 is DownloadRequest.Builder -> {
@@ -783,7 +783,7 @@ interface ImageRequest {
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
-                        resizeApplyToResultDrawable = resizeApplyToResultDrawable,
+                        resizeApplyToDrawable = resizeApplyToDrawable,
                     )
                 }
                 else -> throw UnsupportedOperationException("Unsupported ImageRequest.Builder: ${this@Builder::class.java}")

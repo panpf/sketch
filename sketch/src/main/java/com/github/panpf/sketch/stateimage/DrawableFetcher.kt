@@ -33,6 +33,8 @@ class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable {
         return AppCompatResources.getDrawable(context, drawableRes)!!.let {
+            // VectorDrawable and VectorDrawableCompat share VectorDrawableState,
+            // VectorDrawableState holds alpha and other properties, which are shared, causing exceptions later
             if ((VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && it is VectorDrawable) || it is VectorDrawableCompat) {
                 it.mutate()
             } else {

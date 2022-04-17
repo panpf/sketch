@@ -341,8 +341,8 @@ interface DisplayRequest : ImageRequest {
             super.crossfade(durationMillis, preferExactIntrinsicSize)
         }
 
-        override fun resizeApplyToResultDrawable(resizeApplyToResultDrawable: Boolean?): Builder = apply {
-            super.resizeApplyToResultDrawable(resizeApplyToResultDrawable)
+        override fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean?): Builder = apply {
+            super.resizeApplyToDrawable(resizeApplyToDrawable)
         }
     }
 
@@ -375,7 +375,7 @@ interface DisplayRequest : ImageRequest {
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Factory?,
-        override val resizeApplyToResultDrawable: Boolean?,
+        override val resizeApplyToDrawable: Boolean?,
         override val definedOptions: ImageOptions,
         override val viewOptions: ImageOptions?,
         override val globalOptions: ImageOptions?

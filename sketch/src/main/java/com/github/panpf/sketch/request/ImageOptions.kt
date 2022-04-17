@@ -66,7 +66,7 @@ interface ImageOptions {
     val placeholderImage: StateImage?
     val errorImage: StateImage?
     val transition: Transition.Factory?
-    val resizeApplyToResultDrawable: Boolean?
+    val resizeApplyToDrawable: Boolean?
 
     val depthFrom: String?
         get() = parameters?.value(ImageRequest.REQUEST_DEPTH_FROM)
@@ -104,7 +104,7 @@ interface ImageOptions {
             && placeholderImage == null
             && errorImage == null
             && transition == null
-            && resizeApplyToResultDrawable == null
+            && resizeApplyToDrawable == null
 
     class Builder {
 
@@ -132,7 +132,7 @@ interface ImageOptions {
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
-        private var resizeApplyToResultDrawable: Boolean? = null
+        private var resizeApplyToDrawable: Boolean? = null
 
         constructor()
 
@@ -163,7 +163,7 @@ interface ImageOptions {
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
-            this.resizeApplyToResultDrawable = request.resizeApplyToResultDrawable
+            this.resizeApplyToDrawable = request.resizeApplyToDrawable
         }
 
         fun depth(depth: RequestDepth?): Builder =
@@ -445,9 +445,9 @@ interface ImageOptions {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
         }
 
-        fun resizeApplyToResultDrawable(resizeApplyToResultDrawable: Boolean? = true): Builder =
+        fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder =
             apply {
-                this.resizeApplyToResultDrawable = resizeApplyToResultDrawable
+                this.resizeApplyToDrawable = resizeApplyToDrawable
             }
 
         @SuppressLint("NewApi")
@@ -472,7 +472,7 @@ interface ImageOptions {
             placeholderImage = placeholderImage,
             errorImage = errorImage,
             transition = transition,
-            resizeApplyToResultDrawable = resizeApplyToResultDrawable,
+            resizeApplyToDrawable = resizeApplyToDrawable,
         )
     }
 
@@ -500,6 +500,6 @@ interface ImageOptions {
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Transition.Factory?,
-        override val resizeApplyToResultDrawable: Boolean?,
+        override val resizeApplyToDrawable: Boolean?,
     ) : ImageOptions
 }
