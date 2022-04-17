@@ -18,7 +18,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 请参考 [CrossfadeTransition] 的实现
 
-### 如何实现完美过渡
+### 实现完美过渡
 
 [CrossfadeTransition] 使用 [CrossfadeDrawable] 来实现过渡，[CrossfadeDrawable] 以 placeholder 图片和 result
 图片的最大尺寸作为新 Drawable 的尺寸，然后对 placeholder 图片和 result 图片进行缩放

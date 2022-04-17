@@ -56,7 +56,7 @@ placeholder, error, result Drawable 上
 如果此属性为 true，Sketch 会用 [ResizeDrawable] 将 placeholder, error, result Drawable 包一层，对外用 [Resize] 作为
 intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable 进行缩放
 
-此功能搭配 [CrossfadeTransition] 使用可实现完美过渡，[查看何为完美过渡][transition]
+此功能搭配 [CrossfadeTransition] 使用可实现完美过渡，[查看完美过渡介绍][transition]
 
 [Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Resize.kt
 
