@@ -35,10 +35,12 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.ScreenSizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewSizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
+import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -99,7 +101,7 @@ interface ImageRequest {
     val resizeSize: Size?
     val resizeSizeResolver: SizeResolver
     val resizePrecisionDecider: PrecisionDecider
-    val resizeScale: Scale
+    val resizeScaleDecider: ScaleDecider
 
     /** The list of [Transformation]s to be applied to this request. */
     val transformations: List<Transformation>?
@@ -153,8 +155,8 @@ interface ImageRequest {
             resizeSize?.takeIf { it.width > 0 && it.height > 0 }?.let {
                 Resize(
                     width = it.width, height = it.height,
-                    precisionDecider = resizePrecisionDecider,
-                    scale = resizeScale
+                    precision = resizePrecisionDecider,
+                    scale = resizeScaleDecider
                 )
             }
         }
@@ -194,7 +196,7 @@ interface ImageRequest {
         private var resizeSize: Size? = null
         private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
-        private var resizeScale: Scale? = null
+        private var resizeScaleDecider: ScaleDecider? = null
         private var transformations: MutableSet<Transformation>? = null
         private var disabledReuseBitmap: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
@@ -208,7 +210,7 @@ interface ImageRequest {
 
         private var resolvedLifecycle: Lifecycle? = null
         private var resolvedResizeSizeResolver: SizeResolver? = null
-        private var resolvedResizeScale: Scale? = null
+        private var resolvedResizeScaleDecider: ScaleDecider? = null
 
         constructor(context: Context, uriString: String?) {
             this.context = context
@@ -242,7 +244,7 @@ interface ImageRequest {
             this.resizeSize = request.resizeSize
             this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
-            this.resizeScale = request.resizeScale
+            this.resizeScaleDecider = request.resizeScaleDecider
             this.transformations = request.transformations?.toMutableSet()
             this.disabledReuseBitmap = request.disabledReuseBitmap
             this.ignoreExifOrientation = request.ignoreExifOrientation
@@ -258,11 +260,11 @@ interface ImageRequest {
             if (request.context === context) {
                 resolvedLifecycle = request.lifecycle
                 resolvedResizeSizeResolver = request.resizeSizeResolver
-                resolvedResizeScale = request.resizeScale
+                resolvedResizeScaleDecider = request.resizeScaleDecider
             } else {
                 resolvedLifecycle = null
                 resolvedResizeSizeResolver = null
-                resolvedResizeScale = null
+                resolvedResizeScaleDecider = null
             }
         }
 
@@ -444,7 +446,7 @@ interface ImageRequest {
             this.resizeSize = Size(width, height)
         }
 
-        open fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
+        open fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
             this.resizePrecisionDecider = precisionDecider
         }
 
@@ -452,8 +454,12 @@ interface ImageRequest {
             this.resizePrecisionDecider = FixedPrecisionDecider(precision)
         }
 
+        open fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
+            this.resizeScaleDecider = scaleDecider
+        }
+
         open fun resizeScale(scale: Scale): Builder = apply {
-            this.resizeScale = scale
+            this.resizeScaleDecider = fixedScale(scale)
         }
 
         open fun transformations(transformations: List<Transformation>?): Builder = apply {
@@ -594,7 +600,7 @@ interface ImageRequest {
                 resizeSize(resizeSize)
                 resizeSize(resizeSizeResolver)
                 resizePrecision(resizePrecisionDecider)
-                resizeScale(resizeScale)
+                resizeScale(resizeScaleDecider)
                 transformations(transformations?.toList())
                 disabledReuseBitmap(disabledReuseBitmap)
                 ignoreExifOrientation(ignoreExifOrientation)
@@ -646,11 +652,11 @@ interface ImageRequest {
                 ?: viewOptions?.resizePrecisionDecider
                 ?: globalOptions?.resizePrecisionDecider
                 ?: fixedPrecision(LESS_PIXELS)
-            val resizeScale = resizeScale
-                ?: resolvedResizeScale
-                ?: viewOptions?.resizeScale
-                ?: globalOptions?.resizeScale
-                ?: resolveResizeScale()
+            val resizeScaleDecider = resizeScaleDecider
+                ?: resolvedResizeScaleDecider
+                ?: viewOptions?.resizeScaleDecider
+                ?: globalOptions?.resizeScaleDecider
+                ?: fixedScale(resolveResizeScale())
             val transformations = transformations?.toList()
                 .merge(viewOptions?.transformations)
                 .merge(globalOptions?.transformations)
@@ -706,7 +712,7 @@ interface ImageRequest {
                         resizeSize = resizeSize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
-                        resizeScale = resizeScale,
+                        resizeScaleDecider = resizeScaleDecider,
                         transformations = transformations,
                         disabledReuseBitmap = disabledReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
@@ -740,7 +746,7 @@ interface ImageRequest {
                         resizeSize = resizeSize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
-                        resizeScale = resizeScale,
+                        resizeScaleDecider = resizeScaleDecider,
                         transformations = transformations,
                         disabledReuseBitmap = disabledReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
@@ -774,7 +780,7 @@ interface ImageRequest {
                         resizeSize = resizeSize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
-                        resizeScale = resizeScale,
+                        resizeScaleDecider = resizeScaleDecider,
                         transformations = transformations,
                         disabledReuseBitmap = disabledReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
@@ -794,7 +800,7 @@ interface ImageRequest {
         private fun resetResolvedValues() {
             resolvedLifecycle = null
             resolvedResizeSizeResolver = null
-            resolvedResizeScale = null
+            resolvedResizeScaleDecider = null
         }
 
         private fun resolveResizeSizeResolver(): SizeResolver {

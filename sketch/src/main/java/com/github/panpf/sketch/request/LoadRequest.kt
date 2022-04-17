@@ -15,6 +15,7 @@ import com.github.panpf.sketch.request.ImageRequest.BaseImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
@@ -219,12 +220,16 @@ interface LoadRequest : ImageRequest {
             super.resizeSize(width, height)
         }
 
-        override fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
+        override fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
             super.resizePrecision(precisionDecider)
         }
 
         override fun resizePrecision(precision: Precision): Builder = apply {
             super.resizePrecision(precision)
+        }
+
+        override fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
+            super.resizeScale(scaleDecider)
         }
 
         override fun resizeScale(scale: Scale): Builder = apply {
@@ -341,7 +346,7 @@ interface LoadRequest : ImageRequest {
         override val resizeSize: Size?,
         override val resizeSizeResolver: SizeResolver,
         override val resizePrecisionDecider: PrecisionDecider,
-        override val resizeScale: Scale,
+        override val resizeScaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,
         override val disabledReuseBitmap: Boolean,
         override val ignoreExifOrientation: Boolean,

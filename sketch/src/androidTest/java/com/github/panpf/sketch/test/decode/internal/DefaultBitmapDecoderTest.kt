@@ -353,7 +353,7 @@ class DefaultBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertEquals(
-                "ResizeTransformed(500x384,LongImageClip(KEEP_ASPECT_RATIO,3.0),CENTER_CROP)",
+                "ResizeTransformed(500x384,LongImageClip(KEEP_ASPECT_RATIO,3.0),Fixed(CENTER_CROP))",
                 transformedList?.getResizeTransformed()?.toString()
             )
         }
@@ -830,7 +830,7 @@ class DefaultBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertEquals(
-                "ResizeTransformed(500x384,LongImageClip(KEEP_ASPECT_RATIO,3.0),CENTER_CROP)",
+                "ResizeTransformed(500x384,LongImageClip(KEEP_ASPECT_RATIO,3.0),Fixed(CENTER_CROP))",
                 transformedList?.getResizeTransformed()?.toString()
             )
         }
@@ -1083,7 +1083,7 @@ class DefaultBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertEquals(
-                "ResizeTransformed(384x500,LongImageClip(KEEP_ASPECT_RATIO,3.0),CENTER_CROP)",
+                "ResizeTransformed(384x500,LongImageClip(KEEP_ASPECT_RATIO,3.0),Fixed(CENTER_CROP))",
                 transformedList?.getResizeTransformed()?.toString()
             )
         }

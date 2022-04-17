@@ -24,48 +24,97 @@ import org.json.JSONObject
 data class Resize constructor(
     val width: Int,
     val height: Int,
-    val precisionDecider: PrecisionDecider,
+    val precision: PrecisionDecider,
     /**
      * Which part of the original picture should be kept when the original topic needs to be cropped.
      * Works only when precision is [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO]
      */
-    val scale: Scale = Scale.CENTER_CROP,   // todo scale 也支持长图
+    val scale: ScaleDecider,
 ) {
-
-    constructor(
-        size: Size,
-        precision: Precision = Precision.LESS_PIXELS,
-        scale: Scale = Scale.CENTER_CROP
-    ) : this(size.width, size.height, fixedPrecision(precision), scale)
 
     constructor(
         width: Int,
         height: Int,
         precision: Precision = Precision.LESS_PIXELS,
         scale: Scale = Scale.CENTER_CROP
+    ) : this(width, height, fixedPrecision(precision), fixedScale(scale))
+
+    constructor(
+        width: Int,
+        height: Int,
+        precision: Precision,
+    ) : this(width, height, fixedPrecision(precision), fixedScale(Scale.CENTER_CROP))
+
+    constructor(
+        width: Int,
+        height: Int,
+        scale: Scale
+    ) : this(width, height, fixedPrecision(Precision.LESS_PIXELS), fixedScale(scale))
+
+    constructor(
+        width: Int,
+        height: Int,
+        precision: PrecisionDecider,
+        scale: Scale = Scale.CENTER_CROP
+    ) : this(width, height, precision, fixedScale(scale))
+
+    constructor(
+        width: Int,
+        height: Int,
+        precision: Precision = Precision.LESS_PIXELS,
+        scale: ScaleDecider
     ) : this(width, height, fixedPrecision(precision), scale)
 
     constructor(
         width: Int,
         height: Int,
-        scale: Scale = Scale.CENTER_CROP
+        scale: ScaleDecider
     ) : this(width, height, fixedPrecision(Precision.LESS_PIXELS), scale)
+
 
     constructor(
         size: Size,
+        precision: Precision = Precision.LESS_PIXELS,
         scale: Scale = Scale.CENTER_CROP
+    ) : this(size.width, size.height, fixedPrecision(precision), fixedScale(scale))
+
+    constructor(
+        size: Size,
+        precision: Precision,
+    ) : this(size.width, size.height, fixedPrecision(precision), fixedScale(Scale.CENTER_CROP))
+
+    constructor(
+        size: Size,
+        scale: Scale
+    ) : this(size.width, size.height, fixedPrecision(Precision.LESS_PIXELS), fixedScale(scale))
+
+    constructor(
+        size: Size,
+        precision: PrecisionDecider,
+        scale: Scale = Scale.CENTER_CROP
+    ) : this(size.width, size.height, precision, fixedScale(scale))
+
+    constructor(
+        size: Size,
+        precision: Precision = Precision.LESS_PIXELS,
+        scale: ScaleDecider
+    ) : this(size.width, size.height, fixedPrecision(precision), scale)
+
+    constructor(
+        size: Size,
+        scale: ScaleDecider
     ) : this(size.width, size.height, fixedPrecision(Precision.LESS_PIXELS), scale)
 
-    val key: String by lazy {
-        val precisionDeciderString = precisionDecider.key.replace("PrecisionDecider", "")
-        "Resize(${width}x$height,${precisionDeciderString},${scale})"
-    }
+    val key: String by lazy { toString() }
 
-    fun precision(imageWidth: Int, imageHeight: Int): Precision =
-        precisionDecider.precision(imageWidth, imageHeight, width, height)
+    fun getPrecision(imageWidth: Int, imageHeight: Int): Precision =
+        precision.get(imageWidth, imageHeight, width, height)
+
+    fun getScale(imageWidth: Int, imageHeight: Int): Scale =
+        scale.get(imageWidth, imageHeight, width, height)
 
     fun shouldClip(imageWidth: Int, imageHeight: Int): Boolean =
-        when (precision(imageWidth, imageHeight)) {
+        when (getPrecision(imageWidth, imageHeight)) {
             Precision.KEEP_ASPECT_RATIO -> {
                 val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
                 val resizeAspectRatio = width.toFloat().div(height).format(1)
@@ -79,20 +128,27 @@ data class Resize constructor(
     constructor(jsonObject: JSONObject) : this(
         width = jsonObject.getInt("width"),
         height = jsonObject.getInt("height"),
-        precisionDecider = Class.forName(jsonObject.getString("precisionDeciderClassName"))
+        precision = Class.forName(jsonObject.getString("precisionDeciderClassName"))
             .getConstructor(JSONObject::class.java)
             .newInstance(jsonObject.getJSONObject("precisionDeciderContent")) as PrecisionDecider,
-        scale = Scale.valueOf(jsonObject.getString("scale"))
+        scale = Class.forName(jsonObject.getString("scaleDeciderClassName"))
+            .getConstructor(JSONObject::class.java)
+            .newInstance(jsonObject.getJSONObject("scaleDeciderContent")) as ScaleDecider,
     )
 
     fun serializationToJSON(): JSONObject =
         JSONObject().apply {
             put("width", width)
             put("height", height)
-            put("precisionDeciderClassName", precisionDecider::class.java.name)
-            put("precisionDeciderContent", precisionDecider.serializationToJSON())
-            put("scale", scale.name)
+            put("precisionDeciderClassName", precision::class.java.name)
+            put("precisionDeciderContent", precision.serializationToJSON())
+            put("scaleDeciderClassName", scale::class.java.name)
+            put("scaleDeciderContent", scale.serializationToJSON())
         }
 
-    override fun toString(): String = key
+    override fun toString(): String {
+        val precisionDeciderString = precision.key.replace("PrecisionDecider", "")
+        val scaleDeciderString = scale.key.replace("ScaleDecider", "")
+        return "Resize(${width}x$height,${precisionDeciderString},${scaleDeciderString})"
+    }
 }

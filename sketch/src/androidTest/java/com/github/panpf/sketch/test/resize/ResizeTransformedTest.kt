@@ -23,24 +23,24 @@ class ResizeTransformedTest {
     @Test
     fun testKey() {
         ResizeTransformed(Resize(100, 50)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),CENTER_CROP)", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
         }
         ResizeTransformed(Resize(50, 100)).apply {
-            Assert.assertEquals("ResizeTransformed(50x100,Fixed(LESS_PIXELS),CENTER_CROP)", key)
+            Assert.assertEquals("ResizeTransformed(50x100,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
         }
 
         ResizeTransformed(Resize(100, 50, precision = LESS_PIXELS)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),CENTER_CROP)", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
         }
         ResizeTransformed(Resize(100, 50, precision = KEEP_ASPECT_RATIO)).apply {
             Assert.assertEquals(
-                "ResizeTransformed(100x50,Fixed(KEEP_ASPECT_RATIO),CENTER_CROP)",
+                "ResizeTransformed(100x50,Fixed(KEEP_ASPECT_RATIO),Fixed(CENTER_CROP))",
                 key
             )
         }
         ResizeTransformed(Resize(100, 50, precision = EXACTLY)).apply {
             Assert.assertEquals(
-                "ResizeTransformed(100x50,Fixed(EXACTLY),CENTER_CROP)",
+                "ResizeTransformed(100x50,Fixed(EXACTLY),Fixed(CENTER_CROP))",
                 key
             )
         }
@@ -48,11 +48,11 @@ class ResizeTransformedTest {
             Resize(
                 100,
                 50,
-                precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO)
+                precision = longImageClipPrecision(KEEP_ASPECT_RATIO)
             )
         ).apply {
             Assert.assertEquals(
-                "ResizeTransformed(100x50,LongImageClip(KEEP_ASPECT_RATIO,3.0),CENTER_CROP)",
+                "ResizeTransformed(100x50,LongImageClip(KEEP_ASPECT_RATIO,3.0),Fixed(CENTER_CROP))",
                 key
             )
         }
@@ -60,26 +60,26 @@ class ResizeTransformedTest {
             Resize(
                 100,
                 50,
-                precisionDecider = longImageClipPrecision(EXACTLY)
+                precision = longImageClipPrecision(EXACTLY)
             )
         ).apply {
             Assert.assertEquals(
-                "ResizeTransformed(100x50,LongImageClip(EXACTLY,3.0),CENTER_CROP)",
+                "ResizeTransformed(100x50,LongImageClip(EXACTLY,3.0),Fixed(CENTER_CROP))",
                 key
             )
         }
 
         ResizeTransformed(Resize(100, 50, START_CROP)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),START_CROP)", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(START_CROP))", key)
         }
         ResizeTransformed(Resize(100, 50, CENTER_CROP)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),CENTER_CROP)", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
         }
         ResizeTransformed(Resize(100, 50, END_CROP)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),END_CROP)", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(END_CROP))", key)
         }
         ResizeTransformed(Resize(100, 50, FILL)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),FILL)", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(FILL))", key)
         }
     }
 
@@ -102,12 +102,12 @@ class ResizeTransformedTest {
             Assert.assertEquals(key, toString())
         }
         ResizeTransformed(
-            Resize(100, 50, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
+            Resize(100, 50, precision = longImageClipPrecision(KEEP_ASPECT_RATIO))
         ).apply {
             Assert.assertEquals(key, toString())
         }
         ResizeTransformed(
-            Resize(100, 50, precisionDecider = longImageClipPrecision(EXACTLY))
+            Resize(100, 50, precision = longImageClipPrecision(EXACTLY))
         ).apply {
             Assert.assertEquals(key, toString())
         }

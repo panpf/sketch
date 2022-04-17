@@ -15,25 +15,25 @@ class FixedPrecisionDeciderTest {
     @Test
     fun testPrecision() {
         fixedPrecision(KEEP_ASPECT_RATIO).apply {
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(100, 48, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(100, 49, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(100, 50, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(100, 51, 50, 50))
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(100, 52, 50, 50))
+            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 48, 50, 50))
+            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 49, 50, 50))
+            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 50, 50, 50))
+            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 51, 50, 50))
+            Assert.assertEquals(KEEP_ASPECT_RATIO, get(100, 52, 50, 50))
         }
 
         fixedPrecision(EXACTLY).apply {
-            Assert.assertEquals(EXACTLY, precision(100, 48, 50, 50))
-            Assert.assertEquals(EXACTLY, precision(100, 49, 50, 50))
-            Assert.assertEquals(EXACTLY, precision(100, 50, 50, 50))
-            Assert.assertEquals(EXACTLY, precision(100, 51, 50, 50))
-            Assert.assertEquals(EXACTLY, precision(100, 52, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 48, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 49, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 50, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 51, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 52, 50, 50))
         }
 
         fixedPrecision(LESS_PIXELS).apply {
-            Assert.assertEquals(LESS_PIXELS, precision(100, 32, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, precision(100, 33, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, precision(100, 34, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(100, 32, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(100, 33, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(100, 34, 50, 50))
         }
     }
 

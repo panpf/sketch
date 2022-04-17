@@ -45,6 +45,7 @@ import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.LongImageDecider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -67,6 +68,7 @@ class Sketch private constructor(
     val bitmapDecodeInterceptors: List<DecodeInterceptor<BitmapDecodeResult>>,
     val drawableDecodeInterceptors: List<DecodeInterceptor<DrawableDecodeResult>>,
     val globalImageOptions: ImageOptions?,
+    val longImageDecider: LongImageDecider,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
@@ -120,6 +122,7 @@ class Sketch private constructor(
                 append("\n").append("imageInterceptors: ${requestInterceptors.joinToString(",")}")
                 append("\n").append("bitmapDecodeInterceptors: $bitmapDecodeInterceptors")
                 append("\n").append("drawableDecodeInterceptors: $drawableDecodeInterceptors")
+                append("\n").append("longImageDecider: $longImageDecider")
             }
         }
     }
@@ -200,6 +203,7 @@ class Sketch private constructor(
         private var drawableDecodeInterceptors: MutableList<DecodeInterceptor<DrawableDecodeResult>>? =
             null
         private var globalImageOptions: ImageOptions? = null
+        private var longImageDecider: LongImageDecider? = null
 
         fun logger(logger: Logger?): Builder = apply {
             this.logger = logger
@@ -256,6 +260,10 @@ class Sketch private constructor(
             this.globalImageOptions = globalImageOptions
         }
 
+        fun longImageDecider(longImageDecider: LongImageDecider?): Builder = apply {
+            this.longImageDecider = longImageDecider
+        }
+
         internal fun build(): Sketch {
             val logger = logger ?: Logger()
             val httpStack = httpStack ?: HurlStack.Builder().build()
@@ -291,6 +299,7 @@ class Sketch private constructor(
                         BitmapEngineDecodeInterceptor()
             val drawableDecodeInterceptors: List<DecodeInterceptor<DrawableDecodeResult>> =
                 (drawableDecodeInterceptors ?: listOf()) + DrawableEngineDecodeInterceptor()
+            val longImageDecider: LongImageDecider = longImageDecider ?: LongImageDecider()
 
             return Sketch(
                 context = appContext,
@@ -304,6 +313,7 @@ class Sketch private constructor(
                 bitmapDecodeInterceptors = bitmapDecodeInterceptors,
                 drawableDecodeInterceptors = drawableDecodeInterceptors,
                 globalImageOptions = globalImageOptions,
+                longImageDecider = longImageDecider,
             )
         }
     }

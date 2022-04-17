@@ -11,8 +11,9 @@ interface PrecisionDecider {
 
     val key: String
 
-    fun precision(
+    fun get(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Precision
+
     fun serializationToJSON(): JSONObject
 }

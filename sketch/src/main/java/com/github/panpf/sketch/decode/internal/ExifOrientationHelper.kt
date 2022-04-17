@@ -139,42 +139,12 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
 
     fun addToResize(resize: Resize, imageSize: Size): Resize {
         val newSize = addToSize(Size(resize.width, resize.height))
-        val newScale = if (imageSize.width > imageSize.height) {
-            if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
-                || exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
-                || exifOrientation == ExifInterface.ORIENTATION_ROTATE_180
-                || exifOrientation == ExifInterface.ORIENTATION_FLIP_HORIZONTAL
-            ) {
-                when (resize.scale) {
-                    Scale.START_CROP -> Scale.END_CROP
-                    Scale.CENTER_CROP -> Scale.CENTER_CROP
-                    Scale.END_CROP -> Scale.START_CROP
-                    Scale.FILL -> Scale.FILL
-                }
-            } else {
-                resize.scale
-            }
-        } else {
-            if (exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
-                || exifOrientation == ExifInterface.ORIENTATION_ROTATE_180
-                || exifOrientation == ExifInterface.ORIENTATION_FLIP_VERTICAL
-                || exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
-            ) {
-                when (resize.scale) {
-                    Scale.START_CROP -> Scale.END_CROP
-                    Scale.CENTER_CROP -> Scale.CENTER_CROP
-                    Scale.END_CROP -> Scale.START_CROP
-                    Scale.FILL -> Scale.FILL
-                }
-            } else {
-                resize.scale
-            }
-        }
+        val newScaleDecider = resize.scale.addExifOrientation(this, imageSize)
         return Resize(
             width = newSize.width,
             height = newSize.height,
-            precisionDecider = resize.precisionDecider,
-            scale = newScale,
+            precision = resize.precision,
+            scale = newScaleDecider,
         )
     }
 
@@ -280,4 +250,37 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         canvas.drawBitmap(inBitmap, matrix, paint)
         return outBitmap
     }
+
+    fun addToScale(scale: Scale, imageSize: Size): Scale =
+        if (imageSize.width > imageSize.height) {
+            if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
+                || exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
+                || exifOrientation == ExifInterface.ORIENTATION_ROTATE_180
+                || exifOrientation == ExifInterface.ORIENTATION_FLIP_HORIZONTAL
+            ) {
+                when (scale) {
+                    Scale.START_CROP -> Scale.END_CROP
+                    Scale.CENTER_CROP -> Scale.CENTER_CROP
+                    Scale.END_CROP -> Scale.START_CROP
+                    Scale.FILL -> Scale.FILL
+                }
+            } else {
+                scale
+            }
+        } else {
+            if (exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
+                || exifOrientation == ExifInterface.ORIENTATION_ROTATE_180
+                || exifOrientation == ExifInterface.ORIENTATION_FLIP_VERTICAL
+                || exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
+            ) {
+                when (scale) {
+                    Scale.START_CROP -> Scale.END_CROP
+                    Scale.CENTER_CROP -> Scale.CENTER_CROP
+                    Scale.END_CROP -> Scale.START_CROP
+                    Scale.FILL -> Scale.FILL
+                }
+            } else {
+                scale
+            }
+        }
 }

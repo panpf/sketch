@@ -17,6 +17,7 @@ import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.longImageClipPrecision
+import com.github.panpf.sketch.resize.longImageScale
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
@@ -117,7 +118,12 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
             }
 
             displayImage(data.firstThumbnailUrl) {
-                resizeScale(Scale.valueOf(appSettingsService.resizeScale.value))
+                resizeScale(
+                    longImageScale(
+                        Scale.valueOf(appSettingsService.longImageResizeScale.value),
+                        Scale.valueOf(appSettingsService.otherResizeScale.value)
+                    )
+                )
                 when (appSettingsService.resizePrecision.value) {
                     "LESS_PIXELS" -> {
                         resizePrecision(precision = LESS_PIXELS)

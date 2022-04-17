@@ -2,7 +2,7 @@
 
 [Resize] 用来在解码时以及解码后调整图片的尺寸，解码时参与计算 inSampleSize，解码后如果尺寸依然不符合 [Resize] 要求就会再次调整
 
-[Resize] 由以下几部分构成：
+[Resize] 由以下几个概念构成：
 
 * width、height：期望的宽和高
 * [Precision]：精度。决定如何使用 width 和 height 去调整图片的尺寸
@@ -18,8 +18,11 @@
     * CENTER_CROP：保留中间部分
     * END_CROP：保留尾部部分
     * FILL：全部保留，但会变形
+* [ScaleDecider]：缩放决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Scale]
+    * [FixedScaleDecider]：始终使用指定的 [Scale]
+    * [LongImageScaleDecider]：指定两个 [Scale]，长图使用第一个，否则使用第二个
 
-> 1. 长图的判定规则：[Resize] 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [LongImageClipPrecisionDecider] 的源码
+> 1. 长图的判定规则：[Resize] 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [LongImageClipPrecisionDecider] 和 [LongImageScaleDecider] 的源码
 > 2. 使用 [LongImageClipPrecisionDecider] 有助于提高长图在网格列表中的清晰度，[查看具体介绍][long_image_grid_thumbnails]
 
 ### 配置
@@ -35,6 +38,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
     resizePrecision(longImageClipPrecision(Precision.KEEP_ASPECT_RATIO))
 
     resizeScale(Scale.END_CROP)
+    // 或
+    resizeScale(longImageScale(longImage = Scale.START_CROP, other = Scale.CENTER_CROP))
 }
 ```
 
@@ -61,6 +66,12 @@ intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable �
 [Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Resize.kt
 
 [Scale]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Scale.kt
+
+[ScaleDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/ScaleDecider.kt
+
+[FixedScaleDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/FixedScaleDecider.kt
+
+[LongImageScaleDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/LongImageScaleDecider.kt
 
 [FixedPrecisionDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/FixedPrecisionDecider.kt
 

@@ -134,22 +134,6 @@ fun computeSizeMultiplier(
     }
 }
 
-fun computeSizeMultiplier(
-    @Px srcWidth: Float,
-    @Px srcHeight: Float,
-    @Px dstWidth: Float,
-    @Px dstHeight: Float,
-    fitScale: Boolean
-): Float {
-    val widthPercent = dstWidth / srcWidth
-    val heightPercent = dstHeight / srcHeight
-    return if (fitScale) {
-        min(widthPercent, heightPercent)
-    } else {
-        max(widthPercent, heightPercent)
-    }
-}
-
 fun realDecode(
     request: ImageRequest,
     dataFrom: DataFrom,
@@ -172,14 +156,15 @@ fun realDecode(
     val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
     val resizeTransformed: ResizeTransformed?
     val bitmap = if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
-        val precision = addedResize.precision(imageInfo.width, imageInfo.height)
+        val precision = addedResize.getPrecision(imageInfo.width, imageInfo.height)
+        val scale = addedResize.getScale(imageInfo.width, imageInfo.height)
         val resizeMapping = calculateResizeMapping(
             imageWidth = imageInfo.width,
             imageHeight = imageInfo.height,
             resizeWidth = addedResize.width,
             resizeHeight = addedResize.height,
             precision = precision,
-            resizeScale = addedResize.scale,
+            resizeScale = scale,
         )
         // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
         decodeConfig.inSampleSize = calculateSampleSizeWithTolerance(
@@ -244,14 +229,15 @@ fun BitmapDecodeResult.applyResize(
 ): BitmapDecodeResult {
     val inBitmap = bitmap
     return if (resize?.shouldClip(inBitmap.width, inBitmap.height) == true) {
-        val precision = resize.precision(inBitmap.width, inBitmap.height)
+        val precision = resize.getPrecision(inBitmap.width, inBitmap.height)
+        val scale = resize.getScale(inBitmap.width, inBitmap.height)
         val mapping = calculateResizeMapping(
             imageWidth = inBitmap.width,
             imageHeight = inBitmap.height,
             resizeWidth = resize.width,
             resizeHeight = resize.height,
             precision = precision,
-            resizeScale = resize.scale,
+            resizeScale = scale,
         )
         val config = inBitmap.config ?: ARGB_8888
         val newBitmap = bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config)

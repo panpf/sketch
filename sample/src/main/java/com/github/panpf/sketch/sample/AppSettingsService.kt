@@ -38,8 +38,11 @@ class AppSettingsService(val context: Context) {
     val resizePrecision by lazy {
         StringPrefsData(context, "resizePrecision", "LESS_PIXELS")
     }
-    val resizeScale by lazy {
-        StringPrefsData(context, "resizeScale", Scale.START_CROP.name)
+    val otherResizeScale by lazy {
+        StringPrefsData(context, "otherResizeScale", Scale.CENTER_CROP.name)
+    }
+    val longImageResizeScale by lazy {
+        StringPrefsData(context, "longImageResizeScale", Scale.START_CROP.name)
     }
 
     val inPreferQualityOverSpeed by lazy {

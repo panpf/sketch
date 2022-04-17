@@ -18,7 +18,9 @@ import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
@@ -56,7 +58,7 @@ interface ImageOptions {
     val resizeSize: Size?
     val resizeSizeResolver: SizeResolver?
     val resizePrecisionDecider: PrecisionDecider?
-    val resizeScale: Scale?
+    val resizeScaleDecider: ScaleDecider?
     val transformations: List<Transformation>?
     val disabledReuseBitmap: Boolean?
     val ignoreExifOrientation: Boolean?
@@ -94,7 +96,7 @@ interface ImageOptions {
             && resizeSize == null
             && resizeSizeResolver == null
             && resizePrecisionDecider == null
-            && resizeScale == null
+            && resizeScaleDecider == null
             && transformations == null
             && disabledReuseBitmap == null
             && ignoreExifOrientation == null
@@ -121,7 +123,7 @@ interface ImageOptions {
         private var resizeSize: Size? = null
         private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
-        private var resizeScale: Scale? = null
+        private var resizeScaleDecider: ScaleDecider? = null
         private var transformations: List<Transformation>? = null
         private var disabledReuseBitmap: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
@@ -152,7 +154,7 @@ interface ImageOptions {
             this.resizeSize = request.resizeSize
             this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
-            this.resizeScale = request.resizeScale
+            this.resizeScaleDecider = request.resizeScaleDecider
             this.transformations = request.transformations
             this.disabledReuseBitmap = request.disabledReuseBitmap
             this.ignoreExifOrientation = request.ignoreExifOrientation
@@ -341,9 +343,14 @@ interface ImageOptions {
                 this.resizePrecisionDecider = precision?.let { FixedPrecisionDecider(it) }
             }
 
-        fun resizeScale(scale: Scale?): Builder =
+        fun resizeScale(scaleDecider: ScaleDecider?): Builder =
             apply {
-                this.resizeScale = scale
+                this.resizeScaleDecider = scaleDecider
+            }
+
+        fun resizeScale(scale: Scale): Builder =
+            apply {
+                this.resizeScaleDecider = fixedScale(scale)
             }
 
         fun transformations(transformations: List<Transformation>?): Builder =
@@ -463,7 +470,7 @@ interface ImageOptions {
             resizeSize = resizeSize,
             resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
-            resizeScale = resizeScale,
+            resizeScaleDecider = resizeScaleDecider,
             transformations = transformations,
             disabledReuseBitmap = disabledReuseBitmap,
             ignoreExifOrientation = ignoreExifOrientation,
@@ -490,7 +497,7 @@ interface ImageOptions {
         override val resizeSize: Size?,
         override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider?,
-        override val resizeScale: Scale?,
+        override val resizeScaleDecider: ScaleDecider?,
         override val transformations: List<Transformation>?,
         override val disabledReuseBitmap: Boolean?,
         override val ignoreExifOrientation: Boolean?,

@@ -45,7 +45,7 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         )
         Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
-        Assert.assertEquals("InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),CENTER_CROP)", result.transformedList?.joinToString())
+        Assert.assertEquals("InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", result.transformedList?.joinToString())
 
         val result1 = runBlocking {
             chain.proceed()
@@ -58,7 +58,7 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         )
         Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
         Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, result1.dataFrom)
-        Assert.assertEquals("InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),CENTER_CROP)", result.transformedList?.joinToString())
+        Assert.assertEquals("InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", result.transformedList?.joinToString())
     }
 
     @Test
