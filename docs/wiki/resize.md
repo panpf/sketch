@@ -9,8 +9,7 @@
     * LESS_PIXELS（默认）：只要最终 Bitmap 的像素数（宽乘以高）约等于 [Resize] 的像素数即可，允许有 10% 的误差
     * KEEP_ASPECT_RATIO：在 LESS_PIXELS 的基础上要求 Bitmap 的宽高比和 [Resize] 的宽高比一致，如果比例不一致会裁剪原图、优先使用
       BitmapRegionDecoder 裁剪
-    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果比例不一致会裁剪原图、优先使用
-      BitmapRegionDecoder 裁剪
+    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果比例不一致会裁剪原图、优先使用 BitmapRegionDecoder 裁剪
 * [PrecisionDecider]：精度决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Precision]
     * [FixedPrecisionDecider]：始终使用指定的 [Precision]
     * [LongImageClipPrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
@@ -49,6 +48,16 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 > 注意：如果 view 的宽高到 draw 阶段还是 0，那么请求不会继续执行
 
+### resizeApplyToDrawable
+
+[ImageRequest] 和 [ImageOptions] 的 resizeApplyToDrawable 属性用于将 [Resize] 应用到 [DisplayTarget] 的
+placeholder, error, result Drawable 上
+
+如果此属性为 true，Sketch 会用 [ResizeDrawable] 将 placeholder, error, result Drawable 包一层，对外用 [Resize] 作为
+intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable 进行缩放
+
+此功能搭配 [CrossfadeTransition] 使用可实现完美过渡，[查看何为完美过渡][transition]
+
 [Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Resize.kt
 
 [Scale]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Scale.kt
@@ -67,4 +76,12 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
 
+[CrossfadeTransition]: ../../sketch/src/main/java/com/github/panpf/sketch/transition/CrossfadeTransition.kt
+
+[DisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/DisplayTarget.kt
+
+[ResizeDrawable]: ../../sketch/src/main/java/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
+
 [long_image_grid_thumbnails]: long_image_grid_thumbnails.md
+
+[transition]: transition.md
