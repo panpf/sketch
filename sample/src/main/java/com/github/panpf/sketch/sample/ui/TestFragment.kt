@@ -3,14 +3,8 @@ package com.github.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.sample.AssetImages
-import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.base.BindingFragment
 import com.github.panpf.sketch.sample.databinding.FragmentTestBinding
-import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.ResColor
 
 class TestFragment : BindingFragment<FragmentTestBinding>() {
 
@@ -36,15 +30,24 @@ class TestFragment : BindingFragment<FragmentTestBinding>() {
 //                    }
 //                }, 1000)
 //            })
-            displayImage(AssetImages.ANIMS[0]) {
-                placeholder(
-                    IconStateImage(R.drawable.ic_image_outline, ResColor(R.color.placeholder_bg))
-                )
-                crossfade()
-                resizeApplyToDrawable()
-                lifecycle(viewLifecycleOwner.lifecycle)
-                bitmapMemoryCachePolicy(DISABLED)
-            }
+//            displayImage(AssetImages.ANIMS[0]) {
+//                placeholder(
+//                    IconStateImage(R.drawable.ic_image_outline, ResColor(R.color.placeholder_bg))
+//                )
+//                crossfade()
+//                resizeApplyToDrawable()
+//                lifecycle(viewLifecycleOwner.lifecycle)
+//                bitmapMemoryCachePolicy(DISABLED)
+//            }
+//            displayImage(AssetImages.FORMATS[0]) {
+////                placeholder(
+////                    IconStateImage(R.drawable.ic_image_outline, ResColor(R.color.placeholder_bg))
+////                )
+////                crossfade()
+////                resizeApplyToDrawable()
+////                lifecycle(viewLifecycleOwner.lifecycle)
+////                bitmapMemoryCachePolicy(DISABLED)
+//            }
         }
     }
 }

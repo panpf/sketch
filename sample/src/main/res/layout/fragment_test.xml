@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -7,5 +8,8 @@
         android:id="@+id/testFragmentImageView"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:contentDescription="@string/app_name" />
+        android:contentDescription="@string/app_name"
+        app:siv_displaySrc="@mipmap/ic_launcher"
+        app:siv_transformation="Rotate"
+        app:siv_transformation_rotate_degrees="55" />
 </FrameLayout>

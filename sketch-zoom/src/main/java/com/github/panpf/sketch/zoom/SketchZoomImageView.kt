@@ -23,7 +23,6 @@ import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 
-// todo 提供一些属性
 open class SketchZoomImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
