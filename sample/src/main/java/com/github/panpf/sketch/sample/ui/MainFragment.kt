@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
-import com.github.panpf.sketch.sample.bean.Link
-import com.github.panpf.sketch.sample.bean.ListSeparator
 import com.github.panpf.sketch.sample.databinding.FragmentMainBinding
-import com.github.panpf.sketch.sample.item.LinkItemFactory
-import com.github.panpf.sketch.sample.item.ListSeparatorItemFactory
+import com.github.panpf.sketch.sample.model.Link
+import com.github.panpf.sketch.sample.model.ListSeparator
+import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
+import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 
 class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
 
@@ -52,26 +52,27 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                     ListSeparator("Samples"),
                     Link(
                         "Pexels Photos",
-                        NavMainDirections.actionGlobalPexelsPhotosFragment()
+                        NavMainDirections.actionGlobalPexelsPhotoListFragment()
                     ),
                     Link(
                         "Pexels Photos（Compose）",
-                        NavMainDirections.actionGlobalComposePexelsPhotosFragment(),
+                        NavMainDirections.actionGlobalPexelsPhotoListComposeFragment(),
                         Build.VERSION_CODES.LOLLIPOP
                     ),
-                    Link("Giphy GIF", NavMainDirections.actionGlobalGiphyGifsFragment()),
+                    Link("Giphy GIF", NavMainDirections.actionGlobalGiphyGifListFragment()),
                     Link(
                         "Giphy GIF（Compose）",
-                        NavMainDirections.actionGlobalComposeGiphyGifListFragment(),
+                        NavMainDirections.actionGlobalGiphyGifListComposeFragment(),
                         Build.VERSION_CODES.LOLLIPOP
                     ),
-                    Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
+                    Link("Local Photos", NavMainDirections.actionGlobalLocalPhotoListFragment()),
                     Link("Local Video", NavMainDirections.actionGlobalLocalVideoListFragment()),
-                    Link("Huge Image", NavMainDirections.actionGlobalHugeImagePagerFragment()),
+                    Link("Huge Image", NavMainDirections.actionGlobalHugeImageListFragment()),
 
                     ListSeparator("Test"),
-                    Link("Image Format", NavMainDirections.actionGlobalImageFormatFragment()),
-                    Link("Fetcher", NavMainDirections.actionGlobalFetcherFragment()),
+                    Link("Image Format", NavMainDirections.actionGlobalImageFormatTestFragment()),
+                    Link("Fetcher", NavMainDirections.actionGlobalFetcherTestFragment()),
+                    // todo 增加更多的示例
 //                    Link(
 //                        "ImageProcessor Test",
 //                        NavMainDirections.actionGlobalImageProcessorTestFragment()

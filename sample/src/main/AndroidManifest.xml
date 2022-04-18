@@ -46,7 +46,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.github.panpf.sketch.sample.MainActivity"
+            android:name="com.github.panpf.sketch.sample.ui.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

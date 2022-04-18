@@ -2,8 +2,8 @@ package com.github.panpf.sketch.sample
 
 import android.content.Context
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.sample.bean.LayoutMode
-import com.github.panpf.sketch.sample.bean.LayoutMode.GRID
+import com.github.panpf.sketch.sample.model.LayoutMode
+import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.util.prefsdata.BooleanPrefsData
 import com.github.panpf.sketch.sample.util.prefsdata.EnumPrefsData
 import com.github.panpf.sketch.sample.util.prefsdata.StringPrefsData
