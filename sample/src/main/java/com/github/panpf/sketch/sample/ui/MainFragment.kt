@@ -73,7 +73,11 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                     Link("Image Format", NavMainDirections.actionGlobalImageFormatTestFragment()),
                     Link("Fetcher", NavMainDirections.actionGlobalFetcherTestFragment()),
                     Link("Insanity Test", NavMainDirections.actionGlobalInsanityTestFragment()),
-                    Link("Insanity Test（Compose）", NavMainDirections.actionGlobalInsanityTestComposeFragment()),
+                    Link(
+                        "Insanity Test（Compose）",
+                        NavMainDirections.actionGlobalInsanityTestComposeFragment(),
+                        Build.VERSION_CODES.LOLLIPOP
+                    ),
                     // todo 增加更多的示例
 //                    Link(
 //                        "ImageProcessor Test",
