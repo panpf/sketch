@@ -34,7 +34,7 @@ class DrawableStateImage : StateImage {
     }
 
     override fun getDrawable(
-        sketch: Sketch, request: ImageRequest, throwable: SketchException?
+        sketch: Sketch, request: ImageRequest, exception: SketchException?
     ): Drawable {
         return drawable.getDrawable(sketch.context)
     }

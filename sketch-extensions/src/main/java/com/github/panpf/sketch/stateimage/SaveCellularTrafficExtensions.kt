@@ -32,8 +32,8 @@ private class SaveCellularTrafficMatcher(val saveCellularTrafficImage: StateImag
     override fun match(
         sketch: Sketch,
         request: ImageRequest,
-        throwable: SketchException?
-    ): Boolean = throwable?.isCausedBySaveCellularTraffic == true
+        exception: SketchException?
+    ): Boolean = exception?.isCausedBySaveCellularTraffic == true
 
     override fun getDrawable(
         sketch: Sketch,

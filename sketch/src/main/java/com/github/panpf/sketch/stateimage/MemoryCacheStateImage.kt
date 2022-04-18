@@ -28,14 +28,14 @@ class MemoryCacheStateImage(
 ) : StateImage {
 
     override fun getDrawable(
-        sketch: Sketch, request: ImageRequest, throwable: SketchException?
+        sketch: Sketch, request: ImageRequest, exception: SketchException?
     ): Drawable? {
         val memoryCache = sketch.memoryCache
         val cachedCountBitmap = memoryCacheKey?.let { memoryCache[it] }
         return if (cachedCountBitmap != null) {
             SketchCountBitmapDrawable(cachedCountBitmap, DataFrom.MEMORY_CACHE)
         } else {
-            defaultImage?.getDrawable(sketch, request, throwable)
+            defaultImage?.getDrawable(sketch, request, exception)
         }
     }
 }

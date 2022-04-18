@@ -22,5 +22,5 @@ import com.github.panpf.sketch.util.SketchException
 
 interface StateImage {
 
-    fun getDrawable(sketch: Sketch, request: ImageRequest, throwable: SketchException?): Drawable?
+    fun getDrawable(sketch: Sketch, request: ImageRequest, exception: SketchException?): Drawable?
 }

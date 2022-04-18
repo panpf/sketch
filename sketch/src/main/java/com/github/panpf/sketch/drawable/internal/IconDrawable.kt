@@ -1,81 +1,192 @@
 package com.github.panpf.sketch.drawable.internal
 
-import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.ColorFilter
-import android.graphics.Paint
 import android.graphics.PixelFormat
+import android.graphics.PorterDuff.Mode
 import android.graphics.Rect
+import android.graphics.Region
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
-import androidx.core.graphics.alpha
+import android.os.Build.VERSION_CODES
+import androidx.annotation.RequiresApi
+import androidx.core.graphics.drawable.DrawableCompat
 
-@SuppressLint("RestrictedApi")
-class IconDrawable(
+class IconDrawable constructor(
     private val icon: Drawable,
-    @param:ColorInt private val backgroundColor: Int? = null
+    private val bg: Drawable? = null,
 ) : Drawable(), Drawable.Callback {
 
     init {
+        bg?.callback = this
         icon.callback = this
     }
 
-    private val backgroundPaint = backgroundColor?.let { Paint().apply { color = it } }
-
     override fun mutate(): IconDrawable {
-        return IconDrawable(icon.mutate(), backgroundColor)
+        return IconDrawable(icon.mutate(), bg?.mutate())
     }
 
     override fun draw(canvas: Canvas) {
-        backgroundPaint?.let {
-            val checkpoint = canvas.save()
-            try {
-                canvas.drawRect(bounds, it)
-            } finally {
-                canvas.restoreToCount(checkpoint)
-            }
-        }
+        bg?.draw(canvas)
         icon.draw(canvas)
     }
 
     override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
-        val iconWidth = icon.intrinsicWidth
-        val iconHeight = icon.intrinsicHeight
-        val left = bounds.left + (bounds.width() - iconWidth) / 2
-        val top = bounds.top + (bounds.height() - iconHeight) / 2
-        icon.setBounds(left, top, left + iconWidth, top + iconHeight)
+        bg?.bounds = bounds
+        icon.apply {
+            val iconWidth = icon.intrinsicWidth
+            val iconHeight = icon.intrinsicHeight
+            val left = bounds.left + (bounds.width() - iconWidth) / 2
+            val top = bounds.top + (bounds.height() - iconHeight) / 2
+            setBounds(left, top, left + iconWidth, top + iconHeight)
+        }
+    }
+
+    override fun setChangingConfigurations(configs: Int) {
+        bg?.changingConfigurations = configs
+        icon.changingConfigurations = configs
+    }
+
+    override fun getChangingConfigurations(): Int {
+        return icon.changingConfigurations
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun setDither(dither: Boolean) {
+        @Suppress("DEPRECATION")
+        bg?.setDither(dither)
+        @Suppress("DEPRECATION")
+        icon.setDither(dither)
+    }
+
+    override fun setFilterBitmap(filter: Boolean) {
+        bg?.isFilterBitmap = filter
+        icon.isFilterBitmap = filter
     }
 
     override fun setAlpha(alpha: Int) {
-        backgroundPaint?.alpha = alpha
+        bg?.alpha = alpha
         icon.alpha = alpha
     }
 
+    @RequiresApi(VERSION_CODES.KITKAT)
+    override fun getAlpha(): Int {
+        return icon.alpha
+    }
+
+    @RequiresApi(VERSION_CODES.M)
+    override fun isFilterBitmap(): Boolean {
+        return icon.isFilterBitmap
+    }
+
     override fun setColorFilter(colorFilter: ColorFilter?) {
-        backgroundPaint?.colorFilter = colorFilter
+        bg?.colorFilter = colorFilter
         icon.colorFilter = colorFilter
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun setColorFilter(color: Int, mode: Mode) {
+        bg?.clearColorFilter()
+        icon.clearColorFilter()
+    }
+
+    @RequiresApi(VERSION_CODES.LOLLIPOP)
+    override fun getColorFilter(): ColorFilter? {
+        return icon.colorFilter
     }
 
     @Suppress("DEPRECATION")
     @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int =
         icon.opacity.takeIf { it != PixelFormat.OPAQUE }
-            ?: when (backgroundColor?.alpha ?: 255) {
-                255 -> PixelFormat.OPAQUE
-                0 -> PixelFormat.TRANSPARENT
-                else -> PixelFormat.TRANSLUCENT
-            }
+            ?: bg?.opacity.takeIf { it != PixelFormat.OPAQUE }
+            ?: PixelFormat.OPAQUE
+
+
+    override fun isStateful(): Boolean {
+        return bg?.isStateful == true || icon.isStateful
+    }
+
+    override fun setState(stateSet: IntArray): Boolean {
+        val result1 = bg?.setState(stateSet) == true
+        val result2 = icon.setState(stateSet)
+        return result1 || result2
+    }
+
+    override fun getState(): IntArray {
+        return icon.state
+    }
+
+    override fun jumpToCurrentState() {
+        bg?.jumpToCurrentState()
+        icon.jumpToCurrentState()
+    }
+
+    override fun setVisible(visible: Boolean, restart: Boolean): Boolean {
+        val result1 = bg?.setVisible(visible, restart) == true
+        val result2 = icon.setVisible(visible, restart)
+        return result1 || result2
+    }
+
+    override fun getTransparentRegion(): Region? {
+        return bg?.transparentRegion ?: icon.transparentRegion
+    }
+
+    override fun getPadding(padding: Rect): Boolean {
+        return bg?.getPadding(padding) == true
+    }
 
     override fun invalidateDrawable(who: Drawable) {
-        callback?.invalidateDrawable(this)
+        invalidateSelf()
     }
 
     override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-        callback?.scheduleDrawable(this, what, `when`)
+        scheduleSelf(what, `when`)
     }
 
     override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-        callback?.unscheduleDrawable(this, what)
+        unscheduleSelf(what)
+    }
+
+    override fun onLevelChange(level: Int): Boolean {
+        val result1 = bg?.setLevel(level) == true
+        val result2 = icon.setLevel(level)
+        return result1 || result2
+    }
+
+    override fun setAutoMirrored(mirrored: Boolean) {
+        bg?.let { DrawableCompat.setAutoMirrored(it, mirrored) }
+        DrawableCompat.setAutoMirrored(icon, mirrored)
+    }
+
+    override fun isAutoMirrored(): Boolean {
+        return bg?.let { DrawableCompat.isAutoMirrored(it) } == true
+                || DrawableCompat.isAutoMirrored(icon)
+    }
+
+    override fun setTint(tint: Int) {
+        bg?.let { DrawableCompat.setTint(it, tint) }
+        DrawableCompat.setTint(icon, tint)
+    }
+
+    override fun setTintList(tint: ColorStateList?) {
+        bg?.let { DrawableCompat.setTintList(it, tint) }
+        DrawableCompat.setTintList(icon, tint)
+    }
+
+    override fun setTintMode(tintMode: Mode?) {
+        bg?.let { DrawableCompat.setTintMode(it, tintMode!!) }
+        DrawableCompat.setTintMode(icon, tintMode!!)
+    }
+
+    override fun setHotspot(x: Float, y: Float) {
+        bg?.let { DrawableCompat.setHotspot(it, x, y) }
+        DrawableCompat.setHotspot(icon, x, y)
+    }
+
+    override fun setHotspotBounds(left: Int, top: Int, right: Int, bottom: Int) {
+        bg?.let { DrawableCompat.setHotspotBounds(it, left, top, right, bottom) }
+        DrawableCompat.setHotspotBounds(icon, left, top, right, bottom)
     }
 }

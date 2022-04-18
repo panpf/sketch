@@ -33,8 +33,8 @@ private class PauseLoadWhenScrollingMatcher(val pauseLoadWhenScrollingImage: Sta
     override fun match(
         sketch: Sketch,
         request: ImageRequest,
-        throwable: SketchException?
-    ): Boolean = throwable?.isCausedByPauseLoadWhenScrolling == true
+        exception: SketchException?
+    ): Boolean = exception?.isCausedByPauseLoadWhenScrolling == true
 
     override fun getDrawable(
         sketch: Sketch,

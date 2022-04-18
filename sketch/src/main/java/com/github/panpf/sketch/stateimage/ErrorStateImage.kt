@@ -40,10 +40,10 @@ fun newErrorStateImageBuilder(
 class ErrorStateImage private constructor(private val matcherList: List<Matcher>) : StateImage {
 
     override fun getDrawable(
-        sketch: Sketch, request: ImageRequest, throwable: SketchException?
+        sketch: Sketch, request: ImageRequest, exception: SketchException?
     ): Drawable? = matcherList
-        .find { it.match(sketch, request, throwable) }
-        ?.getDrawable(sketch, request, throwable)
+        .find { it.match(sketch, request, exception) }
+        ?.getDrawable(sketch, request, exception)
 
     class Builder(private val defaultImage: StateImage) {
 
@@ -73,7 +73,7 @@ class ErrorStateImage private constructor(private val matcherList: List<Matcher>
         fun match(
             sketch: Sketch,
             request: ImageRequest,
-            throwable: SketchException?
+            exception: SketchException?
         ): Boolean
 
         fun getDrawable(
@@ -88,7 +88,7 @@ class ErrorStateImage private constructor(private val matcherList: List<Matcher>
         override fun match(
             sketch: Sketch,
             request: ImageRequest,
-            throwable: SketchException?
+            exception: SketchException?
         ): Boolean = true
 
         override fun getDrawable(
@@ -103,8 +103,8 @@ class ErrorStateImage private constructor(private val matcherList: List<Matcher>
         override fun match(
             sketch: Sketch,
             request: ImageRequest,
-            throwable: SketchException?
-        ): Boolean = throwable is UriInvalidException
+            exception: SketchException?
+        ): Boolean = exception is UriInvalidException
                 && (request.uriString.isEmpty() || request.uriString.isBlank())
 
         override fun getDrawable(
