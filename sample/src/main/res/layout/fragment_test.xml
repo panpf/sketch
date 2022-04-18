@@ -9,7 +9,7 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:contentDescription="@string/app_name"
-        app:sketch_displaySrc="@mipmap/ic_launcher"
-        app:sketch_transformation="Rotate"
+        app:sketch_src="@mipmap/ic_launcher"
+        app:sketch_transformation="rotate"
         app:sketch_transformation_rotate_degrees="55" />
 </FrameLayout>

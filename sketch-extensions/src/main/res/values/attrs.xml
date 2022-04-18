@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="sketch_depth" format="enum">
-        <enum name="NETWORK" value="1" />
-        <enum name="LOCAL" value="2" />
-        <enum name="MEMORY" value="3" />
+        <enum name="network" value="1" />
+        <enum name="local" value="2" />
+        <enum name="memory" value="3" />
     </attr>
 
     <attr name="sketch_downloadDiskCachePolicy" format="enum">
-        <enum name="ENABLED" value="1" />
-        <enum name="READ_ONLY" value="2" />
-        <enum name="WRITE_ONLY" value="3" />
-        <enum name="DISABLED" value="4" />
+        <enum name="enabled" value="1" />
+        <enum name="readOnly" value="2" />
+        <enum name="writeOnly" value="3" />
+        <enum name="disabled" value="4" />
     </attr>
 
     <attr name="sketch_preferQualityOverSpeed" format="boolean|reference" />
     <attr name="sketch_bitmapConfig" format="enum">
-        <enum name="LOW_QUALITY" value="1" />
-        <enum name="MIDDEN_QUALITY" value="2" />
-        <enum name="HIGH_QUALITY" value="3" />
-        <enum name="ALPHA_8" value="4" />
-        <enum name="RGB_565" value="5" />
-        <enum name="ARGB_4444" value="6" />
-        <enum name="ARGB_8888" value="7" />
-        <enum name="RGBA_F16" value="8" />
-        <enum name="HARDWARE" value="9" />
+        <enum name="lowQuality" value="1" />
+        <enum name="middenQuality" value="2" />
+        <enum name="highQuality" value="3" />
+        <enum name="alpha8" value="4" />
+        <enum name="rgb565" value="5" />
+        <enum name="argb4444" value="6" />
+        <enum name="argb8888" value="7" />
+        <enum name="rgbaF16" value="8" />
+        <enum name="hardware" value="9" />
     </attr>
     <attr name="sketch_disabledReuseBitmap" format="boolean|reference" />
     <attr name="sketch_ignoreExifOrientation" format="boolean|reference" />
     <attr name="sketch_resizeWidth" format="dimension|reference" />
     <attr name="sketch_resizeHeight" format="dimension|reference" />
     <attr name="sketch_resizePrecision" format="enum">
-        <enum name="LESS_PIXELS" value="1" />
-        <enum name="SAME_ASPECT_RATIO" value="2" />
-        <enum name="EXACTLY" value="3" />
+        <enum name="lessPixels" value="1" />
+        <enum name="sameAspectRatio" value="2" />
+        <enum name="exactly" value="3" />
     </attr>
     <attr name="sketch_resizeScale" format="enum">
-        <enum name="START_CROP" value="1" />
-        <enum name="CENTER_CROP" value="2" />
-        <enum name="END_CROP" value="3" />
-        <enum name="FILL" value="4" />
+        <enum name="startCrop" value="1" />
+        <enum name="centerCrop" value="2" />
+        <enum name="endCrop" value="3" />
+        <enum name="fill" value="4" />
     </attr>
     <attr name="sketch_resizeApplyToDrawable" format="boolean|reference" />
     <attr name="sketch_transformation" format="enum">
-        <enum name="Blur" value="1" />
-        <enum name="Rotate" value="2" />
-        <enum name="RoundedCorners" value="3" />
-        <enum name="CircleCrop" value="4" />
+        <enum name="blur" value="1" />
+        <enum name="rotate" value="2" />
+        <enum name="roundedCorners" value="3" />
+        <enum name="circleCrop" value="4" />
     </attr>
     <attr name="sketch_transformation_blur_radius" format="dimension|reference" />
     <attr name="sketch_transformation_blur_maskColor" format="color|reference" />
@@ -56,23 +56,23 @@
     <attr name="sketch_transformation_roundedCorners_radiusBottomLeft" format="dimension|reference" />
     <attr name="sketch_transformation_roundedCorners_radiusBottomRight" format="dimension|reference" />
     <attr name="sketch_transformation_circleCrop_scale" format="enum">
-        <enum name="START_CROP" value="1" />
-        <enum name="CENTER_CROP" value="2" />
-        <enum name="END_CROP" value="3" />
-        <enum name="FILL" value="4" />
+        <enum name="startCrop" value="1" />
+        <enum name="centerCrop" value="2" />
+        <enum name="endCrop" value="3" />
+        <enum name="fill" value="4" />
     </attr>
     <attr name="sketch_bitmapResultDiskCachePolicy" format="enum">
-        <enum name="ENABLED" value="1" />
-        <enum name="READ_ONLY" value="2" />
-        <enum name="WRITE_ONLY" value="3" />
-        <enum name="DISABLED" value="4" />
+        <enum name="enabled" value="1" />
+        <enum name="readOnly" value="2" />
+        <enum name="writeOnly" value="3" />
+        <enum name="disabled" value="4" />
     </attr>
 
     <attr name="sketch_bitmapMemoryCachePolicy" format="enum">
-        <enum name="ENABLED" value="1" />
-        <enum name="READ_ONLY" value="2" />
-        <enum name="WRITE_ONLY" value="3" />
-        <enum name="DISABLED" value="4" />
+        <enum name="enabled" value="1" />
+        <enum name="readOnly" value="2" />
+        <enum name="writeOnly" value="3" />
+        <enum name="disabled" value="4" />
     </attr>
     <attr name="sketch_crossfade" format="boolean|reference" />
     <attr name="sketch_crossfadeDurationMillis" format="integer|reference" />
@@ -80,7 +80,7 @@
     <attr name="sketch_placeholder" format="color|reference" />
     <attr name="sketch_error" format="color|reference" />
     <attr name="sketch_uriEmptyError" format="color|reference" />
-    <attr name="sketch_displaySrc" format="color|reference" />
+    <attr name="sketch_src" format="color|reference" />
 
     <declare-styleable name="SketchImageView">
         <attr name="sketch_depth" />
@@ -112,6 +112,6 @@
         <attr name="sketch_placeholder" />
         <attr name="sketch_error" />
         <attr name="sketch_uriEmptyError" />
-        <attr name="sketch_displaySrc" />
+        <attr name="sketch_src" />
     </declare-styleable>
 </resources>

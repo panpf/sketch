@@ -30,7 +30,7 @@ open class SketchImageView @JvmOverloads constructor(
 
     override var displayImageOptions: ImageOptions? = null
 
-    private var displaySrcResId: Int? = null
+    private var srcResId: Int? = null
 
     init {
         parseXmlAttributes(context, attrs)
@@ -38,7 +38,7 @@ open class SketchImageView @JvmOverloads constructor(
     }
 
     private fun displaySrc() {
-        val displaySrcResId = displaySrcResId
+        val displaySrcResId = srcResId
         if (displaySrcResId != null) {
             if (isInEditMode) {
                 setImageResource(displaySrcResId)
@@ -144,8 +144,8 @@ open class SketchImageView @JvmOverloads constructor(
                 }
             }.takeIf { !it.isEmpty() }
 
-            displaySrcResId =
-                typedArray.getResourceId(R.styleable.SketchImageView_sketch_displaySrc, -1)
+            srcResId =
+                typedArray.getResourceId(R.styleable.SketchImageView_sketch_src, -1)
                     .takeIf { it != -1 }
         } finally {
             typedArray.recycle()
