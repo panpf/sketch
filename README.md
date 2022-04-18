@@ -157,6 +157,7 @@ AsyncImage(
 
 特色功能：
 
+* [SketchImageView：通过 XML 属性配置请求][sketch_image_view]
 * [SketchZoomImageView：手势缩放及分块显示超大图][zoom]
 * [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
 * [显示下载进度][show_download_progress]
@@ -267,6 +268,8 @@ AsyncImage(
 [show_image_type]: docs/wiki/show_image_type.md
 
 [show_download_progress]: docs/wiki/show_download_progress.md
+
+[sketch_image_view]: docs/wiki/sketch_image_view.md
 
 [zoom]: docs/wiki/zoom.md
 
