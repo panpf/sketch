@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -30,7 +31,8 @@ import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnab
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
-class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::class) {
+class PhotoItemFactory(val disabledCache: Boolean = false) :
+    BindingItemFactory<Photo, ItemImageBinding>(Photo::class) {
 
     private var itemSize: Point? = null
 
@@ -86,6 +88,11 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                 }
                 crossfade()
                 resizeApplyToDrawable()
+                if (disabledCache) {
+                    downloadDiskCachePolicy(DISABLED)
+                    bitmapResultDiskCachePolicy(DISABLED)
+                    bitmapMemoryCachePolicy(DISABLED)
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
@@ -24,17 +25,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 @ExperimentalFoundationApi
-fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>) {
+fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Boolean = false) {
     val items = photoPagingFlow.collectAsLazyPagingItems()
     LazyVerticalGrid(Fixed(3)) {
         itemsIndexed(items) { index, photo ->
-            photo?.let { PhotoContent(index, it) }
+            photo?.let { PhotoContent(index, it, disabledCache) }
         }
     }
 }
 
 @Composable
-fun PhotoContent(index: Int, photo: Photo) {
+fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
     val itemSizeDp = LocalContext.current.getScreenWidth().px2dp / 3
     val resources = LocalContext.current.resources
     AsyncImage(
@@ -46,5 +47,10 @@ fun PhotoContent(index: Int, photo: Photo) {
         placeholder(IconStateImage(drawable.ic_image_outline, ResColor(color.placeholder_bg)))
         error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
         crossfade()
+        if (disabledCache) {
+            downloadDiskCachePolicy(DISABLED)
+            bitmapResultDiskCachePolicy(DISABLED)
+            bitmapMemoryCachePolicy(DISABLED)
+        }
     }
 }

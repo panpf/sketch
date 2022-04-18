@@ -94,6 +94,14 @@
         android:id="@+id/pexelsPhotoListComposeFragment"
         android:name="com.github.panpf.sketch.sample.ui.photo.pexels.compose.PexelsPhotoListComposeFragment"
         android:label="PexelsPhotoListComposeFragment" />
+    <fragment
+        android:id="@+id/insanityTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.insanity.InsanityTestFragment"
+        android:label="InsanityTestFragment" />
+    <fragment
+        android:id="@+id/insanityTestComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.insanity.compose.InsanityTestComposeFragment"
+        android:label="InsanityTestComposeFragment" />
 
     <action
         android:id="@+id/action_global_pexelsPhotoListFragment"
@@ -189,6 +197,20 @@
     <action
         android:id="@+id/action_global_giphyGifListComposeFragment"
         app:destination="@id/giphyGifListComposeFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_insanityTestFragment"
+        app:destination="@id/insanityTestFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_insanityTestComposeFragment"
+        app:destination="@id/insanityTestComposeFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

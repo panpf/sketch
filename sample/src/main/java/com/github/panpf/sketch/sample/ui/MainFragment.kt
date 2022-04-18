@@ -72,6 +72,8 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                     ListSeparator("Test"),
                     Link("Image Format", NavMainDirections.actionGlobalImageFormatTestFragment()),
                     Link("Fetcher", NavMainDirections.actionGlobalFetcherTestFragment()),
+                    Link("Insanity Test", NavMainDirections.actionGlobalInsanityTestFragment()),
+                    Link("Insanity Test（Compose）", NavMainDirections.actionGlobalInsanityTestComposeFragment()),
                     // todo 增加更多的示例
 //                    Link(
 //                        "ImageProcessor Test",
