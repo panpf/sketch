@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="siv_depth" format="enum">
+    <attr name="sketch_depth" format="enum">
         <enum name="NETWORK" value="1" />
         <enum name="LOCAL" value="2" />
         <enum name="MEMORY" value="3" />
     </attr>
 
-    <attr name="siv_downloadDiskCachePolicy" format="enum">
+    <attr name="sketch_downloadDiskCachePolicy" format="enum">
         <enum name="ENABLED" value="1" />
         <enum name="READ_ONLY" value="2" />
         <enum name="WRITE_ONLY" value="3" />
         <enum name="DISABLED" value="4" />
     </attr>
 
-    <attr name="siv_preferQualityOverSpeed" format="boolean|reference" />
-    <attr name="siv_bitmapConfig" format="enum">
+    <attr name="sketch_preferQualityOverSpeed" format="boolean|reference" />
+    <attr name="sketch_bitmapConfig" format="enum">
         <enum name="LOW_QUALITY" value="1" />
         <enum name="MIDDEN_QUALITY" value="2" />
         <enum name="HIGH_QUALITY" value="3" />
@@ -25,93 +25,93 @@
         <enum name="RGBA_F16" value="8" />
         <enum name="HARDWARE" value="9" />
     </attr>
-    <attr name="siv_disabledReuseBitmap" format="boolean|reference" />
-    <attr name="siv_ignoreExifOrientation" format="boolean|reference" />
-    <attr name="siv_resizeWidth" format="dimension|reference" />
-    <attr name="siv_resizeHeight" format="dimension|reference" />
-    <attr name="siv_resizePrecision" format="enum">
+    <attr name="sketch_disabledReuseBitmap" format="boolean|reference" />
+    <attr name="sketch_ignoreExifOrientation" format="boolean|reference" />
+    <attr name="sketch_resizeWidth" format="dimension|reference" />
+    <attr name="sketch_resizeHeight" format="dimension|reference" />
+    <attr name="sketch_resizePrecision" format="enum">
         <enum name="LESS_PIXELS" value="1" />
         <enum name="SAME_ASPECT_RATIO" value="2" />
         <enum name="EXACTLY" value="3" />
     </attr>
-    <attr name="siv_resizeScale" format="enum">
+    <attr name="sketch_resizeScale" format="enum">
         <enum name="START_CROP" value="1" />
         <enum name="CENTER_CROP" value="2" />
         <enum name="END_CROP" value="3" />
         <enum name="FILL" value="4" />
     </attr>
-    <attr name="siv_resizeApplyToDrawable" format="boolean|reference" />
-    <attr name="siv_transformation" format="enum">
+    <attr name="sketch_resizeApplyToDrawable" format="boolean|reference" />
+    <attr name="sketch_transformation" format="enum">
         <enum name="Blur" value="1" />
         <enum name="Rotate" value="2" />
         <enum name="RoundedCorners" value="3" />
         <enum name="CircleCrop" value="4" />
     </attr>
-    <attr name="siv_transformation_blur_radius" format="dimension|reference" />
-    <attr name="siv_transformation_blur_maskColor" format="color|reference" />
-    <attr name="siv_transformation_rotate_degrees" format="integer|reference" />
-    <attr name="siv_transformation_roundedCorners_radius" format="integer|reference" />
-    <attr name="siv_transformation_roundedCorners_radiusTopLeft" format="dimension|reference" />
-    <attr name="siv_transformation_roundedCorners_radiusTopRight" format="dimension|reference" />
-    <attr name="siv_transformation_roundedCorners_radiusBottomLeft" format="dimension|reference" />
-    <attr name="siv_transformation_roundedCorners_radiusBottomRight" format="dimension|reference" />
-    <attr name="siv_transformation_circleCrop_scale" format="enum">
+    <attr name="sketch_transformation_blur_radius" format="dimension|reference" />
+    <attr name="sketch_transformation_blur_maskColor" format="color|reference" />
+    <attr name="sketch_transformation_rotate_degrees" format="integer|reference" />
+    <attr name="sketch_transformation_roundedCorners_radius" format="integer|reference" />
+    <attr name="sketch_transformation_roundedCorners_radiusTopLeft" format="dimension|reference" />
+    <attr name="sketch_transformation_roundedCorners_radiusTopRight" format="dimension|reference" />
+    <attr name="sketch_transformation_roundedCorners_radiusBottomLeft" format="dimension|reference" />
+    <attr name="sketch_transformation_roundedCorners_radiusBottomRight" format="dimension|reference" />
+    <attr name="sketch_transformation_circleCrop_scale" format="enum">
         <enum name="START_CROP" value="1" />
         <enum name="CENTER_CROP" value="2" />
         <enum name="END_CROP" value="3" />
         <enum name="FILL" value="4" />
     </attr>
-    <attr name="siv_bitmapResultDiskCachePolicy" format="enum">
+    <attr name="sketch_bitmapResultDiskCachePolicy" format="enum">
         <enum name="ENABLED" value="1" />
         <enum name="READ_ONLY" value="2" />
         <enum name="WRITE_ONLY" value="3" />
         <enum name="DISABLED" value="4" />
     </attr>
 
-    <attr name="siv_bitmapMemoryCachePolicy" format="enum">
+    <attr name="sketch_bitmapMemoryCachePolicy" format="enum">
         <enum name="ENABLED" value="1" />
         <enum name="READ_ONLY" value="2" />
         <enum name="WRITE_ONLY" value="3" />
         <enum name="DISABLED" value="4" />
     </attr>
-    <attr name="siv_crossfade" format="boolean|reference" />
-    <attr name="siv_crossfadeDurationMillis" format="integer|reference" />
-    <attr name="siv_crossfadePreferExactIntrinsicSize" format="boolean|reference" />
-    <attr name="siv_placeholder" format="color|reference" />
-    <attr name="siv_error" format="color|reference" />
-    <attr name="siv_uriEmptyError" format="color|reference" />
-    <attr name="siv_displaySrc" format="color|reference" />
+    <attr name="sketch_crossfade" format="boolean|reference" />
+    <attr name="sketch_crossfadeDurationMillis" format="integer|reference" />
+    <attr name="sketch_crossfadePreferExactIntrinsicSize" format="boolean|reference" />
+    <attr name="sketch_placeholder" format="color|reference" />
+    <attr name="sketch_error" format="color|reference" />
+    <attr name="sketch_uriEmptyError" format="color|reference" />
+    <attr name="sketch_displaySrc" format="color|reference" />
 
     <declare-styleable name="SketchImageView">
-        <attr name="siv_depth" />
-        <attr name="siv_downloadDiskCachePolicy" />
-        <attr name="siv_preferQualityOverSpeed" />
-        <attr name="siv_bitmapConfig" />
-        <attr name="siv_disabledReuseBitmap" />
-        <attr name="siv_ignoreExifOrientation" />
-        <attr name="siv_resizeWidth" />
-        <attr name="siv_resizeHeight" />
-        <attr name="siv_resizePrecision" />
-        <attr name="siv_resizeScale" />
-        <attr name="siv_resizeApplyToDrawable" />
-        <attr name="siv_transformation" />
-        <attr name="siv_transformation_blur_radius" />
-        <attr name="siv_transformation_blur_maskColor" />
-        <attr name="siv_transformation_rotate_degrees" />
-        <attr name="siv_transformation_roundedCorners_radius" />
-        <attr name="siv_transformation_roundedCorners_radiusTopLeft" />
-        <attr name="siv_transformation_roundedCorners_radiusTopRight" />
-        <attr name="siv_transformation_roundedCorners_radiusBottomLeft" />
-        <attr name="siv_transformation_roundedCorners_radiusBottomRight" />
-        <attr name="siv_transformation_circleCrop_scale" />
-        <attr name="siv_bitmapResultDiskCachePolicy" />
-        <attr name="siv_bitmapMemoryCachePolicy" />
-        <attr name="siv_crossfade" />
-        <attr name="siv_crossfadeDurationMillis" />
-        <attr name="siv_crossfadePreferExactIntrinsicSize" />
-        <attr name="siv_placeholder" />
-        <attr name="siv_error" />
-        <attr name="siv_uriEmptyError" />
-        <attr name="siv_displaySrc" />
+        <attr name="sketch_depth" />
+        <attr name="sketch_downloadDiskCachePolicy" />
+        <attr name="sketch_preferQualityOverSpeed" />
+        <attr name="sketch_bitmapConfig" />
+        <attr name="sketch_disabledReuseBitmap" />
+        <attr name="sketch_ignoreExifOrientation" />
+        <attr name="sketch_resizeWidth" />
+        <attr name="sketch_resizeHeight" />
+        <attr name="sketch_resizePrecision" />
+        <attr name="sketch_resizeScale" />
+        <attr name="sketch_resizeApplyToDrawable" />
+        <attr name="sketch_transformation" />
+        <attr name="sketch_transformation_blur_radius" />
+        <attr name="sketch_transformation_blur_maskColor" />
+        <attr name="sketch_transformation_rotate_degrees" />
+        <attr name="sketch_transformation_roundedCorners_radius" />
+        <attr name="sketch_transformation_roundedCorners_radiusTopLeft" />
+        <attr name="sketch_transformation_roundedCorners_radiusTopRight" />
+        <attr name="sketch_transformation_roundedCorners_radiusBottomLeft" />
+        <attr name="sketch_transformation_roundedCorners_radiusBottomRight" />
+        <attr name="sketch_transformation_circleCrop_scale" />
+        <attr name="sketch_bitmapResultDiskCachePolicy" />
+        <attr name="sketch_bitmapMemoryCachePolicy" />
+        <attr name="sketch_crossfade" />
+        <attr name="sketch_crossfadeDurationMillis" />
+        <attr name="sketch_crossfadePreferExactIntrinsicSize" />
+        <attr name="sketch_placeholder" />
+        <attr name="sketch_error" />
+        <attr name="sketch_uriEmptyError" />
+        <attr name="sketch_displaySrc" />
     </declare-styleable>
 </resources>

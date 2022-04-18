@@ -24,7 +24,6 @@ import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 
-// todo 补充文档，介绍 xml 属性
 open class SketchImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : AbsAbilityImageView(context, attrs, defStyle), ImageOptionsProvider {
@@ -35,6 +34,10 @@ open class SketchImageView @JvmOverloads constructor(
 
     init {
         parseXmlAttributes(context, attrs)
+        displaySrc()
+    }
+
+    private fun displaySrc() {
         val displaySrcResId = displaySrcResId
         if (displaySrcResId != null) {
             if (isInEditMode) {
@@ -55,73 +58,72 @@ open class SketchImageView @JvmOverloads constructor(
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SketchImageView)
         try {
             displayImageOptions = ImageOptions {
-                // todo 解析属性
-                typedArray.getIntOrNull(R.styleable.SketchImageView_siv_depth)?.apply {
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_depth)?.apply {
                     depth(parseDepthAttribute(this))
                 }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_siv_downloadDiskCachePolicy)
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_downloadDiskCachePolicy)
                     ?.apply {
                         downloadDiskCachePolicy(
-                            parseCachePolicyAttribute(this, "siv_downloadDiskCachePolicy")
+                            parseCachePolicyAttribute(this, "sketch_downloadDiskCachePolicy")
                         )
                     }
-                typedArray.getBooleanOrNull(R.styleable.SketchImageView_siv_preferQualityOverSpeed)
+                typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_preferQualityOverSpeed)
                     ?.apply {
                         preferQualityOverSpeed(this)
                     }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_siv_bitmapConfig)
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_bitmapConfig)
                     ?.apply {
                         bitmapConfig(parseBitmapConfigAttribute(this))
                     }
-                typedArray.getBooleanOrNull(R.styleable.SketchImageView_siv_disabledReuseBitmap)
+                typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_disabledReuseBitmap)
                     ?.apply {
                         disabledReuseBitmap(this)
                     }
-                typedArray.getBooleanOrNull(R.styleable.SketchImageView_siv_ignoreExifOrientation)
+                typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_ignoreExifOrientation)
                     ?.apply {
                         ignoreExifOrientation(this)
                     }
                 val resizeWidth =
-                    typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_siv_resizeWidth)
+                    typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_resizeWidth)
                 val resizeHeight =
-                    typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_siv_resizeHeight)
+                    typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_resizeHeight)
                 if (resizeWidth != null && resizeHeight != null) {
                     resizeSize(resizeWidth, resizeHeight)
                 }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_siv_resizePrecision)
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_resizePrecision)
                     ?.apply {
                         resizePrecision(parseResizePrecision(this))
                     }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_siv_resizeScale)
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_resizeScale)
                     ?.apply {
                         resizeScale(parseResizeScale(this))
                     }
-                typedArray.getBooleanOrNull(R.styleable.SketchImageView_siv_resizeApplyToDrawable)
+                typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_resizeApplyToDrawable)
                     ?.apply {
                         resizeApplyToDrawable(this)
                     }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_siv_transformation)?.apply {
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation)?.apply {
                     transformations(parseTransformation(this, typedArray))
                 }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_siv_bitmapResultDiskCachePolicy)
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_bitmapResultDiskCachePolicy)
                     ?.apply {
                         bitmapResultDiskCachePolicy(
-                            parseCachePolicyAttribute(this, "siv_bitmapResultDiskCachePolicy")
+                            parseCachePolicyAttribute(this, "sketch_bitmapResultDiskCachePolicy")
                         )
                     }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_siv_bitmapMemoryCachePolicy)
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_bitmapMemoryCachePolicy)
                     ?.apply {
                         bitmapMemoryCachePolicy(
-                            parseCachePolicyAttribute(this, "siv_bitmapMemoryCachePolicy")
+                            parseCachePolicyAttribute(this, "sketch_bitmapMemoryCachePolicy")
                         )
                     }
-                typedArray.getBooleanOrNull(R.styleable.SketchImageView_siv_crossfade)
+                typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_crossfade)
                     ?.apply {
                         if (this) {
                             val durationMillis =
-                                typedArray.getIntOrNull(R.styleable.SketchImageView_siv_crossfadeDurationMillis)
+                                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_crossfadeDurationMillis)
                             val preferExactIntrinsicSize =
-                                typedArray.getBooleanOrNull(R.styleable.SketchImageView_siv_crossfadePreferExactIntrinsicSize)
+                                typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_crossfadePreferExactIntrinsicSize)
                             crossfade(
                                 durationMillis = durationMillis
                                     ?: CrossfadeDrawable.DEFAULT_DURATION,
@@ -129,20 +131,21 @@ open class SketchImageView @JvmOverloads constructor(
                             )
                         }
                     }
-                typedArray.getDrawable(R.styleable.SketchImageView_siv_placeholder)?.apply {
+                typedArray.getDrawable(R.styleable.SketchImageView_sketch_placeholder)?.apply {
                     placeholder(this)
                 }
-                typedArray.getDrawable(R.styleable.SketchImageView_siv_error)?.apply {
+                typedArray.getDrawable(R.styleable.SketchImageView_sketch_error)?.apply {
                     error(this) {
-                        typedArray.getDrawable(R.styleable.SketchImageView_siv_uriEmptyError)?.let {
-                            uriEmptyError(it)
-                        }
+                        typedArray.getDrawable(R.styleable.SketchImageView_sketch_uriEmptyError)
+                            ?.let {
+                                uriEmptyError(it)
+                            }
                     }
                 }
             }.takeIf { !it.isEmpty() }
 
             displaySrcResId =
-                typedArray.getResourceId(R.styleable.SketchImageView_siv_displaySrc, -1)
+                typedArray.getResourceId(R.styleable.SketchImageView_sketch_displaySrc, -1)
                     .takeIf { it != -1 }
         } finally {
             typedArray.recycle()
@@ -154,7 +157,7 @@ open class SketchImageView @JvmOverloads constructor(
             1 -> RequestDepth.NETWORK
             2 -> RequestDepth.LOCAL
             3 -> RequestDepth.MEMORY
-            else -> throw IllegalArgumentException("Value not supported by the 'siv_depth' attribute: $this")
+            else -> throw IllegalArgumentException("Value not supported by the 'sketch_depth' attribute: $this")
         }
 
     private fun parseCachePolicyAttribute(value: Int, name: String): CachePolicy =
@@ -185,7 +188,7 @@ open class SketchImageView @JvmOverloads constructor(
             } else {
                 throw IllegalArgumentException("VERSION.SDK_INT < O, Does not support HARDWARE")
             }
-            else -> throw IllegalArgumentException("Value not supported by the 'siv_bitmapConfig' attribute: $this")
+            else -> throw IllegalArgumentException("Value not supported by the 'sketch_bitmapConfig' attribute: $this")
         }
 
     private fun TypedArray.getIntOrNull(index: Int): Int? = getInt(index, -1).takeIf { it != -1 }
@@ -211,7 +214,7 @@ open class SketchImageView @JvmOverloads constructor(
             1 -> Precision.LESS_PIXELS
             2 -> Precision.SAME_ASPECT_RATIO
             3 -> Precision.EXACTLY
-            else -> throw IllegalArgumentException("Value not supported by the 'siv_resizePrecision' attribute: $this")
+            else -> throw IllegalArgumentException("Value not supported by the 'sketch_resizePrecision' attribute: $this")
         }
 
     private fun parseResizeScale(value: Int): Scale =
@@ -220,7 +223,7 @@ open class SketchImageView @JvmOverloads constructor(
             2 -> Scale.CENTER_CROP
             3 -> Scale.END_CROP
             4 -> Scale.FILL
-            else -> throw IllegalArgumentException("Value not supported by the 'siv_resizeScale' attribute: $this")
+            else -> throw IllegalArgumentException("Value not supported by the 'sketch_resizeScale' attribute: $this")
         }
 
 
@@ -228,28 +231,28 @@ open class SketchImageView @JvmOverloads constructor(
         when (value) {
             1 -> {
                 val radius =
-                    typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_siv_transformation_blur_radius)
+                    typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_transformation_blur_radius)
                 val maskColor =
-                    typedArray.getColorOrNull(R.styleable.SketchImageView_siv_transformation_blur_maskColor)
+                    typedArray.getColorOrNull(R.styleable.SketchImageView_sketch_transformation_blur_maskColor)
                 BlurTransformation(radius = radius ?: 15, maskColor = maskColor)
             }
             2 -> {
                 val degrees =
-                    typedArray.getIntOrNull(R.styleable.SketchImageView_siv_transformation_rotate_degrees)
-                        ?: throw IllegalArgumentException("Missing 'siv_transformation_rotate_degrees' property")
+                    typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation_rotate_degrees)
+                        ?: throw IllegalArgumentException("Missing 'sketch_transformation_rotate_degrees' property")
                 RotateTransformation(degrees)
             }
             3 -> {
                 val radius =
-                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_siv_transformation_roundedCorners_radius)
+                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_sketch_transformation_roundedCorners_radius)
                 val radiusTopLeft =
-                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_siv_transformation_roundedCorners_radiusTopLeft)
+                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_sketch_transformation_roundedCorners_radiusTopLeft)
                 val radiusTopRight =
-                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_siv_transformation_roundedCorners_radiusTopRight)
+                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_sketch_transformation_roundedCorners_radiusTopRight)
                 val radiusBottomLeft =
-                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_siv_transformation_roundedCorners_radiusBottomLeft)
+                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_sketch_transformation_roundedCorners_radiusBottomLeft)
                 val radiusBottomRight =
-                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_siv_transformation_roundedCorners_radiusBottomRight)
+                    typedArray.getDimensionOrNull(R.styleable.SketchImageView_sketch_transformation_roundedCorners_radiusBottomRight)
                 RoundedCornersTransformation(
                     topLeft = radiusTopLeft ?: radius ?: 0f,
                     topRight = radiusTopRight ?: radius ?: 0f,
@@ -259,18 +262,18 @@ open class SketchImageView @JvmOverloads constructor(
             }
             4 -> {
                 val scale =
-                    typedArray.getIntOrNull(R.styleable.SketchImageView_siv_transformation_circleCrop_scale)
+                    typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation_circleCrop_scale)
                         ?.let { it1 ->
                             when (it1) {
                                 1 -> Scale.START_CROP
                                 2 -> Scale.CENTER_CROP
                                 3 -> Scale.END_CROP
                                 4 -> Scale.FILL
-                                else -> throw IllegalArgumentException("Value not supported by the 'siv_transformation_circleCrop_scale' attribute: $this")
+                                else -> throw IllegalArgumentException("Value not supported by the 'sketch_transformation_circleCrop_scale' attribute: $this")
                             }
                         }
                 CircleCropTransformation(scale ?: Scale.CENTER_CROP)
             }
-            else -> throw IllegalArgumentException("Value not supported by the 'siv_transformation' attribute: $this")
+            else -> throw IllegalArgumentException("Value not supported by the 'sketch_transformation' attribute: $this")
         }
 }
