@@ -18,7 +18,7 @@ package com.github.panpf.sketch.sample.bean
 import androidx.navigation.NavDirections
 import com.github.panpf.assemblyadapter.recycler.DiffKey
 
-data class Link(val title: String, val navDirections: NavDirections) : DiffKey {
+data class Link(val title: String, val navDirections: NavDirections, val minSdk: Int? = null) : DiffKey {
 
     override val diffKey: String = "Link-$title"
 }

@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose.sample.ui
+package com.github.panpf.sketch.sample.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyGridScope

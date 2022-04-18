@@ -86,6 +86,14 @@
         android:id="@+id/settingsFragment"
         android:name="com.github.panpf.sketch.sample.ui.SettingsFragment"
         android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/composeGiphyGifListFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ComposeGiphyGifListFragment"
+        android:label="ComposeGiphyGifListFragment" />
+    <fragment
+        android:id="@+id/composePexelsPhotosFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ComposePexelsPhotosFragment"
+        android:label="ComposePexelsPhotosFragment" />
 
     <action
         android:id="@+id/action_global_pexelsPhotosFragment"
@@ -167,6 +175,20 @@
     <action
         android:id="@+id/action_global_hugeImagePagerFragment"
         app:destination="@id/hugeImagePagerFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_composePexelsPhotosFragment"
+        app:destination="@id/composePexelsPhotosFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_composeGiphyGifListFragment"
+        app:destination="@id/composeGiphyGifListFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

@@ -55,11 +55,28 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
+    }
+
+    // Set both the Java and Kotlin compilers to target Java 8.
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs =
+            freeCompilerArgs + "-P" + "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.2.0-alpha03"
     }
 }
 
 dependencies {
     implementation(project(":sketch"))
+    implementation(project(":sketch-compose"))
     implementation(project(":sketch-extensions"))
     implementation(project(":sketch-gif-movie"))
     implementation(project(":sketch-gif-koral"))
@@ -71,6 +88,7 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
+    implementation(libs.bundles.androidx.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core)

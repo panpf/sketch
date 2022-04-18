@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose.sample.base
+package com.github.panpf.sketch.sample.base
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
-import com.github.panpf.sketch.compose.sample.R
+import com.github.panpf.sketch.sample.R
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 
 @Suppress("MemberVisibilityCanBePrivate")

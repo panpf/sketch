@@ -3,6 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.github.panpf.sketch.sample">
 
+    <uses-sdk tools:overrideLibrary="
+        com.github.panpf.sketch.compose,
+        androidx.lifecycle.viewmodel.compose,
+        androidx.compose.ui.tooling,
+        androidx.activity.compose,
+        androidx.compose.material,
+        androidx.paging.compose,
+        androidx.compose.material.ripple,
+        androidx.compose.foundation,
+        androidx.compose.animation,
+        com.google.accompanist.drawablepainter,
+        androidx.compose.foundation.layout,
+        androidx.compose.material.icons,
+        androidx.compose.animation.core,
+        androidx.compose.ui.tooling.data,
+        androidx.compose.ui.text,
+        androidx.compose.ui.graphics,
+        androidx.compose.ui.tooling.preview,
+        androidx.compose.runtime.saveable,
+        androidx.compose.ui.unit,
+        androidx.compose.ui.geometry,
+        androidx.compose.ui.util" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />

@@ -1,5 +1,4 @@
 include(":sample")
-include(":sample-compose")
 include(":sketch")
 include(":sketch-compose")
 include(":sketch-extensions")

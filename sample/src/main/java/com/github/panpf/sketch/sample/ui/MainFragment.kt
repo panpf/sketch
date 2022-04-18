@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -53,7 +54,17 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                         "Pexels Photos",
                         NavMainDirections.actionGlobalPexelsPhotosFragment()
                     ),
+                    Link(
+                        "Pexels Photos（Compose）",
+                        NavMainDirections.actionGlobalComposePexelsPhotosFragment(),
+                        Build.VERSION_CODES.LOLLIPOP
+                    ),
                     Link("Giphy GIF", NavMainDirections.actionGlobalGiphyGifsFragment()),
+                    Link(
+                        "Giphy GIF（Compose）",
+                        NavMainDirections.actionGlobalComposeGiphyGifListFragment(),
+                        Build.VERSION_CODES.LOLLIPOP
+                    ),
                     Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
                     Link("Local Video", NavMainDirections.actionGlobalLocalVideoListFragment()),
                     Link("Huge Image", NavMainDirections.actionGlobalHugeImagePagerFragment()),

@@ -16,8 +16,10 @@
 package com.github.panpf.sketch.sample.item
 
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.findNavController
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.sample.bean.Link
@@ -37,7 +39,16 @@ class LinkItemFactory : BindingItemFactory<Link, ItemLinkBinding>(Link::class) {
         item: BindingItem<Link, ItemLinkBinding>
     ) {
         binding.root.setOnClickListener {
-            it.findNavController().navigate(item.dataOrThrow.navDirections)
+            val data = item.dataOrThrow
+            if (data.minSdk == null || Build.VERSION.SDK_INT >= data.minSdk) {
+                it.findNavController().navigate(data.navDirections)
+            } else {
+                Toast.makeText(
+                    context,
+                    "Must be API ${data.minSdk} or above",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 

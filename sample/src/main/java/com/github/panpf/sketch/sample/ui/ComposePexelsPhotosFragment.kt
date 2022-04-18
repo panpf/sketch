@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose.sample.ui
+package com.github.panpf.sketch.sample.ui
 
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -16,37 +16,27 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.compose.AsyncImage
-import com.github.panpf.sketch.compose.sample.NavMainDirections
-import com.github.panpf.sketch.compose.sample.R
-import com.github.panpf.sketch.compose.sample.R.drawable
-import com.github.panpf.sketch.compose.sample.base.ToolbarFragment
-import com.github.panpf.sketch.compose.sample.bean.Photo
-import com.github.panpf.sketch.compose.sample.vm.PexelsImageListViewModel
+import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.R.drawable
+import com.github.panpf.sketch.sample.base.ToolbarFragment
+import com.github.panpf.sketch.sample.bean.Photo
+import com.github.panpf.sketch.sample.vm.PexelsImageListViewModel
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.tools4a.dimen.ktx.px2dp
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlinx.coroutines.flow.Flow
 
-class PexelsPhotosFragment : ToolbarFragment() {
+class ComposePexelsPhotosFragment : ToolbarFragment() {
 
     private val viewModel by viewModels<PexelsImageListViewModel>()
 
     @OptIn(ExperimentalFoundationApi::class)
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Pexels Photos"
-        toolbar.menu.add("GIF").apply {
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-            setOnMenuItemClickListener {
-                findNavController().popBackStack()
-                findNavController().navigate(NavMainDirections.actionGlobalGiphyGifListFragment())
-                true
-            }
-        }
+        toolbar.title = "Pexels Photos（Compose）"
         return ComposeView(requireContext()).apply {
             setContent {
                 PhotoListContent(viewModel.pagingFlow)
