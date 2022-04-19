@@ -22,8 +22,8 @@ import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.toHexString
-import com.github.panpf.sketch.util.trimLevelName
 import kotlinx.coroutines.sync.Mutex
 import java.util.WeakHashMap
 import java.util.concurrent.atomic.AtomicInteger
@@ -108,7 +108,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         val releasedSize = oldSize - size
         logger?.w(
             MODULE,
-            "trim. level '${trimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
+            "trim. level '${getTrimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
         )
     }
 

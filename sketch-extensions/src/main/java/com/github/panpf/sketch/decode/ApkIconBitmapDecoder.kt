@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.decode
 
+import android.content.pm.PackageManager
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
@@ -8,7 +9,8 @@ import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
-import com.github.panpf.sketch.util.readApkIcon
+import com.github.panpf.sketch.util.toBitmap
+import java.io.IOException
 
 class ApkIconBitmapDecoder(
     private val sketch: Sketch,
@@ -23,19 +25,17 @@ class ApkIconBitmapDecoder(
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val file = fetchResult.dataSource.file()
-        val bitmap = readApkIcon(
-            sketch.context,
-            file.path,
-            false,
-            sketch.bitmapPool
-        )
+        val packageManager = sketch.context.packageManager
+        val packageInfo =
+            packageManager.getPackageArchiveInfo(file.path, PackageManager.GET_ACTIVITIES)
+                ?: throw IOException("getPackageArchiveInfo return null. ${file.path}")
+        packageInfo.applicationInfo.sourceDir = file.path
+        packageInfo.applicationInfo.publicSourceDir = file.path
+        val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
+        val bitmap = drawable.toBitmap(bitmapPool = sketch.bitmapPool)
         val imageInfo = ImageInfo(bitmap.width, bitmap.height, MIME_TYPE)
-        return BitmapDecodeResult(
-            bitmap,
-            imageInfo,
-            ExifInterface.ORIENTATION_UNDEFINED,
-            LOCAL
-        ).applyResize(sketch.bitmapPool, request.resize)
+        return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
+            .applyResize(sketch.bitmapPool, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

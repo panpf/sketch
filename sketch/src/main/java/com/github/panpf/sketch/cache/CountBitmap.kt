@@ -22,7 +22,7 @@ import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.byteCountCompat
+import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.toHexString
@@ -57,7 +57,7 @@ class CountBitmap constructor(
         get() = bitmapHolder?.isRecycled ?: true
 
     val byteCount: Int
-        get() = bitmap?.byteCountCompat ?: 0
+        get() = bitmap?.allocationByteCountCompat ?: 0
 
     val info: String by lazy {
         "CountBitmap(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%s/%s)".format(
@@ -68,7 +68,7 @@ class CountBitmap constructor(
             initBitmap.width,
             initBitmap.height,
             initBitmap.config,
-            initBitmap.byteCountCompat.toLong().formatFileSize(),
+            initBitmap.allocationByteCountCompat.formatFileSize(),
             initBitmap.toHexString(),
         )
     }

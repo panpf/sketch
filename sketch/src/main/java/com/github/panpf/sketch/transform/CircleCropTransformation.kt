@@ -9,10 +9,9 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.calculateResizeMapping
-import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
-import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 
 class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transformation {
@@ -26,7 +25,7 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
         )
 
         val circleBitmap = sketch.bitmapPool.getOrCreate(
-            resizeMapping.newWidth, resizeMapping.newHeight, input.safeConfig
+            resizeMapping.newWidth, resizeMapping.newHeight, input.config ?: Bitmap.Config.ARGB_8888
         )
         val canvas = Canvas(circleBitmap)
         val paint = Paint()

@@ -4,9 +4,7 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.os.Build;
 
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.util.UtilsKt;
+import com.github.panpf.sketch.util.BitmapUtilsKt;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +48,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     @Override
     public void put(Bitmap bitmap) {
-        int size = UtilsKt.getByteCountCompat(bitmap);
+        int size = BitmapUtilsKt.getAllocationByteCountCompat(bitmap);
         Key key = keyPool.get(size, bitmap.getConfig());
 
         groupedMap.put(key, bitmap);
@@ -62,14 +60,14 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     @Override
     public Bitmap get(int width, int height, Bitmap.Config config) {
-        int size = UtilsKt.computeByteCount(width, height, config);
+        int size = BitmapUtilsKt.computeByteCount(width, height, config);
         Key targetKey = keyPool.get(size, config);
         Key bestKey = findBestKey(targetKey, size, config);
 
         Bitmap result = groupedMap.get(bestKey);
         if (result != null) {
             // Decrement must be called before reconfigure.
-            decrementBitmapOfSize(UtilsKt.getByteCountCompat(result), result.getConfig());
+            decrementBitmapOfSize(BitmapUtilsKt.getAllocationByteCountCompat(result), result.getConfig());
             try {
                 result.reconfigure(width, height,
                         result.getConfig() != null ? result.getConfig() : Bitmap.Config.ARGB_8888);
@@ -103,7 +101,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
     public Bitmap removeLast() {
         Bitmap removed = groupedMap.removeLast();
         if (removed != null) {
-            int removedSize = UtilsKt.getByteCountCompat(removed);
+            int removedSize = BitmapUtilsKt.getAllocationByteCountCompat(removed);
             decrementBitmapOfSize(removedSize, removed.getConfig());
         }
         return removed;
@@ -130,19 +128,19 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     @Override
     public String logBitmap(Bitmap bitmap) {
-        int size = UtilsKt.getByteCountCompat(bitmap);
+        int size = BitmapUtilsKt.getAllocationByteCountCompat(bitmap);
         return getBitmapString(size, bitmap.getConfig());
     }
 
     @Override
     public String logBitmap(int width, int height, Bitmap.Config config) {
-        int size = UtilsKt.computeByteCount(width, height, config);
+        int size = BitmapUtilsKt.computeByteCount(width, height, config);
         return getBitmapString(size, config);
     }
 
     @Override
     public int getSize(Bitmap bitmap) {
-        return UtilsKt.getByteCountCompat(bitmap);
+        return BitmapUtilsKt.getAllocationByteCountCompat(bitmap);
     }
 
     @Override

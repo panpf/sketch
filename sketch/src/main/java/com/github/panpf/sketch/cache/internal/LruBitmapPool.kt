@@ -11,14 +11,14 @@ import com.github.panpf.sketch.decode.internal.calculateSamplingSize
 import com.github.panpf.sketch.decode.internal.calculateSamplingSizeForRegion
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.byteCountCompat
+import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.recycle.AttributeStrategy
 import com.github.panpf.sketch.util.recycle.LruPoolStrategy
 import com.github.panpf.sketch.util.recycle.SizeConfigStrategy
 import com.github.panpf.sketch.util.toHexString
-import com.github.panpf.sketch.util.trimLevelName
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -153,7 +153,7 @@ class LruBitmapPool constructor(
             }
             val releasedSize = (oldSize - size)
             logger?.w(MODULE) {
-                "trim. level '${trimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
+                "trim. level '${getTrimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
             }
         }
     }
@@ -241,7 +241,7 @@ class LruBitmapPool constructor(
                     options.inPreferredConfig,
                     inSampleSize,
                     inBitmap.toHexString(),
-                    inBitmap.byteCountCompat.toLong().formatFileSize()
+                    inBitmap.allocationByteCountCompat.formatFileSize()
                 )
             }
         }
@@ -284,7 +284,7 @@ class LruBitmapPool constructor(
                 options.inPreferredConfig,
                 inSampleSize,
                 inBitmap.toHexString(),
-                inBitmap.byteCountCompat.toLong().formatFileSize()
+                inBitmap.allocationByteCountCompat.formatFileSize()
             )
         }
         return inBitmap != null

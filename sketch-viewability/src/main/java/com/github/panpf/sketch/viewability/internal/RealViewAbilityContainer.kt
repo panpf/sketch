@@ -12,7 +12,6 @@ import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.viewability.AttachObserver
 import com.github.panpf.sketch.viewability.ClickObserver
 import com.github.panpf.sketch.viewability.DrawForegroundObserver

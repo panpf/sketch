@@ -4,15 +4,6 @@ import android.app.ActivityManager
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Bitmap.CompressFormat
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
-import android.os.Build
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Looper
 import android.os.Process
 import android.view.View
@@ -22,14 +13,8 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.SketchDrawable
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
-import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -45,30 +30,29 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
 
 internal fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()
 
-fun requiredMainThread() {
+internal fun requiredMainThread() {
     check(Looper.myLooper() == Looper.getMainLooper()) {
         "This method must be executed in the UI thread"
     }
 }
 
-fun requiredWorkThread() {
+internal fun requiredWorkThread() {
     check(Looper.myLooper() != Looper.getMainLooper()) {
         "This method must be executed in the work thread"
     }
 }
 
-fun Context?.getLifecycle(): Lifecycle? {
+internal fun Context?.getLifecycle(): Lifecycle? {
     var context: Context? = this
     while (true) {
         when (context) {
             is LifecycleOwner -> return context.lifecycle
-            !is ContextWrapper -> return null
-            else -> context = context.baseContext
+            is ContextWrapper -> context = context.baseContext
+            else -> return null
         }
     }
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
     return try {
         getCompleted()
@@ -77,7 +61,7 @@ internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
     }
 }
 
-val View.isAttachedToWindowCompat: Boolean
+internal val View.isAttachedToWindowCompat: Boolean
     get() = ViewCompat.isAttachedToWindow(this)
 
 /** Remove and re-add the observer to ensure all its lifecycle callbacks are invoked. */
@@ -87,57 +71,7 @@ internal fun Lifecycle.removeAndAddObserver(observer: LifecycleObserver) {
     addObserver(observer)
 }
 
-/**
- * 获取 [Bitmap] 占用内存大小，单位字节
- */
-val Bitmap.byteCountCompat: Int
-    get() {
-        // bitmap.isRecycled()过滤很关键，在4.4以及以下版本当bitmap已回收时调用其getAllocationByteCount()方法将直接崩溃
-        return when {
-            this.isRecycled -> 0
-            VERSION.SDK_INT >= VERSION_CODES.KITKAT -> this.allocationByteCount
-            else -> this.byteCount
-        }
-    }
-
-val Bitmap.safeConfig: Bitmap.Config
-    get() = config ?: Bitmap.Config.ARGB_8888
-
-fun Bitmap.toInfoString(): String = "Bitmap(width=${width}, height=${height}, config=$config)"
-fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"
-
-/**
- * 根据宽、高和配置计算所占用的字节数
- */
-fun computeByteCount(width: Int, height: Int, config: Bitmap.Config?): Int {
-    return width * height * config.getBytesPerPixel()
-}
-
-/**
- * 获取指定配置单个像素所占的字节数
- */
-fun Bitmap.Config?.getBytesPerPixel(): Int {
-    // A bitmap by decoding a gif has null "config" in certain environments.
-    val config = this ?: Bitmap.Config.ARGB_8888
-    return when {
-        config == Bitmap.Config.ALPHA_8 -> 1
-        config == Bitmap.Config.RGB_565 || config == Bitmap.Config.ARGB_4444 -> 2
-        config == Bitmap.Config.ARGB_8888 -> 4
-        VERSION.SDK_INT >= Build.VERSION_CODES.O && config == Bitmap.Config.RGBA_F16 -> 8
-        else -> 4
-    }
-}
-
-/**
- * 根据指定的 [Bitmap] 配置获取合适的压缩格式
- */
-val Bitmap.Config?.getCompressFormat: CompressFormat
-    get() = if (this == Bitmap.Config.RGB_565) CompressFormat.JPEG else CompressFormat.PNG
-
-/**
- * 获取修剪级别的名称
- */
-fun trimLevelName(level: Int): String = when (level) {
+internal fun getTrimLevelName(level: Int): String = when (level) {
     ComponentCallbacks2.TRIM_MEMORY_COMPLETE -> "COMPLETE"
     ComponentCallbacks2.TRIM_MEMORY_MODERATE -> "MODERATE"
     ComponentCallbacks2.TRIM_MEMORY_BACKGROUND -> "BACKGROUND"
@@ -148,18 +82,7 @@ fun trimLevelName(level: Int): String = when (level) {
     else -> "UNKNOWN"
 }
 
-fun Any.toHexString(): String =
-    Integer.toHexString(this.hashCode())
-
-/**
- * Convert null and [Bitmap.Config.HARDWARE] configs to [Bitmap.Config.ARGB_8888].
- */
-fun Bitmap.Config?.toSoftware(): Bitmap.Config {
-    return if (this == null || isHardware) Bitmap.Config.ARGB_8888 else this
-}
-
-val Bitmap.Config.isHardware: Boolean
-    get() = VERSION.SDK_INT >= 26 && this == Bitmap.Config.HARDWARE
+internal fun Any.toHexString(): String = Integer.toHexString(this.hashCode())
 
 internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): File {
     val pid = Process.myPid()
@@ -188,90 +111,8 @@ internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): Fi
     }
 }
 
-fun Float.format(newScale: Int): Float {
-    val b = BigDecimal(this.toDouble())
-    return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
-}
-
-fun Drawable.findLastSketchDrawable(): SketchDrawable? {
-    val drawable = this
-    return when {
-        drawable is CrossfadeDrawable -> {
-            drawable.end?.findLastSketchDrawable()
-        }
-        drawable is LayerDrawable -> {
-            val layerCount = drawable.numberOfLayers
-            if (layerCount > 0) {
-                drawable.getDrawable(layerCount - 1).findLastSketchDrawable()
-            } else {
-                null
-            }
-        }
-        drawable is SketchDrawable -> drawable
-        drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {
-            drawable.wrappedDrawable?.findLastSketchDrawable()
-        }
-        VERSION.SDK_INT >= VERSION_CODES.M && drawable is android.graphics.drawable.DrawableWrapper -> {
-            drawable.drawable?.findLastSketchDrawable()
-        }
-        else -> null
-    }
-}
-
-fun Drawable.foreachSketchCountDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
-    val drawable = this
-    when {
-        drawable is SketchCountBitmapDrawable -> {
-            block(drawable)
-        }
-        drawable is LayerDrawable -> {
-            val layerCount = drawable.numberOfLayers
-            for (index in 0 until layerCount) {
-                drawable.getDrawable(index).foreachSketchCountDrawable(block)
-            }
-        }
-        drawable is CrossfadeDrawable -> {
-            drawable.end?.foreachSketchCountDrawable(block)
-        }
-        drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {
-            drawable.wrappedDrawable?.foreachSketchCountDrawable(block)
-        }
-        VERSION.SDK_INT >= VERSION_CODES.M && drawable is android.graphics.drawable.DrawableWrapper -> {
-            drawable.drawable?.foreachSketchCountDrawable(block)
-        }
-    }
-}
-
-// todo 可以删除了
-internal fun View.fixedWidth(): Int? {
-    val layoutParams = layoutParams?.takeIf { it.width > 0 } ?: return null
-    return (layoutParams.width - paddingLeft - paddingRight).takeIf { it > 0 }
-        ?: throw IllegalArgumentException("Invalid view width. Because 'layoutParams.width - paddingLeft - paddingRight' execute result is less than or equal to zero")
-}
-
-internal fun View.fixedHeight(): Int? {
-    val layoutParams = layoutParams?.takeIf { it.height > 0 } ?: return null
-    return (layoutParams.height - paddingTop - paddingBottom).takeIf { it > 0 }
-        ?: throw IllegalArgumentException("Invalid view height. Because 'layoutParams.height - paddingTop - paddingBottom' execute result is less than or equal to zero")
-}
-
-/**
- * 生成文件 uri 的磁盘缓存 key，关键在于要在 uri 的后面加上文件的修改时间来作为缓存 key，这样当文件发生变化时能及时更新缓存
- *
- * @param uri      文件 uri
- * @param filePath 文件路径，要获取文件的修改时间
- * @return 文件 uri 的磁盘缓存 key
- */
-fun createFileUriDiskCacheKey(uri: String, filePath: String): String {
-    val file = File(filePath)
-    return if (file.exists()) {
-        val lastModifyTime = file.lastModified()
-        // 这里必须用 uri 连接修改时间，不能用 filePath，因为使用 filePath 的话当同一个文件可以用于多种 uri 时会导致磁盘缓存错乱
-        "$uri.$lastModifyTime"
-    } else {
-        uri
-    }
-}
+internal fun Float.format(newScale: Int): Float =
+    BigDecimal(toDouble()).setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
 
 /**
  * Returns the formatted file length that can be displayed, up to EB
@@ -330,54 +171,13 @@ internal fun Long.formatFileSize(
     }
 }
 
-/**
- * Read apk file icon. Although the PackageManager will cache the icon, the bitmap returned by this method every time
- *
- * @param context         [Context]
- * @param apkFilePath     Apk file path
- * @param lowQualityImage If set true use ARGB_4444 create bitmap, KITKAT is above is invalid
- * @param logName         Print log is used identify log type
- * @param bitmapPool      Try to find Reusable bitmap from bitmapPool
- */
-@Throws(IOException::class)
-fun readApkIcon(
-    context: Context,
-    apkFilePath: String,
-    lowQualityImage: Boolean,
-    bitmapPool: BitmapPool
-): Bitmap {
-    val packageManager = context.packageManager
-    val packageInfo =
-        packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES)
-            ?: throw IOException("getPackageArchiveInfo return null. $apkFilePath")
-    packageInfo.applicationInfo.sourceDir = apkFilePath
-    packageInfo.applicationInfo.publicSourceDir = apkFilePath
-    val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
-    return drawableToBitmap(drawable, lowQualityImage, bitmapPool)
-}
-
-/**
- * Drawable into Bitmap. Each time a new bitmap is drawn
- */
-fun drawableToBitmap(
-    drawable: Drawable,
-    lowQualityImage: Boolean,
-    bitmapPool: BitmapPool
-): Bitmap {
-    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-    val config = if (lowQualityImage) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
-    val bitmap: Bitmap =
-        bitmapPool.getOrCreate(drawable.intrinsicWidth, drawable.intrinsicHeight, config)
-    val canvas = Canvas(bitmap)
-    drawable.draw(canvas)
-    return bitmap
-}
+internal fun Int.formatFileSize(): String = toLong().formatFileSize()
 
 /**
  * Modified from [MimeTypeMap.getFileExtensionFromUrl] to be more permissive
  * with special characters.
  */
-fun MimeTypeMap.getMimeTypeFromUrl(url: String?): String? {
+internal fun MimeTypeMap.getMimeTypeFromUrl(url: String?): String? {
     if (url.isNullOrBlank()) {
         return null
     }

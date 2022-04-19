@@ -3,7 +3,7 @@ package com.github.panpf.sketch.zoom
 import android.content.Context
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.format
+import com.github.panpf.sketch.zoom.internal.format
 
 data class Scales(
     /**

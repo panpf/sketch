@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
-import com.github.panpf.sketch.util.UtilsKt;
+import com.github.panpf.sketch.util.BitmapUtilsKt;
 
 /**
  * A strategy for reusing bitmaps that requires any returned bitmap's dimensions to exactly match those request.
@@ -51,7 +51,7 @@ public class AttributeStrategy implements LruPoolStrategy {
 
     @Override
     public int getSize(Bitmap bitmap) {
-        return UtilsKt.getByteCountCompat(bitmap);
+        return BitmapUtilsKt.getAllocationByteCountCompat(bitmap);
     }
 
     @NonNull

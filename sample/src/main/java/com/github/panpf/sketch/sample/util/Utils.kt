@@ -1,10 +1,10 @@
 package com.github.panpf.sketch.sample.util
 
 import android.view.View
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.github.panpf.liveevent.LiveEvent
-import com.github.panpf.sketch.util.isAttachedToWindowCompat
 
 fun <T> safeRun(block: () -> T): T? {
     return try {
@@ -16,7 +16,7 @@ fun <T> safeRun(block: () -> T): T? {
 }
 
 fun <T> LiveData<T>.observeFromView(view: View, observer: Observer<T>) {
-    if (view.isAttachedToWindowCompat) {
+    if (ViewCompat.isAttachedToWindow(view)) {
         observeForever(observer)
     }
     view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -34,7 +34,7 @@ fun <T> LiveData<T>.observeFromView(view: View, observer: Observer<T>) {
 }
 
 fun <T> LiveEvent<T>.observeFromView(view: View, observer: com.github.panpf.liveevent.Listener<T>) {
-    if (view.isAttachedToWindowCompat) {
+    if (ViewCompat.isAttachedToWindow(view)) {
         listenForever(observer)
     }
     view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -52,7 +52,7 @@ fun <T> LiveEvent<T>.observeFromView(view: View, observer: com.github.panpf.live
 }
 
 fun <T> LiveData<T>.observeFromViewAndInit(view: View, observer: Observer<T>) {
-    if (view.isAttachedToWindowCompat) {
+    if (ViewCompat.isAttachedToWindow(view)) {
         observeForever(observer)
     } else {
         observer.onChanged(value)

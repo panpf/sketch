@@ -25,7 +25,6 @@ import android.view.View
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.zoom.Zoomer
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.ActionListener
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnScaleDragGestureListener
@@ -247,7 +246,8 @@ internal class ScaleDragHelper constructor(
             if (zoomer.rotateDegrees % 180 == 0) drawableSize.width else drawableSize.height
         val drawableHeight =
             if (zoomer.rotateDegrees % 180 == 0) drawableSize.height else drawableSize.width
-        val drawableThanViewLarge = drawableWidth > viewSize.width || drawableHeight > viewSize.height
+        val drawableThanViewLarge =
+            drawableWidth > viewSize.width || drawableHeight > viewSize.height
         val initZoomScale = zoomer.scales.init
         when {
             zoomer.readModeDecider?.should(

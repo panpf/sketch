@@ -3,6 +3,7 @@
 package com.github.panpf.sketch.drawable
 
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -14,17 +15,17 @@ import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build.VERSION
 import android.os.SystemClock
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeWithTolerance
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
+import com.github.panpf.sketch.internal.allocationByteCountCompat
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
 import com.github.panpf.sketch.util.BitmapInfo
-import com.github.panpf.sketch.util.byteCountCompat
-import com.github.panpf.sketch.util.isHardware
 
 /**
  * A [Drawable] that supports rendering [Movie]s (i.e. GIFs).
@@ -37,7 +38,7 @@ class MovieDrawable constructor(
 
     val bitmapInfo: BitmapInfo by lazy {
         softwareBitmap?.let {
-            BitmapInfo(it.width, it.height, it.byteCountCompat, it.config)
+            BitmapInfo(it.width, it.height, it.allocationByteCountCompat, it.config)
         } ?: BitmapInfo(0, 0, 0, null)
     }
     private val bitmapCreator = bitmapCreator ?: object : BitmapCreator {
@@ -74,7 +75,7 @@ class MovieDrawable constructor(
     private var isSoftwareScalingEnabled = false
 
     init {
-        require(!config.isHardware) { "Bitmap config must not be hardware." }
+        require(!(VERSION.SDK_INT >= 26 && config == HARDWARE)) { "Bitmap config must not be hardware." }
     }
 
     override fun draw(canvas: Canvas) {
@@ -254,7 +255,12 @@ class MovieDrawable constructor(
             hardwareDy = 0f
         } else {
             hardwareScale =
-                1f / calculateSampleSizeWithTolerance(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight)
+                1f / calculateSampleSizeWithTolerance(
+                    bitmapWidth,
+                    bitmapHeight,
+                    boundsWidth,
+                    boundsHeight
+                )
             hardwareScale =
                 computeSizeMultiplier(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, true)
                     .toFloat()

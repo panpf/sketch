@@ -1,8 +1,10 @@
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.Canvas
 import android.graphics.RectF
+import android.os.Build.VERSION
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.SVG
@@ -15,7 +17,6 @@ import com.github.panpf.sketch.fetch.internal.isSvg
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.request.svgBackgroundColor
-import com.github.panpf.sketch.util.toSoftware
 import kotlin.math.roundToInt
 
 class SvgBitmapDecoder(
@@ -101,6 +102,13 @@ class SvgBitmapDecoder(
         }
         svg.renderToCanvas(canvas)
         return bitmap
+    }
+
+    /**
+     * Convert null and [Bitmap.Config.HARDWARE] configs to [Bitmap.Config.ARGB_8888].
+     */
+    private fun Bitmap.Config?.toSoftware(): Bitmap.Config {
+        return if (this == null || VERSION.SDK_INT >= 26 && this == HARDWARE) Bitmap.Config.ARGB_8888 else this
     }
 
     class Factory(val useViewBoundsAsIntrinsicSize: Boolean = true) : BitmapDecoder.Factory {

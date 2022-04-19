@@ -13,7 +13,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
-import com.github.panpf.sketch.util.drawableToBitmap
+import com.github.panpf.sketch.util.toBitmap
 
 class XmlDrawableBitmapDecoder(
     private val sketch: Sketch,
@@ -33,7 +33,7 @@ class XmlDrawableBitmapDecoder(
                 "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
             )
         }
-        val bitmap = drawableToBitmap(drawable, false, sketch.bitmapPool)
+        val bitmap = drawable.toBitmap(bitmapPool = sketch.bitmapPool)
         val imageInfo = ImageInfo(
             bitmap.width,
             bitmap.height,

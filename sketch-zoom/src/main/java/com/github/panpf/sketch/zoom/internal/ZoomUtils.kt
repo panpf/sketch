@@ -1,18 +1,54 @@
 package com.github.panpf.sketch.zoom.internal
 
+import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Matrix
 import android.graphics.PointF
+import android.os.Looper
 import android.view.MotionEvent
-import com.github.panpf.sketch.util.requiredMainThread
+import android.view.View
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import java.math.BigDecimal
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
+internal fun requiredMainThread() {
+    check(Looper.myLooper() == Looper.getMainLooper()) {
+        "This method must be executed in the UI thread"
+    }
+}
+
+internal fun requiredWorkThread() {
+    check(Looper.myLooper() != Looper.getMainLooper()) {
+        "This method must be executed in the work thread"
+    }
+}
+
+internal fun Context?.getLifecycle(): Lifecycle? {
+    var context: Context? = this
+    while (true) {
+        when (context) {
+            is LifecycleOwner -> return context.lifecycle
+            is ContextWrapper -> context = context.baseContext
+            else -> return null
+        }
+    }
+}
+
+internal val View.isAttachedToWindowCompat: Boolean
+    get() = ViewCompat.isAttachedToWindow(this)
+
 internal fun getPointerIndex(action: Int): Int {
     return action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT
 }
+
+internal fun Float.format(newScale: Int): Float =
+    BigDecimal(toDouble()).setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
 
 private val MATRIX_VALUES = FloatArray(9)
 

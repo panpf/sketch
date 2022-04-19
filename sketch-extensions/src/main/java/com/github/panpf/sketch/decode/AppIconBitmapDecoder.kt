@@ -12,7 +12,7 @@ import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
-import com.github.panpf.sketch.util.drawableToBitmap
+import com.github.panpf.sketch.util.toBitmap
 
 class AppIconBitmapDecoder(
     private val sketch: Sketch,
@@ -35,7 +35,7 @@ class AppIconBitmapDecoder(
         }
         val iconDrawable = packageInfo.applicationInfo.loadIcon(packageManager)
             ?: throw Exception("loadIcon return null '$packageName'")
-        val bitmap = drawableToBitmap(iconDrawable, false, sketch.bitmapPool)
+        val bitmap = iconDrawable.toBitmap(bitmapPool = sketch.bitmapPool)
         val imageInfo = ImageInfo(
             bitmap.width,
             bitmap.height,

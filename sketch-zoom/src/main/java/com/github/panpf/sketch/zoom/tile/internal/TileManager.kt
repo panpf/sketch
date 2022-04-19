@@ -31,9 +31,9 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.format
-import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.zoom.internal.format
 import com.github.panpf.sketch.zoom.internal.getScale
+import com.github.panpf.sketch.zoom.internal.requiredMainThread
 import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
 import kotlinx.coroutines.CoroutineDispatcher

@@ -22,8 +22,6 @@ import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.findLastSketchDrawable
-import com.github.panpf.sketch.util.getLifecycle
-import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.viewability.AttachObserver
 import com.github.panpf.sketch.viewability.DrawObserver
 import com.github.panpf.sketch.viewability.DrawableObserver
@@ -35,6 +33,8 @@ import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
+import com.github.panpf.sketch.zoom.internal.getLifecycle
+import com.github.panpf.sketch.zoom.internal.isAttachedToWindowCompat
 import com.github.panpf.sketch.zoom.tile.OnTileChangedListener
 import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles

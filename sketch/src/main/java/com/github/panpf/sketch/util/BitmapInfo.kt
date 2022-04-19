@@ -24,10 +24,10 @@ data class BitmapInfo constructor(
     val config: Bitmap.Config?
 ) {
     override fun toString(): String =
-        "BitmapInfo(width=$width, height=$height, byteCount=${byteCount.toLong().formatFileSize()}, config=$config)"
+        "BitmapInfo(width=$width, height=$height, byteCount=${byteCount.formatFileSize()}, config=$config)"
 
     fun toShortString(): String =
-        "BitmapInfo(${width}x$height,${byteCount.toLong().formatFileSize()},$config)"
+        "BitmapInfo(${width}x$height,${byteCount.formatFileSize()},$config)"
 }
 
-fun Bitmap.toBitmapInfo(): BitmapInfo = BitmapInfo(width, height, byteCountCompat, config)
+fun Bitmap.toBitmapInfo(): BitmapInfo = BitmapInfo(width, height, allocationByteCountCompat, config)

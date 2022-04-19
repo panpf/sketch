@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.ImageView.ScaleType
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.util.getLifecycle
+import com.github.panpf.sketch.viewability.internal.getLifecycle
 
 class Host(val view: View, private val owner: ViewAbilityOwner) {
 

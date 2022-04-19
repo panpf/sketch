@@ -12,7 +12,7 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.byteCountCompat
+import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
 
@@ -91,7 +91,7 @@ class BitmapMemoryCacheHelper internal constructor(
 
     fun write(result: BitmapDecodeResult): SketchCountBitmapDrawable? =
         if (cachePolicy.writeEnabled) {
-            if (result.bitmap.byteCountCompat < memoryCache.maxSize * 0.7f) {
+            if (result.bitmap.allocationByteCountCompat < memoryCache.maxSize * 0.7f) {
                 val countBitmap = CountBitmap(
                     initBitmap = result.bitmap,
                     requestKey = request.key,
@@ -107,7 +107,7 @@ class BitmapMemoryCacheHelper internal constructor(
             } else {
                 logger.w(MODULE) {
                     "write. Reject. Too big ${
-                        result.bitmap.byteCountCompat.toLong().formatFileSize()
+                        result.bitmap.allocationByteCountCompat.formatFileSize()
                     }, maxSize ${memoryCache.maxSize.formatFileSize()}, ${result.bitmap.logString}"
                 }
                 null

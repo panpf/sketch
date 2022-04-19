@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.zoom
 
-import com.github.panpf.sketch.util.format
+import com.github.panpf.sketch.zoom.internal.format
 
 class DefaultReadModeDecider(
     private val minDifferenceOfAspectRatio: Float = 3f

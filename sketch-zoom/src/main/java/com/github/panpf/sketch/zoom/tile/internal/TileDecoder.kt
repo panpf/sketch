@@ -39,8 +39,8 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.requiredMainThread
-import com.github.panpf.sketch.util.requiredWorkThread
+import com.github.panpf.sketch.zoom.internal.requiredMainThread
+import com.github.panpf.sketch.zoom.internal.requiredWorkThread
 import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
 import kotlinx.coroutines.runBlocking
