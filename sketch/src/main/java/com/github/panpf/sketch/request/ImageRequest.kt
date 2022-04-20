@@ -14,6 +14,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -63,6 +64,7 @@ interface ImageRequest {
         const val REQUEST_DEPTH_FROM = "sketch#requestDepthFrom"
     }
 
+    val sketch: Sketch
     val context: Context
     val uriString: String
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
@@ -175,6 +177,7 @@ interface ImageRequest {
     ): ImageRequest
 
     abstract class Builder {
+        private val sketch: Sketch
         private val context: Context
         private val uriString: String
         private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? =
@@ -214,12 +217,14 @@ interface ImageRequest {
 
         constructor(context: Context, uriString: String?) {
             this.context = context
+            this.sketch = context.sketch
             this.uriString = uriString.orEmpty()
-            this.globalOptions = context.sketch.globalImageOptions
+            this.globalOptions = sketch.globalImageOptions
         }
 
         internal constructor(context: Context, request: ImageRequest) {
             this.context = context
+            this.sketch = request.sketch
             this.uriString = request.uriString
             this.listener =
                 request.listener.asOrNull<CombinedListener<ImageRequest, ImageResult.Success, ImageResult.Error>>()?.fromBuilderListener
@@ -692,6 +697,7 @@ interface ImageRequest {
             return when (this@Builder) {
                 is DisplayRequest.Builder -> {
                     DisplayRequest.DisplayRequestImpl(
+                        sketch = sketch,
                         context = context,
                         uriString = uriString,
                         listener = listener,
@@ -726,6 +732,7 @@ interface ImageRequest {
                 }
                 is LoadRequest.Builder -> {
                     LoadRequest.LoadRequestImpl(
+                        sketch = sketch,
                         context = context,
                         uriString = uriString,
                         listener = listener,
@@ -760,6 +767,7 @@ interface ImageRequest {
                 }
                 is DownloadRequest.Builder -> {
                     DownloadRequest.DownloadRequestImpl(
+                        sketch = sketch,
                         context = context,
                         uriString = uriString,
                         listener = listener,

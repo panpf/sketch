@@ -25,17 +25,18 @@ import android.os.Handler
 import android.os.Looper
 import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.zoom.Zoomer
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
 internal class ScrollBarHelper constructor(
     context: Context,
+    sketch: Sketch,
     private val zoomer: Zoomer
 ) {
 
-    private val logger = context.sketch.logger
+    private val logger = sketch.logger
     private val scrollBarPaint: Paint = Paint()
     private val scrollBarSize: Float
     private val scrollBarMargin: Float

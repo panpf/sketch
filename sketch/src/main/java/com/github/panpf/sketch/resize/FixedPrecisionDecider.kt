@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.resize
 
-import android.content.Context
 import androidx.annotation.Keep
+import com.github.panpf.sketch.Sketch
 import org.json.JSONObject
 
 /**
@@ -13,7 +13,7 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
     override val key: String by lazy { "FixedPrecisionDecider($precision)" }
 
     override fun get(
-        context: Context, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+        sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Precision {
         return precision
     }

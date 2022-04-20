@@ -1,13 +1,13 @@
 package com.github.panpf.sketch.drawable.internal
 
-import android.content.Context
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.resize.Resize
 
-open class ResizeAnimatableDrawable(context: Context, val drawable: SketchAnimatableDrawable, resize: Resize) :
-    ResizeDrawable(context, drawable, resize), Animatable2Compat {
+open class ResizeAnimatableDrawable(sketch: Sketch, val drawable: SketchAnimatableDrawable, resize: Resize) :
+    ResizeDrawable(sketch, drawable, resize), Animatable2Compat {
 
     override fun start() {
         drawable.start()

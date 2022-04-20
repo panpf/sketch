@@ -51,7 +51,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                         ?.getDrawable(sketch, request, null)
                         ?.let {
                             if (request.resizeApplyToDrawable == true) {
-                                it.toResizeDrawable(sketch.context, request.resize)
+                                it.toResizeDrawable(sketch, request.resize)
                             } else {
                                 it
                             }

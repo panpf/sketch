@@ -2,7 +2,6 @@ package com.github.panpf.sketch.test.cache
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.CountDrawablePendingManager
@@ -11,6 +10,7 @@ import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.test.contextAndSketch
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ class CountDrawablePendingManagerTest {
 
     @Test
     fun test() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, _) = contextAndSketch()
         val logger = Logger()
         val bitmapPool = LruBitmapPool(context.defaultMemoryCacheBytes())
         val countDrawable = SketchCountBitmapDrawable(

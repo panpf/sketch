@@ -26,6 +26,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
@@ -36,7 +37,6 @@ import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.internal.requiredMainThread
@@ -50,12 +50,12 @@ import java.util.LinkedList
 @WorkerThread
 fun createTileDecoder(
     context: Context,
+    sketch: Sketch,
     imageUri: String,
     disabledExifOrientation: Boolean
 ): TileDecoder? {
     requiredWorkThread()
 
-    val sketch = context.sketch
     val request = LoadRequest(context, imageUri)
     val fetch = sketch.componentRegistry.newFetcher(sketch, request)
     val fetchResult = runBlocking {
@@ -78,7 +78,7 @@ fun createTileDecoder(
     }
 
     return TileDecoder(
-        context = context,
+        sketch = sketch,
         imageUri = imageUri,
         imageInfo = ImageInfo(imageSize.width, imageSize.height, imageInfo.mimeType),
         exifOrientationHelper = exifOrientationHelper,
@@ -87,15 +87,15 @@ fun createTileDecoder(
 }
 
 class TileDecoder internal constructor(
-    context: Context,
+    sketch: Sketch,
     val imageUri: String,
     val imageInfo: ImageInfo,
     val exifOrientationHelper: ExifOrientationHelper,
     val dataSource: DataSource,
 ) {
 
-    private val logger: Logger = context.sketch.logger
-    private val bitmapPool: BitmapPool = context.sketch.bitmapPool
+    private val logger: Logger = sketch.logger
+    private val bitmapPool: BitmapPool = sketch.bitmapPool
     private val decoderPool = LinkedList<BitmapRegionDecoder>()
     private var _destroyed: Boolean = false
     private var disableInBitmap: Boolean = false

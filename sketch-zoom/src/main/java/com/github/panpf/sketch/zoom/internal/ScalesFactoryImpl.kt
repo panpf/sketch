@@ -15,8 +15,8 @@
  */
 package com.github.panpf.sketch.zoom.internal
 
-import android.content.Context
 import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.ReadModeDecider
 import com.github.panpf.sketch.zoom.Scales
@@ -27,7 +27,7 @@ import kotlin.math.min
 class ScalesFactoryImpl : ScalesFactory {
 
     override fun create(
-        context: Context,
+        sketch: Sketch,
         viewSize: Size,
         drawableSize: Size,
         rotateDegrees: Int,
@@ -67,7 +67,7 @@ class ScalesFactoryImpl : ScalesFactory {
         val doubleClickBigZoomScale: Float
         when {
             readModeDecider?.should(
-                context, imageWidth, imageHeight, viewSize.width, viewSize.height
+                sketch, imageWidth, imageHeight, viewSize.width, viewSize.height
             ) == true -> {
                 initZoomScale = fillZoomScale
                 minZoomScale = fullZoomScale

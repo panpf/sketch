@@ -1,8 +1,7 @@
 package com.github.panpf.sketch.resize
 
-import android.content.Context
 import androidx.annotation.Keep
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.Sketch
 import org.json.JSONObject
 
 /**
@@ -43,9 +42,9 @@ data class LongImageClipPrecisionDecider constructor(
     override val key: String by lazy { "LongImageClipPrecisionDecider($precision)" }
 
     override fun get(
-        context: Context, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+        sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Precision {
-        val longImageDecider = context.sketch.longImageDecider
+        val longImageDecider = sketch.longImageDecider
         return if (longImageDecider.isLongImage(imageWidth, imageHeight, resizeWidth, resizeHeight))
             precision else Precision.LESS_PIXELS
     }

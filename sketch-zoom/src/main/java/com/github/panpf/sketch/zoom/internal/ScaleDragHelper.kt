@@ -23,7 +23,7 @@ import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.Zoomer
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.ActionListener
@@ -36,19 +36,20 @@ import kotlin.math.roundToInt
  */
 internal class ScaleDragHelper constructor(
     private val context: Context,
+    private val sketch: Sketch,
     private val zoomer: Zoomer,
     val onUpdateMatrix: () -> Unit,
     val onDragFling: (startX: Float, startY: Float, velocityX: Float, velocityY: Float) -> Unit,
     val onScaleChanged: (scaleFactor: Float, focusX: Float, focusY: Float) -> Unit,
 ) : OnScaleDragGestureListener, ActionListener {
 
-    private val logger = context.sketch.logger
+    private val logger = sketch.logger
     private val baseMatrix = Matrix() // 存储默认的缩放和位移信息
     private val supportMatrix = Matrix() // 存储用户通过触摸事件产生的缩放、位移和外部设置的旋转信息
     private val drawMatrix = Matrix() // 存储 baseMatrix 和 supportMatrix 融合后的信息，用于绘制
     private var flingRunner: FlingRunner? = null // 执行飞速滚动
     private var locationRunner: LocationRunner? = null // 定位执行器
-    private val scaleDragGestureDetector = ScaleDragGestureDetector(context) // 缩放和拖拽手势识别器
+    private val scaleDragGestureDetector = ScaleDragGestureDetector(context, sketch) // 缩放和拖拽手势识别器
     private val tempDisplayRectF = RectF()
     var horScrollEdge = EDGE_NONE // 横向滚动边界
         private set
@@ -155,7 +156,7 @@ internal class ScaleDragHelper constructor(
     }
 
     override fun onFling(startX: Float, startY: Float, velocityX: Float, velocityY: Float) {
-        flingRunner = FlingRunner(context, zoomer, this@ScaleDragHelper)
+        flingRunner = FlingRunner(context, sketch, zoomer, this@ScaleDragHelper)
         flingRunner!!.fling(velocityX.toInt(), velocityY.toInt())
         onDragFling(startX, startY, velocityX, velocityY)
     }
@@ -251,7 +252,7 @@ internal class ScaleDragHelper constructor(
         val initZoomScale = zoomer.scales.init
         when {
             zoomer.readModeDecider?.should(
-                context, drawableWidth, drawableHeight, viewSize.width, viewSize.height
+                sketch, drawableWidth, drawableHeight, viewSize.width, viewSize.height
             ) == true -> {
                 baseMatrix.postScale(initZoomScale, initZoomScale)
             }
@@ -451,7 +452,7 @@ internal class ScaleDragHelper constructor(
             )
         }
         if (animate) {
-            locationRunner = LocationRunner(context, zoomer, this)
+            locationRunner = LocationRunner(context, sketch, zoomer, this)
             locationRunner!!.location(startX, startY, trimCenterLocationX, trimCenterLocationY)
         } else {
             translateBy(
@@ -463,7 +464,7 @@ internal class ScaleDragHelper constructor(
 
     fun zoom(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
         if (animate) {
-            ZoomRunner(context, zoomer, this, zoomScale, scale, focalX, focalY).zoom()
+            ZoomRunner(sketch, zoomer, this, zoomScale, scale, focalX, focalY).zoom()
         } else {
             val baseScale = defaultZoomScale
             val supportZoomScale = supportZoomScale

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.zoom
 
-import android.content.Context
 import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.internal.format
 
@@ -87,7 +87,7 @@ data class Scales(
 
 interface ScalesFactory {
     fun create(
-        context: Context,
+        sketch: Sketch,
         viewSize: Size,
         drawableSize: Size,
         rotateDegrees: Int,

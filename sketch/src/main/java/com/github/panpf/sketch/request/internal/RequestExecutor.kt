@@ -79,7 +79,7 @@ class RequestExecutor(private val sketch: Sketch) {
                     request,
                     data.drawable.let {
                         if (newRequest.resizeApplyToDrawable == true) {
-                            it.toResizeDrawable(sketch.context, resize)
+                            it.toResizeDrawable(sketch, resize)
                         } else {
                             it
                         }
@@ -112,7 +112,7 @@ class RequestExecutor(private val sketch: Sketch) {
                             ?.getDrawable(sketch, request, exception)
                             ?.let {
                                 if (request.resizeApplyToDrawable == true) {
-                                    it.toResizeDrawable(sketch.context, resize)
+                                    it.toResizeDrawable(sketch, resize)
                                 } else {
                                     it
                                 }

@@ -15,8 +15,8 @@
  */
 package com.github.panpf.sketch.resize
 
-import android.content.Context
 import androidx.annotation.Keep
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import org.json.JSONObject
@@ -108,14 +108,14 @@ data class Resize constructor(
 
     val key: String by lazy { toString() }
 
-    fun getPrecision(context: Context, imageWidth: Int, imageHeight: Int): Precision =
-        precision.get(context, imageWidth, imageHeight, width, height)
+    fun getPrecision(sketch: Sketch, imageWidth: Int, imageHeight: Int): Precision =
+        precision.get(sketch, imageWidth, imageHeight, width, height)
 
-    fun getScale(context: Context, imageWidth: Int, imageHeight: Int): Scale =
-        scale.get(context, imageWidth, imageHeight, width, height)
+    fun getScale(sketch: Sketch, imageWidth: Int, imageHeight: Int): Scale =
+        scale.get(sketch, imageWidth, imageHeight, width, height)
 
-    fun shouldClip(context: Context, imageWidth: Int, imageHeight: Int): Boolean =
-        when (getPrecision(context, imageWidth, imageHeight)) {
+    fun shouldClip(sketch: Sketch, imageWidth: Int, imageHeight: Int): Boolean =
+        when (getPrecision(sketch, imageWidth, imageHeight)) {
             Precision.SAME_ASPECT_RATIO -> {
                 val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
                 val resizeAspectRatio = width.toFloat().div(height).format(1)

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.resize
 
-import android.content.Context
 import androidx.annotation.Keep
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.util.Size
 import org.json.JSONObject
@@ -15,7 +15,7 @@ interface ScaleDecider {
     val key: String
 
     fun get(
-        context: Context, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+        sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Scale
 
     fun serializationToJSON(): JSONObject

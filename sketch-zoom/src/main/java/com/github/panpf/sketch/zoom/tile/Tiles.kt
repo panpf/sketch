@@ -5,12 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Rect
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.internal.requiredMainThread
 import com.github.panpf.sketch.zoom.OnMatrixChangeListener
 import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.internal.requiredMainThread
 import com.github.panpf.sketch.zoom.tile.internal.TileManager
 import com.github.panpf.sketch.zoom.tile.internal.createTileDecoder
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +22,7 @@ import kotlinx.coroutines.withContext
 
 class Tiles constructor(
     private val context: Context,
+    private val sketch: Sketch,
     private val zoomer: Zoomer,
     private val imageUri: String,
     viewSize: Size,
@@ -34,7 +35,7 @@ class Tiles constructor(
 
     private val tempDrawMatrix = Matrix()
     private val tempPreviewVisibleRect = Rect()
-    private val logger: Logger = context.sketch.logger
+    private val logger: Logger = sketch.logger
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )
@@ -84,9 +85,9 @@ class Tiles constructor(
     init {
         scope.launch(Dispatchers.Main) {
             val tileDecoder = withContext(Dispatchers.IO) {
-                createTileDecoder(context, imageUri, disabledExifOrientation)
+                createTileDecoder(context, sketch, imageUri, disabledExifOrientation)
             } ?: return@launch
-            tileManager = TileManager(context, imageUri, viewSize, tileDecoder, this@Tiles)
+            tileManager = TileManager(sketch, imageUri, viewSize, tileDecoder, this@Tiles)
             refreshTiles()
         }
 

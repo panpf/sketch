@@ -7,7 +7,6 @@ import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
@@ -35,11 +34,11 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.R
+import com.github.panpf.sketch.test.contextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -120,8 +119,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testApplyResize() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         val newResult: () -> BitmapDecodeResult = {
             BitmapDecodeResult(
                 bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
@@ -137,7 +135,7 @@ class DecodeUtilsTest {
          */
         var resize: Resize? = null
         var result: BitmapDecodeResult = newResult()
-        result.applyResize(context, sketch.bitmapPool, resize).apply {
+        result.applyResize(sketch, resize).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -147,14 +145,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, LESS_PIXELS)
         result = newResult()
-        result.applyResize(context, sketch.bitmapPool, resize).apply {
+        result.applyResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("36x22", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, LESS_PIXELS)
         result = newResult()
-        result.applyResize(context, sketch.bitmapPool, resize).apply {
+        result.applyResize(sketch, resize).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -164,14 +162,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, SAME_ASPECT_RATIO)
         result = newResult()
-        result.applyResize(context, sketch.bitmapPool, resize).apply {
+        result.applyResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, SAME_ASPECT_RATIO)
         result = newResult()
-        result.applyResize(context, sketch.bitmapPool, resize).apply {
+        result.applyResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("17x50", this.bitmap.sizeString)
         }
@@ -182,14 +180,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, EXACTLY)
         result = newResult()
-        result.applyResize(context, sketch.bitmapPool, resize).apply {
+        result.applyResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, EXACTLY)
         result = newResult()
-        result.applyResize(context, sketch.bitmapPool, resize).apply {
+        result.applyResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("50x150", this.bitmap.sizeString)
         }
@@ -215,8 +213,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactory() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactory().apply {
@@ -247,8 +244,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrThrow() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactoryOrThrow().apply {
@@ -276,8 +272,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrNull() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
@@ -305,8 +300,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeBitmapWithBitmapFactory() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeBitmapWithBitmapFactory()!!.apply {
@@ -339,8 +333,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeRegionBitmap() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeRegionBitmap(Rect(500, 500, 600, 600))!!.apply {

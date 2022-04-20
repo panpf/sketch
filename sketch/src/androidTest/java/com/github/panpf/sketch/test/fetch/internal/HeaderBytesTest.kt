@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.test.fetch.internal
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.FetchResult
@@ -12,7 +11,7 @@ import com.github.panpf.sketch.fetch.internal.isHeif
 import com.github.panpf.sketch.fetch.internal.isWebP
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.contextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -73,7 +72,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsWebP() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, _) = contextAndSketch()
 
         HeaderBytes(context.assets.open("sample.webp").use {
             ByteArray(1024).apply { it.read(this) }
@@ -94,7 +93,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsAnimatedWebP() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, _) = contextAndSketch()
 
         HeaderBytes(context.assets.open("sample_anim.webp").use {
             ByteArray(1024).apply { it.read(this) }
@@ -115,7 +114,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsHeif() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, _) = contextAndSketch()
 
         HeaderBytes(context.assets.open("sample.heic").use {
             ByteArray(1024).apply { it.read(this) }
@@ -136,7 +135,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsAnimatedHeif() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, _) = contextAndSketch()
 
         HeaderBytes(context.assets.open("sample.heic").use {
             ByteArray(1024).apply { it.read(this) }
@@ -157,8 +156,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsGif() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
 
         // normal
         val request = LoadRequest(context, newAssetUri("sample_anim.gif"))

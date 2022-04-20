@@ -1,12 +1,11 @@
 package com.github.panpf.sketch.test.datasource
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.contextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -18,8 +17,8 @@ class AssetDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
+
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         AssetDataSource(
             sketch = sketch,
@@ -35,8 +34,8 @@ class AssetDataSourceTest {
 
     @Test
     fun testLength() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
+
         AssetDataSource(
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
@@ -58,8 +57,8 @@ class AssetDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
+
         AssetDataSource(
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
@@ -81,8 +80,8 @@ class AssetDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
+
         AssetDataSource(
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
@@ -104,8 +103,8 @@ class AssetDataSourceTest {
 
     @Test
     fun testToString() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
+
         AssetDataSource(
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),

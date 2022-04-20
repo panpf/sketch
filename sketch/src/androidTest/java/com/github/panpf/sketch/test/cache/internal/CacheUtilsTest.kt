@@ -6,10 +6,10 @@ import android.content.pm.ApplicationInfo
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.cache.internal.getAppMemoryClassBytes
 import com.github.panpf.sketch.cache.internal.isLowRamDevice
+import com.github.panpf.sketch.test.contextAndSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,7 +20,7 @@ class CacheUtilsTest {
 
     @Test
     fun testGetAppMemoryClassBytes() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, _) = contextAndSketch()
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
         val isLargeHeap =
             (context.applicationInfo.flags and ApplicationInfo.FLAG_LARGE_HEAP) != 0
@@ -34,7 +34,7 @@ class CacheUtilsTest {
 
     @Test
     fun testIsLowMemoryDevice() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, _) = contextAndSketch()
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
         val isLowRamDevice =
             VERSION.SDK_INT < VERSION_CODES.KITKAT || activityManager?.isLowRamDevice == true
@@ -43,7 +43,7 @@ class CacheUtilsTest {
 
     @Test
     fun testDefaultMemoryCacheBytes() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, _) = contextAndSketch()
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
         val isLowRamDevice =
             VERSION.SDK_INT < VERSION_CODES.KITKAT || activityManager?.isLowRamDevice == true

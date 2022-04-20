@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.zoom.tile.internal
 
-import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
@@ -26,10 +25,10 @@ import android.graphics.Rect
 import androidx.annotation.MainThread
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.withSave
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.internal.format
 import com.github.panpf.sketch.zoom.internal.getScale
@@ -47,14 +46,14 @@ import kotlin.math.ceil
 import kotlin.math.floor
 
 class TileManager constructor(
-    context: Context,
+    sketch: Sketch,
     private val imageUri: String,
     viewSize: Size,
     private val decoder: TileDecoder,
     private val tiles: Tiles,
 ) {
 
-    private val logger = context.sketch.logger
+    private val logger = sketch.logger
 
     private val tileBoundsPaint: Paint by lazy {
         Paint().apply {
@@ -68,8 +67,8 @@ class TileManager constructor(
         Size(it.width / 2, it.height / 2)
     }
     private val tileMap: Map<Int, List<Tile>> = initializeTileMap(decoder.imageSize, tileMaxSize)
-    private val bitmapPool: BitmapPool = context.sketch.bitmapPool
-    private val memoryCache: MemoryCache = context.sketch.memoryCache
+    private val bitmapPool: BitmapPool = sketch.bitmapPool
+    private val memoryCache: MemoryCache = sketch.memoryCache
     private val scope: CoroutineScope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )

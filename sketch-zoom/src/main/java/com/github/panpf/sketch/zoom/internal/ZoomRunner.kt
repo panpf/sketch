@@ -18,13 +18,12 @@
  */
 package com.github.panpf.sketch.zoom.internal
 
-import android.content.Context
 import androidx.core.view.ViewCompat.postOnAnimation
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.zoom.Zoomer
 
 internal class ZoomRunner(
-    context: Context,
+    sketch: Sketch,
     private val zoomer: Zoomer,
     private val scaleDragHelper: ScaleDragHelper,
     currentZoom: Float,
@@ -36,7 +35,7 @@ internal class ZoomRunner(
     private val mStartTime: Long = System.currentTimeMillis()
     private val mZoomStart: Float = currentZoom
     private val mZoomEnd: Float = targetZoom
-    private val logger = context.sketch.logger
+    private val logger = sketch.logger
 
     override fun run() {
         val t = interpolate()

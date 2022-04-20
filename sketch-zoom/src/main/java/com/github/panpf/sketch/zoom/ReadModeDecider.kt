@@ -1,14 +1,13 @@
 package com.github.panpf.sketch.zoom
 
-import android.content.Context
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.Sketch
 
 class LongImageReadModeDecider : ReadModeDecider {
 
     override fun should(
-        context: Context, imageWidth: Int, imageHeight: Int, viewWidth: Int, viewHeight: Int
+        sketch: Sketch, imageWidth: Int, imageHeight: Int, viewWidth: Int, viewHeight: Int
     ): Boolean {
-        val longImageDecider = context.sketch.longImageDecider
+        val longImageDecider = sketch.longImageDecider
         return longImageDecider.isLongImage(imageWidth, imageHeight, viewWidth, viewHeight)
     }
 
@@ -30,7 +29,7 @@ class LongImageReadModeDecider : ReadModeDecider {
 interface ReadModeDecider {
 
     fun should(
-        context: Context,
+        sketch: Sketch,
         imageWidth: Int,
         imageHeight: Int,
         viewWidth: Int,

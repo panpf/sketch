@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.decode.internal
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
@@ -29,6 +28,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.ImageFormat.HEIC
 import com.github.panpf.sketch.ImageFormat.HEIF
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataSource
@@ -156,9 +156,9 @@ fun realDecode(
     val addedResize = resize?.let { exifOrientationHelper.addToResize(it, applySize) }
     val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
     val resizeTransformed: ResizeTransformed?
-    val bitmap = if (addedResize?.shouldClip(request.context, imageInfo.width, imageInfo.height) == true) {
-        val precision = addedResize.getPrecision(request.context, imageInfo.width, imageInfo.height)
-        val scale = addedResize.getScale(request.context, imageInfo.width, imageInfo.height)
+    val bitmap = if (addedResize?.shouldClip(request.sketch, imageInfo.width, imageInfo.height) == true) {
+        val precision = addedResize.getPrecision(request.sketch, imageInfo.width, imageInfo.height)
+        val scale = addedResize.getScale(request.sketch, imageInfo.width, imageInfo.height)
         val resizeMapping = calculateResizeMapping(
             imageWidth = imageInfo.width,
             imageHeight = imageInfo.height,
@@ -225,14 +225,13 @@ fun BitmapDecodeResult.applyExifOrientation(
 }
 
 fun BitmapDecodeResult.applyResize(
-    context: Context,
-    bitmapPool: BitmapPool,
+    sketch: Sketch,
     resize: Resize?,
 ): BitmapDecodeResult {
     val inBitmap = bitmap
-    return if (resize?.shouldClip(context, inBitmap.width, inBitmap.height) == true) {
-        val precision = resize.getPrecision(context, inBitmap.width, inBitmap.height)
-        val scale = resize.getScale(context, inBitmap.width, inBitmap.height)
+    return if (resize?.shouldClip(sketch, inBitmap.width, inBitmap.height) == true) {
+        val precision = resize.getPrecision(sketch, inBitmap.width, inBitmap.height)
+        val scale = resize.getScale(sketch, inBitmap.width, inBitmap.height)
         val mapping = calculateResizeMapping(
             imageWidth = inBitmap.width,
             imageHeight = inBitmap.height,
@@ -242,10 +241,10 @@ fun BitmapDecodeResult.applyResize(
             resizeScale = scale,
         )
         val config = inBitmap.config ?: ARGB_8888
-        val newBitmap = bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config)
+        val newBitmap = sketch.bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config)
         val canvas = Canvas(newBitmap)
         canvas.drawBitmap(inBitmap, mapping.srcRect, mapping.destRect, null)
-        bitmapPool.free(inBitmap)
+        sketch.bitmapPool.free(inBitmap)
         newResult(newBitmap) {
             addTransformed(ResizeTransformed(resize))
         }

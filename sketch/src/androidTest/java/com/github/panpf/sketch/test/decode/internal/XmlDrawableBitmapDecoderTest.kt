@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.test.decode.internal
 
 import androidx.exifinterface.media.ExifInterface
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
@@ -9,8 +8,8 @@ import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.R
+import com.github.panpf.sketch.test.contextAndSketch
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -24,8 +23,7 @@ class XmlDrawableBitmapDecoderTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
 
         val factory = XmlDrawableBitmapDecoder.Factory()
 
@@ -58,8 +56,7 @@ class XmlDrawableBitmapDecoderTest {
 
     @Test
     fun testExecuteDecode() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
 
         val factory = XmlDrawableBitmapDecoder.Factory()
 

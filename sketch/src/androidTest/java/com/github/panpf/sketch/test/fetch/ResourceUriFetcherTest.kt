@@ -1,7 +1,5 @@
 package com.github.panpf.sketch.test.fetch
 
-import android.widget.ImageView
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
@@ -9,8 +7,8 @@ import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.R.drawable
+import com.github.panpf.sketch.test.contextAndSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -42,9 +40,8 @@ class ResourceUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, sketch) = contextAndSketch()
         val testAppPackage = context.packageName
-        val sketch = context.sketch
         val fetcherFactory = ResourceUriFetcher.Factory()
         val androidResUriByName =
             newResourceUri(testAppPackage, "drawable", "ic_launcher")
@@ -76,8 +73,7 @@ class ResourceUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
         val androidResUriByName =

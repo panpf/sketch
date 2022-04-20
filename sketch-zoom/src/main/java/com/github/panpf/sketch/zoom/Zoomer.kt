@@ -10,7 +10,7 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
@@ -20,6 +20,7 @@ import com.github.panpf.sketch.zoom.internal.TapHelper
 // todo 和 ViewPager2 一起使用时，容易被 pager 滑动拦截
 class Zoomer constructor(
     val context: Context,
+    val sketch: Sketch,
     val view: View,
     scaleType: ScaleType,
     readModeDecider: ReadModeDecider?,
@@ -29,10 +30,11 @@ class Zoomer constructor(
         const val MODULE = "Zoomer"
     }
 
-    private val logger = context.sketch.logger
+    private val logger = sketch.logger
     private val tapHelper = TapHelper(context, this)
     private val scaleDragHelper = ScaleDragHelper(
         context,
+        sketch,
         this,
         onUpdateMatrix = {
             scrollBarHelper?.onMatrixChanged()
@@ -50,7 +52,7 @@ class Zoomer constructor(
                 it.onScaleChanged(scaleFactor, focusX, focusY)
             }
         })
-    private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, this)
+    private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, sketch, this)
     private var _rotateDegrees = 0
 
     private var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
@@ -111,7 +113,7 @@ class Zoomer constructor(
             val enabled = scrollBarHelper != null
             if (enabled != value) {
                 scrollBarHelper = if (value) {
-                    ScrollBarHelper(context, this).apply { reset() }
+                    ScrollBarHelper(context, sketch, this).apply { reset() }
                 } else {
                     null
                 }
@@ -124,7 +126,7 @@ class Zoomer constructor(
             }
         }
     var scales: Scales = scalesFactory.create(
-        context,
+        sketch,
         viewSize,
         drawableSize,
         _rotateDegrees,
@@ -143,7 +145,7 @@ class Zoomer constructor(
 
     private fun reset() {
         scales = scalesFactory.create(
-            context,
+            sketch,
             viewSize,
             drawableSize,
             _rotateDegrees,

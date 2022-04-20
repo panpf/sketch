@@ -50,7 +50,7 @@ open class DefaultBitmapDecoder(
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
         ).applyExifOrientation(bitmapPool, request.ignoreExifOrientation)
-            .applyResize(sketch.context, bitmapPool, request.resize)
+            .applyResize(sketch, request.resize)
     }
 
     private fun realDecodeRegion(

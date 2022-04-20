@@ -21,18 +21,18 @@ import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.Sketch
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-open class ScaleDragGestureDetector constructor(context: Context) {
+open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch) {
 
     companion object {
         private const val NAME = "ScaleDragGestureDetector"
         private const val INVALID_POINTER_ID = -1
     }
 
-    private val logger = context.sketch.logger
+    private val logger = sketch.logger
     private val mTouchSlop: Float
     private val mMinimumVelocity: Float
     private val mDetector: ScaleGestureDetector

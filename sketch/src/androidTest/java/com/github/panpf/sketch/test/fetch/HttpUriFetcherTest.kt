@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.test.fetch
 
 import android.widget.ImageView
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
@@ -13,6 +12,7 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.test.context
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +30,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val context = context()
         val sketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context))
         }.build()
@@ -78,7 +78,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testFetchBlockingRepeatDownload() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val context = context()
         val sketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context))
         }.build()
@@ -138,7 +138,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testFetchByDiskCachePolicy() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val context = context()
         val sketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context))
         }.build()
@@ -290,7 +290,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testProgress() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val context = context()
         val sketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context))
         }.build()
@@ -329,7 +329,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testCancel() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val context = context()
         val sketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context, readDelayMillis = 1000))
         }.build()
@@ -362,7 +362,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testException() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val context = context()
         val sketch = Sketch.Builder(context).apply {
             httpStack(TestHttpStack(context, readDelayMillis = 1000))
         }.build()

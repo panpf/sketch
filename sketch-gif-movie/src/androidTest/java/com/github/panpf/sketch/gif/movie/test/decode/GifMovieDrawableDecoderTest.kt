@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.gif.movie.test.decode
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom
@@ -13,7 +12,7 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.contextAndSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,8 +24,7 @@ class GifMovieDrawableDecoderTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
 
         // normal
         val request = DisplayRequest(context, newAssetUri("sample_anim.gif"))

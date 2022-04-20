@@ -3,7 +3,6 @@ package com.github.panpf.sketch.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.widget.ImageView
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -16,7 +15,7 @@ import com.github.panpf.sketch.decode.internal.newBitmapMemoryCacheHelper
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestDepth
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.contextAndSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,8 +25,7 @@ class BitmapMemoryCacheHelperTest {
 
     @Test
     fun testNewBitmapMemoryCacheHelper() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         val imageView = ImageView(context)
         val request = DisplayRequest(newAssetUri("sample.jpeg"), imageView)
 
@@ -58,8 +56,7 @@ class BitmapMemoryCacheHelperTest {
 
     @Test
     fun testRead() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         val imageView = ImageView(context)
         val request = DisplayRequest(newAssetUri("sample.jpeg"), imageView)
 
@@ -106,8 +103,7 @@ class BitmapMemoryCacheHelperTest {
 
     @Test
     fun testWrite() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         val imageView = ImageView(context)
         val request = DisplayRequest(newAssetUri("sample.jpeg"), imageView)
 

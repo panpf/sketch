@@ -1,9 +1,9 @@
 package com.github.panpf.sketch.drawable.internal
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapper
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
@@ -12,19 +12,19 @@ import com.github.panpf.sketch.util.findLastSketchDrawable
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-fun Drawable.toResizeDrawable(context: Context, resize: Resize?): Drawable =
+fun Drawable.toResizeDrawable(sketch: Sketch, resize: Resize?): Drawable =
     if (resize != null) {
         if (this is SketchAnimatableDrawable) {
-            ResizeAnimatableDrawable(context, this, resize)
+            ResizeAnimatableDrawable(sketch, this, resize)
         } else {
-            ResizeDrawable(context, this, resize)
+            ResizeDrawable(sketch, this, resize)
         }
     } else {
         this
     }
 
 @SuppressLint("RestrictedApi")
-open class ResizeDrawable(val context: Context, drawable: Drawable, val resize: Resize) :
+open class ResizeDrawable(val sketch: Sketch, drawable: Drawable, val resize: Resize) :
     DrawableWrapper(drawable) {
 
     override fun getMinimumWidth(): Int {
@@ -70,7 +70,7 @@ open class ResizeDrawable(val context: Context, drawable: Drawable, val resize: 
                     Size(info.width, info.height)
                 }
             val resizeScale = resize.getScale(
-                context,
+                sketch,
                 imageSize?.width ?: wrappedWidth,
                 imageSize?.height ?: wrappedHeight
             )

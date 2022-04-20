@@ -436,7 +436,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             "ScaleType cannot be MATRIX"
         }
         return Zoomer(
-            host.context,
+            context = host.context,
+            sketch = host.context.sketch,
             view = host.view,
             scaleType = scaleType,
             readModeDecider = if (readModeEnabled) readModeDecider else null,
@@ -479,7 +480,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private fun tryNewTiles(zoomer: Zoomer?): Tiles? {
         zoomer ?: return null
         val host = host ?: return null
-        val logger = host.context.sketch.logger
+        val sketch = host.context.sketch
+        val logger = sketch.logger
         val view = host.view
 
         val viewWidth = view.width - view.paddingLeft - view.paddingRight
@@ -527,6 +529,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val imageUri = sketchDrawable.requestUri
         return Tiles(
             context = host.context,
+            sketch = sketch,
             zoomer = zoomer,
             imageUri = imageUri,
             viewSize = viewSize,

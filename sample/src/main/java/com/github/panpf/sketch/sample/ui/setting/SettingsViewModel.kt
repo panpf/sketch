@@ -251,13 +251,14 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                     application1.sketch.logger.level.toString()
                 },
                 onSelect = { which ->
+                    val logger = application1.sketch.logger
                     when (which) {
-                        0 -> application1.sketch.logger.level = Logger.Level.VERBOSE
-                        1 -> application1.sketch.logger.level = Logger.Level.DEBUG
-                        2 -> application1.sketch.logger.level = Logger.Level.INFO
-                        3 -> application1.sketch.logger.level = Logger.Level.WARNING
-                        4 -> application1.sketch.logger.level = Logger.Level.ERROR
-                        5 -> application1.sketch.logger.level = Logger.Level.NONE
+                        0 -> logger.level = Logger.Level.VERBOSE
+                        1 -> logger.level = Logger.Level.DEBUG
+                        2 -> logger.level = Logger.Level.INFO
+                        3 -> logger.level = Logger.Level.WARNING
+                        4 -> logger.level = Logger.Level.ERROR
+                        5 -> logger.level = Logger.Level.NONE
                         else -> throw IllegalArgumentException("$which")
                     }
                 })

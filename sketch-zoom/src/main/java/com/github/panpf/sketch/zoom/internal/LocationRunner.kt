@@ -19,14 +19,15 @@ import android.content.Context
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Scroller
 import androidx.core.view.ViewCompat.postOnAnimation
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.zoom.Zoomer
 
 /**
  * 定位执行器
  */
-internal class LocationRunner(
+internal class LocationRunner constructor(
     val context: Context,
+    sketch: Sketch,
     private val zoomer: Zoomer,
     private val scaleDragHelper: ScaleDragHelper
 ) : Runnable {
@@ -34,7 +35,7 @@ internal class LocationRunner(
     private val scroller = Scroller(context, AccelerateDecelerateInterpolator())
     private var currentX = 0
     private var currentY = 0
-    private val logger = context.sketch.logger
+    private val logger = sketch.logger
 
     val isRunning: Boolean
         get() = !scroller.isFinished

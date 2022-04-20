@@ -1,11 +1,10 @@
 package com.github.panpf.sketch.test.datasource
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.contextAndSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,8 +14,7 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         val request = LoadRequest(context, "http://sample.jpeg")
         ByteArrayDataSource(
             sketch = sketch,
@@ -33,8 +31,7 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         ByteArrayDataSource(
             sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
@@ -47,8 +44,7 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         ByteArrayDataSource(
             sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
@@ -61,8 +57,7 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testToString() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         ByteArrayDataSource(
             sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),

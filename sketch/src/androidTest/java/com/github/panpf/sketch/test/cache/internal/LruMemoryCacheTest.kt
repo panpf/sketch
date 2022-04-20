@@ -3,13 +3,12 @@ package com.github.panpf.sketch.test.cache.internal
 import android.content.ComponentCallbacks2
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.contextAndSketch
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
 import org.junit.Test
@@ -31,8 +30,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testSize() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
@@ -46,8 +44,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testPutRemoveGet() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertNull(get("image1"))
             Assert.assertTrue(putBitmap(sketch, "image1", 1))
@@ -71,8 +68,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testLRU() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
@@ -129,8 +125,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testTrim() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)
@@ -174,8 +169,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testClear() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = contextAndSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)
