@@ -16,7 +16,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
 open class DefaultBitmapDecoder(
-    sketch: Sketch,
+    private val sketch: Sketch,
     private val request: ImageRequest,
     private val dataSource: DataSource,
 ) : BitmapDecoder {
@@ -50,7 +50,7 @@ open class DefaultBitmapDecoder(
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
         ).applyExifOrientation(bitmapPool, request.ignoreExifOrientation)
-            .applyResize(bitmapPool, request.resize)
+            .applyResize(sketch.context, bitmapPool, request.resize)
     }
 
     private fun realDecodeRegion(

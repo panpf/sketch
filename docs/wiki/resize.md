@@ -22,7 +22,7 @@
     * [FixedScaleDecider]：始终使用指定的 [Scale]
     * [LongImageScaleDecider]：指定两个 [Scale]，长图使用第一个，否则使用第二个
 
-> 1. 长图的判定规则：[Resize] 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [LongImageClipPrecisionDecider] 和 [LongImageScaleDecider] 的源码
+> 1. 长图的判定规则：[LongImageClipPrecisionDecider] 使用 [DefaultLongImageDecider] 来判定长图，具体规则为 [Resize] 的宽高比和原图的宽高比相差超过 2 倍
 > 2. 使用 [LongImageClipPrecisionDecider] 有助于提高长图在网格列表中的清晰度，[查看具体介绍][long_image_grid_thumbnails]
 
 ### 配置
@@ -92,6 +92,8 @@ intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable �
 [DisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/DisplayTarget.kt
 
 [ResizeDrawable]: ../../sketch/src/main/java/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
+
+[DefaultLongImageDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/util/LongImageDecider.kt
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails.md
 

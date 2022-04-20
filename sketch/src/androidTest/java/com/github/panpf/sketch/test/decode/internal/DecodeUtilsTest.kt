@@ -137,7 +137,7 @@ class DecodeUtilsTest {
          */
         var resize: Resize? = null
         var result: BitmapDecodeResult = newResult()
-        result.applyResize(sketch.bitmapPool, resize).apply {
+        result.applyResize(context, sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -147,14 +147,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, LESS_PIXELS)
         result = newResult()
-        result.applyResize(sketch.bitmapPool, resize).apply {
+        result.applyResize(context, sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("36x22", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, LESS_PIXELS)
         result = newResult()
-        result.applyResize(sketch.bitmapPool, resize).apply {
+        result.applyResize(context, sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -164,14 +164,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, SAME_ASPECT_RATIO)
         result = newResult()
-        result.applyResize(sketch.bitmapPool, resize).apply {
+        result.applyResize(context, sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, SAME_ASPECT_RATIO)
         result = newResult()
-        result.applyResize(sketch.bitmapPool, resize).apply {
+        result.applyResize(context, sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("17x50", this.bitmap.sizeString)
         }
@@ -182,14 +182,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, EXACTLY)
         result = newResult()
-        result.applyResize(sketch.bitmapPool, resize).apply {
+        result.applyResize(context, sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, EXACTLY)
         result = newResult()
-        result.applyResize(sketch.bitmapPool, resize).apply {
+        result.applyResize(context, sketch.bitmapPool, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("50x150", this.bitmap.sizeString)
         }

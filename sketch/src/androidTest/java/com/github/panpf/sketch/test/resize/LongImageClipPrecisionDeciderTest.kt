@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -24,63 +25,29 @@ class LongImageClipPrecisionDeciderTest {
 
     @Test
     fun testPrecision() {
+        val context = InstrumentationRegistry.getInstrumentation().context
         longImageClipPrecision(SAME_ASPECT_RATIO).apply {
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 49, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 50, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(150, 51, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(150, 52, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(context, 150, 48, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(context, 150, 49, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(context, 150, 50, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(context, 150, 51, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(context, 150, 52, 50, 50))
         }
 
         longImageClipPrecision(EXACTLY).apply {
-            Assert.assertEquals(EXACTLY, get(150, 48, 50, 50))
-            Assert.assertEquals(EXACTLY, get(150, 49, 50, 50))
-            Assert.assertEquals(EXACTLY, get(150, 50, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(150, 51, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(150, 52, 50, 50))
-        }
-
-        longImageClipPrecision(EXACTLY, minDifferenceOfAspectRatio = 4f).apply {
-            Assert.assertEquals(EXACTLY, get(100, 24, 50, 50))
-            Assert.assertEquals(EXACTLY, get(100, 25, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(100, 26, 50, 50))
-        }
-    }
-
-    @Test
-    fun testIsLongImage() {
-        longImageClipPrecision(SAME_ASPECT_RATIO).apply {
-            Assert.assertTrue(isLongImage(150, 48, 50, 50))
-            Assert.assertTrue(isLongImage(150, 49, 50, 50))
-            Assert.assertTrue(isLongImage(150, 50, 50, 50))
-            Assert.assertFalse(isLongImage(150, 51, 50, 50))
-            Assert.assertFalse(isLongImage(150, 52, 50, 50))
-        }
-
-        longImageClipPrecision(EXACTLY).apply {
-            Assert.assertTrue(isLongImage(150, 48, 50, 50))
-            Assert.assertTrue(isLongImage(150, 49, 50, 50))
-            Assert.assertTrue(isLongImage(150, 50, 50, 50))
-            Assert.assertFalse(isLongImage(150, 51, 50, 50))
-            Assert.assertFalse(isLongImage(150, 52, 50, 50))
-        }
-
-        longImageClipPrecision(EXACTLY, minDifferenceOfAspectRatio = 4f).apply {
-            Assert.assertTrue(isLongImage(100, 24, 50, 50))
-            Assert.assertTrue(isLongImage(100, 25, 50, 50))
-            Assert.assertFalse(isLongImage(100, 26, 50, 50))
+            Assert.assertEquals(EXACTLY, get(context, 150, 48, 50, 50))
+            Assert.assertEquals(EXACTLY, get(context, 150, 49, 50, 50))
+            Assert.assertEquals(EXACTLY, get(context, 150, 50, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(context, 150, 51, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(context, 150, 52, 50, 50))
         }
     }
 
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(SAME_ASPECT_RATIO,3.0)",
+            "LongImageClipPrecisionDecider(SAME_ASPECT_RATIO)",
             longImageClipPrecision(SAME_ASPECT_RATIO).toString()
-        )
-        Assert.assertEquals(
-            "LongImageClipPrecisionDecider(EXACTLY,4.0)",
-            longImageClipPrecision(EXACTLY, 4f).toString()
         )
     }
 }

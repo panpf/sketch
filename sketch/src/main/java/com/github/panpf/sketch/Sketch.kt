@@ -44,6 +44,7 @@ import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
+import com.github.panpf.sketch.util.DefaultLongImageDecider
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LongImageDecider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -299,7 +300,7 @@ class Sketch private constructor(
                         BitmapEngineDecodeInterceptor()
             val drawableDecodeInterceptors: List<DecodeInterceptor<DrawableDecodeResult>> =
                 (drawableDecodeInterceptors ?: listOf()) + DrawableEngineDecodeInterceptor()
-            val longImageDecider: LongImageDecider = longImageDecider ?: LongImageDecider()
+            val longImageDecider: LongImageDecider = longImageDecider ?: DefaultLongImageDecider()
 
             return Sketch(
                 context = appContext,

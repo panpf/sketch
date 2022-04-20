@@ -251,7 +251,7 @@ internal class ScaleDragHelper constructor(
         val initZoomScale = zoomer.scales.init
         when {
             zoomer.readModeDecider?.should(
-                drawableWidth, drawableHeight, viewSize.width, viewSize.height
+                context, drawableWidth, drawableHeight, viewSize.width, viewSize.height
             ) == true -> {
                 baseMatrix.postScale(initZoomScale, initZoomScale)
             }

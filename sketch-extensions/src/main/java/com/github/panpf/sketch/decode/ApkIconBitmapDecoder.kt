@@ -35,7 +35,7 @@ class ApkIconBitmapDecoder(
         val bitmap = drawable.toBitmap(bitmapPool = sketch.bitmapPool)
         val imageInfo = ImageInfo(bitmap.width, bitmap.height, MIME_TYPE)
         return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
-            .applyResize(sketch.bitmapPool, request.resize)
+            .applyResize(sketch.context, sketch.bitmapPool, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

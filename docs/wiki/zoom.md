@@ -87,9 +87,11 @@ sketchZoomImageView.zoomAbility.scrollBarEnabled = false
 sketchZoomImageView.zoomAbility.readModeEnabled = true
 ```
 
-> 长图的判定规则：View 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [DefaultReadModeDecider] 的源码
+[SketchZoomImageView] 通过 [ReadModeDecider] 来判定是否需要使用阅读模式，默认实现是 [LongImageReadModeDecider]，仅对长图使用阅读模式
 
-如果你想修改长图判定规则可以实现 [ReadModeDecider] 接口，然后通过 [ZoomAbility] 的 readModeDecider 属性应用，如下：
+> 长图的判定规则：View 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [LongImageReadModeDecider] 的源码
+
+如果你想修改阅读模式判定规则可以实现 [ReadModeDecider] 接口，然后通过 [ZoomAbility] 的 readModeDecider 属性应用，如下：
 
 ```kotlin
 class MyReadModeDecider : ReadModeDecider {
@@ -100,12 +102,6 @@ class MyReadModeDecider : ReadModeDecider {
 }
 
 sketchZoomImageView.zoomAbility.readModeDecider = MyReadModeDecider()
-```
-
-你也可以关闭阅读模式，如下：
-
-```kotlin
-sketchZoomImageView.zoomAbility.readModeEnabled = false
 ```
 
 ## 缩放信息
@@ -229,4 +225,4 @@ sketchZoomImageView.zoomAbility.addOnTileChangedListener { tiles: Tiles ->
 
 [ReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt
 
-[DefaultReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt
+[LongImageReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt

@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -53,7 +54,7 @@ class ResizeTest {
         }
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(
-                "Resize(100x100,LongImageClip(EXACTLY,3.0),Fixed(CENTER_CROP))",
+                "Resize(100x100,LongImageClip(EXACTLY),Fixed(CENTER_CROP))",
                 key
             )
         }
@@ -74,109 +75,112 @@ class ResizeTest {
 
     @Test
     fun testShouldClip() {
+        val context = InstrumentationRegistry.getInstrumentation().context
         Resize(100, 100).apply {
-            Assert.assertFalse(shouldClip(100, 50))
-            Assert.assertTrue(shouldClip(100, 150))
-            Assert.assertFalse(shouldClip(50, 100))
-            Assert.assertTrue(shouldClip(150, 100))
-            Assert.assertFalse(shouldClip(100, 100))
-            Assert.assertFalse(shouldClip(50, 50))
-            Assert.assertTrue(shouldClip(150, 150))
+            Assert.assertFalse(shouldClip(context, 100, 50))
+            Assert.assertTrue(shouldClip(context, 100, 150))
+            Assert.assertFalse(shouldClip(context, 50, 100))
+            Assert.assertTrue(shouldClip(context, 150, 100))
+            Assert.assertFalse(shouldClip(context, 100, 100))
+            Assert.assertFalse(shouldClip(context, 50, 50))
+            Assert.assertTrue(shouldClip(context, 150, 150))
         }
 
         Resize(100, 100, SAME_ASPECT_RATIO).apply {
-            Assert.assertTrue(shouldClip(100, 50))
-            Assert.assertTrue(shouldClip(100, 150))
-            Assert.assertTrue(shouldClip(50, 100))
-            Assert.assertTrue(shouldClip(150, 100))
-            Assert.assertFalse(shouldClip(100, 100))
-            Assert.assertFalse(shouldClip(50, 50))
-            Assert.assertFalse(shouldClip(150, 150))
+            Assert.assertTrue(shouldClip(context, 100, 50))
+            Assert.assertTrue(shouldClip(context, 100, 150))
+            Assert.assertTrue(shouldClip(context, 50, 100))
+            Assert.assertTrue(shouldClip(context, 150, 100))
+            Assert.assertFalse(shouldClip(context, 100, 100))
+            Assert.assertFalse(shouldClip(context, 50, 50))
+            Assert.assertFalse(shouldClip(context, 150, 150))
         }
 
         Resize(100, 100, EXACTLY).apply {
-            Assert.assertTrue(shouldClip(100, 50))
-            Assert.assertTrue(shouldClip(100, 150))
-            Assert.assertTrue(shouldClip(50, 100))
-            Assert.assertTrue(shouldClip(150, 100))
-            Assert.assertFalse(shouldClip(100, 100))
-            Assert.assertTrue(shouldClip(50, 50))
-            Assert.assertTrue(shouldClip(150, 150))
+            Assert.assertTrue(shouldClip(context, 100, 50))
+            Assert.assertTrue(shouldClip(context, 100, 150))
+            Assert.assertTrue(shouldClip(context, 50, 100))
+            Assert.assertTrue(shouldClip(context, 150, 100))
+            Assert.assertFalse(shouldClip(context, 100, 100))
+            Assert.assertTrue(shouldClip(context, 50, 50))
+            Assert.assertTrue(shouldClip(context, 150, 150))
         }
 
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertTrue(shouldClip(150, 50))
-            Assert.assertTrue(shouldClip(100, 250))
-            Assert.assertTrue(shouldClip(50, 150))
-            Assert.assertTrue(shouldClip(250, 100))
-            Assert.assertFalse(shouldClip(100, 100))
-            Assert.assertFalse(shouldClip(50, 50))
-            Assert.assertTrue(shouldClip(150, 150))
+            Assert.assertTrue(shouldClip(context, 150, 50))
+            Assert.assertTrue(shouldClip(context, 100, 250))
+            Assert.assertTrue(shouldClip(context, 50, 150))
+            Assert.assertTrue(shouldClip(context, 250, 100))
+            Assert.assertFalse(shouldClip(context, 100, 100))
+            Assert.assertFalse(shouldClip(context, 50, 50))
+            Assert.assertTrue(shouldClip(context, 150, 150))
         }
     }
 
     @Test
     fun testPrecision() {
+        val context = InstrumentationRegistry.getInstrumentation().context
         Resize(100, 30).apply {
-            Assert.assertEquals(LESS_PIXELS, getPrecision(0, 0))
+            Assert.assertEquals(LESS_PIXELS, getPrecision(context, 0, 0))
         }
         Resize(100, 30, LESS_PIXELS).apply {
-            Assert.assertEquals(LESS_PIXELS, getPrecision(0, 0))
+            Assert.assertEquals(LESS_PIXELS, getPrecision(context, 0, 0))
         }
         Resize(100, 30, SAME_ASPECT_RATIO).apply {
-            Assert.assertEquals(SAME_ASPECT_RATIO, getPrecision(0, 0))
+            Assert.assertEquals(SAME_ASPECT_RATIO, getPrecision(context, 0, 0))
         }
         Resize(100, 30, EXACTLY).apply {
-            Assert.assertEquals(EXACTLY, getPrecision(0, 0))
+            Assert.assertEquals(EXACTLY, getPrecision(context, 0, 0))
         }
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(LESS_PIXELS, getPrecision(50, 50))
+            Assert.assertEquals(LESS_PIXELS, getPrecision(context, 50, 50))
         }
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(LESS_PIXELS, getPrecision(40, 50))
+            Assert.assertEquals(LESS_PIXELS, getPrecision(context, 40, 50))
         }
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(LESS_PIXELS, getPrecision(50, 40))
+            Assert.assertEquals(LESS_PIXELS, getPrecision(context, 50, 40))
         }
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(EXACTLY, getPrecision(150, 50))
+            Assert.assertEquals(EXACTLY, getPrecision(context, 150, 50))
         }
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(EXACTLY, getPrecision(50, 150))
+            Assert.assertEquals(EXACTLY, getPrecision(context, 50, 150))
         }
     }
 
     @Test
     fun testScale() {
+        val context = InstrumentationRegistry.getInstrumentation().context
         Resize(100, 30).apply {
-            Assert.assertEquals(CENTER_CROP, getScale(0, 0))
+            Assert.assertEquals(CENTER_CROP, getScale(context, 0, 0))
         }
         Resize(100, 30, START_CROP).apply {
-            Assert.assertEquals(START_CROP, getScale(0, 0))
+            Assert.assertEquals(START_CROP, getScale(context, 0, 0))
         }
         Resize(100, 30, CENTER_CROP).apply {
-            Assert.assertEquals(CENTER_CROP, getScale(0, 0))
+            Assert.assertEquals(CENTER_CROP, getScale(context, 0, 0))
         }
         Resize(100, 30, END_CROP).apply {
-            Assert.assertEquals(END_CROP, getScale(0, 0))
+            Assert.assertEquals(END_CROP, getScale(context, 0, 0))
         }
         Resize(100, 30, FILL).apply {
-            Assert.assertEquals(FILL, getScale(0, 0))
+            Assert.assertEquals(FILL, getScale(context, 0, 0))
         }
         Resize(100, 100, longImageScale(START_CROP, CENTER_CROP)).apply {
-            Assert.assertEquals(CENTER_CROP, getScale(50, 50))
+            Assert.assertEquals(CENTER_CROP, getScale(context, 50, 50))
         }
         Resize(100, 100, longImageScale(START_CROP, CENTER_CROP)).apply {
-            Assert.assertEquals(CENTER_CROP, getScale(40, 50))
+            Assert.assertEquals(CENTER_CROP, getScale(context, 40, 50))
         }
         Resize(100, 100, longImageScale(START_CROP, CENTER_CROP)).apply {
-            Assert.assertEquals(CENTER_CROP, getScale(50, 40))
+            Assert.assertEquals(CENTER_CROP, getScale(context, 50, 40))
         }
         Resize(100, 100, longImageScale(START_CROP, CENTER_CROP)).apply {
-            Assert.assertEquals(START_CROP, getScale(150, 50))
+            Assert.assertEquals(START_CROP, getScale(context, 150, 50))
         }
         Resize(100, 100, longImageScale(START_CROP, CENTER_CROP)).apply {
-            Assert.assertEquals(START_CROP, getScale(50, 150))
+            Assert.assertEquals(START_CROP, getScale(context, 50, 150))
         }
     }
 }

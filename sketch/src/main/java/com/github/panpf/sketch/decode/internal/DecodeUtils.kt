@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.decode.internal
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
@@ -155,9 +156,9 @@ fun realDecode(
     val addedResize = resize?.let { exifOrientationHelper.addToResize(it, applySize) }
     val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
     val resizeTransformed: ResizeTransformed?
-    val bitmap = if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
-        val precision = addedResize.getPrecision(imageInfo.width, imageInfo.height)
-        val scale = addedResize.getScale(imageInfo.width, imageInfo.height)
+    val bitmap = if (addedResize?.shouldClip(request.context, imageInfo.width, imageInfo.height) == true) {
+        val precision = addedResize.getPrecision(request.context, imageInfo.width, imageInfo.height)
+        val scale = addedResize.getScale(request.context, imageInfo.width, imageInfo.height)
         val resizeMapping = calculateResizeMapping(
             imageWidth = imageInfo.width,
             imageHeight = imageInfo.height,
@@ -224,13 +225,14 @@ fun BitmapDecodeResult.applyExifOrientation(
 }
 
 fun BitmapDecodeResult.applyResize(
+    context: Context,
     bitmapPool: BitmapPool,
     resize: Resize?,
 ): BitmapDecodeResult {
     val inBitmap = bitmap
-    return if (resize?.shouldClip(inBitmap.width, inBitmap.height) == true) {
-        val precision = resize.getPrecision(inBitmap.width, inBitmap.height)
-        val scale = resize.getScale(inBitmap.width, inBitmap.height)
+    return if (resize?.shouldClip(context, inBitmap.width, inBitmap.height) == true) {
+        val precision = resize.getPrecision(context, inBitmap.width, inBitmap.height)
+        val scale = resize.getScale(context, inBitmap.width, inBitmap.height)
         val mapping = calculateResizeMapping(
             imageWidth = inBitmap.width,
             imageHeight = inBitmap.height,

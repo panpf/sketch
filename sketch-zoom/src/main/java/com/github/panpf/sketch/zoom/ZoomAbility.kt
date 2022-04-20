@@ -103,7 +103,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             if (field != value) {
                 field = value
                 zoomer?.readModeDecider =
-                    if (value) readModeDecider ?: DefaultReadModeDecider() else null
+                    if (value) readModeDecider ?: LongImageReadModeDecider() else null
             }
         }
     var readModeDecider: ReadModeDecider? = null

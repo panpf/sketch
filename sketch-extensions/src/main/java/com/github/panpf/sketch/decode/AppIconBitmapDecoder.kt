@@ -46,7 +46,7 @@ class AppIconBitmapDecoder(
             imageInfo,
             ExifInterface.ORIENTATION_UNDEFINED,
             LOCAL
-        ).applyResize(sketch.bitmapPool, request.resize)
+        ).applyResize(sketch.context, sketch.bitmapPool, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

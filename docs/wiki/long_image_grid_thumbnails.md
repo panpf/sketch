@@ -4,11 +4,11 @@
 [Precision] 默认为 LESS_PIXELS，这时根据 [Resize] 计算得出的 inSampleSize 为 16，而解码得到的缩略图尺寸为
 1875x60，这张缩略图是极其模糊，无法辨别任何内容
 
-针对这种情况你可用 [LongImageClipPrecisionDecider] 动态计算 [Precision]，[LongImageClipPrecisionDecider] 在遇到长图时会返回
-SAME_ASPECT_RATIO 或 EXACTLY（由你指定），否则返回 LESS_PIXELS，这样既确保了长图有一个清晰的缩略图，又保证了非长图的快速加载
+针对这种情况可以用 [LongImageClipPrecisionDecider] 动态计算 [Precision]，[LongImageClipPrecisionDecider] 在遇到长图时会返回
+SAME_ASPECT_RATIO 或 EXACTLY（创建时指定），否则返回 LESS_PIXELS，这样既确保了长图有一个清晰的缩略图，又保证了非长图的快速加载
 
 > 注意：
-> 1. 长图的判定规则：[Resize] 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [LongImageClipPrecisionDecider] 的源码
+> 1. 长图的判定规则：[LongImageClipPrecisionDecider] 使用 [DefaultLongImageDecider] 来判定长图，具体规则为 [Resize] 的宽高比和原图的宽高比相差超过 2 倍
 > 2. SAME_ASPECT_RATIO 和 EXACTLY 会使用 BitmapRegionDecoder 对原图进行裁剪，因此可以得到一张较清晰的缩略图
 
 ### 使用
@@ -24,3 +24,5 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 [Precision]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Precision.kt
 
 [LongImageClipPrecisionDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/LongImageClipPrecisionDecider.kt
+
+[DefaultLongImageDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/util/LongImageDecider.kt

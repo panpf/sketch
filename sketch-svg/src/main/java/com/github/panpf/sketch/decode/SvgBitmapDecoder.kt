@@ -44,7 +44,7 @@ class SvgBitmapDecoder(
                 realDecodeFull(imageInfo, decodeConfig, svg)
             },
             decodeRegion = null
-        ).applyResize(sketch.bitmapPool, request.resize)
+        ).applyResize(sketch.context, sketch.bitmapPool, request.resize)
     }
 
     private fun readImageInfo(svg: SVG): ImageInfo {

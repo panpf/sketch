@@ -3,6 +3,7 @@ package com.github.panpf.sketch
 import android.content.Context
 import com.github.panpf.sketch.Sketch.Builder
 
+// todo 内部减少对此函数的使用
 val Context.sketch: Sketch
     get() = SketchSingleton.sketch(this)
 
