@@ -46,7 +46,7 @@ activitymonitor = "1.0.0"
 
 # other
 google-material = "1.3.0"
-androidgifdrawable = "1.2.8"
+androidgifdrawable = "1.2.15"
 tinypinyin = "2.0.3"
 retrofit2 = "2.6.4"
 retrofit2_kotlinxSerializationConverter = "0.8.0"
