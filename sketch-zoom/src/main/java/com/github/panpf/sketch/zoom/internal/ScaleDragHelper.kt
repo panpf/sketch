@@ -24,7 +24,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.Zoomer
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.ActionListener
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnScaleDragGestureListener
@@ -402,7 +401,7 @@ internal class ScaleDragHelper constructor(
 
         // 旋转定位点
         val pointF = PointF(newX, newY)
-        Size.rotatePoint(pointF, zoomer.rotateDegrees, drawableSize)
+        rotatePoint(pointF, zoomer.rotateDegrees, drawableSize)
         newX = pointF.x
         newY = pointF.y
         cancelFling()
@@ -544,7 +543,7 @@ internal class ScaleDragHelper constructor(
             bottom.roundToInt()
 
         // 将可见区域转回原始角度
-        Size.reverseRotateRect(rect, zoomer.rotateDegrees, drawableSize)
+        reverseRotateRect(rect, zoomer.rotateDegrees, drawableSize)
     }
 
     /**
