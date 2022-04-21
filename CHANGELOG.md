@@ -1,3 +1,34 @@
+# v3.0.0-alpha02
+
+### sketch
+
+* fix: 修复 AnimatedImageDrawable 不支持通过 bounds 缩放的 bug
+* fix: 修正了使用 VectorDrawable 作为状态图像时透明度不正常的 bug
+* change: 现在 DisplayTarget 的所有实现当 error Drawable 为空时，不继续设置
+* change: Scale.KEEP_ASPECT_RATIO 重命名为 SAME_ASPECT_RATIO
+* improve: CrossfadeDrawable 现在恢复为根据 start 和 end Drawable 的最大尺寸作为 intrinsic 宽高
+* improve: ColorResStateImage 合并到 ColorStateImage, DrawableResStateImage 合并到 DrawableStateImage,
+* improve: IconStateImage 的 bg 属性现在支持 Drawable
+* improve: 所有工具函数的访问控制现在为 internal
+* improve: LongImageClipPrecisionDecider 现在默认使用 Sketch.longImageDecider 来判定长图
+* new: ImageRequest 和 ImageOptions 增加 resizeApplyToDrawable 属性 IconDrawableStateImage 和
+  IconDrawableStateImage 合并为 IconStateImage
+* new: Resize 的 scale 属性现在支持 ScaleDecider 并提供 LongImageScaleDecider 实现
+
+### sketch-extensions
+
+* new: SketchImageView 增加 xml 属性
+
+### sketch-zoom
+
+* fix: 修复 findSampleSize 函数可能会崩溃的 bug
+* change: SketchZoomImageView 的 readMode 现在默认关闭
+* improve: DefaultReadModeDecider 改为 LongImageReadModeDecider，并默认使用 Sketch.longImageDecider 来判定长图
+
+### sketch-compose
+
+* improve: 改进 CrossfadePainter
+
 # v3.0.0-alpha01
 
 全新版本，新的开始
