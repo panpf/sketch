@@ -9,7 +9,9 @@ import android.graphics.drawable.Drawable.Callback
 import android.os.SystemClock
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.Lifecycle.State.RESUMED
@@ -21,12 +23,26 @@ import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.isSketchGlobalLifecycle
+import com.github.panpf.sketch.util.getLifecycle
 
 class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) : ViewAbility,
     LayoutObserver, RequestListenerObserver, RequestProgressListenerObserver,
     DrawObserver, VisibilityChangedObserver, AttachObserver {
 
+    private var lifecycle: Lifecycle? = null
+        set(value) {
+            if (value != field) {
+                unregisterLifecycleObserver()
+                field = value
+                registerLifecycleObserver()
+            }
+        }
     override var host: Host? = null
+        set(value) {
+            field = value
+            lifecycle = value?.context.getLifecycle()
+        }
 
     private var requestRunning = false
     private var isAttachedToWindow = false
@@ -67,7 +83,7 @@ class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) :
 
     override fun onAttachedToWindow() {
         isAttachedToWindow = true
-        host?.lifecycle?.addObserver(lifecycleObserver)
+        registerLifecycleObserver()
         resetDrawableVisible()
     }
 
@@ -92,11 +108,25 @@ class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) :
     override fun onDetachedFromWindow() {
         // Because the View.isAttachedToWindow () method still returns true when execute here
         isAttachedToWindow = false
-        host?.lifecycle?.removeObserver(lifecycleObserver)
+        unregisterLifecycleObserver()
         resetDrawableVisible()
     }
 
+    private fun registerLifecycleObserver() {
+        val view = host?.view ?: return
+        if (ViewCompat.isAttachedToWindow(view)) {
+            lifecycle?.addObserver(lifecycleObserver)
+        }
+    }
+
+    private fun unregisterLifecycleObserver() {
+        this.lifecycle?.removeObserver(lifecycleObserver)
+    }
+
     override fun onRequestStart(request: DisplayRequest) {
+        lifecycle =
+            request.lifecycle.takeIf { !it.isSketchGlobalLifecycle() }
+                ?: host?.context.getLifecycle()
         requestRunning = true
         progressDrawable.progress = 0f
         resetDrawableVisible()
@@ -152,7 +182,7 @@ class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) :
     }
 
     private fun startAnimation() {
-        val lifecycle = host?.lifecycle
+        val lifecycle = lifecycle
         val progressDrawable = progressDrawable
         if (progressDrawable is Animatable
             && progressDrawable.isVisible

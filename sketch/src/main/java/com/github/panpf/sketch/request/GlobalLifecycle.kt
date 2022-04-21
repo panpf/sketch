@@ -4,6 +4,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.github.panpf.sketch.util.getLifecycle
 
 /**
  * A [Lifecycle] implementation that is always resumed and never destroyed.
@@ -31,3 +32,5 @@ internal object GlobalLifecycle : Lifecycle() {
 
     override fun toString() = "coil.request.GlobalLifecycle"
 }
+
+fun Lifecycle.isSketchGlobalLifecycle() = this is GlobalLifecycle

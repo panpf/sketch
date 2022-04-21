@@ -19,6 +19,10 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleEventObserver
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
+import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DisplayResult.Error
+import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.isSketchGlobalLifecycle
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.findLastSketchDrawable
@@ -26,6 +30,7 @@ import com.github.panpf.sketch.viewability.AttachObserver
 import com.github.panpf.sketch.viewability.DrawObserver
 import com.github.panpf.sketch.viewability.DrawableObserver
 import com.github.panpf.sketch.viewability.Host
+import com.github.panpf.sketch.viewability.RequestListenerObserver
 import com.github.panpf.sketch.viewability.ScaleTypeObserver
 import com.github.panpf.sketch.viewability.SizeChangeObserver
 import com.github.panpf.sketch.viewability.TouchEventObserver
@@ -40,7 +45,8 @@ import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
 
 class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
-    DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver {
+    DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver,
+    RequestListenerObserver {
 
     companion object {
         private const val MODULE = "ZoomAbility"
@@ -48,7 +54,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     private var zoomer: Zoomer? = null
     private var tiles: Tiles? = null
-    private val tilesPauseLifecycleEventObserver = LifecycleEventObserver { _, event ->
+    private val lifecycleObserver = LifecycleEventObserver { _, event ->
         when (event) {
             ON_PAUSE -> {
                 tiles?.paused = true
@@ -66,12 +72,12 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private var onTileChangedListenerList: MutableSet<OnTileChangedListener>? = null
     private val imageMatrix = Matrix()
 
-    var lifecycle: Lifecycle? = null
+    private var lifecycle: Lifecycle? = null
         set(value) {
             if (value != field) {
-                unregisterTilesPauseLifecycleObserver()
-                field = value ?: host?.context.getLifecycle()
-                registerTilesPauseLifecycleObserver()
+                unregisterLifecycleObserver()
+                field = value
+                registerLifecycleObserver()
             }
         }
 
@@ -363,23 +369,23 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override fun onAttachedToWindow() {
         initialize()
-        registerTilesPauseLifecycleObserver()
+        registerLifecycleObserver()
     }
 
     override fun onDetachedFromWindow() {
         destroy()
-        unregisterTilesPauseLifecycleObserver()
+        unregisterLifecycleObserver()
     }
 
-    private fun registerTilesPauseLifecycleObserver() {
+    private fun registerLifecycleObserver() {
         if (host?.view?.isAttachedToWindowCompat == true) {
-            this.lifecycle?.addObserver(tilesPauseLifecycleEventObserver)
+            this.lifecycle?.addObserver(lifecycleObserver)
             tiles?.paused = this.lifecycle?.currentState?.isAtLeast(STARTED) == false
         }
     }
 
-    private fun unregisterTilesPauseLifecycleObserver() {
-        this.lifecycle?.removeObserver(tilesPauseLifecycleEventObserver)
+    private fun unregisterLifecycleObserver() {
+        this.lifecycle?.removeObserver(lifecycleObserver)
         tiles?.paused = false
     }
 
@@ -539,5 +545,16 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
                 addOnTileChangedListener(it)
             }
         }
+    }
+
+    override fun onRequestStart(request: DisplayRequest) {
+        lifecycle =
+            request.lifecycle.takeIf { !it.isSketchGlobalLifecycle() } ?: host?.context.getLifecycle()
+    }
+
+    override fun onRequestError(request: DisplayRequest, result: Error) {
+    }
+
+    override fun onRequestSuccess(request: DisplayRequest, result: Success) {
     }
 }

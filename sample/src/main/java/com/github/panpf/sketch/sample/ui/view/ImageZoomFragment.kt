@@ -42,7 +42,6 @@ class ImageZoomFragment : BindingFragment<FragmentImageDetailBinding>() {
         val imageDetail = Json.decodeFromString<ImageDetail>(args.imageDetailJson)
 
         binding.imageFragmentZoomImageView.apply {
-            zoomAbility.lifecycle = viewLifecycleOwner.lifecycle
             displayImage(imageDetail.firstMiddenUrl) {
                 lifecycle(viewLifecycleOwner.lifecycle)
                 placeholder(

@@ -5,15 +5,11 @@ import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView.ScaleType
-import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.viewability.internal.getLifecycle
 
 class Host(val view: View, private val owner: ViewAbilityOwner) {
 
     val context: Context = view.context
-
-    val lifecycle: Lifecycle? = view.context.getLifecycle()
 
     val drawable: Drawable?
         get() = owner.superGetDrawable()
