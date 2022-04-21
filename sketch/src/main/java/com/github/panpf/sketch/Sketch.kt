@@ -1,8 +1,6 @@
 package com.github.panpf.sketch
 
-import android.content.ComponentCallbacks2
 import android.content.Context
-import android.content.res.Configuration
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CountDrawablePendingManager
@@ -47,6 +45,7 @@ import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInte
 import com.github.panpf.sketch.util.DefaultLongImageDecider
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LongImageDecider
+import com.github.panpf.sketch.util.SystemCallbacks
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -56,7 +55,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlin.math.roundToLong
 
-// todo Monitor system callbacks, TrimMemory and networking
 class Sketch private constructor(
     val context: Context,
     val logger: Logger,
@@ -78,6 +76,7 @@ class Sketch private constructor(
     )
     private val imageExecutor = RequestExecutor(this)
 
+    val systemCallbacks = SystemCallbacks(context, this)
     val countDrawablePendingManager = CountDrawablePendingManager(logger)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 
@@ -88,21 +87,6 @@ class Sketch private constructor(
         memoryCache.logger = logger
         bitmapPool.logger = logger
         diskCache.logger = logger
-
-        context.registerComponentCallbacks(object : ComponentCallbacks2 {
-            override fun onConfigurationChanged(newConfig: Configuration) {
-            }
-
-            override fun onLowMemory() {
-                memoryCache.clear()
-                bitmapPool.clear()
-            }
-
-            override fun onTrimMemory(level: Int) {
-                memoryCache.trim(level)
-                bitmapPool.trim(level)
-            }
-        })
 
         logger.d("Configuration") {
             buildString {

@@ -30,7 +30,6 @@ dependencies {
     api(project(":sketch"))
     api(project(":sketch-viewability"))
     api(libs.androidx.recyclerview)
-    api(libs.tools4a.network)
 
     androidTestImplementation(libs.bundles.test)
 }
