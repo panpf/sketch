@@ -13,8 +13,8 @@ import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
-import androidx.lifecycle.Lifecycle.Event.ON_RESUME
+import androidx.lifecycle.Lifecycle.Event.ON_START
+import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleEventObserver
 import com.github.panpf.sketch.ImageFormat
@@ -56,10 +56,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private var tiles: Tiles? = null
     private val lifecycleObserver = LifecycleEventObserver { _, event ->
         when (event) {
-            ON_PAUSE -> {
+            ON_START -> {
                 tiles?.paused = true
             }
-            ON_RESUME -> {
+            ON_STOP -> {
                 tiles?.paused = false
             }
             else -> {}
@@ -549,7 +549,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override fun onRequestStart(request: DisplayRequest) {
         lifecycle =
-            request.lifecycle.takeIf { !it.isSketchGlobalLifecycle() } ?: host?.context.getLifecycle()
+            request.lifecycle.takeIf { !it.isSketchGlobalLifecycle() }
+                ?: host?.context.getLifecycle()
     }
 
     override fun onRequestError(request: DisplayRequest, result: Error) {
