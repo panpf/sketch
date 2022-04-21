@@ -10,6 +10,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
 
 class RotateTransformation(val degrees: Int) : Transformation {
@@ -53,20 +55,32 @@ class RotateTransformation(val degrees: Int) : Transformation {
     }
 }
 
-@Keep
 class RotateTransformed(val degrees: Int) : Transformed {
-    override val key: String = "RotateTransformed($degrees)"
+
+    override val key: String by lazy { toString() }
     override val cacheResultToDisk: Boolean = true
 
+    override fun toString(): String = "RotateTransformed($degrees)"
+
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
+    }
+
     @Keep
-    constructor(jsonObject: JSONObject) : this(jsonObject.getInt("degrees"))
+    class Serializer : JsonSerializer<RotateTransformed> {
+        override fun toJson(t: RotateTransformed): JSONObject =
+            JSONObject().apply {
+                t.apply {
+                    put("degrees", degrees)
+                }
+            }
 
-    override fun serializationToJSON(): JSONObject =
-        JSONObject().apply {
-            put("degrees", degrees)
-        }
-
-    override fun toString(): String = key
+        override fun fromJson(jsonObject: JSONObject): RotateTransformed =
+            RotateTransformed(
+                jsonObject.getInt("degrees")
+            )
+    }
 }
 
 fun List<Transformed>.getRotateTransformed(): RotateTransformed? =

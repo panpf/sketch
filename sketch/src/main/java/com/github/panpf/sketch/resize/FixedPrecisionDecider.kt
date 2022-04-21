@@ -2,15 +2,18 @@ package com.github.panpf.sketch.resize
 
 import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
+
+fun fixedPrecision(precision: Precision): FixedPrecisionDecider = FixedPrecisionDecider(precision)
 
 /**
  * Always return specified precision
  */
-@Keep
 data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDecider {
 
-    override val key: String by lazy { "FixedPrecisionDecider($precision)" }
+    override val key: String by lazy { toString() }
 
     override fun get(
         sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
@@ -18,15 +21,25 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
         return precision
     }
 
-    @Keep
-    constructor(jsonObject: JSONObject) : this(Precision.valueOf(jsonObject.getString("precision")))
-
-    override fun serializationToJSON(): JSONObject =
-        JSONObject().apply {
-            put("precision", precision.name)
-        }
-
     override fun toString(): String = "FixedPrecisionDecider($precision)"
-}
 
-fun fixedPrecision(precision: Precision): FixedPrecisionDecider = FixedPrecisionDecider(precision)
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
+    }
+
+    @Keep
+    class Serializer : JsonSerializer<FixedPrecisionDecider> {
+        override fun toJson(t: FixedPrecisionDecider): JSONObject =
+            JSONObject().apply {
+                t.apply {
+                    put("precision", precision.name)
+                }
+            }
+
+        override fun fromJson(jsonObject: JSONObject): FixedPrecisionDecider =
+            FixedPrecisionDecider(
+                Precision.valueOf(jsonObject.getString("precision")),
+            )
+    }
+}

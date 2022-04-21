@@ -9,9 +9,12 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.calculateResizeMapping
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
 
 class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transformation {
@@ -46,20 +49,32 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
     }
 }
 
-@Keep
 class CircleCropTransformed(val scale: Scale) : Transformed {
-    override val key: String = "CircleCropTransformed($scale)"
+
+    override val key: String by lazy { toString() }
     override val cacheResultToDisk: Boolean = true
 
+    override fun toString(): String = "CircleCropTransformed($scale)"
+
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
+    }
+
     @Keep
-    constructor(jsonObject: JSONObject) : this(Scale.valueOf(jsonObject.getString("scale")))
+    class Serializer : JsonSerializer<CircleCropTransformed> {
+        override fun toJson(t: CircleCropTransformed): JSONObject =
+            JSONObject().apply {
+                t.apply {
+                    put("scale", scale.name)
+                }
+            }
 
-    override fun serializationToJSON(): JSONObject =
-        JSONObject().apply {
-            put("scale", scale.name)
-        }
-
-    override fun toString(): String = key
+        override fun fromJson(jsonObject: JSONObject): CircleCropTransformed =
+            CircleCropTransformed(
+                Scale.valueOf(jsonObject.getString("scale"))
+            )
+    }
 }
 
 fun List<Transformed>.getCircleCropTransformed(): CircleCropTransformed? =

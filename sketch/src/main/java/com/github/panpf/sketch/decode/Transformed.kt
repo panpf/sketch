@@ -1,11 +1,8 @@
 package com.github.panpf.sketch.decode
 
-import androidx.annotation.Keep
-import org.json.JSONObject
+import com.github.panpf.sketch.util.JsonSerializable
 
-@Keep
-interface Transformed {
+interface Transformed : JsonSerializable {
     val key: String
     val cacheResultToDisk: Boolean
-    fun serializationToJSON(): JSONObject
 }

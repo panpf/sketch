@@ -8,7 +8,9 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
 
 class BlurTransformation(
@@ -277,24 +279,34 @@ class BlurTransformation(
     }
 }
 
-@Keep
 class BlurTransformed(val radius: Int, val maskColor: Int?) : Transformed {
-    override val key: String = "BlurTransformed($radius,${maskColor ?: -1})"
+
+    override val key: String by lazy { toString() }
     override val cacheResultToDisk: Boolean = true
 
+    override fun toString(): String = "BlurTransformed($radius,${maskColor ?: -1})"
+
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
+    }
+
     @Keep
-    constructor(jsonObject: JSONObject) : this(
-        jsonObject.getInt("radius"),
-        jsonObject.optInt("maskColor", -1).takeIf { it != -1 }
-    )
+    class Serializer : JsonSerializer<BlurTransformed> {
+        override fun toJson(t: BlurTransformed): JSONObject =
+            JSONObject().apply {
+                t.apply {
+                    put("radius", radius)
+                    put("maskColor", maskColor)
+                }
+            }
 
-    override fun serializationToJSON(): JSONObject =
-        JSONObject().apply {
-            put("radius", radius)
-            put("maskColor", maskColor)
-        }
-
-    override fun toString(): String = key
+        override fun fromJson(jsonObject: JSONObject): BlurTransformed =
+            BlurTransformed(
+                jsonObject.getInt("radius"),
+                jsonObject.optInt("maskColor", -1).takeIf { it != -1 }
+            )
+    }
 }
 
 fun List<Transformed>.getBlurTransformed(): BlurTransformed? =

@@ -3,6 +3,8 @@ package com.github.panpf.sketch.resize
 import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.Size
 import org.json.JSONObject
 
@@ -12,23 +14,10 @@ fun longImageScale(
 ): LongImageScaleDecider =
     LongImageScaleDecider(longImage, other)
 
-@Keep
 data class LongImageScaleDecider constructor(
     private val longImage: Scale,
     private val other: Scale,
 ) : ScaleDecider {
-
-    @Keep
-    constructor(jsonObject: JSONObject) : this(
-        Scale.valueOf(jsonObject.getString("longImage")),
-        Scale.valueOf(jsonObject.getString("other")),
-    )
-
-    override fun serializationToJSON(): JSONObject =
-        JSONObject().apply {
-            put("longImage", longImage.name)
-            put("other", other.name)
-        }
 
     override fun addExifOrientation(
         exifOrientationHelper: ExifOrientationHelper,
@@ -50,4 +39,26 @@ data class LongImageScaleDecider constructor(
 
     override fun toString(): String =
         "LongImageScaleDecider($longImage,$other)"
+
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
+    }
+
+    @Keep
+    class Serializer : JsonSerializer<LongImageScaleDecider> {
+        override fun toJson(t: LongImageScaleDecider): JSONObject =
+            JSONObject().apply {
+                t.apply {
+                    put("longImage", longImage.name)
+                    put("other", other.name)
+                }
+            }
+
+        override fun fromJson(jsonObject: JSONObject): LongImageScaleDecider =
+            LongImageScaleDecider(
+                Scale.valueOf(jsonObject.getString("longImage")),
+                Scale.valueOf(jsonObject.getString("other")),
+            )
+    }
 }

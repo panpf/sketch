@@ -17,11 +17,12 @@ package com.github.panpf.sketch.resize
 
 import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import org.json.JSONObject
 
-@Keep
 data class Resize constructor(
     val width: Int,
     val height: Int,
@@ -31,7 +32,7 @@ data class Resize constructor(
      * Works only when precision is [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
      */
     val scale: ScaleDecider,
-) {
+) : JsonSerializable {
 
     constructor(
         width: Int,
@@ -125,31 +126,49 @@ data class Resize constructor(
             Precision.LESS_PIXELS -> imageWidth * imageHeight > width * height
         }
 
-    @Keep
-    constructor(jsonObject: JSONObject) : this(
-        width = jsonObject.getInt("width"),
-        height = jsonObject.getInt("height"),
-        precision = Class.forName(jsonObject.getString("precisionDeciderClassName"))
-            .getConstructor(JSONObject::class.java)
-            .newInstance(jsonObject.getJSONObject("precisionDeciderContent")) as PrecisionDecider,
-        scale = Class.forName(jsonObject.getString("scaleDeciderClassName"))
-            .getConstructor(JSONObject::class.java)
-            .newInstance(jsonObject.getJSONObject("scaleDeciderContent")) as ScaleDecider,
-    )
-
-    fun serializationToJSON(): JSONObject =
-        JSONObject().apply {
-            put("width", width)
-            put("height", height)
-            put("precisionDeciderClassName", precision::class.java.name)
-            put("precisionDeciderContent", precision.serializationToJSON())
-            put("scaleDeciderClassName", scale::class.java.name)
-            put("scaleDeciderContent", scale.serializationToJSON())
-        }
-
     override fun toString(): String {
         val precisionDeciderString = precision.key.replace("PrecisionDecider", "")
         val scaleDeciderString = scale.key.replace("ScaleDecider", "")
         return "Resize(${width}x$height,${precisionDeciderString},${scaleDeciderString})"
+    }
+
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
+    }
+
+    @Keep
+    class Serializer : JsonSerializer<Resize> {
+        override fun toJson(t: Resize): JSONObject =
+            JSONObject().apply {
+                t.apply {
+                    put("width", width)
+                    put("height", height)
+
+                    val precisionSerializerClass =
+                        precision.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
+                    val precisionSerializer = precisionSerializerClass.newInstance()
+                    put("precisionDeciderSerializerClassName", precisionSerializerClass.name)
+                    put("precisionDeciderContent", precisionSerializer.toJson(precision))
+
+                    val scaleDeciderSerializerClass =
+                        scale.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
+                    val scaleDeciderSerializer = scaleDeciderSerializerClass.newInstance()
+                    put("scaleDeciderSerializerClassName", scaleDeciderSerializerClass.name)
+                    put("scaleDeciderContent", scaleDeciderSerializer.toJson(scale))
+                }
+            }
+
+        override fun fromJson(jsonObject: JSONObject): Resize =
+            Resize(
+                width = jsonObject.getInt("width"),
+                height = jsonObject.getInt("height"),
+                precision = (Class.forName(jsonObject.getString("precisionDeciderSerializerClassName"))
+                    .newInstance() as JsonSerializer<*>)
+                    .fromJson(jsonObject.getJSONObject("precisionDeciderContent")) as PrecisionDecider,
+                scale = (Class.forName(jsonObject.getString("scaleDeciderSerializerClassName"))
+                    .newInstance() as JsonSerializer<*>)
+                    .fromJson(jsonObject.getJSONObject("scaleDeciderContent")) as ScaleDecider,
+            )
     }
 }

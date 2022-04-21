@@ -13,6 +13,8 @@ import androidx.annotation.Px
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
 
 class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation {
@@ -59,7 +61,11 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
     ): TransformResult {
         val bitmapPool = sketch.bitmapPool
         val roundedCornersBitmap =
-            bitmapPool.getOrCreate(input.width, input.height, input.config ?: Bitmap.Config.ARGB_8888)
+            bitmapPool.getOrCreate(
+                input.width,
+                input.height,
+                input.config ?: Bitmap.Config.ARGB_8888
+            )
         val canvas = Canvas(roundedCornersBitmap)
         val paint = Paint()
         paint.isAntiAlias = true
@@ -83,22 +89,32 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
     }
 }
 
-@Keep
 class RoundedCornersTransformed(val radiusArray: FloatArray) : Transformed {
-    override val key: String = "RoundedCornersTransformed($radiusArray)"
+
+    override val key: String by lazy { toString() }
     override val cacheResultToDisk: Boolean = true
 
+    override fun toString(): String = "RoundedCornersTransformed($radiusArray)"
+
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
+    }
+
     @Keep
-    constructor(jsonObject: JSONObject) : this(
-        jsonObject.getString("radiusArray").split(",").map { it.toFloat() }.toFloatArray()
-    )
+    class Serializer : JsonSerializer<RoundedCornersTransformed> {
+        override fun toJson(t: RoundedCornersTransformed): JSONObject =
+            JSONObject().apply {
+                t.apply {
+                    put("radiusArray", radiusArray.joinToString(separator = ","))
+                }
+            }
 
-    override fun serializationToJSON(): JSONObject =
-        JSONObject().apply {
-            put("radiusArray", radiusArray.joinToString(separator = ","))
-        }
-
-    override fun toString(): String = key
+        override fun fromJson(jsonObject: JSONObject): RoundedCornersTransformed =
+            RoundedCornersTransformed(
+                jsonObject.getString("radiusArray").split(",").map { it.toFloat() }.toFloatArray()
+            )
+    }
 }
 
 fun List<Transformed>.getRoundedCornersTransformed(): RoundedCornersTransformed? =

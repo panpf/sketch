@@ -2,6 +2,8 @@ package com.github.panpf.sketch.resize
 
 import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
 
 /**
@@ -22,24 +24,13 @@ data class LongImageClipPrecisionDecider constructor(
     private val precision: Precision = Precision.SAME_ASPECT_RATIO,
 ) : PrecisionDecider {
 
-    @Keep
-    constructor(jsonObject: JSONObject) : this(
-        Precision.valueOf(jsonObject.getString("precision")),
-    )
-
-    // todo 搞一个专门 json 序列化的接口，然后需要序列化的都提供这个接口的实现
-    override fun serializationToJSON(): JSONObject =
-        JSONObject().apply {
-            put("precision", precision.name)
-        }
-
     init {
         require(precision == Precision.EXACTLY || precision == Precision.SAME_ASPECT_RATIO) {
             "precision must be EXACTLY or SAME_ASPECT_RATIO"
         }
     }
 
-    override val key: String by lazy { "LongImageClipPrecisionDecider($precision)" }
+    override val key: String by lazy { toString() }
 
     override fun get(
         sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
@@ -50,4 +41,24 @@ data class LongImageClipPrecisionDecider constructor(
     }
 
     override fun toString(): String = "LongImageClipPrecisionDecider($precision)"
+
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
+    }
+
+    @Keep
+    class Serializer : JsonSerializer<LongImageClipPrecisionDecider> {
+        override fun toJson(t: LongImageClipPrecisionDecider): JSONObject =
+            JSONObject().apply {
+                t.apply {
+                    put("precision", precision.name)
+                }
+            }
+
+        override fun fromJson(jsonObject: JSONObject): LongImageClipPrecisionDecider =
+            LongImageClipPrecisionDecider(
+                Precision.valueOf(jsonObject.getString("precision")),
+            )
+    }
 }
