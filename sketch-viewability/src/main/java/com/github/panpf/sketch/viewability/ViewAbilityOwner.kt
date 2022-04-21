@@ -9,7 +9,6 @@ import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.target.ListenerProvider
 
-// todo 拆分出单独的 ImageViewAbilityOwner
 interface ViewAbilityOwner : ListenerProvider {
 
     val viewAbilityList: List<ViewAbility>

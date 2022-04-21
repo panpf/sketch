@@ -41,7 +41,7 @@ import pl.droidsonroids.gif.transforms.Transform
  *
  * onAnimationEnd
  */
-// todo GifDrawable 在 api 28 上会随机的播放几次后就停止播放了
+// todo GifDrawable will play a random number of times on API 28 and then stop playing
 class GifDrawableDrawableDecoder(
     private val request: ImageRequest,
     private val dataSource: DataSource,
