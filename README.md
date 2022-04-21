@@ -154,6 +154,7 @@ AsyncImage(
 * [DownloadRequest：下载图片到磁盘][download_request]
 * [LoadRequest：加载图片获取 Bitmap][load_request]
 * [预加载图片到内存][preloading]
+* [Lifecycle][lifecycle]
 
 特色功能：
 
@@ -280,6 +281,8 @@ AsyncImage(
 [apk_app_icon]: docs/wiki/apk_app_icon.md
 
 [log]: docs/wiki/log.md
+
+[Lifecycle]: docs/wiki/lifecycle.md
 
 
 [comment]: <> (links)
