@@ -58,8 +58,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 [ImageRequest] 和 [ImageOptions] 的 resizeApplyToDrawable 属性用于将 [Resize] 应用到 [DisplayTarget] 的
 placeholder, error, result Drawable 上
 
-如果此属性为 true，Sketch 会用 [ResizeDrawable] 将 placeholder, error, result Drawable 包一层，对外用 [Resize] 作为
-intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable 进行缩放
+如果此属性为 true，Sketch 会用 [ResizeDrawable] 或 [ResizeAnimatableDrawable] 将 placeholder, error, result
+Drawable 包一层，对外用 [Resize] 作为 intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable 进行缩放
 
 此功能搭配 [CrossfadeTransition] 使用可实现完美过渡，[查看完美过渡介绍][transition]
 
@@ -92,6 +92,8 @@ intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable �
 [DisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/DisplayTarget.kt
 
 [ResizeDrawable]: ../../sketch/src/main/java/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
+
+[ResizeAnimatableDrawable]: ../../sketch/src/main/java/com/github/panpf/sketch/drawable/internal/ResizeAnimatableDrawable.kt
 
 [DefaultLongImageDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/util/LongImageDecider.kt
 

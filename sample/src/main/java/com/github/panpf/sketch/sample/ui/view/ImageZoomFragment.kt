@@ -44,20 +44,10 @@ class ImageZoomFragment : BindingFragment<FragmentImageDetailBinding>() {
         binding.imageFragmentZoomImageView.apply {
             zoomAbility.lifecycle = viewLifecycleOwner.lifecycle
             displayImage(imageDetail.firstMiddenUrl) {
-                // todo 加了 viewLifecycleOwner.lifecycle 后不会自动播放了
-//                lifecycle(viewLifecycleOwner.lifecycle)
+                lifecycle(viewLifecycleOwner.lifecycle)
                 placeholder(
-                    MemoryCacheStateImage(
-                        imageDetail.placeholderImageMemoryKey,
-                        null
-                    )
+                    MemoryCacheStateImage(imageDetail.placeholderImageMemoryKey, null)
                 )
-//                saveCellularTraffic()
-//                error(newErrorStateImage(ColorStateImage(Color.RED)){
-//                    uriEmptyError(ColorStateImage(Color.RED))
-//                    saveCellularTrafficError(ColorStateImage(Color.RED))
-//                    pauseLoadWhenScrollingError(ColorStateImage(Color.RED))
-//                })
             }
         }
 

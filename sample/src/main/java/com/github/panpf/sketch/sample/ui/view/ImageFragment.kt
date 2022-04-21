@@ -24,6 +24,8 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
     }
 
     override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
-        binding.imageFragmentImageView.displayImage(args.url)
+        binding.imageFragmentImageView.displayImage(args.url) {
+            lifecycle(viewLifecycleOwner.lifecycle)
+        }
     }
 }

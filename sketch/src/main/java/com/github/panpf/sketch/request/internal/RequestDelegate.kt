@@ -103,11 +103,12 @@ class ViewTargetRequestDelegate(
     }
 
     override fun start() {
+        target.view.requestManager.setRequest(this)
+
         lifecycle?.addObserver(this)
         if (target is LifecycleObserver) {
             lifecycle?.removeAndAddObserver(target)
         }
-        target.view.requestManager.setRequest(this)
     }
 
     override fun dispose() {

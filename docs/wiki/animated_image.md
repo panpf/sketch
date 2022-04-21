@@ -72,21 +72,21 @@ imageView.displayImage("https://www.example.com/image.gif") {
 }
 ```
 
-## 控制播放/停止
+## 控制播放
 
-动图相关的 [DrawableDecoder] 统一返回 [SketchAnimatableDrawable]
+动图相关的 [DrawableDecoder] 统一返回 [SketchAnimatableDrawable]，[SketchAnimatableDrawable] 实现了
+Animatable2Compat 接口
 
-##### 初始状态
+你可以通过 Animatable2Compat 接口的 start() 和 stop() 方法手动控制开始播放和停止播放
 
-Sketch 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会根据 lifecycle 的状态决定是否开始播放
+#### 初始状态
 
-##### 手动控制
+[GenericViewTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查 ImageRequest.lifecycle 的状态，如果
+lifecycle 的状态大于 start 就开始播放
 
-你可以通过 [SketchAnimatableDrawable] 的 start() 和 stop() 方法控制开始播放和停止播放
+#### 自动控制
 
-##### 自动控制
-
-Sketch 会监听 lifecycle 的状态自动的播放或停止动图
+[GenericViewTarget] 会监听 ImageRequest.lifecycle 的 start 和 stop 状态自动控制播放
 
 [koral--]: https://github.com/koral--
 
