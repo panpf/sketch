@@ -61,16 +61,16 @@ sealed class RequestDelegate : DefaultLifecycleObserver {
 
 /** A request delegate for a one-shot requests with no target or a non-[ViewTarget]. */
 internal class BaseRequestDelegate(
-    private val lifecycle: Lifecycle?,
+    private val lifecycle: Lifecycle,
     private val job: Job
 ) : RequestDelegate() {
 
     override fun start() {
-        lifecycle?.addObserver(this)
+        lifecycle.addObserver(this)
     }
 
     override fun complete() {
-        lifecycle?.removeObserver(this)
+        lifecycle.removeObserver(this)
     }
 
     override fun dispose() {
@@ -85,7 +85,7 @@ class ViewTargetRequestDelegate(
     private val sketch: Sketch,
     private val initialRequest: DisplayRequest,
     private val target: ViewTarget<*>,
-    private val lifecycle: Lifecycle?,
+    private val lifecycle: Lifecycle,
     private val job: Job
 ) : RequestDelegate() {
 
@@ -105,18 +105,18 @@ class ViewTargetRequestDelegate(
     override fun start() {
         target.view.requestManager.setRequest(this)
 
-        lifecycle?.addObserver(this)
+        lifecycle.addObserver(this)
         if (target is LifecycleObserver) {
-            lifecycle?.removeAndAddObserver(target)
+            lifecycle.removeAndAddObserver(target)
         }
     }
 
     override fun dispose() {
         job.cancel()
         if (target is LifecycleObserver) {
-            lifecycle?.removeObserver(target)
+            lifecycle.removeObserver(target)
         }
-        lifecycle?.removeObserver(this)
+        lifecycle.removeObserver(this)
     }
 
     override fun onDestroy(owner: LifecycleOwner) {

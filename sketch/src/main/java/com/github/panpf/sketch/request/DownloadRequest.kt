@@ -354,7 +354,7 @@ interface DownloadRequest : ImageRequest {
         override val ignoreExifOrientation: Boolean,
         override val bitmapResultDiskCachePolicy: CachePolicy,
         override val target: Target?,
-        override val lifecycle: Lifecycle?,
+        override val lifecycle: Lifecycle,
         override val disabledAnimatedImage: Boolean,
         override val bitmapMemoryCachePolicy: CachePolicy,
         override val placeholderImage: StateImage?,

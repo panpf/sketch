@@ -117,7 +117,7 @@ interface ImageRequest {
     /** @see com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheDecodeInterceptor */
     val bitmapResultDiskCachePolicy: CachePolicy
     val target: Target?
-    val lifecycle: Lifecycle?
+    val lifecycle: Lifecycle
 
     val disabledAnimatedImage: Boolean
     val bitmapMemoryCachePolicy: CachePolicy
@@ -591,7 +591,7 @@ interface ImageRequest {
         open fun build(): ImageRequest {
             val listener = combinationListener()
             val progressListener = combinationProgressListener()
-            val lifecycle = lifecycle ?: resolvedLifecycle ?: resolveLifecycle()
+            val lifecycle = lifecycle ?: resolvedLifecycle ?: resolveLifecycle() ?: GlobalLifecycle
             val definedOptions = ImageOptions {
                 depth(depth)
                 parameters(parametersBuilder?.build())
