@@ -47,7 +47,7 @@ internal class ScaleDragHelper constructor(
     private val supportMatrix = Matrix() // 存储用户通过触摸事件产生的缩放、位移和外部设置的旋转信息
     private val drawMatrix = Matrix() // 存储 baseMatrix 和 supportMatrix 融合后的信息，用于绘制
     private var flingHelper: FlingHelper? = null // 执行飞速滚动
-    private var locationRunner: LocationRunner? = null // 定位执行器
+    private var scrollHelper: ScrollHelper? = null // 定位执行器
     private val scaleDragGestureDetector = ScaleDragGestureDetector(context, sketch) // 缩放和拖拽手势识别器
     private val tempDisplayRectF = RectF()
     var horScrollEdge = EDGE_NONE // 横向滚动边界
@@ -78,15 +78,15 @@ internal class ScaleDragHelper constructor(
     }
 
     fun onTouchEvent(event: MotionEvent): Boolean { // 定位操作不能被打断
-        if (locationRunner != null) {
-            if (locationRunner!!.isRunning) {
+        if (scrollHelper != null) {
+            if (scrollHelper!!.isRunning) {
                 logger.v(Zoomer.MODULE) {
                     "disallow parent intercept touch event. location running"
                 }
                 requestDisallowInterceptTouchEvent(zoomer.view, true)
                 return true
             }
-            locationRunner = null
+            scrollHelper = null
         }
 
         // 缩放、拖拽手势处理
@@ -375,7 +375,7 @@ internal class ScaleDragHelper constructor(
 
     fun cancelFling() {
         if (flingHelper != null) {
-            flingHelper!!.cancelFling()
+            flingHelper!!.cancel()
             flingHelper = null
         }
     }
@@ -405,8 +405,8 @@ internal class ScaleDragHelper constructor(
         newX = pointF.x
         newY = pointF.y
         cancelFling()
-        if (locationRunner != null) {
-            locationRunner!!.cancel()
+        if (scrollHelper != null) {
+            scrollHelper!!.cancel()
         }
         val imageViewWidth = imageViewSize.width
         val imageViewHeight = imageViewSize.height
@@ -451,8 +451,8 @@ internal class ScaleDragHelper constructor(
             )
         }
         if (animate) {
-            locationRunner = LocationRunner(context, sketch, zoomer, this)
-            locationRunner!!.location(startX, startY, trimCenterLocationX, trimCenterLocationY)
+            scrollHelper = ScrollHelper(context, sketch, zoomer, this)
+            scrollHelper!!.start(startX, startY, trimCenterLocationX, trimCenterLocationY)
         } else {
             translateBy(
                 -(trimCenterLocationX - startX).toFloat(),
