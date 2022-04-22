@@ -22,6 +22,8 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
 import com.github.panpf.sketch.Sketch
+import java.lang.Float.isInfinite
+import java.lang.Float.isNaN
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -33,46 +35,46 @@ open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch
     }
 
     private val logger = sketch.logger
-    private val mTouchSlop: Float
-    private val mMinimumVelocity: Float
-    private val mDetector: ScaleGestureDetector
-    private var mListener: OnScaleDragGestureListener? = null
+    private val touchSlop: Float
+    private val minimumVelocity: Float
+    private val scaleGestureDetector: ScaleGestureDetector
+    private var scaleDragGestureListener: OnScaleDragGestureListener? = null
     private var actionListener: ActionListener? = null
-    private var mLastTouchX = 0f
-    private var mLastTouchY = 0f
-    private var mVelocityTracker: VelocityTracker? = null
+    private var lastTouchX: Float = 0f
+    private var lastTouchY: Float = 0f
+    private var velocityTracker: VelocityTracker? = null
+    private var activePointerId: Int = INVALID_POINTER_ID
+    private var activePointerIndex: Int = 0
+
     var isDragging = false
         private set
-    private var mActivePointerId = INVALID_POINTER_ID
-    private var mActivePointerIndex = 0
+
+    val isScaling: Boolean
+        get() = scaleGestureDetector.isInProgress
 
     init {
         val configuration = ViewConfiguration.get(context)
-        mMinimumVelocity = configuration.scaledMinimumFlingVelocity.toFloat()
-        mTouchSlop = configuration.scaledTouchSlop.toFloat()
-        mDetector = ScaleGestureDetector(context, object : OnScaleGestureListener {
+        minimumVelocity = configuration.scaledMinimumFlingVelocity.toFloat()
+        touchSlop = configuration.scaledTouchSlop.toFloat()
+        scaleGestureDetector = ScaleGestureDetector(context, object : OnScaleGestureListener {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
-                val scaleFactor = detector.scaleFactor
-                if (java.lang.Float.isNaN(scaleFactor) || java.lang.Float.isInfinite(scaleFactor)) return false
-                mListener!!.onScale(
-                    scaleFactor,
-                    detector.focusX, detector.focusY
-                )
+                val scaleFactor =
+                    detector.scaleFactor.takeIf { !isNaN(it) && !isInfinite(it) } ?: return false
+                scaleDragGestureListener?.onScale(scaleFactor, detector.focusX, detector.focusY)
                 return true
             }
 
-            override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
-                return mListener!!.onScaleBegin()
-            }
+            override fun onScaleBegin(detector: ScaleGestureDetector): Boolean =
+                scaleDragGestureListener?.onScaleBegin() == true
 
             override fun onScaleEnd(detector: ScaleGestureDetector) {
-                mListener!!.onScaleEnd()
+                scaleDragGestureListener?.onScaleEnd()
             }
         })
     }
 
     fun setOnGestureListener(listener: OnScaleDragGestureListener?) {
-        mListener = listener
+        scaleDragGestureListener = listener
     }
 
     fun setActionListener(actionListener: ActionListener?) {
@@ -81,24 +83,21 @@ open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch
 
     private fun getActiveX(ev: MotionEvent): Float {
         return try {
-            ev.getX(mActivePointerIndex)
+            ev.getX(activePointerIndex)
         } catch (e: Exception) {
             ev.x
         }
     }
 
     private fun getActiveY(ev: MotionEvent): Float = try {
-        ev.getY(mActivePointerIndex)
+        ev.getY(activePointerIndex)
     } catch (e: Exception) {
         ev.y
     }
 
-    val isScaling: Boolean
-        get() = mDetector.isInProgress
-
     fun onTouchEvent(ev: MotionEvent): Boolean {
         try {
-            mDetector.onTouchEvent(ev)
+            scaleGestureDetector.onTouchEvent(ev)
         } catch (e: IllegalArgumentException) {
             // Fix for support lib bug, happening when onDestroy is
             e.printStackTrace()
@@ -107,8 +106,8 @@ open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch
         try {
             val action = ev.action
             when (action and MotionEvent.ACTION_MASK) {
-                MotionEvent.ACTION_DOWN -> mActivePointerId = ev.getPointerId(0)
-                MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> mActivePointerId =
+                MotionEvent.ACTION_DOWN -> activePointerId = ev.getPointerId(0)
+                MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> activePointerId =
                     INVALID_POINTER_ID
                 MotionEvent.ACTION_POINTER_UP -> {
                     // Ignore deprecation, ACTION_POINTER_ID_MASK and
@@ -116,18 +115,18 @@ open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch
                     // You can have either deprecation or lint target api warning
                     val pointerIndex = getPointerIndex(ev.action)
                     val pointerId = ev.getPointerId(pointerIndex)
-                    if (pointerId == mActivePointerId) {
+                    if (pointerId == activePointerId) {
                         // This was our active pointer going up. Choose a new
                         // active pointer and adjust accordingly.
                         val newPointerIndex = if (pointerIndex == 0) 1 else 0
-                        mActivePointerId = ev.getPointerId(newPointerIndex)
-                        mLastTouchX = ev.getX(newPointerIndex)
-                        mLastTouchY = ev.getY(newPointerIndex)
+                        activePointerId = ev.getPointerId(newPointerIndex)
+                        lastTouchX = ev.getX(newPointerIndex)
+                        lastTouchY = ev.getY(newPointerIndex)
                     }
                 }
             }
-            mActivePointerIndex = ev
-                .findPointerIndex(if (mActivePointerId != INVALID_POINTER_ID) mActivePointerId else 0)
+            activePointerIndex = ev
+                .findPointerIndex(if (activePointerId != INVALID_POINTER_ID) activePointerId else 0)
         } catch (e: IllegalArgumentException) {
             // Fix for support lib bug, happening when onDestroy is
             e.printStackTrace()
@@ -136,14 +135,14 @@ open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch
         return try {
             when (ev.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    mVelocityTracker = VelocityTracker.obtain()
-                    if (null != mVelocityTracker) {
-                        mVelocityTracker!!.addMovement(ev)
+                    velocityTracker = VelocityTracker.obtain()
+                    if (null != velocityTracker) {
+                        velocityTracker!!.addMovement(ev)
                     } else {
                         logger.w(NAME, "Velocity tracker is null")
                     }
-                    mLastTouchX = getActiveX(ev)
-                    mLastTouchY = getActiveY(ev)
+                    lastTouchX = getActiveX(ev)
+                    lastTouchY = getActiveY(ev)
                     isDragging = false
                     if (actionListener != null) {
                         actionListener!!.onActionDown(ev)
@@ -152,28 +151,28 @@ open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch
                 MotionEvent.ACTION_MOVE -> {
                     val x = getActiveX(ev)
                     val y = getActiveY(ev)
-                    val dx = x - mLastTouchX
-                    val dy = y - mLastTouchY
+                    val dx = x - lastTouchX
+                    val dy = y - lastTouchY
                     if (!isDragging) {
                         // Use Pythagoras to see if drag length is larger than
                         // touch slop
-                        isDragging = sqrt((dx * dx + dy * dy).toDouble()) >= mTouchSlop
+                        isDragging = sqrt((dx * dx + dy * dy).toDouble()) >= touchSlop
                     }
                     if (isDragging) {
-                        mListener!!.onDrag(dx, dy)
-                        mLastTouchX = x
-                        mLastTouchY = y
-                        if (null != mVelocityTracker) {
-                            mVelocityTracker!!.addMovement(ev)
+                        scaleDragGestureListener!!.onDrag(dx, dy)
+                        lastTouchX = x
+                        lastTouchY = y
+                        if (null != velocityTracker) {
+                            velocityTracker!!.addMovement(ev)
                         }
                     }
                 }
                 MotionEvent.ACTION_CANCEL -> {
 
                     // Recycle Velocity Tracker
-                    if (null != mVelocityTracker) {
-                        mVelocityTracker!!.recycle()
-                        mVelocityTracker = null
+                    if (null != velocityTracker) {
+                        velocityTracker!!.recycle()
+                        velocityTracker = null
                     }
                     if (actionListener != null) {
                         actionListener!!.onActionCancel(ev)
@@ -181,22 +180,22 @@ open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch
                 }
                 MotionEvent.ACTION_UP -> {
                     if (isDragging) {
-                        if (null != mVelocityTracker) {
-                            mLastTouchX = getActiveX(ev)
-                            mLastTouchY = getActiveY(ev)
+                        if (null != velocityTracker) {
+                            lastTouchX = getActiveX(ev)
+                            lastTouchY = getActiveY(ev)
 
                             // Compute velocity within the last 1000ms
-                            mVelocityTracker!!.addMovement(ev)
-                            mVelocityTracker!!.computeCurrentVelocity(1000)
-                            val vX = mVelocityTracker!!.xVelocity
-                            val vY = mVelocityTracker!!
+                            velocityTracker!!.addMovement(ev)
+                            velocityTracker!!.computeCurrentVelocity(1000)
+                            val vX = velocityTracker!!.xVelocity
+                            val vY = velocityTracker!!
                                 .yVelocity
 
                             // If the velocity is greater than minVelocity, call
                             // listener
-                            if (abs(vX).coerceAtLeast(abs(vY)) >= mMinimumVelocity) {
-                                mListener!!.onFling(
-                                    mLastTouchX, mLastTouchY, -vX,
+                            if (abs(vX).coerceAtLeast(abs(vY)) >= minimumVelocity) {
+                                scaleDragGestureListener!!.onFling(
+                                    lastTouchX, lastTouchY, -vX,
                                     -vY
                                 )
                             }
@@ -204,9 +203,9 @@ open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch
                     }
 
                     // Recycle Velocity Tracker
-                    if (null != mVelocityTracker) {
-                        mVelocityTracker!!.recycle()
-                        mVelocityTracker = null
+                    if (null != velocityTracker) {
+                        velocityTracker!!.recycle()
+                        velocityTracker = null
                     }
                     if (actionListener != null) {
                         actionListener!!.onActionUp(ev)
@@ -228,11 +227,7 @@ open class ScaleDragGestureDetector constructor(context: Context, sketch: Sketch
 
     interface OnScaleDragGestureListener {
         fun onDrag(dx: Float, dy: Float)
-        fun onFling(
-            startX: Float, startY: Float, velocityX: Float,
-            velocityY: Float
-        )
-
+        fun onFling(startX: Float, startY: Float, velocityX: Float, velocityY: Float)
         fun onScale(scaleFactor: Float, focusX: Float, focusY: Float)
         fun onScaleBegin(): Boolean
         fun onScaleEnd()
