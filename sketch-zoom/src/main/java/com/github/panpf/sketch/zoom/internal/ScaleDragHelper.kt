@@ -46,7 +46,7 @@ internal class ScaleDragHelper constructor(
     private val baseMatrix = Matrix() // 存储默认的缩放和位移信息
     private val supportMatrix = Matrix() // 存储用户通过触摸事件产生的缩放、位移和外部设置的旋转信息
     private val drawMatrix = Matrix() // 存储 baseMatrix 和 supportMatrix 融合后的信息，用于绘制
-    private var flingRunner: FlingRunner? = null // 执行飞速滚动
+    private var flingHelper: FlingHelper? = null // 执行飞速滚动
     private var locationRunner: LocationRunner? = null // 定位执行器
     private val scaleDragGestureDetector = ScaleDragGestureDetector(context, sketch) // 缩放和拖拽手势识别器
     private val tempDisplayRectF = RectF()
@@ -155,8 +155,8 @@ internal class ScaleDragHelper constructor(
     }
 
     override fun onFling(startX: Float, startY: Float, velocityX: Float, velocityY: Float) {
-        flingRunner = FlingRunner(context, sketch, zoomer, this@ScaleDragHelper)
-        flingRunner!!.fling(velocityX.toInt(), velocityY.toInt())
+        flingHelper = FlingHelper(context, sketch, zoomer, this@ScaleDragHelper)
+        flingHelper!!.start(velocityX.toInt(), velocityY.toInt())
         onDragFling(startX, startY, velocityX, velocityY)
     }
 
@@ -374,9 +374,9 @@ internal class ScaleDragHelper constructor(
     }
 
     fun cancelFling() {
-        if (flingRunner != null) {
-            flingRunner!!.cancelFling()
-            flingRunner = null
+        if (flingHelper != null) {
+            flingHelper!!.cancelFling()
+            flingHelper = null
         }
     }
 
