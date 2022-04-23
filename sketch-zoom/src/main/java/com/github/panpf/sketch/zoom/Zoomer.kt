@@ -175,6 +175,7 @@ class Zoomer constructor(
     }
 
     internal fun onTouchEvent(event: MotionEvent): Boolean {
+        if (drawableSize.isEmpty) return false
         val scaleAndDragConsumed = scaleDragHelper.onTouchEvent(event)
         val tapConsumed = tapHelper.onTouchEvent(event)
         return scaleAndDragConsumed || tapConsumed
