@@ -22,7 +22,7 @@
     * [FixedScaleDecider]：始终使用指定的 [Scale]
     * [LongImageScaleDecider]：指定两个 [Scale]，长图使用第一个，否则使用第二个
 
-> 1. 长图的判定规则：[LongImageClipPrecisionDecider] 使用 [DefaultLongImageDecider] 来判定长图，具体规则为 [Resize] 的宽高比和原图的宽高比相差超过 2 倍
+> 1. 长图规则：[LongImageClipPrecisionDecider] 默认使用 [Sketch].longImageDecider 来判定长图，默认实现为 [DefaultLongImageDecider]
 > 2. 使用 [LongImageClipPrecisionDecider] 有助于提高长图在网格列表中的清晰度，[查看具体介绍][long_image_grid_thumbnails]
 
 ### 配置
@@ -62,6 +62,8 @@ placeholder, error, result Drawable 上
 Drawable 包一层，对外用 [Resize] 作为 intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable 进行缩放
 
 此功能搭配 [CrossfadeTransition] 使用可实现完美过渡，[查看完美过渡介绍][transition]
+
+[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
 
 [Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Resize.kt
 

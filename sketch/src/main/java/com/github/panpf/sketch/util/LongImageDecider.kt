@@ -3,30 +3,32 @@ package com.github.panpf.sketch.util
 interface LongImageDecider {
 
     fun isLongImage(
-        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+        imageWidth: Int, imageHeight: Int, targetWidth: Int, targetHeight: Int
     ): Boolean
 }
 
 open class DefaultLongImageDecider(
-    val minDifferenceOfAspectRatio: Float = DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO
-): LongImageDecider {
-
-    companion object {
-        const val DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO: Float = 3f
-    }
+    val ratioMultipleWhenSameDirection: Float = 2.5f,
+    val ratioMultipleWhenNotSameDirection: Float = 5.0f,
+) : LongImageDecider {
 
     override fun isLongImage(
-        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+        imageWidth: Int, imageHeight: Int, targetWidth: Int, targetHeight: Int
     ): Boolean {
         val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
-        val resizeAspectRatio = resizeWidth.toFloat().div(resizeHeight).format(1)
-        val maxAspectRatio = resizeAspectRatio.coerceAtLeast(imageAspectRatio)
-        val minAspectRatio = resizeAspectRatio.coerceAtMost(imageAspectRatio)
-        return maxAspectRatio >= (minAspectRatio * minDifferenceOfAspectRatio)
+        val targetAspectRatio = targetWidth.toFloat().div(targetHeight).format(1)
+        val maxAspectRatio = targetAspectRatio.coerceAtLeast(imageAspectRatio)
+        val minAspectRatio = targetAspectRatio.coerceAtMost(imageAspectRatio)
+        return when {
+            (imageWidth >= imageHeight && targetWidth >= targetHeight)
+                    || (imageWidth <= imageHeight && targetWidth <= targetHeight) -> {
+                maxAspectRatio >= (minAspectRatio * ratioMultipleWhenSameDirection)
+            }
+            else -> {
+                maxAspectRatio >= (minAspectRatio * ratioMultipleWhenNotSameDirection)
+            }
+        }
     }
-
-    override fun toString(): String =
-        "DefaultLongImageDecider($minDifferenceOfAspectRatio)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -34,12 +36,19 @@ open class DefaultLongImageDecider(
 
         other as DefaultLongImageDecider
 
-        if (minDifferenceOfAspectRatio != other.minDifferenceOfAspectRatio) return false
+        if (ratioMultipleWhenSameDirection != other.ratioMultipleWhenSameDirection) return false
+        if (ratioMultipleWhenNotSameDirection != other.ratioMultipleWhenNotSameDirection) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return minDifferenceOfAspectRatio.hashCode()
+        var result = ratioMultipleWhenSameDirection.hashCode()
+        result = 31 * result + ratioMultipleWhenNotSameDirection.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "DefaultLongImageDecider(sameDirection=$ratioMultipleWhenSameDirection,notSameDirection=$ratioMultipleWhenNotSameDirection)"
     }
 }

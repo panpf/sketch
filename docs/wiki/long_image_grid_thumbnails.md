@@ -8,7 +8,7 @@
 SAME_ASPECT_RATIO 或 EXACTLY（创建时指定），否则返回 LESS_PIXELS，这样既确保了长图有一个清晰的缩略图，又保证了非长图的快速加载
 
 > 注意：
-> 1. 长图的判定规则：[LongImageClipPrecisionDecider] 使用 [DefaultLongImageDecider] 来判定长图，具体规则为 [Resize] 的宽高比和原图的宽高比相差超过 2 倍
+> 1. 长图规则：[LongImageClipPrecisionDecider] 默认使用 [Sketch].longImageDecider 来判定长图，默认实现为 [DefaultLongImageDecider]
 > 2. SAME_ASPECT_RATIO 和 EXACTLY 会使用 BitmapRegionDecoder 对原图进行裁剪，因此可以得到一张较清晰的缩略图
 
 ### 使用
@@ -18,6 +18,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
     resizePrecision(longImageClipPrecision(Precision.SAME_ASPECT_RATIO))
 }
 ```
+
+[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
 
 [Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Resize.kt
 

@@ -89,7 +89,7 @@ sketchZoomImageView.zoomAbility.readModeEnabled = true
 
 [SketchZoomImageView] 通过 [ReadModeDecider] 来判定是否需要使用阅读模式，默认实现是 [LongImageReadModeDecider]，仅对长图使用阅读模式
 
-> 长图的判定规则：View 的宽高比和原图的宽高比相差超过 2 倍，具体请查看 [LongImageReadModeDecider] 的源码
+> 长图规则：[LongImageReadModeDecider] 默认使用 [Sketch].longImageDecider 来判定长图，默认实现为 [DefaultLongImageDecider]
 
 如果你想修改阅读模式判定规则可以实现 [ReadModeDecider] 接口，然后通过 [ZoomAbility] 的 readModeDecider 属性应用，如下：
 
@@ -214,6 +214,8 @@ sketchZoomImageView.zoomAbility.addOnTileChangedListener { tiles: Tiles ->
 
 }
 ```
+
+[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
 
 [BitmapRegionDecoder]: https://developer.android.google.cn/reference/android/graphics/BitmapRegionDecoder.html
 
