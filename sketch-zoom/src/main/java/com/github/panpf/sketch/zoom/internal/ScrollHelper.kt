@@ -19,18 +19,15 @@ import android.content.Context
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Scroller
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.zoom.Zoomer
 
-internal class ScrollHelper constructor(
+internal class ScrollHelper(
     val context: Context,
-    sketch: Sketch,
     zoomer: Zoomer,
     private val scaleDragHelper: ScaleDragHelper
 ) {
 
     private val view = zoomer.view
-    private val logger = sketch.logger
     private var scrollTask: ScrollTask? = null
 
     val isRunning: Boolean
@@ -39,10 +36,6 @@ internal class ScrollHelper constructor(
     fun start(startX: Int, startY: Int, endX: Int, endY: Int) {
         cancel()
 
-        logger.d(Zoomer.MODULE) {
-            "scroll. start=${startX}x${startY}, end=${endX}x${endY}"
-        }
-
         val locationTask = ScrollTask(
             context,
             onTranslateBy = { dx: Float, dy: Float ->
@@ -50,7 +43,6 @@ internal class ScrollHelper constructor(
                 ViewCompat.postOnAnimation(view, scrollTask)
             },
             onFinished = {
-                logger.d(Zoomer.MODULE) { "Finished" }
                 this@ScrollHelper.scrollTask = null
             }
         )

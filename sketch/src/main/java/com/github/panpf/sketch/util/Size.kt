@@ -27,6 +27,10 @@ open class Size(var width: Int, var height: Int) {
     val isEmpty: Boolean
         get() = width == 0 || height == 0
 
+    operator fun component1(): Int = width
+
+    operator fun component2(): Int = height
+
     override fun toString(): String = width.toString() + "x" + height
 
     override fun equals(other: Any?): Boolean {

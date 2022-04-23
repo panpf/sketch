@@ -33,6 +33,7 @@ import kotlin.math.roundToInt
 /**
  * 缩放和拖拽处理，控制 Matrix 变化，更新 Matrix
  */
+// todo 待优化
 internal class ScaleDragHelper constructor(
     private val context: Context,
     private val sketch: Sketch,
@@ -155,7 +156,7 @@ internal class ScaleDragHelper constructor(
     }
 
     override fun onFling(startX: Float, startY: Float, velocityX: Float, velocityY: Float) {
-        flingHelper = FlingHelper(context, sketch, zoomer, this@ScaleDragHelper)
+        flingHelper = FlingHelper(context, zoomer, this@ScaleDragHelper)
         flingHelper!!.start(velocityX.toInt(), velocityY.toInt())
         onDragFling(startX, startY, velocityX, velocityY)
     }
@@ -451,7 +452,7 @@ internal class ScaleDragHelper constructor(
             )
         }
         if (animate) {
-            scrollHelper = ScrollHelper(context, sketch, zoomer, this)
+            scrollHelper = ScrollHelper(context, zoomer, this)
             scrollHelper!!.start(startX, startY, trimCenterLocationX, trimCenterLocationY)
         } else {
             translateBy(
@@ -463,7 +464,7 @@ internal class ScaleDragHelper constructor(
 
     fun zoom(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
         if (animate) {
-            ZoomRunner(sketch, zoomer, this, zoomScale, scale, focalX, focalY).zoom()
+            ZoomHelper(zoomer, this).start(scale, focalX, focalY)
         } else {
             val baseScale = defaultZoomScale
             val supportZoomScale = supportZoomScale

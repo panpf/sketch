@@ -19,31 +19,26 @@ import android.content.Context
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
-import com.github.panpf.sketch.zoom.internal.format
 import com.github.panpf.sketch.zoom.Zoomer
 
-internal class TapHelper constructor(context: Context, private val zoomer: Zoomer) :
-    SimpleOnGestureListener() {
+internal class TapHelper constructor(
+    context: Context, private val zoomer: Zoomer
+) : SimpleOnGestureListener() {
 
+    private val view = zoomer.view
     private val tapGestureDetector: GestureDetector = GestureDetector(context, this)
 
-    fun onTouchEvent(event: MotionEvent): Boolean {
-        return tapGestureDetector.onTouchEvent(event)
-    }
+    fun onTouchEvent(event: MotionEvent): Boolean = tapGestureDetector.onTouchEvent(event)
 
-    override fun onDown(e: MotionEvent): Boolean {
-        return true
-    }
+    override fun onDown(e: MotionEvent): Boolean = true
 
-    override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-        return zoomer.onViewTapListener?.onViewTap(zoomer.view, e.x, e.y) != null
-                || zoomer.view.performClick()
-    }
+    override fun onSingleTapConfirmed(e: MotionEvent): Boolean =
+        zoomer.onViewTapListener?.onViewTap(view, e.x, e.y) != null || view.performClick()
 
     override fun onLongPress(e: MotionEvent) {
         super.onLongPress(e)
-        zoomer.onViewLongPressListener?.onViewLongPress(zoomer.view, e.x, e.y)
-            ?: zoomer.view.performLongClick()
+        zoomer.onViewLongPressListener?.onViewLongPress(view, e.x, e.y)
+            ?: view.performLongClick()
     }
 
     override fun onDoubleTap(ev: MotionEvent): Boolean {

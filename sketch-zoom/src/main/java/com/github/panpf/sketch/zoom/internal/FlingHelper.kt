@@ -22,19 +22,16 @@ import android.content.Context
 import android.graphics.RectF
 import android.widget.OverScroller
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.zoom.Zoomer
 import kotlin.math.roundToInt
 
-internal class FlingHelper constructor(
+internal class FlingHelper(
     val context: Context,
-    sketch: Sketch,
     private val zoomer: Zoomer,
     private val scaleDragHelper: ScaleDragHelper
 ) {
 
     private val view = zoomer.view
-    private val logger = sketch.logger
     private var flingTask: FlingTask? = null
 
     val isRunning: Boolean
@@ -74,9 +71,6 @@ internal class FlingHelper constructor(
         }
 
         if (startX != maxX || startY != maxY) {
-            logger.d(Zoomer.MODULE) {
-                "fling. start=${startX}x${startY}, min=${minX}x${minY}, max=${maxX}x${maxY}"
-            }
             val flingTask = FlingTask(
                 context,
                 onTranslateBy = { dx: Float, dy: Float ->
@@ -84,7 +78,6 @@ internal class FlingHelper constructor(
                     ViewCompat.postOnAnimation(view, flingTask)
                 },
                 onFinished = {
-                    logger.d(Zoomer.MODULE) { "Finished" }
                     this@FlingHelper.flingTask = null
                 }
             )
@@ -95,7 +88,6 @@ internal class FlingHelper constructor(
     }
 
     fun cancel() {
-        logger.d(Zoomer.MODULE) { "cancel fling" }
         val flingTask = this@FlingHelper.flingTask
         if (flingTask != null) {
             flingTask.stop()

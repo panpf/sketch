@@ -17,7 +17,7 @@ import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
 import com.github.panpf.sketch.zoom.internal.TapHelper
 
-// todo 和 ViewPager2 一起使用时，容易被 pager 滑动拦截
+// todo 和 ViewPager 一起使用时，如果只有竖向可以滑动时，竖向滑动操作容易被 pager 的横向滑动拦截
 class Zoomer constructor(
     val context: Context,
     val sketch: Sketch,
@@ -52,7 +52,7 @@ class Zoomer constructor(
                 it.onScaleChanged(scaleFactor, focusX, focusY)
             }
         })
-    private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, sketch, this)
+    private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, this)
     private var _rotateDegrees = 0
 
     private var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
@@ -113,7 +113,7 @@ class Zoomer constructor(
             val enabled = scrollBarHelper != null
             if (enabled != value) {
                 scrollBarHelper = if (value) {
-                    ScrollBarHelper(context, sketch, this).apply { reset() }
+                    ScrollBarHelper(context, this).apply { reset() }
                 } else {
                     null
                 }
