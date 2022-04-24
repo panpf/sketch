@@ -17,7 +17,6 @@ import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
 import com.github.panpf.sketch.zoom.internal.TapHelper
 
-// todo 和 ViewPager 一起使用时，如果只有竖向可以滑动时，竖向滑动操作容易被 pager 的横向滑动拦截
 class Zoomer constructor(
     val context: Context,
     val sketch: Sketch,
