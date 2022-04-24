@@ -21,7 +21,7 @@ import android.widget.Scroller
 import androidx.core.view.ViewCompat
 import com.github.panpf.sketch.zoom.Zoomer
 
-internal class ScrollHelper(
+internal class LocationHelper(
     val context: Context,
     zoomer: Zoomer,
     private val scaleDragHelper: ScaleDragHelper
@@ -43,20 +43,20 @@ internal class ScrollHelper(
                 ViewCompat.postOnAnimation(view, scrollTask)
             },
             onFinished = {
-                this@ScrollHelper.scrollTask = null
+                this@LocationHelper.scrollTask = null
             }
         )
-        this@ScrollHelper.scrollTask = locationTask
+        this@LocationHelper.scrollTask = locationTask
         locationTask.start(startX, startY, endX, endY)
         ViewCompat.postOnAnimation(view, locationTask)
     }
 
     fun cancel() {
-        val locationTask = this@ScrollHelper.scrollTask
+        val locationTask = this@LocationHelper.scrollTask
         if (locationTask != null) {
             locationTask.stop()
             view.removeCallbacks(locationTask)
-            this@ScrollHelper.scrollTask = null
+            this@LocationHelper.scrollTask = null
         }
     }
 

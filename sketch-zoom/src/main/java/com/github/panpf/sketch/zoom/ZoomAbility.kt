@@ -36,7 +36,7 @@ import com.github.panpf.sketch.viewability.SizeChangeObserver
 import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
-import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
+import com.github.panpf.sketch.zoom.internal.Edge
 import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.getLifecycle
 import com.github.panpf.sketch.zoom.internal.isAttachedToWindowCompat
@@ -237,11 +237,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     fun canScrollVertically(direction: Int): Boolean =
         zoomer?.canScrollVertically(direction) == true
 
-    val horScrollEdge: Int
-        get() = zoomer?.horScrollEdge ?: ScaleDragHelper.EDGE_NONE
+    val horScrollEdge: Edge
+        get() = zoomer?.horScrollEdge ?: Edge.NONE
 
-    val verScrollEdge: Int
-        get() = zoomer?.verScrollEdge ?: ScaleDragHelper.EDGE_NONE
+    val verScrollEdge: Edge
+        get() = zoomer?.verScrollEdge ?: Edge.NONE
 
     val zoomScale: Float
         get() = zoomer?.zoomScale ?: 1f

@@ -12,6 +12,7 @@ import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.zoom.internal.Edge
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
@@ -254,10 +255,10 @@ class Zoomer constructor(
     fun canScrollVertically(direction: Int): Boolean =
         scaleDragHelper.canScrollVertically(direction)
 
-    val horScrollEdge: Int
+    val horScrollEdge: Edge
         get() = scaleDragHelper.horScrollEdge
 
-    val verScrollEdge: Int
+    val verScrollEdge: Edge
         get() = scaleDragHelper.verScrollEdge
 
     val zoomScale: Float
@@ -293,7 +294,7 @@ class Zoomer constructor(
     val isZooming: Boolean
         get() = scaleDragHelper.isZooming
 
-    fun getDrawMatrix(matrix: Matrix) = matrix.set(scaleDragHelper.getDrawMatrix())
+    fun getDrawMatrix(matrix: Matrix) = scaleDragHelper.getDrawMatrix(matrix)
 
     fun getDrawRect(rectF: RectF) = scaleDragHelper.getDrawRect(rectF)
 
