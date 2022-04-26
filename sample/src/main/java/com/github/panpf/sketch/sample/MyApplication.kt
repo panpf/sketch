@@ -37,12 +37,11 @@ import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
 import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.sample.util.SettingsDisplayRequestInterceptor
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.Logger.Level.DEBUG
 
 class MyApplication : MultiDexApplication(), SketchConfigurator {
 
     override fun createSketchConfig(): Builder.() -> Unit = {
-        logger(Logger(DEBUG))
+        logger(Logger(Logger.Level.valueOf(appSettingsService.logLevel.value)))
         httpStack(OkHttpStack.Builder().build())
         addRequestInterceptor(SettingsDisplayRequestInterceptor())
         addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())

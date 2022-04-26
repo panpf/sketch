@@ -246,21 +246,14 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             MultiSelectMenu(
                 "Logger Level",
                 null,
-                listOf("VERBOSE", "DEBUG", "INFO", "WARNING", "ERROR", "NONE"),
+                Logger.Level.values().map { it.name },
                 value = {
                     application1.sketch.logger.level.toString()
                 },
                 onSelect = { which ->
-                    val logger = application1.sketch.logger
-                    when (which) {
-                        0 -> logger.level = Logger.Level.VERBOSE
-                        1 -> logger.level = Logger.Level.DEBUG
-                        2 -> logger.level = Logger.Level.INFO
-                        3 -> logger.level = Logger.Level.WARNING
-                        4 -> logger.level = Logger.Level.ERROR
-                        5 -> logger.level = Logger.Level.NONE
-                        else -> throw IllegalArgumentException("$which")
-                    }
+                    val level = Logger.Level.values()[which]
+                    application1.sketch.logger.level = level
+                    appSettingsService.logLevel.postValue(level.name)
                 })
         )
     }

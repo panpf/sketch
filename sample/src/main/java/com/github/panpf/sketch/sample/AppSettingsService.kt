@@ -7,6 +7,7 @@ import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.util.prefsdata.BooleanPrefsData
 import com.github.panpf.sketch.sample.util.prefsdata.EnumPrefsData
 import com.github.panpf.sketch.sample.util.prefsdata.StringPrefsData
+import com.github.panpf.sketch.util.Logger
 
 class AppSettingsService(val context: Context) {
 
@@ -73,6 +74,10 @@ class AppSettingsService(val context: Context) {
     }
     val showTileBoundsInHugeImagePage by lazy {
         BooleanPrefsData(context, "showTileBoundsInHugeImagePage", true)
+    }
+
+    val logLevel by lazy {
+        StringPrefsData(context, "logLevel", Logger.Level.DEBUG.name)
     }
 
 //    val readModeEnabled by lazy {
