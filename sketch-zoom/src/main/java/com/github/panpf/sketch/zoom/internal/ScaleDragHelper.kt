@@ -25,8 +25,8 @@ import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.Zoomer
-import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.ActionListener
-import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnScaleDragGestureListener
+import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnActionListener
+import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnGestureListener
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -59,27 +59,31 @@ internal class ScaleDragHelper constructor(
     private val locationHelper: LocationHelper =
         LocationHelper(context, zoomer, this@ScaleDragHelper)
     private val zoomHelper: ZoomHelper = ZoomHelper(zoomer, this@ScaleDragHelper)
-    private val scaleDragGestureDetector = ScaleDragGestureDetector(context, sketch).apply {
-        setOnGestureListener(object : OnScaleDragGestureListener {
+    private val gestureDetector = ScaleDragGestureDetector(
+        context, object : OnGestureListener {
             override fun onDrag(dx: Float, dy: Float) = drag(dx, dy)
-            override fun onFling(startX: Float, startY: Float, velocityX: Float, velocityY: Float) =
-                fling(startX, startY, velocityX, velocityY)
+            override fun onFling(
+                startX: Float, startY: Float, velocityX: Float, velocityY: Float
+            ) = fling(startX, startY, velocityX, velocityY)
 
             override fun onScaleBegin(): Boolean = scaleBegin()
-            override fun onScale(scaleFactor: Float, focusX: Float, focusY: Float) =
-                scale(scaleFactor, focusX, focusY)
+            override fun onScale(
+                scaleFactor: Float, focusX: Float, focusY: Float
+            ) = scale(scaleFactor, focusX, focusY)
 
             override fun onScaleEnd() = scaleEnd()
-        })
-        setActionListener(object : ActionListener {
+        }
+    ).apply {
+        onActionListener = object : OnActionListener {
             override fun onActionDown(ev: MotionEvent) = actionDown()
             override fun onActionUp(ev: MotionEvent) = actionUp()
             override fun onActionCancel(ev: MotionEvent) = actionUp()
-        })
+        }
     }
     private var _horScrollEdge: Edge = Edge.NONE
     private var _verScrollEdge: Edge = Edge.NONE
-    private var disallowParentInterceptTouchEvent: Boolean = false
+    private var blockParentIntercept: Boolean = false
+    private var dragging = false
 
     var isZooming: Boolean = false
     val horScrollEdge: Edge
@@ -113,13 +117,22 @@ internal class ScaleDragHelper constructor(
             return true
         }
 
-        val beforeInScaling = scaleDragGestureDetector.isScaling
-        val beforeInDragging = scaleDragGestureDetector.isDragging
-        val scaleDragHandled = scaleDragGestureDetector.onTouchEvent(event)
-        val afterInScaling = scaleDragGestureDetector.isScaling
-        val afterInDragging = scaleDragGestureDetector.isDragging
-        disallowParentInterceptTouchEvent =
-            !beforeInScaling && !afterInScaling && beforeInDragging && afterInDragging
+//        val wasScaling = gestureDetector.isScaling
+//        val wasDragging = gestureDetector.isDragging
+        val scaleDragHandled = gestureDetector.onTouchEvent(event)
+//        val didntScale = !wasScaling && !gestureDetector.isScaling
+//        val didntDrag = !wasDragging && !gestureDetector.isDragging
+//        blockParentIntercept = didntScale && didntDrag
+//        blockParentIntercept = didntScale
+//        if (blockParentIntercept) {
+//            logger.w(Zoomer.MODULE) {
+//                "onTouchEvent. didntScale=${didntScale}, didntDrag=${didntDrag}"
+//            }
+//        } else {
+//            logger.d(Zoomer.MODULE) {
+//                "onTouchEvent. didntScale=${didntScale}, didntDrag=${didntDrag}"
+//            }
+//        }
         return scaleDragHandled
     }
 
@@ -271,7 +284,7 @@ internal class ScaleDragHelper constructor(
             zoom(zoomer.originZoomScale, newX, newY, false)
         }
 
-        val drawRectF = RectF().apply { getDrawRect(this) }
+        val drawRectF = drawRectF.apply { getDrawRect(this) }
         val currentScale = zoomScale
         val scaleLocationX = (newX * currentScale).toInt()
         val scaleLocationY = (newY * currentScale).toInt()
@@ -326,7 +339,7 @@ internal class ScaleDragHelper constructor(
      */
     fun getVisibleRect(rect: Rect) {
         rect.setEmpty()
-        val drawRectF = RectF().apply { getDrawRect(this) }.takeIf { !it.isEmpty } ?: return
+        val drawRectF = drawRectF.apply { getDrawRect(this) }.takeIf { !it.isEmpty } ?: return
         val viewSize = zoomer.viewSize.takeIf { !it.isEmpty } ?: return
         val drawableSize = zoomer.drawableSize.takeIf { !it.isEmpty } ?: return
         val (drawableWidth, drawableHeight) = drawableSize.let {
@@ -379,50 +392,52 @@ internal class ScaleDragHelper constructor(
     }
 
     private fun drag(dx: Float, dy: Float) {
-        if (scaleDragGestureDetector.isScaling) {
+        if (gestureDetector.isScaling) {
             logger.v(Zoomer.MODULE) { "onDrag. isScaling" }
             return
         }
-        logger.v(Zoomer.MODULE) { "onDrag. dx: $dx, dy: $dy" }
+//        logger.v(Zoomer.MODULE) { "onDrag. dx: $dx, dy: $dy" }
         supportMatrix.postTranslate(dx, dy)
         checkAndApplyMatrix()
 
-        // todo 和 ViewPager 一起使用时，如果只有竖向可以滑动时，竖向滑动操作容易被 pager 的横向滑动拦截
-        // todo 测试 ViewPager 垂直滑动时，只有横向滑动时和 ViewPager 的滑动冲突
-        val isScaling = scaleDragGestureDetector.isScaling
-        val allowParentInterceptOnEdge = zoomer.allowParentInterceptOnEdge
-        val blockParent = disallowParentInterceptTouchEvent
+        val scaling = gestureDetector.isScaling
+        val disallowParentInterceptOnEdge = !zoomer.allowParentInterceptOnEdge
+        val blockParent = blockParentIntercept
         val requestDisallowInterceptTouchEvent =
-            if (!allowParentInterceptOnEdge || isScaling || blockParent) {
-                logger.v(Zoomer.MODULE) {
-                    "onDrag. requestDisallowInterceptTouchEvent true. allowParentInterceptOnEdge=%s, scaling=%s, blockParent=%s"
-                        .format(allowParentInterceptOnEdge, isScaling, blockParent)
+            if (dragging || scaling || blockParent || disallowParentInterceptOnEdge) {
+                logger.i(Zoomer.MODULE) {
+                    "onDrag. DisallowParentIntercept. dragging=$dragging, scaling=$scaling, blockParent=$blockParent, disallowParentInterceptOnEdge=$disallowParentInterceptOnEdge"
                 }
                 true
-            } else if (horScrollEdge == Edge.BOTH
-                || (horScrollEdge == Edge.START && dx >= 1f)
-                || (horScrollEdge == Edge.END && dx <= -1f)
-//            || verScrollEdge == Edge.BOTH
-//            || (verScrollEdge == Edge.START && dy >= 1f)
-//            || (verScrollEdge == Edge.END && dy <= -1f)
-            // 暂时不处理顶部和底部边界
-            ) {
-                logger.v(Zoomer.MODULE) {
-                    "onDrag. requestDisallowInterceptTouchEvent false. scrollEdge=%s-%s"
-                        .format(horScrollEdge, verScrollEdge)
-                }
-                false
             } else {
-                logger.v(Zoomer.MODULE) {
-                    "onDrag. requestDisallowInterceptTouchEvent true. scrollEdge=%s-%s"
-                        .format(horScrollEdge, verScrollEdge)
+                val slop = 1f
+                val result = (horScrollEdge == Edge.NONE && (dx >= slop || dx <= -slop))
+                        || (horScrollEdge == Edge.START && dx <= -slop)
+                        || (horScrollEdge == Edge.END && dx >= slop)
+                        || (verScrollEdge == Edge.NONE && (dy >= slop || dy <= -slop))
+                        || (verScrollEdge == Edge.START && dy <= -slop)
+                        || (verScrollEdge == Edge.END && dy >= slop)
+                if (result) {
+                    logger.i(Zoomer.MODULE) {
+                        "onDrag. DisallowParentIntercept. scrollEdge=%s-%s, d=%sx%s"
+                            .format(horScrollEdge, verScrollEdge, dx, dy)
+                    }
+                } else {
+                    logger.w(Zoomer.MODULE) {
+                        "onDrag. AllowParentIntercept. scrollEdge=%s-%s, d=%sx%s"
+                            .format(horScrollEdge, verScrollEdge, dx, dy)
+                    }
                 }
-                true
+                dragging = result
+                result
             }
         requestDisallowInterceptTouchEvent(requestDisallowInterceptTouchEvent)
     }
 
     private fun fling(startX: Float, startY: Float, velocityX: Float, velocityY: Float) {
+        logger.v(Zoomer.MODULE) {
+            "fling. startX=$startX, startY=$startY, velocityX=$velocityX, velocityY=$velocityY"
+        }
         flingHelper.start(velocityX.toInt(), velocityY.toInt())
         onDragFling(startX, startY, velocityX, velocityY)
     }
@@ -489,6 +504,7 @@ internal class ScaleDragHelper constructor(
     private fun actionDown() {
         lastScaleFocusX = 0f
         lastScaleFocusY = 0f
+        dragging = false
 
         logger.v(Zoomer.MODULE) {
             "onActionDown. disallow parent intercept touch event"
@@ -504,7 +520,7 @@ internal class ScaleDragHelper constructor(
         val minZoomScale = zoomer.minZoomScale.format(2)
         val maxZoomScale = zoomer.maxZoomScale.format(2)
         if (currentScale < minZoomScale) {
-            val drawRectF = RectF().apply { getDrawRect(this) }
+            val drawRectF = drawRectF.apply { getDrawRect(this) }
             if (!drawRectF.isEmpty) {
                 zoom(minZoomScale, drawRectF.centerX(), drawRectF.centerY(), true)
             }
