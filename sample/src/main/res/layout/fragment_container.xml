@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/containerFragmentContainer"
-    android:layout_width="300dp"
-    android:layout_height="500dp"
-    android:background="#88FF0000"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>

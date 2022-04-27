@@ -2,43 +2,60 @@ package com.github.panpf.sketch.sample.ui.huge
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
-import com.github.panpf.sketch.sample.AssetImages
-import com.github.panpf.sketch.sample.databinding.FragmentPager2TabBinding
-import com.github.panpf.sketch.sample.model.ImageDetail
+import androidx.fragment.app.viewModels
+import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.databinding.FragmentContainerBinding
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
-import com.github.panpf.sketch.sample.ui.view.ImageZoomFragmentItemFactory
-import com.google.android.material.tabs.TabLayoutMediator
+import com.github.panpf.sketch.sample.ui.huge.Layout.COLUMN
 
-class HugeImageListFragment : ToolbarBindingFragment<FragmentPager2TabBinding>() {
+class HugeImageListFragment : ToolbarBindingFragment<FragmentContainerBinding>() {
+
+    private val viewModel by viewModels<HugeImageListViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
-    ) = FragmentPager2TabBinding.inflate(inflater, parent, false)
+    ) = FragmentContainerBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
         toolbar: Toolbar,
-        binding: FragmentPager2TabBinding,
+        binding: FragmentContainerBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Huge Image"
 
-        val images = AssetImages.HUGES.plus(AssetImages.LONGS).map {
-            ImageDetail(it, it, null)
+        val menu = toolbar.menu.add("Layout").apply {
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            setOnMenuItemClickListener {
+                val newLayout = if (viewModel.layoutData.value == COLUMN) {
+                    Layout.ROW
+                } else {
+                    COLUMN
+                }
+                viewModel.changeTab(newLayout)
+                true
+            }
         }
-        val titles = arrayOf("WORLD", "CARD", "QMSHT", "CWB")
 
-        binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
-            this,
-            listOf(ImageZoomFragmentItemFactory(true)),
-            images
-        )
+        viewModel.layoutData.observe(viewLifecycleOwner) {
+            val meuIcon = if (it == COLUMN) {
+                R.drawable.ic_layout_row
+            } else {
+                R.drawable.ic_layout_column
+            }
+            menu.setIcon(meuIcon)
 
-        TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->
-            tab.text = titles[position]
-        }.attach()
+            val fragment = if (it == COLUMN) {
+                HugeImageHorListFragment()
+            } else {
+                HugeImageVerListFragment()
+            }
+            childFragmentManager.beginTransaction()
+                .replace(binding.containerFragmentContainer.id, fragment)
+                .commit()
+        }
     }
 }
