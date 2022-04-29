@@ -32,8 +32,9 @@ class MyRecyclerView @JvmOverloads constructor(
                 postValue(1)
             }
             addSource(appSettingsService.resizePrecision.liveEvent, observer)
-            addSource(appSettingsService.otherResizeScale.liveEvent, observer)
+            addSource(appSettingsService.resizeScale.liveEvent, observer)
             addSource(appSettingsService.longImageResizeScale.liveEvent, observer)
+            addSource(appSettingsService.otherImageResizeScale.liveEvent, observer)
         }
 
         mediatorLiveData.observeFromView(this) {

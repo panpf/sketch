@@ -13,10 +13,11 @@ import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateDisplayImageOptions
-import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.fixedPrecision
+import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.resize.longImageClipPrecision
 import com.github.panpf.sketch.resize.longImageScale
 import com.github.panpf.sketch.sample.R
@@ -126,28 +127,20 @@ class PhotoItemFactory(val disabledCache: Boolean = false) :
 
             displayImage(data.firstThumbnailUrl) {
                 resizeScale(
-                    longImageScale(
-                        Scale.valueOf(appSettingsService.longImageResizeScale.value),
-                        Scale.valueOf(appSettingsService.otherResizeScale.value)
-                    )
+                    when (val value = appSettingsService.resizeScale.value) {
+                        "LongImageMode" -> longImageScale(
+                            Scale.valueOf(appSettingsService.longImageResizeScale.value),
+                            Scale.valueOf(appSettingsService.otherImageResizeScale.value)
+                        )
+                        else -> fixedScale(Scale.valueOf(value))
+                    }
                 )
-                when (appSettingsService.resizePrecision.value) {
-                    "LESS_PIXELS" -> {
-                        resizePrecision(precision = LESS_PIXELS)
+                resizePrecision(
+                    when (val value = appSettingsService.resizePrecision.value) {
+                        "LongImageMode" -> longImageClipPrecision(precision = SAME_ASPECT_RATIO)
+                        else -> fixedPrecision(Precision.valueOf(value))
                     }
-                    "SAME_ASPECT_RATIO" -> {
-                        resizePrecision(precision = SAME_ASPECT_RATIO)
-                    }
-                    "EXACTLY" -> {
-                        resizePrecision(precision = EXACTLY)
-                    }
-                    "LONG_IMAGE_CROP" -> {
-                        resizePrecision(longImageClipPrecision(precision = SAME_ASPECT_RATIO))
-                    }
-                    "ORIGINAL" -> {
-                        resizeSize(-1, -1)
-                    }
-                }
+                )
             }
         }
     }

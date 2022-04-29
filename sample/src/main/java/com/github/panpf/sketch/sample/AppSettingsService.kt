@@ -32,31 +32,37 @@ class AppSettingsService(val context: Context) {
     val showProgressIndicatorInList by lazy {
         BooleanPrefsData(context, "showProgressIndicatorInList", true)
     }
+    val showDataFromLogo by lazy {
+        BooleanPrefsData(context, "showDataFrom", true)
+    }
     val saveCellularTrafficInList by lazy {
         BooleanPrefsData(context, "saveCellularTrafficInList", false)
     }
     val pauseLoadWhenScrollInList by lazy {
         BooleanPrefsData(context, "pauseLoadWhenScrollInList", false)
     }
+
     val resizePrecision by lazy {
-        StringPrefsData(context, "resizePrecision", "LESS_PIXELS")
+        StringPrefsData(context, "resizePrecision", "LongImageMode")
     }
-    val otherResizeScale by lazy {
-        StringPrefsData(context, "otherResizeScale", Scale.CENTER_CROP.name)
+    val resizeScale by lazy {
+        StringPrefsData(context, "resizeScale", "LongImageMode")
     }
     val longImageResizeScale by lazy {
         StringPrefsData(context, "longImageResizeScale", Scale.START_CROP.name)
     }
-
-    val inPreferQualityOverSpeed by lazy {
-        BooleanPrefsData(context, "inPreferQualityOverSpeed", false)
+    val otherImageResizeScale by lazy {
+        StringPrefsData(context, "otherImageResizeScale", Scale.CENTER_CROP.name)
     }
     val bitmapQuality by lazy {
-        StringPrefsData(context, "bitmapQuality", "MIDDEN")
+        StringPrefsData(context, "bitmapQuality", "Default")
     }
     @get:RequiresApi(Build.VERSION_CODES.O)
     val colorSpace by lazy {
         StringPrefsData(context, "colorSpace", "Default")
+    }
+    val inPreferQualityOverSpeed by lazy {
+        BooleanPrefsData(context, "inPreferQualityOverSpeed", false)
     }
     val ignoreExifOrientation by lazy {
         BooleanPrefsData(context, "ignoreExifOrientation", false)
@@ -75,9 +81,6 @@ class AppSettingsService(val context: Context) {
         BooleanPrefsData(context, "disabledReuseBitmap", false)
     }
 
-    val showDataFromLogo by lazy {
-        BooleanPrefsData(context, "showDataFrom", true)
-    }
     val showTileBoundsInHugeImagePage by lazy {
         BooleanPrefsData(context, "showTileBoundsInHugeImagePage", true)
     }
@@ -85,28 +88,4 @@ class AppSettingsService(val context: Context) {
     val logLevel by lazy {
         StringPrefsData(context, "logLevel", Logger.Level.DEBUG.name)
     }
-
-//    val readModeEnabled by lazy {
-//        BooleanPrefsData(context, "readModeEnabled", true)
-//    }
-//    val pauseBlockDisplayWhenPageNoVisibleEnabled by lazy {
-//        BooleanPrefsData(context, "pauseBlockDisplayWhenPageNoVisibleEnabled", true)
-//    }
-//    val threeLevelZoomModeEnabled by lazy {
-//        BooleanPrefsData(context, "threeLevelZoomModeEnabled", false)
-//    }
-//    val smallMapLocationAnimateEnabled by lazy {
-//        BooleanPrefsData(context, "smallMapLocationAnimateEnabled", true)
-//    }
-//
-//    val clickPlayGifEnabled by lazy {
-//        BooleanPrefsData(context, "clickPlayGifEnabled", false)
-//    }
-//
-//    val showRoundedInPhotoListEnabled by lazy {
-//        BooleanPrefsData(context, "showRoundedInPhotoListEnabled", false)
-//    }
-//    val showRawImageInDetailEnabled by lazy {
-//        BooleanPrefsData(context, "showRawImageInDetailEnabled", false)
-//    }
 }

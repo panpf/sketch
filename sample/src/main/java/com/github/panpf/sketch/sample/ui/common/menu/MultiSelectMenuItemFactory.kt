@@ -28,7 +28,7 @@ class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
         binding.root.setOnClickListener {
             val data = item.dataOrThrow
             showDialog(data) {
-                binding.multiSelectMenuItemInfoText.text = data.value()
+                binding.multiSelectMenuItemInfoText.text = data.getValue()
             }
         }
 
@@ -48,7 +48,7 @@ class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
         data: MultiSelectMenu
     ) {
         binding.multiSelectMenuItemTitleText.text = data.title
-        binding.multiSelectMenuItemInfoText.text = data.value()
+        binding.multiSelectMenuItemInfoText.text = data.getValue()
         binding.multiSelectMenuItemDescText.text = data.desc
         binding.multiSelectMenuItemDescText.isVisible =
             !compactModel && data.desc?.isNotEmpty() == true
@@ -58,7 +58,7 @@ class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
         val activity = ActivityMonitor.getLastResumedActivity() ?: return
         AlertDialog.Builder(activity).apply {
             setItems(data.values.toTypedArray()) { _, which ->
-                data.onSelect(which)
+                data.onSelect(which, data.values[which])
                 after()
             }
         }.show()

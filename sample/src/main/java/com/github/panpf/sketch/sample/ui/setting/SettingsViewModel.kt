@@ -5,6 +5,9 @@ import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.lifecycle.MutableLiveData
+import com.github.panpf.liveevent.Listener
+import com.github.panpf.liveevent.MediatorLiveEvent
+import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.InfoMenu
@@ -13,26 +16,61 @@ import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenu
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.tools4j.io.ktx.formatFileSize
 
 class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
 
     val menuListData = MutableLiveData<List<Any>>()
     private val appSettingsService = application1.appSettingsService
+    private val mediatorLiveData = MediatorLiveEvent<Any>()
 
     init {
-        val assembleMenuList = buildList {
-            this.add(ListSeparator("List"))
-            this.addAll(makeListMenuList())
-            this.add(ListSeparator("Decode"))
-            this.addAll(makeDecodeMenuList())
-            this.add(ListSeparator("Cache"))
-            this.addAll(makeCacheMenuList())
-            this.add(ListSeparator("Other"))
-            this.addAll(makeOtherMenuList())
+        updateList()
+
+        mediatorLiveData.apply {
+            val observer = Listener<Any> {
+                postValue(1)
+            }
+            addSource(appSettingsService.showMimeTypeLogoInLIst.liveEvent, observer)
+            addSource(appSettingsService.showProgressIndicatorInList.liveEvent, observer)
+            addSource(appSettingsService.saveCellularTrafficInList.liveEvent, observer)
+            addSource(appSettingsService.pauseLoadWhenScrollInList.liveEvent, observer)
+            addSource(appSettingsService.resizePrecision.liveEvent, observer)
+            addSource(appSettingsService.resizeScale.liveEvent, observer)
+            addSource(appSettingsService.longImageResizeScale.liveEvent, observer)
+            addSource(appSettingsService.otherImageResizeScale.liveEvent, observer)
+            addSource(appSettingsService.inPreferQualityOverSpeed.liveEvent, observer)
+            addSource(appSettingsService.bitmapQuality.liveEvent, observer)
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                addSource(appSettingsService.colorSpace.liveEvent, observer)
+            }
+            addSource(appSettingsService.ignoreExifOrientation.liveEvent, observer)
+            addSource(appSettingsService.disabledBitmapMemoryCache.liveEvent, observer)
+            addSource(appSettingsService.disabledBitmapResultDiskCache.liveEvent, observer)
+            addSource(appSettingsService.disabledDownloadDiskCache.liveEvent, observer)
+            addSource(appSettingsService.disabledReuseBitmap.liveEvent, observer)
+            addSource(appSettingsService.showDataFromLogo.liveEvent, observer)
+            addSource(appSettingsService.showTileBoundsInHugeImagePage.liveEvent, observer)
+            addSource(appSettingsService.logLevel.liveEvent, observer)
         }
-        menuListData.postValue(assembleMenuList)
+
+        mediatorLiveData.listen(this) {
+            updateList()
+        }
+    }
+
+    private fun updateList() {
+        menuListData.postValue(buildList {
+            add(ListSeparator("List"))
+            addAll(makeListMenuList())
+            add(ListSeparator("Decode"))
+            addAll(makeDecodeMenuList())
+            add(ListSeparator("Cache"))
+            addAll(makeCacheMenuList())
+            add(ListSeparator("Other"))
+            addAll(makeOtherMenuList())
+        })
     }
 
     private fun makeListMenuList(): List<Any> = buildList {
@@ -52,6 +90,13 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         )
         add(
             SwitchMenu(
+                title = "Show Data From Logo",
+                data = appSettingsService.showDataFromLogo,
+                desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
+            )
+        )
+        add(
+            SwitchMenu(
                 title = "Save Cellular Traffic",
                 data = appSettingsService.saveCellularTrafficInList,
                 desc = "Mobile cell traffic does not download pictures"
@@ -64,71 +109,70 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                 desc = "No image is loaded during list scrolling to improve the smoothness of list sliding"
             )
         )
+    }
+
+    private fun makeDecodeMenuList(): List<Any> = buildList {
         add(
             MultiSelectMenu(
                 title = "Resize Precision",
                 desc = null,
-                values = listOf(
-                    "LESS_PIXELS",
-                    "SAME_ASPECT_RATIO",
-                    "EXACTLY",
-                    "LONG_IMAGE_CROP",
-                    "ORIGINAL"
-                ),
-                value = {
-                    appSettingsService.resizePrecision.value
-                },
-                onSelect = { which ->
-                    appSettingsService.resizePrecision.value = when (which) {
-                        0 -> "LESS_PIXELS"
-                        1 -> "SAME_ASPECT_RATIO"
-                        2 -> "EXACTLY"
-                        3 -> "LONG_IMAGE_CROP"
-                        4 -> "ORIGINAL"
-                        else -> throw IllegalArgumentException("$which")
-                    }
-                }
+                values = listOf("LongImageMode").plus(Precision.values().map { it.name }),
+                getValue = { appSettingsService.resizePrecision.value },
+                onSelect = { _, value -> appSettingsService.resizePrecision.value = value }
             )
         )
         add(
             MultiSelectMenu(
-                "Resize Scale",
-                null,
-                Scale.values().map { it.name },
-                value = {
-                    appSettingsService.otherResizeScale.value
-                },
-                onSelect = { which ->
-                    appSettingsService.otherResizeScale.value = when (which) {
-                        0 -> Scale.START_CROP.name
-                        1 -> Scale.CENTER_CROP.name
-                        2 -> Scale.END_CROP.name
-                        3 -> Scale.FILL.name
-                        else -> throw IllegalArgumentException("$which")
-                    }
-                })
+                title = "Resize Scale",
+                desc = null,
+                values = listOf("LongImageMode").plus(Scale.values().map { it.name }),
+                getValue = { appSettingsService.resizeScale.value },
+                onSelect = { _, value -> appSettingsService.resizeScale.value = value }
+            )
         )
+        if (appSettingsService.resizeScale.value == "LongImageMode") {
+            add(
+                MultiSelectMenu(
+                    title = "Long Image Resize Scale",
+                    desc = "Only LongImageMode",
+                    values = Scale.values().map { it.name },
+                    getValue = { appSettingsService.longImageResizeScale.value },
+                    onSelect = { _, value -> appSettingsService.longImageResizeScale.value = value }
+                )
+            )
+            add(
+                MultiSelectMenu(
+                    title = "Other Image Resize Scale",
+                    desc = "Only LongImageMode",
+                    values = Scale.values().map { it.name },
+                    getValue = { appSettingsService.otherImageResizeScale.value },
+                    onSelect = { _, value ->
+                        appSettingsService.otherImageResizeScale.value = value
+                    }
+                )
+            )
+        }
         add(
             MultiSelectMenu(
-                "Long Image Resize Scale",
-                null,
-                Scale.values().map { it.name },
-                value = {
-                    appSettingsService.longImageResizeScale.value
-                },
-                onSelect = { which ->
-                    appSettingsService.longImageResizeScale.value = when (which) {
-                        0 -> Scale.START_CROP.name
-                        1 -> Scale.CENTER_CROP.name
-                        2 -> Scale.END_CROP.name
-                        3 -> Scale.FILL.name
-                        else -> throw IllegalArgumentException("$which")
-                    }
-                })
+                title = "Bitmap Quality",
+                desc = null,
+                values = listOf("Default", "LOW", "MIDDEN", "HIGH"),
+                getValue = { appSettingsService.bitmapQuality.value },
+                onSelect = { _, value -> appSettingsService.bitmapQuality.value = value }
+            )
         )
-    }
-
-    private fun makeDecodeMenuList(): List<Any> = buildList {
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            val items = listOf("Default").plus(ColorSpace.Named.values().map { it.name })
+            add(
+                MultiSelectMenu(
+                    title = "Color Space",
+                    desc = null,
+                    values = items,
+                    getValue = { appSettingsService.colorSpace.value },
+                    onSelect = { _, value -> appSettingsService.colorSpace.value = value }
+                )
+            )
+        }
         if (VERSION.SDK_INT < VERSION_CODES.N) {
             add(
                 SwitchMenu(
@@ -136,38 +180,6 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                     desc = null,
                     data = appSettingsService.inPreferQualityOverSpeed
                 )
-            )
-        }
-        add(
-            MultiSelectMenu(
-                "Bitmap Quality",
-                null,
-                listOf("LOW", "MIDDEN", "HIGH"),
-                value = {
-                    appSettingsService.bitmapQuality.value
-                },
-                onSelect = { which ->
-                    appSettingsService.bitmapQuality.value = when (which) {
-                        0 -> "LOW"
-                        1 -> "MIDDEN"
-                        2 -> "HIGH"
-                        else -> throw IllegalArgumentException("$which")
-                    }
-                })
-        )
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            val items = listOf("Default").plus(ColorSpace.Named.values().map { it.name })
-            add(
-                MultiSelectMenu(
-                    "Color Space",
-                    null,
-                    items,
-                    value = {
-                        appSettingsService.colorSpace.value
-                    },
-                    onSelect = { which ->
-                        appSettingsService.colorSpace.value = items[which]
-                    })
             )
         }
         add(
@@ -218,39 +230,47 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         )
 
         val sketch = application1.sketch
-        add(InfoMenu("Memory Cache Statistics", "Click clear", getInfo = {
-            val usedSizeFormat = sketch.memoryCache.size.formatFileSize(0, false, true)
-            val maxSizeFormat = sketch.memoryCache.maxSize.formatFileSize(0, false, true)
-            "$usedSizeFormat/$maxSizeFormat"
-        }, onClick = {
-            sketch.memoryCache.clear()
-        }))
+        add(InfoMenu(
+            title = "Memory Cache Statistics",
+            desc = "Click clear",
+            info = "%s/%s".format(
+                sketch.memoryCache.size.formatFileSize(0, false, true),
+                sketch.memoryCache.maxSize.formatFileSize(0, false, true)
+            ),
+            onClick = {
+                sketch.memoryCache.clear()
+                updateList()
+            }
+        ))
 
-        add(InfoMenu("Bitmap Pool Statistics", "Click clear", getInfo = {
-            val usedSizeFormat = sketch.bitmapPool.size.formatFileSize(0, false, true)
-            val maxSizeFormat = sketch.bitmapPool.maxSize.formatFileSize(0, false, true)
-            "$usedSizeFormat/$maxSizeFormat"
-        }, onClick = {
-            sketch.bitmapPool.clear()
-        }))
+        add(InfoMenu(
+            title = "Bitmap Pool Statistics",
+            desc = "Click clear",
+            info = "%s/%s".format(
+                sketch.bitmapPool.size.formatFileSize(0, false, true),
+                sketch.bitmapPool.maxSize.formatFileSize(0, false, true)
+            ),
+            onClick = {
+                sketch.bitmapPool.clear()
+                updateList()
+            }
+        ))
 
-        add(InfoMenu("Disk Cache Statistics", "Click clear", getInfo = {
-            val usedSizeFormat = sketch.diskCache.size.formatFileSize(0, false, true)
-            val maxSizeFormat = sketch.diskCache.maxSize.formatFileSize(0, false, true)
-            "$usedSizeFormat/$maxSizeFormat"
-        }, onClick = {
-            sketch.diskCache.clear()
-        }))
+        add(InfoMenu(
+            "Disk Cache Statistics",
+            "Click clear",
+            info = "%s/%s".format(
+                sketch.diskCache.size.formatFileSize(0, false, true),
+                sketch.diskCache.maxSize.formatFileSize(0, false, true)
+            ),
+            onClick = {
+                sketch.diskCache.clear()
+                updateList()
+            }
+        ))
     }
 
     private fun makeOtherMenuList(): List<Any> = buildList {
-        add(
-            SwitchMenu(
-                title = "Show Data From Logo",
-                data = appSettingsService.showDataFromLogo,
-                desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
-            )
-        )
         add(
             SwitchMenu(
                 title = "Show Tile Bounds In 'Huge Image' Page",
@@ -260,17 +280,15 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         )
         add(
             MultiSelectMenu(
-                "Logger Level",
-                null,
-                Logger.Level.values().map { it.name },
-                value = {
-                    application1.sketch.logger.level.toString()
-                },
-                onSelect = { which ->
-                    val level = Logger.Level.values()[which]
-                    application1.sketch.logger.level = level
-                    appSettingsService.logLevel.postValue(level.name)
-                })
+                title = "Logger Level",
+                desc = null,
+                values = Level.values().map { it.name },
+                getValue = { application1.sketch.logger.level.toString() },
+                onSelect = { _, value ->
+                    application1.sketch.logger.level = Level.valueOf(value)
+                    appSettingsService.logLevel.value = value
+                }
+            )
         )
     }
 }

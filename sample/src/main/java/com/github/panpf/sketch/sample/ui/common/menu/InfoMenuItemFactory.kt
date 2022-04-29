@@ -26,7 +26,6 @@ class InfoMenuItemFactory(private val compactModel: Boolean = false) :
         binding.root.setOnClickListener {
             val data = item.dataOrThrow
             data.onClick()
-            binding.infoMenuItemInfoText.text = data.getInfo()
         }
 
         if (compactModel) {
@@ -45,7 +44,7 @@ class InfoMenuItemFactory(private val compactModel: Boolean = false) :
         data: InfoMenu
     ) {
         binding.infoMenuItemTitleText.text = data.title
-        binding.infoMenuItemInfoText.text = data.getInfo()
+        binding.infoMenuItemInfoText.text = data.info
         binding.infoMenuItemDescText.text = data.desc
         binding.infoMenuItemDescText.isVisible = !compactModel && data.desc?.isNotEmpty() == true
     }
