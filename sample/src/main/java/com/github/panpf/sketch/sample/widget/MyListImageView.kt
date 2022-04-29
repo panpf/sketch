@@ -6,12 +6,12 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import com.github.panpf.liveevent.Listener
 import com.github.panpf.liveevent.MediatorLiveEvent
-import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
+import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.removeProgressIndicator
-import com.github.panpf.sketch.viewability.showMimeTypeLogoWithDrawable
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
+import com.github.panpf.sketch.viewability.showMimeTypeLogoWithDrawable
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class MyListImageView @JvmOverloads constructor(
@@ -45,7 +45,7 @@ class MyListImageView @JvmOverloads constructor(
 
     init {
         mediatorLiveData.observeFromView(this) {
-            RequestManagerUtils.requestManagerOrNull(this@MyListImageView)?.restart()
+            SketchUtils.restart(this@MyListImageView)
         }
 
         context.appSettingsService.apply {

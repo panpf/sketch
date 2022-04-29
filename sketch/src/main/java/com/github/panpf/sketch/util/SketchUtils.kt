@@ -5,9 +5,26 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.view.View
+import com.github.panpf.sketch.R
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
+import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
+
+class SketchUtils {
+    companion object {
+        private fun requestManagerOrNull(view: View): ViewTargetRequestManager? =
+            view.getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?
+
+        fun dispose(view: View) = requestManagerOrNull(view)?.dispose()
+
+        fun getResult(view: View): DisplayResult? = requestManagerOrNull(view)?.getResult()
+
+        fun restart(view: View) = requestManagerOrNull(view)?.restart()
+    }
+}
 
 /**
  * Find the last [SketchDrawable] from the specified Drawable

@@ -11,9 +11,9 @@ import com.github.panpf.liveevent.MediatorLiveEvent
 import com.github.panpf.sketch.SketchImageView
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.drawable.SketchDrawable
-import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
+import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.util.findLastSketchDrawable
 import com.github.panpf.sketch.viewability.removeDataFromLogo
 import com.github.panpf.sketch.viewability.showDataFromLogo
@@ -25,7 +25,7 @@ open class MyImageView @JvmOverloads constructor(
 
     init {
         mediatorLiveData.observeFromView(this) {
-            RequestManagerUtils.requestManagerOrNull(this@MyImageView)?.restart()
+            SketchUtils.restart(this@MyImageView)
         }
         context.appSettingsService.apply {
             mediatorLiveData.apply {
