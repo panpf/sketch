@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.sample.widget
 
 import android.content.Context
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.util.AttributeSet
 import androidx.appcompat.app.AlertDialog
 import com.github.panpf.activity.monitor.ActivityMonitor
@@ -36,6 +38,9 @@ open class MyImageView @JvmOverloads constructor(
                 addSource(disabledReuseBitmap.liveEvent, observer)
                 addSource(inPreferQualityOverSpeed.liveEvent, observer)
                 addSource(bitmapQuality.liveEvent, observer)
+                if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                    addSource(colorSpace.liveEvent, observer)
+                }
             }
 
             showDataFromLogo.observeFromView(this@MyImageView) {

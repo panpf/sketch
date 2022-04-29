@@ -25,7 +25,7 @@ internal fun ImageRequest.newQualityKey(): String? =
         parameters?.cacheKey?.let { add(it) }
         bitmapConfig?.let { add(it.key) }
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            colorSpace?.let { add("colorSpace(${it.name.replace(" ", "")}") }
+            colorSpace?.let { add("colorSpace(${it.name.replace(" ", "_")})") }
         }
         @Suppress("DEPRECATION")
         if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
@@ -62,7 +62,7 @@ internal fun ImageRequest.newKey(): String = buildString {
         }
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             colorSpace?.let {
-                append("_").append("colorSpace(${it.name.replace(" ", "")}")
+                append("_").append("colorSpace(${it.name.replace(" ", "_")})")
             }
         }
         @Suppress("DEPRECATION")

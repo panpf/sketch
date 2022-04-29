@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.sample
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
@@ -51,6 +53,10 @@ class AppSettingsService(val context: Context) {
     }
     val bitmapQuality by lazy {
         StringPrefsData(context, "bitmapQuality", "MIDDEN")
+    }
+    @get:RequiresApi(Build.VERSION_CODES.O)
+    val colorSpace by lazy {
+        StringPrefsData(context, "colorSpace", "Default")
     }
     val ignoreExifOrientation by lazy {
         BooleanPrefsData(context, "ignoreExifOrientation", false)

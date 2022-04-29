@@ -1,13 +1,15 @@
 package com.github.panpf.sketch.sample.util
 
-import android.os.Build
+import android.graphics.ColorSpace
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.appSettingsService
@@ -40,7 +42,7 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
             if (appSettings.ignoreExifOrientation.value) {
                 ignoreExifOrientation(true)
             }
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && appSettings.inPreferQualityOverSpeed.value) {
+            if (VERSION.SDK_INT < VERSION_CODES.N && appSettings.inPreferQualityOverSpeed.value) {
                 @Suppress("DEPRECATION")
                 preferQualityOverSpeed(true)
             }
@@ -48,6 +50,16 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                 "LOW" -> bitmapConfig(BitmapConfig.LOW_QUALITY)
                 "MIDDEN" -> bitmapConfig(BitmapConfig.MIDDEN_QUALITY)
                 "HIGH" -> bitmapConfig(BitmapConfig.HIGH_QUALITY)
+            }
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                when (val value = appSettings.colorSpace.value) {
+                    "Default" -> {
+
+                    }
+                    else -> {
+                        colorSpace(ColorSpace.get(ColorSpace.Named.valueOf(value)))
+                    }
+                }
             }
             val target = chain.request.target
             if (target is ViewTarget<*>) {

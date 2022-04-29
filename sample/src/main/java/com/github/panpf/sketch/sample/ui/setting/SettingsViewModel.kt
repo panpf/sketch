@@ -1,7 +1,9 @@
 package com.github.panpf.sketch.sample.ui.setting
 
 import android.app.Application
-import android.os.Build
+import android.graphics.ColorSpace
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.lifecycle.MutableLiveData
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.appSettingsService
@@ -127,7 +129,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
     }
 
     private fun makeDecodeMenuList(): List<Any> = buildList {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if (VERSION.SDK_INT < VERSION_CODES.N) {
             add(
                 SwitchMenu(
                     title = "inPreferQualityOverSpeed",
@@ -153,7 +155,21 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                     }
                 })
         )
-        // todo color space
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            val items = listOf("Default").plus(ColorSpace.Named.values().map { it.name })
+            add(
+                MultiSelectMenu(
+                    "Color Space",
+                    null,
+                    items,
+                    value = {
+                        appSettingsService.colorSpace.value
+                    },
+                    onSelect = { which ->
+                        appSettingsService.colorSpace.value = items[which]
+                    })
+            )
+        }
         add(
             SwitchMenu(
                 title = "Exif Orientation",
