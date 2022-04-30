@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentPager2TabBinding
-import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
-import com.github.panpf.sketch.sample.ui.view.ImageZoomFragmentItemFactory
+import com.github.panpf.sketch.sample.ui.view.HugeImageFragmentItemFactory
 import com.google.android.material.tabs.TabLayoutMediator
 
 class HugeImageHorListFragment : BindingFragment<FragmentPager2TabBinding>() {
@@ -22,14 +21,12 @@ class HugeImageHorListFragment : BindingFragment<FragmentPager2TabBinding>() {
         binding: FragmentPager2TabBinding,
         savedInstanceState: Bundle?
     ) {
-        val images = AssetImages.HUGES.plus(AssetImages.LONGS).map {
-            ImageDetail(it, it, null)
-        }
+        val images = AssetImages.HUGES.plus(AssetImages.LONGS).toList()
         val titles = arrayOf("WORLD", "CARD", "QMSHT", "CWB")
 
         binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
             this,
-            listOf(ImageZoomFragmentItemFactory(true)),
+            listOf(HugeImageFragmentItemFactory()),
             images
         )
 

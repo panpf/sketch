@@ -2,17 +2,16 @@ package com.github.panpf.sketch.sample.ui.view
 
 import androidx.fragment.app.Fragment
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
-import com.github.panpf.sketch.sample.model.ImageDetail
 
-class ImageZoomFragmentItemFactory : FragmentItemFactory<ImageDetail>(ImageDetail::class) {
+class HugeImageFragmentItemFactory: FragmentItemFactory<String>(String::class) {
 
     override fun createFragment(
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
-        data: ImageDetail
+        data: String
     ): Fragment {
-        return ImageZoomFragment().apply {
-            arguments = ImageZoomFragmentArgs(data.url).toBundle()
+        return HugeImageFragment().apply {
+            arguments = HugeImageFragmentArgs(data).toBundle()
         }
     }
 }

@@ -61,13 +61,17 @@
         android:name="com.github.panpf.sketch.sample.ui.view.ImageZoomFragment"
         android:label="ImageZoomFragment">
         <argument
-            android:name="imageDetailJson"
+            android:name="imageUri"
             app:argType="string"
             app:nullable="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/hugeImageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.view.HugeImageFragment"
+        android:label="HugeImageFragment">
         <argument
-            android:name="showTileMap"
-            android:defaultValue="false"
-            app:argType="boolean"
+            android:name="imageUri"
+            app:argType="string"
             app:nullable="false" />
     </fragment>
     <fragment
