@@ -5,19 +5,19 @@
     android:layout_height="match_parent">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_recyclerFragment"
+        android:id="@+id/recyclerRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.github.panpf.sketch.sample.widget.MyRecyclerView
-            android:id="@+id/recycler_recyclerFragment_content"
+            android:id="@+id/recyclerRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.github.panpf.sketch.sample.widget.HintView
-        android:id="@+id/hint_recyclerFragment"
+        android:id="@+id/recyclerHint"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

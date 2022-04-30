@@ -1,29 +1,22 @@
 package com.github.panpf.sketch.sample.ui.test.fetcher
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
-import com.github.panpf.sketch.sample.databinding.FragmentPager2TabBinding
+import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
-import com.github.panpf.sketch.sample.ui.view.ImageFragmentItemFactory
+import com.github.panpf.sketch.sample.ui.viewer.ImageFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class FetcherTestFragment : ToolbarBindingFragment<FragmentPager2TabBinding>() {
+class FetcherTestFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {
 
     private val viewModel by viewModels<FetcherTestViewModel>()
 
-    override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ) = FragmentPager2TabBinding.inflate(inflater, parent, false)
-
-    override fun onInitData(
+    override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentPager2TabBinding,
+        binding: TabPagerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Fetcher"
@@ -36,9 +29,9 @@ class FetcherTestFragment : ToolbarBindingFragment<FragmentPager2TabBinding>() {
             val titles = imageFromData.titles
 
             binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
-                this,
-                listOf(ImageFragmentItemFactory()),
-                images
+                fragment = this,
+                itemFactoryList = listOf(ImageFragment.ItemFactory()),
+                initDataList = images
             )
 
             TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->

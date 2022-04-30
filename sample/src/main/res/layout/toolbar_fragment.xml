@@ -6,7 +6,7 @@
     android:background="?android:windowBackground">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarFragmentToolbar"
+        android:id="@+id/toolbarToolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/windowBackground"
@@ -17,12 +17,12 @@
         app:title="@string/app_name" />
 
     <FrameLayout
-        android:id="@+id/toolbarFragmentContent"
+        android:id="@+id/toolbarContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarFragmentToolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbarToolbar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

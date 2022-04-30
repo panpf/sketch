@@ -6,7 +6,7 @@
     android:orientation="horizontal">
 
     <com.github.panpf.sketch.sample.widget.VerticalTabLayout
-        android:id="@+id/tabPagerVerticalTabLayout"
+        android:id="@+id/tabPagerVerTabLayout"
         android:layout_width="70dp"
         android:layout_height="match_parent"
         app:tab_mode="fixed"
@@ -14,7 +14,7 @@
         app:tab_textSelectedColor="@color/colorAccent" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/tabPagerVerticalPager"
+        android:id="@+id/tabPagerVerPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

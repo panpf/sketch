@@ -20,17 +20,15 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import com.github.panpf.sketch.sample.databinding.ActivityMainBinding
+import com.github.panpf.sketch.sample.databinding.MainActivityBinding
 import com.github.panpf.sketch.sample.service.NotificationService
-import com.github.panpf.sketch.sample.ui.base.BaseActivity
+import com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
 
-class MainActivity : BaseActivity<ActivityMainBinding>() {
+class MainActivity : BaseBindingActivity<MainActivityBinding>() {
 
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -39,12 +37,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
         }
 
-    override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ) = ActivityMainBinding.inflate(inflater, parent, false)
-
-    override fun onInitData(binding: ActivityMainBinding, savedInstanceState: Bundle?) {
+    override fun onCreate(binding: MainActivityBinding, savedInstanceState: Bundle?) {
         startMultiProcess()
         requestPermission()
     }

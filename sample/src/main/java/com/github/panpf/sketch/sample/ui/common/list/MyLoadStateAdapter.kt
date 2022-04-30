@@ -1,10 +1,9 @@
-package com.github.panpf.sketch.sample.ui.base
+package com.github.panpf.sketch.sample.ui.common.list
 
 import android.annotation.SuppressLint
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyLoadStateAdapter
-import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 
 class MyLoadStateAdapter(
     alwaysShowWhenEndOfPaginationReached: Boolean = true

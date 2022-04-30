@@ -19,8 +19,6 @@ package com.github.panpf.sketch.sample.ui.video
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -28,19 +26,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
-import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
+import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.DialogFragmentItemInfo
 import com.github.panpf.sketch.sample.model.NavMenuItemInfo
 import com.github.panpf.sketch.sample.model.SwitchMenuItemInfo
 import com.github.panpf.sketch.sample.model.VideoInfo
-import com.github.panpf.sketch.sample.ui.base.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import kotlinx.coroutines.launch
 import java.io.File
 
-class LocalVideoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
+class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
     private val videoListViewModel by viewModels<LocalVideoListViewModel>()
     private val listMenuViewModel by viewModels<ListMenuViewModel> {
@@ -51,49 +49,38 @@ class LocalVideoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>()
         )
     }
 
-    override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
-
-    override fun onInitViews(
+    override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentRecyclerBinding,
+        binding: RecyclerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        super.onInitViews(toolbar, binding, savedInstanceState)
-        listMenuViewModel.menuList.observe(viewLifecycleOwner) { list ->
-            toolbar.menu.clear()
-            list?.forEachIndexed { groupIndex, group ->
-                group.items.forEachIndexed { index, menuItemInfo ->
-                    toolbar.menu.add(groupIndex, index, index, menuItemInfo.title).apply {
-                        menuItemInfo.iconResId?.let { iconResId ->
-                            setIcon(iconResId)
-                        }
-                        setOnMenuItemClickListener {
-                            when (menuItemInfo) {
-                                is SwitchMenuItemInfo<*> -> menuItemInfo.click()
-                                is NavMenuItemInfo -> findNavController().navigate(menuItemInfo.navDirections)
-                                is DialogFragmentItemInfo -> menuItemInfo.fragment
-                                    .javaClass.newInstance().apply {
-                                        arguments = menuItemInfo.fragment.arguments
-                                    }.show(childFragmentManager, null)
+        toolbar.apply {
+            title = "Local Video"
+            listMenuViewModel.menuList.observe(viewLifecycleOwner) { list ->
+                menu.clear()
+                list?.forEachIndexed { groupIndex, group ->
+                    group.items.forEachIndexed { index, menuItemInfo ->
+                        menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                            menuItemInfo.iconResId?.let { iconResId ->
+                                setIcon(iconResId)
                             }
-                            true
+                            setOnMenuItemClickListener {
+                                when (menuItemInfo) {
+                                    is SwitchMenuItemInfo<*> -> menuItemInfo.click()
+                                    is NavMenuItemInfo -> findNavController().navigate(menuItemInfo.navDirections)
+                                    is DialogFragmentItemInfo -> menuItemInfo.fragment
+                                        .javaClass.newInstance().apply {
+                                            arguments = menuItemInfo.fragment.arguments
+                                        }.show(childFragmentManager, null)
+                                }
+                                true
+                            }
+                            setShowAsAction(menuItemInfo.showAsAction)
                         }
-                        setShowAsAction(menuItemInfo.showAsAction)
                     }
                 }
             }
         }
-    }
-
-    override fun onInitData(
-        toolbar: Toolbar,
-        binding: FragmentRecyclerBinding,
-        savedInstanceState: Bundle?
-    ) {
-        toolbar.title = "Local Video"
 
         val pagingAdapter = AssemblyPagingDataAdapter<VideoInfo>(listOf(
             LocalVideoItemFactory().setOnItemClickListener { _, _, _, _, data ->
@@ -106,16 +93,22 @@ class LocalVideoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>()
                     showLongToast("Not found can play video app")
                 }
             }
-        ))
+        )).apply {
+            viewLifecycleOwner.lifecycleScope.launch {
+                videoListViewModel.pagingFlow.collect {
+                    submitData(it)
+                }
+            }
+        }
 
-        binding.recyclerRecyclerFragmentContent.apply {
+        binding.recyclerRecycler.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
             })
         }
 
-        binding.refreshRecyclerFragment.setOnRefreshListener {
+        binding.recyclerRefresh.setOnRefreshListener {
             pagingAdapter.refresh()
         }
 
@@ -123,30 +116,24 @@ class LocalVideoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>()
             pagingAdapter.loadStateFlow.collect {
                 when (val refreshState = it.refresh) {
                     is LoadState.Loading -> {
-                        binding.hintRecyclerFragment.hidden()
-                        binding.refreshRecyclerFragment.isRefreshing = true
+                        binding.recyclerHint.hidden()
+                        binding.recyclerRefresh.isRefreshing = true
                     }
                     is LoadState.Error -> {
-                        binding.refreshRecyclerFragment.isRefreshing = false
-                        binding.hintRecyclerFragment.failed(refreshState.error) {
+                        binding.recyclerRefresh.isRefreshing = false
+                        binding.recyclerHint.failed(refreshState.error) {
                             pagingAdapter.refresh()
                         }
                     }
                     is LoadState.NotLoading -> {
-                        binding.refreshRecyclerFragment.isRefreshing = false
+                        binding.recyclerRefresh.isRefreshing = false
                         if (pagingAdapter.itemCount <= 0) {
-                            binding.hintRecyclerFragment.empty("No videos")
+                            binding.recyclerHint.empty("No videos")
                         } else {
-                            binding.hintRecyclerFragment.hidden()
+                            binding.recyclerHint.hidden()
                         }
                     }
                 }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            videoListViewModel.pagingFlow.collect {
-                pagingAdapter.submitData(it)
             }
         }
     }

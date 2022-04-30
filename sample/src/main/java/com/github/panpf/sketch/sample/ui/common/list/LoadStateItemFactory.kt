@@ -1,33 +1,24 @@
 package com.github.panpf.sketch.sample.ui.common.list
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
-import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.sample.databinding.ItemLoadStateBinding
+import com.github.panpf.sketch.sample.databinding.LoadStateItemBinding
 
 class LoadStateItemFactory :
-    BindingItemFactory<LoadState, ItemLoadStateBinding>(LoadState::class) {
-
-    override fun createItemViewBinding(
-        context: Context,
-        inflater: LayoutInflater,
-        parent: ViewGroup
-    ) = ItemLoadStateBinding.inflate(inflater, parent, false)
+    MyBindingItemFactory<LoadState, LoadStateItemBinding>(LoadState::class) {
 
     override fun initItem(
         context: Context,
-        binding: ItemLoadStateBinding,
-        item: BindingItem<LoadState, ItemLoadStateBinding>
+        binding: LoadStateItemBinding,
+        item: BindingItem<LoadState, LoadStateItemBinding>
     ) {
     }
 
     override fun bindItemData(
         context: Context,
-        binding: ItemLoadStateBinding,
-        item: BindingItem<LoadState, ItemLoadStateBinding>,
+        binding: LoadStateItemBinding,
+        item: BindingItem<LoadState, LoadStateItemBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: LoadState

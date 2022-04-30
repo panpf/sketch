@@ -28,7 +28,7 @@
 
                     <ProgressBar
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/text_hint_progress"
@@ -36,8 +36,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:textSize="12dp"
                         android:textColor="@color/text_normal"
+                        android:textSize="12dp"
                         tools:text="10%" />
                 </FrameLayout>
 
@@ -46,8 +46,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:textColor="@color/text_normal"
                     android:gravity="center"
+                    android:textColor="@color/text_normal"
                     tools:text="Loading…" />
             </LinearLayout>
 
@@ -56,10 +56,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@color/text_normal"
-                android:drawablePadding="@dimen/padding_specialLarge"
                 android:drawableTop="@drawable/ic_error_outline"
-                android:gravity="center" />
+                android:drawablePadding="@dimen/padding_specialLarge"
+                android:gravity="center"
+                android:textColor="@color/text_normal" />
         </ViewSwitcher>
 
         <Button

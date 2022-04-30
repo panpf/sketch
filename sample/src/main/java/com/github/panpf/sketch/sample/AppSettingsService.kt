@@ -12,7 +12,7 @@ import com.github.panpf.sketch.sample.util.prefsdata.StringPrefsData
 import com.github.panpf.sketch.util.Logger
 
 class AppSettingsService(val context: Context) {
-
+    // todo 用 flow 加 mmkv 替代 PrefsData
     val photoListLayoutMode by lazy {
         EnumPrefsData(
             context,

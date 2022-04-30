@@ -1,28 +1,21 @@
 package com.github.panpf.sketch.sample.ui.test.format
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
-import com.github.panpf.sketch.sample.databinding.FragmentPager2TabBinding
+import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
-import com.github.panpf.sketch.sample.ui.view.ImageFragmentItemFactory
+import com.github.panpf.sketch.sample.ui.viewer.ImageFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ImageFormatTestFragment : ToolbarBindingFragment<FragmentPager2TabBinding>() {
+class ImageFormatTestFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {
 
     private val viewModel by viewModels<ImageFormatTestViewModel>()
 
-    override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ) = FragmentPager2TabBinding.inflate(inflater, parent, false)
-
-    override fun onInitData(
+    override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentPager2TabBinding,
+        binding: TabPagerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Image Format"
@@ -30,9 +23,9 @@ class ImageFormatTestFragment : ToolbarBindingFragment<FragmentPager2TabBinding>
         viewModel.data.observe(viewLifecycleOwner) {
             it ?: return@observe
             binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
-                this,
-                listOf(ImageFragmentItemFactory()),
-                it.second
+                fragment = this,
+                itemFactoryList = listOf(ImageFragment.ItemFactory()),
+                initDataList = it.second
             )
 
             TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->

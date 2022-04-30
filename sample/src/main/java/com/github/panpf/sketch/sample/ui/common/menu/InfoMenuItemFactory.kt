@@ -2,26 +2,18 @@ package com.github.panpf.sketch.sample.ui.common.menu
 
 import android.content.Context
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.core.view.isVisible
-import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.sample.databinding.ItemMenuInfoBinding
+import com.github.panpf.sketch.sample.databinding.InfoMenuItemBinding
 import com.github.panpf.sketch.sample.model.InfoMenu
+import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 
 class InfoMenuItemFactory(private val compactModel: Boolean = false) :
-    BindingItemFactory<InfoMenu, ItemMenuInfoBinding>(InfoMenu::class) {
-
-    override fun createItemViewBinding(
-        context: Context,
-        inflater: LayoutInflater,
-        parent: ViewGroup
-    ) = ItemMenuInfoBinding.inflate(inflater, parent, false)
+    MyBindingItemFactory<InfoMenu, InfoMenuItemBinding>(InfoMenu::class) {
 
     override fun initItem(
         context: Context,
-        binding: ItemMenuInfoBinding,
-        item: BindingItem<InfoMenu, ItemMenuInfoBinding>
+        binding: InfoMenuItemBinding,
+        item: BindingItem<InfoMenu, InfoMenuItemBinding>
     ) {
         binding.root.setOnClickListener {
             val data = item.dataOrThrow
@@ -37,8 +29,8 @@ class InfoMenuItemFactory(private val compactModel: Boolean = false) :
 
     override fun bindItemData(
         context: Context,
-        binding: ItemMenuInfoBinding,
-        item: BindingItem<InfoMenu, ItemMenuInfoBinding>,
+        binding: InfoMenuItemBinding,
+        item: BindingItem<InfoMenu, InfoMenuItemBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: InfoMenu

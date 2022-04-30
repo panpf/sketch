@@ -16,32 +16,23 @@
 package com.github.panpf.sketch.sample.ui.common.list
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.sample.databinding.ItemListSeparatorBinding
+import com.github.panpf.sketch.sample.databinding.ListSeparatorItemBinding
 import com.github.panpf.sketch.sample.model.ListSeparator
 
 class ListSeparatorItemFactory :
-    BindingItemFactory<ListSeparator, ItemListSeparatorBinding>(ListSeparator::class) {
-
-    override fun createItemViewBinding(
-        context: Context, inflater: LayoutInflater, parent: ViewGroup
-    ): ItemListSeparatorBinding {
-        return ItemListSeparatorBinding.inflate(inflater, parent, false)
-    }
+    MyBindingItemFactory<ListSeparator, ListSeparatorItemBinding>(ListSeparator::class) {
 
     override fun initItem(
         context: Context,
-        binding: ItemListSeparatorBinding,
-        item: BindingItem<ListSeparator, ItemListSeparatorBinding>
+        binding: ListSeparatorItemBinding,
+        item: BindingItem<ListSeparator, ListSeparatorItemBinding>
     ) {
     }
 
     override fun bindItemData(
         context: Context,
-        binding: ItemListSeparatorBinding,
-        item: BindingItem<ListSeparator, ItemListSeparatorBinding>,
+        binding: ListSeparatorItemBinding,
+        item: BindingItem<ListSeparator, ListSeparatorItemBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: ListSeparator

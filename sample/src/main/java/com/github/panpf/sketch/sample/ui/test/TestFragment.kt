@@ -1,18 +1,13 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import com.github.panpf.sketch.sample.databinding.FragmentTestBinding
+import com.github.panpf.sketch.sample.databinding.TestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 
-class TestFragment : BindingFragment<FragmentTestBinding>() {
+class TestFragment : BindingFragment<TestFragmentBinding>() {
 
-    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
-        FragmentTestBinding.inflate(inflater, parent, false)
-
-    override fun onInitData(binding: FragmentTestBinding, savedInstanceState: Bundle?) {
-        binding.testFragmentImageView.apply {
+    override fun onViewCreated(binding: TestFragmentBinding, savedInstanceState: Bundle?) {
+        binding.testImage.apply {
 //            scaleType = ScaleType.CENTER
 //            setImageDrawable(RingProgressDrawable(160).apply {
 ////                    progress = 1.4f

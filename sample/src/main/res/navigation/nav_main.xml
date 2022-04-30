@@ -7,18 +7,128 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.github.panpf.sketch.sample.ui.MainFragment"
-        android:label="MainFragment" />
+        android:label="MainFragment">
+        <action
+            android:id="@+id/action_pexelsPhotoListFragment"
+            app:destination="@id/pexelsPhotoListFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_pexelsPhotoListComposeFragment"
+            app:destination="@id/pexelsPhotoListComposeFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_giphyGifListFragment"
+            app:destination="@id/giphyGifListFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_giphyGifListComposeFragment"
+            app:destination="@id/giphyGifListComposeFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_localPhotoListFragment"
+            app:destination="@id/localPhotoListFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_localVideoListFragment"
+            app:destination="@id/localVideoListFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_hugeImageHomeFragment"
+            app:destination="@id/hugeImageHomeFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+
+        <action
+            android:id="@+id/action_imageFormatTestFragment"
+            app:destination="@id/imageFormatTestFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_fetcherTestFragment"
+            app:destination="@id/fetcherTestFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_insanityTestFragment"
+            app:destination="@id/insanityTestFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_insanityTestComposeFragment"
+            app:destination="@id/insanityTestComposeFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_testFragment"
+            app:destination="@id/testFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <!--<action
+            android:id="@+id/action_global_imageFragment"
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_global_imageZoomFragment"
+            app:destination="@id/imageViewerFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />-->
+    </fragment>
+
     <fragment
         android:id="@+id/localPhotoListFragment"
         android:name="com.github.panpf.sketch.sample.ui.photo.local.LocalPhotoListFragment"
         android:label="LocalPhotoListFragment" />
+
     <fragment
         android:id="@+id/pexelsPhotoListFragment"
         android:name="com.github.panpf.sketch.sample.ui.photo.pexels.PexelsPhotoListFragment"
         android:label="PexelsPhotoListFragment" />
+
     <fragment
         android:id="@+id/imageFragment"
-        android:name="com.github.panpf.sketch.sample.ui.view.ImageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.viewer.ImageFragment"
         android:label="ImageFragment">
         <argument
             android:name="url"
@@ -26,22 +136,36 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+
     <fragment
         android:id="@+id/fetcherTestFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.fetcher.FetcherTestFragment"
         android:label="FetcherTestFragment" />
+
     <fragment
         android:id="@+id/imageFormatTestFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.format.ImageFormatTestFragment"
         android:label="ImageFormatTestFragment" />
+
     <fragment
-        android:id="@+id/hugeImageListFragment"
-        android:name="com.github.panpf.sketch.sample.ui.huge.HugeImageListFragment"
-        android:label="HugeImageListFragment" />
+        android:id="@+id/hugeImageHomeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.huge.HugeImageHomeFragment"
+        android:label="HugeImageHomeFragment" />
+
     <fragment
-        android:id="@+id/imageViewerFragment"
-        android:name="com.github.panpf.sketch.sample.ui.view.ImageViewerFragment"
-        android:label="ImageViewerFragment">
+        android:id="@+id/hugeImageViewerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.huge.HugeImageViewerFragment"
+        android:label="HugeImageViewerFragment">
+        <argument
+            android:name="imageUri"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/imageViewerPagerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerPagerFragment"
+        android:label="ImageViewerPagerFragment">
         <argument
             android:name="imageDetailJsonArray"
             app:argType="string"
@@ -56,165 +180,60 @@
             app:argType="integer"
             app:nullable="false" />
     </fragment>
+
     <fragment
-        android:id="@+id/imageZoomFragment"
-        android:name="com.github.panpf.sketch.sample.ui.view.ImageZoomFragment"
-        android:label="ImageZoomFragment">
+        android:id="@+id/imageViewerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerFragment"
+        android:label="ImageViewerFragment">
         <argument
             android:name="imageUri"
             app:argType="string"
             app:nullable="false" />
     </fragment>
-    <fragment
-        android:id="@+id/hugeImageFragment"
-        android:name="com.github.panpf.sketch.sample.ui.view.HugeImageFragment"
-        android:label="HugeImageFragment">
-        <argument
-            android:name="imageUri"
-            app:argType="string"
-            app:nullable="false" />
-    </fragment>
+
     <fragment
         android:id="@+id/giphyGifListFragment"
         android:name="com.github.panpf.sketch.sample.ui.gif.giphy.GiphyGifListFragment"
         android:label="GiphyGifListFragment" />
+
     <fragment
         android:id="@+id/localVideoListFragment"
         android:name="com.github.panpf.sketch.sample.ui.video.LocalVideoListFragment"
         android:label="LocalVideoListFragment" />
+
     <fragment
         android:id="@+id/testFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.TestFragment"
         android:label="TestFragment" />
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.github.panpf.sketch.sample.ui.setting.SettingsFragment"
         android:label="SettingsFragment" />
+
     <fragment
         android:id="@+id/giphyGifListComposeFragment"
         android:name="com.github.panpf.sketch.sample.ui.gif.giphy.compose.GiphyGifListComposeFragment"
         android:label="GiphyGifListComposeFragment" />
+
     <fragment
         android:id="@+id/pexelsPhotoListComposeFragment"
         android:name="com.github.panpf.sketch.sample.ui.photo.pexels.compose.PexelsPhotoListComposeFragment"
         android:label="PexelsPhotoListComposeFragment" />
+
     <fragment
         android:id="@+id/insanityTestFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.insanity.InsanityTestFragment"
         android:label="InsanityTestFragment" />
+
     <fragment
         android:id="@+id/insanityTestComposeFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.insanity.compose.InsanityTestComposeFragment"
         android:label="InsanityTestComposeFragment" />
 
     <action
-        android:id="@+id/action_global_pexelsPhotoListFragment"
-        app:destination="@id/pexelsPhotoListFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_localPhotoListFragment"
-        app:destination="@id/localPhotoListFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_imageFormatTestFragment"
-        app:destination="@id/imageFormatTestFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_imageFragment"
-        app:destination="@id/imageFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_fetcherTestFragment"
-        app:destination="@id/fetcherTestFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_imageViewerFragment"
-        app:destination="@id/imageViewerFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_imageZoomFragment"
-        app:destination="@id/imageZoomFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_giphyGifListFragment"
-        app:destination="@id/giphyGifListFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_localVideoListFragment"
-        app:destination="@id/localVideoListFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_testFragment"
-        app:destination="@id/testFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_settingsFragment"
-        app:destination="@id/settingsFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_hugeImageListFragment"
-        app:destination="@id/hugeImageListFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_pexelsPhotoListComposeFragment"
-        app:destination="@id/pexelsPhotoListComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_giphyGifListComposeFragment"
-        app:destination="@id/giphyGifListComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_insanityTestFragment"
-        app:destination="@id/insanityTestFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_insanityTestComposeFragment"
-        app:destination="@id/insanityTestComposeFragment"
+        android:id="@+id/action_global_imageViewerPagerFragment"
+        app:destination="@id/imageViewerPagerFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

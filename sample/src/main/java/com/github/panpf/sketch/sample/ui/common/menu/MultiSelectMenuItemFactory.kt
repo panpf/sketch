@@ -2,28 +2,20 @@ package com.github.panpf.sketch.sample.ui.common.menu
 
 import android.content.Context
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.github.panpf.activity.monitor.ActivityMonitor
-import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.sample.databinding.ItemMenuMultiSelectBinding
+import com.github.panpf.sketch.sample.databinding.MultiSelectMenuItemBinding
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
+import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 
 class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
-    BindingItemFactory<MultiSelectMenu, ItemMenuMultiSelectBinding>(MultiSelectMenu::class) {
-
-    override fun createItemViewBinding(
-        context: Context,
-        inflater: LayoutInflater,
-        parent: ViewGroup
-    ) = ItemMenuMultiSelectBinding.inflate(inflater, parent, false)
+    MyBindingItemFactory<MultiSelectMenu, MultiSelectMenuItemBinding>(MultiSelectMenu::class) {
 
     override fun initItem(
         context: Context,
-        binding: ItemMenuMultiSelectBinding,
-        item: BindingItem<MultiSelectMenu, ItemMenuMultiSelectBinding>
+        binding: MultiSelectMenuItemBinding,
+        item: BindingItem<MultiSelectMenu, MultiSelectMenuItemBinding>
     ) {
         binding.root.setOnClickListener {
             val data = item.dataOrThrow
@@ -41,8 +33,8 @@ class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
 
     override fun bindItemData(
         context: Context,
-        binding: ItemMenuMultiSelectBinding,
-        item: BindingItem<MultiSelectMenu, ItemMenuMultiSelectBinding>,
+        binding: MultiSelectMenuItemBinding,
+        item: BindingItem<MultiSelectMenu, MultiSelectMenuItemBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: MultiSelectMenu

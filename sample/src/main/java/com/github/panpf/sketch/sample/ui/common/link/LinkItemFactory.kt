@@ -17,26 +17,18 @@ package com.github.panpf.sketch.sample.ui.common.link
 
 import android.content.Context
 import android.os.Build
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.findNavController
-import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.sample.databinding.ItemLinkBinding
+import com.github.panpf.sketch.sample.databinding.LinkItemBinding
 import com.github.panpf.sketch.sample.model.Link
+import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 
-class LinkItemFactory : BindingItemFactory<Link, ItemLinkBinding>(Link::class) {
-
-    override fun createItemViewBinding(
-        context: Context, inflater: LayoutInflater, parent: ViewGroup
-    ): ItemLinkBinding {
-        return ItemLinkBinding.inflate(inflater, parent, false)
-    }
+class LinkItemFactory : MyBindingItemFactory<Link, LinkItemBinding>(Link::class) {
 
     override fun initItem(
         context: Context,
-        binding: ItemLinkBinding,
-        item: BindingItem<Link, ItemLinkBinding>
+        binding: LinkItemBinding,
+        item: BindingItem<Link, LinkItemBinding>
     ) {
         binding.root.setOnClickListener {
             val data = item.dataOrThrow
@@ -54,8 +46,8 @@ class LinkItemFactory : BindingItemFactory<Link, ItemLinkBinding>(Link::class) {
 
     override fun bindItemData(
         context: Context,
-        binding: ItemLinkBinding,
-        item: BindingItem<Link, ItemLinkBinding>,
+        binding: LinkItemBinding,
+        item: BindingItem<Link, LinkItemBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: Link

@@ -1,10 +1,14 @@
 package com.github.panpf.sketch.sample.util
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.viewbinding.ViewBinding
 import com.github.panpf.liveevent.LiveEvent
+import java.lang.reflect.ParameterizedType
 
 fun <T> safeRun(block: () -> T): T? {
     return try {
@@ -69,4 +73,20 @@ fun <T> LiveData<T>.observeFromViewAndInit(view: View, observer: Observer<T>) {
             removeObserver(observer)
         }
     })
+}
+
+fun Class<*>.instanceViewBinding(viewBindingParamIndex: Int, inflater: LayoutInflater, parent: ViewGroup?): ViewBinding {
+    val type = genericSuperclass
+    if (type is ParameterizedType) {
+        val clazz = type.actualTypeArguments[viewBindingParamIndex] as Class<ViewBinding>
+        val method = clazz.getMethod(
+            "inflate",
+            LayoutInflater::class.java,
+            ViewGroup::class.java,
+            Boolean::class.java
+        )
+        return method.invoke(null, inflater, parent, false) as ViewBinding
+    } else {
+        throw IllegalArgumentException("${this} 需要定义一个泛型参数，例如 class MyFragment<T: ViewBinding>: Fragment()")
+    }
 }

@@ -1,32 +1,21 @@
 package com.github.panpf.sketch.sample.ui.huge
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.AssetImages
-import com.github.panpf.sketch.sample.databinding.FragmentPager2TabBinding
+import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
-import com.github.panpf.sketch.sample.ui.view.HugeImageFragmentItemFactory
 import com.google.android.material.tabs.TabLayoutMediator
 
-class HugeImageHorListFragment : BindingFragment<FragmentPager2TabBinding>() {
+class HugeImageHorPagerFragment : BindingFragment<TabPagerFragmentBinding>() {
 
-    override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ) = FragmentPager2TabBinding.inflate(inflater, parent, false)
-
-    override fun onInitData(
-        binding: FragmentPager2TabBinding,
-        savedInstanceState: Bundle?
-    ) {
+    override fun onViewCreated(binding: TabPagerFragmentBinding, savedInstanceState: Bundle?) {
         val images = AssetImages.HUGES.plus(AssetImages.LONGS).toList()
         val titles = arrayOf("WORLD", "CARD", "QMSHT", "CWB")
 
         binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
             this,
-            listOf(HugeImageFragmentItemFactory()),
+            listOf(HugeImageViewerFragment.ItemFactory()),
             images
         )
 

@@ -2,27 +2,19 @@ package com.github.panpf.sketch.sample.ui.common.menu
 
 import android.content.Context
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.core.view.isVisible
-import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.sample.databinding.ItemMenuSwitchBinding
+import com.github.panpf.sketch.sample.databinding.SwitchMenuItemBinding
 import com.github.panpf.sketch.sample.model.SwitchMenu
+import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 
 class SwitchMenuItemFactory(
     private val compactModel: Boolean = false,
-) : BindingItemFactory<SwitchMenu, ItemMenuSwitchBinding>(SwitchMenu::class) {
-
-    override fun createItemViewBinding(
-        context: Context,
-        inflater: LayoutInflater,
-        parent: ViewGroup
-    ) = ItemMenuSwitchBinding.inflate(inflater, parent, false)
+) : MyBindingItemFactory<SwitchMenu, SwitchMenuItemBinding>(SwitchMenu::class) {
 
     override fun initItem(
         context: Context,
-        binding: ItemMenuSwitchBinding,
-        item: BindingItem<SwitchMenu, ItemMenuSwitchBinding>
+        binding: SwitchMenuItemBinding,
+        item: BindingItem<SwitchMenu, SwitchMenuItemBinding>
     ) {
         binding.root.setOnClickListener {
             binding.switchMenuItemSwitch.isChecked = !binding.switchMenuItemSwitch.isChecked
@@ -42,8 +34,8 @@ class SwitchMenuItemFactory(
 
     override fun bindItemData(
         context: Context,
-        binding: ItemMenuSwitchBinding,
-        item: BindingItem<SwitchMenu, ItemMenuSwitchBinding>,
+        binding: SwitchMenuItemBinding,
+        item: BindingItem<SwitchMenu, SwitchMenuItemBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: SwitchMenu

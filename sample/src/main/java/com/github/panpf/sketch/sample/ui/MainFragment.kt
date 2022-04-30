@@ -2,48 +2,35 @@ package com.github.panpf.sketch.sample.ui
 
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
-import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.FragmentMainBinding
+import com.github.panpf.sketch.sample.databinding.MainFragmentBinding
 import com.github.panpf.sketch.sample.model.Link
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 
-class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
+class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
 
-    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
-        FragmentMainBinding.inflate(inflater, parent, false)
-
-    override fun onInitViews(
+    override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentMainBinding,
+        binding: MainFragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        super.onInitViews(toolbar, binding, savedInstanceState)
         toolbar.menu.add(0, 0, 0, "Settings").apply {
             setIcon(R.drawable.ic_settings)
             setOnMenuItemClickListener {
-                findNavController().navigate(NavMainDirections.actionGlobalSettingsFragment())
+                findNavController().navigate(MainFragmentDirections.actionSettingsFragment())
                 true
             }
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
         }
-    }
 
-    override fun onInitData(
-        toolbar: Toolbar,
-        binding: FragmentMainBinding,
-        savedInstanceState: Bundle?
-    ) {
         binding.mainRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = AssemblyRecyclerAdapter(
@@ -52,56 +39,68 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                     ListSeparator("Samples"),
                     Link(
                         "Pexels Photos",
-                        NavMainDirections.actionGlobalPexelsPhotoListFragment()
+                        MainFragmentDirections.actionPexelsPhotoListFragment()
                     ),
                     Link(
                         "Pexels Photos（Compose）",
-                        NavMainDirections.actionGlobalPexelsPhotoListComposeFragment(),
+                        MainFragmentDirections.actionPexelsPhotoListComposeFragment(),
                         Build.VERSION_CODES.LOLLIPOP
                     ),
-                    Link("Giphy GIF", NavMainDirections.actionGlobalGiphyGifListFragment()),
+                    Link("Giphy GIF", MainFragmentDirections.actionGiphyGifListFragment()),
                     Link(
                         "Giphy GIF（Compose）",
-                        NavMainDirections.actionGlobalGiphyGifListComposeFragment(),
+                        MainFragmentDirections.actionGiphyGifListComposeFragment(),
                         Build.VERSION_CODES.LOLLIPOP
                     ),
-                    Link("Local Photos", NavMainDirections.actionGlobalLocalPhotoListFragment()),
-                    Link("Local Video", NavMainDirections.actionGlobalLocalVideoListFragment()),
-                    Link("Huge Image", NavMainDirections.actionGlobalHugeImageListFragment()),
+                    Link(
+                        "Local Photos",
+                        MainFragmentDirections.actionLocalPhotoListFragment()
+                    ),
+                    Link(
+                        "Local Video",
+                        MainFragmentDirections.actionLocalVideoListFragment()
+                    ),
+                    Link("Huge Image", MainFragmentDirections.actionHugeImageHomeFragment()),
 
                     ListSeparator("Test"),
-                    Link("Image Format", NavMainDirections.actionGlobalImageFormatTestFragment()),
-                    Link("Fetcher", NavMainDirections.actionGlobalFetcherTestFragment()),
-                    Link("Insanity Test", NavMainDirections.actionGlobalInsanityTestFragment()),
+                    Link(
+                        "Image Format",
+                        MainFragmentDirections.actionImageFormatTestFragment()
+                    ),
+                    Link("Fetcher", MainFragmentDirections.actionFetcherTestFragment()),
+                    Link(
+                        "Insanity Test",
+                        MainFragmentDirections.actionInsanityTestFragment()
+                    ),
                     Link(
                         "Insanity Test（Compose）",
-                        NavMainDirections.actionGlobalInsanityTestComposeFragment(),
+                        MainFragmentDirections.actionInsanityTestComposeFragment(),
                         Build.VERSION_CODES.LOLLIPOP
                     ),
                     // todo 增加更多的示例
 //                    Link(
 //                        "ImageProcessor Test",
-//                        NavMainDirections.actionGlobalImageProcessorTestFragment()
+//                        MainFragmentDirections.actionImageProcessorTestFragment()
 //                    ),
 //                    Link(
 //                        "ImageShaper Test",
-//                        NavMainDirections.actionGlobalImageShaperTestFragment()
+//                        MainFragmentDirections.actionImageShaperTestFragment()
 //                    ),
 //                    Link(
 //                        "Repeat Load Or Download Test",
-//                        NavMainDirections.actionGlobalRepeatLoadOrDownloadTestFragment()
+//                        MainFragmentDirections.actionRepeatLoadOrDownloadTestFragment()
 //                    ),
-//                    Link("inBitmap Test", NavMainDirections.actionGlobalInBitmapTestFragment()),
+//                    Link("inBitmap Test", MainFragmentDirections.actionInBitmapTestFragment()),
 //                    Link(
 //                        "Image Orientation Test",
-//                        NavMainDirections.actionGlobalImageOrientationTestHomeFragment()
+//                        MainFragmentDirections.actionImageOrientationTestHomeFragment()
 //                    ),
-//                    Link("Other Test", NavMainDirections.actionGlobalOtherTestFragment()),
-                    Link("Other Test", NavMainDirections.actionGlobalTestFragment()),
+//                    Link("Other Test", MainFragmentDirections.actionOtherTestFragment()),
+                    Link("Other Test", MainFragmentDirections.actionTestFragment()),
 //
 //                    ListSeparator("App"),
-//                    Link("Settings", NavMainDirections.actionGlobalSettingsFragment()),
-//                    Link("About", NavMainDirections.actionGlobalAboutFragment()),
+//                    Link("Settings", MainFragmentDirections.actionSettingsFragment()),
+//                    Link("About", MainFragmentDirections.actionAboutFragment()),
                 )
             )
         }

@@ -9,7 +9,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateDisplayImageOptions
@@ -22,8 +21,9 @@ import com.github.panpf.sketch.resize.longImageClipPrecision
 import com.github.panpf.sketch.resize.longImageScale
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.databinding.ItemImageBinding
+import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
 import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
@@ -32,8 +32,8 @@ import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnab
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
-class PhotoItemFactory(val disabledCache: Boolean = false) :
-    BindingItemFactory<Photo, ItemImageBinding>(Photo::class) {
+class ImageGridItemFactory(val disabledCache: Boolean = false) :
+    MyBindingItemFactory<Photo, ImageGridItemBinding>(Photo::class) {
 
     private var itemSize: Point? = null
 
@@ -41,7 +41,7 @@ class PhotoItemFactory(val disabledCache: Boolean = false) :
         context: Context,
         inflater: LayoutInflater,
         parent: ViewGroup
-    ): ItemImageBinding {
+    ): ImageGridItemBinding {
         if (itemSize == null && parent is RecyclerView) {
             val screenWidth = context.getScreenWidth()
             val gridDivider = context.resources.getDimensionPixelSize(R.dimen.grid_divider)
@@ -61,16 +61,16 @@ class PhotoItemFactory(val disabledCache: Boolean = false) :
                 }
             }
         }
-        return ItemImageBinding.inflate(inflater, parent, false)
+        return super.createItemViewBinding(context, inflater, parent)
     }
 
     override fun initItem(
         context: Context,
-        binding: ItemImageBinding,
-        item: BindingItem<Photo, ItemImageBinding>
+        binding: ImageGridItemBinding,
+        item: BindingItem<Photo, ImageGridItemBinding>
     ) {
 
-        binding.imageItemImageView.apply {
+        binding.imageGridItemImage.apply {
             setClickIgnoreSaveCellularTrafficEnabled(true)
             updateDisplayImageOptions {
                 placeholder(
@@ -100,13 +100,13 @@ class PhotoItemFactory(val disabledCache: Boolean = false) :
 
     override fun bindItemData(
         context: Context,
-        binding: ItemImageBinding,
-        item: BindingItem<Photo, ItemImageBinding>,
+        binding: ImageGridItemBinding,
+        item: BindingItem<Photo, ImageGridItemBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: Photo
     ) {
-        binding.imageItemImageView.apply {
+        binding.imageGridItemImage.apply {
             updateLayoutParams<LayoutParams> {
                 val photoWidth = data.width
                 val photoHeight = data.height

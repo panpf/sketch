@@ -25,10 +25,9 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
+import com.github.panpf.sketch.sample.util.instanceViewBinding
 
-abstract class BaseActivity<VIEW_BINDING : ViewBinding> : AppCompatActivity() {
-
-    protected var binding: VIEW_BINDING? = null
+abstract class BaseBindingActivity<VIEW_BINDING : ViewBinding> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,22 +35,13 @@ abstract class BaseActivity<VIEW_BINDING : ViewBinding> : AppCompatActivity() {
         setTransparentStatusBar()
 
         val contentParent: ViewGroup = findViewById(android.R.id.content)
-        val binding = createViewBinding(LayoutInflater.from(this), contentParent)
+        val binding = this@BaseBindingActivity::class.java
+            .instanceViewBinding(0, LayoutInflater.from(this), contentParent) as VIEW_BINDING
         setContentView(binding.root)
-        onInitViews(binding, savedInstanceState)
-        onInitData(binding, savedInstanceState)
+        onCreate(binding, savedInstanceState)
     }
 
-    protected abstract fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): VIEW_BINDING
-
-    protected open fun onInitViews(binding: VIEW_BINDING, savedInstanceState: Bundle?) {
-
-    }
-
-    protected abstract fun onInitData(binding: VIEW_BINDING, savedInstanceState: Bundle?)
+    protected abstract fun onCreate(binding: VIEW_BINDING, savedInstanceState: Bundle?)
 
     private fun setTransparentStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -1,9 +1,6 @@
 package com.github.panpf.sketch.sample.ui.photo.pexels
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -22,7 +19,7 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
+import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.DialogFragmentItemInfo
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
@@ -30,17 +27,17 @@ import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
 import com.github.panpf.sketch.sample.model.NavMenuItemInfo
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.model.SwitchMenuItemInfo
-import com.github.panpf.sketch.sample.ui.base.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
+import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
-import com.github.panpf.sketch.sample.ui.photo.PhotoItemFactory
+import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class PexelsPhotoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
+class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
     private val pexelsImageListViewModel by viewModels<PexelsPhotoListViewModel>()
     private val listMenuViewModel by viewModels<ListMenuViewModel> {
@@ -51,52 +48,40 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>(
         )
     }
 
-    override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
-
-    override fun onInitViews(
+    override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentRecyclerBinding,
+        binding: RecyclerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        super.onInitViews(toolbar, binding, savedInstanceState)
-        listMenuViewModel.menuList.observe(viewLifecycleOwner) { list ->
-            toolbar.menu.clear()
-            list?.forEachIndexed { groupIndex, group ->
-                group.items.forEachIndexed { index, menuItemInfo ->
-                    toolbar.menu.add(groupIndex, index, index, menuItemInfo.title).apply {
-                        menuItemInfo.iconResId?.let { iconResId ->
-                            setIcon(iconResId)
-                        }
-                        setOnMenuItemClickListener {
-                            when (menuItemInfo) {
-                                is SwitchMenuItemInfo<*> -> menuItemInfo.click()
-                                is NavMenuItemInfo -> findNavController().navigate(menuItemInfo.navDirections)
-                                is DialogFragmentItemInfo -> menuItemInfo.fragment
-                                    .javaClass.newInstance().apply {
-                                        arguments = menuItemInfo.fragment.arguments
-                                    }.show(childFragmentManager, null)
+        toolbar.apply {
+            title = "Pexels Photos"
+            listMenuViewModel.menuList.observe(viewLifecycleOwner) { list ->
+                menu.clear()
+                list?.forEachIndexed { groupIndex, group ->
+                    group.items.forEachIndexed { index, menuItemInfo ->
+                        menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                            menuItemInfo.iconResId?.let { iconResId ->
+                                setIcon(iconResId)
                             }
-                            true
+                            setOnMenuItemClickListener {
+                                when (menuItemInfo) {
+                                    is SwitchMenuItemInfo<*> -> menuItemInfo.click()
+                                    is NavMenuItemInfo -> findNavController().navigate(menuItemInfo.navDirections)
+                                    is DialogFragmentItemInfo -> menuItemInfo.fragment
+                                        .javaClass.newInstance().apply {
+                                            arguments = menuItemInfo.fragment.arguments
+                                        }.show(childFragmentManager, null)
+                                }
+                                true
+                            }
+                            setShowAsAction(menuItemInfo.showAsAction)
                         }
-                        setShowAsAction(menuItemInfo.showAsAction)
                     }
                 }
             }
         }
-    }
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onInitData(
-        toolbar: Toolbar,
-        binding: FragmentRecyclerBinding,
-        savedInstanceState: Bundle?
-    ) {
-        toolbar.title = "Pexels Photos"
-
-        binding.recyclerRecyclerFragmentContent.apply {
+        binding.recyclerRecycler.apply {
             appSettingsService.photoListLayoutMode.observe(viewLifecycleOwner) {
                 (0 until itemDecorationCount).forEach { index ->
                     removeItemDecorationAt(index)
@@ -141,12 +126,18 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>(
                 }
 
                 val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
-                    PhotoItemFactory().setOnViewClickListener(R.id.imageItemImageView) { _, _, _, absoluteAdapterPosition, _ ->
+                    ImageGridItemFactory().setOnViewClickListener(R.id.imageGridItemImage) { _, _, _, absoluteAdapterPosition, _ ->
                         startImageDetail(binding, absoluteAdapterPosition)
                     }
-                ))
+                )).apply {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        pexelsImageListViewModel.pagingFlow.collect { pagingData ->
+                            submitData(pagingData)
+                        }
+                    }
+                }
 
-                binding.refreshRecyclerFragment.setOnRefreshListener {
+                binding.recyclerRefresh.setOnRefreshListener {
                     pagingAdapter.refresh()
                 }
 
@@ -154,30 +145,24 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>(
                     pagingAdapter.loadStateFlow.collect { loadStates ->
                         when (val refreshState = loadStates.refresh) {
                             is LoadState.Loading -> {
-                                binding.hintRecyclerFragment.hidden()
-                                binding.refreshRecyclerFragment.isRefreshing = true
+                                binding.recyclerHint.hidden()
+                                binding.recyclerRefresh.isRefreshing = true
                             }
                             is LoadState.Error -> {
-                                binding.refreshRecyclerFragment.isRefreshing = false
-                                binding.hintRecyclerFragment.failed(refreshState.error) {
+                                binding.recyclerRefresh.isRefreshing = false
+                                binding.recyclerHint.failed(refreshState.error) {
                                     pagingAdapter.refresh()
                                 }
                             }
                             is LoadState.NotLoading -> {
-                                binding.refreshRecyclerFragment.isRefreshing = false
+                                binding.recyclerRefresh.isRefreshing = false
                                 if (pagingAdapter.itemCount <= 0) {
-                                    binding.hintRecyclerFragment.empty("No Photos")
+                                    binding.recyclerHint.empty("No Photos")
                                 } else {
-                                    binding.hintRecyclerFragment.hidden()
+                                    binding.recyclerHint.hidden()
                                 }
                             }
                         }
-                    }
-                }
-
-                viewLifecycleOwner.lifecycleScope.launch {
-                    pexelsImageListViewModel.pagingFlow.collect { pagingData ->
-                        pagingAdapter.submitData(pagingData)
                     }
                 }
 
@@ -188,8 +173,8 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>(
         }
     }
 
-    private fun startImageDetail(binding: FragmentRecyclerBinding, position: Int) {
-        val imageList = binding.recyclerRecyclerFragmentContent
+    private fun startImageDetail(binding: RecyclerFragmentBinding, position: Int) {
+        val imageList = binding.recyclerRecycler
             .adapter!!.asOrThrow<ConcatAdapter>()
             .adapters.first().asOrThrow<AssemblyPagingDataAdapter<Photo>>()
             .currentList.map {
@@ -200,7 +185,7 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>(
                 )
             }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageViewerFragment(
+            NavMainDirections.actionGlobalImageViewerPagerFragment(
                 Json.encodeToString(imageList),
                 null,
                 position,

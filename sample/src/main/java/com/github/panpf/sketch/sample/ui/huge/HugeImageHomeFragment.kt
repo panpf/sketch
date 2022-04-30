@@ -1,28 +1,21 @@
 package com.github.panpf.sketch.sample.ui.huge
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.FragmentContainerBinding
+import com.github.panpf.sketch.sample.databinding.ContainerFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.huge.Layout.COLUMN
 
-class HugeImageListFragment : ToolbarBindingFragment<FragmentContainerBinding>() {
+class HugeImageHomeFragment : ToolbarBindingFragment<ContainerFragmentBinding>() {
 
     private val viewModel by viewModels<HugeImageListViewModel>()
 
-    override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ) = FragmentContainerBinding.inflate(inflater, parent, false)
-
-    override fun onInitData(
+    override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentContainerBinding,
+        binding: ContainerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Huge Image"
@@ -49,9 +42,9 @@ class HugeImageListFragment : ToolbarBindingFragment<FragmentContainerBinding>()
             menu.setIcon(meuIcon)
 
             val fragment = if (it == COLUMN) {
-                HugeImageHorListFragment()
+                HugeImageHorPagerFragment()
             } else {
-                HugeImageVerListFragment()
+                HugeImageVerPagerFragment()
             }
             childFragmentManager.beginTransaction()
                 .replace(binding.containerFragmentContainer.id, fragment)

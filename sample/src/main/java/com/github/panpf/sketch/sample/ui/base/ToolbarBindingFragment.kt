@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.util.instanceViewBinding
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -23,26 +24,19 @@ abstract class ToolbarBindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_toolbar, container, false).apply {
-        val toolbar = findViewById<Toolbar>(R.id.toolbarFragmentToolbar)
-        val contentContainer = findViewById<FrameLayout>(R.id.toolbarFragmentContent)
+    ): View = inflater.inflate(R.layout.toolbar_fragment, container, false).apply {
+        val toolbar = findViewById<Toolbar>(R.id.toolbarToolbar)
+        val contentContainer = findViewById<FrameLayout>(R.id.toolbarContent)
 
         setTransparentStatusBar(toolbar)
 
-        val binding = createViewBinding(inflater, contentContainer)
+        val binding =
+            this@ToolbarBindingFragment::class.java
+                .instanceViewBinding(0, inflater, contentContainer) as VIEW_BINDING
         contentContainer.addView(binding.root)
 
         this@ToolbarBindingFragment.toolbar = toolbar
         this@ToolbarBindingFragment.binding = binding
-    }
-
-    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val binding = this.binding!!
-        val toolbar = this.toolbar!!
-        onInitViews(toolbar, binding, savedInstanceState)
-        onInitData(toolbar, binding, savedInstanceState)
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -57,24 +51,18 @@ abstract class ToolbarBindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment
         }
     }
 
-    protected abstract fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): VIEW_BINDING
+    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        onViewCreated(this.toolbar!!, this.binding!!, savedInstanceState)
+    }
 
-    protected open fun onInitViews(
+    protected open fun onViewCreated(
         toolbar: Toolbar,
         binding: VIEW_BINDING,
         savedInstanceState: Bundle?
     ) {
 
     }
-
-    protected abstract fun onInitData(
-        toolbar: Toolbar,
-        binding: VIEW_BINDING,
-        savedInstanceState: Bundle?
-    )
 
     override fun onDestroyView() {
         this.binding = null

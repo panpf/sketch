@@ -6,4 +6,4 @@
     android:layout_height="match_parent"
     android:background="?android:windowBackground"
     android:scrollbars="vertical"
-    tools:listitem="@layout/item_link" />
+    tools:listitem="@layout/link_item" />

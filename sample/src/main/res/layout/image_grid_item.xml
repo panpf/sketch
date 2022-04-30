@@ -6,7 +6,7 @@
     <!-- 需要包一层，要不然在 StaggeredGridLayoutManager 里尺寸会有偏差 -->
 
     <com.github.panpf.sketch.sample.widget.MyListImageView
-        android:id="@+id/imageItemImageView"
+        android:id="@+id/imageGridItemImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop" />

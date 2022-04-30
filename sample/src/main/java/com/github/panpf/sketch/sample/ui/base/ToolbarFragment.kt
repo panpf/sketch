@@ -21,9 +21,9 @@ abstract class ToolbarFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_toolbar, container, false).apply {
-        val toolbar = findViewById<Toolbar>(R.id.toolbarFragmentToolbar)
-        val contentContainer = findViewById<FrameLayout>(R.id.toolbarFragmentContent)
+    ): View = inflater.inflate(R.layout.toolbar_fragment, container, false).apply {
+        val toolbar = findViewById<Toolbar>(R.id.toolbarToolbar)
+        val contentContainer = findViewById<FrameLayout>(R.id.toolbarContent)
 
         setTransparentStatusBar(toolbar)
 

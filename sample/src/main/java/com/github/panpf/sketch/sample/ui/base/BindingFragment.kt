@@ -20,40 +20,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
+import com.github.panpf.sketch.sample.util.instanceViewBinding
 
 abstract class BindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
 
-    protected var binding: VIEW_BINDING? = null
+    private var binding: VIEW_BINDING? = null
 
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = createViewBinding(inflater, container).apply {
+    ): View = (this@BindingFragment::class.java
+        .instanceViewBinding(0, inflater, container) as VIEW_BINDING).apply {
         this@BindingFragment.binding = this
     }.root
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val binding = this.binding!!
-        onInitViews(binding, savedInstanceState)
-        onInitData(binding, savedInstanceState)
+        onViewCreated(this.binding!!, savedInstanceState)
     }
+
+    abstract fun onViewCreated(binding: VIEW_BINDING, savedInstanceState: Bundle?)
 
     override fun onDestroyView() {
         this.binding = null
         super.onDestroyView()
     }
-
-    protected abstract fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): VIEW_BINDING
-
-    protected open fun onInitViews(binding: VIEW_BINDING, savedInstanceState: Bundle?) {
-
-    }
-
-    protected abstract fun onInitData(binding: VIEW_BINDING, savedInstanceState: Bundle?)
 }

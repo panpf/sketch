@@ -18,8 +18,6 @@ package com.github.panpf.sketch.sample.ui.test.insanity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -31,32 +29,27 @@ import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerI
 import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
+import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.base.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
-import com.github.panpf.sketch.sample.ui.photo.PhotoItemFactory
+import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
+import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
 import kotlinx.coroutines.launch
 
-class InsanityTestFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
+class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
     private val localPhotoListViewModel by viewModels<InsanityTestViewModel>()
 
-    override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
-
     @SuppressLint("NotifyDataSetChanged")
-    override fun onInitData(
+    override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentRecyclerBinding,
+        binding: RecyclerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Insanity Test"
 
-        binding.recyclerRecyclerFragmentContent.apply {
+        binding.recyclerRecycler.apply {
             layoutManager =
                 newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
                     itemSpanByItemFactory(
@@ -73,12 +66,17 @@ class InsanityTestFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                 useSideDividerAsSideHeaderAndFooterDivider()
             }
 
-
             val pagingAdapter = AssemblyPagingDataAdapter<Photo>(
-                listOf(PhotoItemFactory(disabledCache = true))
-            )
+                listOf(ImageGridItemFactory(disabledCache = true))
+            ).apply {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    localPhotoListViewModel.pagingFlow.collect { pagingData ->
+                        submitData(pagingData)
+                    }
+                }
+            }
 
-            binding.refreshRecyclerFragment.setOnRefreshListener {
+            binding.recyclerRefresh.setOnRefreshListener {
                 pagingAdapter.refresh()
             }
 
@@ -86,30 +84,24 @@ class InsanityTestFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                 pagingAdapter.loadStateFlow.collect { loadStates ->
                     when (val refreshState = loadStates.refresh) {
                         is LoadState.Loading -> {
-                            binding.hintRecyclerFragment.hidden()
-                            binding.refreshRecyclerFragment.isRefreshing = true
+                            binding.recyclerHint.hidden()
+                            binding.recyclerRefresh.isRefreshing = true
                         }
                         is LoadState.Error -> {
-                            binding.refreshRecyclerFragment.isRefreshing = false
-                            binding.hintRecyclerFragment.failed(refreshState.error) {
+                            binding.recyclerRefresh.isRefreshing = false
+                            binding.recyclerHint.failed(refreshState.error) {
                                 pagingAdapter.refresh()
                             }
                         }
                         is LoadState.NotLoading -> {
-                            binding.refreshRecyclerFragment.isRefreshing = false
+                            binding.recyclerRefresh.isRefreshing = false
                             if (pagingAdapter.itemCount <= 0) {
-                                binding.hintRecyclerFragment.empty("No Photos")
+                                binding.recyclerHint.empty("No Photos")
                             } else {
-                                binding.hintRecyclerFragment.hidden()
+                                binding.recyclerHint.hidden()
                             }
                         }
                     }
-                }
-            }
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                localPhotoListViewModel.pagingFlow.collect { pagingData ->
-                    pagingAdapter.submitData(pagingData)
                 }
             }
 

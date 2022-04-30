@@ -14,7 +14,7 @@ import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.widget.LinearLayout
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.ViewHintBinding
+import com.github.panpf.sketch.sample.databinding.HintViewBinding
 import com.github.panpf.tools4k.lang.asOrNull
 import org.apache.http.conn.ConnectTimeoutException
 import java.io.FileNotFoundException
@@ -24,9 +24,10 @@ import java.net.UnknownHostException
 /**
  * 提示视图
  */
+// todo 改为 StateView
 class HintView : LinearLayout {
 
-    private val binding = ViewHintBinding.inflate(LayoutInflater.from(context), this)
+    private val binding = HintViewBinding.inflate(LayoutInflater.from(context), this)
 
     private var mode: Mode? = null
 
@@ -436,7 +437,8 @@ class HintView : LinearLayout {
 
         fun isConnectedByState(context: Context): Boolean {
             val networkInfo =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE).asOrNull<ConnectivityManager>()?.activeNetworkInfo
+                context.getSystemService(Context.CONNECTIVITY_SERVICE)
+                    .asOrNull<ConnectivityManager>()?.activeNetworkInfo
             return networkInfo != null && networkInfo.state == NetworkInfo.State.CONNECTED
         }
 
