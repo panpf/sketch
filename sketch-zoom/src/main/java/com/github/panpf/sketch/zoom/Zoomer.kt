@@ -220,7 +220,7 @@ class Zoomer constructor(
      * @param degrees Rotation degrees, can only be 90°, 180°, 270°, 360°
      */
     fun rotateTo(degrees: Int) {
-        require(degrees % 90 != 0) { "degrees must be in multiples of 90" }
+        require(degrees % 90 == 0) { "degrees must be in multiples of 90: $degrees" }
         if (_rotateDegrees == degrees) return
 
         var newDegrees = degrees % 360
