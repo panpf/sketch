@@ -18,15 +18,13 @@ class ResourceDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher))
         ResourceDataSource(
-            sketch = sketch,
             request = request,
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
-            Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals(R.drawable.ic_launcher, this.drawableId)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
@@ -35,9 +33,8 @@ class ResourceDataSourceTest {
 
     @Test
     fun testLength() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         ResourceDataSource(
-            sketch = sketch,
             request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
@@ -47,7 +44,6 @@ class ResourceDataSourceTest {
 
         assertThrow(Resources.NotFoundException::class) {
             ResourceDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, context.newResourceUri(42)),
                 resources = context.resources,
                 drawableId = 42
@@ -59,9 +55,8 @@ class ResourceDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         ResourceDataSource(
-            sketch = sketch,
             request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
@@ -71,7 +66,6 @@ class ResourceDataSourceTest {
 
         assertThrow(Resources.NotFoundException::class) {
             ResourceDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, context.newResourceUri(42)),
                 resources = context.resources,
                 drawableId = 42
@@ -83,9 +77,8 @@ class ResourceDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         ResourceDataSource(
-            sketch = sketch,
             request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
@@ -95,7 +88,6 @@ class ResourceDataSourceTest {
 
         assertThrow(Resources.NotFoundException::class) {
             ResourceDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, context.newResourceUri(42)),
                 resources = context.resources,
                 drawableId = 42
@@ -107,9 +99,8 @@ class ResourceDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         ResourceDataSource(
-            sketch = sketch,
             request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
@@ -121,7 +112,6 @@ class ResourceDataSourceTest {
         }
 
         ResourceDataSource(
-            sketch = sketch,
             request = LoadRequest(context, context.newResourceUri(42)),
             resources = context.resources,
             drawableId = 42

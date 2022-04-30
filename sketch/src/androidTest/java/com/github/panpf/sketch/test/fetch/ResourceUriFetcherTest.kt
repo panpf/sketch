@@ -40,7 +40,7 @@ class ResourceUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
         val androidResUriByName =
@@ -49,31 +49,31 @@ class ResourceUriFetcherTest {
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
-        fetcherFactory.create(sketch, LoadRequest(context, androidResUriByName))!!.apply {
+        fetcherFactory.create(LoadRequest(context, androidResUriByName))!!.apply {
             Assert.assertEquals(androidResUriByName, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, LoadRequest(context, androidResUriById))!!.apply {
+        fetcherFactory.create(LoadRequest(context, androidResUriById))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DisplayRequest(context, androidResUriByName))!!.apply {
+        fetcherFactory.create(DisplayRequest(context, androidResUriByName))!!.apply {
             Assert.assertEquals(androidResUriByName, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DisplayRequest(context, androidResUriById))!!.apply {
+        fetcherFactory.create(DisplayRequest(context, androidResUriById))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DownloadRequest(context, androidResUriByName))!!.apply {
+        fetcherFactory.create(DownloadRequest(context, androidResUriByName))!!.apply {
             Assert.assertEquals(androidResUriByName, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DownloadRequest(context, androidResUriById))!!.apply {
+        fetcherFactory.create(DownloadRequest(context, androidResUriById))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, httpUri)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
+        Assert.assertNull(fetcherFactory.create(LoadRequest(context, httpUri)))
+        Assert.assertNull(fetcherFactory.create(LoadRequest(context, contentUri)))
     }
 
     @Test
     fun testFetch() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
         val androidResUriByName =
@@ -81,13 +81,13 @@ class ResourceUriFetcherTest {
         val androidResUriById = newResourceUri(testAppPackage, drawable.ic_launcher)
 
         val fetcherByName =
-            fetcherFactory.create(sketch, LoadRequest(context, androidResUriByName))!!
+            fetcherFactory.create(LoadRequest(context, androidResUriByName))!!
         val sourceByName = runBlocking {
             fetcherByName.fetch().dataSource
         }
         Assert.assertTrue(sourceByName is ResourceDataSource)
 
-        val fetcherById = fetcherFactory.create(sketch, LoadRequest(context, androidResUriById))!!
+        val fetcherById = fetcherFactory.create(LoadRequest(context, androidResUriById))!!
         val sourceById = runBlocking {
             fetcherById.fetch().dataSource
         }

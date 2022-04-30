@@ -10,13 +10,12 @@ class BitmapEngineDecodeInterceptor : DecodeInterceptor<BitmapDecodeResult> {
     override suspend fun intercept(
         chain: DecodeInterceptor.Chain<BitmapDecodeResult>,
     ): BitmapDecodeResult {
-        val sketch = chain.sketch
         val request = chain.request
-        val componentRegistry = sketch.componentRegistry
-        val fetcher = componentRegistry.newFetcher(sketch, request)
+        val componentRegistry = request.sketch.componentRegistry
+        val fetcher = componentRegistry.newFetcher(request)
         val fetchResult = chain.fetchResult ?: fetcher.fetch()
         return componentRegistry
-            .newBitmapDecoder(sketch, request, chain.requestExtras, fetchResult)
+            .newBitmapDecoder(request, chain.requestExtras, fetchResult)
             .decode()
     }
 

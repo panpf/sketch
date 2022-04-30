@@ -87,7 +87,7 @@ class AsyncImagePainter(
         if (isPreview) {
             state = State.Loading(
                 request.placeholderImage
-                    ?.getDrawable(sketch, request, null)
+                    ?.getDrawable(request, null)
                     ?.toPainter(filterQuality)
             )
         } else if (disposable == null) {

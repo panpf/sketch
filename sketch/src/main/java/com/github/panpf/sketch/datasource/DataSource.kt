@@ -15,8 +15,6 @@
  */
 package com.github.panpf.sketch.datasource
 
-import android.content.Context
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.withLock
@@ -27,12 +25,7 @@ import java.io.IOException
 import java.io.InputStream
 
 interface DataSource {
-    val sketch: Sketch
-
     val request: ImageRequest
-
-    val context: Context
-        get() = sketch.context
 
     val dataFrom: DataFrom
 
@@ -47,9 +40,9 @@ interface DataSource {
 
     @Throws(IOException::class)
     suspend fun file(): File = withContext(Dispatchers.IO) {
-        val diskCache = sketch.diskCache
+        val diskCache = request.sketch.diskCache
         val diskCacheKey = request.uriString + "_data_source"
-        sketch.diskCache.editLock(diskCacheKey).withLock {
+        diskCache.editLock(diskCacheKey).withLock {
             val snapshot = diskCache[diskCacheKey]
             if (snapshot != null) {
                 snapshot

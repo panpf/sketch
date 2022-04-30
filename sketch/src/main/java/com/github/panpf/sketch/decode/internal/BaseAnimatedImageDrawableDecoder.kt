@@ -6,7 +6,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
@@ -46,7 +45,6 @@ import java.nio.ByteBuffer
  */
 @RequiresApi(Build.VERSION_CODES.P)
 abstract class BaseAnimatedImageDrawableDecoder(
-    private val sketch: Sketch,
     private val request: ImageRequest,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
@@ -55,13 +53,13 @@ abstract class BaseAnimatedImageDrawableDecoder(
     override suspend fun decode(): DrawableDecodeResult {
         val source = when (dataSource) {
             is AssetDataSource -> {
-                ImageDecoder.createSource(sketch.context.assets, dataSource.assetFileName)
+                ImageDecoder.createSource(request.context.assets, dataSource.assetFileName)
             }
             is ResourceDataSource -> {
                 ImageDecoder.createSource(dataSource.resources, dataSource.drawableId)
             }
             is ContentDataSource -> {
-                ImageDecoder.createSource(sketch.context.contentResolver, dataSource.contentUri)
+                ImageDecoder.createSource(request.context.contentResolver, dataSource.contentUri)
             }
             is ByteArrayDataSource -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

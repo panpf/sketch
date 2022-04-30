@@ -17,18 +17,18 @@ class FetchResultTest {
 
     @Test
     fun testFrom() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val request = LoadRequest(context, "")
 
         FetchResult(
-            FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
+            FileDataSource(request, File("/sdcard/sample.jpeg")),
             "image/jpeg"
         ).apply {
             Assert.assertEquals(DataFrom.LOCAL, from)
         }
 
         FetchResult(
-            ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf()),
+            ByteArrayDataSource(request, DataFrom.NETWORK, byteArrayOf()),
             "image/jpeg"
         ).apply {
             Assert.assertEquals(DataFrom.NETWORK, from)
@@ -37,11 +37,11 @@ class FetchResultTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val request = LoadRequest(context, "")
 
         FetchResult(
-            FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
+            FileDataSource(request, File("/sdcard/sample.jpeg")),
             "image/jpeg"
         ).apply {
             Assert.assertEquals(
@@ -51,7 +51,7 @@ class FetchResultTest {
         }
 
         FetchResult(
-            ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf()),
+            ByteArrayDataSource(request, DataFrom.NETWORK, byteArrayOf()),
             "image/jpeg"
         ).apply {
             Assert.assertEquals(

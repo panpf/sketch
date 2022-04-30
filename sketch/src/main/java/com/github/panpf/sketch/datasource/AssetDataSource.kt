@@ -15,14 +15,12 @@
  */
 package com.github.panpf.sketch.datasource
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
 class AssetDataSource constructor(
-    override val sketch: Sketch,
     override val request: ImageRequest,
     val assetFileName: String
 ) : DataSource {
@@ -35,7 +33,7 @@ class AssetDataSource constructor(
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
-            ?: context.assets.openFd(assetFileName).use {
+            ?: request.context.assets.openFd(assetFileName).use {
                 it.length
             }.apply {
                 this@AssetDataSource._length = this
@@ -43,10 +41,10 @@ class AssetDataSource constructor(
 
     @Throws(IOException::class)
     override fun newFileDescriptor(): FileDescriptor =
-        context.assets.openFd(assetFileName).fileDescriptor
+        request.context.assets.openFd(assetFileName).fileDescriptor
 
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream = context.assets.open(assetFileName)
+    override fun newInputStream(): InputStream = request.context.assets.open(assetFileName)
 
     override fun toString(): String =
         "AssetDataSource(assetFileName='$assetFileName')"

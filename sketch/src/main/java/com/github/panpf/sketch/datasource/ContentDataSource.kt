@@ -17,7 +17,6 @@ package com.github.panpf.sketch.datasource
 
 import android.content.ContentResolver
 import android.net.Uri
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
 import java.io.FileDescriptor
@@ -29,7 +28,6 @@ import java.io.InputStream
  * 支持 content://、file://、android.resource:// 格式的 uri
  */
 class ContentDataSource constructor(
-    override val sketch: Sketch,
     override val request: ImageRequest,
     val contentUri: Uri
 ) : DataSource {
@@ -41,7 +39,7 @@ class ContentDataSource constructor(
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
-            ?: (context.contentResolver.openFileDescriptor(contentUri, "r")
+            ?: (request.context.contentResolver.openFileDescriptor(contentUri, "r")
                 ?.use {
                     it.statSize
                 } ?: throw IOException("Invalid content uri: $contentUri")).apply {
@@ -49,12 +47,12 @@ class ContentDataSource constructor(
             }
 
     override fun newFileDescriptor(): FileDescriptor =
-        context.contentResolver.openFileDescriptor(contentUri, "r")?.fileDescriptor
+        request.context.contentResolver.openFileDescriptor(contentUri, "r")?.fileDescriptor
             ?: throw IOException("Invalid content uri: $contentUri")
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream =
-        context.contentResolver.openInputStream(contentUri)
+        request.context.contentResolver.openInputStream(contentUri)
             ?: throw IOException("Invalid content uri: $contentUri")
 
     @Throws(IOException::class)

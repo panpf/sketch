@@ -3,7 +3,6 @@ package com.github.panpf.sketch.decode
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ImageFormat
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
@@ -30,16 +29,14 @@ import com.github.panpf.sketch.request.internal.RequestExtras
  */
 @RequiresApi(Build.VERSION_CODES.P)
 class WebpAnimatedDrawableDecoder(
-    sketch: Sketch,
     request: ImageRequest,
     dataSource: DataSource,
-) : BaseAnimatedImageDrawableDecoder(sketch, request, dataSource) {
+) : BaseAnimatedImageDrawableDecoder(request, dataSource) {
 
     @RequiresApi(Build.VERSION_CODES.P)
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
-            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
@@ -47,7 +44,7 @@ class WebpAnimatedDrawableDecoder(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !request.disabledAnimatedImage) {
                 val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
                 if (imageFormat == ImageFormat.WEBP && fetchResult.headerBytes.isAnimatedWebP()) {
-                    return WebpAnimatedDrawableDecoder(sketch, request, fetchResult.dataSource)
+                    return WebpAnimatedDrawableDecoder(request, fetchResult.dataSource)
                 }
             }
             return null

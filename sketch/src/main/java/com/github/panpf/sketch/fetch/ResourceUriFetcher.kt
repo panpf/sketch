@@ -6,7 +6,6 @@ import android.content.res.Resources
 import android.net.Uri
 import android.util.TypedValue
 import android.webkit.MimeTypeMap
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
@@ -40,7 +39,6 @@ fun Context.newResourceUri(drawableResId: Int): String = newResourceUri(packageN
  * Support 'android.resource://com.github.panpf.sketch.sample/mipmap/ic_launch' uri
  */
 class ResourceUriFetcher(
-    val sketch: Sketch,
     val request: ImageRequest,
     val contentUri: Uri,
 ) : Fetcher {
@@ -57,7 +55,7 @@ class ResourceUriFetcher(
             ?.let { path.substring(it + 1) }
             ?: path.toString()
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromUrl(entryName)
-        return FetchResult(ResourceDataSource(sketch, request, resources, id), mimeType)
+        return FetchResult(ResourceDataSource(request, resources, id), mimeType)
     }
 
     @Throws(FileNotFoundException::class)
@@ -65,7 +63,7 @@ class ResourceUriFetcher(
         val authority = uri.authority?.takeIf { it.isNotEmpty() }
             ?: throw FileNotFoundException("No authority: $uri")
         val r: Resources = try {
-            sketch.context.packageManager.getResourcesForApplication(authority)
+            request.context.packageManager.getResourcesForApplication(authority)
         } catch (ex: NameNotFoundException) {
             throw FileNotFoundException("No package found for authority: $uri")
         }
@@ -92,9 +90,9 @@ class ResourceUriFetcher(
     }
 
     class Factory : Fetcher.Factory {
-        override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? =
+        override fun create(request: ImageRequest): ResourceUriFetcher? =
             if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
-                ResourceUriFetcher(sketch, request, request.uri)
+                ResourceUriFetcher(request, request.uri)
             } else {
                 null
             }

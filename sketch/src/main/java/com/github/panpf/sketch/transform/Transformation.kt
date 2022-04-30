@@ -1,9 +1,7 @@
 package com.github.panpf.sketch.transform
 
 import android.graphics.Bitmap
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
 
 /**
  * An interface for making transformations to an image's pixel data.
@@ -25,7 +23,7 @@ interface Transformation {
      * @param input The input [Bitmap] to transform.
      * @return The transformed [Bitmap].
      */
-    suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult?
+    suspend fun transform(request: ImageRequest, input: Bitmap): TransformResult?
 }
 
 

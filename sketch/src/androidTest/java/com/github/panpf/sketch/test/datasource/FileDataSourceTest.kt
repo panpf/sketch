@@ -21,21 +21,18 @@ class FileDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val file = runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, newAssetUri("sample.jpeg")),
                 assetFileName = "sample.jpeg"
             ).file()
         }
         val request = LoadRequest(context, newFileUri(file.path))
         FileDataSource(
-            sketch = sketch,
             request = request,
             file = file
         ).apply {
-            Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertTrue(file === this.file)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
@@ -44,16 +41,14 @@ class FileDataSourceTest {
 
     @Test
     fun testLength() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val file = runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, newAssetUri("sample.jpeg")),
                 assetFileName = "sample.jpeg"
             ).file()
         }
         FileDataSource(
-            sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
             file = file
         ).apply {
@@ -61,7 +56,6 @@ class FileDataSourceTest {
         }
 
         FileDataSource(
-            sketch = sketch,
             request = LoadRequest(context, newFileUri("/sdcard/not_found.jpeg")),
             file = File("/sdcard/not_found.jpeg")
         ).apply {
@@ -71,16 +65,14 @@ class FileDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val file = runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, newAssetUri("sample.jpeg")),
                 assetFileName = "sample.jpeg"
             ).file()
         }
         FileDataSource(
-            sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
             file = file
         ).apply {
@@ -88,7 +80,6 @@ class FileDataSourceTest {
         }
 
         FileDataSource(
-            sketch = sketch,
             request = LoadRequest(context, newFileUri("/sdcard/not_found.jpeg")),
             file = File("/sdcard/not_found.jpeg")
         ).apply {
@@ -98,16 +89,14 @@ class FileDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val file = runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, newAssetUri("sample.jpeg")),
                 assetFileName = "sample.jpeg"
             ).file()
         }
         FileDataSource(
-            sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
             file = file
         ).apply {
@@ -116,7 +105,6 @@ class FileDataSourceTest {
 
         assertThrow(FileNotFoundException::class) {
             FileDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, newFileUri("/sdcard/not_found.jpeg")),
                 file = File("/sdcard/not_found.jpeg")
             ).apply {
@@ -127,16 +115,14 @@ class FileDataSourceTest {
 
     @Test
     fun testFile() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val file = runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, newAssetUri("sample.jpeg")),
                 assetFileName = "sample.jpeg"
             ).file()
         }
         FileDataSource(
-            sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
             file = file,
         ).apply {
@@ -149,16 +135,14 @@ class FileDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val file = runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = LoadRequest(context, newAssetUri("sample.jpeg")),
                 assetFileName = "sample.jpeg"
             ).file()
         }
         FileDataSource(
-            sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
             file = file
         ).apply {
@@ -169,7 +153,6 @@ class FileDataSourceTest {
         }
 
         FileDataSource(
-            sketch = sketch,
             request = LoadRequest(context, newFileUri("/sdcard/not_found.jpeg")),
             file = File("/sdcard/not_found.jpeg")
         ).apply {

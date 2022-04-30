@@ -26,7 +26,7 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
         }
 
         val newRequest = request.newDisplayRequest {
-            val appSettings = chain.sketch.context.appSettingsService
+            val appSettings = request.context.appSettingsService
             if (appSettings.disabledBitmapMemoryCache.value) {
                 bitmapMemoryCachePolicy(DISABLED)
             }

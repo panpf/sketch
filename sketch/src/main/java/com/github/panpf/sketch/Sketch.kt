@@ -74,7 +74,7 @@ class Sketch private constructor(
             logger.e("scope", throwable, "exception")
         }
     )
-    private val imageExecutor = RequestExecutor(this)
+    private val imageExecutor = RequestExecutor()
 
     val systemCallbacks = SystemCallbacks(context, this)
     val countDrawablePendingManager = CountDrawablePendingManager(logger)

@@ -30,42 +30,42 @@ class FileUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val fileUri = "file:///sdcard/sample.jpg"
         val filePath = "/sdcard/sample.jpg"
         val ftpUri = "ftp:///sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
         val httpUriFetcherFactory = FileUriFetcher.Factory()
-        httpUriFetcherFactory.create(sketch, LoadRequest(context, fileUri))!!.apply {
+        httpUriFetcherFactory.create(LoadRequest(context, fileUri))!!.apply {
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, LoadRequest(context, filePath))!!.apply {
+        httpUriFetcherFactory.create(LoadRequest(context, filePath))!!.apply {
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DisplayRequest(context, fileUri))!!.apply {
+        httpUriFetcherFactory.create(DisplayRequest(context, fileUri))!!.apply {
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DisplayRequest(context, filePath))!!.apply {
+        httpUriFetcherFactory.create(DisplayRequest(context, filePath))!!.apply {
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DownloadRequest(context, fileUri))!!.apply {
+        httpUriFetcherFactory.create(DownloadRequest(context, fileUri))!!.apply {
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DownloadRequest(context, filePath))!!.apply {
+        httpUriFetcherFactory.create(DownloadRequest(context, filePath))!!.apply {
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, ftpUri)))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, contentUri)))
+        Assert.assertNull(httpUriFetcherFactory.create(LoadRequest(context, ftpUri)))
+        Assert.assertNull(httpUriFetcherFactory.create(LoadRequest(context, contentUri)))
     }
 
     @Test
     fun testFetch() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val fetcherFactory = FileUriFetcher.Factory()
         val fileUri = "file:///sdcard/sample.jpg"
 
-        val fetcher = fetcherFactory.create(sketch, LoadRequest(context, fileUri))!!
+        val fetcher = fetcherFactory.create(LoadRequest(context, fileUri))!!
         val source = runBlocking {
             fetcher.fetch().dataSource
         }

@@ -114,6 +114,7 @@ tools4j-math = { module = "io.github.panpf.tools4j:tools4j-math-ktx", version.re
 tools4j-date = { module = "io.github.panpf.tools4j:tools4j-date-ktx", version.ref = "tools4j" }
 tools4j-io = { module = "io.github.panpf.tools4j:tools4j-io-ktx", version.ref = "tools4j" }
 tools4j-test = { module = "io.github.panpf.tools4j:tools4j-test-ktx", version.ref = "tools4j" }
+tools4j-reflect = { module = "io.github.panpf.tools4j:tools4j-reflect-ktx", version.ref = "tools4j" }
 tools4k = { module = "io.github.panpf.tools4k:tools4k", version.ref = "tools4k" }
 liveevent = { module = "io.github.panpf.liveevent:liveevent", version.ref = "liveevent" }
 activitymonitor = { module = "io.github.panpf.activitymonitor:activitymonitor", version.ref = "activitymonitor" }
@@ -138,8 +139,9 @@ test = [
     "androidx-test-rules",
     "androidx-test-ext-junit",
     "tools4j-test",
+    "tools4j-reflect",
     "tools4a-run",
-    "tools4a-dimen"
+    "tools4a-dimen",
 ]
 androidx-navigation = [
     "androidx-navigation-fragment",

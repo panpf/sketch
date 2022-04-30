@@ -14,15 +14,13 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         val request = LoadRequest(context, "http://sample.jpeg")
         ByteArrayDataSource(
-            sketch = sketch,
             request = request,
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
-            Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals(37, this.length())
             Assert.assertEquals(DataFrom.MEMORY, this.dataFrom)
@@ -31,9 +29,8 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         ByteArrayDataSource(
-            sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
@@ -44,9 +41,8 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         ByteArrayDataSource(
-            sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
@@ -57,9 +53,8 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
         ByteArrayDataSource(
-            sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()

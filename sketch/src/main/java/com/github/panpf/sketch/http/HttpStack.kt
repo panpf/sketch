@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.IOException
 import java.io.InputStream
@@ -30,7 +29,7 @@ interface HttpStack {
     }
 
     @Throws(IOException::class)
-    fun getResponse(sketch: Sketch, request: ImageRequest, url: String): Response
+    fun getResponse(request: ImageRequest, url: String): Response
 
     interface Response {
         @get:Throws(IOException::class)

@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.fetch
 
 import android.webkit.MimeTypeMap
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.AssetUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
@@ -16,7 +15,6 @@ fun newAssetUri(assetFilePath: String): String = "$SCHEME://$assetFilePath"
  * Support 'asset://test.png' uri
  */
 class AssetUriFetcher(
-    val sketch: Sketch,
     val request: ImageRequest,
     val assetFileName: String
 ) : Fetcher {
@@ -27,11 +25,11 @@ class AssetUriFetcher(
 
     override suspend fun fetch(): FetchResult {
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromUrl(assetFileName)
-        return FetchResult(AssetDataSource(sketch, request, assetFileName), mimeType)
+        return FetchResult(AssetDataSource(request, assetFileName), mimeType)
     }
 
     class Factory : Fetcher.Factory {
-        override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? =
+        override fun create(request: ImageRequest): AssetUriFetcher? =
             if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 val uriString = request.uriString
                 val subStartIndex = SCHEME.length + 3
@@ -39,7 +37,7 @@ class AssetUriFetcher(
                     ?: uriString.indexOf("#").takeIf { it != -1 }
                     ?: uriString.length
                 val assetFileName = uriString.substring(subStartIndex, subEndIndex)
-                AssetUriFetcher(sketch, request, assetFileName)
+                AssetUriFetcher(request, assetFileName)
             } else {
                 null
             }

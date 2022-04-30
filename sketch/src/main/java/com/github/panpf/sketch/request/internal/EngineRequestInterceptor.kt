@@ -27,17 +27,16 @@ class EngineRequestInterceptor : RequestInterceptor {
 
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): ImageData {
-        val sketch = chain.sketch
         val request = chain.request
         val target = request.target
         return when (request) {
             is DisplayRequest -> {
-                newBitmapMemoryCacheHelper(sketch, request)?.read()?.let { result ->
+                newBitmapMemoryCacheHelper(request)?.read()?.let { result ->
                     val drawable = result.drawable
                     if (drawable is SketchCountBitmapDrawable) {
                         val key = request.key
                         chain.requestExtras.putCountDrawablePendingManagerKey(key)
-                        sketch.countDrawablePendingManager.mark(
+                        request.sketch.countDrawablePendingManager.mark(
                             "EngineRequestInterceptor",
                             key,
                             drawable
@@ -48,10 +47,10 @@ class EngineRequestInterceptor : RequestInterceptor {
 
                 if (target is DisplayTarget) {
                     val placeholderDrawable = request.placeholderImage
-                        ?.getDrawable(sketch, request, null)
+                        ?.getDrawable(request, null)
                         ?.let {
                             if (request.resizeApplyToDrawable == true) {
-                                it.toResizeDrawable(sketch, request.resize)
+                                it.toResizeDrawable(request.sketch, request.resize)
                             } else {
                                 it
                             }
@@ -64,11 +63,10 @@ class EngineRequestInterceptor : RequestInterceptor {
                     throw RequestDepthException(request, requestDepth, request.depthFrom)
                 }
 
-                withContext(sketch.decodeTaskDispatcher) {
+                withContext(request.sketch.decodeTaskDispatcher) {
                     DrawableDecodeInterceptorChain(
-                        interceptors = sketch.drawableDecodeInterceptors,
+                        interceptors = request.sketch.drawableDecodeInterceptors,
                         index = 0,
-                        sketch = sketch,
                         request = request,
                         requestExtras = chain.requestExtras,
                         fetchResult = null,
@@ -79,11 +77,10 @@ class EngineRequestInterceptor : RequestInterceptor {
                 if (target is LoadTarget) {
                     target.onStart()
                 }
-                withContext(chain.sketch.decodeTaskDispatcher) {
+                withContext(request.sketch.decodeTaskDispatcher) {
                     BitmapDecodeInterceptorChain(
-                        interceptors = sketch.bitmapDecodeInterceptors,
+                        interceptors = request.sketch.bitmapDecodeInterceptors,
                         index = 0,
-                        sketch = sketch,
                         request = request,
                         requestExtras = chain.requestExtras,
                         fetchResult = null,
@@ -94,8 +91,8 @@ class EngineRequestInterceptor : RequestInterceptor {
                 if (target is DownloadTarget) {
                     target.onStart()
                 }
-                withContext(chain.sketch.decodeTaskDispatcher) {
-                    val fetcher = sketch.componentRegistry.newFetcher(sketch, request)
+                withContext(request.sketch.decodeTaskDispatcher) {
+                    val fetcher = request.sketch.componentRegistry.newFetcher(request)
                     if (fetcher !is HttpUriFetcher) {
                         throw IllegalArgumentException("Download only support HTTP and HTTPS uri: ${request.uriString}")
                     }

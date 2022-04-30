@@ -2,7 +2,6 @@ package com.github.panpf.sketch.test.fetch
 
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
@@ -13,7 +12,9 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.context
+import com.github.panpf.sketch.test.contextAndSketch
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.tools4j.reflect.ktx.setFieldValue
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -31,9 +32,6 @@ class HttpUriFetcherTest {
     @Test
     fun testFactory() {
         val context = context()
-        val sketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context))
-        }.build()
         val httpUri = "http://sample.com/sample.jpg"
         val httpsUri = "https://sample.com/sample.jpg"
         val ftpUri = "ftp://sample.com/sample.jpg"
@@ -41,47 +39,20 @@ class HttpUriFetcherTest {
         val imageView = ImageView(context)
 
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
-        Assert.assertNotNull(
-            httpUriFetcherFactory.create(
-                sketch,
-                DownloadRequest(context, httpUri)
-            )
-        )
-        Assert.assertNotNull(
-            httpUriFetcherFactory.create(
-                sketch,
-                DownloadRequest(context, httpsUri)
-            )
-        )
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, httpUri)))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, httpsUri)))
-        Assert.assertNotNull(
-            httpUriFetcherFactory.create(
-                sketch,
-                DisplayRequest(httpUri, imageView)
-            )
-        )
-        Assert.assertNotNull(
-            httpUriFetcherFactory.create(
-                sketch,
-                DisplayRequest(httpsUri, imageView)
-            )
-        )
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest(context, ftpUri)))
-        Assert.assertNull(
-            httpUriFetcherFactory.create(
-                sketch,
-                DownloadRequest(context, contentUri)
-            )
-        )
+        Assert.assertNotNull(httpUriFetcherFactory.create(DownloadRequest(context, httpUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(DownloadRequest(context, httpsUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(LoadRequest(context, httpUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(LoadRequest(context, httpsUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(DisplayRequest(httpUri, imageView)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(DisplayRequest(httpsUri, imageView)))
+        Assert.assertNull(httpUriFetcherFactory.create(DownloadRequest(context, ftpUri)))
+        Assert.assertNull(httpUriFetcherFactory.create(DownloadRequest(context, contentUri)))
     }
 
     @Test
     fun testFetchBlockingRepeatDownload() {
-        val context = context()
-        val sketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context))
-        }.build()
+        val (context, sketch) = contextAndSketch()
+        sketch.setFieldValue("httpStack", TestHttpStack(context))
         val diskCache = sketch.diskCache
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.testUris.first()
@@ -91,7 +62,7 @@ class HttpUriFetcherTest {
             runBlocking {
                 val request = DownloadRequest(context, testUri.uriString)
                 val httpUriFetcher =
-                    httpUriFetcherFactory.create(sketch, request)!!
+                    httpUriFetcherFactory.create(request)!!
                 val diskCacheKey = request.uriString
 
                 diskCache.remove(diskCacheKey)
@@ -138,10 +109,8 @@ class HttpUriFetcherTest {
 
     @Test
     fun testFetchByDiskCachePolicy() {
-        val context = context()
-        val sketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context))
-        }.build()
+        val (context, sketch) = contextAndSketch()
+        sketch.setFieldValue("httpStack", TestHttpStack(context))
         val diskCache = sketch.diskCache
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.testUris.first()
@@ -152,7 +121,7 @@ class HttpUriFetcherTest {
                 downloadDiskCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher =
-                httpUriFetcherFactory.create(sketch, request)!!
+                httpUriFetcherFactory.create(request)!!
             val diskCacheKey = request.uriString
 
             diskCache.remove(diskCacheKey)
@@ -183,7 +152,7 @@ class HttpUriFetcherTest {
                 downloadDiskCachePolicy(CachePolicy.DISABLED)
             }
             val httpUriFetcher =
-                httpUriFetcherFactory.create(sketch, request)!!
+                httpUriFetcherFactory.create(request)!!
             val diskCacheKey = request.uriString
 
             diskCache.remove(diskCacheKey)
@@ -214,7 +183,7 @@ class HttpUriFetcherTest {
                 downloadDiskCachePolicy(CachePolicy.READ_ONLY)
             }
             val httpUriFetcher =
-                httpUriFetcherFactory.create(sketch, request)!!
+                httpUriFetcherFactory.create(request)!!
             val diskCacheKey = request.uriString
 
             diskCache.remove(diskCacheKey)
@@ -242,7 +211,7 @@ class HttpUriFetcherTest {
                 downloadDiskCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher2 =
-                httpUriFetcherFactory.create(sketch, request2)!!
+                httpUriFetcherFactory.create(request2)!!
             httpUriFetcher2.fetch()
             Assert.assertNotNull(diskCache[diskCacheKey])
 
@@ -262,7 +231,7 @@ class HttpUriFetcherTest {
                 downloadDiskCachePolicy(CachePolicy.WRITE_ONLY)
             }
             val httpUriFetcher =
-                httpUriFetcherFactory.create(sketch, request)!!
+                httpUriFetcherFactory.create(request)!!
             val diskCacheKey = request.uriString
 
             diskCache.remove(diskCacheKey)
@@ -290,10 +259,8 @@ class HttpUriFetcherTest {
 
     @Test
     fun testProgress() {
-        val context = context()
-        val sketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context))
-        }.build()
+        val (context, sketch) = contextAndSketch()
+        sketch.setFieldValue("httpStack", TestHttpStack(context))
         val diskCache = sketch.diskCache
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.testUris.first()
@@ -309,7 +276,7 @@ class HttpUriFetcherTest {
         diskCache.remove(diskCacheKey)
         Assert.assertNull(diskCache[diskCacheKey])
 
-        val httpUriFetcher = httpUriFetcherFactory.create(sketch, request)!!
+        val httpUriFetcher = httpUriFetcherFactory.create(request)!!
         runBlocking {
             httpUriFetcher.fetch()
             delay(1000)
@@ -329,10 +296,8 @@ class HttpUriFetcherTest {
 
     @Test
     fun testCancel() {
-        val context = context()
-        val sketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context, readDelayMillis = 1000))
-        }.build()
+        val (context, sketch) = contextAndSketch()
+        sketch.setFieldValue("httpStack", TestHttpStack(context))
         val diskCache = sketch.diskCache
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.testUris.first()
@@ -343,7 +308,7 @@ class HttpUriFetcherTest {
             }
         }
         val diskCacheKey = request.uriString
-        val httpUriFetcher = httpUriFetcherFactory.create(sketch, request)!!
+        val httpUriFetcher = httpUriFetcherFactory.create(request)!!
 
         diskCache.remove(diskCacheKey)
         Assert.assertNull(diskCache[diskCacheKey])
@@ -362,10 +327,8 @@ class HttpUriFetcherTest {
 
     @Test
     fun testException() {
-        val context = context()
-        val sketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context, readDelayMillis = 1000))
-        }.build()
+        val (context, sketch) = contextAndSketch()
+        sketch.setFieldValue("httpStack", TestHttpStack(context))
         val diskCache = sketch.diskCache
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
@@ -376,7 +339,7 @@ class HttpUriFetcherTest {
             }
         }
         val diskCacheKey = request.uriString
-        val httpUriFetcher = httpUriFetcherFactory.create(sketch, request)!!
+        val httpUriFetcher = httpUriFetcherFactory.create(request)!!
 
         diskCache.remove(diskCacheKey)
         Assert.assertNull(diskCache[diskCacheKey])

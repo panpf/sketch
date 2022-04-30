@@ -17,15 +17,12 @@ package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
 class ColorStateImage(private val color: ColorFetcher) : StateImage {
 
-    override fun getDrawable(
-        sketch: Sketch, request: ImageRequest, exception: SketchException?
-    ): Drawable {
-        return ColorDrawable(color.getColor(sketch.context))
+    override fun getDrawable(request: ImageRequest, exception: SketchException?): Drawable {
+        return ColorDrawable(color.getColor(request.context))
     }
 }

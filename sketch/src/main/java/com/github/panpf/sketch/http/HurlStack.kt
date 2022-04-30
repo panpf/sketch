@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.IOException
 import java.io.InputStream
@@ -35,11 +34,7 @@ class HurlStack(
         "HurlStack(connectTimeout=${connectTimeout},readTimeout=${readTimeout},userAgent=${userAgent})"
 
     @Throws(IOException::class)
-    override fun getResponse(
-        sketch: Sketch,
-        request: ImageRequest,
-        url: String
-    ): HttpStack.Response {
+    override fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
         var newUri = url
         while (newUri.isNotEmpty()) {
             val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {

@@ -19,16 +19,16 @@ class GifInfoHandleCompat(private val dataSource: DataSource) {
                 GifInfoHandle(dataSource.diskCacheSnapshot.file.path)
             }
             is ResourceDataSource -> {
-                GifInfoHandle(dataSource.context.resources.openRawResourceFd(dataSource.drawableId))
+                GifInfoHandle(dataSource.request.context.resources.openRawResourceFd(dataSource.drawableId))
             }
             is ContentDataSource -> {
-                GifInfoHandle.openUri(dataSource.context.contentResolver, dataSource.contentUri)
+                GifInfoHandle.openUri(dataSource.request.context.contentResolver, dataSource.contentUri)
             }
             is FileDataSource -> {
                 GifInfoHandle(dataSource.file.path)
             }
             is AssetDataSource -> {
-                GifInfoHandle(dataSource.context.assets.openFd(dataSource.assetFileName))
+                GifInfoHandle(dataSource.request.context.assets.openFd(dataSource.assetFileName))
             }
             else -> {
                 throw Exception("Unsupported DataSource: ${dataSource::class.qualifiedName}")

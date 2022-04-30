@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.toResizeDrawable
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
@@ -28,7 +27,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
 import kotlin.coroutines.coroutineContext
 
-class RequestExecutor(private val sketch: Sketch) {
+class RequestExecutor {
 
     companion object {
         const val MODULE = "RequestExecutor"
@@ -38,7 +37,7 @@ class RequestExecutor(private val sketch: Sketch) {
     suspend fun execute(request: ImageRequest): ImageResult {
         requiredMainThread()
         // Wrap the request to manage its lifecycle.
-        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
+        val requestDelegate = requestDelegate(request, coroutineContext.job)
         requestDelegate.assertActive()
         val target = request.target
         val requestExtras = RequestExtras()
@@ -67,9 +66,8 @@ class RequestExecutor(private val sketch: Sketch) {
 
             val data = RequestInterceptorChain(
                 initialRequest = request,
-                interceptors = sketch.requestInterceptors,
+                interceptors = request.sketch.requestInterceptors,
                 index = 0,
-                sketch = sketch,
                 request = newRequest,
                 requestExtras = requestExtras,
             ).proceed(newRequest)
@@ -79,7 +77,7 @@ class RequestExecutor(private val sketch: Sketch) {
                     request,
                     data.drawable.let {
                         if (newRequest.resizeApplyToDrawable == true) {
-                            it.toResizeDrawable(sketch, resize)
+                            it.toResizeDrawable(request.sketch, resize)
                         } else {
                             it
                         }
@@ -109,10 +107,10 @@ class RequestExecutor(private val sketch: Sketch) {
                 val errorResult = when (request) {
                     is DisplayRequest -> {
                         val errorDrawable = request.errorImage
-                            ?.getDrawable(sketch, request, exception)
+                            ?.getDrawable(request, exception)
                             ?.let {
                                 if (request.resizeApplyToDrawable == true) {
-                                    it.toResizeDrawable(sketch, resize)
+                                    it.toResizeDrawable(request.sketch, resize)
                                 } else {
                                     it
                                 }
@@ -133,21 +131,21 @@ class RequestExecutor(private val sketch: Sketch) {
             }
         } finally {
             requestExtras.getCountDrawablePendingManagerKey()?.let {
-                sketch.countDrawablePendingManager.complete("RequestCompleted", it)
+                request.sketch.countDrawablePendingManager.complete("RequestCompleted", it)
             }
             requestDelegate.complete()
         }
     }
 
     private fun onStart(request: ImageRequest) {
-        sketch.logger.d(MODULE) {
+        request.sketch.logger.d(MODULE) {
             "Request started. ${request.key}"
         }
         request.listener?.onStart(request)
     }
 
     private fun onSuccess(request: ImageRequest, target: Target?, result: ImageResult.Success) {
-        sketch.logger.d(MODULE) {
+        request.sketch.logger.d(MODULE) {
             if (result is DisplayResult.Success) {
                 "Request Successful. ${result.drawable}. ${request.key}"
             } else {
@@ -171,7 +169,7 @@ class RequestExecutor(private val sketch: Sketch) {
     }
 
     private fun onError(request: ImageRequest, target: Target?, result: ImageResult.Error) {
-        sketch.logger.e(MODULE, result.exception) {
+        request.sketch.logger.e(MODULE, result.exception) {
             "Request failed. ${result.exception.message}. ${request.key}"
         }
         when {
@@ -191,7 +189,7 @@ class RequestExecutor(private val sketch: Sketch) {
     }
 
     private fun onCancel(request: ImageRequest) {
-        sketch.logger.d(MODULE) {
+        request.sketch.logger.d(MODULE) {
             "Request canceled. ${request.key}"
         }
         request.listener?.onCancel(request)

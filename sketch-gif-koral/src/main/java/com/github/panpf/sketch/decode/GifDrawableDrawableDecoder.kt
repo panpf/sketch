@@ -7,7 +7,6 @@ import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeWithTolerance
@@ -116,7 +115,6 @@ class GifDrawableDrawableDecoder(
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
-            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult

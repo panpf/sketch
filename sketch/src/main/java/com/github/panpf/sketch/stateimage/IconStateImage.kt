@@ -3,7 +3,6 @@ package com.github.panpf.sketch.stateimage
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
@@ -33,13 +32,11 @@ class IconStateImage : StateImage {
         this.bg = bg
     }
 
-    override fun getDrawable(
-        sketch: Sketch, request: ImageRequest, exception: SketchException?
-    ): Drawable {
-        val icon = icon.getDrawable(sketch.context)
+    override fun getDrawable(request: ImageRequest, exception: SketchException?): Drawable {
+        val icon = icon.getDrawable(request.context)
         val bgDrawable = when (bg) {
-            is DrawableFetcher -> bg.getDrawable(sketch.context)
-            is ColorFetcher -> ColorDrawable(bg.getColor(sketch.context))
+            is DrawableFetcher -> bg.getDrawable(request.context)
+            is ColorFetcher -> ColorDrawable(bg.getColor(request.context))
             else -> null
         }
         return IconDrawable(icon, bgDrawable)

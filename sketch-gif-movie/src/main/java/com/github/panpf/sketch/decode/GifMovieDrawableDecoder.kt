@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
@@ -44,7 +43,6 @@ import com.github.panpf.sketch.request.repeatCount
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifMovieDrawableDecoder constructor(
-    private val sketch: Sketch,
     private val request: ImageRequest,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
@@ -66,10 +64,10 @@ class GifMovieDrawableDecoder constructor(
             if (!request.disabledReuseBitmap) {
                 object : MovieDrawable.BitmapCreator {
                     override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
-                        sketch.bitmapPool.getOrCreate(width, height, config)
+                        request.sketch.bitmapPool.getOrCreate(width, height, config)
 
                     override fun freeBitmap(bitmap: Bitmap) {
-                        sketch.bitmapPool.free(bitmap)
+                        request.sketch.bitmapPool.free(bitmap)
                     }
                 }
             } else null,
@@ -113,7 +111,6 @@ class GifMovieDrawableDecoder constructor(
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
-            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
@@ -122,7 +119,7 @@ class GifMovieDrawableDecoder constructor(
                 val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
                 if (imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()) {
-                    return GifMovieDrawableDecoder(sketch, request, fetchResult.dataSource)
+                    return GifMovieDrawableDecoder(request, fetchResult.dataSource)
                 }
             }
             return null

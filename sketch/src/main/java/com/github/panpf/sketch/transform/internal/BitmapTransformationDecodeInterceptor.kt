@@ -13,7 +13,6 @@ class BitmapTransformationDecodeInterceptor : DecodeInterceptor<BitmapDecodeResu
     override suspend fun intercept(
         chain: DecodeInterceptor.Chain<BitmapDecodeResult>,
     ): BitmapDecodeResult {
-        val sketch = chain.sketch
         val request = chain.request
         val result = chain.proceed()
         val transformations = request.transformations
@@ -24,9 +23,9 @@ class BitmapTransformationDecodeInterceptor : DecodeInterceptor<BitmapDecodeResu
         val transformedList = LinkedList<Transformed>()
         transformations.forEach {
             val inputBitmap = transformedBitmap ?: oldBitmap
-            val transformResult = it.transform(sketch, request, inputBitmap)
+            val transformResult = it.transform(request, inputBitmap)
             if (transformResult != null) {
-                sketch.bitmapPool.free(inputBitmap)
+                request.sketch.bitmapPool.free(inputBitmap)
                 transformedBitmap = transformResult.bitmap
                 transformedList.add(transformResult.transformed)
             }

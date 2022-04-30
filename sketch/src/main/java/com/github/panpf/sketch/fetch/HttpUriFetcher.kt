@@ -2,7 +2,6 @@ package com.github.panpf.sketch.fetch
 
 import android.webkit.MimeTypeMap
 import androidx.annotation.VisibleForTesting
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
@@ -10,9 +9,9 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestDepth
+import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +28,6 @@ import kotlin.coroutines.cancellation.CancellationException
  * Support 'http://pexels.com/sample.jpg', 'https://pexels.com/sample.jpgg' uri
  */
 class HttpUriFetcher(
-    val sketch: Sketch,
     val request: ImageRequest,
     val url: String
 ) : Fetcher {
@@ -42,7 +40,7 @@ class HttpUriFetcher(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun fetch(): FetchResult {
-        val diskCacheHelper = HttpDiskCacheHelper.from(sketch, request)
+        val diskCacheHelper = HttpDiskCacheHelper.from(request)
         diskCacheHelper?.lock?.lock()
         try {
             val result = diskCacheHelper?.read()
@@ -64,8 +62,8 @@ class HttpUriFetcher(
     @Throws(IOException::class)
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun execute(diskCacheHelper: HttpDiskCacheHelper?): FetchResult =
-        withContext(sketch.networkTaskDispatcher) {
-            val response = sketch.httpStack.getResponse(sketch, request, url)
+        withContext(request.sketch.networkTaskDispatcher) {
+            val response = request.sketch.httpStack.getResponse(request, url)
             val responseCode = response.code
             if (responseCode != 200) {
                 throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uriString}")
@@ -99,7 +97,7 @@ class HttpUriFetcher(
             val contentType = response.contentType
             val mimeType = getMimeType(request.uriString, contentType)
             val bytes = byteArrayOutputStream.toByteArray()
-            FetchResult(ByteArrayDataSource(sketch, request, DataFrom.NETWORK, bytes), mimeType)
+            FetchResult(ByteArrayDataSource(request, DataFrom.NETWORK, bytes), mimeType)
         } else {
             throw CancellationException()
         }
@@ -149,11 +147,11 @@ class HttpUriFetcher(
     }
 
     class Factory : Fetcher.Factory {
-        override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? =
+        override fun create(request: ImageRequest): HttpUriFetcher? =
             if (SCHEME.equals(request.uri.scheme, ignoreCase = true)
                         || SCHEME1.equals(request.uri.scheme, ignoreCase = true)
             ) {
-                HttpUriFetcher(sketch, request, request.uriString)
+                HttpUriFetcher(request, request.uriString)
             } else {
                 null
             }
@@ -162,7 +160,6 @@ class HttpUriFetcher(
     }
 
     private class HttpDiskCacheHelper(
-        val sketch: Sketch,
         val request: ImageRequest,
         val diskCache: DiskCache,
         val dataDiskCacheKey: String,
@@ -199,7 +196,6 @@ class HttpUriFetcher(
                 val mimeType = getMimeType(request.uriString, contentType)
                 return FetchResult(
                     DiskCacheDataSource(
-                        sketch,
                         request,
                         DataFrom.DISK_CACHE,
                         dataDiskCacheSnapshot
@@ -261,7 +257,7 @@ class HttpUriFetcher(
                     ?: throw IOException("Disk cache loss after write. key: ${request.downloadDiskCacheKey}")
                 if (diskCachePolicy.readEnabled) {
                     FetchResult(
-                        DiskCacheDataSource(sketch, request, DataFrom.NETWORK, diskCacheSnapshot),
+                        DiskCacheDataSource(request, DataFrom.NETWORK, diskCacheSnapshot),
                         mimeType
                     )
                 } else {
@@ -269,7 +265,7 @@ class HttpUriFetcher(
                         .use { it.readBytes() }
                         .run {
                             FetchResult(
-                                ByteArrayDataSource(sketch, request, DataFrom.NETWORK, this),
+                                ByteArrayDataSource(request, DataFrom.NETWORK, this),
                                 mimeType
                             )
                         }
@@ -283,15 +279,14 @@ class HttpUriFetcher(
         }
 
         companion object {
-            fun from(sketch: Sketch, request: ImageRequest): HttpDiskCacheHelper? {
+            fun from(request: ImageRequest): HttpDiskCacheHelper? {
                 val cachePolicy = request.downloadDiskCachePolicy
                 return if (cachePolicy.isReadOrWrite) {
-                    val diskCache = sketch.diskCache
+                    val diskCache = request.sketch.diskCache
                     val dataDiskCacheKey = request.downloadDiskCacheKey
                     val contentTypeDiskCacheKey =
                         request.downloadDiskCacheKey + "_contentType"
                     HttpDiskCacheHelper(
-                        sketch = sketch,
                         request = request,
                         diskCache = diskCache,
                         dataDiskCacheKey = dataDiskCacheKey,

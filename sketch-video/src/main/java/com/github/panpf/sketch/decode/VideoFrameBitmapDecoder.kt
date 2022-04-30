@@ -7,7 +7,6 @@ import android.media.MediaMetadataRetriever.BitmapParams
 import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
@@ -32,7 +31,6 @@ import kotlin.math.roundToInt
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)
 class VideoFrameBitmapDecoder(
-    private val sketch: Sketch,
     private val request: ImageRequest,
     private val dataSource: DataSource,
     private val mimeType: String,
@@ -43,7 +41,7 @@ class VideoFrameBitmapDecoder(
         val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
             MediaMetadataRetriever().apply {
                 if (dataSource is ContentDataSource) {
-                    setDataSource(dataSource.context, dataSource.contentUri)
+                    setDataSource(request.context, dataSource.contentUri)
                 } else {
                     val file = runBlocking {
                         dataSource.file()
@@ -68,8 +66,8 @@ class VideoFrameBitmapDecoder(
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it)
                 },
                 decodeRegion = null
-            ).applyExifOrientation(sketch.bitmapPool, request.ignoreExifOrientation)
-                .applyResize(sketch, request.resize)
+            ).applyExifOrientation(request.sketch.bitmapPool, request.ignoreExifOrientation)
+                .applyResize(request.sketch, request.resize)
         } finally {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mediaMetadataRetriever.close()
@@ -162,14 +160,13 @@ class VideoFrameBitmapDecoder(
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
-            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): VideoFrameBitmapDecoder? {
             val mimeType = fetchResult.mimeType
             if (mimeType?.startsWith("video/") == true) {
-                return VideoFrameBitmapDecoder(sketch, request, fetchResult.dataSource, mimeType)
+                return VideoFrameBitmapDecoder(request, fetchResult.dataSource, mimeType)
             }
             return null
         }

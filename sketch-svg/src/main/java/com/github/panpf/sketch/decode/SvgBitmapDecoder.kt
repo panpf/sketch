@@ -8,7 +8,6 @@ import android.os.Build.VERSION
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.SVG
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.decode.internal.realDecode
@@ -20,7 +19,6 @@ import com.github.panpf.sketch.request.svgBackgroundColor
 import kotlin.math.roundToInt
 
 class SvgBitmapDecoder(
-    private val sketch: Sketch,
     private val request: ImageRequest,
     private val dataSource: DataSource,
     private val useViewBoundsAsIntrinsicSize: Boolean = true,
@@ -44,7 +42,7 @@ class SvgBitmapDecoder(
                 realDecodeFull(imageInfo, decodeConfig, svg)
             },
             decodeRegion = null
-        ).applyResize(sketch, request.resize)
+        ).applyResize(request.sketch, request.resize)
     }
 
     private fun readImageInfo(svg: SVG): ImageInfo {
@@ -93,7 +91,7 @@ class SvgBitmapDecoder(
         svg.setDocumentWidth("100%")
         svg.setDocumentHeight("100%")
 
-        val bitmap = sketch.bitmapPool
+        val bitmap = request.sketch.bitmapPool
             .getOrCreate(dstWidth, dstHeight, decodeConfig.inPreferredConfig.toSoftware())
         val canvas = Canvas(bitmap).apply {
             backgroundColor?.let {
@@ -114,7 +112,6 @@ class SvgBitmapDecoder(
     class Factory(val useViewBoundsAsIntrinsicSize: Boolean = true) : BitmapDecoder.Factory {
 
         override fun create(
-            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
@@ -124,7 +121,6 @@ class SvgBitmapDecoder(
                 || fetchResult.headerBytes.isSvg()
             ) {
                 SvgBitmapDecoder(
-                    sketch,
                     request,
                     fetchResult.dataSource,
                     useViewBoundsAsIntrinsicSize,

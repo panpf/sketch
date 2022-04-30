@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
@@ -11,7 +10,6 @@ internal class RequestInterceptorChain(
     override val initialRequest: ImageRequest,
     val interceptors: List<RequestInterceptor>,
     val index: Int,
-    override val sketch: Sketch,
     override val request: ImageRequest,
     override val requestExtras: RequestExtras,
 ) : RequestInterceptor.Chain {
@@ -25,5 +23,5 @@ internal class RequestInterceptorChain(
     }
 
     private fun copy(index: Int, request: ImageRequest): RequestInterceptorChain =
-        RequestInterceptorChain(initialRequest, interceptors, index, sketch, request, requestExtras)
+        RequestInterceptorChain(initialRequest, interceptors, index, request, requestExtras)
 }

@@ -18,13 +18,12 @@ class SaveCellularTrafficDisplayInterceptor : RequestInterceptor {
             return chain.proceed(request)
         }
 
-        val sketch = chain.sketch
         val requestDepth = request.depth
         val finalRequest = if (
             enabled
             && request.isSaveCellularTraffic
             && !request.isIgnoredSaveCellularTraffic
-            && sketch.systemCallbacks.isCellularNetworkConnected
+            && request.sketch.systemCallbacks.isCellularNetworkConnected
             && requestDepth < RequestDepth.LOCAL
         ) {
             request.newDisplayRequest {

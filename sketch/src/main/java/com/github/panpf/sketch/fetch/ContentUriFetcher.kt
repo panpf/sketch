@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.fetch
 
 import android.net.Uri
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.request.ImageRequest
 
@@ -9,7 +8,6 @@ import com.github.panpf.sketch.request.ImageRequest
  * Support 'content://sample.jpg' uri
  */
 class ContentUriFetcher(
-    val sketch: Sketch,
     val request: ImageRequest,
     val contentUri: Uri,
 ) : Fetcher {
@@ -19,14 +17,14 @@ class ContentUriFetcher(
     }
 
     override suspend fun fetch(): FetchResult {
-        val mimeType = sketch.context.contentResolver.getType(contentUri)
-        return FetchResult(ContentDataSource(sketch, request, contentUri), mimeType)
+        val mimeType = request.context.contentResolver.getType(contentUri)
+        return FetchResult(ContentDataSource(request, contentUri), mimeType)
     }
 
     class Factory : Fetcher.Factory {
-        override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? =
+        override fun create(request: ImageRequest): ContentUriFetcher? =
             if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
-                ContentUriFetcher(sketch, request, request.uri)
+                ContentUriFetcher(request, request.uri)
             } else {
                 null
             }

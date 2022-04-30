@@ -2,12 +2,12 @@ package com.github.panpf.sketch.test
 
 import android.os.Looper
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.tools4j.reflect.ktx.setFieldValue
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,21 +21,18 @@ class SketchTest {
 
     @Test
     fun testEnqueueDownload() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
 
         /*
          * success
          */
-        val normalSketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context))
-        }.build()
+        sketch.setFieldValue("httpStack", TestHttpStack(context))
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalCallbackActionList = normalDownloadListenerSupervisor.callbackActionList
         val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
             listener(normalDownloadListenerSupervisor)
         }
-        val normalDisposable =
-            normalSketch.enqueue(normalRequest)
+        val normalDisposable = sketch.enqueue(normalRequest)
         runBlocking {
             normalDisposable.job.await()
         }.apply {
@@ -46,9 +43,7 @@ class SketchTest {
         /*
          * cancel
          */
-        val slowSketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context, readDelayMillis = 1000))
-        }.build()
+        sketch.setFieldValue("httpStack", TestHttpStack(context, readDelayMillis = 1000))
         val cancelDownloadListenerSupervisor = DownloadListenerSupervisor()
         val cancelCallbackActionList = cancelDownloadListenerSupervisor.callbackActionList
         val cancelRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
@@ -56,7 +51,7 @@ class SketchTest {
             listener(cancelDownloadListenerSupervisor)
         }
         val cancelDisposable =
-            slowSketch.enqueue(cancelRequest)
+            sketch.enqueue(cancelRequest)
         runBlocking {
             delay(1000)
             cancelDisposable.dispose()
@@ -74,8 +69,7 @@ class SketchTest {
             downloadDiskCachePolicy(CachePolicy.DISABLED)
             listener(errorDownloadListenerSupervisor)
         }
-        val errorDisposable =
-            slowSketch.enqueue(errorRequest)
+        val errorDisposable = sketch.enqueue(errorRequest)
         runBlocking {
             errorDisposable.job.await()
         }.apply {
@@ -86,17 +80,14 @@ class SketchTest {
 
     @Test
     fun testExecuteDownload() {
-        val (context, _) = contextAndSketch()
-
+        val (context, sketch) = contextAndSketch()
         /*
          * success
          */
-        val normalSketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context))
-        }.build()
+        sketch.setFieldValue("httpStack", TestHttpStack(context))
         val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString)
         runBlocking {
-            normalSketch.execute(normalRequest)
+            sketch.execute(normalRequest)
         }.apply {
             Assert.assertTrue(this is DownloadResult.Success)
         }
@@ -104,15 +95,13 @@ class SketchTest {
         /*
          * cancel
          */
-        val slowSketch = Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context, readDelayMillis = 1000))
-        }.build()
+        sketch.setFieldValue("httpStack", TestHttpStack(context, readDelayMillis = 1000))
         val cancelRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
             downloadDiskCachePolicy(CachePolicy.DISABLED)
         }
         runBlocking {
             val job = launch {
-                slowSketch.execute(cancelRequest)
+                sketch.execute(cancelRequest)
             }
             delay(1000)
             job.cancelAndJoin()
@@ -126,7 +115,7 @@ class SketchTest {
             downloadDiskCachePolicy(CachePolicy.DISABLED)
         }
         runBlocking {
-            slowSketch.execute(errorRequest)
+            sketch.execute(errorRequest)
         }.apply {
             Assert.assertTrue(this is DownloadResult.Error)
         }

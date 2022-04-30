@@ -16,16 +16,16 @@ class SvgExtensionsTest {
 
     @Test
     fun test() {
-        val (context, sketch) = contextAndSketch()
+        val (context, _) = contextAndSketch()
 
         // normal
         val request = LoadRequest(context, newAssetUri("sample.svg"))
-        val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample.svg"), null)
+        val fetchResult = FetchResult(AssetDataSource(request, "sample.svg"), null)
         Assert.assertTrue(fetchResult.headerBytes.isSvg())
 
         // not svg
         val request1 = LoadRequest(context, newAssetUri("sample.png"))
-        val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
+        val fetchResult1 = FetchResult(AssetDataSource(request1, "sample.png"), null)
         Assert.assertFalse(fetchResult1.headerBytes.isSvg())
     }
 }

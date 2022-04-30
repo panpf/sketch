@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.ImageRequest
 import okhttp3.Interceptor
@@ -14,7 +13,7 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
     override fun toString(): String =
         "OkHttpStack(connectTimeout=${okHttpClient.connectTimeoutMillis()},readTimeout=${okHttpClient.readTimeoutMillis()})"
 
-    override fun getResponse(sketch: Sketch, request: ImageRequest, url: String): Response {
+    override fun getResponse(request: ImageRequest, url: String): Response {
         val httpRequest = Request.Builder().apply {
             url(url)
             request.httpHeaders?.apply {

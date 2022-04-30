@@ -28,7 +28,7 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         }
         val requestExtras = RequestExtras()
         val chain =
-            BitmapDecodeInterceptorChain(interceptors, 0, sketch, loadRequest, requestExtras, null)
+            BitmapDecodeInterceptorChain(interceptors, 0, loadRequest, requestExtras, null)
 
         sketch.diskCache.clear()
 

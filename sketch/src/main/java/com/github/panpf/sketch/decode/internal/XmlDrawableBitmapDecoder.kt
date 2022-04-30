@@ -4,7 +4,6 @@ import android.content.res.Resources
 import androidx.annotation.WorkerThread
 import androidx.core.content.res.ResourcesCompat
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -16,7 +15,6 @@ import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.toBitmap
 
 class XmlDrawableBitmapDecoder(
-    private val sketch: Sketch,
     private val request: ImageRequest,
     private val resources: Resources,
     private val drawableResId: Int
@@ -33,20 +31,19 @@ class XmlDrawableBitmapDecoder(
                 "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
             )
         }
-        val bitmap = drawable.toBitmap(bitmapPool = sketch.bitmapPool)
+        val bitmap = drawable.toBitmap(bitmapPool = request.sketch.bitmapPool)
         val imageInfo = ImageInfo(
             bitmap.width,
             bitmap.height,
             "image/android-xml",
         )
         return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
-            .applyResize(sketch, request.resize)
+            .applyResize(request.sketch, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
-            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
@@ -55,7 +52,7 @@ class XmlDrawableBitmapDecoder(
             return if (fetchResult.mimeType == "text/xml" && dataSource is ResourceDataSource) {
                 XmlDrawableBitmapDecoder(
                     // Be sure to use dataSource.resources
-                    sketch, request, dataSource.resources, dataSource.drawableId
+                    request, dataSource.resources, dataSource.drawableId
                 )
             } else {
                 null

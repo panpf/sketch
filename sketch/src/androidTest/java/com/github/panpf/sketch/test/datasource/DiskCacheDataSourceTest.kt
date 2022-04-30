@@ -21,7 +21,6 @@ class DiskCacheDataSourceTest {
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = request,
                 assetFileName = "sample.jpeg"
             ).file()
@@ -29,12 +28,10 @@ class DiskCacheDataSourceTest {
         val diskCache = sketch.diskCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
-            sketch = sketch,
             request = request,
             dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
-            Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertTrue(diskCacheSnapshot === this.diskCacheSnapshot)
             Assert.assertEquals(DataFrom.DISK_CACHE, this.dataFrom)
@@ -48,7 +45,6 @@ class DiskCacheDataSourceTest {
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = request,
                 assetFileName = "sample.jpeg"
             ).file()
@@ -56,7 +52,6 @@ class DiskCacheDataSourceTest {
         val diskCache = sketch.diskCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
-            sketch = sketch,
             request = request,
             dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
@@ -71,7 +66,6 @@ class DiskCacheDataSourceTest {
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = request,
                 assetFileName = "sample.jpeg"
             ).file()
@@ -79,7 +73,6 @@ class DiskCacheDataSourceTest {
         val diskCache = sketch.diskCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
-            sketch = sketch,
             request = request,
             dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
@@ -94,7 +87,6 @@ class DiskCacheDataSourceTest {
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = request,
                 assetFileName = "sample.jpeg"
             ).file()
@@ -102,7 +94,6 @@ class DiskCacheDataSourceTest {
         val diskCache = sketch.diskCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
-            sketch = sketch,
             request = request,
             dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
@@ -123,7 +114,6 @@ class DiskCacheDataSourceTest {
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
-                sketch = sketch,
                 request = request,
                 assetFileName = "sample.jpeg"
             ).file()
@@ -131,7 +121,6 @@ class DiskCacheDataSourceTest {
         val diskCache = sketch.diskCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
-            sketch = sketch,
             request = request,
             dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
