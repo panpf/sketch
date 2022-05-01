@@ -20,6 +20,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
@@ -33,6 +34,7 @@ import kotlinx.serialization.json.Json
 class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerPagerFragmentArgs>()
+    private val viewModel by viewModels<ImageViewerPagerViewModel>()
 
     override fun onViewCreated(
         binding: ImageViewerPagerFragmentBinding,
@@ -55,12 +57,15 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
             }
         }
 
-        binding.imageViewerPagerPageNumber.apply {
+        binding.imageViewerPagerTools.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 updateLayoutParams<ViewGroup.MarginLayoutParams> {
                     topMargin += requireContext().getStatusBarHeight()
                 }
             }
+        }
+
+        binding.imageViewerPagerPageNumber.apply {
             text = "%d/%d".format(
                 args.defaultPosition + 1,
                 binding.imageViewerPagerPager.adapter!!.itemCount
@@ -73,6 +78,22 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
                         .format(position + 1, binding.imageViewerPagerPager.adapter!!.itemCount)
                 }
             })
+        }
+
+        binding.imageViewerPagerShare.setOnClickListener {
+            viewModel.shareEvent.value = 0
+        }
+
+        binding.imageViewerPagerSave.setOnClickListener {
+            viewModel.saveEvent.value = 0
+        }
+
+        binding.imageViewerPagerRotate.setOnClickListener {
+            viewModel.rotateEvent.value = 0
+        }
+
+        binding.imageViewerPagerInfo.setOnClickListener {
+            viewModel.infoEvent.value = 0
         }
     }
 }

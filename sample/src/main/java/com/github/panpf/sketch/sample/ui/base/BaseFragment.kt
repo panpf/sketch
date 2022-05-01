@@ -16,5 +16,20 @@
 package com.github.panpf.sketch.sample.ui.base
 
 import androidx.fragment.app.Fragment
+import com.github.panpf.sketch.sample.ui.common.ActionResult
+import com.github.panpf.tools4a.toast.ktx.showLongToast
 
-abstract class BaseFragment : Fragment()
+abstract class BaseFragment : Fragment() {
+
+    fun handleActionResult(result: ActionResult): Boolean =
+        when (result) {
+            is ActionResult.Success -> {
+                result.message?.let { showLongToast(it) }
+                true
+            }
+            is ActionResult.Error -> {
+                showLongToast(result.message)
+                false
+            }
+        }
+}

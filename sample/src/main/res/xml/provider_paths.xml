@@ -8,9 +8,7 @@
         name="files"
         path="." />
 
-    <external-files-path
-        name="apk"
-        path="app_download/" />
-
-    <root-path name="name" path="" />
+    <external-cache-path
+        name="cache"
+        path="." />
 </paths>
