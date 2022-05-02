@@ -86,6 +86,8 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                         ?.joinToString(prefix = "[", postfix = "]") { it.format(1).toString() }
                     add("stepScales=${stepScales}")
                     add("rotateDegrees=${zoomAbility.rotateDegrees}")
+                    add("canScrollHorizontally=${zoomAbility.canScrollHorizontally(-1)},${zoomAbility.canScrollHorizontally(1)}")
+                    add("canScrollVertically=${zoomAbility.canScrollVertically(-1)},${zoomAbility.canScrollVertically(1)}")
                 }.joinToString(separator = "\n")
 
                 tilesInfo = zoomAbility.tileList?.takeIf { it.isNotEmpty() }?.let {
