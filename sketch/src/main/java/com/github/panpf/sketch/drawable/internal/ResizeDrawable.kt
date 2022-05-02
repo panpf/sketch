@@ -103,4 +103,8 @@ open class ResizeDrawable(val sketch: Sketch, drawable: Drawable, val resize: Re
         }
         wrappedDrawable.setBounds(wrappedLeft, wrappedTop, wrappedRight, wrappedBottom)
     }
+
+    override fun toString(): String {
+        return "ResizeDrawable($wrappedDrawable)"
+    }
 }

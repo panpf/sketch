@@ -32,4 +32,8 @@ open class ResizeAnimatableDrawable(sketch: Sketch, val drawable: SketchAnimatab
     override fun clearAnimationCallbacks() {
         drawable.clearAnimationCallbacks()
     }
+
+    override fun toString(): String {
+        return "ResizeAnimatableDrawable($drawable)"
+    }
 }
