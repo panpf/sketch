@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
+import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.util.instanceViewBinding
 
 abstract class BindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
@@ -33,6 +34,9 @@ abstract class BindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
     ): View = (this@BindingFragment::class.java
         .instanceViewBinding(0, inflater, container) as VIEW_BINDING).apply {
         this@BindingFragment.binding = this
+        if (root.background == null) {
+            root.setBackgroundResource(R.color.windowBackground)
+        }
     }.root
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

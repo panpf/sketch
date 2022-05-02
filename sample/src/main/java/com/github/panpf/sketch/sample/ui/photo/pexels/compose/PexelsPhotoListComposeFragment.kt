@@ -16,7 +16,7 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
 
     @OptIn(ExperimentalFoundationApi::class)
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Pexels Photos（Compose）"
+        toolbar.title = "Photos On Compose"
         return ComposeView(requireContext()).apply {
             setContent {
                 PhotoListContent(viewModel.pagingFlow)

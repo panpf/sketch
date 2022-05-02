@@ -17,7 +17,7 @@ class InsanityTestComposeFragment : ToolbarFragment() {
 
     @OptIn(ExperimentalFoundationApi::class)
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Insanity Test（Compose）"
+        toolbar.title = "Insanity Test On Compose"
         return ComposeView(requireContext()).apply {
             setContent {
                 PhotoListContent(viewModel.pagingFlow, disabledCache = true)

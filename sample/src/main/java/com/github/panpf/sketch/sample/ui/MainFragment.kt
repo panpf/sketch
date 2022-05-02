@@ -41,17 +41,7 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                         "Pexels Photos",
                         MainFragmentDirections.actionPexelsPhotoListFragment()
                     ),
-                    Link(
-                        "Pexels Photos（Compose）",
-                        MainFragmentDirections.actionPexelsPhotoListComposeFragment(),
-                        Build.VERSION_CODES.LOLLIPOP
-                    ),
                     Link("Giphy GIF", MainFragmentDirections.actionGiphyGifListFragment()),
-                    Link(
-                        "Giphy GIF（Compose）",
-                        MainFragmentDirections.actionGiphyGifListComposeFragment(),
-                        Build.VERSION_CODES.LOLLIPOP
-                    ),
                     Link(
                         "Local Photos",
                         MainFragmentDirections.actionLocalPhotoListFragment()
@@ -61,6 +51,23 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                         MainFragmentDirections.actionLocalVideoListFragment()
                     ),
                     Link("Huge Image", MainFragmentDirections.actionHugeImageHomeFragment()),
+
+                    ListSeparator("Jetpack Compose"),
+                    Link(
+                        "GIF On Compose",
+                        MainFragmentDirections.actionGiphyGifListComposeFragment(),
+                        Build.VERSION_CODES.LOLLIPOP
+                    ),
+                    Link(
+                        "Photos On Compose",
+                        MainFragmentDirections.actionPexelsPhotoListComposeFragment(),
+                        Build.VERSION_CODES.LOLLIPOP
+                    ),
+                    Link(
+                        "Insanity Test On Compose",
+                        MainFragmentDirections.actionInsanityTestComposeFragment(),
+                        Build.VERSION_CODES.LOLLIPOP
+                    ),
 
                     ListSeparator("Test"),
                     Link(
@@ -72,11 +79,7 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                         "Insanity Test",
                         MainFragmentDirections.actionInsanityTestFragment()
                     ),
-                    Link(
-                        "Insanity Test（Compose）",
-                        MainFragmentDirections.actionInsanityTestComposeFragment(),
-                        Build.VERSION_CODES.LOLLIPOP
-                    ),
+                    Link("Other Test", MainFragmentDirections.actionTestFragment()),
                     // todo 增加更多的示例
 //                    Link(
 //                        "ImageProcessor Test",
@@ -96,7 +99,6 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
 //                        MainFragmentDirections.actionImageOrientationTestHomeFragment()
 //                    ),
 //                    Link("Other Test", MainFragmentDirections.actionOtherTestFragment()),
-                    Link("Other Test", MainFragmentDirections.actionTestFragment()),
 //
 //                    ListSeparator("App"),
 //                    Link("Settings", MainFragmentDirections.actionSettingsFragment()),
