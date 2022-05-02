@@ -106,7 +106,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             SwitchMenu(
                 title = "Pause Load When Scrolling",
                 data = appSettingsService.pauseLoadWhenScrollInList,
-                desc = "No image is loaded during list scrolling to improve the smoothness of list sliding"
+                desc = "No image is loaded during list scrolling to improve the smoothness"
             )
         )
     }
@@ -134,7 +134,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             add(
                 MultiSelectMenu(
                     title = "Long Image Resize Scale",
-                    desc = "Only LongImageMode",
+                    desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
                     getValue = { appSettingsService.longImageResizeScale.value },
                     onSelect = { _, value -> appSettingsService.longImageResizeScale.value = value }
@@ -143,7 +143,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             add(
                 MultiSelectMenu(
                     title = "Other Image Resize Scale",
-                    desc = "Only LongImageMode",
+                    desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
                     getValue = { appSettingsService.otherImageResizeScale.value },
                     onSelect = { _, value ->
@@ -273,8 +273,15 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
     private fun makeOtherMenuList(): List<Any> = buildList {
         add(
             SwitchMenu(
-                title = "Show Tile Bounds In 'Huge Image' Page",
+                title = "Show Tile Bounds",
                 data = appSettingsService.showTileBoundsInHugeImagePage,
+                desc = "Only huge image page"
+            )
+        )
+        add(
+            SwitchMenu(
+                title = "Read Mode",
+                data = appSettingsService.readModeEnabled,
                 desc = null
             )
         )

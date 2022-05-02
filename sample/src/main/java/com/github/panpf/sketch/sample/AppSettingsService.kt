@@ -84,7 +84,9 @@ class AppSettingsService(val context: Context) {
     val showTileBoundsInHugeImagePage by lazy {
         BooleanPrefsData(context, "showTileBoundsInHugeImagePage", true)
     }
-
+    val readModeEnabled by lazy {
+        BooleanPrefsData(context, "readModeEnabled", true)
+    }
     val logLevel by lazy {
         StringPrefsData(context, "logLevel", Logger.Level.DEBUG.name)
     }

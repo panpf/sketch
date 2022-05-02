@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
@@ -34,7 +35,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
         binding.imageViewerZoomImage.apply {
             showRingProgressIndicator()
-            zoomAbility.readModeEnabled = true
+            zoomAbility.readModeEnabled = appSettingsService.readModeEnabled.value
             setOnClickListener {
                 findNavController().popBackStack()
             }
