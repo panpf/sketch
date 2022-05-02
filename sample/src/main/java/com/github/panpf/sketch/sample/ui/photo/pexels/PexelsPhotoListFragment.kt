@@ -145,21 +145,21 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
                     pagingAdapter.loadStateFlow.collect { loadStates ->
                         when (val refreshState = loadStates.refresh) {
                             is LoadState.Loading -> {
-                                binding.recyclerHint.hidden()
+                                binding.recyclerState.gone()
                                 binding.recyclerRefresh.isRefreshing = true
                             }
                             is LoadState.Error -> {
                                 binding.recyclerRefresh.isRefreshing = false
-                                binding.recyclerHint.failed(refreshState.error) {
+                                binding.recyclerState.errorWithRetry(refreshState.error) {
                                     pagingAdapter.refresh()
                                 }
                             }
                             is LoadState.NotLoading -> {
                                 binding.recyclerRefresh.isRefreshing = false
                                 if (pagingAdapter.itemCount <= 0) {
-                                    binding.recyclerHint.empty("No Photos")
+                                    binding.recyclerState.empty("No Photos")
                                 } else {
-                                    binding.recyclerHint.hidden()
+                                    binding.recyclerState.gone()
                                 }
                             }
                         }

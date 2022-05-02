@@ -25,7 +25,7 @@ class SettingsFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
         binding.recyclerRefresh.isEnabled = false
 
-        binding.recyclerHint.hidden()
+        binding.recyclerState.gone()
 
         binding.recyclerRecycler.apply {
             layoutManager = LinearLayoutManager(context)

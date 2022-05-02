@@ -116,21 +116,21 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
             pagingAdapter.loadStateFlow.collect {
                 when (val refreshState = it.refresh) {
                     is LoadState.Loading -> {
-                        binding.recyclerHint.hidden()
+                        binding.recyclerState.gone()
                         binding.recyclerRefresh.isRefreshing = true
                     }
                     is LoadState.Error -> {
                         binding.recyclerRefresh.isRefreshing = false
-                        binding.recyclerHint.failed(refreshState.error) {
+                        binding.recyclerState.errorWithRetry(refreshState.error) {
                             pagingAdapter.refresh()
                         }
                     }
                     is LoadState.NotLoading -> {
                         binding.recyclerRefresh.isRefreshing = false
                         if (pagingAdapter.itemCount <= 0) {
-                            binding.recyclerHint.empty("No videos")
+                            binding.recyclerState.empty("No videos")
                         } else {
-                            binding.recyclerHint.hidden()
+                            binding.recyclerState.gone()
                         }
                     }
                 }

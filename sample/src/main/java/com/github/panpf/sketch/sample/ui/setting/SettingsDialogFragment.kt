@@ -22,7 +22,7 @@ class SettingsDialogFragment : BindingDialogFragment<RecyclerFragmentBinding>() 
     override fun onViewCreated(binding: RecyclerFragmentBinding, savedInstanceState: Bundle?) {
         binding.recyclerRefresh.isEnabled = false
 
-        binding.recyclerHint.hidden()
+        binding.recyclerState.gone()
 
         binding.recyclerRecycler.apply {
             layoutManager = LinearLayoutManager(context)
