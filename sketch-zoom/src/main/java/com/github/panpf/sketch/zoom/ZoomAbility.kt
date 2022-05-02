@@ -243,35 +243,35 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     val verScrollEdge: Edge
         get() = zoomer?.verScrollEdge ?: Edge.NONE
 
-    val zoomScale: Float
-        get() = zoomer?.zoomScale ?: 1f
+    val scale: Float
+        get() = zoomer?.scale ?: 1f
 
-    val baseZoomScale: Float
-        get() = zoomer?.baseZoomScale ?: 1f
+    val baseScale: Float
+        get() = zoomer?.baseScale ?: 1f
 
-    val supportZoomScale: Float
-        get() = zoomer?.supportZoomScale ?: 1f
+    val supportScale: Float
+        get() = zoomer?.supportScale ?: 1f
 
     /** Zoom ratio that makes the image fully visible */
-    val fullZoomScale: Float
-        get() = zoomer?.fullZoomScale ?: 1f
+    val fullScale: Float
+        get() = zoomer?.fullScale ?: 1f
 
     /** Gets the zoom that fills the image with the ImageView display */
-    val fillZoomScale: Float
-        get() = zoomer?.fillZoomScale ?: 1f
+    val fillScale: Float
+        get() = zoomer?.fillScale ?: 1f
 
     /** Gets the scale that allows the image to be displayed at scale to scale */
-    val originZoomScale: Float
-        get() = zoomer?.originZoomScale ?: 1f
+    val originScale: Float
+        get() = zoomer?.originScale ?: 1f
 
-    val minZoomScale: Float
-        get() = zoomer?.minZoomScale ?: 1f
+    val minScale: Float
+        get() = zoomer?.minScale ?: 1f
 
-    val maxZoomScale: Float
-        get() = zoomer?.maxZoomScale ?: 1f
+    val maxScale: Float
+        get() = zoomer?.maxScale ?: 1f
 
-    val doubleClickZoomScales: FloatArray?
-        get() = zoomer?.doubleClickZoomScales
+    val stepScales: FloatArray?
+        get() = zoomer?.stepScales
 
     val isZooming: Boolean
         get() = zoomer?.isZooming == true

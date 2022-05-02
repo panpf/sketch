@@ -43,9 +43,9 @@ internal class TapHelper constructor(
 
     override fun onDoubleTap(ev: MotionEvent): Boolean {
         try {
-            val currentScaleFormat = zoomer.zoomScale.format(2)
+            val currentScaleFormat = zoomer.scale.format(2)
             var finalScale = -1f
-            for (scale in zoomer.scales.doubleClicks) {
+            for (scale in zoomer.scales.steps) {
                 if (finalScale == -1f) {
                     finalScale = scale
                 } else if (currentScaleFormat < scale.format(2)) {

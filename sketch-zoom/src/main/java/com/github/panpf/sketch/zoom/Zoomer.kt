@@ -261,35 +261,35 @@ class Zoomer constructor(
     val verScrollEdge: Edge
         get() = scaleDragHelper.verScrollEdge
 
-    val zoomScale: Float
-        get() = scaleDragHelper.zoomScale
+    val scale: Float
+        get() = scaleDragHelper.scale
 
-    val baseZoomScale: Float
-        get() = scaleDragHelper.defaultZoomScale
+    val baseScale: Float
+        get() = scaleDragHelper.defaultScale
 
-    val supportZoomScale: Float
-        get() = scaleDragHelper.supportZoomScale
+    val supportScale: Float
+        get() = scaleDragHelper.supportScale
 
     /** Zoom ratio that makes the image fully visible */
-    val fullZoomScale: Float
+    val fullScale: Float
         get() = scales.full
 
     /** Gets the zoom that fills the image with the ImageView display */
-    val fillZoomScale: Float
+    val fillScale: Float
         get() = scales.fill
 
     /** Gets the scale that allows the image to be displayed at scale to scale */
-    val originZoomScale: Float
+    val originScale: Float
         get() = scales.origin
 
-    val minZoomScale: Float
+    val minScale: Float
         get() = scales.min
 
-    val maxZoomScale: Float
+    val maxScale: Float
         get() = scales.max
 
-    val doubleClickZoomScales: FloatArray
-        get() = scales.doubleClicks
+    val stepScales: FloatArray
+        get() = scales.steps
 
     val isZooming: Boolean
         get() = scaleDragHelper.isZooming

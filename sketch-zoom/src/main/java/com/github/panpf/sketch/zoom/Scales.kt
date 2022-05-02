@@ -39,7 +39,7 @@ data class Scales(
     /**
      * Double-click to scale the desired scale group
      */
-    val doubleClicks: FloatArray
+    val steps: FloatArray
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -53,7 +53,7 @@ data class Scales(
         if (full != other.full) return false
         if (fill != other.fill) return false
         if (origin != other.origin) return false
-        if (!doubleClicks.contentEquals(other.doubleClicks)) return false
+        if (!steps.contentEquals(other.steps)) return false
 
         return true
     }
@@ -65,7 +65,7 @@ data class Scales(
         result = 31 * result + full.hashCode()
         result = 31 * result + fill.hashCode()
         result = 31 * result + origin.hashCode()
-        result = 31 * result + doubleClicks.contentHashCode()
+        result = 31 * result + steps.contentHashCode()
         return result
     }
 
@@ -77,8 +77,8 @@ data class Scales(
                 "full=${full.format(2)}, " +
                 "fill=${fill.format(2)}, " +
                 "origin=${origin.format(2)}, " +
-                "doubleClicks=${
-                    doubleClicks.joinToString(prefix = "[", postfix = "]") {
+                "steps=${
+                    steps.joinToString(prefix = "[", postfix = "]") {
                         it.format(2).toString()
                     }
                 }})"

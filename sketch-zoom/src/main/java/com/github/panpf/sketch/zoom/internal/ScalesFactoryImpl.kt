@@ -53,62 +53,62 @@ class ScalesFactoryImpl : ScalesFactory {
             drawableWidth > viewSize.width || drawableHeight > viewSize.height
 
         // The width or height of the drawable fills the view
-        val fullZoomScale = min(widthScale, heightScale)
+        val fullScale = min(widthScale, heightScale)
         // The width and height of drawable fill the view at the same time
-        val fillZoomScale = max(widthScale, heightScale)
+        val fillScale = max(widthScale, heightScale)
         // Enlarge drawable to the same size as its original image
-        val originZoomScale =
+        val originScale =
             max(imageWidth.toFloat() / drawableWidth, imageHeight.toFloat() / drawableHeight)
         // The drawable size remains the same
-        val keepZoomScale = 1.0f
+        val keepScale = 1.0f
 
-        val minZoomScale: Float
-        val initZoomScale: Float
-        val doubleClickBigZoomScale: Float
+        val minScale: Float
+        val initScale: Float
+        val stepsBigScale: Float
         when {
             readModeDecider?.should(
                 sketch, imageWidth, imageHeight, viewSize.width, viewSize.height
             ) == true -> {
-                initZoomScale = fillZoomScale
-                minZoomScale = fullZoomScale
-                doubleClickBigZoomScale = max(originZoomScale, initZoomScale)
+                initScale = fillScale
+                minScale = fullScale
+                stepsBigScale = max(originScale, initScale)
             }
             scaleType == ScaleType.CENTER
                     || (scaleType == ScaleType.CENTER_INSIDE && !drawableThanViewLarge) -> {
-                initZoomScale = keepZoomScale
-                minZoomScale = keepZoomScale
-                doubleClickBigZoomScale =
-                    floatArrayOf(originZoomScale, fullZoomScale, initZoomScale * 2f).maxOrNull()!!
+                initScale = keepScale
+                minScale = keepScale
+                stepsBigScale =
+                    floatArrayOf(originScale, fullScale, initScale * 2f).maxOrNull()!!
             }
             scaleType == ScaleType.CENTER_CROP -> {
-                initZoomScale = fillZoomScale
-                minZoomScale = fillZoomScale
-                doubleClickBigZoomScale = max(originZoomScale, initZoomScale * 2f)
+                initScale = fillScale
+                minScale = fillScale
+                stepsBigScale = max(originScale, initScale * 2f)
             }
             scaleType == ScaleType.FIT_START
                     || scaleType == ScaleType.FIT_CENTER
                     || scaleType == ScaleType.FIT_END
                     || (scaleType == ScaleType.CENTER_INSIDE && drawableThanViewLarge) -> {
-                initZoomScale = fullZoomScale
-                minZoomScale = fullZoomScale
-                doubleClickBigZoomScale = max(originZoomScale, initZoomScale * 2f)
+                initScale = fullScale
+                minScale = fullScale
+                stepsBigScale = max(originScale, initScale * 2f)
             }
             else -> {
-                initZoomScale = keepZoomScale
-                minZoomScale = keepZoomScale
-                doubleClickBigZoomScale = max(originZoomScale, initZoomScale * 2f)
+                initScale = keepScale
+                minScale = keepScale
+                stepsBigScale = max(originScale, initScale * 2f)
             }
         }
-        val doubleClicks = floatArrayOf(minZoomScale, doubleClickBigZoomScale)
-        val maxZoomScale = doubleClickBigZoomScale * 2f
+        val steps = floatArrayOf(minScale, stepsBigScale)
+        val maxScale = stepsBigScale * 2f
         return Scales(
-            min = minZoomScale,
-            max = maxZoomScale,
-            init = initZoomScale,
-            full = fullZoomScale,
-            fill = fillZoomScale,
-            origin = originZoomScale,
-            doubleClicks = doubleClicks
+            min = minScale,
+            max = maxScale,
+            init = initScale,
+            full = fullScale,
+            fill = fillScale,
+            origin = originScale,
+            steps = steps
         )
     }
 }

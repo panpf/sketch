@@ -90,11 +90,11 @@ internal class ScaleDragHelper constructor(
         get() = _horScrollEdge
     val verScrollEdge: Edge
         get() = _verScrollEdge
-    val defaultZoomScale: Float
+    val defaultScale: Float
         get() = baseMatrix.getScale()
-    val supportZoomScale: Float
+    val supportScale: Float
         get() = supportMatrix.getScale()
-    val zoomScale: Float
+    val scale: Float
         get() = drawMatrix.apply { getDrawMatrix(this) }.getScale()
 
     fun reset() {
@@ -278,14 +278,14 @@ internal class ScaleDragHelper constructor(
         val newX = pointF.x
         val newY = pointF.y
 
-        val scale = zoomScale.format(2)
-        val fullZoomScale = zoomer.fullZoomScale.format(2)
+        val scale = scale.format(2)
+        val fullZoomScale = zoomer.fullScale.format(2)
         if (scale == fullZoomScale) {
-            zoom(zoomer.originZoomScale, newX, newY, false)
+            zoom(zoomer.originScale, newX, newY, false)
         }
 
         val drawRectF = drawRectF.apply { getDrawRect(this) }
-        val currentScale = zoomScale
+        val currentScale = scale
         val scaleLocationX = (newX * currentScale).toInt()
         val scaleLocationY = (newY * currentScale).toInt()
         val scaledLocationX =
@@ -315,8 +315,8 @@ internal class ScaleDragHelper constructor(
         if (animate) {
             zoomHelper.start(scale, focalX, focalY)
         } else {
-            val baseScale = defaultZoomScale
-            val supportZoomScale = supportZoomScale
+            val baseScale = defaultScale
+            val supportZoomScale = supportScale
             val finalScale = scale / baseScale
             val addScale = finalScale / supportZoomScale
             scaleBy(addScale, focalX, focalY)
@@ -464,11 +464,11 @@ internal class ScaleDragHelper constructor(
         }
         lastScaleFocusX = focusX
         lastScaleFocusY = focusY
-        val oldSupportScale = supportZoomScale
+        val oldSupportScale = supportScale
         var newSupportScale = oldSupportScale * newScaleFactor
         if (newScaleFactor > 1.0f) {
             // The maximum zoom has been reached. Simulate the effect of pulling a rubber band
-            val maxSupportScale = zoomer.maxZoomScale / baseMatrix.getScale()
+            val maxSupportScale = zoomer.maxScale / baseMatrix.getScale()
             if (oldSupportScale >= maxSupportScale) {
                 var addScale = newSupportScale - oldSupportScale
                 addScale *= 0.4f
@@ -477,7 +477,7 @@ internal class ScaleDragHelper constructor(
             }
         } else if (newScaleFactor < 1.0f) {
             // The minimum zoom has been reached. Simulate the effect of pulling a rubber band
-            val minSupportScale = zoomer.minZoomScale / baseMatrix.getScale()
+            val minSupportScale = zoomer.minScale / baseMatrix.getScale()
             if (oldSupportScale <= minSupportScale) {
                 var addScale = newSupportScale - oldSupportScale
                 addScale *= 0.4f
@@ -492,9 +492,9 @@ internal class ScaleDragHelper constructor(
 
     private fun scaleEnd() {
         logger.v(Zoomer.MODULE) { "onScaleEnd" }
-        val currentScale = zoomScale.format(2)
-        val overMinZoomScale = currentScale < zoomer.minZoomScale.format(2)
-        val overMaxZoomScale = currentScale > zoomer.maxZoomScale.format(2)
+        val currentScale = scale.format(2)
+        val overMinZoomScale = currentScale < zoomer.minScale.format(2)
+        val overMaxZoomScale = currentScale > zoomer.maxScale.format(2)
         if (!overMinZoomScale && !overMaxZoomScale) {
             isZooming = false
             onUpdateMatrix()
@@ -516,9 +516,9 @@ internal class ScaleDragHelper constructor(
 
     private fun actionUp() {
         /* Roll back to minimum or maximum scaling */
-        val currentScale = zoomScale.format(2)
-        val minZoomScale = zoomer.minZoomScale.format(2)
-        val maxZoomScale = zoomer.maxZoomScale.format(2)
+        val currentScale = scale.format(2)
+        val minZoomScale = zoomer.minScale.format(2)
+        val maxZoomScale = zoomer.maxScale.format(2)
         if (currentScale < minZoomScale) {
             val drawRectF = drawRectF.apply { getDrawRect(this) }
             if (!drawRectF.isEmpty) {

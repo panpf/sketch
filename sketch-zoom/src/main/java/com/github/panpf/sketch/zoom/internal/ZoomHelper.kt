@@ -31,7 +31,7 @@ internal class ZoomHelper(
     fun start(targetScale: Float, scaleFocalX: Float, scaleFocalY: Float) {
         lastTask?.stop()
         lastTask = ZoomTask(
-            zoomer, scaleDragHelper, zoomer.zoomScale, targetScale, scaleFocalX, scaleFocalY
+            zoomer, scaleDragHelper, zoomer.scale, targetScale, scaleFocalX, scaleFocalY
         )
         lastTask?.start()
     }
@@ -63,7 +63,7 @@ internal class ZoomHelper(
         override fun run() {
             val t = interpolate()
             val scale = startScale + t * (endScale - startScale)
-            val deltaScale = scale / scaleDragHelper.zoomScale
+            val deltaScale = scale / scaleDragHelper.scale
             val continueZoom = t < 1f
             scaleDragHelper.isZooming = continueZoom
             scaleDragHelper.scale(deltaScale, scaleFocalX, scaleFocalY)
