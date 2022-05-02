@@ -4,120 +4,94 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 
-
-internal fun ImageRequest.newCacheKey(): String = buildString {
-    append(uriString)
-    newQualityKey()?.let {
-        append("_").append(it)
+internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
+    parameters?.key?.takeIf { it.isNotEmpty() }?.let {
+        appendQueryParameter("_parameters", it)
+    }
+    bitmapConfig?.let {
+        appendQueryParameter("_bitmapConfig", it.key)
+    }
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        colorSpace?.let {
+            appendQueryParameter("_colorSpace", it.name.replace(" ", "_"))
+        }
+    }
+    @Suppress("DEPRECATION")
+    if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
+        appendQueryParameter("_preferQualityOverSpeed", true.toString())
+    }
+    resize?.let {
+        appendQueryParameter("_resize", it.key)
+    }
+    transformations?.takeIf { it.isNotEmpty() }?.let { list ->
+        appendQueryParameter("_transformations", list.joinToString(separator = ",") {
+            it.key.replace("Transformation", "")
+        })
+    }
+    if (ignoreExifOrientation) {
+        appendQueryParameter("_ignoreExifOrientation", true.toString())
     }
     if (disabledAnimatedImage) {
-        append("_").append("DisabledAnimationDrawable")
+        appendQueryParameter("_disabledAnimatedImage", true.toString())
     }
-}
+}.build().toString()
 
-internal fun ImageRequest.newQualityKey(): String? =
-    buildList {
-        parameters?.cacheKey?.let { add(it) }
-        bitmapConfig?.let { add(it.key) }
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            colorSpace?.let { add("colorSpace(${it.name.replace(" ", "_")})") }
-        }
-        @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
-            add("preferQualityOverSpeed")
-        }
-        resize?.let { add(it.key) }
-        transformations?.takeIf { it.isNotEmpty() }?.let { list ->
-            add("transformations(${list.joinToString(separator = ",") { it.key }})")
-        }
-        if (ignoreExifOrientation) {
-            add("ignoreExifOrientation")
-        }
-    }.takeIf { it.isNotEmpty() }
-        ?.joinToString(separator = ",", prefix = "Quality(", postfix = ")")
-
-internal fun ImageRequest.newKey(): String = buildString {
-    val download: () -> Unit = {
-        depth.takeIf { it != NETWORK }?.let {
-            append("_").append("RequestDepth(${it})")
-        }
-        parameters?.key?.takeIf { it.isNotEmpty() }?.let {
-            append("_").append(it)
-        }
-        httpHeaders?.takeIf { !it.isEmpty() }?.let {
-            append("_").append(it)
-        }
-        downloadDiskCachePolicy.takeIf { it != ENABLED }?.let {
-            append("_").append("downloadDiskCachePolicy($it)")
-        }
+internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
+    depth.takeIf { it != NETWORK }?.let {
+        appendQueryParameter("_depth", it.toString())
     }
-    val load: () -> Unit = {
+    parameters?.key?.takeIf { it.isNotEmpty() }?.let {
+        appendQueryParameter("_parameters", it)
+    }
+    httpHeaders?.takeIf { !it.isEmpty() }?.let {
+        appendQueryParameter("_httpHeaders", it.toString())
+    }
+    downloadDiskCachePolicy.takeIf { it != ENABLED }?.let {
+        appendQueryParameter("_downloadDiskCachePolicy", it.toString())
+    }
+
+    if (this@newKey is LoadRequest || this@newKey is DisplayRequest) {
         bitmapConfig?.let {
-            append("_").append(it.key)
+            appendQueryParameter("_bitmapConfig", it.key)
         }
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             colorSpace?.let {
-                append("_").append("colorSpace(${it.name.replace(" ", "_")})")
+                appendQueryParameter("_colorSpace", it.name.replace(" ", "_"))
             }
         }
         @Suppress("DEPRECATION")
         if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
-            append("_").append("preferQualityOverSpeed")
+            appendQueryParameter("_preferQualityOverSpeed", true.toString())
         }
         resize?.let {
-            append("_").append(it.key)
+            appendQueryParameter("_resize", it.key)
         }
         transformations?.takeIf { it.isNotEmpty() }?.let { list ->
-            append("_").append(
-                "transformations(${
-                    list.joinToString(separator = ",") {
-                        it.key.replace("Transformation", "")
-                    }
-                })"
-            )
+            appendQueryParameter("_transformations", list.joinToString(separator = ",") {
+                it.key.replace("Transformation", "")
+            })
         }
         if (disabledReuseBitmap) {
-            append("_").append("disabledReuseBitmap")
+            appendQueryParameter("_disabledReuseBitmap", true.toString())
         }
         if (ignoreExifOrientation) {
-            append("_").append("ignoreExifOrientation")
+            appendQueryParameter("_ignoreExifOrientation", true.toString())
         }
         bitmapResultDiskCachePolicy.takeIf { it != ENABLED }?.let {
-            append("_").append("bitmapResultDiskCachePolicy($it)")
+            appendQueryParameter("_bitmapResultDiskCachePolicy", it.name)
         }
     }
-    val display: () -> Unit = {
+
+    if (this@newKey is DisplayRequest) {
         if (disabledAnimatedImage) {
-            append("_").append("disabledAnimatedImage")
+            appendQueryParameter("_disabledAnimatedImage", true.toString())
         }
         bitmapMemoryCachePolicy.takeIf { it != ENABLED }?.let {
-            append("_").append("bitmapMemoryCachePolicy($it)")
+            appendQueryParameter("_bitmapMemoryCachePolicy", it.name)
         }
     }
-    when (this@newKey) {
-        is DownloadRequest -> {
-            append("download")
-            append("-").append(uriString)
-            download()
-        }
-        is LoadRequest -> {
-            append("load")
-            append("-").append(uriString)
-            download()
-            load()
-        }
-        is DisplayRequest -> {
-            append("display")
-            append("-").append(uriString)
-            download()
-            load()
-            display()
-        }
-        else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${this@newKey::class.java}")
-    }
-}
+}.build().toString()
