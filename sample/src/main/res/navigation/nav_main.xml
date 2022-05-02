@@ -231,9 +231,63 @@
         android:name="com.github.panpf.sketch.sample.ui.test.insanity.compose.InsanityTestComposeFragment"
         android:label="InsanityTestComposeFragment" />
 
+    <dialog
+        android:id="@+id/imageInfoDialogFragment"
+        android:name="com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment"
+        android:label="ImageInfoDialogFragment">
+        <argument
+            android:name="uri"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null"/>
+        <argument
+            android:name="imageInfo"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null"/>
+        <argument
+            android:name="optionsInfo"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null"/>
+        <argument
+            android:name="drawableInfo"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null"/>
+        <argument
+            android:name="dataFromInfo"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null"/>
+        <argument
+            android:name="transformedInfo"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null"/>
+        <argument
+            android:name="zoomInfo"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null"/>
+        <argument
+            android:name="tilesInfo"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null"/>
+    </dialog>
+
     <action
         android:id="@+id/action_global_imageViewerPagerFragment"
         app:destination="@id/imageViewerPagerFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <action
+        android:id="@+id/action_global_imageInfoDialogFragment"
+        app:destination="@id/imageInfoDialogFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

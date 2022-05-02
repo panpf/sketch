@@ -14,15 +14,12 @@ import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
+import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.viewability.showRingProgressIndicator
 import kotlinx.coroutines.launch
 
 // todo 增加上下滑动退出功能
 // todo 增加进入和退出过渡动画
-// todo 增加保存功能
-// todo 增加设置壁纸功能
-// todo 增加旋转功能
-// todo 增加查看图片信息功能
 class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
@@ -66,7 +63,12 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             }
             infoEvent.listen(viewLifecycleOwner) {
                 if (userVisibleHint && isResumed) {
-                    // todo info
+                    findNavController().navigate(
+                        ImageInfoDialogFragment.createDirectionsFromImageView(
+                            binding.imageViewerZoomImage,
+                            args.imageUri,
+                        )
+                    )
                 }
             }
         }

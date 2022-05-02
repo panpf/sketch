@@ -13,15 +13,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_weight="1"
-        android:ellipsize="end"
-        android:maxLines="1"
         android:textColor="@color/text_title"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/multiSelectMenuItemDescText"
         app:layout_constraintEnd_toStartOf="@id/multiSelectMenuItemInfoText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="显示按下状态" />
+        tools:text="显示按下状态显示按下状态显示按下状态显示按下状态" />
 
     <TextView
         android:id="@+id/multiSelectMenuItemDescText"
