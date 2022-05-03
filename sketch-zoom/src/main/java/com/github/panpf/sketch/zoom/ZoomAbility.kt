@@ -44,7 +44,13 @@ import com.github.panpf.sketch.zoom.internal.sizeWithoutPaddingOrNull
 import com.github.panpf.sketch.zoom.tile.OnTileChangedListener
 import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
     DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver,
@@ -73,9 +79,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private var onScaleChangeListenerList: MutableSet<OnScaleChangeListener>? = null
     private var onTileChangedListenerList: MutableSet<OnTileChangedListener>? = null
     private val imageMatrix = Matrix()
-//    private val scope = CoroutineScope(
-//        SupervisorJob() + Dispatchers.Main.immediate
-//    )
+    private val scope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main.immediate
+    )
+    private var lastPostResetTilesJob: Job? = null
 
     private var lifecycle: Lifecycle? = null
         set(value) {
@@ -102,9 +109,9 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             }
 
             lifecycle = value?.context.getLifecycle()
-//            if (value == null) {
-//                scope.cancel()
-//            }
+            if (value == null) {
+                scope.cancel()
+            }
         }
 
     var scrollBarEnabled: Boolean = true
@@ -397,20 +404,27 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         tiles?.paused = false
     }
 
-    var lastResetTilesJob: Job? = null
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         val host = host ?: return
         val view = host.view
         val viewWidth = view.width - view.paddingLeft - view.paddingRight
         val viewHeight = view.height - view.paddingTop - view.paddingBottom
         zoomer?.viewSize = Size(viewWidth, viewHeight)
+        postResetTiles()
+    }
 
-//        lastResetTilesJob?.cancel()
-//        lastResetTilesJob = scope.launch(Dispatchers.Main) {
-//            delay(600)
-        // todo 在 size 频繁改变时（共享元素动画）会频繁触发 resetTiles 导致内存大幅波动
-        resetTiles()
-//        }
+    private fun postResetTiles() {
+        // Triggering the reset tiles frequently (such as changing the view size in shared element animations)
+        // can cause large fluctuations in memory, so delayed resets can avoid this problem
+        lastPostResetTilesJob?.cancel()
+        lastPostResetTilesJob = scope.launch(Dispatchers.Main) {
+            delay(60)
+            tiles?.destroy()
+            tiles = newTiles(zoomer)?.apply {
+                showTileBounds = this@ZoomAbility.showTileBounds
+                paused = this@ZoomAbility.lifecycle?.currentState?.isAtLeast(STARTED) == false
+            }
+        }
     }
 
     override fun onDrawBefore(canvas: Canvas) {
@@ -439,7 +453,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     private fun initialize() {
         setZoomerDrawable()
-        resetTiles()
+        postResetTiles()
     }
 
     private fun destroy() {
@@ -493,14 +507,6 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val sketchDrawable = previewDrawable?.findLastSketchDrawable()
         zoomer.imageSize =
             Size(sketchDrawable?.imageInfo?.width ?: 0, sketchDrawable?.imageInfo?.height ?: 0)
-    }
-
-    private fun resetTiles() {
-        tiles?.destroy()
-        tiles = newTiles(zoomer)?.apply {
-            showTileBounds = this@ZoomAbility.showTileBounds
-            paused = this@ZoomAbility.lifecycle?.currentState?.isAtLeast(STARTED) == false
-        }
     }
 
     private fun newTiles(zoomer: Zoomer?): Tiles? {
