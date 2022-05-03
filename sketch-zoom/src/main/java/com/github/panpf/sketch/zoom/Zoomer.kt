@@ -125,15 +125,7 @@ class Zoomer constructor(
                 field = value
             }
         }
-    var scales: Scales = scalesFactory.create(
-        sketch,
-        viewSize,
-        drawableSize,
-        _rotateDegrees,
-        imageSize,
-        scaleType,
-        readModeDecider
-    )
+    var scales: Scales = Scales.EMPTY
         private set
 
 
@@ -145,13 +137,13 @@ class Zoomer constructor(
 
     private fun reset() {
         scales = scalesFactory.create(
-            sketch,
-            viewSize,
-            drawableSize,
-            _rotateDegrees,
-            imageSize,
-            scaleType,
-            readModeDecider
+            sketch = sketch,
+            viewSize = viewSize,
+            drawableSize = drawableSize,
+            rotateDegrees = _rotateDegrees,
+            imageSize = imageSize,
+            scaleType = scaleType,
+            readModeDecider = readModeDecider
         )
         scaleDragHelper.reset()
         logger.d(MODULE) {

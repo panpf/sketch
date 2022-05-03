@@ -83,6 +83,11 @@ data class Scales(
                     }
                 }})"
     }
+
+    companion object {
+        @JvmStatic
+        val EMPTY = Scales(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, floatArrayOf(1.0f, 1.0f))
+    }
 }
 
 interface ScalesFactory {

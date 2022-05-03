@@ -35,18 +35,24 @@ class ScalesFactoryImpl : ScalesFactory {
         scaleType: ScaleType,
         readModeDecider: ReadModeDecider?,
     ): Scales {
-        if (imageSize.isEmpty || drawableSize.isEmpty || viewSize.isEmpty) {
-            return Scales(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, floatArrayOf(1.0f, 1.0f))
+        if (drawableSize.isEmpty || viewSize.isEmpty) {
+            return Scales.EMPTY
         }
 
         val drawableWidth =
             if (rotateDegrees % 180 == 0) drawableSize.width else drawableSize.height
         val drawableHeight =
             if (rotateDegrees % 180 == 0) drawableSize.height else drawableSize.width
-        val imageWidth =
+        val imageWidth = if (!imageSize.isEmpty) {
             if (rotateDegrees % 180 == 0) imageSize.width else imageSize.height
-        val imageHeight =
+        } else {
+            drawableWidth
+        }
+        val imageHeight = if (!imageSize.isEmpty) {
             if (rotateDegrees % 180 == 0) imageSize.height else imageSize.width
+        } else {
+            drawableHeight
+        }
         val widthScale = viewSize.width.toFloat() / drawableWidth
         val heightScale = viewSize.height.toFloat() / drawableHeight
         val drawableThanViewLarge =
