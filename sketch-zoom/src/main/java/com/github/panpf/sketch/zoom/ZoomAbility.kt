@@ -40,9 +40,11 @@ import com.github.panpf.sketch.zoom.internal.Edge
 import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.getLifecycle
 import com.github.panpf.sketch.zoom.internal.isAttachedToWindowCompat
+import com.github.panpf.sketch.zoom.internal.sizeWithoutPaddingOrNull
 import com.github.panpf.sketch.zoom.tile.OnTileChangedListener
 import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
+import kotlinx.coroutines.Job
 
 class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
     DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver,
@@ -71,6 +73,9 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private var onScaleChangeListenerList: MutableSet<OnScaleChangeListener>? = null
     private var onTileChangedListenerList: MutableSet<OnTileChangedListener>? = null
     private val imageMatrix = Matrix()
+//    private val scope = CoroutineScope(
+//        SupervisorJob() + Dispatchers.Main.immediate
+//    )
 
     private var lifecycle: Lifecycle? = null
         set(value) {
@@ -97,6 +102,9 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             }
 
             lifecycle = value?.context.getLifecycle()
+//            if (value == null) {
+//                scope.cancel()
+//            }
         }
 
     var scrollBarEnabled: Boolean = true
@@ -379,22 +387,30 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     private fun registerLifecycleObserver() {
         if (host?.view?.isAttachedToWindowCompat == true) {
-            this.lifecycle?.addObserver(lifecycleObserver)
-            tiles?.paused = this.lifecycle?.currentState?.isAtLeast(STARTED) == false
+            lifecycle?.addObserver(lifecycleObserver)
+            tiles?.paused = lifecycle?.currentState?.isAtLeast(STARTED) == false
         }
     }
 
     private fun unregisterLifecycleObserver() {
-        this.lifecycle?.removeObserver(lifecycleObserver)
+        lifecycle?.removeObserver(lifecycleObserver)
         tiles?.paused = false
     }
 
+    var lastResetTilesJob: Job? = null
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         val host = host ?: return
         val view = host.view
         val viewWidth = view.width - view.paddingLeft - view.paddingRight
         val viewHeight = view.height - view.paddingTop - view.paddingBottom
         zoomer?.viewSize = Size(viewWidth, viewHeight)
+
+//        lastResetTilesJob?.cancel()
+//        lastResetTilesJob = scope.launch(Dispatchers.Main) {
+//            delay(600)
+        // todo 在 size 频繁改变时（共享元素动画）会频繁触发 resetTiles 导致内存大幅波动
+        resetTiles()
+//        }
     }
 
     override fun onDrawBefore(canvas: Canvas) {
@@ -423,11 +439,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     private fun initialize() {
         setZoomerDrawable()
-        tiles?.destroy()
-        tiles = tryNewTiles(zoomer)?.apply {
-            showTileBounds = this@ZoomAbility.showTileBounds
-            paused = this@ZoomAbility.lifecycle?.currentState?.isAtLeast(STARTED) == false
-        }
+        resetTiles()
     }
 
     private fun destroy() {
@@ -475,7 +487,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private fun setZoomerDrawable() {
         val host = host ?: return
         val zoomer = zoomer ?: return
-        val previewDrawable = host.drawable;
+        val previewDrawable = host.drawable
         zoomer.drawableSize =
             Size(previewDrawable?.intrinsicWidth ?: 0, previewDrawable?.intrinsicHeight ?: 0)
         val sketchDrawable = previewDrawable?.findLastSketchDrawable()
@@ -483,25 +495,28 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             Size(sketchDrawable?.imageInfo?.width ?: 0, sketchDrawable?.imageInfo?.height ?: 0)
     }
 
-    private fun tryNewTiles(zoomer: Zoomer?): Tiles? {
+    private fun resetTiles() {
+        tiles?.destroy()
+        tiles = newTiles(zoomer)?.apply {
+            showTileBounds = this@ZoomAbility.showTileBounds
+            paused = this@ZoomAbility.lifecycle?.currentState?.isAtLeast(STARTED) == false
+        }
+    }
+
+    private fun newTiles(zoomer: Zoomer?): Tiles? {
         zoomer ?: return null
         val host = host ?: return null
         val sketch = host.context.sketch
         val logger = sketch.logger
-        val view = host.view
-
-        val viewWidth = view.width - view.paddingLeft - view.paddingRight
-        val viewHeight = view.height - view.paddingTop - view.paddingBottom
-        if (viewWidth <= 0 || viewHeight <= 0) {
-            logger.d(MODULE) { "View size error" }
+        val viewSize = host.view.sizeWithoutPaddingOrNull
+        if (viewSize == null) {
+            logger.d(MODULE) { "Can't use Tiles. View size error" }
             return null
         }
-        val viewSize = Size(viewWidth, viewHeight)
-
         val previewDrawable = host.drawable
-        val sketchDrawable = previewDrawable?.findLastSketchDrawable()
-        if (sketchDrawable == null || previewDrawable is Animatable) {
-            logger.d(MODULE) { "Can't use Tiles" }
+        val sketchDrawable = previewDrawable?.findLastSketchDrawable()?.takeIf { it !is Animatable }
+        if (sketchDrawable == null) {
+            logger.d(MODULE) { "Can't use Tiles. Drawable error" }
             return null
         }
 
@@ -548,9 +563,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     }
 
     override fun onRequestStart(request: DisplayRequest) {
-        lifecycle =
-            request.lifecycle.takeIf { !it.isSketchGlobalLifecycle() }
-                ?: host?.context.getLifecycle()
+        lifecycle = request.lifecycle.takeIf { !it.isSketchGlobalLifecycle() }
+            ?: host?.context.getLifecycle()
     }
 
     override fun onRequestError(request: DisplayRequest, result: Error) {

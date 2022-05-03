@@ -59,15 +59,6 @@ class Tiles constructor(
             field = value
             invalidateView()
         }
-    var viewSize: Size = viewSize
-        internal set(value) {
-            if (field != value) {
-                field = value
-                scope.launch(Dispatchers.Main) {
-                    tileManager?.viewSize = value
-                }
-            }
-        }
     var paused = false
         set(value) {
             if (field != value) {
@@ -184,6 +175,7 @@ class Tiles constructor(
         requiredMainThread()
 
         if (_destroyed) return
+        logger.w(MODULE, "destroy")
         _destroyed = true
         zoomer.removeOnMatrixChangeListener(onMatrixChangeListener)
         scope.cancel()

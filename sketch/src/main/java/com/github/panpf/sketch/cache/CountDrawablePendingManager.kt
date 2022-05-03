@@ -47,7 +47,7 @@ class CountDrawablePendingManager constructor(private val logger: Logger) {
         key: String,
         drawable: SketchCountBitmapDrawable
     ) {
-        drawable.setIsPending("$callingStation:complete", false)
+        drawable.setIsPending(callingStation, false)
         if (drawable.getPendingCount() == 0) {
             map.remove(key)
         }

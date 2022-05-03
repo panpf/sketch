@@ -79,13 +79,6 @@ class TileManager constructor(
     private val imageLoadRect = Rect()
     private val tileDrawRect = Rect()
 
-    var viewSize: Size = viewSize
-        internal set(value) {
-            if (field != value) {
-                field = value
-                // todo apply view size change
-            }
-        }
     val tileList: List<Tile>?
         get() = lastTileList
     val imageSize = decoder.imageSize
@@ -137,7 +130,7 @@ class TileManager constructor(
         resetVisibleAndLoadRect(previewSize, previewVisibleRect)
 
         logger.d(Tiles.MODULE) {
-            "refreshTiles. successful. " +
+            "refreshTiles. started. " +
                     "imageSize=${imageSize}, " +
                     "imageVisibleRect=$imageVisibleRect, " +
                     "imageLoadRect=$imageLoadRect, " +
@@ -240,10 +233,10 @@ class TileManager constructor(
         val memoryCacheKey = "${imageUri}_tile_${tile.srcRect}_${tile.inSampleSize}"
         val countBitmap = memoryCache[memoryCacheKey]
         if (countBitmap != null) {
-            logger.d(Tiles.MODULE) {
-                "loadTile. fromMemory. $tile. $imageUri"
-            }
             tile.countBitmap = countBitmap
+            logger.d(Tiles.MODULE) {
+                "loadTile. successful. fromMemory. $tile. $imageUri"
+            }
             tiles.invalidateView()
             notifyTileChanged()
             return
@@ -251,33 +244,38 @@ class TileManager constructor(
 
         tile.loadJob = scope.async(decodeDispatcher) {
             val bitmap = decoder.decode(tile)
-            if (!isActive) {
-                bitmapPool.free(bitmap)
-                return@async
-            }
-            withContext(Dispatchers.Main) {
-                if (bitmap != null) {
-                    logger.d(Tiles.MODULE) {
-                        "loadTile. decode. $tile. $imageUri"
-                    }
-                    val newCountBitmap = CountBitmap(
-                        bitmap,
-                        memoryCacheKey,
-                        imageUri,
-                        decoder.imageInfo,
-                        decoder.exifOrientationHelper.exifOrientation,
-                        null,
-                        logger,
-                        bitmapPool
-                    )
-                    memoryCache.put(memoryCacheKey, newCountBitmap)
-                    tile.countBitmap = newCountBitmap
-                    tiles.invalidateView()
-                    notifyTileChanged()
-                } else {
+            when {
+                bitmap == null -> {
                     logger.e(Tiles.MODULE) {
                         "loadTile. null. $tile. $imageUri"
                     }
+                }
+                isActive -> {
+                    withContext(Dispatchers.Main) {
+                        val newCountBitmap = CountBitmap(
+                            bitmap,
+                            memoryCacheKey,
+                            imageUri,
+                            decoder.imageInfo,
+                            decoder.exifOrientationHelper.exifOrientation,
+                            null,
+                            logger,
+                            bitmapPool
+                        )
+                        memoryCache.put(memoryCacheKey, newCountBitmap)
+                        tile.countBitmap = newCountBitmap
+                        logger.d(Tiles.MODULE) {
+                            "loadTile. successful. $tile. $imageUri"
+                        }
+                        tiles.invalidateView()
+                        notifyTileChanged()
+                    }
+                }
+                else -> {
+                    logger.w(Tiles.MODULE) {
+                        "loadTile. canceled. $tile. $imageUri"
+                    }
+                    bitmapPool.free(bitmap)
                 }
             }
         }
