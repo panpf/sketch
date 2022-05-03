@@ -293,11 +293,11 @@ class TileManager constructor(
         }
 
         tile.countBitmap?.run {
-            tile.countBitmap = null
-            notifyTileChanged()
             logger.w(Tiles.MODULE) {
                 "freeTile. $tile. $imageUri"
             }
+            tile.countBitmap = null
+            notifyTileChanged()
         }
     }
 
