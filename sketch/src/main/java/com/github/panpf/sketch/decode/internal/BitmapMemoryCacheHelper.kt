@@ -69,7 +69,11 @@ class BitmapMemoryCacheHelper internal constructor(
                         "From memory get bitmap. bitmap=${cachedCountBitmap.info}. ${request.key}"
                     }
                     DrawableDecodeResult(
-                        drawable = SketchCountBitmapDrawable(cachedCountBitmap, MEMORY_CACHE),
+                        drawable = SketchCountBitmapDrawable(
+                            request.context.resources,
+                            cachedCountBitmap,
+                            MEMORY_CACHE
+                        ),
                         imageInfo = cachedCountBitmap.imageInfo,
                         exifOrientation = cachedCountBitmap.exifOrientation,
                         dataFrom = MEMORY_CACHE,
@@ -98,7 +102,7 @@ class BitmapMemoryCacheHelper internal constructor(
                     bitmapPool = bitmapPool
                 )
                 memoryCache.put(cacheKey, countBitmap)
-                SketchCountBitmapDrawable(countBitmap, result.dataFrom)
+                SketchCountBitmapDrawable(request.context.resources, countBitmap, result.dataFrom)
             } else {
                 logger.w(MODULE) {
                     "write. Reject. Too big ${

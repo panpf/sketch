@@ -30,7 +30,9 @@ class MemoryCacheStateImage(
         val memoryCache = request.sketch.memoryCache
         val cachedCountBitmap = memoryCacheKey?.let { memoryCache[it] }
         return if (cachedCountBitmap != null) {
-            SketchCountBitmapDrawable(cachedCountBitmap, DataFrom.MEMORY_CACHE)
+            SketchCountBitmapDrawable(
+                request.context.resources, cachedCountBitmap, DataFrom.MEMORY_CACHE
+            )
         } else {
             defaultImage?.getDrawable(request, exception)
         }

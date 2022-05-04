@@ -28,6 +28,7 @@ class CountDrawablePendingManagerTest {
         val logger = Logger()
         val bitmapPool = LruBitmapPool(context.defaultMemoryCacheBytes())
         val countDrawable = SketchCountBitmapDrawable(
+            context.resources,
             CountBitmap(
                 initBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
                 requestKey = "requestKey",
@@ -40,6 +41,7 @@ class CountDrawablePendingManagerTest {
             ), NETWORK
         )
         val countDrawable1 = SketchCountBitmapDrawable(
+            context.resources,
             CountBitmap(
                 initBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
                 requestKey = "requestKey1",

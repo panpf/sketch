@@ -15,12 +15,14 @@
  */
 package com.github.panpf.sketch.drawable
 
+import android.content.res.Resources
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 
 class SketchCountBitmapDrawable constructor(
+    resources: Resources,
     private val countBitmap: CountBitmap,
     dataFrom: DataFrom,
 ) : SketchBitmapDrawable(
@@ -30,6 +32,7 @@ class SketchCountBitmapDrawable constructor(
     imageExifOrientation = countBitmap.exifOrientation,
     dataFrom = dataFrom,
     transformedList = countBitmap.transformedList,
+    resources = resources,
     bitmap = countBitmap.bitmap!!
 ) {
 

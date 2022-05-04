@@ -31,6 +31,7 @@ class DefaultDrawableDecoder(
                         imageExifOrientation = result.exifOrientation,
                         dataFrom = result.dataFrom,
                         transformedList = result.transformedList,
+                        resources = request.context.resources,
                         bitmap = result.bitmap
                     )
                 DrawableDecodeResult(

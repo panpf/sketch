@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.drawable
 
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import com.github.panpf.sketch.datasource.DataFrom
@@ -31,17 +32,12 @@ open class SketchBitmapDrawable constructor(
     override val imageExifOrientation: Int,
     override val dataFrom: DataFrom,
     override val transformedList: List<Transformed>?,
+    resources: Resources,
     bitmap: Bitmap,
-) : BitmapDrawable(null, bitmap), SketchDrawable {
+) : BitmapDrawable(resources, bitmap), SketchDrawable {
 
     override val bitmapInfo: BitmapInfo by lazy {
         bitmap.toBitmapInfo()
-    }
-
-    init {
-        // Let the getIntrinsicWidth() and getIntrinsicHeight() methods get the true (unscaled) size of the bitmap
-        @Suppress("LeakingThis")
-        setTargetDensity(bitmap.density)
     }
 
     override fun toString(): String =
