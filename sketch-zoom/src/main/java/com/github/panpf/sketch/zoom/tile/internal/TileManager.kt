@@ -335,9 +335,7 @@ class TileManager constructor(
     }
 
     @MainThread
-    fun freeAllTile() {
-        requiredMainThread()
-
+    private fun freeAllTile() {
         tileMap.values.forEach { tileList ->
             tileList.forEach { tile ->
                 freeTile(tile)
@@ -349,8 +347,15 @@ class TileManager constructor(
     @MainThread
     fun destroy() {
         requiredMainThread()
-
-        freeAllTile()
+        clean()
         decoder.destroy()
+    }
+
+    @MainThread
+    fun clean() {
+        requiredMainThread()
+        freeAllTile()
+        lastSampleSize = null
+        lastTileList = null
     }
 }

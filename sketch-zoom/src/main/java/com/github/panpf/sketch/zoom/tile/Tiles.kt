@@ -10,6 +10,7 @@ import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.OnMatrixChangeListener
 import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.internal.format
 import com.github.panpf.sketch.zoom.internal.requiredMainThread
 import com.github.panpf.sketch.zoom.tile.internal.TileManager
 import com.github.panpf.sketch.zoom.tile.internal.createTileDecoder
@@ -65,7 +66,7 @@ class Tiles constructor(
                 field = value
                 if (value) {
                     logger.d(MODULE) { "pause. $imageUri" }
-                    tileManager?.freeAllTile()
+                    tileManager?.clean()
                 } else {
                     logger.d(MODULE) { "resume. $imageUri" }
                     refreshTiles()
@@ -90,20 +91,23 @@ class Tiles constructor(
         requiredMainThread()
 
         if (destroyed) {
-            logger.d(MODULE) { "refreshTiles. destroyed. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. Interrupt. destroyed. $imageUri" }
             return
         }
         if (paused) {
-            logger.d(MODULE) { "refreshTiles. paused. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. Interrupt. paused. $imageUri" }
             return
         }
         val manager = tileManager
         if (manager == null) {
-            logger.d(MODULE) { "refreshTiles. initializing. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. Interrupt. initializing. $imageUri" }
             return
         }
         if (zoomer.rotateDegrees % 90 != 0) {
-            logger.w(MODULE, "rotate degrees must be in multiples of 90. $imageUri")
+            logger.w(
+                MODULE,
+                "refreshTiles. Interrupt. rotate degrees must be in multiples of 90. $imageUri"
+            )
             return
         }
 
@@ -118,16 +122,24 @@ class Tiles constructor(
 
         if (previewVisibleRect.isEmpty) {
             logger.w(MODULE) {
-                "refreshTiles. previewVisibleRect is empty. previewVisibleRect=${previewVisibleRect}. $imageUri"
+                "refreshTiles. Interrupt. previewVisibleRect is empty. previewVisibleRect=${previewVisibleRect}. $imageUri"
             }
-            tileManager?.freeAllTile()
+            tileManager?.clean()
             return
         }
 
         if (zooming) {
             logger.d(MODULE) {
-                "refreshTiles. zooming. $imageUri"
+                "refreshTiles. Interrupt. zooming. $imageUri"
             }
+            return
+        }
+
+        if (zoomer.scale.format(2) == zoomer.minScale.format(2)) {
+            logger.d(MODULE) {
+                "refreshTiles. Interrupt. minScale. $imageUri"
+            }
+            tileManager?.clean()
             return
         }
 
