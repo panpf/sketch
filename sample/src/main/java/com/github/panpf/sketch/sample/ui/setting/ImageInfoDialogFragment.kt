@@ -79,7 +79,7 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                 val zoomAbility = imageView.zoomAbility
                 zoomInfo = buildList {
                     add("visible=${Rect().apply { zoomAbility.getVisibleRect(this) }}")
-                    add("nowScale=${zoomAbility.scale.format(1)}")
+                    add("nowScale=${zoomAbility.scale.format(1)}(${zoomAbility.baseScale.format(1)},${zoomAbility.supportScale.format(1)})")
                     add("minScale=${zoomAbility.minScale.format(1)}")
                     add("maxScale=${zoomAbility.maxScale.format(1)}")
                     val stepScales = zoomAbility.stepScales
