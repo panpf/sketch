@@ -22,6 +22,10 @@ Sketch 的 [SketchZoomImageView] 提供了手势缩放以及分块显示超大�
 sketchZoomImageView.displayImage("https://www.sample.com/image.jpg")
 ```
 
+> 注意：
+> * 缩放功能支持任意来源的 Drawable
+> * 分块显示超大图功能仅支持来自 Sketch 的 Drawable 
+
 ## 缩放
 
 ```kotlin
@@ -49,9 +53,9 @@ sketchZoomImageView.zoomAbility.rotateTo(180)
 sketchZoomImageView.zoomAbility.rotateBy(90)
 ```
 
-> 注意：只支持90°、180°、270°旋转
-
-旋转角度是会一直存在的
+> 注意：
+> * 只支持 90、180、270、360等能整除 90 的旋转角度 
+> * 旋转角度是会一直存在的
 
 ## 定位
 
@@ -73,7 +77,7 @@ sketchZoomImageView.zoomAbility.location(100f, 200f, true)
 sketchZoomImageView.zoomAbility.scrollBarEnabled = false
 ```
 
-滑动时显示，无操作 800 毫秒后自动隐藏
+> 滑动时显示，无操作 800 毫秒后自动隐藏
 
 ## 阅读模式
 
@@ -110,16 +114,16 @@ sketchZoomImageView.zoomAbility.readModeDecider = MyReadModeDecider()
 
 ```kotlin
 // 获取当前缩放比例
-sketchZoomImageView.zoomAbility.zoomScale
+sketchZoomImageView.zoomAbility.scale
 
 // 获取当前旋转角度（顺时针）
 sketchZoomImageView.zoomAbility.rotateDegrees
 
 // 获取最小缩放比例
-sketchZoomImageView.zoomAbility.minZoomScale
+sketchZoomImageView.zoomAbility.minScale
 
 // 获取最大缩放比例
-sketchZoomImageView.zoomAbility.maxZoomScale
+sketchZoomImageView.zoomAbility.maxScale
 
 // 获取当前预览图上用户能看到的区域（不受旋转影响）
 sketchZoomImageView.zoomAbility.getVisibleRect(Rect())
