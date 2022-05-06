@@ -22,6 +22,7 @@ import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.OtherException
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
@@ -34,7 +35,7 @@ class RequestExecutor {
     }
 
     @MainThread
-    suspend fun execute(request: ImageRequest): ImageResult {
+    suspend fun execute(request: ImageRequest, enqueue: Boolean): ImageResult {
         requiredMainThread()
         // Wrap the request to manage its lifecycle.
         val requestDelegate = requestDelegate(request, coroutineContext.job)
@@ -50,6 +51,12 @@ class RequestExecutor {
 
             // Set up the request's lifecycle observers.
             requestDelegate.start()
+
+            // Enqueued requests suspend until the lifecycle is started.
+            if (enqueue) {
+                request.lifecycle.awaitStarted()
+            }
+
             onStart(request)
 
             val newRequest = if (request.resizeSize == null) {

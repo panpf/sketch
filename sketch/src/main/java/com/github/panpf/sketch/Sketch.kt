@@ -116,7 +116,7 @@ class Sketch private constructor(
     @AnyThread
     fun enqueue(request: DisplayRequest): Disposable<DisplayResult> {
         val job = scope.async(Dispatchers.Main.immediate) {
-            imageExecutor.execute(request) as DisplayResult
+            imageExecutor.execute(request, enqueue = true) as DisplayResult
         }
         val target = request.target
         return if (target is ViewTarget<*>) {
@@ -129,7 +129,7 @@ class Sketch private constructor(
     suspend fun execute(request: DisplayRequest): DisplayResult =
         coroutineScope {
             val job = async(Dispatchers.Main.immediate) {
-                imageExecutor.execute(request) as DisplayResult
+                imageExecutor.execute(request, enqueue = false) as DisplayResult
             }
             // Update the current request attached to the view and await the result.
             val target = request.target
@@ -143,14 +143,14 @@ class Sketch private constructor(
     @AnyThread
     fun enqueue(request: LoadRequest): Disposable<LoadResult> {
         val job = scope.async(Dispatchers.Main.immediate) {
-            imageExecutor.execute(request) as LoadResult
+            imageExecutor.execute(request, enqueue = true) as LoadResult
         }
         return OneShotDisposable(job)
     }
 
     suspend fun execute(request: LoadRequest): LoadResult = coroutineScope {
         val job = async(Dispatchers.Main.immediate) {
-            imageExecutor.execute(request) as LoadResult
+            imageExecutor.execute(request, enqueue = false) as LoadResult
         }
         job.await()
     }
@@ -159,7 +159,7 @@ class Sketch private constructor(
     @AnyThread
     fun enqueue(request: DownloadRequest): Disposable<DownloadResult> {
         val job = scope.async(Dispatchers.Main.immediate) {
-            imageExecutor.execute(request) as DownloadResult
+            imageExecutor.execute(request, enqueue = true) as DownloadResult
         }
         return OneShotDisposable(job)
     }
@@ -167,7 +167,7 @@ class Sketch private constructor(
     suspend fun execute(request: DownloadRequest): DownloadResult =
         coroutineScope {
             val job = async(Dispatchers.Main.immediate) {
-                imageExecutor.execute(request) as DownloadResult
+                imageExecutor.execute(request, enqueue = false) as DownloadResult
             }
             job.await()
         }
