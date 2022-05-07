@@ -316,6 +316,7 @@ class DefaultBitmapDecoderTest {
                 "${bitmap.width}x${bitmap.height}",
                 bitmap.width * bitmap.height <= 500 * 200 * 1.1f
             )
+            // todo Fix test error
             Assert.assertEquals(
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(200).format(1)
@@ -554,6 +555,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(this, AssetDataSource(this, "sample.bmp"))
                 .let { runBlocking { it.decode() } }
         }.apply {
+            // todo Fix test error
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
                 bitmap.width * bitmap.height <= 500 * 200 * 1.1f
@@ -791,6 +793,7 @@ class DefaultBitmapDecoderTest {
                 "${bitmap.width}x${bitmap.height}",
                 bitmap.width * bitmap.height <= 500 * 200 * 1.1f
             )
+            // todo Fix test error
             Assert.assertEquals(
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(200).format(1)
@@ -1038,6 +1041,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(this, FileDataSource(this, testFile.file))
                 .let { runBlocking { it.decode() } }
         }.apply {
+            // todo Fix test error
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
                 bitmap.width * bitmap.height <= 200 * 500 * 1.1f

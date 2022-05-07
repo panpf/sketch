@@ -322,6 +322,7 @@ class HttpUriFetcherTest {
             job.cancel()
         }
         Assert.assertTrue(progressList.size > 0)
+        // todo Fix test error
         Assert.assertNull(progressList.find { it == testUri.contentLength })
     }
 

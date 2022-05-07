@@ -6,14 +6,14 @@
 
 * width、height：期望的宽和高
 * [Precision]：精度。决定如何使用 width 和 height 去调整图片的尺寸
-    * LESS_PIXELS（默认）：只要最终 Bitmap 的像素数（宽乘以高）约等于 [Resize] 的像素数即可，允许有 10% 的误差
-    * SAME_ASPECT_RATIO：在 LESS_PIXELS 的基础上要求 Bitmap 的宽高比和 [Resize] 的宽高比一致，如果比例不一致会裁剪原图、优先使用
-      BitmapRegionDecoder 裁剪
-    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果比例不一致会裁剪原图、优先使用 BitmapRegionDecoder 裁剪
+    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果尺寸不一致会根据 [Scale] 裁剪原图、优先使用 BitmapRegionDecoder 裁剪
+    * SAME_ASPECT_RATIO：最终 Bitmap 的宽高比和 [Resize] 的宽高比一致并且像素数一定少于 [Resize]，如果比例不一致会根据 [Scale]
+      裁剪原图、优先使用 BitmapRegionDecoder 裁剪
+    * LESS_PIXELS：只要最终 Bitmap 的像素数（宽乘以高）约等于 [Resize] 的像素数即可，允许有 10% 的误差
 * [PrecisionDecider]：精度决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Precision]
     * [FixedPrecisionDecider]：始终使用指定的 [Precision]
     * [LongImageClipPrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
-* [Scale]：缩放。需要对原图进行裁剪时决定如何裁剪原图
+* [Scale]：缩放。[Precision] 为 EXACTLY 或 SAME_ASPECT_RATIO 时决定如何裁剪原图
     * START_CROP：保留头部部分
     * CENTER_CROP：保留中间部分
     * END_CROP：保留尾部部分
@@ -48,7 +48,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 当你什么都不配置的情况下默认值为：
 
 * width、height：如果 target 是 [ViewTarget] 就取 view 的宽高，否则取屏幕的宽高
-* [Precision]：LESS_PIXELS
+* [Precision]：设置任意 resizeSize 或 resizeSizeResolver 时是 EXACTLY 否则是 LESS_PIXELS，
 * [Scale]：CENTER_CROP
 
 > 注意：如果 view 的宽高到 draw 阶段还是 0，那么请求不会继续执行

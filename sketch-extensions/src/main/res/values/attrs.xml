@@ -30,9 +30,9 @@
     <attr name="sketch_resizeWidth" format="dimension|reference" />
     <attr name="sketch_resizeHeight" format="dimension|reference" />
     <attr name="sketch_resizePrecision" format="enum">
-        <enum name="lessPixels" value="1" />
+        <enum name="exactly" value="1" />
         <enum name="sameAspectRatio" value="2" />
-        <enum name="exactly" value="3" />
+        <enum name="lessPixels" value="3" />
     </attr>
     <attr name="sketch_resizeScale" format="enum">
         <enum name="startCrop" value="1" />

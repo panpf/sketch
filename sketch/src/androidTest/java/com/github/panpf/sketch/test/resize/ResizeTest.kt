@@ -34,13 +34,13 @@ class ResizeTest {
     @Test
     fun testCacheKey() {
         Resize(100, 100).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
+            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", key)
         }
         Resize(100, 50).apply {
-            Assert.assertEquals("Resize(100x50,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
+            Assert.assertEquals("Resize(100x50,Fixed(EXACTLY),Fixed(CENTER_CROP))", key)
         }
         Resize(50, 100).apply {
-            Assert.assertEquals("Resize(50x100,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
+            Assert.assertEquals("Resize(50x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", key)
         }
 
         Resize(100, 100, SAME_ASPECT_RATIO).apply {
@@ -60,23 +60,23 @@ class ResizeTest {
         }
 
         Resize(100, 100, scale = START_CROP).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),Fixed(START_CROP))", key)
+            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(START_CROP))", key)
         }
         Resize(100, 100, scale = CENTER_CROP).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
+            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", key)
         }
         Resize(100, 100, scale = END_CROP).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),Fixed(END_CROP))", key)
+            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(END_CROP))", key)
         }
         Resize(100, 100, scale = FILL).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),Fixed(FILL))", key)
+            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(FILL))", key)
         }
     }
 
     @Test
     fun testShouldClip() {
-        val (context, sketch) = contextAndSketch()
-        Resize(100, 100).apply {
+        val (_, sketch) = contextAndSketch()
+        Resize(100, 100, LESS_PIXELS).apply {
             Assert.assertFalse(shouldClip(sketch, 100, 50))
             Assert.assertTrue(shouldClip(sketch, 100, 150))
             Assert.assertFalse(shouldClip(sketch, 50, 100))
@@ -119,9 +119,9 @@ class ResizeTest {
 
     @Test
     fun testPrecision() {
-        val (context, sketch) = contextAndSketch()
+        val (_, sketch) = contextAndSketch()
         Resize(100, 30).apply {
-            Assert.assertEquals(LESS_PIXELS, getPrecision(sketch, 0, 0))
+            Assert.assertEquals(EXACTLY, getPrecision(sketch, 0, 0))
         }
         Resize(100, 30, LESS_PIXELS).apply {
             Assert.assertEquals(LESS_PIXELS, getPrecision(sketch, 0, 0))
@@ -151,7 +151,7 @@ class ResizeTest {
 
     @Test
     fun testScale() {
-        val (context, sketch) = contextAndSketch()
+        val (_, sketch) = contextAndSketch()
         Resize(100, 30).apply {
             Assert.assertEquals(CENTER_CROP, getScale(sketch, 0, 0))
         }

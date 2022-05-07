@@ -30,6 +30,7 @@ class LongImageClipPrecisionDeciderTest {
             Assert.assertEquals(SAME_ASPECT_RATIO, get(sketch, 150, 48, 50, 50))
             Assert.assertEquals(SAME_ASPECT_RATIO, get(sketch, 150, 49, 50, 50))
             Assert.assertEquals(SAME_ASPECT_RATIO, get(sketch, 150, 50, 50, 50))
+            // todo Fix test error
             Assert.assertEquals(LESS_PIXELS, get(sketch, 150, 51, 50, 50))
             Assert.assertEquals(LESS_PIXELS, get(sketch, 150, 52, 50, 50))
         }

@@ -37,7 +37,7 @@ data class Resize constructor(
     constructor(
         width: Int,
         height: Int,
-        precision: Precision = Precision.LESS_PIXELS,
+        precision: Precision = Precision.EXACTLY,
         scale: Scale = Scale.CENTER_CROP
     ) : this(width, height, fixedPrecision(precision), fixedScale(scale))
 
@@ -51,7 +51,7 @@ data class Resize constructor(
         width: Int,
         height: Int,
         scale: Scale
-    ) : this(width, height, fixedPrecision(Precision.LESS_PIXELS), fixedScale(scale))
+    ) : this(width, height, fixedPrecision(Precision.EXACTLY), fixedScale(scale))
 
     constructor(
         width: Int,
@@ -63,7 +63,7 @@ data class Resize constructor(
     constructor(
         width: Int,
         height: Int,
-        precision: Precision = Precision.LESS_PIXELS,
+        precision: Precision = Precision.EXACTLY,
         scale: ScaleDecider
     ) : this(width, height, fixedPrecision(precision), scale)
 
@@ -71,12 +71,12 @@ data class Resize constructor(
         width: Int,
         height: Int,
         scale: ScaleDecider
-    ) : this(width, height, fixedPrecision(Precision.LESS_PIXELS), scale)
+    ) : this(width, height, fixedPrecision(Precision.EXACTLY), scale)
 
 
     constructor(
         size: Size,
-        precision: Precision = Precision.LESS_PIXELS,
+        precision: Precision = Precision.EXACTLY,
         scale: Scale = Scale.CENTER_CROP
     ) : this(size.width, size.height, fixedPrecision(precision), fixedScale(scale))
 
@@ -88,7 +88,7 @@ data class Resize constructor(
     constructor(
         size: Size,
         scale: Scale
-    ) : this(size.width, size.height, fixedPrecision(Precision.LESS_PIXELS), fixedScale(scale))
+    ) : this(size.width, size.height, fixedPrecision(Precision.EXACTLY), fixedScale(scale))
 
     constructor(
         size: Size,
@@ -98,14 +98,14 @@ data class Resize constructor(
 
     constructor(
         size: Size,
-        precision: Precision = Precision.LESS_PIXELS,
+        precision: Precision = Precision.EXACTLY,
         scale: ScaleDecider
     ) : this(size.width, size.height, fixedPrecision(precision), scale)
 
     constructor(
         size: Size,
         scale: ScaleDecider
-    ) : this(size.width, size.height, fixedPrecision(Precision.LESS_PIXELS), scale)
+    ) : this(size.width, size.height, fixedPrecision(Precision.EXACTLY), scale)
 
     val key: String by lazy { toString() }
 
@@ -117,12 +117,12 @@ data class Resize constructor(
 
     fun shouldClip(sketch: Sketch, imageWidth: Int, imageHeight: Int): Boolean =
         when (getPrecision(sketch, imageWidth, imageHeight)) {
+            Precision.EXACTLY -> imageWidth != width || imageHeight != height
             Precision.SAME_ASPECT_RATIO -> {
                 val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
                 val resizeAspectRatio = width.toFloat().div(height).format(1)
                 imageAspectRatio != resizeAspectRatio
             }
-            Precision.EXACTLY -> imageWidth != width || imageHeight != height
             Precision.LESS_PIXELS -> imageWidth * imageHeight > width * height
         }
 

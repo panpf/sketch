@@ -29,6 +29,7 @@ import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Resize
@@ -648,15 +649,18 @@ interface ImageRequest {
             val resizeSize = resizeSize
                 ?: viewOptions?.resizeSize
                 ?: globalOptions?.resizeSize
+            var resolvedResizeSize = false
             val resizeSizeResolver = resizeSizeResolver
                 ?: resolvedResizeSizeResolver
                 ?: viewOptions?.resizeSizeResolver
                 ?: globalOptions?.resizeSizeResolver
-                ?: resolveResizeSizeResolver()
+                ?: (resolveResizeSizeResolver().apply {
+                    resolvedResizeSize = true
+                })
             val resizePrecisionDecider = resizePrecisionDecider
                 ?: viewOptions?.resizePrecisionDecider
                 ?: globalOptions?.resizePrecisionDecider
-                ?: fixedPrecision(LESS_PIXELS)
+                ?: fixedPrecision(if (resizeSize != null || !resolvedResizeSize) EXACTLY else LESS_PIXELS)
             val resizeScaleDecider = resizeScaleDecider
                 ?: resolvedResizeScaleDecider
                 ?: viewOptions?.resizeScaleDecider

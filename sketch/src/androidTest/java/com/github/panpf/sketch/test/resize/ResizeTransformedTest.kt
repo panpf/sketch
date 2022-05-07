@@ -23,10 +23,10 @@ class ResizeTransformedTest {
     @Test
     fun testKey() {
         ResizeTransformed(Resize(100, 50)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(EXACTLY),Fixed(CENTER_CROP))", key)
         }
         ResizeTransformed(Resize(50, 100)).apply {
-            Assert.assertEquals("ResizeTransformed(50x100,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
+            Assert.assertEquals("ResizeTransformed(50x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", key)
         }
 
         ResizeTransformed(Resize(100, 50, precision = LESS_PIXELS)).apply {
@@ -70,16 +70,16 @@ class ResizeTransformedTest {
         }
 
         ResizeTransformed(Resize(100, 50, START_CROP)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(START_CROP))", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(EXACTLY),Fixed(START_CROP))", key)
         }
         ResizeTransformed(Resize(100, 50, CENTER_CROP)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(EXACTLY),Fixed(CENTER_CROP))", key)
         }
         ResizeTransformed(Resize(100, 50, END_CROP)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(END_CROP))", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(EXACTLY),Fixed(END_CROP))", key)
         }
         ResizeTransformed(Resize(100, 50, FILL)).apply {
-            Assert.assertEquals("ResizeTransformed(100x50,Fixed(LESS_PIXELS),Fixed(FILL))", key)
+            Assert.assertEquals("ResizeTransformed(100x50,Fixed(EXACTLY),Fixed(FILL))", key)
         }
     }
 

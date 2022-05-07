@@ -211,9 +211,9 @@ open class SketchImageView @JvmOverloads constructor(
 
     private fun parseResizePrecision(value: Int): Precision =
         when (value) {
-            1 -> Precision.LESS_PIXELS
+            1 -> Precision.EXACTLY
             2 -> Precision.SAME_ASPECT_RATIO
-            3 -> Precision.EXACTLY
+            3 -> Precision.LESS_PIXELS
             else -> throw IllegalArgumentException("Value not supported by the 'sketch_resizePrecision' attribute: $this")
         }
 
