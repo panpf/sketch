@@ -7,13 +7,13 @@
 首先在初始化 [Sketch] 时注册 [ApkIconBitmapDecoder]，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         components {
             addBitmapDecoder(ApkIconBitmapDecoder.Factory())
         }
-    }
+    }.build()
 }
 ```
 
@@ -28,14 +28,14 @@ imageView.displayImage("/sdcard/sample.apk")
 首先在初始化 [Sketch] 时注册 [AppIconUriFetcher] 和 [AppIconBitmapDecoder]，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         addFetcher(AppIconUriFetcher.Factory())
         components {
             addBitmapDecoder(AppIconBitmapDecoder.Factory())
         }
-    }
+    }.build()
 }
 ```
 

@@ -31,15 +31,15 @@ sketchImageView.updateDisplayImageOptions {
 Global：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         globalImageOptions(ImageOptions {
             placeholer(R.drawable.placeholder)
             error(R.drawable.error)
             // more ...
         })
-    }
+    }.build()
 }
 ```
 

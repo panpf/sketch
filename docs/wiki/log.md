@@ -7,11 +7,11 @@
 和 android.util.Log 一样，[Logger] 也支持 Level，默认 为 INFO，你可以在初始化 [Sketch] 时修改，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         logger(Logger(Logger.Level.DEBUG))
-    }
+    }.build()
 }
 ```
 
@@ -48,11 +48,11 @@ class MyProxy : Proxy {
     override fun toString(): String = "MyProxy"
 }
 
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         logger(Logger(Logger.Level.DEBUG, MyProxy()))
-    }
+    }.build()
 }
 ```
 

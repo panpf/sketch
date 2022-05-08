@@ -20,11 +20,11 @@ listView.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
 第 2 步. 在初始化 [Sketch] 时添加 [PauseLoadWhenScrollingDisplayInterceptor] 请求拦截器，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
-    }
+    }.build()
 }
 ```
 

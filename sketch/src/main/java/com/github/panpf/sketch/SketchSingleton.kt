@@ -22,10 +22,10 @@ internal object SketchSingleton {
 
     private fun newSketch(context: Context): Sketch {
         val appContext = context.applicationContext
-        val builder = Builder(appContext)
-        if (appContext is SketchConfigurator) {
-            appContext.createSketchConfig().invoke(builder)
+        return if (appContext is SketchFactory) {
+            appContext.createSketch()
+        } else {
+            Builder(appContext).build()
         }
-        return builder.build()
     }
 }

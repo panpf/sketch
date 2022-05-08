@@ -40,12 +40,12 @@ class MyDrawableDecodeInterceptor : DecodeInterceptor<DrawableDecodeResult> {
 然后在初始化 Sketch 时通过 addBitmapDecodeInterceptor() 和 addDrawableDecodeInterceptor() 方法注册即可：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         addBitmapDecodeInterceptor(MyBitmapDecodeInterceptor())
         addDrawableDecodeInterceptor(MyDrawableDecodeInterceptor())
-    }
+    }.build()
 }
 ```
 

@@ -20,12 +20,12 @@ Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都由相应的 [D
 
 Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你将需要的 [DrawableDecoder] 注册到 Sketch 才能播放动图
 
-通过在 Application 类实现 [SketchConfigurator] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，如下：
+通过在 Application 类实现 [SketchFactory] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         components {
             addDrawableDecoder(
                 when {
@@ -41,7 +41,7 @@ class MyApplication : Application(), SketchConfigurator {
                 addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
             }
         }
-    }
+    }.build()
 }
 ```
 
@@ -108,7 +108,7 @@ lifecycle 的状态大于 start 就开始播放
 
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[SketchConfigurator]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchConfigurator.kt
+[SketchFactory]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchFactory.kt
 
 [SketchAnimatableDrawable]: ../../sketch/src/main/java/com/github/panpf/sketch/drawable/SketchAnimatableDrawable.kt
 

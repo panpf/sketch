@@ -15,13 +15,13 @@ Sketch 支持解码视频文件的帧图片，由以下 Decoder 提供支持：
 根据情况选择合适的 Decoder，然后在初始化 Sketch 时通过 components() 方法注册即可：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         components {
             addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
         }
-    }
+    }.build()
 }
 ```
 

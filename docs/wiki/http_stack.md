@@ -7,9 +7,9 @@
 [HurlStack] 采用 HttpURLConnection 实现，支持以下配置：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         httpStack(HurlStack.Builder().apply {
             // 连接超时。默认 7000
             connectTimeout(Int)
@@ -31,7 +31,7 @@ class MyApplication : Application(), SketchConfigurator {
 
             }
         }.build())
-    }
+    }.build()
 }
 ```
 
@@ -41,9 +41,9 @@ Sketch 还提供了 [HttpStack] 的 [OkHttpStack] 实现，使用之前需要先
 方法注册即可，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         httpStack(OkHttpStack.Builder().apply {
             // 连接超时。默认 7000
             connectTimeout(Int)
@@ -66,7 +66,7 @@ class MyApplication : Application(), SketchConfigurator {
             // 网络拦截器。默认 null
             networkInterceptors(Interceptor)
         }.build())
-    }
+    }.build()
 }
 ```
 
@@ -77,11 +77,11 @@ class MyApplication : Application(), SketchConfigurator {
 实现 [HttpStack] 接口定义自己的 HttpStack，然后在初始化 Sketch 时通过 httpStack() 方法注册即可：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         httpStack(MyHttpStack())
-    }
+    }.build()
 }
 ```
 

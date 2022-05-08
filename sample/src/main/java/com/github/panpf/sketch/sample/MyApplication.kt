@@ -19,8 +19,8 @@ package com.github.panpf.sketch.sample
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.multidex.MultiDexApplication
-import com.github.panpf.sketch.Sketch.Builder
-import com.github.panpf.sketch.SketchConfigurator
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.SketchFactory
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameBitmapDecoder
@@ -38,9 +38,9 @@ import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.sample.util.SettingsDisplayRequestInterceptor
 import com.github.panpf.sketch.util.Logger
 
-class MyApplication : MultiDexApplication(), SketchConfigurator {
+class MyApplication : MultiDexApplication(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         logger(Logger(Logger.Level.valueOf(appSettingsService.logLevel.value)))
         httpStack(OkHttpStack.Builder().build())
         addRequestInterceptor(SettingsDisplayRequestInterceptor())
@@ -74,5 +74,5 @@ class MyApplication : MultiDexApplication(), SketchConfigurator {
                 addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
             }
         }
-    }
+    }.build()
 }

@@ -22,102 +22,113 @@ class SketchTest {
     @Test
     fun testEnqueueDownload() {
         val (context, sketch) = contextAndSketch()
+        val oldHttpStack = sketch.httpStack
+        try {
+            sketch.setFieldValue("httpStack", TestHttpStack(context))
 
-        /*
-         * success
-         */
-        sketch.setFieldValue("httpStack", TestHttpStack(context))
-        val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
-        val normalCallbackActionList = normalDownloadListenerSupervisor.callbackActionList
-        val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
-            listener(normalDownloadListenerSupervisor)
-        }
-        val normalDisposable = sketch.enqueue(normalRequest)
-        runBlocking {
-            normalDisposable.job.await()
-        }.apply {
-            Assert.assertTrue(this is DownloadResult.Success)
-        }
-        Assert.assertEquals("onStart, onSuccess", normalCallbackActionList.joinToString())
+            /*
+             * success
+             */
+            val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
+            val normalCallbackActionList = normalDownloadListenerSupervisor.callbackActionList
+            val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
+                listener(normalDownloadListenerSupervisor)
+            }
+            val normalDisposable = sketch.enqueue(normalRequest)
+            runBlocking {
+                normalDisposable.job.await()
+            }.apply {
+                Assert.assertTrue(this is DownloadResult.Success)
+            }
+            Assert.assertEquals("onStart, onSuccess", normalCallbackActionList.joinToString())
 
-        /*
-         * cancel
-         */
-        sketch.setFieldValue("httpStack", TestHttpStack(context, readDelayMillis = 1000))
-        val cancelDownloadListenerSupervisor = DownloadListenerSupervisor()
-        val cancelCallbackActionList = cancelDownloadListenerSupervisor.callbackActionList
-        val cancelRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
-            downloadDiskCachePolicy(CachePolicy.DISABLED)
-            listener(cancelDownloadListenerSupervisor)
-        }
-        val cancelDisposable =
-            sketch.enqueue(cancelRequest)
-        runBlocking {
-            delay(1000)
-            cancelDisposable.dispose()
-            cancelDisposable.job.join()
-        }
-        Assert.assertEquals("onStart, onCancel", cancelCallbackActionList.joinToString())
+            /*
+             * cancel
+             */
+            sketch.setFieldValue("httpStack", TestHttpStack(context, readDelayMillis = 1000))
+            val cancelDownloadListenerSupervisor = DownloadListenerSupervisor()
+            val cancelCallbackActionList = cancelDownloadListenerSupervisor.callbackActionList
+            val cancelRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
+                downloadDiskCachePolicy(CachePolicy.DISABLED)
+                listener(cancelDownloadListenerSupervisor)
+            }
+            val cancelDisposable =
+                sketch.enqueue(cancelRequest)
+            runBlocking {
+                delay(1000)
+                cancelDisposable.dispose()
+                cancelDisposable.job.join()
+            }
+            Assert.assertEquals("onStart, onCancel", cancelCallbackActionList.joinToString())
 
-        /*
-         * error
-         */
-        val errorDownloadListenerSupervisor = DownloadListenerSupervisor()
-        val errorCallbackActionList = errorDownloadListenerSupervisor.callbackActionList
-        val errorTestUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
-        val errorRequest = DownloadRequest(context, errorTestUri.uriString) {
-            downloadDiskCachePolicy(CachePolicy.DISABLED)
-            listener(errorDownloadListenerSupervisor)
+            /*
+             * error
+             */
+            val errorDownloadListenerSupervisor = DownloadListenerSupervisor()
+            val errorCallbackActionList = errorDownloadListenerSupervisor.callbackActionList
+            val errorTestUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
+            val errorRequest = DownloadRequest(context, errorTestUri.uriString) {
+                downloadDiskCachePolicy(CachePolicy.DISABLED)
+                listener(errorDownloadListenerSupervisor)
+            }
+            val errorDisposable = sketch.enqueue(errorRequest)
+            runBlocking {
+                errorDisposable.job.await()
+            }.apply {
+                Assert.assertTrue(this is DownloadResult.Error)
+            }
+            Assert.assertEquals("onStart, onError", errorCallbackActionList.joinToString())
+        } catch (e: Exception) {
+            sketch.setFieldValue("httpStack", oldHttpStack)
         }
-        val errorDisposable = sketch.enqueue(errorRequest)
-        runBlocking {
-            errorDisposable.job.await()
-        }.apply {
-            Assert.assertTrue(this is DownloadResult.Error)
-        }
-        Assert.assertEquals("onStart, onError", errorCallbackActionList.joinToString())
     }
 
     @Test
     fun testExecuteDownload() {
         val (context, sketch) = contextAndSketch()
-        /*
-         * success
-         */
-        sketch.setFieldValue("httpStack", TestHttpStack(context))
-        val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString)
-        runBlocking {
-            sketch.execute(normalRequest)
-        }.apply {
-            Assert.assertTrue(this is DownloadResult.Success)
-        }
+        val oldHttpStack = sketch.httpStack
+        try {
+            sketch.setFieldValue("httpStack", TestHttpStack(context))
 
-        /*
-         * cancel
-         */
-        sketch.setFieldValue("httpStack", TestHttpStack(context, readDelayMillis = 1000))
-        val cancelRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
-            downloadDiskCachePolicy(CachePolicy.DISABLED)
-        }
-        runBlocking {
-            val job = launch {
-                sketch.execute(cancelRequest)
+            /*
+             * success
+             */
+            val normalRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString)
+            runBlocking {
+                sketch.execute(normalRequest)
+            }.apply {
+                Assert.assertTrue(this is DownloadResult.Success)
             }
-            delay(1000)
-            job.cancelAndJoin()
-        }
 
-        /*
-         * error
-         */
-        val errorTestUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
-        val errorRequest = DownloadRequest(context, errorTestUri.uriString) {
-            downloadDiskCachePolicy(CachePolicy.DISABLED)
-        }
-        runBlocking {
-            sketch.execute(errorRequest)
-        }.apply {
-            Assert.assertTrue(this is DownloadResult.Error)
+            /*
+             * cancel
+             */
+            sketch.setFieldValue("httpStack", TestHttpStack(context, readDelayMillis = 1000))
+            val cancelRequest = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
+                downloadDiskCachePolicy(CachePolicy.DISABLED)
+            }
+            runBlocking {
+                val job = launch {
+                    sketch.execute(cancelRequest)
+                }
+                delay(1000)
+                job.cancelAndJoin()
+            }
+
+            /*
+             * error
+             */
+            val errorTestUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
+            val errorRequest = DownloadRequest(context, errorTestUri.uriString) {
+                downloadDiskCachePolicy(CachePolicy.DISABLED)
+            }
+            runBlocking {
+                sketch.execute(errorRequest)
+            }.apply {
+                Assert.assertTrue(this is DownloadResult.Error)
+            }
+        } catch (e: Exception) {
+            sketch.setFieldValue("httpStack", oldHttpStack)
         }
     }
 

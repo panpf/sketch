@@ -44,13 +44,13 @@ class MyFetcher : Fetcher {
 2.然后在配置 Sketch 时通过 components 方法将其 Factory 注册到 Sketch，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         components {
             addFetcher(MyFetcher.Factory())
         }
-    }
+    }.build()
 }
 ```
 

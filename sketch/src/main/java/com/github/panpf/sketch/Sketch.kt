@@ -172,7 +172,7 @@ class Sketch private constructor(
             job.await()
         }
 
-    class Builder internal constructor(context: Context) {
+    class Builder constructor(context: Context) {
 
         private val appContext: Context = context.applicationContext
         private var logger: Logger? = null
@@ -249,7 +249,7 @@ class Sketch private constructor(
             this.longImageDecider = longImageDecider
         }
 
-        internal fun build(): Sketch {
+        fun build(): Sketch {
             val logger = logger ?: Logger()
             val httpStack = httpStack ?: HurlStack.Builder().build()
 

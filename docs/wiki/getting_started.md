@@ -43,15 +43,15 @@
 val sketch = context.sketch
 ```
 
-你可以在你的 Application 类上实现 [SketchConfigurator] 接口来配置 Sketch ，如下：
+你可以在你的 Application 类上实现 [SketchFactory] 接口来配置 Sketch ，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         logger(Logger(DEBUG))
         httpStack(OkHttpStack.Builder().build())
-    }
+    }.build()
 }
 ```
 
@@ -184,7 +184,7 @@ imageView.displayImage("https://www.example.com/image.jpg") {
 
 [Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
 
-[SketchConfigurator]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchConfigurator.kt
+[SketchFactory]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchFactory.kt
 
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 

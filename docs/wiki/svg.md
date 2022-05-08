@@ -7,13 +7,13 @@ Sketch 支持解码 SVG 静态图片，由 [SvgBitmapDecoder] 提供支持
 使用 [SvgBitmapDecoder] 需要先导入 `sketch-svg` 模块，然后在初始化 Sketch 时通过 components() 方法注册即可：
 
 ```kotlin
-class MyApplication : Application(), SketchConfigurator {
+class MyApplication : Application(), SketchFactory {
 
-    override fun createSketchConfig(): Builder.() -> Unit = {
+    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         components {
             addBitmapDecoder(SvgBitmapDecoder.Factory())
         }
-    }
+    }.build()
 }
 ```
 
