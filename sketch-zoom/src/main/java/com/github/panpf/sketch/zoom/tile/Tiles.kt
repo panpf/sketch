@@ -91,22 +91,22 @@ class Tiles constructor(
         requiredMainThread()
 
         if (destroyed) {
-            logger.d(MODULE) { "refreshTiles. Interrupt. destroyed. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. interrupted. destroyed. $imageUri" }
             return
         }
         if (paused) {
-            logger.d(MODULE) { "refreshTiles. Interrupt. paused. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. interrupted. paused. $imageUri" }
             return
         }
         val manager = tileManager
         if (manager == null) {
-            logger.d(MODULE) { "refreshTiles. Interrupt. initializing. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. interrupted. initializing. $imageUri" }
             return
         }
         if (zoomer.rotateDegrees % 90 != 0) {
             logger.w(
                 MODULE,
-                "refreshTiles. Interrupt. rotate degrees must be in multiples of 90. $imageUri"
+                "refreshTiles. interrupted. rotate degrees must be in multiples of 90. $imageUri"
             )
             return
         }
@@ -122,7 +122,7 @@ class Tiles constructor(
 
         if (previewVisibleRect.isEmpty) {
             logger.w(MODULE) {
-                "refreshTiles. Interrupt. previewVisibleRect is empty. previewVisibleRect=${previewVisibleRect}. $imageUri"
+                "refreshTiles. interrupted. previewVisibleRect is empty. previewVisibleRect=${previewVisibleRect}. $imageUri"
             }
             tileManager?.clean()
             return
@@ -130,14 +130,14 @@ class Tiles constructor(
 
         if (zooming) {
             logger.d(MODULE) {
-                "refreshTiles. Interrupt. zooming. $imageUri"
+                "refreshTiles. interrupted. zooming. $imageUri"
             }
             return
         }
 
-        if (zoomer.scale.format(2) == zoomer.minScale.format(2)) {
+        if (zoomer.scale.format(2) <= zoomer.minScale.format(2)) {
             logger.d(MODULE) {
-                "refreshTiles. Interrupt. minScale. $imageUri"
+                "refreshTiles. interrupted. minScale. $imageUri"
             }
             tileManager?.clean()
             return
