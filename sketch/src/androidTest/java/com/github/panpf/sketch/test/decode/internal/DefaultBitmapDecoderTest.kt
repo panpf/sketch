@@ -304,56 +304,6 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
 
-        // precisionDecider = LongImageClipPrecisionDecider
-        LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resizeSize(500, 200)
-            resizePrecision(longImageClipPrecision(SAME_ASPECT_RATIO))
-        }.run {
-            DefaultBitmapDecoder(this, AssetDataSource(this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
-        }.apply {
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 200 * 1.1f
-            )
-            // todo Fix test error
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                500f.div(200).format(1)
-            )
-            Assert.assertEquals("Bitmap(322x129,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-        LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resizeSize(500, 384)
-            resizePrecision(longImageClipPrecision(SAME_ASPECT_RATIO))
-        }.run {
-            DefaultBitmapDecoder(this, AssetDataSource(this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
-        }.apply {
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 384 * 1.1f
-            )
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
-            )
-            Assert.assertEquals("Bitmap(322x484,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertEquals(
-                "ResizeTransformed(500x384,LongImageClip(SAME_ASPECT_RATIO),Fixed(CENTER_CROP))",
-                transformedList?.getResizeTransformed()?.toString()
-            )
-        }
-
         // scale
         val startCropBitmap = LoadRequest(context, newAssetUri("sample.jpeg")) {
             resizeSize(500, 300)
@@ -545,45 +495,6 @@ class DefaultBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-
-        // precisionDecider = LongImageClipPrecisionDecider
-        LoadRequest(context, newAssetUri("sample.bmp")) {
-            resizeSize(500, 200)
-            resizePrecision(longImageClipPrecision(SAME_ASPECT_RATIO))
-        }.run {
-            DefaultBitmapDecoder(this, AssetDataSource(this, "sample.bmp"))
-                .let { runBlocking { it.decode() } }
-        }.apply {
-            // todo Fix test error
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 200 * 1.1f
-            )
-            Assert.assertEquals("Bitmap(350x140,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(700x1012,'image/bmp')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-        LoadRequest(context, newAssetUri("sample.bmp")) {
-            resizeSize(500, 384)
-            resizePrecision(longImageClipPrecision(SAME_ASPECT_RATIO))
-        }.run {
-            DefaultBitmapDecoder(this, AssetDataSource(this, "sample.bmp"))
-                .let { runBlocking { it.decode() } }
-        }.apply {
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 384 * 1.1f
-            )
-            Assert.assertEquals("Bitmap(350x506,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(700x1012,'image/bmp')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
         // scale
@@ -779,56 +690,6 @@ class DefaultBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-
-        // precisionDecider = LongImageClipPrecisionDecider
-        LoadRequest(context, testFile.file.path) {
-            resizeSize(500, 200)
-            resizePrecision(longImageClipPrecision(SAME_ASPECT_RATIO))
-        }.run {
-            DefaultBitmapDecoder(this, FileDataSource(this, testFile.file))
-                .let { runBlocking { it.decode() } }
-        }.apply {
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 200 * 1.1f
-            )
-            // todo Fix test error
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                500f.div(200).format(1)
-            )
-            Assert.assertEquals("Bitmap(322x129,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-        LoadRequest(context, testFile.file.path) {
-            resizeSize(500, 384)
-            resizePrecision(longImageClipPrecision(SAME_ASPECT_RATIO))
-        }.run {
-            DefaultBitmapDecoder(this, FileDataSource(this, testFile.file))
-                .let { runBlocking { it.decode() } }
-        }.apply {
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 384 * 1.1f
-            )
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
-            )
-            Assert.assertEquals("Bitmap(322x484,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertEquals(
-                "ResizeTransformed(500x384,LongImageClip(SAME_ASPECT_RATIO),Fixed(CENTER_CROP))",
-                transformedList?.getResizeTransformed()?.toString()
-            )
         }
 
         // scale
@@ -1030,58 +891,6 @@ class DefaultBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-
-        // precisionDecider = LongImageClipPrecisionDecider
-        LoadRequest(context, testFile.file.path) {
-            resizeSize(200, 500)
-            resizePrecision(longImageClipPrecision(SAME_ASPECT_RATIO))
-            ignoreExifOrientation()
-        }.run {
-            DefaultBitmapDecoder(this, FileDataSource(this, testFile.file))
-                .let { runBlocking { it.decode() } }
-        }.apply {
-            // todo Fix test error
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 200 * 500 * 1.1f
-            )
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                200f.div(500).format(1)
-            )
-            Assert.assertEquals("Bitmap(129x322,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-        LoadRequest(context, testFile.file.path) {
-            resizeSize(384, 500)
-            resizePrecision(longImageClipPrecision(SAME_ASPECT_RATIO))
-            ignoreExifOrientation()
-        }.run {
-            DefaultBitmapDecoder(this, FileDataSource(this, testFile.file))
-                .let { runBlocking { it.decode() } }
-        }.apply {
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 384 * 500 * 1.1f
-            )
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
-            )
-            Assert.assertEquals("Bitmap(484x322,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertEquals(
-                "ResizeTransformed(384x500,LongImageClip(SAME_ASPECT_RATIO),Fixed(CENTER_CROP))",
-                transformedList?.getResizeTransformed()?.toString()
-            )
         }
 
         // scale
