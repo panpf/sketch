@@ -1,3 +1,38 @@
+# v3.0.0-alpha03
+
+### sketch
+
+* fix: 修复由于 ViewTargetRequestDelegate.start() 方法错误的移除了对 Lifecycle 的观察导致 GifDrawable 不会自动暂停的 bug
+* change: 现在只要设置了 resizeSize 或 resizeSizeResolver，默认的 Precision 就是 EXACTLY
+* change: RequestManagerUtils 合并到 SketchUtils
+* change: 现在 DefaultLongImageDecider 被分为 smallRatioMultiple 和 bigRatioMultiple
+* change: 将 SketchConfigurator 更改为 SketchFactory
+* change: 现在
+  DataSource、BitmapDecoder、DrawableDecoder、Fetcher、HttpStack、RequestInterceptor、StateImage、Transformation、DecodeInterceptor
+  等关键组件将使用 ImageRequest 携带的 Sketch
+* change: 现在创建 SketchBitmapDrawable 时需要传 Resources
+* new: 现在只有 Lifecycle 到达 Started 状态才会开始执行 ImageRequest
+* new: 为 ImageView 添加了一系列 displayImage 重载方法，例如 displayImage(Int)、displayImage(Uri)
+  、displayImage(File)、displayAssetImage(String) 等
+
+### sketch-zoom
+
+* fix: 修复了 View 大小改变时 Tiles 没有重置的 bug
+* fix: 修复了 SketchZoomImageView 在非 SketchDrawable 时缩放异常的 bug
+* fix: 修复了 Zoomer 的 rotateTo() 方法崩溃的 bug
+* fix: 修复了 SketchZoomImageView 在没有设置 Drawable 时始终拦截触摸事件导致 ViewPager 无法左右滑动的 bug
+* change: ZoomAbility 的 zoomScale, baseZoomScale, supportZoomScale, fullZoomScale, fillZoomScale,
+  originZoomScale, minZoomScale, maxZoomScale 和 doubleClickZoomScales 属性重命名为 scale, baseScale,
+  supportScale, fullScale, fillScale, originScale, minScale, maxScale 和 stepScales
+* improve: 现在 Tiles 在当前缩放比例小于等于最小缩放比例时不会启用
+* improve: 改进 Zoomer 的代码
+* improve: ZoomAbility 现在改为监听 Lifecycle 的 ON_START 和 ON_STOP 事件来暂停和恢复 Tiles
+* improve: ZoomAbility 将从优先 ImageRequest 获取生命周期
+
+### sketch-gif-koral
+
+* upgrade: 升级 android-gif-drawable 库的 1.2.15 版本
+
 # v3.0.0-alpha02
 
 ### sketch
