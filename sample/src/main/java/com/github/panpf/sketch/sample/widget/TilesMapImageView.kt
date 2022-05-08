@@ -31,6 +31,7 @@ import android.view.ViewGroup.LayoutParams
 import androidx.core.view.updateLayoutParams
 import com.github.panpf.sketch.SketchImageView
 import com.github.panpf.sketch.request.updateDisplayImageOptions
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.tools4a.dimen.ktx.dp2pxF
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -53,6 +54,7 @@ class TilesMapImageView @JvmOverloads constructor(
     init {
         updateDisplayImageOptions {
             resizeSize(600, 600)
+            resizePrecision(LESS_PIXELS)
         }
     }
 
