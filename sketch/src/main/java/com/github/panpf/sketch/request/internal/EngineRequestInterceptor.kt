@@ -7,7 +7,7 @@ import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.newBitmapMemoryCacheHelper
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.internal.toResizeDrawable
+import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadData
@@ -48,13 +48,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                 if (target is DisplayTarget) {
                     val placeholderDrawable = request.placeholderImage
                         ?.getDrawable(request, null)
-                        ?.let {
-                            if (request.resizeApplyToDrawable == true) {
-                                it.toResizeDrawable(request.sketch, request.resize)
-                            } else {
-                                it
-                            }
-                        }
+                        ?.tryToResizeDrawable(request)
                     target.onStart(placeholderDrawable)
                 }
 

@@ -170,7 +170,7 @@ class AsyncImagePainter(
             target(target)
             configBlock?.invoke(this)
         }.run {
-            val resetSizeResolver = resizeSize == null && definedOptions.resizeSizeResolver == null
+            val resetSizeResolver = resize == null && definedOptions.resizeSizeResolver == null
             val resetScale = definedOptions.resizeScaleDecider == null
             if (resetSizeResolver || resetScale) {
                 newDisplayRequest {

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.drawable.internal.toResizeDrawable
+import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
@@ -35,14 +35,14 @@ class RequestExecutor {
     }
 
     @MainThread
-    suspend fun execute(request: ImageRequest, enqueue: Boolean): ImageResult {
+    suspend fun execute(originRequest: ImageRequest, enqueue: Boolean): ImageResult {
         requiredMainThread()
+        var request: ImageRequest = originRequest
         // Wrap the request to manage its lifecycle.
         val requestDelegate = requestDelegate(request, coroutineContext.job)
         requestDelegate.assertActive()
         val target = request.target
         val requestExtras = RequestExtras()
-        var resize: Resize? = null
 
         try {
             if (request.uriString.isEmpty() || request.uriString.isBlank()) {
@@ -51,44 +51,37 @@ class RequestExecutor {
 
             // Set up the request's lifecycle observers.
             requestDelegate.start()
-
             // Enqueued requests suspend until the lifecycle is started.
             if (enqueue) {
                 request.lifecycle.awaitStarted()
             }
 
-            onStart(request)
-
-            val newRequest = if (request.resizeSize == null) {
-                val newResizeSize = request.resizeSizeResolver.size()
-                if (newResizeSize != null) {
-                    request.newRequest { resizeSize(newResizeSize) }
-                } else {
-                    request
+            if (request.resize == null) {
+                val size = request.resizeSizeResolver.size()
+                if (size != null) {
+                    val newResize = Resize(
+                        size, request.resizePrecisionDecider, request.resizeScaleDecider
+                    )
+                    request = request.newRequest {
+                        resize(newResize)
+                    }
                 }
-            } else {
-                request
             }
-            resize = newRequest.resize
+
+            onStart(request)
 
             val data = RequestInterceptorChain(
                 initialRequest = request,
                 interceptors = request.sketch.requestInterceptors,
                 index = 0,
-                request = newRequest,
+                request = request,
                 requestExtras = requestExtras,
-            ).proceed(newRequest)
+            ).proceed(request)
 
             val successResult = when (data) {
                 is DisplayData -> DisplayResult.Success(
                     request,
-                    data.drawable.let {
-                        if (newRequest.resizeApplyToDrawable == true) {
-                            it.toResizeDrawable(request.sketch, resize)
-                        } else {
-                            it
-                        }
-                    },
+                    data.drawable.tryToResizeDrawable(request),
                     data.imageInfo,
                     data.dataFrom
                 )
@@ -115,18 +108,8 @@ class RequestExecutor {
                     is DisplayRequest -> {
                         val errorDrawable = request.errorImage
                             ?.getDrawable(request, exception)
-                            ?.let {
-                                if (request.resizeApplyToDrawable == true) {
-                                    it.toResizeDrawable(request.sketch, resize)
-                                } else {
-                                    it
-                                }
-                            }
-                        DisplayResult.Error(
-                            request,
-                            errorDrawable,
-                            exception
-                        )
+                            ?.tryToResizeDrawable(request)
+                        DisplayResult.Error(request, errorDrawable, exception)
                     }
                     is LoadRequest -> LoadResult.Error(request, exception)
                     is DownloadRequest -> DownloadResult.Error(request, exception)

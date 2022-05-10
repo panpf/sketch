@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
@@ -12,16 +13,19 @@ import com.github.panpf.sketch.util.findLastSketchDrawable
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-fun Drawable.toResizeDrawable(sketch: Sketch, resize: Resize?): Drawable =
-    if (resize != null) {
+fun Drawable.tryToResizeDrawable(request: ImageRequest): Drawable {
+    val resize = request.resize
+    return if (request.resizeApplyToDrawable == true && resize != null) {
         if (this is SketchAnimatableDrawable) {
-            ResizeAnimatableDrawable(sketch, this, resize)
+            ResizeAnimatableDrawable(request.sketch, this, resize)
         } else {
-            ResizeDrawable(sketch, this, resize)
+            ResizeDrawable(request.sketch, this, resize)
         }
     } else {
         this
     }
+}
+
 
 @SuppressLint("RestrictedApi")
 open class ResizeDrawable(val sketch: Sketch, drawable: Drawable, val resize: Resize) :

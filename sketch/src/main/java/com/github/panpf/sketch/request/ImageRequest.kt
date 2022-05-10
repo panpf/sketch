@@ -101,7 +101,7 @@ interface ImageRequest {
     val preferQualityOverSpeed: Boolean
 
     /** The size of the desired bitmap */
-    val resizeSize: Size?
+    val resize: Resize?
     val resizeSizeResolver: SizeResolver
     val resizePrecisionDecider: PrecisionDecider
     val resizeScaleDecider: ScaleDecider
@@ -144,8 +144,6 @@ interface ImageRequest {
     val downloadDiskCacheKey: String
         get() = uriString
 
-    val resize: Resize?
-
     abstract class BaseImageRequest : ImageRequest {
         override val uri: Uri by lazy { Uri.parse(uriString) }
 
@@ -153,16 +151,6 @@ interface ImageRequest {
 
         /** Used to cache bitmaps in memory and on disk */
         override val cacheKey: String by lazy { newCacheKey() }
-
-        override val resize: Resize? by lazy {
-            resizeSize?.takeIf { it.width > 0 && it.height > 0 }?.let {
-                Resize(
-                    width = it.width, height = it.height,
-                    precision = resizePrecisionDecider,
-                    scale = resizeScaleDecider
-                )
-            }
-        }
 
         override fun toString(): String = key
     }
@@ -197,7 +185,7 @@ interface ImageRequest {
         private var bitmapConfig: BitmapConfig? = null
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
-        private var resizeSize: Size? = null
+        private var resize: Resize? = null
         private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScaleDecider: ScaleDecider? = null
@@ -247,7 +235,7 @@ interface ImageRequest {
             if (VERSION.SDK_INT >= VERSION_CODES.O) this.colorSpace = request.colorSpace
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
-            this.resizeSize = request.resizeSize
+            this.resize = request.resize
             this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScaleDecider = request.resizeScaleDecider
@@ -439,17 +427,21 @@ interface ImageRequest {
             }
         }
 
+        open fun resize(resize: Resize?): Builder = apply {
+            this.resize = resize
+        }
+
         open fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
             this.resizeSizeResolver = sizeResolver
             resetResolvedValues()
         }
 
         open fun resizeSize(size: Size?): Builder = apply {
-            this.resizeSize = size
+            resizeSize(size?.let { SizeResolver(it) })
         }
 
         open fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
-            this.resizeSize = Size(width, height)
+            resizeSize(SizeResolver(Size(width, height)))
         }
 
         open fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
@@ -594,28 +586,28 @@ interface ImageRequest {
             val progressListener = combinationProgressListener()
             val lifecycle = lifecycle ?: resolvedLifecycle ?: resolveLifecycle() ?: GlobalLifecycle
             val definedOptions = ImageOptions {
-                depth(depth)
-                parameters(parametersBuilder?.build())
-                httpHeaders(httpHeaders?.build())
-                downloadDiskCachePolicy(downloadDiskCachePolicy)
-                bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy)
-                bitmapConfig(bitmapConfig)
-                if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace(colorSpace)
+                this.depth(depth)
+                this.parameters(parametersBuilder?.build())
+                this.httpHeaders(httpHeaders?.build())
+                this.downloadDiskCachePolicy(downloadDiskCachePolicy)
+                this.bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy)
+                this.bitmapConfig(bitmapConfig)
+                if (VERSION.SDK_INT >= VERSION_CODES.O) this.colorSpace(colorSpace)
                 @Suppress("DEPRECATION")
-                preferQualityOverSpeed(preferQualityOverSpeed)
-                resizeSize(resizeSize)
-                resizeSize(resizeSizeResolver)
-                resizePrecision(resizePrecisionDecider)
-                resizeScale(resizeScaleDecider)
-                transformations(transformations?.toList())
-                disabledReuseBitmap(disabledReuseBitmap)
-                ignoreExifOrientation(ignoreExifOrientation)
-                bitmapMemoryCachePolicy(bitmapMemoryCachePolicy)
-                disabledAnimatedImage(disabledAnimatedImage)
-                placeholder(placeholderImage)
-                error(errorImage)
-                transition(transition)
-                resizeApplyToDrawable(resizeApplyToDrawable)
+                this.preferQualityOverSpeed(preferQualityOverSpeed)
+                this.resize(resize)
+                this.resizeSize(resizeSizeResolver)
+                this.resizePrecision(resizePrecisionDecider)
+                this.resizeScale(resizeScaleDecider)
+                this.transformations(transformations?.toList())
+                this.disabledReuseBitmap(disabledReuseBitmap)
+                this.ignoreExifOrientation(ignoreExifOrientation)
+                this.bitmapMemoryCachePolicy(bitmapMemoryCachePolicy)
+                this.disabledAnimatedImage(disabledAnimatedImage)
+                this.placeholder(placeholderImage)
+                this.error(errorImage)
+                this.transition(transition)
+                this.resizeApplyToDrawable(resizeApplyToDrawable)
             }
             val depth = depth
                 ?: viewOptions?.depth
@@ -646,9 +638,9 @@ interface ImageRequest {
             val preferQualityOverSpeed = preferQualityOverSpeed
                 ?: viewOptions?.preferQualityOverSpeed
                 ?: globalOptions?.preferQualityOverSpeed ?: false
-            val resizeSize = resizeSize
-                ?: viewOptions?.resizeSize
-                ?: globalOptions?.resizeSize
+            val resize = resize
+                ?: viewOptions?.resize
+                ?: globalOptions?.resize
             var resolvedResizeSize = false
             val resizeSizeResolver = resizeSizeResolver
                 ?: resolvedResizeSizeResolver
@@ -660,7 +652,7 @@ interface ImageRequest {
             val resizePrecisionDecider = resizePrecisionDecider
                 ?: viewOptions?.resizePrecisionDecider
                 ?: globalOptions?.resizePrecisionDecider
-                ?: fixedPrecision(if (resizeSize != null || !resolvedResizeSize) EXACTLY else LESS_PIXELS)
+                ?: fixedPrecision(if (resize != null || !resolvedResizeSize) EXACTLY else LESS_PIXELS)
             val resizeScaleDecider = resizeScaleDecider
                 ?: resolvedResizeScaleDecider
                 ?: viewOptions?.resizeScaleDecider
@@ -719,7 +711,7 @@ interface ImageRequest {
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
-                        resizeSize = resizeSize,
+                        resize = resize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
@@ -754,7 +746,7 @@ interface ImageRequest {
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
-                        resizeSize = resizeSize,
+                        resize = resize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
@@ -789,7 +781,7 @@ interface ImageRequest {
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
-                        resizeSize = resizeSize,
+                        resize = resize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,

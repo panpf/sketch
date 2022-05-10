@@ -107,6 +107,12 @@ data class Resize constructor(
         scale: ScaleDecider
     ) : this(size.width, size.height, fixedPrecision(Precision.EXACTLY), scale)
 
+    constructor(
+        size: Size,
+        precision: PrecisionDecider,
+        scale: ScaleDecider
+    ) : this(size.width, size.height, precision, scale)
+
     val key: String by lazy { toString() }
 
     fun getPrecision(sketch: Sketch, imageWidth: Int, imageHeight: Int): Precision =

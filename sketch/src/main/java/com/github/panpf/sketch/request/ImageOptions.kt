@@ -17,6 +17,7 @@ import com.github.panpf.sketch.request.ImageOptions.Builder
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
@@ -55,7 +56,7 @@ interface ImageOptions {
 
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val preferQualityOverSpeed: Boolean?
-    val resizeSize: Size?
+    val resize: Resize?
     val resizeSizeResolver: SizeResolver?
     val resizePrecisionDecider: PrecisionDecider?
     val resizeScaleDecider: ScaleDecider?
@@ -93,7 +94,7 @@ interface ImageOptions {
             && bitmapConfig == null
             && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
             && preferQualityOverSpeed == null
-            && resizeSize == null
+            && resize == null
             && resizeSizeResolver == null
             && resizePrecisionDecider == null
             && resizeScaleDecider == null
@@ -120,7 +121,7 @@ interface ImageOptions {
 
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
-        private var resizeSize: Size? = null
+        private var resize: Resize? = null
         private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScaleDecider: ScaleDecider? = null
@@ -151,7 +152,7 @@ interface ImageOptions {
             }
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
-            this.resizeSize = request.resizeSize
+            this.resize = request.resize
             this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScaleDecider = request.resizeScaleDecider
@@ -168,24 +169,21 @@ interface ImageOptions {
             this.resizeApplyToDrawable = request.resizeApplyToDrawable
         }
 
-        fun depth(depth: RequestDepth?): Builder =
-            apply {
-                this.depth = depth
-            }
+        fun depth(depth: RequestDepth?): Builder = apply {
+            this.depth = depth
+        }
 
-        fun depthFrom(from: String?): Builder =
-            apply {
-                if (from != null) {
-                    setParameter(ImageRequest.REQUEST_DEPTH_FROM, from, null)
-                } else {
-                    removeParameter(ImageRequest.REQUEST_DEPTH_FROM)
-                }
+        fun depthFrom(from: String?): Builder = apply {
+            if (from != null) {
+                setParameter(ImageRequest.REQUEST_DEPTH_FROM, from, null)
+            } else {
+                removeParameter(ImageRequest.REQUEST_DEPTH_FROM)
             }
+        }
 
-        fun parameters(parameters: Parameters?): Builder =
-            apply {
-                this.parametersBuilder = parameters?.newBuilder()
-            }
+        fun parameters(parameters: Parameters?): Builder = apply {
+            this.parametersBuilder = parameters?.newBuilder()
+        }
 
         /**
          * Set a parameter for this request.
@@ -194,42 +192,30 @@ interface ImageOptions {
          */
         @JvmOverloads
         fun setParameter(
-            key: String,
-            value: Any?,
-            cacheKey: String? = value?.toString()
-        ): Builder =
-            apply {
-                this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
-                    set(
-                        key,
-                        value,
-                        cacheKey
-                    )
-                }
+            key: String, value: Any?, cacheKey: String? = value?.toString()
+        ): Builder = apply {
+            this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
+                set(key, value, cacheKey)
             }
+        }
 
         /**
          * Remove a parameter from this request.
          *
          * @see Parameters.Builder.remove
          */
-        fun removeParameter(key: String): Builder =
-            apply {
-                this.parametersBuilder?.remove(key)
-            }
+        fun removeParameter(key: String): Builder = apply {
+            this.parametersBuilder?.remove(key)
+        }
 
-        fun httpHeaders(httpHeaders: HttpHeaders?): Builder =
-            apply {
-                this.httpHeaders = httpHeaders?.newBuilder()
-            }
+        fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
+            this.httpHeaders = httpHeaders?.newBuilder()
+        }
 
         /**
          * Add a header for any network operations performed by this request.
          */
-        fun addHttpHeader(
-            name: String,
-            value: String
-        ): Builder = apply {
+        fun addHttpHeader(name: String, value: String): Builder = apply {
             this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
                 add(name, value)
             }
@@ -238,10 +224,7 @@ interface ImageOptions {
         /**
          * Set a header for any network operations performed by this request.
          */
-        fun setHttpHeader(
-            name: String,
-            value: String
-        ): Builder = apply {
+        fun setHttpHeader(name: String, value: String): Builder = apply {
             this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
                 set(name, value)
             }
@@ -250,51 +233,43 @@ interface ImageOptions {
         /**
          * Remove all network headers with the key [name].
          */
-        fun removeHttpHeader(name: String): Builder =
-            apply {
-                this.httpHeaders?.removeAll(name)
-            }
+        fun removeHttpHeader(name: String): Builder = apply {
+            this.httpHeaders?.removeAll(name)
+        }
 
-        fun downloadDiskCachePolicy(downloadDiskCachePolicy: CachePolicy?): Builder =
-            apply {
-                this.downloadDiskCachePolicy = downloadDiskCachePolicy
-            }
+        fun downloadDiskCachePolicy(downloadDiskCachePolicy: CachePolicy?): Builder = apply {
+            this.downloadDiskCachePolicy = downloadDiskCachePolicy
+        }
 
         fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder =
             apply {
                 this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
             }
 
-        fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder =
-            apply {
-                this.bitmapConfig = bitmapConfig
-            }
+        fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
+            this.bitmapConfig = bitmapConfig
+        }
 
-        fun bitmapConfig(bitmapConfig: Bitmap.Config?): Builder =
-            apply {
-                this.bitmapConfig = if (bitmapConfig != null) BitmapConfig(bitmapConfig) else null
-            }
+        fun bitmapConfig(bitmapConfig: Bitmap.Config?): Builder = apply {
+            this.bitmapConfig = if (bitmapConfig != null) BitmapConfig(bitmapConfig) else null
+        }
 
-        fun lowQualityBitmapConfig(): Builder =
-            apply {
-                this.bitmapConfig = BitmapConfig.LOW_QUALITY
-            }
+        fun lowQualityBitmapConfig(): Builder = apply {
+            this.bitmapConfig = BitmapConfig.LOW_QUALITY
+        }
 
-        fun middenQualityBitmapConfig(): Builder =
-            apply {
-                this.bitmapConfig = BitmapConfig.MIDDEN_QUALITY
-            }
+        fun middenQualityBitmapConfig(): Builder = apply {
+            this.bitmapConfig = BitmapConfig.MIDDEN_QUALITY
+        }
 
-        fun highQualityBitmapConfig(): Builder =
-            apply {
-                this.bitmapConfig = BitmapConfig.HIGH_QUALITY
-            }
+        fun highQualityBitmapConfig(): Builder = apply {
+            this.bitmapConfig = BitmapConfig.HIGH_QUALITY
+        }
 
         @RequiresApi(VERSION_CODES.O)
-        fun colorSpace(colorSpace: ColorSpace?): Builder =
-            apply {
-                this.colorSpace = colorSpace
-            }
+        fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
+            this.colorSpace = colorSpace
+        }
 
         /**
          * From Android N (API 24), this is ignored.  The output will always be high quality.
@@ -309,108 +284,86 @@ interface ImageOptions {
          * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
-        fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder =
-            apply {
-                if (VERSION.SDK_INT < VERSION_CODES.N) {
-                    this.preferQualityOverSpeed = inPreferQualityOverSpeed
-                }
+        fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
+            if (VERSION.SDK_INT < VERSION_CODES.N) {
+                this.preferQualityOverSpeed = inPreferQualityOverSpeed
             }
-
-        fun resizeSize(size: Size?): Builder =
-            apply {
-                this.resizeSize = size
-            }
-
-        fun resizeSize(
-            @Px width: Int,
-            @Px height: Int
-        ): Builder = apply {
-            this.resizeSize = Size(width, height)
         }
 
-        fun resizeSize(sizeResolver: SizeResolver?): Builder =
-            apply {
-                this.resizeSizeResolver = sizeResolver
-            }
+        fun resize(resize: Resize?): Builder = apply {
+            this.resize = resize
+        }
 
-        fun resizePrecision(precisionDecider: PrecisionDecider?): Builder =
-            apply {
-                this.resizePrecisionDecider = precisionDecider
-            }
+        fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+            this.resizeSizeResolver = sizeResolver
+        }
 
-        fun resizePrecision(precision: Precision?): Builder =
-            apply {
-                this.resizePrecisionDecider = precision?.let { FixedPrecisionDecider(it) }
-            }
+        fun resizeSize(size: Size?): Builder = apply {
+            resizeSize(size?.let { SizeResolver(it) })
+        }
 
-        fun resizeScale(scaleDecider: ScaleDecider?): Builder =
-            apply {
-                this.resizeScaleDecider = scaleDecider
-            }
+        fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
+            resizeSize(SizeResolver(Size(width, height)))
+        }
 
-        fun resizeScale(scale: Scale): Builder =
-            apply {
-                this.resizeScaleDecider = fixedScale(scale)
-            }
+        fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
+            this.resizePrecisionDecider = precisionDecider
+        }
 
-        fun transformations(transformations: List<Transformation>?): Builder =
-            apply {
-                this.transformations = transformations
-            }
+        fun resizePrecision(precision: Precision?): Builder = apply {
+            this.resizePrecisionDecider = precision?.let { FixedPrecisionDecider(it) }
+        }
 
-        fun transformations(vararg transformations: Transformation): Builder =
-            apply {
-                this.transformations = transformations.toList()
-            }
+        fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
+            this.resizeScaleDecider = scaleDecider
+        }
 
-        fun disabledReuseBitmap(disabledReuseBitmap: Boolean? = true): Builder =
-            apply {
-                this.disabledReuseBitmap = disabledReuseBitmap
-            }
+        fun resizeScale(scale: Scale): Builder = apply {
+            this.resizeScaleDecider = fixedScale(scale)
+        }
 
-        fun ignoreExifOrientation(ignoreExifOrientation: Boolean? = true): Builder =
-            apply {
-                this.ignoreExifOrientation = ignoreExifOrientation
-            }
+        fun transformations(transformations: List<Transformation>?): Builder = apply {
+            this.transformations = transformations
+        }
 
-        fun bitmapMemoryCachePolicy(bitmapMemoryCachePolicy: CachePolicy?): Builder =
-            apply {
-                this.bitmapMemoryCachePolicy = bitmapMemoryCachePolicy
-            }
+        fun transformations(vararg transformations: Transformation): Builder = apply {
+            this.transformations = transformations.toList()
+        }
 
-        fun disabledAnimatedImage(disabledAnimatedImage: Boolean? = true): Builder =
-            apply {
-                this.disabledAnimatedImage = disabledAnimatedImage
-            }
+        fun disabledReuseBitmap(disabledReuseBitmap: Boolean? = true): Builder = apply {
+            this.disabledReuseBitmap = disabledReuseBitmap
+        }
 
-        fun placeholder(placeholderImage: StateImage?): Builder =
-            apply {
-                this.placeholderImage = placeholderImage
-            }
+        fun ignoreExifOrientation(ignoreExifOrientation: Boolean? = true): Builder = apply {
+            this.ignoreExifOrientation = ignoreExifOrientation
+        }
 
-        fun placeholder(placeholderDrawable: Drawable?): Builder =
-            apply {
-                this.placeholderImage =
-                    if (placeholderDrawable != null) DrawableStateImage(placeholderDrawable) else null
-            }
+        fun bitmapMemoryCachePolicy(bitmapMemoryCachePolicy: CachePolicy?): Builder = apply {
+            this.bitmapMemoryCachePolicy = bitmapMemoryCachePolicy
+        }
 
-        fun placeholder(@DrawableRes placeholderDrawableResId: Int?): Builder =
-            apply {
-                this.placeholderImage = if (placeholderDrawableResId != null) {
-                    DrawableStateImage(placeholderDrawableResId)
-                } else null
-            }
+        fun disabledAnimatedImage(disabledAnimatedImage: Boolean? = true): Builder = apply {
+            this.disabledAnimatedImage = disabledAnimatedImage
+        }
+
+        fun placeholder(placeholderImage: StateImage?): Builder = apply {
+            this.placeholderImage = placeholderImage
+        }
+
+        fun placeholder(placeholderDrawable: Drawable?): Builder = apply {
+            this.placeholderImage = placeholderDrawable?.let { DrawableStateImage(it) }
+        }
+
+        fun placeholder(@DrawableRes placeholderDrawableResId: Int?): Builder = apply {
+            this.placeholderImage = placeholderDrawableResId?.let { DrawableStateImage(it) }
+        }
 
         fun error(
             errorImage: StateImage?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
             this.errorImage = errorImage?.let {
-                if (configBlock != null) {
-                    newErrorStateImage(it, configBlock)
-                } else {
-                    it
-                }
+                if (configBlock != null) newErrorStateImage(it, configBlock) else it
             }
         }
 
@@ -440,10 +393,9 @@ interface ImageOptions {
             }
         }
 
-        fun transition(transition: Transition.Factory?): Builder =
-            apply {
-                this.transition = transition
-            }
+        fun transition(transition: Transition.Factory?): Builder = apply {
+            this.transition = transition
+        }
 
         fun crossfade(
             durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
@@ -452,10 +404,9 @@ interface ImageOptions {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
         }
 
-        fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder =
-            apply {
-                this.resizeApplyToDrawable = resizeApplyToDrawable
-            }
+        fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder = apply {
+            this.resizeApplyToDrawable = resizeApplyToDrawable
+        }
 
         @SuppressLint("NewApi")
         fun build(): ImageOptions = ImageOptionsImpl(
@@ -467,7 +418,7 @@ interface ImageOptions {
             bitmapConfig = bitmapConfig,
             colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
             preferQualityOverSpeed = preferQualityOverSpeed,
-            resizeSize = resizeSize,
+            resize = resize,
             resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScaleDecider = resizeScaleDecider,
@@ -494,7 +445,7 @@ interface ImageOptions {
         override val colorSpace: ColorSpace?,
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         override val preferQualityOverSpeed: Boolean?,
-        override val resizeSize: Size?,
+        override val resize: Resize?,
         override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider?,
         override val resizeScaleDecider: ScaleDecider?,

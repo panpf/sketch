@@ -15,6 +15,7 @@ import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.ImageRequest.BaseImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
@@ -209,6 +210,10 @@ interface LoadRequest : ImageRequest {
             super.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
+        override fun resize(resize: Resize?): Builder = apply {
+            super.resize(resize)
+        }
+
         override fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
             super.resizeSize(sizeResolver)
         }
@@ -345,7 +350,7 @@ interface LoadRequest : ImageRequest {
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean,
-        override val resizeSize: Size?,
+        override val resize: Resize?,
         override val resizeSizeResolver: SizeResolver,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
