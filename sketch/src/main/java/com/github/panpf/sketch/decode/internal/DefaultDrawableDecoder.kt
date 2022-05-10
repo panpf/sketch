@@ -1,11 +1,10 @@
 package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
-import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.drawable.toSketchBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
@@ -20,53 +19,38 @@ class DefaultDrawableDecoder(
 ) : DrawableDecoder {
 
     @WorkerThread
-    override suspend fun decode(): DrawableDecodeResult {
-        val result = tryLockBitmapMemoryCache(request) { helper ->
-            helper?.read() ?: decodeNewBitmap().let { result ->
-                val drawable = helper?.write(result)
-                    ?: SketchBitmapDrawable(
-                        requestKey = request.key,
-                        requestUri = request.uriString,
-                        imageInfo = result.imageInfo,
-                        imageExifOrientation = result.exifOrientation,
-                        dataFrom = result.dataFrom,
-                        transformedList = result.transformedList,
-                        resources = request.context.resources,
-                        bitmap = result.bitmap
-                    )
+    override suspend fun decode(): DrawableDecodeResult =
+        tryLockBitmapMemoryCache(request) { helper ->
+            val cachedResult = helper?.read()
+            if (cachedResult != null) {
+                cachedResult
+            } else {
+                val bitmapResult = BitmapDecodeInterceptorChain(
+                    interceptors = request.sketch.bitmapDecodeInterceptors,
+                    index = 0,
+                    request = request,
+                    requestExtras = requestExtras,
+                    fetchResult = fetchResult
+                ).proceed()
+                val drawable = helper?.write(bitmapResult)
+                    ?: bitmapResult.toSketchBitmapDrawable(request)
                 DrawableDecodeResult(
                     drawable = drawable,
-                    imageInfo = result.imageInfo,
-                    exifOrientation = result.exifOrientation,
-                    dataFrom = result.dataFrom,
-                    transformedList = result.transformedList
+                    imageInfo = bitmapResult.imageInfo,
+                    exifOrientation = bitmapResult.exifOrientation,
+                    dataFrom = bitmapResult.dataFrom,
+                    transformedList = bitmapResult.transformedList
                 )
             }
-        }
-
-        val drawable = result.drawable
-        if (drawable is SketchCountBitmapDrawable) {
-            val key = request.key
-            requestExtras.putCountDrawablePendingManagerKey(key)
-            withContext(Dispatchers.Main) {
-                request.sketch.countDrawablePendingManager.mark(
-                    "DefaultDrawableDecoder",
-                    key,
-                    drawable
-                )
+        }.apply {
+            if (drawable is SketchCountBitmapDrawable) {
+                withContext(Dispatchers.Main) {
+                    requestExtras.putCountDrawablePendingManagerKey(request.key)
+                    request.sketch.countDrawablePendingManager
+                        .mark("DefaultDrawableDecoder", request.key, drawable)
+                }
             }
         }
-        return result
-    }
-
-    private suspend fun decodeNewBitmap(): BitmapDecodeResult =
-        BitmapDecodeInterceptorChain(
-            interceptors = request.sketch.bitmapDecodeInterceptors,
-            index = 0,
-            request = request,
-            requestExtras = requestExtras,
-            fetchResult = fetchResult
-        ).proceed()
 
     class Factory : DrawableDecoder.Factory {
         override fun create(

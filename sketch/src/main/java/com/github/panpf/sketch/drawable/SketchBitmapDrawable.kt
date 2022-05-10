@@ -19,9 +19,11 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.exifOrientationName
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.toBitmapInfo
 
@@ -50,3 +52,15 @@ open class SketchBitmapDrawable constructor(
                 "," + requestKey +
                 ")"
 }
+
+fun BitmapDecodeResult.toSketchBitmapDrawable(request: ImageRequest): SketchBitmapDrawable =
+    SketchBitmapDrawable(
+        requestKey = request.key,
+        requestUri = request.uriString,
+        imageInfo = this.imageInfo,
+        imageExifOrientation = this.exifOrientation,
+        dataFrom = this.dataFrom,
+        transformedList = this.transformedList,
+        resources = request.context.resources,
+        bitmap = this.bitmap
+    )

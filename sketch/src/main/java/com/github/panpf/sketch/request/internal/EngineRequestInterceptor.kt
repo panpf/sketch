@@ -47,10 +47,9 @@ class EngineRequestInterceptor : RequestInterceptor {
         if (result != null) {
             val drawable = result.drawable
             if (drawable is SketchCountBitmapDrawable) {
-                val key = request.key
-                chain.requestExtras.putCountDrawablePendingManagerKey(key)
+                chain.requestExtras.putCountDrawablePendingManagerKey(request.key)
                 request.sketch.countDrawablePendingManager
-                    .mark("EngineRequestInterceptor", key, drawable)
+                    .mark("EngineRequestInterceptor", request.key, drawable)
             }
             return result.toDisplayData()
         }
