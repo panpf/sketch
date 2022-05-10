@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.request.DisplayRequest
@@ -24,49 +24,49 @@ internal fun requestDelegate(
     val lifecycle = initialRequest.lifecycle
     return when (val target = initialRequest.target) {
         is ViewTarget<*> -> ViewTargetRequestDelegate(
-            initialRequest as DisplayRequest,
-            target,
-            lifecycle,
-            job
+            initialRequest = initialRequest as DisplayRequest,
+            target = target,
+            lifecycle = lifecycle,
+            job = job
         )
         else -> BaseRequestDelegate(lifecycle, job)
     }
 }
 
-sealed class RequestDelegate : DefaultLifecycleObserver {
+sealed interface RequestDelegate : LifecycleEventObserver {
 
     /** Throw a [CancellationException] if this request should be cancelled before starting. */
     @MainThread
-    open fun assertActive() {
-    }
+    fun assertActive()
 
     /** Register all lifecycle observers. */
     @MainThread
-    open fun start() {
-    }
+    fun start()
 
     /** Called when this request's job is cancelled or completes successfully/unsuccessfully. */
     @MainThread
-    open fun complete() {
-    }
+    fun finish()
 
     /** Cancel this request's job and clear all lifecycle observers. */
     @MainThread
-    open fun dispose() {
-    }
+    fun dispose()
 }
 
 /** A request delegate for a one-shot requests with no target or a non-[ViewTarget]. */
 internal class BaseRequestDelegate(
     private val lifecycle: Lifecycle,
     private val job: Job
-) : RequestDelegate() {
+) : RequestDelegate {
+
+    override fun assertActive() {
+        // Do nothing
+    }
 
     override fun start() {
         lifecycle.addObserver(this)
     }
 
-    override fun complete() {
+    override fun finish() {
         lifecycle.removeObserver(this)
     }
 
@@ -74,7 +74,11 @@ internal class BaseRequestDelegate(
         job.cancel()
     }
 
-    override fun onDestroy(owner: LifecycleOwner) = dispose()
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (event == Lifecycle.Event.ON_DESTROY) {
+            dispose()
+        }
+    }
 }
 
 /** A request delegate for restartable requests with a [ViewTarget]. */
@@ -83,17 +87,12 @@ class ViewTargetRequestDelegate(
     private val target: ViewTarget<*>,
     private val lifecycle: Lifecycle,
     private val job: Job
-) : RequestDelegate() {
-
-    /** Repeat this request with the same [ImageRequest]. */
-    @MainThread
-    fun restart() {
-        initialRequest.sketch.enqueue(initialRequest)
-    }
+) : RequestDelegate {
 
     override fun assertActive() {
-        if (!target.view.isAttachedToWindowCompat) {
-            target.view.requestManager.setRequest(this)
+        val view = target.view
+        if (!view.isAttachedToWindowCompat) {
+            view.requestManager.setRequest(this)
             throw CancellationException("'ViewTarget.view' must be attached to a window.")
         }
     }
@@ -107,6 +106,10 @@ class ViewTargetRequestDelegate(
         }
     }
 
+    override fun finish() {
+        // Do nothing
+    }
+
     override fun dispose() {
         job.cancel()
         if (target is LifecycleObserver) {
@@ -115,8 +118,16 @@ class ViewTargetRequestDelegate(
         lifecycle.removeObserver(this)
     }
 
-    override fun onDestroy(owner: LifecycleOwner) {
-        target.view.requestManager.dispose()
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (event == Lifecycle.Event.ON_DESTROY) {
+            target.view.requestManager.dispose()
+        }
+    }
+
+    /** Repeat this request with the same [ImageRequest]. */
+    @MainThread
+    fun restart() {
+        initialRequest.sketch.enqueue(initialRequest)
     }
 
     fun onViewDetachedFromWindow() {

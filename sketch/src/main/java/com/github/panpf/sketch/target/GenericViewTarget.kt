@@ -27,11 +27,7 @@ abstract class GenericViewTarget<T : View> : ViewTarget<T>, TransitionTarget,
 
     override fun onStart(placeholder: Drawable?) = updateDrawable(placeholder)
 
-    override fun onError(error: Drawable?) {
-        if (error != null) {
-            updateDrawable(error)
-        }
-    }
+    override fun onError(error: Drawable?) = updateDrawable(error)
 
     override fun onSuccess(result: Drawable) = updateDrawable(result)
 

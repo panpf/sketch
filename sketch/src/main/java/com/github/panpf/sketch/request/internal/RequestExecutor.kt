@@ -41,16 +41,17 @@ class RequestExecutor {
         // Wrap the request to manage its lifecycle.
         val requestDelegate = requestDelegate(request, coroutineContext.job)
         requestDelegate.assertActive()
+
         val target = request.target
         val requestExtras = RequestExtras()
-
         try {
             if (request.uriString.isEmpty() || request.uriString.isBlank()) {
                 throw UriInvalidException(request, "Request uri is empty or blank")
             }
 
-            // Set up the request's lifecycle observers.
+            // Set up the request's lifecycle observers. Cancel the request when destroy
             requestDelegate.start()
+
             // Enqueued requests suspend until the lifecycle is started.
             if (enqueue) {
                 request.lifecycle.awaitStarted()
@@ -109,6 +110,9 @@ class RequestExecutor {
                         val errorDrawable = request.errorImage
                             ?.getDrawable(request, exception)
                             ?.tryToResizeDrawable(request)
+                            ?: request.placeholderImage
+                                ?.getDrawable(request, exception)
+                                ?.tryToResizeDrawable(request)
                         DisplayResult.Error(request, errorDrawable, exception)
                     }
                     is LoadRequest -> LoadResult.Error(request, exception)
@@ -123,7 +127,7 @@ class RequestExecutor {
             requestExtras.getCountDrawablePendingManagerKey()?.let {
                 request.sketch.countDrawablePendingManager.complete("RequestCompleted", it)
             }
-            requestDelegate.complete()
+            requestDelegate.finish()
         }
     }
 
