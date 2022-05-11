@@ -93,7 +93,7 @@ interface ImageRequest {
      * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
      */
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
-    val preferQualityOverSpeed: Boolean?
+    val preferQualityOverSpeed: Boolean
 
     /** The size of the desired bitmap */
     val resize: Resize?
@@ -105,22 +105,22 @@ interface ImageRequest {
     val transformations: List<Transformation>?
 
     /** Disabled reuse of Bitmap from [BitmapPool] */
-    val disabledReuseBitmap: Boolean?
+    val disabledReuseBitmap: Boolean
 
     /** Ignore exif orientation */
-    val ignoreExifOrientation: Boolean?
+    val ignoreExifOrientation: Boolean
 
     /** @see com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheDecodeInterceptor */
     val bitmapResultDiskCachePolicy: CachePolicy
     val target: Target?
     val lifecycle: Lifecycle
 
-    val disabledAnimatedImage: Boolean?
+    val disabledAnimatedImage: Boolean
     val bitmapMemoryCachePolicy: CachePolicy
     val placeholderImage: StateImage?
     val errorImage: StateImage?
     val transition: Transition.Factory?
-    val resizeApplyToDrawable: Boolean?
+    val resizeApplyToDrawable: Boolean
 
     val definedOptions: ImageOptions
     val globalOptions: ImageOptions?
@@ -492,7 +492,7 @@ interface ImageRequest {
                 if (VERSION.SDK_INT >= VERSION_CODES.O) finalOptions.colorSpace else null
             @Suppress("DEPRECATION") val preferQualityOverSpeed =
                 if (VERSION.SDK_INT < VERSION_CODES.N)
-                    finalOptions.preferQualityOverSpeed ?: false else null
+                    finalOptions.preferQualityOverSpeed ?: false else false
             val resize = finalOptions.resize
             var resolvedResizeSize = false
             val resizeSizeResolver = finalOptions.resizeSizeResolver
@@ -502,14 +502,14 @@ interface ImageRequest {
             val resizeScaleDecider = finalOptions.resizeScaleDecider
                 ?: fixedScale(resolveResizeScale())
             val transformations = finalOptions.transformations
-            val disabledReuseBitmap = finalOptions.disabledReuseBitmap
-            val ignoreExifOrientation = finalOptions.ignoreExifOrientation
+            val disabledReuseBitmap = finalOptions.disabledReuseBitmap ?: false
+            val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
             val bitmapMemoryCachePolicy = finalOptions.bitmapMemoryCachePolicy ?: ENABLED
-            val disabledAnimatedImage = finalOptions.disabledAnimatedImage
+            val disabledAnimatedImage = finalOptions.disabledAnimatedImage ?: false
             val placeholderImage = finalOptions.placeholderImage
             val errorImage = finalOptions.errorImage
             val transition = finalOptions.transition
-            val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable
+            val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
 
             return when (this@Builder) {
                 is DisplayRequest.Builder -> {

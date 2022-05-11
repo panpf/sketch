@@ -21,7 +21,7 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
         }
     }
     @Suppress("DEPRECATION")
-    if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+    if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
         appendQueryParameter("_preferQualityOverSpeed", true.toString())
     }
     resize?.let {
@@ -32,10 +32,10 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
             it.key.replace("Transformation", "")
         })
     }
-    if (ignoreExifOrientation == true) {
+    if (ignoreExifOrientation) {
         appendQueryParameter("_ignoreExifOrientation", true.toString())
     }
-    if (disabledAnimatedImage == true) {
+    if (disabledAnimatedImage) {
         appendQueryParameter("_disabledAnimatedImage", true.toString())
     }
 }.build().toString()
@@ -64,7 +64,7 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
             }
         }
         @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+        if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
             appendQueryParameter("_preferQualityOverSpeed", true.toString())
         }
         resize?.let {
@@ -75,10 +75,10 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
                 it.key.replace("Transformation", "")
             })
         }
-        if (disabledReuseBitmap == true) {
+        if (disabledReuseBitmap) {
             appendQueryParameter("_disabledReuseBitmap", true.toString())
         }
-        if (ignoreExifOrientation == true) {
+        if (ignoreExifOrientation) {
             appendQueryParameter("_ignoreExifOrientation", true.toString())
         }
         bitmapResultDiskCachePolicy.takeIf { it != ENABLED }?.let {
@@ -87,7 +87,7 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
     }
 
     if (this@newKey is DisplayRequest) {
-        if (disabledAnimatedImage == true) {
+        if (disabledAnimatedImage) {
             appendQueryParameter("_disabledAnimatedImage", true.toString())
         }
         bitmapMemoryCachePolicy.takeIf { it != ENABLED }?.let {

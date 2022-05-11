@@ -29,7 +29,7 @@ open class DefaultBitmapDecoder(
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow()
-        val exifOrientation = if (request.ignoreExifOrientation != true) {
+        val exifOrientation = if (!request.ignoreExifOrientation) {
             dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
         } else {
             ExifInterface.ORIENTATION_UNDEFINED
@@ -47,7 +47,7 @@ open class DefaultBitmapDecoder(
             decodeRegion = if (canDecodeRegion) { srcRect, decodeConfig ->
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
-        ).applyExifOrientation(bitmapPool, request.ignoreExifOrientation == true)
+        ).applyExifOrientation(bitmapPool, request.ignoreExifOrientation)
             .applyResize(request.sketch, request.resize)
     }
 
@@ -55,7 +55,7 @@ open class DefaultBitmapDecoder(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
     ): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
-        if (request.disabledReuseBitmap != true) {
+        if (!request.disabledReuseBitmap) {
             bitmapPool.setInBitmapForRegionDecoder(
                 options = decodeOptions,
                 imageWidth = srcRect.width(),
@@ -106,7 +106,7 @@ open class DefaultBitmapDecoder(
         val decodeOptions = decodeConfig.toBitmapOptions()
 
         // Set inBitmap from bitmap pool
-        if (request.disabledReuseBitmap != true) {
+        if (!request.disabledReuseBitmap) {
             bitmapPool.setInBitmapForBitmapFactory(
                 decodeOptions, imageInfo.width, imageInfo.height, imageInfo.mimeType
             )

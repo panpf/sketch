@@ -15,7 +15,7 @@ import kotlin.math.roundToInt
 
 fun Drawable.tryToResizeDrawable(request: ImageRequest): Drawable {
     val resize = request.resize
-    return if (request.resizeApplyToDrawable == true && resize != null) {
+    return if (request.resizeApplyToDrawable && resize != null) {
         if (this is SketchAnimatableDrawable) {
             ResizeAnimatableDrawable(request.sketch, this, resize)
         } else {

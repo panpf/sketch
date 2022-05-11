@@ -345,23 +345,23 @@ interface DownloadRequest : ImageRequest {
         override val colorSpace: ColorSpace?,
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         @Suppress("OverridingDeprecatedMember")
-        override val preferQualityOverSpeed: Boolean?,
+        override val preferQualityOverSpeed: Boolean,
         override val resize: Resize?,
         override val resizeSizeResolver: SizeResolver,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,
-        override val disabledReuseBitmap: Boolean?,
-        override val ignoreExifOrientation: Boolean?,
+        override val disabledReuseBitmap: Boolean,
+        override val ignoreExifOrientation: Boolean,
         override val bitmapResultDiskCachePolicy: CachePolicy,
         override val target: Target?,
         override val lifecycle: Lifecycle,
-        override val disabledAnimatedImage: Boolean?,
+        override val disabledAnimatedImage: Boolean,
         override val bitmapMemoryCachePolicy: CachePolicy,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Factory?,
-        override val resizeApplyToDrawable: Boolean?,
+        override val resizeApplyToDrawable: Boolean,
         override val definedOptions: ImageOptions,
         override val globalOptions: ImageOptions?
     ) : BaseImageRequest(), DownloadRequest

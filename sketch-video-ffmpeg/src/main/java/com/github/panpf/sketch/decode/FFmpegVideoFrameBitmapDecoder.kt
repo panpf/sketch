@@ -48,7 +48,7 @@ class FFmpegVideoFrameBitmapDecoder(
         }
         try {
             val imageInfo = readImageInfo(mediaMetadataRetriever)
-            val exifOrientation = if (request.ignoreExifOrientation != true) {
+            val exifOrientation = if (!request.ignoreExifOrientation) {
                 readExifOrientation(mediaMetadataRetriever)
             } else {
                 ExifInterface.ORIENTATION_UNDEFINED
@@ -62,7 +62,7 @@ class FFmpegVideoFrameBitmapDecoder(
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it)
                 },
                 decodeRegion = null
-            ).applyExifOrientation(request.sketch.bitmapPool, request.ignoreExifOrientation == true)
+            ).applyExifOrientation(request.sketch.bitmapPool, request.ignoreExifOrientation)
                 .applyResize(request.sketch, request.resize)
         } finally {
             mediaMetadataRetriever.release()

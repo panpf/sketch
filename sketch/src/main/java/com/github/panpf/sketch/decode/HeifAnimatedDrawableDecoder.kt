@@ -33,7 +33,6 @@ class HeifAnimatedDrawableDecoder(
     dataSource: DataSource,
 ) : BaseAnimatedImageDrawableDecoder(request, dataSource) {
 
-    @RequiresApi(Build.VERSION_CODES.R)
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
@@ -41,7 +40,7 @@ class HeifAnimatedDrawableDecoder(
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): HeifAnimatedDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && request.disabledAnimatedImage != true) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !request.disabledAnimatedImage) {
                 val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
                 if ((imageFormat == ImageFormat.HEIC || imageFormat == ImageFormat.HEIF)
                     && fetchResult.headerBytes.isAnimatedHeif()
