@@ -57,7 +57,7 @@ fun createTileDecoder(
     requiredWorkThread()
 
     val request = LoadRequest(context, imageUri)
-    val fetch = sketch.componentRegistry.newFetcher(request)
+    val fetch = sketch.components.newFetcher(request)
     val fetchResult = runBlocking {
         fetch.fetch()
     }

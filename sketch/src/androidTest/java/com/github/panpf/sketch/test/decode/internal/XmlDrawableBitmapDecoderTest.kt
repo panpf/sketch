@@ -30,27 +30,27 @@ class XmlDrawableBitmapDecoderTest {
         Assert.assertEquals("XmlDrawableBitmapDecoder", factory.toString())
 
         LoadRequest(context, context.newResourceUri(R.drawable.test)).apply {
-            val fetcher = sketch.componentRegistry.newFetcher(this)
+            val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking {
                 fetcher.fetch()
             }
-            Assert.assertNotNull(factory.create(this, RequestExtras(), fetchResult))
+            Assert.assertNotNull(factory.create(sketch, this, RequestExtras(), fetchResult))
         }
 
         LoadRequest(context, context.newResourceUri(R.drawable.test_error)).apply {
-            val fetcher = sketch.componentRegistry.newFetcher(this)
+            val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking {
                 fetcher.fetch()
             }
-            Assert.assertNotNull(factory.create(this, RequestExtras(), fetchResult))
+            Assert.assertNotNull(factory.create(sketch, this, RequestExtras(), fetchResult))
         }
 
         LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)).apply {
-            val fetcher = sketch.componentRegistry.newFetcher(this)
+            val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking {
                 fetcher.fetch()
             }
-            Assert.assertNull(factory.create(this, RequestExtras(), fetchResult))
+            Assert.assertNull(factory.create(sketch, this, RequestExtras(), fetchResult))
         }
     }
 
@@ -63,12 +63,12 @@ class XmlDrawableBitmapDecoderTest {
         Assert.assertEquals("XmlDrawableBitmapDecoder", factory.toString())
 
         LoadRequest(context, context.newResourceUri(R.drawable.test)).run {
-            val fetcher = sketch.componentRegistry.newFetcher(this)
+            val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking {
                 fetcher.fetch()
             }
             runBlocking {
-                factory.create(this@run, RequestExtras(), fetchResult)!!.decode()
+                factory.create(sketch, this@run, RequestExtras(), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -85,13 +85,13 @@ class XmlDrawableBitmapDecoderTest {
         }
 
         LoadRequest(context, context.newResourceUri(R.drawable.test_error)).run {
-            val fetcher = sketch.componentRegistry.newFetcher(this)
+            val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking {
                 fetcher.fetch()
             }
             assertThrow(BitmapDecodeException::class) {
                 runBlocking {
-                    factory.create(this@run, RequestExtras(), fetchResult)!!.decode()
+                    factory.create(sketch, this@run, RequestExtras(), fetchResult)!!.decode()
                 }
             }
         }

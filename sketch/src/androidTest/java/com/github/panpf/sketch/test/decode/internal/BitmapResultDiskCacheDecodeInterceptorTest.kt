@@ -10,6 +10,7 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.test.contextAndSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -25,12 +26,11 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         val interceptors =
             listOf(BitmapResultDiskCacheDecodeInterceptor(), BitmapEngineDecodeInterceptor())
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resizeSize(500, 500)
-            resizePrecision(LESS_PIXELS)
+            resize(Resize(500, 500, LESS_PIXELS))
         }
         val requestExtras = RequestExtras()
         val chain =
-            BitmapDecodeInterceptorChain(interceptors, 0, loadRequest, requestExtras, null)
+            BitmapDecodeInterceptorChain(sketch, loadRequest, requestExtras, null, interceptors, 0)
 
         sketch.diskCache.clear()
 

@@ -13,13 +13,13 @@ import com.github.panpf.sketch.util.findLastSketchDrawable
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-fun Drawable.tryToResizeDrawable(request: ImageRequest): Drawable {
+fun Drawable.tryToResizeDrawable(sketch: Sketch, request: ImageRequest): Drawable {
     val resize = request.resize
     return if (request.resizeApplyToDrawable && resize != null) {
         if (this is SketchAnimatableDrawable) {
-            ResizeAnimatableDrawable(request.sketch, this, resize)
+            ResizeAnimatableDrawable(sketch, this, resize)
         } else {
-            ResizeDrawable(request.sketch, this, resize)
+            ResizeDrawable(sketch, this, resize)
         }
     } else {
         this

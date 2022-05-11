@@ -4,6 +4,7 @@ import android.graphics.Bitmap.CompressFormat.PNG
 import android.graphics.BitmapFactory
 import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
@@ -20,13 +21,14 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 suspend fun <R> tryLockBitmapResultDiskCache(
+    sketch: Sketch,
     request: ImageRequest,
     block: suspend (helper: BitmapResultDiskCacheHelper?) -> R
 ): R {
-    val helper = newBitmapResultDiskCacheHelper(request)
+    val helper = newBitmapResultDiskCacheHelper(sketch, request)
     return if (helper != null) {
         val lockKey = "${request.cacheKey}_result"
-        val lock: Mutex = request.sketch.diskCache.editLock(lockKey)
+        val lock: Mutex = sketch.diskCache.editLock(lockKey)
         lock.lock()
         try {
             block(helper)
@@ -39,6 +41,7 @@ suspend fun <R> tryLockBitmapResultDiskCache(
 }
 
 fun newBitmapResultDiskCacheHelper(
+    sketch: Sketch,
     request: ImageRequest
 ): BitmapResultDiskCacheHelper? {
     val cachePolicy = request.bitmapResultDiskCachePolicy
@@ -47,7 +50,7 @@ fun newBitmapResultDiskCacheHelper(
     val metaDataDiskCacheKey = "${request.cacheKey}_result_meta"
     return BitmapResultDiskCacheHelper(
         request,
-        request.sketch.diskCache,
+        sketch.diskCache,
         cachePolicy,
         bitmapDataDiskCacheKey,
         metaDataDiskCacheKey

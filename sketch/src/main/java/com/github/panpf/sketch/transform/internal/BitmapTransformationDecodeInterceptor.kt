@@ -23,9 +23,9 @@ class BitmapTransformationDecodeInterceptor : DecodeInterceptor<BitmapDecodeResu
         val transformedList = LinkedList<Transformed>()
         transformations.forEach {
             val inputBitmap = transformedBitmap ?: oldBitmap
-            val transformResult = it.transform(request, inputBitmap)
+            val transformResult = it.transform(chain.sketch, request, inputBitmap)
             if (transformResult != null) {
-                request.sketch.bitmapPool.free(inputBitmap)
+                chain.sketch.bitmapPool.free(inputBitmap)
                 transformedBitmap = transformResult.bitmap
                 transformedList.add(transformResult.transformed)
             }

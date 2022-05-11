@@ -97,7 +97,7 @@ class SketchTest {
             runBlocking {
                 sketch.execute(normalRequest)
             }.apply {
-                Assert.assertTrue(this is DownloadResult.Success)
+                Assert.assertTrue(this.toString(), this is DownloadResult.Success)
             }
 
             /*

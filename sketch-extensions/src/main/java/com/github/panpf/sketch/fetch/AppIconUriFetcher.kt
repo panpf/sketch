@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.fetch
 
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.UnavailableDataSource
@@ -19,6 +20,7 @@ fun newAppIconUri(packageName: String, versionCode: Int): String =
  * Support 'app.icon://com.github.panpf.sketch.sample/1120' uri
  */
 class AppIconUriFetcher(
+    val sketch: Sketch,
     val request: ImageRequest,
     val packageName: String,
     val versionCode: Int,
@@ -30,19 +32,19 @@ class AppIconUriFetcher(
     }
 
     override suspend fun fetch(): FetchResult = FetchResult(
-        AppIconDataSource(request, LOCAL, packageName, versionCode),
+        AppIconDataSource(sketch, request, LOCAL, packageName, versionCode),
         MIME_TYPE
     )
 
     class Factory : Fetcher.Factory {
-        override fun create(request: ImageRequest): AppIconUriFetcher? {
+        override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
             val uri = request.uri
             return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val packageName = uri.authority
                     ?: throw UriInvalidException(request, "App icon uri 'packageName' part invalid")
                 val versionCode = uri.lastPathSegment?.toIntOrNull()
                     ?: throw UriInvalidException(request, "App icon uri 'versionCode' part invalid")
-                AppIconUriFetcher(request, packageName, versionCode)
+                AppIconUriFetcher(sketch, request, packageName, versionCode)
             } else {
                 null
             }
@@ -52,6 +54,7 @@ class AppIconUriFetcher(
     }
 
     class AppIconDataSource(
+        override val sketch: Sketch,
         override val request: ImageRequest,
         override val dataFrom: DataFrom,
         val packageName: String,
@@ -60,7 +63,7 @@ class AppIconUriFetcher(
         override fun length(): Long =
             throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
 
-        override fun newFileDescriptor(): FileDescriptor? =
+        override fun newFileDescriptor(): FileDescriptor =
             throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
 
         override fun newInputStream(): InputStream =

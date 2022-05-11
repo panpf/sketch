@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.datasource
 
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
@@ -23,6 +24,7 @@ import java.io.IOException
 import java.io.InputStream
 
 class DiskCacheDataSource constructor(
+    override val sketch: Sketch,
     override val request: ImageRequest,
     override val dataFrom: DataFrom,
     val diskCacheSnapshot: DiskCache.Snapshot,

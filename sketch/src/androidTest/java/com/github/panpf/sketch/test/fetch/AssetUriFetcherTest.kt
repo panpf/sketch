@@ -30,32 +30,32 @@ class AssetUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         val fetcherFactory = AssetUriFetcher.Factory()
         val assetUri = newAssetUri("sample.jpeg")
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
-        fetcherFactory.create(LoadRequest(context, assetUri))!!.apply {
+        fetcherFactory.create(sketch, LoadRequest(context, assetUri))!!.apply {
             Assert.assertEquals("sample.jpeg", assetFileName)
         }
-        fetcherFactory.create(DisplayRequest(context, assetUri))!!.apply {
+        fetcherFactory.create(sketch, DisplayRequest(context, assetUri))!!.apply {
             Assert.assertEquals("sample.jpeg", assetFileName)
         }
-        fetcherFactory.create(DownloadRequest(context, assetUri))!!.apply {
+        fetcherFactory.create(sketch, DownloadRequest(context, assetUri))!!.apply {
             Assert.assertEquals("sample.jpeg", assetFileName)
         }
-        Assert.assertNull(fetcherFactory.create(LoadRequest(context, httpUri)))
-        Assert.assertNull(fetcherFactory.create(LoadRequest(context, contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, httpUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }
 
     @Test
     fun testFetch() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         val fetcherFactory = AssetUriFetcher.Factory()
         val assetUri = newAssetUri("sample.jpeg")
 
-        val fetcher = fetcherFactory.create(LoadRequest(context, assetUri))!!
+        val fetcher = fetcherFactory.create(sketch, LoadRequest(context, assetUri))!!
         val source = runBlocking {
             fetcher.fetch().dataSource
         }

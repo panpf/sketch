@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestExtras
 
 interface RequestInterceptor {
@@ -9,6 +10,8 @@ interface RequestInterceptor {
     suspend fun intercept(chain: Chain): ImageData
 
     interface Chain {
+
+        val sketch: Sketch
 
         val initialRequest: ImageRequest
 

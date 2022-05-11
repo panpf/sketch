@@ -10,7 +10,7 @@ class BitmapResultDiskCacheDecodeInterceptor : DecodeInterceptor<BitmapDecodeRes
     override suspend fun intercept(
         chain: DecodeInterceptor.Chain<BitmapDecodeResult>,
     ): BitmapDecodeResult =
-        tryLockBitmapResultDiskCache(chain.request) { helper ->
+        tryLockBitmapResultDiskCache(chain.sketch, chain.request) { helper ->
             helper?.read() ?: chain.proceed().apply {
                 helper?.write(this@apply)
             }

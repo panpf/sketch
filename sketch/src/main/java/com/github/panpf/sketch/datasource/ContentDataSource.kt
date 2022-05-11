@@ -17,6 +17,7 @@ package com.github.panpf.sketch.datasource
 
 import android.content.ContentResolver
 import android.net.Uri
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
 import java.io.FileDescriptor
@@ -28,6 +29,7 @@ import java.io.InputStream
  * 支持 content://、file://、android.resource:// 格式的 uri
  */
 class ContentDataSource constructor(
+    override val sketch: Sketch,
     override val request: ImageRequest,
     val contentUri: Uri
 ) : DataSource {

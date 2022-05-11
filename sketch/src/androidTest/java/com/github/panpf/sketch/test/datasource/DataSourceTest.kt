@@ -17,8 +17,9 @@ class DataSourceTest {
 
     @Test
     fun testFile() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         AssetDataSource(
+            sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
         ).apply {
@@ -34,6 +35,7 @@ class DataSourceTest {
 
         assertThrow(FileNotFoundException::class) {
             AssetDataSource(
+                sketch = sketch,
                 request = LoadRequest(context, newAssetUri("not_found.jpeg")),
                 assetFileName = "not_found.jpeg"
             ).apply {

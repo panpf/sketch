@@ -28,29 +28,29 @@ class BitmapResultDiskCacheHelperTest {
 
     @Test
     fun testNewBitmapResultCacheHelper() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         Assert.assertNotNull(
-            newBitmapResultDiskCacheHelper(request)
+            newBitmapResultDiskCacheHelper(sketch, request)
         )
         Assert.assertNotNull(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(ENABLED)
             })
         )
         Assert.assertNull(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(DISABLED)
             })
         )
         Assert.assertNotNull(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(READ_ONLY)
             })
         )
         Assert.assertNotNull(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(WRITE_ONLY)
             })
         )
@@ -64,7 +64,7 @@ class BitmapResultDiskCacheHelperTest {
         sketch.diskCache.clear()
 
         // Is there really no
-        val helper = newBitmapResultDiskCacheHelper(request)!!
+        val helper = newBitmapResultDiskCacheHelper(sketch, request)!!
         Assert.assertNull(helper.read())
 
         // There are the
@@ -80,17 +80,17 @@ class BitmapResultDiskCacheHelperTest {
         Assert.assertNotNull(helper.read())
 
         Assert.assertNotNull(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(ENABLED)
             })!!.read()
         )
         Assert.assertNotNull(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(READ_ONLY)
             })!!.read()
         )
         Assert.assertNull(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(WRITE_ONLY)
             })!!.read()
         )
@@ -103,7 +103,7 @@ class BitmapResultDiskCacheHelperTest {
 
         sketch.diskCache.clear()
 
-        Assert.assertNull(newBitmapResultDiskCacheHelper(request)!!.read())
+        Assert.assertNull(newBitmapResultDiskCacheHelper(sketch, request)!!.read())
 
         // transformedList empty
         val bitmapDecodeResult = BitmapDecodeResult(
@@ -114,9 +114,9 @@ class BitmapResultDiskCacheHelperTest {
             null
         )
         Assert.assertFalse(
-            newBitmapResultDiskCacheHelper(request)!!.write(bitmapDecodeResult)
+            newBitmapResultDiskCacheHelper(sketch, request)!!.write(bitmapDecodeResult)
         )
-        Assert.assertNull(newBitmapResultDiskCacheHelper(request)!!.read())
+        Assert.assertNull(newBitmapResultDiskCacheHelper(sketch, request)!!.read())
 
         val bitmapDecodeResult1 = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
@@ -126,27 +126,27 @@ class BitmapResultDiskCacheHelperTest {
             listOf(InSampledTransformed(4))
         )
         Assert.assertTrue(
-            newBitmapResultDiskCacheHelper(request)!!.write(bitmapDecodeResult1)
+            newBitmapResultDiskCacheHelper(sketch, request)!!.write(bitmapDecodeResult1)
         )
-        Assert.assertNotNull(newBitmapResultDiskCacheHelper(request)!!.read())
+        Assert.assertNotNull(newBitmapResultDiskCacheHelper(sketch, request)!!.read())
 
         Assert.assertTrue(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(ENABLED)
             })!!.write(bitmapDecodeResult1)
         )
         Assert.assertFalse(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(READ_ONLY)
             })!!.write(bitmapDecodeResult1)
         )
         Assert.assertTrue(
-            newBitmapResultDiskCacheHelper(request.newLoadRequest {
+            newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
                 bitmapResultDiskCachePolicy(WRITE_ONLY)
             })!!.write(bitmapDecodeResult1)
         )
 
-        Assert.assertNotNull(newBitmapResultDiskCacheHelper(request)!!.read())
+        Assert.assertNotNull(newBitmapResultDiskCacheHelper(sketch, request)!!.read())
     }
 
     @Test

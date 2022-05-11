@@ -5,6 +5,7 @@ import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
@@ -15,6 +16,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
 open class DefaultBitmapDecoder(
+    private val sketch: Sketch,
     private val request: ImageRequest,
     private val dataSource: DataSource,
 ) : BitmapDecoder {
@@ -23,8 +25,8 @@ open class DefaultBitmapDecoder(
         const val MODULE = "DefaultBitmapDecoder"
     }
 
-    private val bitmapPool = request.sketch.bitmapPool
-    private val logger = request.sketch.logger
+    private val bitmapPool = sketch.bitmapPool
+    private val logger = sketch.logger
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
@@ -37,10 +39,11 @@ open class DefaultBitmapDecoder(
         val canDecodeRegion = ImageFormat.valueOfMimeType(imageInfo.mimeType)
             ?.supportBitmapRegionDecoder() == true
         return realDecode(
-            request,
-            dataSource.dataFrom,
-            imageInfo,
-            exifOrientation,
+            sketch = sketch,
+            request = request,
+            dataFrom = dataSource.dataFrom,
+            imageInfo = imageInfo,
+            exifOrientation = exifOrientation,
             decodeFull = { decodeConfig ->
                 realDecodeFull(imageInfo, decodeConfig)
             },
@@ -48,7 +51,7 @@ open class DefaultBitmapDecoder(
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
         ).applyExifOrientation(bitmapPool, request.ignoreExifOrientation)
-            .applyResize(request.sketch, request.resize)
+            .applyResize(sketch, request.resize)
     }
 
     private fun realDecodeRegion(
@@ -143,10 +146,11 @@ open class DefaultBitmapDecoder(
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
+            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
-        ): BitmapDecoder = DefaultBitmapDecoder(request, fetchResult.dataSource)
+        ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, fetchResult.dataSource)
 
         override fun toString(): String = "DefaultBitmapDecoder"
     }

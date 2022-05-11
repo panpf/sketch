@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.gif.movie.test.decode
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
@@ -11,7 +13,7 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.sketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,18 +25,19 @@ class GifMovieDrawableDecoderTest {
 
     @Test
     fun testFactory() {
-        val (context, _) = contextAndSketch()
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val sketch = context.sketch
 
         // normal
         val request = DisplayRequest(context, newAssetUri("sample_anim.gif"))
-        val fetchResult = FetchResult(AssetDataSource(request, "sample_anim.gif"), null)
+        val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample_anim.gif"), null)
         Assert.assertNotNull(
             GifMovieDrawableDecoder.Factory().create(request, RequestExtras(), fetchResult)
         )
 
         // not gif
         val request1 = DisplayRequest(context, newAssetUri("sample.png"))
-        val fetchResult1 = FetchResult(AssetDataSource(request1, "sample.png"), null)
+        val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
         Assert.assertNull(
             GifMovieDrawableDecoder.Factory()
                 .create(request1, RequestExtras(), fetchResult1)
@@ -44,7 +47,7 @@ class GifMovieDrawableDecoderTest {
         val request2 = DisplayRequest(context, newAssetUri("sample_anim.gif")) {
             disabledAnimatedImage()
         }
-        val fetchResult2 = FetchResult(ErrorDataSource(request2, LOCAL), null)
+        val fetchResult2 = FetchResult(ErrorDataSource(sketch, request2, LOCAL), null)
         Assert.assertNull(
             GifMovieDrawableDecoder.Factory()
                 .create(request2, RequestExtras(), fetchResult2)
@@ -53,7 +56,7 @@ class GifMovieDrawableDecoderTest {
         // mimeType error
         val request3 = DisplayRequest(context, newAssetUri("sample_anim.gif"))
         val fetchResult3 = FetchResult(
-            AssetDataSource(request3, "sample_anim.gif"),
+            AssetDataSource(sketch, request3, "sample_anim.gif"),
             "image/jpeg",
         )
         Assert.assertNotNull(
@@ -68,6 +71,7 @@ class GifMovieDrawableDecoderTest {
     }
 
     private class ErrorDataSource(
+        override val sketch: Sketch,
         override val request: ImageRequest,
         override val dataFrom: DataFrom
     ) : DataSource {

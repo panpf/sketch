@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
 import androidx.annotation.Keep
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -19,13 +20,13 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
 
     override val key: String = "CircleCropTransformation($scale)"
 
-    override suspend fun transform(request: ImageRequest, input: Bitmap): TransformResult {
+    override suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult {
         val newSize = input.width.coerceAtMost(input.height)
         val resizeMapping = calculateResizeMapping(
             input.width, input.height, newSize, newSize, SAME_ASPECT_RATIO, scale
         )
 
-        val circleBitmap = request.sketch.bitmapPool.getOrCreate(
+        val circleBitmap = sketch.bitmapPool.getOrCreate(
             resizeMapping.newWidth, resizeMapping.newHeight, input.config ?: Bitmap.Config.ARGB_8888
         )
         val canvas = Canvas(circleBitmap)

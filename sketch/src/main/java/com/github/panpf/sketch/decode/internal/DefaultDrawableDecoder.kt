@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DefaultDrawableDecoder(
+    private val sketch: Sketch,
     private val request: ImageRequest,
     private val requestExtras: RequestExtras,
     private val fetchResult: FetchResult
@@ -20,17 +22,18 @@ class DefaultDrawableDecoder(
 
     @WorkerThread
     override suspend fun decode(): DrawableDecodeResult =
-        tryLockBitmapMemoryCache(request) { helper ->
+        tryLockBitmapMemoryCache(sketch, request) { helper ->
             val cachedResult = helper?.read()
             if (cachedResult != null) {
                 cachedResult
             } else {
                 val bitmapResult = BitmapDecodeInterceptorChain(
-                    interceptors = request.sketch.bitmapDecodeInterceptors,
-                    index = 0,
+                    sketch = sketch,
                     request = request,
                     requestExtras = requestExtras,
-                    fetchResult = fetchResult
+                    fetchResult = fetchResult,
+                    interceptors = sketch.bitmapDecodeInterceptors,
+                    index = 0,
                 ).proceed()
                 val drawable = helper?.write(bitmapResult)
                     ?: bitmapResult.toSketchBitmapDrawable(request)
@@ -46,22 +49,20 @@ class DefaultDrawableDecoder(
             if (drawable is SketchCountBitmapDrawable) {
                 withContext(Dispatchers.Main) {
                     requestExtras.putCountDrawablePendingManagerKey(request.key)
-                    request.sketch.countDrawablePendingManager
+                    sketch.countDrawablePendingManager
                         .mark("DefaultDrawableDecoder", request.key, drawable)
                 }
             }
         }
 
     class Factory : DrawableDecoder.Factory {
+
         override fun create(
+            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
-        ): DrawableDecoder = DefaultDrawableDecoder(
-            request = request,
-            requestExtras = requestExtras,
-            fetchResult = fetchResult
-        )
+        ): DrawableDecoder = DefaultDrawableDecoder(sketch, request, requestExtras, fetchResult)
 
         override fun toString(): String = "DefaultDrawableDecoder"
     }

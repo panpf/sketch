@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ViewTarget
@@ -18,12 +19,14 @@ import kotlinx.coroutines.Job
  * based on its lifecycle.
  */
 internal fun requestDelegate(
+    sketch: Sketch,
     initialRequest: ImageRequest,
     job: Job
 ): RequestDelegate {
     val lifecycle = initialRequest.lifecycle
     return when (val target = initialRequest.target) {
         is ViewTarget<*> -> ViewTargetRequestDelegate(
+            sketch = sketch,
             initialRequest = initialRequest as DisplayRequest,
             target = target,
             lifecycle = lifecycle,
@@ -83,6 +86,7 @@ internal class BaseRequestDelegate(
 
 /** A request delegate for restartable requests with a [ViewTarget]. */
 class ViewTargetRequestDelegate(
+    private val sketch: Sketch,
     private val initialRequest: DisplayRequest,
     private val target: ViewTarget<*>,
     private val lifecycle: Lifecycle,
@@ -127,7 +131,7 @@ class ViewTargetRequestDelegate(
     /** Repeat this request with the same [ImageRequest]. */
     @MainThread
     fun restart() {
-        initialRequest.sketch.enqueue(initialRequest)
+        sketch.enqueue(initialRequest)
     }
 
     fun onViewDetachedFromWindow() {

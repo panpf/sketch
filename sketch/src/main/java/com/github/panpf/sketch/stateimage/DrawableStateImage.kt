@@ -17,6 +17,7 @@ package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
@@ -32,7 +33,7 @@ class DrawableStateImage : StateImage {
         this.drawable = RealDrawable(drawable)
     }
 
-    override fun getDrawable(request: ImageRequest, exception: SketchException?): Drawable {
+    override fun getDrawable(sketch: Sketch, request: ImageRequest, exception: SketchException?): Drawable {
         return drawable.getDrawable(request.context)
     }
 }

@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
@@ -35,13 +36,13 @@ class RequestExecutor {
     }
 
     @MainThread
-    suspend fun execute(originRequest: ImageRequest, enqueue: Boolean): ImageResult {
+    suspend fun execute(sketch: Sketch, originRequest: ImageRequest, enqueue: Boolean): ImageResult {
         requiredMainThread()
-        var request: ImageRequest = originRequest.sketch.globalImageOptions
+        var request: ImageRequest = sketch.globalImageOptions
             ?.let { originRequest.newBuilder().global(it).build() }
             ?: originRequest
         // Wrap the request to manage its lifecycle.
-        val requestDelegate = requestDelegate(request, coroutineContext.job)
+        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
         requestDelegate.assertActive()
 
         val target = request.target
@@ -71,20 +72,21 @@ class RequestExecutor {
                 }
             }
 
-            onStart(request)
+            onStart(sketch, request)
 
             val data = RequestInterceptorChain(
+                sketch = sketch,
                 initialRequest = request,
-                interceptors = request.sketch.requestInterceptors,
-                index = 0,
                 request = request,
                 requestExtras = requestExtras,
+                interceptors = sketch.requestInterceptors,
+                index = 0,
             ).proceed(request)
 
             val successResult = when (data) {
                 is DisplayData -> DisplayResult.Success(
                     request,
-                    data.drawable.tryToResizeDrawable(request),
+                    data.drawable.tryToResizeDrawable(sketch, request),
                     data.imageInfo,
                     data.dataFrom
                 )
@@ -97,11 +99,11 @@ class RequestExecutor {
                 is DownloadData -> DownloadResult.Success(request, data, data.dataFrom)
                 else -> throw UnsupportedOperationException("Unsupported ImageData: ${data::class.java}")
             }
-            onSuccess(request, target, successResult)
+            onSuccess(sketch, request, target, successResult)
             return successResult
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
-                onCancel(request)
+                onCancel(sketch, request)
                 throw throwable
             } else {
                 throwable.printStackTrace()
@@ -110,11 +112,11 @@ class RequestExecutor {
                 val errorResult = when (request) {
                     is DisplayRequest -> {
                         val errorDrawable = request.errorImage
-                            ?.getDrawable(request, exception)
-                            ?.tryToResizeDrawable(request)
+                            ?.getDrawable(sketch, request, exception)
+                            ?.tryToResizeDrawable(sketch, request)
                             ?: request.placeholderImage
-                                ?.getDrawable(request, exception)
-                                ?.tryToResizeDrawable(request)
+                                ?.getDrawable(sketch, request, exception)
+                                ?.tryToResizeDrawable(sketch, request)
                         DisplayResult.Error(request, errorDrawable, exception)
                     }
                     is LoadRequest -> LoadResult.Error(request, exception)
@@ -122,26 +124,26 @@ class RequestExecutor {
                     else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${request::class.java}")
                 }
 
-                onError(request, target, errorResult)
+                onError(sketch, request, target, errorResult)
                 return errorResult
             }
         } finally {
             requestExtras.getCountDrawablePendingManagerKey()?.let {
-                request.sketch.countDrawablePendingManager.complete("RequestCompleted", it)
+                sketch.countDrawablePendingManager.complete("RequestCompleted", it)
             }
             requestDelegate.finish()
         }
     }
 
-    private fun onStart(request: ImageRequest) {
-        request.sketch.logger.d(MODULE) {
+    private fun onStart(sketch: Sketch, request: ImageRequest) {
+        sketch.logger.d(MODULE) {
             "Request started. ${request.key}"
         }
         request.listener?.onStart(request)
     }
 
-    private fun onSuccess(request: ImageRequest, target: Target?, result: ImageResult.Success) {
-        request.sketch.logger.d(MODULE) {
+    private fun onSuccess(sketch: Sketch, request: ImageRequest, target: Target?, result: ImageResult.Success) {
+        sketch.logger.d(MODULE) {
             if (result is DisplayResult.Success) {
                 "Request Successful. ${result.drawable}. ${request.key}"
             } else {
@@ -164,8 +166,8 @@ class RequestExecutor {
         request.listener?.onSuccess(request, result)
     }
 
-    private fun onError(request: ImageRequest, target: Target?, result: ImageResult.Error) {
-        request.sketch.logger.e(MODULE, result.exception) {
+    private fun onError(sketch: Sketch, request: ImageRequest, target: Target?, result: ImageResult.Error) {
+        sketch.logger.e(MODULE, result.exception) {
             "Request failed. ${result.exception.message}. ${request.key}"
         }
         when {
@@ -184,8 +186,8 @@ class RequestExecutor {
         request.listener?.onError(request, result)
     }
 
-    private fun onCancel(request: ImageRequest) {
-        request.sketch.logger.d(MODULE) {
+    private fun onCancel(sketch: Sketch, request: ImageRequest) {
+        sketch.logger.d(MODULE) {
             "Request canceled. ${request.key}"
         }
         request.listener?.onCancel(request)

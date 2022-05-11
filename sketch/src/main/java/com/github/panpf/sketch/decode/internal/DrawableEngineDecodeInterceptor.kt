@@ -11,10 +11,10 @@ class DrawableEngineDecodeInterceptor : DecodeInterceptor<DrawableDecodeResult> 
         chain: DecodeInterceptor.Chain<DrawableDecodeResult>,
     ): DrawableDecodeResult {
         val request = chain.request
-        val componentRegistry = request.sketch.componentRegistry
-        val fetcher = componentRegistry.newFetcher(request)
+        val components = chain.sketch.components
+        val fetcher = components.newFetcher(request)
         val fetchResult = chain.fetchResult ?: fetcher.fetch()
-        return componentRegistry
+        return components
             .newDrawableDecoder(request, chain.requestExtras, fetchResult)
             .decode()
     }

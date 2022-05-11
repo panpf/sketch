@@ -37,19 +37,19 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientation() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
             AssetDataSource(
-                LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
+                sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
             ).readExifOrientation()
         )
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             AssetDataSource(
-                LoadRequest(context, newAssetUri("sample.webp")), "sample.webp"
+                sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp"
             ).readExifOrientation()
         )
 
@@ -57,6 +57,7 @@ class ExifOrientationHelperTest {
             Assert.assertEquals(
                 it.exifOrientation,
                 FileDataSource(
+                    sketch,
                     LoadRequest(context, it.file.path),
                     it.file
                 ).readExifOrientation()
@@ -66,6 +67,7 @@ class ExifOrientationHelperTest {
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             ResourceDataSource(
+                sketch,
                 LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
@@ -75,11 +77,12 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientationWithMimeType() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
             AssetDataSource(
+                sketch,
                 LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
             ).readExifOrientationWithMimeType("image/jpeg")
         )
@@ -87,6 +90,7 @@ class ExifOrientationHelperTest {
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             AssetDataSource(
+                sketch,
                 LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
             ).readExifOrientationWithMimeType("image/bmp")
         )
@@ -94,6 +98,7 @@ class ExifOrientationHelperTest {
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             AssetDataSource(
+                sketch,
                 LoadRequest(context, newAssetUri("sample.webp")), "sample.webp"
             ).readExifOrientationWithMimeType("image/webp")
         )
@@ -101,12 +106,12 @@ class ExifOrientationHelperTest {
         ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             Assert.assertEquals(
                 it.exifOrientation,
-                FileDataSource(LoadRequest(context, it.file.path), it.file)
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
                     .readExifOrientationWithMimeType("image/jpeg")
             )
             Assert.assertEquals(
                 ExifInterface.ORIENTATION_UNDEFINED,
-                FileDataSource(LoadRequest(context, it.file.path), it.file)
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
                     .readExifOrientationWithMimeType("image/bmp")
             )
         }
@@ -114,6 +119,7 @@ class ExifOrientationHelperTest {
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             ResourceDataSource(
+                sketch,
                 LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
@@ -371,7 +377,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testAddAndApplyToBitmap() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
         }

@@ -24,7 +24,7 @@ class BitmapDecodeInterceptorChainTest {
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
         val requestExtras = RequestExtras()
         val chain =
-            BitmapDecodeInterceptorChain(interceptors, 0, loadRequest, requestExtras, null)
+            BitmapDecodeInterceptorChain(sketch, loadRequest, requestExtras, null, interceptors, 0)
         val result = runBlocking {
             chain.proceed()
         }

@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.UriInvalidException
 import com.github.panpf.sketch.stateimage.ErrorStateImage.Builder
@@ -38,10 +39,14 @@ fun newErrorStateImageBuilder(
 
 class ErrorStateImage private constructor(private val matcherList: List<Matcher>) : StateImage {
 
-    override fun getDrawable(request: ImageRequest, exception: SketchException?): Drawable? =
+    override fun getDrawable(
+        sketch: Sketch,
+        request: ImageRequest,
+        exception: SketchException?
+    ): Drawable? =
         matcherList
             .find { it.match(request, exception) }
-            ?.getDrawable(request, exception)
+            ?.getDrawable(sketch, request, exception)
 
     class Builder(private val defaultImage: StateImage) {
 
@@ -71,15 +76,21 @@ class ErrorStateImage private constructor(private val matcherList: List<Matcher>
 
         fun match(request: ImageRequest, exception: SketchException?): Boolean
 
-        fun getDrawable(request: ImageRequest, throwable: SketchException?): Drawable?
+        fun getDrawable(
+            sketch: Sketch,
+            request: ImageRequest,
+            throwable: SketchException?
+        ): Drawable?
     }
 
     private class DefaultMatcher(val stateImage: StateImage) : Matcher {
 
         override fun match(request: ImageRequest, exception: SketchException?): Boolean = true
 
-        override fun getDrawable(request: ImageRequest, throwable: SketchException?): Drawable? =
-            stateImage.getDrawable(request, throwable)
+        override fun getDrawable(
+            sketch: Sketch, request: ImageRequest, throwable: SketchException?
+        ): Drawable? =
+            stateImage.getDrawable(sketch, request, throwable)
     }
 
     private class UriEmptyMatcher(val stateImage: StateImage) : Matcher {
@@ -87,7 +98,9 @@ class ErrorStateImage private constructor(private val matcherList: List<Matcher>
         override fun match(request: ImageRequest, exception: SketchException?): Boolean =
             exception is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())
 
-        override fun getDrawable(request: ImageRequest, throwable: SketchException?): Drawable? =
-            stateImage.getDrawable(request, throwable)
+        override fun getDrawable(
+            sketch: Sketch, request: ImageRequest, throwable: SketchException?
+        ): Drawable? =
+            stateImage.getDrawable(sketch, request, throwable)
     }
 }

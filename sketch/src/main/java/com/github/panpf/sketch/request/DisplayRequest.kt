@@ -9,7 +9,6 @@ import android.os.Build.VERSION_CODES
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.http.HttpHeaders
@@ -356,7 +355,6 @@ interface DisplayRequest : ImageRequest {
     }
 
     class DisplayRequestImpl internal constructor(
-        override val sketch: Sketch,
         override val context: Context,
         override val uriString: String,
         override val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?,

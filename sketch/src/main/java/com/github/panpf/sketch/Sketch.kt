@@ -61,7 +61,7 @@ class Sketch private constructor(
     val memoryCache: MemoryCache,
     val diskCache: DiskCache,
     val bitmapPool: BitmapPool,
-    val componentRegistry: ComponentRegistry,
+    componentRegistry: ComponentRegistry,
     val httpStack: HttpStack,
     val requestInterceptors: List<RequestInterceptor>,
     val bitmapDecodeInterceptors: List<DecodeInterceptor<BitmapDecodeResult>>,
@@ -79,6 +79,7 @@ class Sketch private constructor(
     val systemCallbacks = SystemCallbacks(context, this)
     val countDrawablePendingManager = CountDrawablePendingManager(logger)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
+    val components = ComponentService(this, componentRegistry)
 
     // Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
@@ -116,7 +117,7 @@ class Sketch private constructor(
     @AnyThread
     fun enqueue(request: DisplayRequest): Disposable<DisplayResult> {
         val job = scope.async(Dispatchers.Main.immediate) {
-            imageExecutor.execute(request, enqueue = true) as DisplayResult
+            imageExecutor.execute(this@Sketch, request, enqueue = true) as DisplayResult
         }
         val target = request.target
         return if (target is ViewTarget<*>) {
@@ -129,7 +130,7 @@ class Sketch private constructor(
     suspend fun execute(request: DisplayRequest): DisplayResult =
         coroutineScope {
             val job = async(Dispatchers.Main.immediate) {
-                imageExecutor.execute(request, enqueue = false) as DisplayResult
+                imageExecutor.execute(this@Sketch, request, enqueue = false) as DisplayResult
             }
             // Update the current request attached to the view and await the result.
             val target = request.target
@@ -143,14 +144,14 @@ class Sketch private constructor(
     @AnyThread
     fun enqueue(request: LoadRequest): Disposable<LoadResult> {
         val job = scope.async(Dispatchers.Main.immediate) {
-            imageExecutor.execute(request, enqueue = true) as LoadResult
+            imageExecutor.execute(this@Sketch, request, enqueue = true) as LoadResult
         }
         return OneShotDisposable(job)
     }
 
     suspend fun execute(request: LoadRequest): LoadResult = coroutineScope {
         val job = async(Dispatchers.Main.immediate) {
-            imageExecutor.execute(request, enqueue = false) as LoadResult
+            imageExecutor.execute(this@Sketch, request, enqueue = false) as LoadResult
         }
         job.await()
     }
@@ -159,7 +160,7 @@ class Sketch private constructor(
     @AnyThread
     fun enqueue(request: DownloadRequest): Disposable<DownloadResult> {
         val job = scope.async(Dispatchers.Main.immediate) {
-            imageExecutor.execute(request, enqueue = true) as DownloadResult
+            imageExecutor.execute(this@Sketch, request, enqueue = true) as DownloadResult
         }
         return OneShotDisposable(job)
     }
@@ -167,7 +168,7 @@ class Sketch private constructor(
     suspend fun execute(request: DownloadRequest): DownloadResult =
         coroutineScope {
             val job = async(Dispatchers.Main.immediate) {
-                imageExecutor.execute(request, enqueue = false) as DownloadResult
+                imageExecutor.execute(this@Sketch, request, enqueue = false) as DownloadResult
             }
             job.await()
         }

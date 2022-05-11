@@ -4,6 +4,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
@@ -14,6 +15,7 @@ import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.toBitmap
 
 class AppIconBitmapDecoder(
+    private val sketch: Sketch,
     private val request: ImageRequest,
     private val packageName: String,
     private val versionCode: Int,
@@ -33,7 +35,7 @@ class AppIconBitmapDecoder(
         }
         val iconDrawable = packageInfo.applicationInfo.loadIcon(packageManager)
             ?: throw Exception("loadIcon return null '$packageName'")
-        val bitmap = iconDrawable.toBitmap(bitmapPool = request.sketch.bitmapPool)
+        val bitmap = iconDrawable.toBitmap(bitmapPool = sketch.bitmapPool)
         val imageInfo = ImageInfo(
             bitmap.width,
             bitmap.height,
@@ -44,12 +46,13 @@ class AppIconBitmapDecoder(
             imageInfo,
             ExifInterface.ORIENTATION_UNDEFINED,
             LOCAL
-        ).applyResize(request.sketch, request.resize)
+        ).applyResize(sketch, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
+            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
@@ -59,7 +62,7 @@ class AppIconBitmapDecoder(
                 AppIconUriFetcher.MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
                 && dataSource is AppIconDataSource
             ) {
-                AppIconBitmapDecoder(request, dataSource.packageName, dataSource.versionCode)
+                AppIconBitmapDecoder(sketch, request, dataSource.packageName, dataSource.versionCode)
             } else {
                 null
             }

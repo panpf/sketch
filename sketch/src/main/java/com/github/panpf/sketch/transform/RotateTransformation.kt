@@ -6,6 +6,7 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import androidx.annotation.Keep
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
@@ -17,10 +18,10 @@ class RotateTransformation(val degrees: Int) : Transformation {
 
     override val key: String = "RotateTransformation($degrees)"
 
-    override suspend fun transform(request: ImageRequest, input: Bitmap): TransformResult? {
+    override suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult? {
         if (degrees % 360 == 0) return null
         return TransformResult(
-            rotate(input, degrees, request.sketch.bitmapPool),
+            rotate(input, degrees, sketch.bitmapPool),
             RotateTransformed(degrees)
         )
     }

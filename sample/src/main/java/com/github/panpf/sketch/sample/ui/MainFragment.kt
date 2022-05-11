@@ -54,13 +54,13 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
 
                     ListSeparator("Jetpack Compose"),
                     Link(
-                        "GIF On Compose",
-                        MainFragmentDirections.actionGiphyGifListComposeFragment(),
+                        "Photos On Compose",
+                        MainFragmentDirections.actionPexelsPhotoListComposeFragment(),
                         Build.VERSION_CODES.LOLLIPOP
                     ),
                     Link(
-                        "Photos On Compose",
-                        MainFragmentDirections.actionPexelsPhotoListComposeFragment(),
+                        "GIF On Compose",
+                        MainFragmentDirections.actionGiphyGifListComposeFragment(),
                         Build.VERSION_CODES.LOLLIPOP
                     ),
                     Link(

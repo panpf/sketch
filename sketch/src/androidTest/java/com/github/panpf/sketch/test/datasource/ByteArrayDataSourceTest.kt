@@ -14,9 +14,10 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         val request = LoadRequest(context, "http://sample.jpeg")
         ByteArrayDataSource(
+            sketch = sketch,
             request = request,
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
@@ -29,8 +30,9 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         ByteArrayDataSource(
+            sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
@@ -41,8 +43,9 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         ByteArrayDataSource(
+            sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
@@ -53,8 +56,9 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         ByteArrayDataSource(
+            sketch = sketch,
             request = LoadRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()

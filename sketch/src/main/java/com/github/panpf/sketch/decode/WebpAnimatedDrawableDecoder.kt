@@ -3,6 +3,7 @@ package com.github.panpf.sketch.decode
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ImageFormat
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
@@ -33,10 +34,10 @@ class WebpAnimatedDrawableDecoder(
     dataSource: DataSource,
 ) : BaseAnimatedImageDrawableDecoder(request, dataSource) {
 
-    @RequiresApi(Build.VERSION_CODES.P)
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
+            sketch: Sketch,
             request: ImageRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult

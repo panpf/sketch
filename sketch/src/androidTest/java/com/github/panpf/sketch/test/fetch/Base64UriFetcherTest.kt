@@ -31,34 +31,34 @@ class Base64UriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         val fetcherFactory = Base64UriFetcher.Factory()
         val base64Uri = "data:image/png;base64,4y2u1412421089084901240129"
         val contentUri = "content://sample_app/sample"
 
-        fetcherFactory.create(LoadRequest(context, base64Uri))!!.apply {
+        fetcherFactory.create(sketch, LoadRequest(context, base64Uri))!!.apply {
             Assert.assertEquals("image/png", mimeType)
             Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64StringLazy.value)
         }
-        fetcherFactory.create(DisplayRequest(context, base64Uri))!!.apply {
+        fetcherFactory.create(sketch, DisplayRequest(context, base64Uri))!!.apply {
             Assert.assertEquals("image/png", mimeType)
             Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64StringLazy.value)
         }
-        fetcherFactory.create(DownloadRequest(context, base64Uri))!!.apply {
+        fetcherFactory.create(sketch, DownloadRequest(context, base64Uri))!!.apply {
             Assert.assertEquals("image/png", mimeType)
             Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64StringLazy.value)
         }
-        Assert.assertNull(fetcherFactory.create(LoadRequest(context, contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }
 
     @Test
     fun testFetch() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         val fetcherFactory = Base64UriFetcher.Factory()
         val imageData = "4y2u1412421089084901240129".toByteArray()
         val base64Uri = "data:image/png;base64,${Base64.encodeToString(imageData, Base64.DEFAULT)}"
 
-        val fetcher = fetcherFactory.create(LoadRequest(context, base64Uri))!!
+        val fetcher = fetcherFactory.create(sketch, LoadRequest(context, base64Uri))!!
         val source = runBlocking {
             fetcher.fetch().dataSource
         }

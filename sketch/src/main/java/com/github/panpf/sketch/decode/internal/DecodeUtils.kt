@@ -136,6 +136,7 @@ fun computeSizeMultiplier(
 }
 
 fun realDecode(
+    sketch: Sketch,
     request: ImageRequest,
     dataFrom: DataFrom,
     imageInfo: ImageInfo,
@@ -156,9 +157,9 @@ fun realDecode(
     val addedResize = resize?.let { exifOrientationHelper.addToResize(it, applySize) }
     val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
     val resizeTransformed: ResizeTransformed?
-    val bitmap = if (addedResize?.shouldClip(request.sketch, imageInfo.width, imageInfo.height) == true) {
-        val precision = addedResize.getPrecision(request.sketch, imageInfo.width, imageInfo.height)
-        val scale = addedResize.getScale(request.sketch, imageInfo.width, imageInfo.height)
+    val bitmap = if (addedResize?.shouldClip(sketch, imageInfo.width, imageInfo.height) == true) {
+        val precision = addedResize.getPrecision(sketch, imageInfo.width, imageInfo.height)
+        val scale = addedResize.getScale(sketch, imageInfo.width, imageInfo.height)
         val resizeMapping = calculateResizeMapping(
             imageWidth = imageInfo.width,
             imageHeight = imageInfo.height,
