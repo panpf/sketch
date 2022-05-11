@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.request
 
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.util.getLifecycle
@@ -16,14 +16,14 @@ internal object GlobalLifecycle : Lifecycle() {
     private val owner = LifecycleOwner { this }
 
     override fun addObserver(observer: LifecycleObserver) {
-        require(observer is DefaultLifecycleObserver) {
-            "$observer must implement androidx.lifecycle.DefaultLifecycleObserver."
+        require(observer is LifecycleEventObserver) {
+            "$observer must implement androidx.lifecycle.LifecycleEventObserver."
         }
 
         // Call the lifecycle methods in order and do not hold a reference to the observer.
-        observer.onCreate(owner)
-        observer.onStart(owner)
-        observer.onResume(owner)
+        observer.onStateChanged(owner, Lifecycle.Event.ON_CREATE)
+        observer.onStateChanged(owner, Lifecycle.Event.ON_START)
+        observer.onStateChanged(owner, Lifecycle.Event.ON_RESUME)
     }
 
     override fun removeObserver(observer: LifecycleObserver) {}
