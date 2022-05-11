@@ -94,6 +94,7 @@ interface ImageRequest {
 
     /** The size of the desired bitmap */
     val resize: Resize?
+    val resizeSize: Size?
     val resizeSizeResolver: SizeResolver
     val resizePrecisionDecider: PrecisionDecider
     val resizeScaleDecider: ScaleDecider
@@ -142,6 +143,16 @@ interface ImageRequest {
 
         /** Used to cache bitmaps in memory and on disk */
         override val cacheKey: String by lazy { newCacheKey() }
+
+        override val resize: Resize? by lazy {
+            resizeSize?.takeIf { it.width > 0 && it.height > 0 }?.let {
+                Resize(
+                    width = it.width, height = it.height,
+                    precision = resizePrecisionDecider,
+                    scale = resizeScaleDecider
+                )
+            }
+        }
 
         override fun toString(): String = key
     }
@@ -336,12 +347,46 @@ interface ImageRequest {
             definedOptionsBuilder.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
-        open fun resize(resize: Resize?): Builder = apply {
-            definedOptionsBuilder.resize(resize)
+        open fun resize(
+            size: Size,
+            precision: PrecisionDecider? = null,
+            scale: ScaleDecider? = null
+        ): Builder = apply {
+            definedOptionsBuilder.resize(size, precision, scale)
         }
 
-        open fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
-            definedOptionsBuilder.resizeSize(sizeResolver)
+        open fun resize(
+            size: Size,
+            precision: Precision = EXACTLY,
+            scale: Scale = CENTER_CROP
+        ): Builder = apply {
+            definedOptionsBuilder.resize(size, precision, scale)
+        }
+
+        open fun resize(size: Size): Builder = apply {
+            definedOptionsBuilder.resize(size)
+        }
+
+        open fun resize(
+            @Px width: Int,
+            @Px height: Int,
+            precision: PrecisionDecider? = null,
+            scale: ScaleDecider? = null
+        ): Builder = apply {
+            definedOptionsBuilder.resize(width, height, precision, scale)
+        }
+
+        open fun resize(
+            @Px width: Int,
+            @Px height: Int,
+            precision: Precision = EXACTLY,
+            scale: Scale = CENTER_CROP
+        ): Builder = apply {
+            definedOptionsBuilder.resize(width, height, precision, scale)
+        }
+
+        open fun resize(@Px width: Int, @Px height: Int): Builder = apply {
+            definedOptionsBuilder.resize(width, height)
         }
 
         open fun resizeSize(size: Size?): Builder = apply {
@@ -350,6 +395,10 @@ interface ImageRequest {
 
         open fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
             definedOptionsBuilder.resizeSize(width, height)
+        }
+
+        open fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+            definedOptionsBuilder.resizeSize(sizeResolver)
         }
 
         open fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
@@ -487,12 +536,12 @@ interface ImageRequest {
             @Suppress("DEPRECATION") val preferQualityOverSpeed =
                 if (VERSION.SDK_INT < VERSION_CODES.N)
                     finalOptions.preferQualityOverSpeed ?: false else false
-            val resize = finalOptions.resize
+            val resizeSize = finalOptions.resizeSize
             var resolvedResizeSize = false
             val resizeSizeResolver = finalOptions.resizeSizeResolver
                 ?: resolveResizeSizeResolver().apply { resolvedResizeSize = true }
             val resizePrecisionDecider = finalOptions.resizePrecisionDecider
-                ?: fixedPrecision(if (resize != null || !resolvedResizeSize) EXACTLY else LESS_PIXELS)
+                ?: fixedPrecision(if (resizeSize != null || !resolvedResizeSize) EXACTLY else LESS_PIXELS)
             val resizeScaleDecider = finalOptions.resizeScaleDecider
                 ?: fixedScale(resolveResizeScale())
             val transformations = finalOptions.transformations
@@ -524,7 +573,7 @@ interface ImageRequest {
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
-                        resize = resize,
+                        resizeSize = resizeSize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
@@ -557,7 +606,7 @@ interface ImageRequest {
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
-                        resize = resize,
+                        resizeSize = resizeSize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
@@ -590,7 +639,7 @@ interface ImageRequest {
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
-                        resize = resize,
+                        resizeSize = resizeSize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,

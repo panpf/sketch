@@ -15,7 +15,6 @@ import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.ImageRequest.BaseImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
@@ -227,12 +226,36 @@ interface DisplayRequest : ImageRequest {
             super.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
-        override fun resize(resize: Resize?): Builder = apply {
-            super.resize(resize)
+        override fun resize(
+            size: Size, precision: PrecisionDecider?, scale: ScaleDecider?
+        ): Builder = apply {
+            super.resize(size, precision, scale)
         }
 
-        override fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
-            super.resizeSize(sizeResolver)
+        override fun resize(
+            size: Size, precision: Precision, scale: Scale
+        ): Builder = apply {
+            super.resize(size, precision, scale)
+        }
+
+        override fun resize(size: Size): Builder = apply {
+            super.resize(size)
+        }
+
+        override fun resize(
+            width: Int, height: Int, precision: PrecisionDecider?, scale: ScaleDecider?
+        ): Builder = apply {
+            super.resize(width, height, precision, scale)
+        }
+
+        override fun resize(
+            width: Int, height: Int, precision: Precision, scale: Scale
+        ): Builder = apply {
+            super.resize(width, height, precision, scale)
+        }
+
+        override fun resize(width: Int, height: Int): Builder = apply {
+            super.resize(width, height)
         }
 
         override fun resizeSize(size: Size?): Builder = apply {
@@ -241,6 +264,10 @@ interface DisplayRequest : ImageRequest {
 
         override fun resizeSize(width: Int, height: Int): Builder = apply {
             super.resizeSize(width, height)
+        }
+
+        override fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+            super.resizeSize(sizeResolver)
         }
 
         override fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
@@ -368,7 +395,7 @@ interface DisplayRequest : ImageRequest {
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean,
-        override val resize: Resize?,
+        override val resizeSize: Size?,
         override val resizeSizeResolver: SizeResolver,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,

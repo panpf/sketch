@@ -10,7 +10,6 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.test.contextAndSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -26,7 +25,7 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         val interceptors =
             listOf(BitmapResultDiskCacheDecodeInterceptor(), BitmapEngineDecodeInterceptor())
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(Resize(500, 500, LESS_PIXELS))
+            resize(500, 500, LESS_PIXELS)
         }
         val requestExtras = RequestExtras()
         val chain =
@@ -45,7 +44,10 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         )
         Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
-        Assert.assertEquals("InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", result.transformedList?.joinToString())
+        Assert.assertEquals(
+            "InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            result.transformedList?.joinToString()
+        )
 
         val result1 = runBlocking {
             chain.proceed()
@@ -58,7 +60,10 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         )
         Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
         Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, result1.dataFrom)
-        Assert.assertEquals("InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", result.transformedList?.joinToString())
+        Assert.assertEquals(
+            "InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            result.transformedList?.joinToString()
+        )
     }
 
     @Test

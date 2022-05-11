@@ -14,7 +14,6 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
@@ -36,7 +35,11 @@ class RequestExecutor {
     }
 
     @MainThread
-    suspend fun execute(sketch: Sketch, originRequest: ImageRequest, enqueue: Boolean): ImageResult {
+    suspend fun execute(
+        sketch: Sketch,
+        originRequest: ImageRequest,
+        enqueue: Boolean
+    ): ImageResult {
         requiredMainThread()
         var request: ImageRequest = sketch.globalImageOptions
             ?.let { originRequest.newBuilder().global(it).build() }
@@ -60,14 +63,11 @@ class RequestExecutor {
                 request.lifecycle.awaitStarted()
             }
 
-            if (request.resize == null) {
+            if (request.resizeSize == null) {
                 val size = request.resizeSizeResolver.size()
                 if (size != null) {
-                    val newResize = Resize(
-                        size, request.resizePrecisionDecider, request.resizeScaleDecider
-                    )
                     request = request.newRequest {
-                        resize(newResize)
+                        resizeSize(size)
                     }
                 }
             }
@@ -142,7 +142,12 @@ class RequestExecutor {
         request.listener?.onStart(request)
     }
 
-    private fun onSuccess(sketch: Sketch, request: ImageRequest, target: Target?, result: ImageResult.Success) {
+    private fun onSuccess(
+        sketch: Sketch,
+        request: ImageRequest,
+        target: Target?,
+        result: ImageResult.Success
+    ) {
         sketch.logger.d(MODULE) {
             if (result is DisplayResult.Success) {
                 "Request Successful. ${result.drawable}. ${request.key}"
@@ -166,7 +171,12 @@ class RequestExecutor {
         request.listener?.onSuccess(request, result)
     }
 
-    private fun onError(sketch: Sketch, request: ImageRequest, target: Target?, result: ImageResult.Error) {
+    private fun onError(
+        sketch: Sketch,
+        request: ImageRequest,
+        target: Target?,
+        result: ImageResult.Error
+    ) {
         sketch.logger.e(MODULE, result.exception) {
             "Request failed. ${result.exception.message}. ${request.key}"
         }
