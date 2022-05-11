@@ -3,7 +3,7 @@ package com.github.panpf.sketch.resize
 import android.content.Context
 import com.github.panpf.sketch.util.Size
 
-class ScreenSizeResolver(context: Context) : SizeResolver {
+class DisplaySizeResolver(context: Context) : SizeResolver {
 
     private val appContext = context.applicationContext
 

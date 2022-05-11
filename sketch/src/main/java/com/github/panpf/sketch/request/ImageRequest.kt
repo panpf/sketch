@@ -38,7 +38,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.resize.ScreenSizeResolver
+import com.github.panpf.sketch.resize.DisplaySizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewSizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
@@ -66,7 +66,7 @@ interface ImageRequest {
     }
 
     val sketch: Sketch
-    val context: Context
+    val context: Context    // todo Request 不持有 Sketch
     val uriString: String
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
     val parameters: Parameters?
@@ -172,12 +172,11 @@ interface ImageRequest {
         private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? =
             null
         private var progressListener: ProgressListener<ImageRequest>? = null
-
         private var target: Target? = null
         private var lifecycle: Lifecycle? = null
-
         private var viewOptions: ImageOptions? = null
         private var globalOptions: ImageOptions? = null
+
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var httpHeaders: HttpHeaders.Builder? = null
@@ -208,7 +207,7 @@ interface ImageRequest {
             this.context = context
             this.sketch = context.sketch
             this.uriString = uriString.orEmpty()
-            this.globalOptions = sketch.globalImageOptions
+            this.globalOptions = sketch.globalImageOptions  // 提供 defaults() 方法替代
         }
 
         internal constructor(context: Context, request: ImageRequest) {
@@ -299,7 +298,7 @@ interface ImageRequest {
             this.target = target
             this.viewOptions = target.asOrNull<ViewTarget<*>>()
                 ?.view.asOrNull<ImageOptionsProvider>()
-                ?.displayImageOptions
+                ?.displayImageOptions   // 搞一个 options 方法 将 viewoptions 合并到 builder ，因为 viewoptions 也算是 用户指定的
         }
 
         open fun depth(depth: RequestDepth?): Builder = apply {
@@ -812,7 +811,7 @@ interface ImageRequest {
             return if (target is ViewTarget<*>) {
                 ViewSizeResolver(target.view)
             } else {
-                ScreenSizeResolver(context)
+                DisplaySizeResolver(context)
             }
         }
 
