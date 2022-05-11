@@ -41,7 +41,7 @@ class WebpAnimatedDrawableDecoder(
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): WebpAnimatedDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !request.disabledAnimatedImage) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && request.disabledAnimatedImage != true) {
                 val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
                 if (imageFormat == ImageFormat.WEBP && fetchResult.headerBytes.isAnimatedWebP()) {
                     return WebpAnimatedDrawableDecoder(request, fetchResult.dataSource)

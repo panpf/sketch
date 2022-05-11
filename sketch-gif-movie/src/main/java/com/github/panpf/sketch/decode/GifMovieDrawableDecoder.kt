@@ -61,7 +61,7 @@ class GifMovieDrawableDecoder constructor(
                 movie.isOpaque && request.bitmapConfig?.isLowQuality == true -> RGB_565
                 else -> ARGB_8888
             },
-            if (!request.disabledReuseBitmap) {
+            if (request.disabledReuseBitmap != true) {
                 object : MovieDrawable.BitmapCreator {
                     override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
                         request.sketch.bitmapPool.getOrCreate(width, height, config)
@@ -115,7 +115,7 @@ class GifMovieDrawableDecoder constructor(
             requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): GifMovieDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !request.disabledAnimatedImage) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && request.disabledAnimatedImage != true) {
                 val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
                 if (imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()) {

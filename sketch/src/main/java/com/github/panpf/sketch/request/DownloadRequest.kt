@@ -46,30 +46,26 @@ fun DownloadRequestBuilder(
 interface DownloadRequest : ImageRequest {
 
     override fun newBuilder(
-        context: Context,
         configBlock: (ImageRequest.Builder.() -> Unit)?
-    ): Builder = Builder(context, this).apply {
+    ): Builder = Builder(this).apply {
         configBlock?.invoke(this)
     }
 
     override fun newRequest(
-        context: Context,
         configBlock: (ImageRequest.Builder.() -> Unit)?
-    ): ImageRequest = Builder(context, this).apply {
+    ): ImageRequest = Builder(this).apply {
         configBlock?.invoke(this)
     }.build()
 
     fun newDownloadBuilder(
-        context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
-    ): Builder = Builder(context, this).apply {
+    ): Builder = Builder(this).apply {
         configBlock?.invoke(this)
     }
 
     fun newDownloadRequest(
-        context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
-    ): DownloadRequest = Builder(context, this).apply {
+    ): DownloadRequest = Builder(this).apply {
         configBlock?.invoke(this)
     }.build()
 
@@ -78,7 +74,7 @@ interface DownloadRequest : ImageRequest {
         //        constructor(context: Context, uriString: String?) : super(context, DOWNLOAD, uriString)
         constructor(context: Context, uriString: String?) : super(context, uriString)
 
-        constructor(context: Context, request: DownloadRequest) : super(context, request)
+        constructor(request: DownloadRequest) : super(request)
 
         fun listener(listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>?): Builder =
             apply {
@@ -123,14 +119,14 @@ interface DownloadRequest : ImageRequest {
             override fun onSuccess(result: DownloadData) = onSuccess(result)
         })
 
+        override fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
+            super.lifecycle(lifecycle)
+        }
+
         override fun build(): DownloadRequest {
             return super.build() as DownloadRequest
         }
 
-
-        override fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
-            super.lifecycle(lifecycle)
-        }
 
         override fun depth(depth: RequestDepth?): Builder = apply {
             super.depth(depth)
@@ -168,15 +164,13 @@ interface DownloadRequest : ImageRequest {
             super.removeHttpHeader(name)
         }
 
-        override fun downloadDiskCachePolicy(downloadDiskCachePolicy: CachePolicy?): Builder =
-            apply {
-                super.downloadDiskCachePolicy(downloadDiskCachePolicy)
-            }
+        override fun downloadDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            super.downloadDiskCachePolicy(cachePolicy)
+        }
 
-        override fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder =
-            apply {
-                super.bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy)
-            }
+        override fun bitmapResultDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            super.bitmapResultDiskCachePolicy(cachePolicy)
+        }
 
         override fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
             super.bitmapConfig(bitmapConfig)
@@ -258,65 +252,59 @@ interface DownloadRequest : ImageRequest {
             super.addTransformations(*transformations)
         }
 
-        override fun removeTransformations(removeTransformations: List<Transformation>): Builder =
-            apply {
-                super.removeTransformations(removeTransformations)
-            }
-
-        override fun removeTransformations(vararg removeTransformations: Transformation): Builder =
-            apply {
-                super.removeTransformations(*removeTransformations)
-            }
-
-        override fun disabledReuseBitmap(disabledReuseBitmap: Boolean?): Builder = apply {
-            super.disabledReuseBitmap(disabledReuseBitmap)
+        override fun removeTransformations(transformations: List<Transformation>): Builder = apply {
+            super.removeTransformations(transformations)
         }
 
-        override fun ignoreExifOrientation(ignoreExifOrientation: Boolean?): Builder = apply {
-            super.ignoreExifOrientation(ignoreExifOrientation)
-        }
-
-        override fun bitmapMemoryCachePolicy(bitmapMemoryCachePolicy: CachePolicy?): Builder =
+        override fun removeTransformations(vararg transformations: Transformation): Builder =
             apply {
-                super.bitmapMemoryCachePolicy(bitmapMemoryCachePolicy)
+                super.removeTransformations(*transformations)
             }
 
-        override fun disabledAnimatedImage(disabledAnimatedImage: Boolean?): Builder =
-            apply {
-                super.disabledAnimatedImage(disabledAnimatedImage)
-            }
-
-        override fun placeholder(placeholderImage: StateImage?): Builder = apply {
-            super.placeholder(placeholderImage)
+        override fun disabledReuseBitmap(disabled: Boolean?): Builder = apply {
+            super.disabledReuseBitmap(disabled)
         }
 
-        override fun placeholder(placeholderDrawable: Drawable?): Builder = apply {
-            super.placeholder(placeholderDrawable)
+        override fun ignoreExifOrientation(ignore: Boolean?): Builder = apply {
+            super.ignoreExifOrientation(ignore)
         }
 
-        override fun placeholder(placeholderDrawableResId: Int?): Builder = apply {
-            super.placeholder(placeholderDrawableResId)
+        override fun bitmapMemoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            super.bitmapMemoryCachePolicy(cachePolicy)
+        }
+
+        override fun disabledAnimatedImage(disabled: Boolean?): Builder = apply {
+            super.disabledAnimatedImage(disabled)
+        }
+
+        override fun placeholder(stateImage: StateImage?): Builder = apply {
+            super.placeholder(stateImage)
+        }
+
+        override fun placeholder(drawable: Drawable?): Builder = apply {
+            super.placeholder(drawable)
+        }
+
+        override fun placeholder(drawableResId: Int?): Builder = apply {
+            super.placeholder(drawableResId)
         }
 
         override fun error(
-            errorImage: StateImage?,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)?
+            stateImage: StateImage?, configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
-            super.error(errorImage, configBlock)
+            super.error(stateImage, configBlock)
         }
 
         override fun error(
-            errorDrawable: Drawable?,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)?
+            drawable: Drawable?, configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
-            super.error(errorDrawable, configBlock)
+            super.error(drawable, configBlock)
         }
 
         override fun error(
-            errorDrawableResId: Int?,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)?
+            drawableResId: Int?, configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
-            super.error(errorDrawableResId, configBlock)
+            super.error(drawableResId, configBlock)
         }
 
         override fun transition(transition: Factory?): Builder = apply {
@@ -324,14 +312,22 @@ interface DownloadRequest : ImageRequest {
         }
 
         override fun crossfade(
-            durationMillis: Int,
-            preferExactIntrinsicSize: Boolean
+            durationMillis: Int, preferExactIntrinsicSize: Boolean
         ): Builder = apply {
             super.crossfade(durationMillis, preferExactIntrinsicSize)
         }
 
         override fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean?): Builder = apply {
             super.resizeApplyToDrawable(resizeApplyToDrawable)
+        }
+
+
+        override fun merge(options: ImageOptions?): Builder = apply {
+            super.merge(options)
+        }
+
+        override fun global(options: ImageOptions?): Builder = apply {
+            super.global(options)
         }
     }
 
@@ -349,25 +345,24 @@ interface DownloadRequest : ImageRequest {
         override val colorSpace: ColorSpace?,
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         @Suppress("OverridingDeprecatedMember")
-        override val preferQualityOverSpeed: Boolean,
+        override val preferQualityOverSpeed: Boolean?,
         override val resize: Resize?,
         override val resizeSizeResolver: SizeResolver,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,
-        override val disabledReuseBitmap: Boolean,
-        override val ignoreExifOrientation: Boolean,
+        override val disabledReuseBitmap: Boolean?,
+        override val ignoreExifOrientation: Boolean?,
         override val bitmapResultDiskCachePolicy: CachePolicy,
         override val target: Target?,
         override val lifecycle: Lifecycle,
-        override val disabledAnimatedImage: Boolean,
+        override val disabledAnimatedImage: Boolean?,
         override val bitmapMemoryCachePolicy: CachePolicy,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Factory?,
         override val resizeApplyToDrawable: Boolean?,
         override val definedOptions: ImageOptions,
-        override val viewOptions: ImageOptions?,
         override val globalOptions: ImageOptions?
     ) : BaseImageRequest(), DownloadRequest
 }

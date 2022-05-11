@@ -21,13 +21,12 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.http.merge
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
-import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.DisplaySizeResolver
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -38,22 +37,17 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.resize.DisplaySizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewSizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
 import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.sketch.stateimage.newErrorStateImage
 import com.github.panpf.sketch.target.ListenerProvider
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.Transformation
-import com.github.panpf.sketch.transform.merge
-import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
@@ -83,6 +77,7 @@ interface ImageRequest {
      */
     val bitmapConfig: BitmapConfig?
 
+    @get:RequiresApi(VERSION_CODES.O)
     val colorSpace: ColorSpace?
 
     /**
@@ -98,7 +93,7 @@ interface ImageRequest {
      * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
      */
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
-    val preferQualityOverSpeed: Boolean
+    val preferQualityOverSpeed: Boolean?
 
     /** The size of the desired bitmap */
     val resize: Resize?
@@ -110,17 +105,17 @@ interface ImageRequest {
     val transformations: List<Transformation>?
 
     /** Disabled reuse of Bitmap from [BitmapPool] */
-    val disabledReuseBitmap: Boolean
+    val disabledReuseBitmap: Boolean?
 
     /** Ignore exif orientation */
-    val ignoreExifOrientation: Boolean
+    val ignoreExifOrientation: Boolean?
 
     /** @see com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheDecodeInterceptor */
     val bitmapResultDiskCachePolicy: CachePolicy
     val target: Target?
     val lifecycle: Lifecycle
 
-    val disabledAnimatedImage: Boolean
+    val disabledAnimatedImage: Boolean?
     val bitmapMemoryCachePolicy: CachePolicy
     val placeholderImage: StateImage?
     val errorImage: StateImage?
@@ -128,7 +123,6 @@ interface ImageRequest {
     val resizeApplyToDrawable: Boolean?
 
     val definedOptions: ImageOptions
-    val viewOptions: ImageOptions?
     val globalOptions: ImageOptions?
 
     val uri: Uri
@@ -156,12 +150,10 @@ interface ImageRequest {
     }
 
     fun newBuilder(
-        context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
     ): Builder
 
     fun newRequest(
-        context: Context = this.context,
         configBlock: (Builder.() -> Unit)? = null
     ): ImageRequest
 
@@ -169,96 +161,37 @@ interface ImageRequest {
         private val sketch: Sketch
         private val context: Context
         private val uriString: String
-        private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? =
-            null
+        private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
         private var target: Target? = null
+        private var targetViewOptions: ImageOptions? = null
         private var lifecycle: Lifecycle? = null
-        private var viewOptions: ImageOptions? = null
         private var globalOptions: ImageOptions? = null
-
-        private var depth: RequestDepth? = null
-        private var parametersBuilder: Parameters.Builder? = null
-        private var httpHeaders: HttpHeaders.Builder? = null
-        private var downloadDiskCachePolicy: CachePolicy? = null
-        private var bitmapConfig: BitmapConfig? = null
-        private var colorSpace: ColorSpace? = null
-        private var preferQualityOverSpeed: Boolean? = null
-        private var resize: Resize? = null
-        private var resizeSizeResolver: SizeResolver? = null
-        private var resizePrecisionDecider: PrecisionDecider? = null
-        private var resizeScaleDecider: ScaleDecider? = null
-        private var transformations: MutableSet<Transformation>? = null
-        private var disabledReuseBitmap: Boolean? = null
-        private var ignoreExifOrientation: Boolean? = null
-        private var bitmapResultDiskCachePolicy: CachePolicy? = null
-        private var bitmapMemoryCachePolicy: CachePolicy? = null
-        private var disabledAnimatedImage: Boolean? = null
-        private var placeholderImage: StateImage? = null
-        private var errorImage: StateImage? = null
-        private var transition: Transition.Factory? = null
-        private var resizeApplyToDrawable: Boolean? = null
-
-        private var resolvedLifecycle: Lifecycle? = null
-        private var resolvedResizeSizeResolver: SizeResolver? = null
-        private var resolvedResizeScaleDecider: ScaleDecider? = null
+        private val definedOptionsBuilder: ImageOptions.Builder
 
         constructor(context: Context, uriString: String?) {
             this.context = context
             this.sketch = context.sketch
             this.uriString = uriString.orEmpty()
-            this.globalOptions = sketch.globalImageOptions  // 提供 defaults() 方法替代
+            this.definedOptionsBuilder = ImageOptionsBuilder()
         }
 
-        internal constructor(context: Context, request: ImageRequest) {
-            this.context = context
+        internal constructor(request: ImageRequest) {
+            this.context = request.context
             this.sketch = request.sketch
             this.uriString = request.uriString
-            this.listener =
-                request.listener.asOrNull<CombinedListener<ImageRequest, ImageResult.Success, ImageResult.Error>>()?.fromBuilderListener
-                    ?: request.listener
-            this.progressListener =
-                request.progressListener.asOrNull<CombinedProgressListener<ImageRequest>>()?.fromBuilderProgressListener
-                    ?: request.progressListener
-
+            this.listener = request.listener
+                .asOrNull<CombinedListener<ImageRequest, ImageResult.Success, ImageResult.Error>>()
+                ?.fromBuilderListener
+                ?: request.listener
+            this.progressListener = request.progressListener
+                .asOrNull<CombinedProgressListener<ImageRequest>>()
+                ?.fromBuilderProgressListener
+                ?: request.progressListener
             this.target = request.target
             this.lifecycle = request.lifecycle
-
-            this.viewOptions = request.viewOptions
             this.globalOptions = request.globalOptions
-            this.depth = request.depth
-            this.parametersBuilder = request.parameters?.newBuilder()
-            this.httpHeaders = request.httpHeaders?.newBuilder()
-            this.downloadDiskCachePolicy = request.downloadDiskCachePolicy
-            this.bitmapConfig = request.bitmapConfig
-            if (VERSION.SDK_INT >= VERSION_CODES.O) this.colorSpace = request.colorSpace
-            @Suppress("DEPRECATION")
-            this.preferQualityOverSpeed = request.preferQualityOverSpeed
-            this.resize = request.resize
-            this.resizeSizeResolver = request.resizeSizeResolver
-            this.resizePrecisionDecider = request.resizePrecisionDecider
-            this.resizeScaleDecider = request.resizeScaleDecider
-            this.transformations = request.transformations?.toMutableSet()
-            this.disabledReuseBitmap = request.disabledReuseBitmap
-            this.ignoreExifOrientation = request.ignoreExifOrientation
-            this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
-            this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
-            this.disabledAnimatedImage = request.disabledAnimatedImage
-            this.placeholderImage = request.placeholderImage
-            this.errorImage = request.errorImage
-            this.transition = request.transition
-            this.resizeApplyToDrawable = request.resizeApplyToDrawable
-
-            // If the context changes, recompute the resolved values.
-            if (request.context === context) {
-                resolvedLifecycle = request.lifecycle
-                resolvedResizeSizeResolver = request.resizeSizeResolver
-                resolvedResizeScaleDecider = request.resizeScaleDecider
-            } else {
-                resolvedLifecycle = null
-                resolvedResizeSizeResolver = null
-                resolvedResizeScaleDecider = null
-            }
+            this.definedOptionsBuilder = request.definedOptions.newBuilder()
         }
 
         internal fun listener(listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?): Builder =
@@ -285,10 +218,11 @@ interface ImageRequest {
                     onSuccess(request, result)
             })
 
-        internal fun progressListener(progressListener: ProgressListener<ImageRequest>?): Builder =
-            apply {
-                this.progressListener = progressListener
-            }
+        internal fun progressListener(
+            progressListener: ProgressListener<ImageRequest>?
+        ): Builder = apply {
+            this.progressListener = progressListener
+        }
 
         open fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
             this.lifecycle = lifecycle
@@ -296,25 +230,22 @@ interface ImageRequest {
 
         internal fun target(target: Target?): Builder = apply {
             this.target = target
-            this.viewOptions = target.asOrNull<ViewTarget<*>>()
+            this.targetViewOptions = target.asOrNull<ViewTarget<*>>()
                 ?.view.asOrNull<ImageOptionsProvider>()
-                ?.displayImageOptions   // 搞一个 options 方法 将 viewoptions 合并到 builder ，因为 viewoptions 也算是 用户指定的
+                ?.displayImageOptions
         }
 
+
         open fun depth(depth: RequestDepth?): Builder = apply {
-            this.depth = depth
+            definedOptionsBuilder.depth(depth)
         }
 
         open fun depthFrom(from: String?): Builder = apply {
-            if (from != null) {
-                setParameter(REQUEST_DEPTH_FROM, from, null)
-            } else {
-                removeParameter(REQUEST_DEPTH_FROM)
-            }
+            definedOptionsBuilder.depthFrom(from)
         }
 
         open fun parameters(parameters: Parameters?): Builder = apply {
-            this.parametersBuilder = parameters?.newBuilder()
+            definedOptionsBuilder.parameters(parameters)
         }
 
         /**
@@ -324,15 +255,10 @@ interface ImageRequest {
          */
         @JvmOverloads
         open fun setParameter(
-            key: String,
-            value: Any?,
-            cacheKey: String? = value?.toString()
-        ): Builder =
-            apply {
-                this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
-                    set(key, value, cacheKey)
-                }
-            }
+            key: String, value: Any?, cacheKey: String? = value?.toString()
+        ): Builder = apply {
+            definedOptionsBuilder.setParameter(key, value, cacheKey)
+        }
 
         /**
          * Remove a parameter from this request.
@@ -340,71 +266,62 @@ interface ImageRequest {
          * @see Parameters.Builder.remove
          */
         open fun removeParameter(key: String): Builder = apply {
-            this.parametersBuilder?.remove(key)
+            definedOptionsBuilder.removeParameter(key)
         }
 
         open fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
-            this.httpHeaders = httpHeaders?.newBuilder()
+            definedOptionsBuilder.httpHeaders(httpHeaders)
         }
 
         /**
          * Add a header for any network operations performed by this request.
          */
         open fun addHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
-                add(name, value)
-            }
+            definedOptionsBuilder.addHttpHeader(name, value)
         }
 
         /**
          * Set a header for any network operations performed by this request.
          */
         open fun setHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
-                set(name, value)
-            }
+            definedOptionsBuilder.setHttpHeader(name, value)
         }
 
         /**
          * Remove all network headers with the key [name].
          */
         open fun removeHttpHeader(name: String): Builder = apply {
-            this.httpHeaders?.removeAll(name)
+            definedOptionsBuilder.removeHttpHeader(name)
         }
 
-        open fun downloadDiskCachePolicy(downloadDiskCachePolicy: CachePolicy?): Builder =
-            apply {
-                this.downloadDiskCachePolicy = downloadDiskCachePolicy
-            }
+        open fun downloadDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            definedOptionsBuilder.downloadDiskCachePolicy(cachePolicy)
+        }
 
-        open fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder =
-            apply {
-                this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
-            }
 
         open fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
-            this.bitmapConfig = bitmapConfig
+            definedOptionsBuilder.bitmapConfig(bitmapConfig)
         }
 
         open fun bitmapConfig(bitmapConfig: Bitmap.Config?): Builder = apply {
-            this.bitmapConfig = if (bitmapConfig != null) BitmapConfig(bitmapConfig) else null
+            definedOptionsBuilder.bitmapConfig(bitmapConfig)
         }
 
         open fun lowQualityBitmapConfig(): Builder = apply {
-            this.bitmapConfig = BitmapConfig.LOW_QUALITY
+            definedOptionsBuilder.lowQualityBitmapConfig()
         }
 
         open fun middenQualityBitmapConfig(): Builder = apply {
-            this.bitmapConfig = BitmapConfig.MIDDEN_QUALITY
+            definedOptionsBuilder.middenQualityBitmapConfig()
         }
 
         open fun highQualityBitmapConfig(): Builder = apply {
-            this.bitmapConfig = BitmapConfig.HIGH_QUALITY
+            definedOptionsBuilder.highQualityBitmapConfig()
         }
 
         @RequiresApi(VERSION_CODES.O)
         open fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
-            this.colorSpace = colorSpace
+            definedOptionsBuilder.colorSpace(colorSpace)
         }
 
         /**
@@ -421,273 +338,178 @@ interface ImageRequest {
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
         open fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
-            if (VERSION.SDK_INT < VERSION_CODES.N) {
-                this.preferQualityOverSpeed = inPreferQualityOverSpeed
-            }
+            @Suppress("DEPRECATION")
+            definedOptionsBuilder.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
         open fun resize(resize: Resize?): Builder = apply {
-            this.resize = resize
+            definedOptionsBuilder.resize(resize)
         }
 
         open fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
-            this.resizeSizeResolver = sizeResolver
-            resetResolvedValues()
+            definedOptionsBuilder.resizeSize(sizeResolver)
         }
 
         open fun resizeSize(size: Size?): Builder = apply {
-            resizeSize(size?.let { SizeResolver(it) })
+            definedOptionsBuilder.resizeSize(size)
         }
 
         open fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
-            resizeSize(SizeResolver(Size(width, height)))
+            definedOptionsBuilder.resizeSize(width, height)
         }
 
         open fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
-            this.resizePrecisionDecider = precisionDecider
+            definedOptionsBuilder.resizePrecision(precisionDecider)
         }
 
         open fun resizePrecision(precision: Precision): Builder = apply {
-            this.resizePrecisionDecider = FixedPrecisionDecider(precision)
+            definedOptionsBuilder.resizePrecision(precision)
         }
 
         open fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
-            this.resizeScaleDecider = scaleDecider
+            definedOptionsBuilder.resizeScale(scaleDecider)
         }
 
         open fun resizeScale(scale: Scale): Builder = apply {
-            this.resizeScaleDecider = fixedScale(scale)
+            definedOptionsBuilder.resizeScale(scale)
         }
 
         open fun transformations(transformations: List<Transformation>?): Builder = apply {
-            this.transformations = transformations?.toMutableSet()
+            definedOptionsBuilder.transformations(transformations)
         }
 
         open fun transformations(vararg transformations: Transformation): Builder = apply {
-            this.transformations = transformations.toMutableSet()
+            definedOptionsBuilder.transformations(transformations.toList())
         }
 
         open fun addTransformations(transformations: List<Transformation>): Builder = apply {
-            val newTransformations = transformations.filter { newTransformation ->
-                this.transformations?.find { it.key == newTransformation.key } == null
-            }
-            this.transformations = (this.transformations ?: HashSet()).apply {
-                addAll(newTransformations)
-            }
+            definedOptionsBuilder.addTransformations(transformations)
         }
 
         open fun addTransformations(vararg transformations: Transformation): Builder = apply {
-            addTransformations(transformations.toList())
+            definedOptionsBuilder.addTransformations(transformations.toList())
         }
 
-        open fun removeTransformations(removeTransformations: List<Transformation>): Builder =
-            apply {
-                this.transformations = this.transformations?.filter { oldTransformation ->
-                    removeTransformations.find { it.key == oldTransformation.key } == null
-                }?.toMutableSet()
-            }
-
-        open fun removeTransformations(vararg removeTransformations: Transformation): Builder =
-            apply {
-                removeTransformations(removeTransformations.toList())
-            }
-
-        open fun disabledReuseBitmap(disabledReuseBitmap: Boolean? = true): Builder = apply {
-            this.disabledReuseBitmap = disabledReuseBitmap
+        open fun removeTransformations(transformations: List<Transformation>): Builder = apply {
+            definedOptionsBuilder.removeTransformations(transformations)
         }
 
-        open fun ignoreExifOrientation(ignoreExifOrientation: Boolean? = true): Builder =
-            apply {
-                this.ignoreExifOrientation = ignoreExifOrientation
-            }
-
-        open fun bitmapMemoryCachePolicy(bitmapMemoryCachePolicy: CachePolicy?): Builder = apply {
-            this.bitmapMemoryCachePolicy = bitmapMemoryCachePolicy
+        open fun removeTransformations(vararg transformations: Transformation): Builder = apply {
+            definedOptionsBuilder.removeTransformations(transformations.toList())
         }
 
-        open fun disabledAnimatedImage(disabledAnimatedImage: Boolean? = true): Builder =
-            apply {
-                this.disabledAnimatedImage = disabledAnimatedImage
-            }
-
-        open fun placeholder(placeholderImage: StateImage?): Builder = apply {
-            this.placeholderImage = placeholderImage
+        open fun disabledReuseBitmap(disabled: Boolean? = true): Builder = apply {
+            definedOptionsBuilder.disabledReuseBitmap(disabled)
         }
 
-        open fun placeholder(placeholderDrawable: Drawable?): Builder = apply {
-            this.placeholderImage =
-                if (placeholderDrawable != null) DrawableStateImage(placeholderDrawable) else null
+        open fun ignoreExifOrientation(ignore: Boolean? = true): Builder = apply {
+            definedOptionsBuilder.ignoreExifOrientation(ignore)
         }
 
-        open fun placeholder(@DrawableRes placeholderDrawableResId: Int?): Builder = apply {
-            this.placeholderImage = if (placeholderDrawableResId != null) {
-                DrawableStateImage(placeholderDrawableResId)
-            } else null
+        open fun bitmapResultDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            definedOptionsBuilder.bitmapResultDiskCachePolicy(cachePolicy)
+        }
+
+
+        open fun disabledAnimatedImage(disabled: Boolean? = true): Builder = apply {
+            definedOptionsBuilder.disabledAnimatedImage(disabled)
+        }
+
+        open fun placeholder(stateImage: StateImage?): Builder = apply {
+            definedOptionsBuilder.placeholder(stateImage)
+        }
+
+        open fun placeholder(drawable: Drawable?): Builder = apply {
+            definedOptionsBuilder.placeholder(drawable)
+        }
+
+        open fun placeholder(@DrawableRes drawableResId: Int?): Builder = apply {
+            definedOptionsBuilder.placeholder(drawableResId)
         }
 
         open fun error(
-            errorImage: StateImage?,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+            stateImage: StateImage?, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            this.errorImage = errorImage?.let {
-                if (configBlock != null) {
-                    newErrorStateImage(it, configBlock)
-                } else {
-                    it
-                }
-            }
+            definedOptionsBuilder.error(stateImage, configBlock)
         }
 
         open fun error(
-            errorDrawable: Drawable?,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+            drawable: Drawable?, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            this.errorImage = errorDrawable?.let {
-                if (configBlock != null) {
-                    newErrorStateImage(DrawableStateImage(it), configBlock)
-                } else {
-                    DrawableStateImage(it)
-                }
-            }
+            definedOptionsBuilder.error(drawable, configBlock)
         }
 
         open fun error(
-            errorDrawableResId: Int?,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+            drawableResId: Int?, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            this.errorImage = errorDrawableResId?.let {
-                if (configBlock != null) {
-                    newErrorStateImage(DrawableStateImage(it), configBlock)
-                } else {
-                    DrawableStateImage(it)
-                }
-            }
+            definedOptionsBuilder.error(drawableResId, configBlock)
         }
 
         open fun transition(transition: Transition.Factory?): Builder = apply {
-            this.transition = transition
+            definedOptionsBuilder.transition(transition)
         }
 
         open fun crossfade(
             durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
             preferExactIntrinsicSize: Boolean = false
         ): Builder = apply {
-            transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
+            definedOptionsBuilder.crossfade(durationMillis, preferExactIntrinsicSize)
         }
 
         open fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder = apply {
-            this.resizeApplyToDrawable = resizeApplyToDrawable
+            definedOptionsBuilder.resizeApplyToDrawable(resizeApplyToDrawable)
         }
+
+        open fun bitmapMemoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            definedOptionsBuilder.bitmapMemoryCachePolicy(cachePolicy)
+        }
+
+
+        open fun merge(options: ImageOptions?): Builder = apply {
+            definedOptionsBuilder.merge(options)
+        }
+
+        open fun global(options: ImageOptions?): Builder = apply {
+            this.globalOptions = options
+        }
+
 
         @SuppressLint("NewApi")
         open fun build(): ImageRequest {
             val listener = combinationListener()
             val progressListener = combinationProgressListener()
-            val lifecycle = lifecycle ?: resolvedLifecycle ?: resolveLifecycle() ?: GlobalLifecycle
-            val definedOptions = ImageOptions {
-                this.depth(depth)
-                this.parameters(parametersBuilder?.build())
-                this.httpHeaders(httpHeaders?.build())
-                this.downloadDiskCachePolicy(downloadDiskCachePolicy)
-                this.bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy)
-                this.bitmapConfig(bitmapConfig)
-                if (VERSION.SDK_INT >= VERSION_CODES.O) this.colorSpace(colorSpace)
-                @Suppress("DEPRECATION")
-                this.preferQualityOverSpeed(preferQualityOverSpeed)
-                this.resize(resize)
-                this.resizeSize(resizeSizeResolver)
-                this.resizePrecision(resizePrecisionDecider)
-                this.resizeScale(resizeScaleDecider)
-                this.transformations(transformations?.toList())
-                this.disabledReuseBitmap(disabledReuseBitmap)
-                this.ignoreExifOrientation(ignoreExifOrientation)
-                this.bitmapMemoryCachePolicy(bitmapMemoryCachePolicy)
-                this.disabledAnimatedImage(disabledAnimatedImage)
-                this.placeholder(placeholderImage)
-                this.error(errorImage)
-                this.transition(transition)
-                this.resizeApplyToDrawable(resizeApplyToDrawable)
-            }
-            val depth = depth
-                ?: viewOptions?.depth
-                ?: globalOptions?.depth
-                ?: NETWORK
-            val parameters = parametersBuilder?.build()
-                .merge(viewOptions?.parameters)
-                .merge(globalOptions?.parameters)
-            val httpHeaders = httpHeaders?.build()
-                .merge(viewOptions?.httpHeaders)
-                .merge(globalOptions?.httpHeaders)
-            val downloadDiskCachePolicy = downloadDiskCachePolicy
-                ?: viewOptions?.downloadDiskCachePolicy
-                ?: globalOptions?.downloadDiskCachePolicy
-                ?: ENABLED
-            val bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
-                ?: viewOptions?.bitmapResultDiskCachePolicy
-                ?: globalOptions?.bitmapResultDiskCachePolicy
-                ?: ENABLED
-            val bitmapConfig = bitmapConfig
-                ?: viewOptions?.bitmapConfig
-                ?: globalOptions?.bitmapConfig
-            val colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O)
-                colorSpace ?: viewOptions?.colorSpace
-                ?: globalOptions?.colorSpace else null
-
-            @Suppress("DEPRECATION")
-            val preferQualityOverSpeed = preferQualityOverSpeed
-                ?: viewOptions?.preferQualityOverSpeed
-                ?: globalOptions?.preferQualityOverSpeed ?: false
-            val resize = resize
-                ?: viewOptions?.resize
-                ?: globalOptions?.resize
+            val lifecycle = lifecycle ?: resolveLifecycle() ?: GlobalLifecycle
+            definedOptionsBuilder.merge(targetViewOptions)
+            val definedOptions = definedOptionsBuilder.build()
+            val finalOptions = definedOptionsBuilder.merge(globalOptions).build()
+            val depth = finalOptions.depth ?: NETWORK
+            val parameters = finalOptions.parameters
+            val httpHeaders = finalOptions.httpHeaders
+            val downloadDiskCachePolicy = finalOptions.downloadDiskCachePolicy ?: ENABLED
+            val bitmapResultDiskCachePolicy = finalOptions.bitmapResultDiskCachePolicy ?: ENABLED
+            val bitmapConfig = finalOptions.bitmapConfig
+            val colorSpace =
+                if (VERSION.SDK_INT >= VERSION_CODES.O) finalOptions.colorSpace else null
+            @Suppress("DEPRECATION") val preferQualityOverSpeed =
+                if (VERSION.SDK_INT < VERSION_CODES.N)
+                    finalOptions.preferQualityOverSpeed ?: false else null
+            val resize = finalOptions.resize
             var resolvedResizeSize = false
-            val resizeSizeResolver = resizeSizeResolver
-                ?: resolvedResizeSizeResolver
-                ?: viewOptions?.resizeSizeResolver
-                ?: globalOptions?.resizeSizeResolver
-                ?: (resolveResizeSizeResolver().apply {
-                    resolvedResizeSize = true
-                })
-            val resizePrecisionDecider = resizePrecisionDecider
-                ?: viewOptions?.resizePrecisionDecider
-                ?: globalOptions?.resizePrecisionDecider
+            val resizeSizeResolver = finalOptions.resizeSizeResolver
+                ?: resolveResizeSizeResolver().apply { resolvedResizeSize = true }
+            val resizePrecisionDecider = finalOptions.resizePrecisionDecider
                 ?: fixedPrecision(if (resize != null || !resolvedResizeSize) EXACTLY else LESS_PIXELS)
-            val resizeScaleDecider = resizeScaleDecider
-                ?: resolvedResizeScaleDecider
-                ?: viewOptions?.resizeScaleDecider
-                ?: globalOptions?.resizeScaleDecider
+            val resizeScaleDecider = finalOptions.resizeScaleDecider
                 ?: fixedScale(resolveResizeScale())
-            val transformations = transformations?.toList()
-                .merge(viewOptions?.transformations)
-                .merge(globalOptions?.transformations)
-            val disabledReuseBitmap = disabledReuseBitmap
-                ?: viewOptions?.disabledReuseBitmap
-                ?: globalOptions?.disabledReuseBitmap
-                ?: false
-            val ignoreExifOrientation = ignoreExifOrientation
-                ?: viewOptions?.ignoreExifOrientation
-                ?: globalOptions?.ignoreExifOrientation
-                ?: false
-            val bitmapMemoryCachePolicy = bitmapMemoryCachePolicy
-                ?: viewOptions?.bitmapMemoryCachePolicy
-                ?: globalOptions?.bitmapMemoryCachePolicy
-                ?: ENABLED
-            val disabledAnimatedImage = disabledAnimatedImage
-                ?: viewOptions?.disabledAnimatedImage
-                ?: globalOptions?.disabledAnimatedImage
-                ?: false
-            val placeholderImage = placeholderImage
-                ?: viewOptions?.placeholderImage
-                ?: globalOptions?.placeholderImage
-            val errorImage = errorImage
-                ?: viewOptions?.errorImage
-                ?: globalOptions?.errorImage
-            val transition = transition
-                ?: viewOptions?.transition
-                ?: globalOptions?.transition
-            val resizeApplyToDrawable = resizeApplyToDrawable
-                ?: viewOptions?.resizeApplyToDrawable
-                ?: globalOptions?.resizeApplyToDrawable
+            val transformations = finalOptions.transformations
+            val disabledReuseBitmap = finalOptions.disabledReuseBitmap
+            val ignoreExifOrientation = finalOptions.ignoreExifOrientation
+            val bitmapMemoryCachePolicy = finalOptions.bitmapMemoryCachePolicy ?: ENABLED
+            val disabledAnimatedImage = finalOptions.disabledAnimatedImage
+            val placeholderImage = finalOptions.placeholderImage
+            val errorImage = finalOptions.errorImage
+            val transition = finalOptions.transition
+            val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable
 
             return when (this@Builder) {
                 is DisplayRequest.Builder -> {
@@ -699,7 +521,6 @@ interface ImageRequest {
                         progressListener = progressListener,
                         target = target,
                         lifecycle = lifecycle,
-                        viewOptions = viewOptions,
                         globalOptions = globalOptions,
                         definedOptions = definedOptions,
                         depth = depth,
@@ -734,7 +555,6 @@ interface ImageRequest {
                         progressListener = progressListener,
                         target = target,
                         lifecycle = lifecycle,
-                        viewOptions = viewOptions,
                         globalOptions = globalOptions,
                         definedOptions = definedOptions,
                         depth = depth,
@@ -769,7 +589,6 @@ interface ImageRequest {
                         progressListener = progressListener,
                         target = target,
                         lifecycle = lifecycle,
-                        viewOptions = viewOptions,
                         globalOptions = globalOptions,
                         definedOptions = definedOptions,
                         depth = depth,
@@ -799,13 +618,6 @@ interface ImageRequest {
             }
         }
 
-        /** Ensure these values will be recomputed when [build] is called. */
-        private fun resetResolvedValues() {
-            resolvedLifecycle = null
-            resolvedResizeSizeResolver = null
-            resolvedResizeScaleDecider = null
-        }
-
         private fun resolveResizeSizeResolver(): SizeResolver {
             val target = target
             return if (target is ViewTarget<*>) {
@@ -816,38 +628,23 @@ interface ImageRequest {
         }
 
 
-        private fun resolveLifecycle(): Lifecycle? {
-            val target = target
-            val context = if (target is ViewTarget<*>) target.view.context else null
-            return context.getLifecycle()
-        }
+        private fun resolveLifecycle(): Lifecycle? =
+            target.asOrNull<ViewTarget<*>>()?.view?.context?.getLifecycle()
 
-        private fun resolveResizeScale(): Scale {
-            val sizeResolver = resizeSizeResolver
-            if (sizeResolver is ViewSizeResolver<*>) {
-                val view = sizeResolver.view
-                if (view is ImageView) return view.scale
-            }
-
-            val target = target
-            if (target is ViewTarget<*>) {
-                val view = target.view
-                if (view is ImageView) return view.scale
-            }
-
-            return CENTER_CROP
-        }
-
-        private val ImageView.scale: Scale
-            get() = when (scaleType) {
-                ScaleType.FIT_START -> START_CROP
-                ScaleType.FIT_CENTER -> CENTER_CROP
-                ScaleType.FIT_END -> END_CROP
-                ScaleType.CENTER_INSIDE -> CENTER_CROP
-                ScaleType.CENTER -> CENTER_CROP
-                ScaleType.CENTER_CROP -> CENTER_CROP
-                else -> Scale.FILL
-            }
+        private fun resolveResizeScale(): Scale =
+            target.asOrNull<ViewTarget<*>>()
+                ?.view?.asOrNull<ImageView>()
+                ?.scaleType?.let {
+                    when (it) {
+                        ScaleType.FIT_START -> START_CROP
+                        ScaleType.FIT_CENTER -> CENTER_CROP
+                        ScaleType.FIT_END -> END_CROP
+                        ScaleType.CENTER_INSIDE -> CENTER_CROP
+                        ScaleType.CENTER -> CENTER_CROP
+                        ScaleType.CENTER_CROP -> CENTER_CROP
+                        else -> Scale.FILL
+                    }
+                } ?: CENTER_CROP
 
         private fun combinationListener(): Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? {
             val target = target

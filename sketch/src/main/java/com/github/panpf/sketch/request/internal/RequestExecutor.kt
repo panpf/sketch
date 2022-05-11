@@ -37,7 +37,9 @@ class RequestExecutor {
     @MainThread
     suspend fun execute(originRequest: ImageRequest, enqueue: Boolean): ImageResult {
         requiredMainThread()
-        var request: ImageRequest = originRequest
+        var request: ImageRequest = originRequest.sketch.globalImageOptions
+            ?.let { originRequest.newBuilder().global(it).build() }
+            ?: originRequest
         // Wrap the request to manage its lifecycle.
         val requestDelegate = requestDelegate(request, coroutineContext.job)
         requestDelegate.assertActive()

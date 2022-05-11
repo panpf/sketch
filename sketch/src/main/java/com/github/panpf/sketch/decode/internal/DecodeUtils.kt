@@ -144,7 +144,7 @@ fun realDecode(
     decodeRegion: ((srcRect: Rect, decodeConfig: DecodeConfig) -> Bitmap)?
 ): BitmapDecodeResult {
     val exifOrientationHelper = ExifOrientationHelper(
-        if (!request.ignoreExifOrientation) {
+        if (request.ignoreExifOrientation != true) {
             exifOrientation
         } else {
             ExifInterface.ORIENTATION_UNDEFINED
@@ -343,7 +343,7 @@ val Bitmap.sizeString: String
 fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
     DecodeConfig().apply {
         @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
+        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed == true) {
             inPreferQualityOverSpeed = true
         }
 
