@@ -26,7 +26,7 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageRes
         )
     }
 
-private class SaveCellularTrafficMatcher(val saveCellularTrafficImage: StateImage) :
+private class SaveCellularTrafficMatcher(val stateImage: StateImage) :
     ErrorStateImage.Matcher {
 
     override fun match(request: ImageRequest, exception: SketchException?): Boolean =
@@ -34,5 +34,24 @@ private class SaveCellularTrafficMatcher(val saveCellularTrafficImage: StateImag
 
     override fun getDrawable(
         sketch: Sketch, request: ImageRequest, throwable: SketchException?
-    ): Drawable? = saveCellularTrafficImage.getDrawable(sketch, request, throwable)
+    ): Drawable? = stateImage.getDrawable(sketch, request, throwable)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SaveCellularTrafficMatcher
+
+        if (stateImage != other.stateImage) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return stateImage.hashCode()
+    }
+
+    override fun toString(): String {
+        return "SaveCellularTrafficMatcher(stateImage=$stateImage)"
+    }
 }

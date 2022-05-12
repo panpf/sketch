@@ -42,4 +42,26 @@ class MemoryCacheStateImage(
             defaultImage?.getDrawable(sketch, request, exception)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MemoryCacheStateImage
+
+        if (memoryCacheKey != other.memoryCacheKey) return false
+        if (defaultImage != other.defaultImage) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = memoryCacheKey?.hashCode() ?: 0
+        result = 31 * result + (defaultImage?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "MemoryCacheStateImage(memoryCacheKey=$memoryCacheKey, defaultImage=$defaultImage)"
+    }
 }

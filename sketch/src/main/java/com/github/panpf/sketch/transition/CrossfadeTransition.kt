@@ -3,8 +3,8 @@ package com.github.panpf.sketch.transition
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.DisplayResult
 
 /**
@@ -79,6 +79,10 @@ class CrossfadeTransition @JvmOverloads constructor(
             var result = durationMillis
             result = 31 * result + preferExactIntrinsicSize.hashCode()
             return result
+        }
+
+        override fun toString(): String {
+            return "CrossfadeTransition.Factory(durationMillis=$durationMillis, preferExactIntrinsicSize=$preferExactIntrinsicSize)"
         }
     }
 }

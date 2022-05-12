@@ -46,6 +46,23 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
         canvas.drawBitmap(input, resizeMapping.srcRect, resizeMapping.destRect, paint)
         return TransformResult(circleBitmap, CircleCropTransformed(scale))
     }
+
+    override fun toString(): String = key
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CircleCropTransformation
+
+        if (scale != other.scale) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return scale.hashCode()
+    }
 }
 
 class CircleCropTransformed(val scale: Scale) : Transformed {

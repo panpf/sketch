@@ -22,15 +22,25 @@ class HttpHeaders(
             setList.takeIf { it.isNotEmpty() }?.joinToString(prefix = "[", postfix = ",") {
                 "${it.first},${it.second}"
             }
-        return if (addListString != null && setListString != null) {
-            "HttpHeaders(adds=$addListString,sets=$setListString)"
-        } else if (addListString != null) {
-            "HttpHeaders(adds=$addListString)"
-        } else if (setListString != null) {
-            "HttpHeaders(sets=$setListString)"
-        } else {
-            "HttpHeaders()"
-        }
+        return "HttpHeaders(adds=$addListString,sets=$setListString)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HttpHeaders
+
+        if (addList != other.addList) return false
+        if (setList != other.setList) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = addList.hashCode()
+        result = 31 * result + setList.hashCode()
+        return result
     }
 
 

@@ -48,6 +48,25 @@ class ErrorStateImage private constructor(private val matcherList: List<Matcher>
             .find { it.match(request, exception) }
             ?.getDrawable(sketch, request, exception)
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ErrorStateImage
+
+        if (matcherList != other.matcherList) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return matcherList.hashCode()
+    }
+
+    override fun toString(): String {
+        return "ErrorStateImage(matcherList=$matcherList)"
+    }
+
     class Builder(private val defaultImage: StateImage) {
 
         private val matcherList = LinkedList<Matcher>()
@@ -91,6 +110,25 @@ class ErrorStateImage private constructor(private val matcherList: List<Matcher>
             sketch: Sketch, request: ImageRequest, throwable: SketchException?
         ): Drawable? =
             stateImage.getDrawable(sketch, request, throwable)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as DefaultMatcher
+
+            if (stateImage != other.stateImage) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return stateImage.hashCode()
+        }
+
+        override fun toString(): String {
+            return "DefaultMatcher(stateImage=$stateImage)"
+        }
     }
 
     private class UriEmptyMatcher(val stateImage: StateImage) : Matcher {
@@ -102,5 +140,24 @@ class ErrorStateImage private constructor(private val matcherList: List<Matcher>
             sketch: Sketch, request: ImageRequest, throwable: SketchException?
         ): Drawable? =
             stateImage.getDrawable(sketch, request, throwable)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as UriEmptyMatcher
+
+            if (stateImage != other.stateImage) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return stateImage.hashCode()
+        }
+
+        override fun toString(): String {
+            return "UriEmptyMatcher(stateImage=$stateImage)"
+        }
     }
 }

@@ -54,6 +54,28 @@ class BitmapConfig(private val config: Bitmap.Config) {
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as BitmapConfig
+        return when {
+            this === LOW_QUALITY -> other === LOW_QUALITY
+            this === MIDDEN_QUALITY -> other === MIDDEN_QUALITY
+            this === HIGH_QUALITY -> other === HIGH_QUALITY
+            else -> this.config == other.config
+        }
+    }
+
+    override fun hashCode(): Int = when {
+        this === LOW_QUALITY -> super.hashCode()
+        this === MIDDEN_QUALITY -> super.hashCode()
+        this === HIGH_QUALITY -> super.hashCode()
+        else -> config.hashCode()
+    }
+
+    override fun toString(): String = key
+
+
     companion object {
         /**
          * Lower quality bitmap config are preferred.

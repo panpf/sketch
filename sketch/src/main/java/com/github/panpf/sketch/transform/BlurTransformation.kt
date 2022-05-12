@@ -35,7 +35,11 @@ class BlurTransformation(
     override val key: String =
         "BlurTransformation(${radius}${if (maskColor != null) ",$maskColor" else ""})"
 
-    override suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult? {
+    override suspend fun transform(
+        sketch: Sketch,
+        request: ImageRequest,
+        input: Bitmap
+    ): TransformResult? {
         // blur handle
         val canReuseInBitmap = input.config != null && input.isMutable
         val blurBitmap = fastGaussianBlur(input, radius, canReuseInBitmap) ?: return null
@@ -45,6 +49,26 @@ class BlurTransformation(
             Canvas(blurBitmap).drawColor(maskColor)
         }
         return TransformResult(blurBitmap, BlurTransformed(radius, maskColor))
+    }
+
+    override fun toString(): String = key
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BlurTransformation
+
+        if (radius != other.radius) return false
+        if (maskColor != other.maskColor) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = radius
+        result = 31 * result + (maskColor ?: 0)
+        return result
     }
 
     companion object {

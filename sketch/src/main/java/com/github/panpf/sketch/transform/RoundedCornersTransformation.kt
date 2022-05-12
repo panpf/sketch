@@ -54,7 +54,11 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
     override val key: String =
         "RoundedCornersTransformation(${radiusArray.joinToString(separator = ",")})"
 
-    override suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult {
+    override suspend fun transform(
+        sketch: Sketch,
+        request: ImageRequest,
+        input: Bitmap
+    ): TransformResult {
         val bitmapPool = sketch.bitmapPool
         val roundedCornersBitmap =
             bitmapPool.getOrCreate(
@@ -82,6 +86,23 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
         val rect = Rect(0, 0, input.width, input.height)
         canvas.drawBitmap(input, rect, rect, paint)
         return TransformResult(roundedCornersBitmap, RoundedCornersTransformed(radiusArray))
+    }
+
+    override fun toString(): String = key
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RoundedCornersTransformation
+
+        if (!radiusArray.contentEquals(other.radiusArray)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return radiusArray.contentHashCode()
     }
 }
 

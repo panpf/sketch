@@ -15,7 +15,7 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.ImageOptions.Builder
+import com.github.panpf.sketch.http.isNotEmpty
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.PrecisionDecider
@@ -36,14 +36,15 @@ import com.github.panpf.sketch.util.Size
 import java.util.LinkedList
 
 fun ImageOptions(
-    configBlock: (Builder.() -> Unit)? = null
-): ImageOptions = Builder().apply {
+    configBlock: (ImageOptions.Builder.() -> Unit)? = null
+): ImageOptions = ImageOptions.Builder().apply {
     configBlock?.invoke(this)
 }.build()
 
+@Suppress("FunctionName")
 fun ImageOptionsBuilder(
-    configBlock: (Builder.() -> Unit)? = null
-): Builder = Builder().apply {
+    configBlock: (ImageOptions.Builder.() -> Unit)? = null
+): ImageOptions.Builder = ImageOptions.Builder().apply {
     configBlock?.invoke(this)
 }
 
@@ -96,14 +97,20 @@ interface ImageOptions {
         configBlock?.invoke(this)
     }.build()
 
+    fun merge(
+        options: ImageOptions
+    ): ImageOptions = Builder(this).apply {
+        merge(options)
+    }.build()
+
     @Suppress("DEPRECATION")
     fun isEmpty(): Boolean = depth == null
             && parameters?.isEmpty() != false
-            && httpHeaders == null
+            && httpHeaders?.isEmpty() != false
             && downloadDiskCachePolicy == null
             && bitmapConfig == null
-            && (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace == null)
-            && (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == null)
+            && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
+            && preferQualityOverSpeed == null
             && resizeSize == null
             && resizeSizeResolver == null
             && resizePrecisionDecider == null
@@ -113,11 +120,11 @@ interface ImageOptions {
             && ignoreExifOrientation == null
             && bitmapResultDiskCachePolicy == null
             && disabledAnimatedImage == null
-            && bitmapMemoryCachePolicy == null
             && placeholderImage == null
             && errorImage == null
             && transition == null
             && resizeApplyToDrawable == null
+            && bitmapMemoryCachePolicy == null
 
     class Builder {
 
@@ -526,8 +533,8 @@ interface ImageOptions {
         @SuppressLint("NewApi")
         fun build(): ImageOptions = ImageOptionsImpl(
             depth = depth,
-            parameters = parametersBuilder?.build(),
-            httpHeaders = httpHeaders?.build(),
+            parameters = parametersBuilder?.build()?.takeIf { it.isNotEmpty() },
+            httpHeaders = httpHeaders?.build()?.takeIf { it.isNotEmpty() },
             downloadDiskCachePolicy = downloadDiskCachePolicy,
             bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
             bitmapConfig = bitmapConfig,
@@ -576,6 +583,7 @@ interface ImageOptions {
         override val transition: Transition.Factory?,
         override val resizeApplyToDrawable: Boolean?,
     ) : ImageOptions {
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false

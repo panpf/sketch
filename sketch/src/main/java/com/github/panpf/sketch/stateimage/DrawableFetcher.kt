@@ -42,11 +42,49 @@ class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
             }
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ResDrawable
+
+        if (drawableRes != other.drawableRes) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return drawableRes
+    }
+
+    override fun toString(): String {
+        return "ResDrawable(drawableRes=$drawableRes)"
+    }
 }
 
 class RealDrawable(val drawable: Drawable) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable {
         return drawable.mutate()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RealDrawable
+
+        if (drawable != other.drawable) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return drawable.hashCode()
+    }
+
+    override fun toString(): String {
+        return "RealDrawable(drawable=$drawable)"
     }
 }

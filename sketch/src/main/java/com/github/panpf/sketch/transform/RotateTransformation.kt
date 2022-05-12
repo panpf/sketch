@@ -18,13 +18,35 @@ class RotateTransformation(val degrees: Int) : Transformation {
 
     override val key: String = "RotateTransformation($degrees)"
 
-    override suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult? {
+    override suspend fun transform(
+        sketch: Sketch,
+        request: ImageRequest,
+        input: Bitmap
+    ): TransformResult? {
         if (degrees % 360 == 0) return null
         return TransformResult(
             rotate(input, degrees, sketch.bitmapPool),
             RotateTransformed(degrees)
         )
     }
+
+    override fun toString(): String = key
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RotateTransformation
+
+        if (degrees != other.degrees) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return degrees
+    }
+
 
     companion object {
         fun rotate(bitmap: Bitmap, degrees: Int, bitmapPool: BitmapPool): Bitmap {
