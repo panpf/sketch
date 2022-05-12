@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.github.panpf.sketch.http
 
 import java.util.LinkedList
@@ -72,6 +74,9 @@ class HttpHeaders(
         fun build(): HttpHeaders = HttpHeaders(addList.toList(), setList.toList())
     }
 }
+
+/** Return true when the set contains elements. */
+inline fun HttpHeaders.isNotEmpty(): Boolean = !isEmpty()
 
 fun HttpHeaders?.merge(other: HttpHeaders?): HttpHeaders? =
     if (this != null) {

@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.github.panpf.sketch.request
 
 import android.annotation.SuppressLint
@@ -665,3 +667,5 @@ interface ImageOptions {
         }
     }
 }
+
+inline fun ImageOptions.isNotEmpty(): Boolean = !isEmpty()
