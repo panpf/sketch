@@ -534,8 +534,7 @@ interface ImageRequest {
             val colorSpace =
                 if (VERSION.SDK_INT >= VERSION_CODES.O) finalOptions.colorSpace else null
             @Suppress("DEPRECATION") val preferQualityOverSpeed =
-                if (VERSION.SDK_INT < VERSION_CODES.N)
-                    finalOptions.preferQualityOverSpeed ?: false else false
+                finalOptions.preferQualityOverSpeed ?: false
             val resizeSize = finalOptions.resizeSize
             var resolvedResizeSize = false
             val resizeSizeResolver = finalOptions.resizeSizeResolver

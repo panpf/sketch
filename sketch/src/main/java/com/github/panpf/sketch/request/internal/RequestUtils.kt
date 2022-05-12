@@ -21,7 +21,7 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
         }
     }
     @Suppress("DEPRECATION")
-    if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
+    if (preferQualityOverSpeed) {
         appendQueryParameter("_preferQualityOverSpeed", true.toString())
     }
     resize?.let {
@@ -64,7 +64,7 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
             }
         }
         @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
+        if (preferQualityOverSpeed) {
             appendQueryParameter("_preferQualityOverSpeed", true.toString())
         }
         resize?.let {

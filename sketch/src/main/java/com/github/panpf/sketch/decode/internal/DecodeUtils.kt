@@ -344,7 +344,7 @@ val Bitmap.sizeString: String
 fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
     DecodeConfig().apply {
         @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
+        if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed) {
             inPreferQualityOverSpeed = true
         }
 

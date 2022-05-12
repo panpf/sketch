@@ -158,10 +158,8 @@ interface ImageOptions {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 this.colorSpace = request.colorSpace
             }
-            if (VERSION.SDK_INT < VERSION_CODES.N) {
-                @Suppress("DEPRECATION")
-                this.preferQualityOverSpeed = request.preferQualityOverSpeed
-            }
+            @Suppress("DEPRECATION")
+            this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resizeSize = request.resizeSize
             this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
@@ -285,9 +283,7 @@ interface ImageOptions {
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
         fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
-            if (VERSION.SDK_INT < VERSION_CODES.N) {
-                this.preferQualityOverSpeed = inPreferQualityOverSpeed
-            }
+            this.preferQualityOverSpeed = inPreferQualityOverSpeed
         }
 
         fun resize(
@@ -475,7 +471,7 @@ interface ImageOptions {
             if (VERSION.SDK_INT >= VERSION_CODES.O && this.colorSpace == null) {
                 this.colorSpace = options.colorSpace
             }
-            if (VERSION.SDK_INT < VERSION_CODES.N && this.preferQualityOverSpeed == null) {
+            if (this.preferQualityOverSpeed == null) {
                 @Suppress("DEPRECATION")
                 this.preferQualityOverSpeed = options.preferQualityOverSpeed
             }
@@ -534,7 +530,7 @@ interface ImageOptions {
             bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
             bitmapConfig = bitmapConfig,
             colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
-            preferQualityOverSpeed = if (VERSION.SDK_INT < VERSION_CODES.N) preferQualityOverSpeed else null,
+            preferQualityOverSpeed = preferQualityOverSpeed,
             resizeSize = resizeSize,
             resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
@@ -590,7 +586,7 @@ interface ImageOptions {
             if (downloadDiskCachePolicy != other.downloadDiskCachePolicy) return false
             if (bitmapConfig != other.bitmapConfig) return false
             if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != other.colorSpace) return false
-            @Suppress("DEPRECATION") if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed != other.preferQualityOverSpeed) return false
+            @Suppress("DEPRECATION") if (preferQualityOverSpeed != other.preferQualityOverSpeed) return false
             if (resizeSize != other.resizeSize) return false
             if (resizeSizeResolver != other.resizeSizeResolver) return false
             if (resizePrecisionDecider != other.resizePrecisionDecider) return false
@@ -618,10 +614,8 @@ interface ImageOptions {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 result = 31 * result + (colorSpace?.hashCode() ?: 0)
             }
-            if (VERSION.SDK_INT < VERSION_CODES.N) {
-                @Suppress("DEPRECATION")
-                result = 31 * result + (preferQualityOverSpeed?.hashCode() ?: 0)
-            }
+            @Suppress("DEPRECATION")
+            result = 31 * result + (preferQualityOverSpeed?.hashCode() ?: 0)
             result = 31 * result + (resizeSize?.hashCode() ?: 0)
             result = 31 * result + (resizeSizeResolver?.hashCode() ?: 0)
             result = 31 * result + (resizePrecisionDecider?.hashCode() ?: 0)
@@ -650,10 +644,8 @@ interface ImageOptions {
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     append("colorSpace=$colorSpace, ")
                 }
-                if (VERSION.SDK_INT < VERSION_CODES.N) {
-                    @Suppress("DEPRECATION")
-                    append("preferQualityOverSpeed=$preferQualityOverSpeed, ")
-                }
+                @Suppress("DEPRECATION")
+                append("preferQualityOverSpeed=$preferQualityOverSpeed, ")
                 append("resizeSize=$resizeSize, ")
                 append("resizeSizeResolver=$resizeSizeResolver, ")
                 append("resizePrecisionDecider=$resizePrecisionDecider, ")
