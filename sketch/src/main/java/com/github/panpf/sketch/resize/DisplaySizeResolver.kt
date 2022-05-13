@@ -3,12 +3,10 @@ package com.github.panpf.sketch.resize
 import android.content.Context
 import com.github.panpf.sketch.util.Size
 
-class DisplaySizeResolver(private val context: Context) : SizeResolver {
-
-    private val appContext = context.applicationContext
+class DisplaySizeResolver constructor(private val context: Context) : SizeResolver {
 
     override suspend fun size(): Size {
-        return appContext.resources.displayMetrics.let {
+        return context.resources.displayMetrics.let {
             Size(it.widthPixels, it.heightPixels)
         }
     }
@@ -19,4 +17,8 @@ class DisplaySizeResolver(private val context: Context) : SizeResolver {
     }
 
     override fun hashCode() = context.hashCode()
+
+    override fun toString(): String {
+        return "DisplaySizeResolver(context=$context)"
+    }
 }
