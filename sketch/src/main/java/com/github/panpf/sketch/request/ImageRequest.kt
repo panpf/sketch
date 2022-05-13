@@ -60,11 +60,15 @@ interface ImageRequest {
     val context: Context
     val uriString: String
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
-    val parameters: Parameters?
+    val progressListener: ProgressListener<ImageRequest>?
+    val target: Target?
+    val lifecycle: Lifecycle
+
     val depth: RequestDepth
+    val parameters: Parameters?
+
     val httpHeaders: HttpHeaders?
     val downloadDiskCachePolicy: CachePolicy
-    val progressListener: ProgressListener<ImageRequest>?
 
     /**
      * Specify [Bitmap.Config] to use when creating the bitmap.
@@ -110,15 +114,13 @@ interface ImageRequest {
 
     /** @see com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheDecodeInterceptor */
     val bitmapResultDiskCachePolicy: CachePolicy
-    val target: Target?
-    val lifecycle: Lifecycle
 
-    val disabledAnimatedImage: Boolean
-    val bitmapMemoryCachePolicy: CachePolicy
     val placeholderImage: StateImage?
     val errorImage: StateImage?
     val transition: Transition.Factory?
+    val disabledAnimatedImage: Boolean
     val resizeApplyToDrawable: Boolean
+    val bitmapMemoryCachePolicy: CachePolicy
 
     val definedOptions: ImageOptions
     val globalOptions: ImageOptions?
@@ -179,7 +181,7 @@ interface ImageRequest {
         constructor(context: Context, uriString: String?) {
             this.context = context
             this.uriString = uriString.orEmpty()
-            this.definedOptionsBuilder = ImageOptionsBuilder()
+            this.definedOptionsBuilder = ImageOptions.Builder()
         }
 
         internal constructor(request: ImageRequest) {
@@ -308,7 +310,7 @@ interface ImageRequest {
             definedOptionsBuilder.bitmapConfig(bitmapConfig)
         }
 
-        open fun bitmapConfig(bitmapConfig: Bitmap.Config?): Builder = apply {
+        open fun bitmapConfig(bitmapConfig: Bitmap.Config): Builder = apply {
             definedOptionsBuilder.bitmapConfig(bitmapConfig)
         }
 
@@ -349,8 +351,8 @@ interface ImageRequest {
 
         open fun resize(
             size: Size,
-            precision: PrecisionDecider? = null,
-            scale: ScaleDecider? = null
+            precision: PrecisionDecider = fixedPrecision(EXACTLY),
+            scale: ScaleDecider = fixedScale(CENTER_CROP)
         ): Builder = apply {
             definedOptionsBuilder.resize(size, precision, scale)
         }
@@ -370,8 +372,8 @@ interface ImageRequest {
         open fun resize(
             @Px width: Int,
             @Px height: Int,
-            precision: PrecisionDecider? = null,
-            scale: ScaleDecider? = null
+            precision: PrecisionDecider = fixedPrecision(EXACTLY),
+            scale: ScaleDecider = fixedScale(CENTER_CROP)
         ): Builder = apply {
             definedOptionsBuilder.resize(width, height, precision, scale)
         }
@@ -454,19 +456,15 @@ interface ImageRequest {
         }
 
 
-        open fun disabledAnimatedImage(disabled: Boolean? = true): Builder = apply {
-            definedOptionsBuilder.disabledAnimatedImage(disabled)
-        }
-
         open fun placeholder(stateImage: StateImage?): Builder = apply {
             definedOptionsBuilder.placeholder(stateImage)
         }
 
-        open fun placeholder(drawable: Drawable?): Builder = apply {
+        open fun placeholder(drawable: Drawable): Builder = apply {
             definedOptionsBuilder.placeholder(drawable)
         }
 
-        open fun placeholder(@DrawableRes drawableResId: Int?): Builder = apply {
+        open fun placeholder(@DrawableRes drawableResId: Int): Builder = apply {
             definedOptionsBuilder.placeholder(drawableResId)
         }
 
@@ -477,13 +475,13 @@ interface ImageRequest {
         }
 
         open fun error(
-            drawable: Drawable?, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+            drawable: Drawable, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
             definedOptionsBuilder.error(drawable, configBlock)
         }
 
         open fun error(
-            drawableResId: Int?, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+            drawableResId: Int, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
             definedOptionsBuilder.error(drawableResId, configBlock)
         }
@@ -497,6 +495,10 @@ interface ImageRequest {
             preferExactIntrinsicSize: Boolean = false
         ): Builder = apply {
             definedOptionsBuilder.crossfade(durationMillis, preferExactIntrinsicSize)
+        }
+
+        open fun disabledAnimatedImage(disabled: Boolean? = true): Builder = apply {
+            definedOptionsBuilder.disabledAnimatedImage(disabled)
         }
 
         open fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder = apply {
@@ -546,12 +548,12 @@ interface ImageRequest {
             val transformations = finalOptions.transformations
             val disabledReuseBitmap = finalOptions.disabledReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
-            val bitmapMemoryCachePolicy = finalOptions.bitmapMemoryCachePolicy ?: ENABLED
-            val disabledAnimatedImage = finalOptions.disabledAnimatedImage ?: false
             val placeholderImage = finalOptions.placeholderImage
             val errorImage = finalOptions.errorImage
             val transition = finalOptions.transition
+            val disabledAnimatedImage = finalOptions.disabledAnimatedImage ?: false
             val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
+            val bitmapMemoryCachePolicy = finalOptions.bitmapMemoryCachePolicy ?: ENABLED
 
             return when (this@Builder) {
                 is DisplayRequest.Builder -> {
@@ -579,12 +581,12 @@ interface ImageRequest {
                         transformations = transformations,
                         disabledReuseBitmap = disabledReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
-                        bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-                        disabledAnimatedImage = disabledAnimatedImage,
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
+                        disabledAnimatedImage = disabledAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
+                        bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                     )
                 }
                 is LoadRequest.Builder -> {
@@ -612,12 +614,12 @@ interface ImageRequest {
                         transformations = transformations,
                         disabledReuseBitmap = disabledReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
-                        bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-                        disabledAnimatedImage = disabledAnimatedImage,
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
+                        disabledAnimatedImage = disabledAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
+                        bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                     )
                 }
                 is DownloadRequest.Builder -> {
@@ -645,12 +647,12 @@ interface ImageRequest {
                         transformations = transformations,
                         disabledReuseBitmap = disabledReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
-                        bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-                        disabledAnimatedImage = disabledAnimatedImage,
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
+                        disabledAnimatedImage = disabledAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
+                        bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                     )
                 }
                 else -> throw UnsupportedOperationException("Unsupported ImageRequest.Builder: ${this@Builder::class.java}")

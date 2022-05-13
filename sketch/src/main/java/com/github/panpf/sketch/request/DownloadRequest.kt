@@ -61,7 +61,6 @@ interface DownloadRequest : ImageRequest {
 
     class Builder : ImageRequest.Builder {
 
-        //        constructor(context: Context, uriString: String?) : super(context, DOWNLOAD, uriString)
         constructor(context: Context, uriString: String?) : super(context, uriString)
 
         constructor(request: DownloadRequest) : super(request)
@@ -158,15 +157,11 @@ interface DownloadRequest : ImageRequest {
             super.downloadDiskCachePolicy(cachePolicy)
         }
 
-        override fun bitmapResultDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            super.bitmapResultDiskCachePolicy(cachePolicy)
-        }
-
         override fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
             super.bitmapConfig(bitmapConfig)
         }
 
-        override fun bitmapConfig(bitmapConfig: Config?): Builder = apply {
+        override fun bitmapConfig(bitmapConfig: Config): Builder = apply {
             super.bitmapConfig(bitmapConfig)
         }
 
@@ -188,14 +183,15 @@ interface DownloadRequest : ImageRequest {
             }
         }
 
-        @Suppress("OverridingDeprecatedMember")
+        @Suppress("OverridingDeprecatedMember", "DeprecatedCallableAddReplaceWith")
+        @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
         override fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
             @Suppress("DEPRECATION")
             super.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
         override fun resize(
-            size: Size, precision: PrecisionDecider?, scale: ScaleDecider?
+            size: Size, precision: PrecisionDecider, scale: ScaleDecider
         ): Builder = apply {
             super.resize(size, precision, scale)
         }
@@ -211,7 +207,7 @@ interface DownloadRequest : ImageRequest {
         }
 
         override fun resize(
-            width: Int, height: Int, precision: PrecisionDecider?, scale: ScaleDecider?
+            width: Int, height: Int, precision: PrecisionDecider, scale: ScaleDecider
         ): Builder = apply {
             super.resize(width, height, precision, scale)
         }
@@ -287,23 +283,19 @@ interface DownloadRequest : ImageRequest {
             super.ignoreExifOrientation(ignore)
         }
 
-        override fun bitmapMemoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            super.bitmapMemoryCachePolicy(cachePolicy)
-        }
-
-        override fun disabledAnimatedImage(disabled: Boolean?): Builder = apply {
-            super.disabledAnimatedImage(disabled)
+        override fun bitmapResultDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            super.bitmapResultDiskCachePolicy(cachePolicy)
         }
 
         override fun placeholder(stateImage: StateImage?): Builder = apply {
             super.placeholder(stateImage)
         }
 
-        override fun placeholder(drawable: Drawable?): Builder = apply {
+        override fun placeholder(drawable: Drawable): Builder = apply {
             super.placeholder(drawable)
         }
 
-        override fun placeholder(drawableResId: Int?): Builder = apply {
+        override fun placeholder(drawableResId: Int): Builder = apply {
             super.placeholder(drawableResId)
         }
 
@@ -314,13 +306,13 @@ interface DownloadRequest : ImageRequest {
         }
 
         override fun error(
-            drawable: Drawable?, configBlock: (ErrorStateImage.Builder.() -> Unit)?
+            drawable: Drawable, configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
             super.error(drawable, configBlock)
         }
 
         override fun error(
-            drawableResId: Int?, configBlock: (ErrorStateImage.Builder.() -> Unit)?
+            drawableResId: Int, configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
             super.error(drawableResId, configBlock)
         }
@@ -335,8 +327,16 @@ interface DownloadRequest : ImageRequest {
             super.crossfade(durationMillis, preferExactIntrinsicSize)
         }
 
+        override fun disabledAnimatedImage(disabled: Boolean?): Builder = apply {
+            super.disabledAnimatedImage(disabled)
+        }
+
         override fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean?): Builder = apply {
             super.resizeApplyToDrawable(resizeApplyToDrawable)
+        }
+
+        override fun bitmapMemoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            super.bitmapMemoryCachePolicy(cachePolicy)
         }
 
 
@@ -353,11 +353,15 @@ interface DownloadRequest : ImageRequest {
         override val context: Context,
         override val uriString: String,
         override val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?,
-        override val parameters: Parameters?,
+        override val progressListener: ProgressListener<ImageRequest>?,
+        override val target: Target?,
+        override val lifecycle: Lifecycle,
+        override val definedOptions: ImageOptions,
+        override val globalOptions: ImageOptions?,
         override val depth: RequestDepth,
+        override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
         override val downloadDiskCachePolicy: CachePolicy,
-        override val progressListener: ProgressListener<ImageRequest>?,
         override val bitmapConfig: BitmapConfig?,
         override val colorSpace: ColorSpace?,
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
@@ -371,15 +375,11 @@ interface DownloadRequest : ImageRequest {
         override val disabledReuseBitmap: Boolean,
         override val ignoreExifOrientation: Boolean,
         override val bitmapResultDiskCachePolicy: CachePolicy,
-        override val target: Target?,
-        override val lifecycle: Lifecycle,
-        override val disabledAnimatedImage: Boolean,
-        override val bitmapMemoryCachePolicy: CachePolicy,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Factory?,
+        override val disabledAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,
-        override val definedOptions: ImageOptions,
-        override val globalOptions: ImageOptions?
+        override val bitmapMemoryCachePolicy: CachePolicy,
     ) : BaseImageRequest(), DownloadRequest
 }

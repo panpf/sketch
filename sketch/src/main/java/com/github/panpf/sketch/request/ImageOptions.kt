@@ -44,6 +44,8 @@ fun ImageOptions(
 interface ImageOptions {
     /* Base */
     val depth: RequestDepth?
+    val depthFrom: String?
+        get() = parameters?.value(ImageRequest.REQUEST_DEPTH_FROM)
     val parameters: Parameters?
 
     /* Download */
@@ -68,15 +70,12 @@ interface ImageOptions {
     val bitmapResultDiskCachePolicy: CachePolicy?
 
     /* Display */
-    val disabledAnimatedImage: Boolean?
     val placeholderImage: StateImage?
     val errorImage: StateImage?
     val transition: Transition.Factory?
+    val disabledAnimatedImage: Boolean?
     val resizeApplyToDrawable: Boolean?
     val bitmapMemoryCachePolicy: CachePolicy?
-
-    val depthFrom: String?
-        get() = parameters?.value(ImageRequest.REQUEST_DEPTH_FROM)
 
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -90,7 +89,7 @@ interface ImageOptions {
         configBlock?.invoke(this)
     }.build()
 
-    fun merge(
+    fun merged(
         options: ImageOptions
     ): ImageOptions = Builder(this).apply {
         merge(options)
@@ -112,10 +111,10 @@ interface ImageOptions {
             && disabledReuseBitmap == null
             && ignoreExifOrientation == null
             && bitmapResultDiskCachePolicy == null
-            && disabledAnimatedImage == null
             && placeholderImage == null
             && errorImage == null
             && transition == null
+            && disabledAnimatedImage == null
             && resizeApplyToDrawable == null
             && bitmapMemoryCachePolicy == null
 
@@ -128,7 +127,6 @@ interface ImageOptions {
         private var downloadDiskCachePolicy: CachePolicy? = null
 
         private var bitmapConfig: BitmapConfig? = null
-
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
         private var resizeSize: Size? = null
@@ -140,12 +138,12 @@ interface ImageOptions {
         private var ignoreExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
 
-        private var bitmapMemoryCachePolicy: CachePolicy? = null
-        private var disabledAnimatedImage: Boolean? = null
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
+        private var disabledAnimatedImage: Boolean? = null
         private var resizeApplyToDrawable: Boolean? = null
+        private var bitmapMemoryCachePolicy: CachePolicy? = null
 
         constructor()
 
@@ -171,18 +169,25 @@ interface ImageOptions {
             this.ignoreExifOrientation = request.ignoreExifOrientation
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
 
-            this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
-            this.disabledAnimatedImage = request.disabledAnimatedImage
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
+            this.disabledAnimatedImage = request.disabledAnimatedImage
             this.resizeApplyToDrawable = request.resizeApplyToDrawable
+            this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
         }
 
+
+        /**
+         * Set the requested depth
+         */
         fun depth(depth: RequestDepth?): Builder = apply {
             this.depth = depth
         }
 
+        /**
+         * Set the source of the request depth
+         */
         fun depthFrom(from: String?): Builder = apply {
             if (from != null) {
                 setParameter(ImageRequest.REQUEST_DEPTH_FROM, from, null)
@@ -191,16 +196,17 @@ interface ImageOptions {
             }
         }
 
+
+        /**
+         * Bulk set parameters for this request
+         */
         fun parameters(parameters: Parameters?): Builder = apply {
             this.parametersBuilder = parameters?.newBuilder()
         }
 
         /**
          * Set a parameter for this request.
-         *
-         * @see Parameters.Builder.set
          */
-        @JvmOverloads
         fun setParameter(
             key: String, value: Any?, cacheKey: String? = value?.toString()
         ): Builder = apply {
@@ -211,14 +217,15 @@ interface ImageOptions {
 
         /**
          * Remove a parameter from this request.
-         *
-         * @see Parameters.Builder.remove
          */
         fun removeParameter(key: String): Builder = apply {
             this.parametersBuilder?.remove(key)
         }
 
 
+        /**
+         * Bulk set headers for any network request for this request
+         */
         fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
             this.httpHeaders = httpHeaders?.newBuilder()
         }
@@ -257,8 +264,8 @@ interface ImageOptions {
             this.bitmapConfig = bitmapConfig
         }
 
-        fun bitmapConfig(bitmapConfig: Bitmap.Config?): Builder =
-            bitmapConfig(if (bitmapConfig != null) BitmapConfig(bitmapConfig) else null)
+        fun bitmapConfig(bitmapConfig: Bitmap.Config): Builder =
+            bitmapConfig(BitmapConfig(bitmapConfig))
 
         fun lowQualityBitmapConfig(): Builder = bitmapConfig(BitmapConfig.LOW_QUALITY)
 
@@ -290,8 +297,8 @@ interface ImageOptions {
 
         fun resize(
             size: Size,
-            precision: PrecisionDecider? = null,
-            scale: ScaleDecider? = null
+            precision: PrecisionDecider = fixedPrecision(EXACTLY),
+            scale: ScaleDecider = fixedScale(CENTER_CROP)
         ): Builder = apply {
             this.resizeSize = size
             this.resizePrecisionDecider = precision
@@ -309,8 +316,8 @@ interface ImageOptions {
 
         fun resize(
             @Px width: Int, @Px height: Int,
-            precision: PrecisionDecider? = null,
-            scale: ScaleDecider? = null
+            precision: PrecisionDecider = fixedPrecision(EXACTLY),
+            scale: ScaleDecider = fixedScale(CENTER_CROP)
         ): Builder = resize(Size(width, height), precision, scale)
 
         fun resize(
@@ -337,8 +344,8 @@ interface ImageOptions {
             this.resizePrecisionDecider = precisionDecider
         }
 
-        fun resizePrecision(precision: Precision?): Builder =
-            resizePrecision(precision?.let { fixedPrecision(it) })
+        fun resizePrecision(precision: Precision): Builder =
+            resizePrecision(fixedPrecision(precision))
 
         fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
             this.resizeScaleDecider = scaleDecider
@@ -375,52 +382,48 @@ interface ImageOptions {
         fun removeTransformations(vararg removeTransformations: Transformation): Builder =
             removeTransformations(removeTransformations.toList())
 
-        fun disabledReuseBitmap(disabledReuseBitmap: Boolean? = true): Builder = apply {
-            this.disabledReuseBitmap = disabledReuseBitmap
+        fun disabledReuseBitmap(disabled: Boolean? = true): Builder = apply {
+            this.disabledReuseBitmap = disabled
         }
 
-        fun ignoreExifOrientation(ignoreExifOrientation: Boolean? = true): Builder = apply {
-            this.ignoreExifOrientation = ignoreExifOrientation
+        fun ignoreExifOrientation(ignore: Boolean? = true): Builder = apply {
+            this.ignoreExifOrientation = ignore
         }
 
-        fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder =
+        fun bitmapResultDiskCachePolicy(cachePolicy: CachePolicy?): Builder =
             apply {
-                this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
+                this.bitmapResultDiskCachePolicy = cachePolicy
             }
 
 
-        fun disabledAnimatedImage(disabledAnimatedImage: Boolean? = true): Builder = apply {
-            this.disabledAnimatedImage = disabledAnimatedImage
+        fun placeholder(stateImage: StateImage?): Builder = apply {
+            this.placeholderImage = stateImage
         }
 
-        fun placeholder(placeholderImage: StateImage?): Builder = apply {
-            this.placeholderImage = placeholderImage
-        }
+        fun placeholder(drawable: Drawable): Builder =
+            placeholder(DrawableStateImage(drawable))
 
-        fun placeholder(placeholderDrawable: Drawable?): Builder =
-            placeholder(placeholderDrawable?.let { DrawableStateImage(it) })
-
-        fun placeholder(@DrawableRes placeholderDrawableResId: Int?): Builder =
-            placeholder(placeholderDrawableResId?.let { DrawableStateImage(it) })
+        fun placeholder(@DrawableRes drawableResId: Int): Builder =
+            placeholder(DrawableStateImage(drawableResId))
 
         fun error(
-            errorImage: StateImage?,
+            stateImage: StateImage?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            this.errorImage = errorImage?.let {
-                if (configBlock != null) newErrorStateImage(it, configBlock) else it
+            this.errorImage = stateImage?.let {
+                newErrorStateImage(it, configBlock)
             }
         }
 
         fun error(
-            errorDrawable: Drawable?,
+            drawable: Drawable,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = error(errorDrawable?.let { DrawableStateImage(it) }, configBlock)
+        ): Builder = error(DrawableStateImage(drawable), configBlock)
 
         fun error(
-            errorDrawableResId: Int?,
+            drawableResId: Int,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = error(errorDrawableResId?.let { DrawableStateImage(it) }, configBlock)
+        ): Builder = error(DrawableStateImage(drawableResId), configBlock)
 
         fun transition(transition: Transition.Factory?): Builder = apply {
             this.transition = transition
@@ -433,12 +436,16 @@ interface ImageOptions {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
         }
 
-        fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder = apply {
-            this.resizeApplyToDrawable = resizeApplyToDrawable
+        fun disabledAnimatedImage(disabled: Boolean? = true): Builder = apply {
+            this.disabledAnimatedImage = disabled
         }
 
-        fun bitmapMemoryCachePolicy(bitmapMemoryCachePolicy: CachePolicy?): Builder = apply {
-            this.bitmapMemoryCachePolicy = bitmapMemoryCachePolicy
+        fun resizeApplyToDrawable(apply: Boolean? = true): Builder = apply {
+            this.resizeApplyToDrawable = apply
+        }
+
+        fun bitmapMemoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            this.bitmapMemoryCachePolicy = cachePolicy
         }
 
 
@@ -502,9 +509,6 @@ interface ImageOptions {
                 this.bitmapResultDiskCachePolicy = options.bitmapResultDiskCachePolicy
             }
 
-            if (this.disabledAnimatedImage == null) {
-                this.disabledAnimatedImage = options.disabledAnimatedImage
-            }
             if (this.placeholderImage == null) {
                 this.placeholderImage = options.placeholderImage
             }
@@ -513,6 +517,9 @@ interface ImageOptions {
             }
             if (this.transition == null) {
                 this.transition = options.transition
+            }
+            if (this.disabledAnimatedImage == null) {
+                this.disabledAnimatedImage = options.disabledAnimatedImage
             }
             if (this.resizeApplyToDrawable == null) {
                 this.resizeApplyToDrawable = options.resizeApplyToDrawable
@@ -537,15 +544,15 @@ interface ImageOptions {
             resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScaleDecider = resizeScaleDecider,
-            transformations = transformations,
+            transformations = transformations?.takeIf { it.isNotEmpty() },
             disabledReuseBitmap = disabledReuseBitmap,
             ignoreExifOrientation = ignoreExifOrientation,
-            bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
-            disabledAnimatedImage = disabledAnimatedImage,
             placeholderImage = placeholderImage,
             errorImage = errorImage,
             transition = transition,
+            disabledAnimatedImage = disabledAnimatedImage,
             resizeApplyToDrawable = resizeApplyToDrawable,
+            bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
         )
     }
 
@@ -569,12 +576,12 @@ interface ImageOptions {
         override val disabledReuseBitmap: Boolean?,
         override val ignoreExifOrientation: Boolean?,
         override val bitmapResultDiskCachePolicy: CachePolicy?,
-        override val disabledAnimatedImage: Boolean?,
-        override val bitmapMemoryCachePolicy: CachePolicy?,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Transition.Factory?,
+        override val disabledAnimatedImage: Boolean?,
         override val resizeApplyToDrawable: Boolean?,
+        override val bitmapMemoryCachePolicy: CachePolicy?,
     ) : ImageOptions {
 
         override fun equals(other: Any?): Boolean {
@@ -598,12 +605,12 @@ interface ImageOptions {
             if (disabledReuseBitmap != other.disabledReuseBitmap) return false
             if (ignoreExifOrientation != other.ignoreExifOrientation) return false
             if (bitmapResultDiskCachePolicy != other.bitmapResultDiskCachePolicy) return false
-            if (disabledAnimatedImage != other.disabledAnimatedImage) return false
-            if (bitmapMemoryCachePolicy != other.bitmapMemoryCachePolicy) return false
             if (placeholderImage != other.placeholderImage) return false
             if (errorImage != other.errorImage) return false
             if (transition != other.transition) return false
+            if (disabledAnimatedImage != other.disabledAnimatedImage) return false
             if (resizeApplyToDrawable != other.resizeApplyToDrawable) return false
+            if (bitmapMemoryCachePolicy != other.bitmapMemoryCachePolicy) return false
 
             return true
         }
@@ -627,12 +634,12 @@ interface ImageOptions {
             result = 31 * result + (disabledReuseBitmap?.hashCode() ?: 0)
             result = 31 * result + (ignoreExifOrientation?.hashCode() ?: 0)
             result = 31 * result + (bitmapResultDiskCachePolicy?.hashCode() ?: 0)
-            result = 31 * result + (disabledAnimatedImage?.hashCode() ?: 0)
-            result = 31 * result + (bitmapMemoryCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (placeholderImage?.hashCode() ?: 0)
             result = 31 * result + (errorImage?.hashCode() ?: 0)
             result = 31 * result + (transition?.hashCode() ?: 0)
+            result = 31 * result + (disabledAnimatedImage?.hashCode() ?: 0)
             result = 31 * result + (resizeApplyToDrawable?.hashCode() ?: 0)
+            result = 31 * result + (bitmapMemoryCachePolicy?.hashCode() ?: 0)
             return result
         }
 
@@ -657,12 +664,12 @@ interface ImageOptions {
                 append("disabledReuseBitmap=$disabledReuseBitmap, ")
                 append("ignoreExifOrientation=$ignoreExifOrientation, ")
                 append("bitmapResultDiskCachePolicy=$bitmapResultDiskCachePolicy, ")
-                append("disabledAnimatedImage=$disabledAnimatedImage, ")
-                append("bitmapMemoryCachePolicy=$bitmapMemoryCachePolicy, ")
                 append("placeholderImage=$placeholderImage, ")
                 append("errorImage=$errorImage, ")
                 append("transition=$transition, ")
+                append("disabledAnimatedImage=$disabledAnimatedImage, ")
                 append("resizeApplyToDrawable=$resizeApplyToDrawable")
+                append("bitmapMemoryCachePolicy=$bitmapMemoryCachePolicy, ")
                 append(")")
             }
         }
