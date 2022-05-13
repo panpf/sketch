@@ -336,7 +336,7 @@ interface ImageOptions {
         fun resizeSize(@Px width: Int, @Px height: Int): Builder =
             resizeSize(Size(width, height))
 
-        fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+        fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
             this.resizeSizeResolver = sizeResolver
         }
 

@@ -242,8 +242,8 @@ interface DownloadRequest : ImageRequest {
             super.resizeSize(width, height)
         }
 
-        override fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
-            super.resizeSize(sizeResolver)
+        override fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
+            super.resizeSizeResolver(sizeResolver)
         }
 
         override fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {

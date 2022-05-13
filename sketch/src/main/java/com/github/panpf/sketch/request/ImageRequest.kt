@@ -397,8 +397,8 @@ interface ImageRequest {
             definedOptionsBuilder.resizeSize(width, height)
         }
 
-        open fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
-            definedOptionsBuilder.resizeSize(sizeResolver)
+        open fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
+            definedOptionsBuilder.resizeSizeResolver(sizeResolver)
         }
 
         open fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
