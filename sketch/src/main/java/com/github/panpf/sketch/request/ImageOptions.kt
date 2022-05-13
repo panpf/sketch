@@ -41,13 +41,6 @@ fun ImageOptions(
     configBlock?.invoke(this)
 }.build()
 
-@Suppress("FunctionName")
-fun ImageOptionsBuilder(
-    configBlock: (ImageOptions.Builder.() -> Unit)? = null
-): ImageOptions.Builder = ImageOptions.Builder().apply {
-    configBlock?.invoke(this)
-}
-
 interface ImageOptions {
     /* Base */
     val depth: RequestDepth?

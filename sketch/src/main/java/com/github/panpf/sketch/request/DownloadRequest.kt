@@ -33,14 +33,6 @@ fun DownloadRequest(
     configBlock?.invoke(this)
 }.build()
 
-fun DownloadRequestBuilder(
-    context: Context,
-    uriString: String?,
-    configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-): DownloadRequest.Builder = DownloadRequest.Builder(context, uriString).apply {
-    configBlock?.invoke(this)
-}
-
 interface DownloadRequest : ImageRequest {
 
     override fun newBuilder(

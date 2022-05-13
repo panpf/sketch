@@ -34,14 +34,6 @@ fun LoadRequest(
     configBlock?.invoke(this)
 }.build()
 
-fun LoadRequestBuilder(
-    context: Context,
-    uriString: String?,
-    configBlock: (LoadRequest.Builder.() -> Unit)? = null
-): LoadRequest.Builder = LoadRequest.Builder(context, uriString).apply {
-    configBlock?.invoke(this)
-}
-
 interface LoadRequest : ImageRequest {
 
     override fun newBuilder(

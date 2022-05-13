@@ -44,23 +44,6 @@ fun DisplayRequest(
     configBlock?.invoke(this)
 }.build()
 
-fun DisplayRequestBuilder(
-    context: Context,
-    uriString: String?,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): DisplayRequest.Builder = DisplayRequest.Builder(context, uriString).apply {
-    configBlock?.invoke(this)
-}
-
-fun DisplayRequestBuilder(
-    uriString: String?,
-    imageView: ImageView,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): DisplayRequest.Builder = DisplayRequest.Builder(imageView.context, uriString).apply {
-    target(imageView)
-    configBlock?.invoke(this)
-}
-
 interface DisplayRequest : ImageRequest {
 
     override fun newBuilder(
