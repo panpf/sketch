@@ -9,6 +9,22 @@ class HttpHeaders(
     val setList: List<Pair<String, String>>,
 ) {
 
+    constructor() : this(emptyList(), emptyList())
+
+    val size: Int = addList.size + setList.size
+
+    val addSize: Int = addList.size
+
+    val setSize: Int = setList.size
+
+    fun getAdd(key: String): List<String>? {
+        return addList.filter { it.first == key }.map { it.second }.takeIf { it.isNotEmpty() }
+    }
+
+    fun getSet(key: String): String? {
+        return setList.find { it.first == key }?.second
+    }
+
     fun isEmpty(): Boolean = addList.isEmpty() && setList.isEmpty()
 
     fun newBuilder(): Builder = Builder(this)
@@ -56,19 +72,19 @@ class HttpHeaders(
             this.setList.addAll(headers.setList)
         }
 
-        fun add(name: String, value: String) {
+        fun add(name: String, value: String): Builder = apply {
             setList.removeAll {
                 it.first == name
             }
             addList.add(name to value)
         }
 
-        fun set(name: String, value: String) {
+        fun set(name: String, value: String): Builder = apply {
             removeAll(name)
             setList.add(name to value)
         }
 
-        fun removeAll(name: String) {
+        fun removeAll(name: String): Builder = apply {
             addList.removeAll {
                 it.first == name
             }
@@ -88,7 +104,7 @@ class HttpHeaders(
 /** Return true when the set contains elements. */
 inline fun HttpHeaders.isNotEmpty(): Boolean = !isEmpty()
 
-fun HttpHeaders?.merge(other: HttpHeaders?): HttpHeaders? =
+fun HttpHeaders?.merged(other: HttpHeaders?): HttpHeaders? =
     if (this != null) {
         if (other != null) {
             this.newBuilder().apply {

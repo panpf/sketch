@@ -154,7 +154,7 @@ inline fun Parameters.isNotEmpty(): Boolean = !isEmpty()
 /** Returns the value associated with [key] or null if [key] has no mapping. */
 inline operator fun Parameters.get(key: String): Any? = value(key)
 
-fun Parameters?.merge(other: Parameters?): Parameters? =
+fun Parameters?.merged(other: Parameters?): Parameters? =
     if (this != null) {
         if (other != null) {
             this.newBuilder().apply {
