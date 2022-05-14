@@ -30,36 +30,36 @@ class AppIconUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         val fetcherFactory = Factory()
         val appIconUri = "app.icon://packageName/12412"
         val contentUri = "content://sample_app/sample"
 
-        fetcherFactory.create(LoadRequest(context, appIconUri))!!.apply {
+        fetcherFactory.create(sketch, LoadRequest(context, appIconUri))!!.apply {
             Assert.assertEquals("packageName", packageName)
             Assert.assertEquals(12412, versionCode)
         }
-        fetcherFactory.create(DisplayRequest(context, appIconUri))!!.apply {
+        fetcherFactory.create(sketch, DisplayRequest(context, appIconUri))!!.apply {
             Assert.assertEquals("packageName", packageName)
             Assert.assertEquals(12412, versionCode)
         }
-        fetcherFactory.create(DownloadRequest(context, appIconUri))!!.apply {
+        fetcherFactory.create(sketch, DownloadRequest(context, appIconUri))!!.apply {
             Assert.assertEquals("packageName", packageName)
             Assert.assertEquals(12412, versionCode)
         }
-        Assert.assertNull(fetcherFactory.create(LoadRequest(context, contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
     }
 
     @Test
     fun testFetch() {
-        val (context, _) = contextAndSketch()
+        val (context, sketch) = contextAndSketch()
         val fetcherFactory = Factory()
         val appIconUri = newAppIconUri(
             context.packageName,
             context.packageManager.getPackageInfo(context.packageName, 0).versionCode
         )
 
-        val fetcher = fetcherFactory.create(LoadRequest(context, appIconUri))!!
+        val fetcher = fetcherFactory.create(sketch, LoadRequest(context, appIconUri))!!
         val source = runBlocking {
             fetcher.fetch().dataSource
         }
