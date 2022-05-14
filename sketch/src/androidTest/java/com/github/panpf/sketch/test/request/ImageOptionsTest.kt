@@ -98,10 +98,10 @@ class ImageOptionsTest {
             Assert.assertNull(this.disabledReuseBitmap)
             Assert.assertNull(this.ignoreExifOrientation)
             Assert.assertNull(this.bitmapResultDiskCachePolicy)
-            Assert.assertNull(this.disabledAnimatedImage)
             Assert.assertNull(this.placeholderImage)
             Assert.assertNull(this.errorImage)
             Assert.assertNull(this.transition)
+            Assert.assertNull(this.disabledAnimatedImage)
             Assert.assertNull(this.resizeApplyToDrawable)
             Assert.assertNull(this.bitmapMemoryCachePolicy)
         }

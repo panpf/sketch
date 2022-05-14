@@ -36,6 +36,7 @@ dependencies {
     api(libs.androidx.lifecycle.runtime)
 
     androidTestImplementation(libs.bundles.test)
+    androidTestImplementation(libs.androidx.fragment)
 }
 
 /**

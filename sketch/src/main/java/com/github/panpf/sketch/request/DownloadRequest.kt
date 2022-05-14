@@ -79,19 +79,25 @@ interface DownloadRequest : ImageRequest {
             crossinline onCancel: (request: DownloadRequest) -> Unit = {},
             crossinline onError: (request: DownloadRequest, result: DownloadResult.Error) -> Unit = { _, _ -> },
             crossinline onSuccess: (request: DownloadRequest, result: DownloadResult.Success) -> Unit = { _, _ -> }
-        ): Builder =
-            listener(object :
-                Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
-                override fun onStart(request: DownloadRequest) = onStart(request)
-                override fun onCancel(request: DownloadRequest) = onCancel(request)
-                override fun onError(request: DownloadRequest, result: DownloadResult.Error) =
-                    onError(request, result)
+        ): Builder = listener(object :
+            Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
+            override fun onStart(request: DownloadRequest) = onStart(request)
+            override fun onCancel(request: DownloadRequest) = onCancel(request)
+            override fun onError(request: DownloadRequest, result: DownloadResult.Error) =
+                onError(request, result)
 
-                override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) =
-                    onSuccess(request, result)
-            })
+            override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) =
+                onSuccess(request, result)
+        })
 
-        fun target(target: DownloadTarget): Builder = apply {
+        fun progressListener(
+            progressListener: ProgressListener<DownloadRequest>?
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.progressListener(progressListener as ProgressListener<ImageRequest>?)
+        }
+
+        fun target(target: DownloadTarget?): Builder = apply {
             super.target(target)
         }
 

@@ -63,8 +63,17 @@ interface ImageRequest {
     val progressListener: ProgressListener<ImageRequest>?
     val target: Target?
     val lifecycle: Lifecycle
+    val uri: Uri
+    val key: String
+
+    /** Used to cache bitmaps in memory and on disk */
+    val cacheKey: String
+    val definedOptions: ImageOptions
+    val globalOptions: ImageOptions?
 
     val depth: RequestDepth
+    val depthFrom: String?
+        get() = parameters?.value(REQUEST_DEPTH_FROM)
     val parameters: Parameters?
 
     val httpHeaders: HttpHeaders?
@@ -122,19 +131,6 @@ interface ImageRequest {
     val resizeApplyToDrawable: Boolean
     val bitmapMemoryCachePolicy: CachePolicy
 
-    val definedOptions: ImageOptions
-    val globalOptions: ImageOptions?
-
-    val uri: Uri
-
-    val key: String
-
-    /** Used to cache bitmaps in memory and on disk */
-    val cacheKey: String
-
-    val depthFrom: String?
-        get() = parameters?.value(REQUEST_DEPTH_FROM)
-
     val downloadDiskCacheKey: String
         get() = uriString
 
@@ -173,18 +169,18 @@ interface ImageRequest {
         private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
         private var target: Target? = null
-        private var targetViewOptions: ImageOptions? = null
         private var lifecycle: Lifecycle? = null
         private var globalOptions: ImageOptions? = null
+        private var viewTargetOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
 
-        constructor(context: Context, uriString: String?) {
+        protected  constructor(context: Context, uriString: String?) {
             this.context = context
             this.uriString = uriString.orEmpty()
             this.definedOptionsBuilder = ImageOptions.Builder()
         }
 
-        internal constructor(request: ImageRequest) {
+        protected constructor(request: ImageRequest) {
             this.context = request.context
             this.uriString = request.uriString
             this.listener = request.listener
@@ -201,7 +197,7 @@ interface ImageRequest {
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
         }
 
-        internal fun listener(listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?): Builder =
+        protected fun listener(listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?): Builder =
             apply {
                 this.listener = listener
             }
@@ -209,7 +205,7 @@ interface ImageRequest {
         /**
          * Convenience function to create and set the [Listener].
          */
-        internal inline fun listener(
+        protected inline fun listener(
             crossinline onStart: (request: ImageRequest) -> Unit = {},
             crossinline onCancel: (request: ImageRequest) -> Unit = {},
             crossinline onError: (request: ImageRequest, result: ImageResult.Error) -> Unit = { _, _ -> },
@@ -225,7 +221,7 @@ interface ImageRequest {
                     onSuccess(request, result)
             })
 
-        internal fun progressListener(
+        protected fun progressListener(
             progressListener: ProgressListener<ImageRequest>?
         ): Builder = apply {
             this.progressListener = progressListener
@@ -235,9 +231,9 @@ interface ImageRequest {
             this.lifecycle = lifecycle
         }
 
-        internal fun target(target: Target?): Builder = apply {
+        protected fun target(target: Target?): Builder = apply {
             this.target = target
-            this.targetViewOptions = target.asOrNull<ViewTarget<*>>()
+            this.viewTargetOptions = target.asOrNull<ViewTarget<*>>()
                 ?.view.asOrNull<ImageOptionsProvider>()
                 ?.displayImageOptions
         }
@@ -524,7 +520,7 @@ interface ImageRequest {
             val listener = combinationListener()
             val progressListener = combinationProgressListener()
             val lifecycle = lifecycle ?: resolveLifecycle() ?: GlobalLifecycle
-            definedOptionsBuilder.merge(targetViewOptions)
+            definedOptionsBuilder.merge(viewTargetOptions)
             val definedOptions = definedOptionsBuilder.build()
             val finalOptions = definedOptionsBuilder.merge(globalOptions).build()
             val depth = finalOptions.depth ?: NETWORK
@@ -670,7 +666,7 @@ interface ImageRequest {
 
 
         private fun resolveLifecycle(): Lifecycle? =
-            target.asOrNull<ViewTarget<*>>()?.view?.context?.getLifecycle()
+            (target.asOrNull<ViewTarget<*>>()?.view?.context ?: context).getLifecycle()
 
         private fun resolveResizeScale(): Scale =
             target.asOrNull<ViewTarget<*>>()

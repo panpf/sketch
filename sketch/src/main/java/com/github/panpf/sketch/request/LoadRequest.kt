@@ -92,7 +92,14 @@ interface LoadRequest : ImageRequest {
                     onSuccess(request, result)
             })
 
-        fun target(target: LoadTarget): Builder = apply {
+        fun progressListener(
+            progressListener: ProgressListener<LoadRequest>?
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.progressListener(progressListener as ProgressListener<ImageRequest>?)
+        }
+
+        fun target(target: LoadTarget?): Builder = apply {
             super.target(target)
         }
 

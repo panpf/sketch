@@ -76,11 +76,12 @@ interface DisplayRequest : ImageRequest {
 
         constructor(request: DisplayRequest) : super(request)
 
-        fun listener(listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                super.listener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?)
-            }
+        fun listener(
+            listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.listener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?)
+        }
 
         /**
          * Convenience function to create and set the [Listener].
@@ -90,19 +91,27 @@ interface DisplayRequest : ImageRequest {
             crossinline onCancel: (request: DisplayRequest) -> Unit = {},
             crossinline onError: (request: DisplayRequest, result: DisplayResult.Error) -> Unit = { _, _ -> },
             crossinline onSuccess: (request: DisplayRequest, result: DisplayResult.Success) -> Unit = { _, _ -> }
-        ): Builder =
-            listener(object :
-                Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {
-                override fun onStart(request: DisplayRequest) = onStart(request)
-                override fun onCancel(request: DisplayRequest) = onCancel(request)
-                override fun onError(request: DisplayRequest, result: DisplayResult.Error) =
-                    onError(request, result)
+        ): Builder = listener(object :
+            Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {
+            override fun onStart(request: DisplayRequest) = onStart(request)
+            override fun onCancel(request: DisplayRequest) = onCancel(request)
+            override fun onError(
+                request: DisplayRequest, result: DisplayResult.Error
+            ) = onError(request, result)
 
-                override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) =
-                    onSuccess(request, result)
-            })
+            override fun onSuccess(
+                request: DisplayRequest, result: DisplayResult.Success
+            ) = onSuccess(request, result)
+        })
 
-        fun target(target: DisplayTarget): Builder = apply {
+        fun progressListener(
+            progressListener: ProgressListener<DisplayRequest>?
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.progressListener(progressListener as ProgressListener<ImageRequest>?)
+        }
+
+        fun target(target: DisplayTarget?): Builder = apply {
             super.target(target)
         }
 

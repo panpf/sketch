@@ -5,5 +5,7 @@
 
     <application
         android:networkSecurityConfig="@xml/network_security_config"
-        tools:ignore="GoogleAppIndexingWarning" />
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".utils.TestActivity" />
+    </application>
 </manifest>
