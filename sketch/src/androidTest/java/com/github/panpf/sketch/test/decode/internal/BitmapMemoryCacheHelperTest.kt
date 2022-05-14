@@ -27,7 +27,7 @@ class BitmapMemoryCacheHelperTest {
     fun testNewBitmapMemoryCacheHelper() {
         val (context, sketch) = contextAndSketch()
         val imageView = ImageView(context)
-        val request = DisplayRequest(newAssetUri("sample.jpeg"), imageView)
+        val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
 
         Assert.assertNotNull(
             newBitmapMemoryCacheHelper(sketch, request)
@@ -58,7 +58,7 @@ class BitmapMemoryCacheHelperTest {
     fun testRead() {
         val (context, sketch) = contextAndSketch()
         val imageView = ImageView(context)
-        val request = DisplayRequest(newAssetUri("sample.jpeg"), imageView)
+        val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
 
         sketch.memoryCache.clear()
 
@@ -105,7 +105,7 @@ class BitmapMemoryCacheHelperTest {
     fun testWrite() {
         val (context, sketch) = contextAndSketch()
         val imageView = ImageView(context)
-        val request = DisplayRequest(newAssetUri("sample.jpeg"), imageView)
+        val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
 
         sketch.memoryCache.clear()
 

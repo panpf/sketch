@@ -92,7 +92,7 @@ val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
 
 // 或者
 
-val request1 = DisplayRequest("https://www.example.com/image.jpg", imageView) {
+val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
     placeholder(R.drawable.image)
     transformations(CircleCropTransformation())
 }
@@ -112,7 +112,7 @@ val request1 = DisplayRequest("https://www.example.com/image.jpg", imageView) {
 enqueue 示例：
 
 ```kotlin
-val request = DisplayRequest("https://www.example.com/image.jpg", imageView)
+val request = DisplayRequest(imageView, "https://www.example.com/image.jpg")
 sketch.enqueue(request)
 ```
 
@@ -139,7 +139,7 @@ coroutineScope.launch(Dispatchers.Main) {
 另外, [Sketch] 的 enqueue() 方法会返回一个 [Disposable], 它可以用来取消请求，如下:
 
 ```kotlin
-val request = DisplayRequest("https://www.example.com/image.jpg", imageView)
+val request = DisplayRequest(imageView, "https://www.example.com/image.jpg")
 val disposable = sketch.enqueue(request)
 
 // 在你需要的时候取消请求
@@ -157,7 +157,7 @@ imageView.displayImage("https://www.example.com/image.jpg")
 上述调用等价于：
 
 ```kotlin
-val request = DisplayRequest("https://www.example.com/image.jpg", imageView)
+val request = DisplayRequest(imageView, "https://www.example.com/image.jpg")
 sketch.enqueue(request)
 ```
 

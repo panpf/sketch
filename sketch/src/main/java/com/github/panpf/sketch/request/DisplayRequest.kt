@@ -36,8 +36,8 @@ fun DisplayRequest(
 }.build()
 
 fun DisplayRequest(
-    uriString: String?,
     imageView: ImageView,
+    uriString: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): DisplayRequest = DisplayRequest.Builder(imageView.context, uriString).apply {
     target(imageView)

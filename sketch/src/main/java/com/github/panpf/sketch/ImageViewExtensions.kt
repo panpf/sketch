@@ -16,7 +16,7 @@ fun ImageView.displayImage(
     uri: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
-    context.sketch.enqueue(DisplayRequest(uri, this, configBlock))
+    context.sketch.enqueue(DisplayRequest(this, uri, configBlock))
 
 fun ImageView.displayImage(
     @DrawableRes drawableResId: Int?,

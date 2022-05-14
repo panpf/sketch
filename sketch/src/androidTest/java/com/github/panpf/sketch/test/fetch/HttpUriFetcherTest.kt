@@ -42,8 +42,8 @@ class HttpUriFetcherTest {
         Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DownloadRequest(context, httpsUri)))
         Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, httpUri)))
         Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, httpsUri)))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest(httpUri, imageView)))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest(httpsUri, imageView)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest(imageView, httpUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest(imageView, httpsUri)))
         Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest(context, ftpUri)))
         Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest(context, contentUri)))
     }
