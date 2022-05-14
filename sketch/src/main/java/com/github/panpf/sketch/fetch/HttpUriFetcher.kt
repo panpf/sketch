@@ -253,7 +253,7 @@ class HttpUriFetcher(
             if (coroutineScope.isActive) {
                 val mimeType = getMimeType(request.uriString, contentType)
                 val diskCacheSnapshot = diskCache[dataDiskCacheKey]
-                    ?: throw IOException("Disk cache loss after write. key: ${request.downloadDiskCacheKey}")
+                    ?: throw IOException("Disk cache loss after write. key: ${request.uriString}")
                 if (diskCachePolicy.readEnabled) {
                     FetchResult(
                         DiskCacheDataSource(sketch, request, DataFrom.NETWORK, diskCacheSnapshot),
@@ -282,9 +282,8 @@ class HttpUriFetcher(
                 val cachePolicy = request.downloadDiskCachePolicy
                 return if (cachePolicy.isReadOrWrite) {
                     val diskCache = sketch.diskCache
-                    val dataDiskCacheKey = request.downloadDiskCacheKey
-                    val contentTypeDiskCacheKey =
-                        request.downloadDiskCacheKey + "_contentType"
+                    val dataDiskCacheKey = request.uriString
+                    val contentTypeDiskCacheKey = request.uriString + "_contentType"
                     HttpDiskCacheHelper(
                         sketch = sketch,
                         request = request,

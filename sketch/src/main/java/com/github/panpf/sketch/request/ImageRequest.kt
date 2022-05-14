@@ -131,9 +131,6 @@ interface ImageRequest {
     val resizeApplyToDrawable: Boolean
     val bitmapMemoryCachePolicy: CachePolicy
 
-    val downloadDiskCacheKey: String
-        get() = uriString
-
     abstract class BaseImageRequest : ImageRequest {
         override val uri: Uri by lazy { Uri.parse(uriString) }
 
