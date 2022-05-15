@@ -10,7 +10,7 @@ import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.test.getContextAndSketch
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ class CountDrawablePendingManagerTest {
 
     @Test
     fun test() {
-        val (context, _) = contextAndSketch()
+        val (context, _) = getContextAndSketch()
         val logger = Logger()
         val bitmapPool = LruBitmapPool(context.defaultMemoryCacheBytes())
         val countDrawable = SketchCountBitmapDrawable(

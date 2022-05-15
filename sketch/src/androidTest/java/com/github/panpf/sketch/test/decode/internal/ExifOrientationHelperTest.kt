@@ -20,7 +20,7 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.test.getContextAndSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
 import com.github.panpf.sketch.test.utils.cornerB
@@ -37,7 +37,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientation() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
@@ -77,7 +77,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientationWithMimeType() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
@@ -207,7 +207,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testApplyToBitmap() {
-        val (context, _) = contextAndSketch()
+        val (context, _) = getContextAndSketch()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
         }
@@ -292,7 +292,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testAddToBitmap() {
-        val (context, _) = contextAndSketch()
+        val (context, _) = getContextAndSketch()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
         }
@@ -377,7 +377,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testAddAndApplyToBitmap() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
         }

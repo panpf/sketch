@@ -9,8 +9,19 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 
+fun NetworkObserver(context: Context): NetworkObserver =
+    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+        NetworkObserver21(context)
+    } else {
+        NetworkObserver1(context)
+    }
+
+
 interface NetworkObserver {
     val isCellularNetworkConnected: Boolean
+
+    /** Stop observing network changes. */
+    fun shutdown()
 }
 
 @RequiresApi(VERSION_CODES.LOLLIPOP)
@@ -39,6 +50,10 @@ class NetworkObserver21(context: Context) : NetworkObserver {
 
         _isCellularNetworkConnected =
             connectivityManager?.activeNetworkCompat()?.isCellularNetworkConnected() == true
+    }
+
+    override fun shutdown() {
+        connectivityManager?.unregisterNetworkCallback(networkCallback)
     }
 
     private fun onConnectivityChange() {
@@ -87,4 +102,7 @@ class NetworkObserver1(context: Context) : NetworkObserver {
                 false
             }
         }
+
+    override fun shutdown() {
+    }
 }

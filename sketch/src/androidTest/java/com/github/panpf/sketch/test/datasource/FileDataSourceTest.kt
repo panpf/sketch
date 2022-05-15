@@ -7,7 +7,7 @@ import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.test.getContextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -21,7 +21,7 @@ class FileDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val file = runBlocking {
             AssetDataSource(
                 sketch = sketch,
@@ -43,7 +43,7 @@ class FileDataSourceTest {
 
     @Test
     fun testLength() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val file = runBlocking {
             AssetDataSource(
                 sketch = sketch,
@@ -70,7 +70,7 @@ class FileDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val file = runBlocking {
             AssetDataSource(
                 sketch = sketch,
@@ -97,7 +97,7 @@ class FileDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val file = runBlocking {
             AssetDataSource(
                 sketch = sketch,
@@ -126,7 +126,7 @@ class FileDataSourceTest {
 
     @Test
     fun testFile() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val file = runBlocking {
             AssetDataSource(
                 sketch = sketch,
@@ -148,7 +148,7 @@ class FileDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val file = runBlocking {
             AssetDataSource(
                 sketch = sketch,

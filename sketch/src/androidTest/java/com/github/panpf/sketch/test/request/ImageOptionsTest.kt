@@ -45,7 +45,7 @@ import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.newErrorStateImage
-import com.github.panpf.sketch.test.context
+import com.github.panpf.sketch.test.getContext
 import com.github.panpf.sketch.test.utils.TestTransition
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -76,7 +76,7 @@ class ImageOptionsTest {
 
     @Test
     fun testIsEmpty() {
-        val context = context()
+        val context = getContext()
 
         ImageOptions().apply {
             Assert.assertTrue(this.isEmpty())
@@ -318,7 +318,7 @@ class ImageOptionsTest {
 
     @Test
     fun testMerged() {
-        val context = context()
+        val context = getContext()
 
         val options = ImageOptions()
         Assert.assertTrue(options == options.merged(ImageOptions()))
@@ -611,7 +611,7 @@ class ImageOptionsTest {
 
     @Test
     fun testEqualsHashCodeToString() {
-        val context = context()
+        val context = getContext()
         val optionsList = buildList {
             ImageOptions()
                 .apply { add(this) }.newOptions {
@@ -1121,7 +1121,7 @@ class ImageOptionsTest {
 
     @Test
     fun testResizeSizeResolver() {
-        val context = context()
+        val context = getContext()
 
         ImageOptions.Builder().apply {
             build().apply {

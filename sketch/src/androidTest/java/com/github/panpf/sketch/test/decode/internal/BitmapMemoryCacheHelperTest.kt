@@ -15,7 +15,7 @@ import com.github.panpf.sketch.decode.internal.newBitmapMemoryCacheHelper
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestDepth
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.test.getContextAndSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,7 +25,7 @@ class BitmapMemoryCacheHelperTest {
 
     @Test
     fun testNewBitmapMemoryCacheHelper() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val imageView = ImageView(context)
         val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
 
@@ -56,7 +56,7 @@ class BitmapMemoryCacheHelperTest {
 
     @Test
     fun testRead() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val imageView = ImageView(context)
         val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
 
@@ -103,7 +103,7 @@ class BitmapMemoryCacheHelperTest {
 
     @Test
     fun testWrite() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val imageView = ImageView(context)
         val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
 

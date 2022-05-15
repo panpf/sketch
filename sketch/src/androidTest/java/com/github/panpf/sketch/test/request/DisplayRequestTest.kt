@@ -55,7 +55,7 @@ import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.target.ImageViewTarget
-import com.github.panpf.sketch.test.context
+import com.github.panpf.sketch.test.getContext
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestImageView
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -76,7 +76,7 @@ class DisplayRequestTest {
 
     @Test
     fun testFun() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest(context1, uriString1).apply {
             Assert.assertSame(context1, this.context)
@@ -151,7 +151,7 @@ class DisplayRequestTest {
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     @Test
     fun testNewBuilder() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         DisplayRequest(context1, uriString1).newBuilder {
@@ -219,7 +219,7 @@ class DisplayRequestTest {
 
     @Test
     fun testContext() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest(context1, uriString1).apply {
             Assert.assertEquals(context1, context)
@@ -229,7 +229,7 @@ class DisplayRequestTest {
 
     @Test
     fun testTarget() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         val imageView = TestImageView(context1)
 
@@ -260,7 +260,7 @@ class DisplayRequestTest {
 
     @Test
     fun testLifecycle() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         var lifecycle1: Lifecycle? = null
         val lifecycleOwner = LifecycleOwner { lifecycle1!! }
@@ -290,7 +290,7 @@ class DisplayRequestTest {
 
     @Test
     fun testKey() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         DisplayRequest(context1, uriString1).apply {
@@ -312,7 +312,7 @@ class DisplayRequestTest {
 
     @Test
     fun testCacheKey() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         DisplayRequest(context1, uriString1).apply {
@@ -334,7 +334,7 @@ class DisplayRequestTest {
 
     @Test
     fun testDefinedOptions() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         DisplayRequest(context1, uriString1).apply {
@@ -356,7 +356,7 @@ class DisplayRequestTest {
 
     @Test
     fun testGlobalOptions() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         DisplayRequest(context1, uriString1).apply {
@@ -377,7 +377,7 @@ class DisplayRequestTest {
 
     @Test
     fun testMerge() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -413,7 +413,7 @@ class DisplayRequestTest {
 
     @Test
     fun testDepth() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
@@ -462,7 +462,7 @@ class DisplayRequestTest {
 
     @Test
     fun testParameters() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -517,7 +517,7 @@ class DisplayRequestTest {
 
     @Test
     fun testHttpHeaders() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -587,7 +587,7 @@ class DisplayRequestTest {
 
     @Test
     fun testDownloadDiskCachePolicy() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -613,7 +613,7 @@ class DisplayRequestTest {
 
     @Test
     fun testBitmapConfig() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -656,7 +656,7 @@ class DisplayRequestTest {
     fun testColorSpace() {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -683,7 +683,7 @@ class DisplayRequestTest {
     @Test
     @Suppress("DEPRECATION")
     fun testPreferQualityOverSpeed() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -709,7 +709,7 @@ class DisplayRequestTest {
 
     @Test
     fun testResize() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -864,7 +864,7 @@ class DisplayRequestTest {
 
     @Test
     fun testResizeSize() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -899,7 +899,7 @@ class DisplayRequestTest {
 
     @Test
     fun testResizeSizeResolver() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         val imageView = ImageView(context1)
 
@@ -922,7 +922,7 @@ class DisplayRequestTest {
 
     @Test
     fun testResizePrecision() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -951,7 +951,7 @@ class DisplayRequestTest {
 
     @Test
     fun testResizeScale() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -977,7 +977,7 @@ class DisplayRequestTest {
 
     @Test
     fun testTransformations() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1072,7 +1072,7 @@ class DisplayRequestTest {
 
     @Test
     fun testDisabledReuseBitmap() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1098,7 +1098,7 @@ class DisplayRequestTest {
 
     @Test
     fun testIgnoreExifOrientation() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1124,7 +1124,7 @@ class DisplayRequestTest {
 
     @Test
     fun testBitmapResultDiskCachePolicy() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1150,7 +1150,7 @@ class DisplayRequestTest {
 
     @Test
     fun testDisabledAnimatedImage() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1176,7 +1176,7 @@ class DisplayRequestTest {
 
     @Test
     fun testPlaceholderImage() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1210,7 +1210,7 @@ class DisplayRequestTest {
 
     @Test
     fun testErrorImage() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1259,7 +1259,7 @@ class DisplayRequestTest {
 
     @Test
     fun testTransition() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1280,7 +1280,7 @@ class DisplayRequestTest {
 
     @Test
     fun testResizeApplyToDrawable() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1306,7 +1306,7 @@ class DisplayRequestTest {
 
     @Test
     fun testBitmapMemoryCachePolicy() {
-        val context1 = context()
+        val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {

@@ -9,7 +9,7 @@ import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.test.getContextAndSketch
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -23,7 +23,7 @@ class XmlDrawableBitmapDecoderTest {
 
     @Test
     fun testFactory() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         val factory = XmlDrawableBitmapDecoder.Factory()
 
@@ -56,7 +56,7 @@ class XmlDrawableBitmapDecoderTest {
 
     @Test
     fun testExecuteDecode() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         val factory = XmlDrawableBitmapDecoder.Factory()
 

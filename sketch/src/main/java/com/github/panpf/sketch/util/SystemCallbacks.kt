@@ -3,40 +3,45 @@ package com.github.panpf.sketch.util
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.Sketch
+import java.util.concurrent.atomic.AtomicBoolean
 
 class SystemCallbacks(
     val context: Context,
     val sketch: Sketch,
 ) {
 
-    private val networkObserver = if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-        NetworkObserver21(context)
-    } else {
-        NetworkObserver1(context)
+    private val networkObserver by lazy { NetworkObserver(context) }
+    private val _isShutdown = AtomicBoolean(false)
+    private val componentCallbacks2 = object : ComponentCallbacks2 {
+        override fun onConfigurationChanged(newConfig: Configuration) {
+        }
+
+        override fun onLowMemory() {
+            sketch.memoryCache.clear()
+            sketch.bitmapPool.clear()
+        }
+
+        override fun onTrimMemory(level: Int) {
+            sketch.memoryCache.trim(level)
+            sketch.bitmapPool.trim(level)
+        }
     }
 
     init {
-        context.registerComponentCallbacks(object : ComponentCallbacks2 {
-            override fun onConfigurationChanged(newConfig: Configuration) {
-            }
-
-            override fun onLowMemory() {
-                sketch.memoryCache.clear()
-                sketch.bitmapPool.clear()
-            }
-
-            override fun onTrimMemory(level: Int) {
-                sketch.memoryCache.trim(level)
-                sketch.bitmapPool.trim(level)
-            }
-        })
+        context.registerComponentCallbacks(componentCallbacks2)
     }
+
+    val isShutdown get() = _isShutdown.get()
 
     val isCellularNetworkConnected: Boolean
         get() = networkObserver.isCellularNetworkConnected
+
+    fun shutdown() {
+        if (_isShutdown.getAndSet(true)) return
+        context.unregisterComponentCallbacks(componentCallbacks2)
+        networkObserver.shutdown()
+    }
 
 //    fun isCellularNetworkConnected(): Boolean =
 //        if (VERSION.SDK_INT >= VERSION_CODES.M) {

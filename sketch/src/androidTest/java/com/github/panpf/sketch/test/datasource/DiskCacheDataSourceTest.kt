@@ -6,7 +6,7 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.test.getContextAndSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -17,7 +17,7 @@ class DiskCacheDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
@@ -43,7 +43,7 @@ class DiskCacheDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
@@ -66,7 +66,7 @@ class DiskCacheDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
@@ -89,7 +89,7 @@ class DiskCacheDataSourceTest {
 
     @Test
     fun testFile() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
@@ -118,7 +118,7 @@ class DiskCacheDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(

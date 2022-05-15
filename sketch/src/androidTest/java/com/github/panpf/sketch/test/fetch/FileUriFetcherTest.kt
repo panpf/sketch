@@ -7,7 +7,7 @@ import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.test.getContextAndSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -30,7 +30,7 @@ class FileUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val fileUri = "file:///sdcard/sample.jpg"
         val filePath = "/sdcard/sample.jpg"
         val ftpUri = "ftp:///sample.com/sample.jpg"
@@ -61,7 +61,7 @@ class FileUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
         val fetcherFactory = FileUriFetcher.Factory()
         val fileUri = "file:///sdcard/sample.jpg"
 

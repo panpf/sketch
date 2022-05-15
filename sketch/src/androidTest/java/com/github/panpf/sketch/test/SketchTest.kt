@@ -63,7 +63,7 @@ class SketchTest {
 
     @Test
     fun testBuilder() {
-        val context1 = context()
+        val context1 = getContext()
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
         Sketch.Builder(activity).build().apply {
@@ -278,7 +278,7 @@ class SketchTest {
 
     @Test
     fun testDisplayEnqueue() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         /* success */
         val listenerSupervisor1 = DisplayListenerSupervisor()
@@ -321,7 +321,7 @@ class SketchTest {
 
     @Test
     fun testDisplayExecute() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         /* success */
         val listenerSupervisor1 = DisplayListenerSupervisor()
@@ -366,7 +366,7 @@ class SketchTest {
 
     @Test
     fun testLoadEnqueue() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         /* success */
         val listenerSupervisor1 = LoadListenerSupervisor()
@@ -409,7 +409,7 @@ class SketchTest {
 
     @Test
     fun testLoadExecute() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         /* success */
         val listenerSupervisor1 = LoadListenerSupervisor()
@@ -454,8 +454,9 @@ class SketchTest {
 
     @Test
     fun testDownloadEnqueue() {
-        val context = context()
-        val sketch = Sketch.Builder(context).httpStack(TestHttpStack(context)).build()
+        val (context, sketch) = getContextAndSketch {
+            httpStack(TestHttpStack(it))
+        }
 
         /* success */
         val listenerSupervisor1 = DownloadListenerSupervisor()
@@ -466,7 +467,10 @@ class SketchTest {
             sketch.enqueue(request1).job.await()
         }
         Assert.assertTrue(result1 is DownloadResult.Success)
-        Assert.assertEquals(listOf("onStart", "onSuccess"), listenerSupervisor1.callbackActionList)
+        Assert.assertEquals(
+            listOf("onStart", "onSuccess"),
+            listenerSupervisor1.callbackActionList
+        )
 
         /* error */
         val listenerSupervisor2 = DownloadListenerSupervisor()
@@ -477,7 +481,10 @@ class SketchTest {
             sketch.enqueue(request2).job.await()
         }
         Assert.assertTrue(result2 is DownloadResult.Error)
-        Assert.assertEquals(listOf("onStart", "onError"), listenerSupervisor2.callbackActionList)
+        Assert.assertEquals(
+            listOf("onStart", "onError"),
+            listenerSupervisor2.callbackActionList
+        )
 
         /* cancel */
         var disposable3: Disposable<DownloadResult>? = null
@@ -493,13 +500,17 @@ class SketchTest {
             disposable3 = sketch.enqueue(request3)
             disposable3?.job?.join()
         }
-        Assert.assertEquals(listOf("onStart", "onCancel"), listenerSupervisor3.callbackActionList)
+        Assert.assertEquals(
+            listOf("onStart", "onCancel"),
+            listenerSupervisor3.callbackActionList
+        )
     }
 
     @Test
     fun testDownloadExecute() {
-        val context = context()
-        val sketch = Sketch.Builder(context).httpStack(TestHttpStack(context)).build()
+        val (context, sketch) = getContextAndSketch {
+            httpStack(TestHttpStack(it))
+        }
 
         /* success */
         val listenerSupervisor1 = DownloadListenerSupervisor()
@@ -510,7 +521,10 @@ class SketchTest {
             sketch.execute(request1)
         }
         Assert.assertTrue(result1 is DownloadResult.Success)
-        Assert.assertEquals(listOf("onStart", "onSuccess"), listenerSupervisor1.callbackActionList)
+        Assert.assertEquals(
+            listOf("onStart", "onSuccess"),
+            listenerSupervisor1.callbackActionList
+        )
 
         /* error */
         val listenerSupervisor2 = DownloadListenerSupervisor()
@@ -521,7 +535,10 @@ class SketchTest {
             sketch.execute(request2)
         }
         Assert.assertTrue(result2 is DownloadResult.Error)
-        Assert.assertEquals(listOf("onStart", "onError"), listenerSupervisor2.callbackActionList)
+        Assert.assertEquals(
+            listOf("onStart", "onError"),
+            listenerSupervisor2.callbackActionList
+        )
 
         /* cancel */
         var deferred3: Deferred<DownloadResult>? = null
@@ -539,6 +556,15 @@ class SketchTest {
             }
             deferred3?.join()
         }
-        Assert.assertEquals(listOf("onStart", "onCancel"), listenerSupervisor3.callbackActionList)
+        Assert.assertEquals(
+            listOf("onStart", "onCancel"),
+            listenerSupervisor3.callbackActionList
+        )
+    }
+
+    @Test
+    fun testShutdown() {
+        val sketch = getSketch()
+        sketch.shutdown()
     }
 }

@@ -11,7 +11,7 @@ import com.github.panpf.sketch.fetch.internal.isHeif
 import com.github.panpf.sketch.fetch.internal.isWebP
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.test.getContextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -72,7 +72,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsWebP() {
-        val (context, _) = contextAndSketch()
+        val (context, _) = getContextAndSketch()
 
         HeaderBytes(context.assets.open("sample.webp").use {
             ByteArray(1024).apply { it.read(this) }
@@ -93,7 +93,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsAnimatedWebP() {
-        val (context, _) = contextAndSketch()
+        val (context, _) = getContextAndSketch()
 
         HeaderBytes(context.assets.open("sample_anim.webp").use {
             ByteArray(1024).apply { it.read(this) }
@@ -114,7 +114,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsHeif() {
-        val (context, _) = contextAndSketch()
+        val (context, _) = getContextAndSketch()
 
         HeaderBytes(context.assets.open("sample.heic").use {
             ByteArray(1024).apply { it.read(this) }
@@ -135,7 +135,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsAnimatedHeif() {
-        val (context, _) = contextAndSketch()
+        val (context, _) = getContextAndSketch()
 
         HeaderBytes(context.assets.open("sample.heic").use {
             ByteArray(1024).apply { it.read(this) }
@@ -156,7 +156,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsGif() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         // normal
         val request = LoadRequest(context, newAssetUri("sample_anim.gif"))

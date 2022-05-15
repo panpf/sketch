@@ -52,7 +52,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToLong
 
 class Sketch private constructor(
@@ -75,6 +77,7 @@ class Sketch private constructor(
         }
     )
     private val requestExecutor = RequestExecutor()
+    private val isShutdown = AtomicBoolean(false)
 
     val systemCallbacks = SystemCallbacks(context, this)
     val countDrawablePendingManager = CountDrawablePendingManager(logger)
@@ -174,6 +177,14 @@ class Sketch private constructor(
             }
             job.await()
         }
+
+    fun shutdown() {
+        if (isShutdown.getAndSet(true)) return
+        scope.cancel()
+        systemCallbacks.shutdown()
+        memoryCache.clear()
+        bitmapPool.clear()
+    }
 
     class Builder constructor(context: Context) {
 

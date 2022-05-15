@@ -38,7 +38,7 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.test.contextAndSketch
+import com.github.panpf.sketch.test.getContextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -119,7 +119,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testApplyResize() {
-        val (_, sketch) = contextAndSketch()
+        val (_, sketch) = getContextAndSketch()
         val newResult: () -> BitmapDecodeResult = {
             BitmapDecodeResult(
                 bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
@@ -213,7 +213,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactory() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactory().apply {
@@ -244,7 +244,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrThrow() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactoryOrThrow().apply {
@@ -272,7 +272,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrNull() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
@@ -300,7 +300,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeBitmapWithBitmapFactory() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeBitmapWithBitmapFactory()!!.apply {
@@ -333,7 +333,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeRegionBitmap() {
-        val (context, sketch) = contextAndSketch()
+        val (context, sketch) = getContextAndSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeRegionBitmap(Rect(500, 500, 600, 600))!!.apply {
