@@ -20,6 +20,25 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
         return TestResponse(context, url.substring(url.lastIndexOf("/") + 1), readDelayMillis)
     }
 
+    override fun toString(): String {
+        return "TestHttpStack(readDelayMillis=$readDelayMillis)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as TestHttpStack
+
+        if (readDelayMillis != other.readDelayMillis) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return readDelayMillis?.hashCode() ?: 0
+    }
+
     class TestResponse(
         private val context: Context,
         private val assetFileName: String,
