@@ -92,6 +92,7 @@ class ResourceUriFetcher(
     }
 
     class Factory : Fetcher.Factory {
+
         override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? =
             if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 ResourceUriFetcher(sketch, request, request.uri)
@@ -100,5 +101,15 @@ class ResourceUriFetcher(
             }
 
         override fun toString(): String = "ResourceUriFetcher"
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
     }
 }

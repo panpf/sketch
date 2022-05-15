@@ -31,6 +31,7 @@ class AssetUriFetcher(
     }
 
     class Factory : Fetcher.Factory {
+
         override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? =
             if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 val uriString = request.uriString
@@ -45,5 +46,15 @@ class AssetUriFetcher(
             }
 
         override fun toString(): String = "AssetUriFetcher"
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
     }
 }

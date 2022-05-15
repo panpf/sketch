@@ -31,6 +31,7 @@ class FileUriFetcher(
     }
 
     class Factory : Fetcher.Factory {
+
         override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {
             val uriString = request.uriString
             val subStartIndex = when {
@@ -49,5 +50,15 @@ class FileUriFetcher(
         }
 
         override fun toString(): String = "FileUriFetcher"
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
     }
 }

@@ -149,9 +149,11 @@ class HttpUriFetcher(
     }
 
     class Factory : Fetcher.Factory {
+
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? =
-            if (SCHEME.equals(request.uri.scheme, ignoreCase = true)
-                        || SCHEME1.equals(request.uri.scheme, ignoreCase = true)
+            if (
+                SCHEME.equals(request.uri.scheme, ignoreCase = true)
+                || SCHEME1.equals(request.uri.scheme, ignoreCase = true)
             ) {
                 HttpUriFetcher(sketch, request, request.uriString)
             } else {
@@ -159,6 +161,16 @@ class HttpUriFetcher(
             }
 
         override fun toString(): String = "HttpUriFetcher"
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
     }
 
     private class HttpDiskCacheHelper(
@@ -198,7 +210,12 @@ class HttpUriFetcher(
                 }
                 val mimeType = getMimeType(request.uriString, contentType)
                 return FetchResult(
-                    DiskCacheDataSource(sketch, request, DataFrom.DISK_CACHE, dataDiskCacheSnapshot),
+                    DiskCacheDataSource(
+                        sketch,
+                        request,
+                        DataFrom.DISK_CACHE,
+                        dataDiskCacheSnapshot
+                    ),
                     mimeType
                 )
             }

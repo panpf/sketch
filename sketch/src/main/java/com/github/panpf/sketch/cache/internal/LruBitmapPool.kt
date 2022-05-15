@@ -184,13 +184,6 @@ class LruBitmapPool constructor(
         }
     }
 
-    override fun toString(): String {
-        val strategy =
-            if (strategy is SizeConfigStrategy) "SizeConfigStrategy" else "AttributeStrategy"
-        val configs = allowedConfigs.joinToString(prefix = "[", postfix = "]", separator = ",")
-        return "${MODULE}(maxSize=${maxSize.formatFileSize()},strategy=${strategy},allowedConfigs=${configs})"
-    }
-
     override fun setInBitmapForBitmapFactory(
         options: BitmapFactory.Options, imageWidth: Int, imageHeight: Int, imageMimeType: String?,
     ): Boolean {
@@ -305,5 +298,30 @@ class LruBitmapPool constructor(
             }
         }
         return success
+    }
+
+    override fun toString(): String {
+        val strategy =
+            if (strategy is SizeConfigStrategy) "SizeConfigStrategy" else "AttributeStrategy"
+        val configs = allowedConfigs.joinToString(prefix = "[", postfix = "]", separator = ",")
+        return "${MODULE}(maxSize=${maxSize.formatFileSize()},strategy=${strategy},allowedConfigs=${configs})"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as LruBitmapPool
+
+        if (maxSize != other.maxSize) return false
+        if (allowedConfigs != other.allowedConfigs) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = maxSize.hashCode()
+        result = 31 * result + allowedConfigs.hashCode()
+        return result
     }
 }

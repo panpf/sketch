@@ -153,5 +153,15 @@ open class DefaultBitmapDecoder(
         ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, fetchResult.dataSource)
 
         override fun toString(): String = "DefaultBitmapDecoder"
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
     }
 }

@@ -37,6 +37,7 @@ class AppIconUriFetcher(
     )
 
     class Factory : Fetcher.Factory {
+
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
             val uri = request.uri
             return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
@@ -51,6 +52,16 @@ class AppIconUriFetcher(
         }
 
         override fun toString(): String = "AppIconUriFetcher"
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
     }
 
     class AppIconDataSource(

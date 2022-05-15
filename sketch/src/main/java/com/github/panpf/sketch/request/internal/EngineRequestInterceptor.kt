@@ -37,8 +37,6 @@ class EngineRequestInterceptor : RequestInterceptor {
             else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${request::class.java}")
         }
 
-    override fun toString(): String = "EngineRequestInterceptor"
-
     private suspend fun display(
         sketch: Sketch,
         request: DisplayRequest,
@@ -130,5 +128,17 @@ class EngineRequestInterceptor : RequestInterceptor {
                 else -> throw IllegalArgumentException("The unknown source: ${source::class.qualifiedName}")
             }
         }
+    }
+
+    override fun toString(): String = "EngineRequestInterceptor"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
     }
 }

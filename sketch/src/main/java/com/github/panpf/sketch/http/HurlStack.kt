@@ -30,9 +30,6 @@ class HurlStack(
     val processRequest: ((url: String, connection: HttpURLConnection) -> Unit)?
 ) : HttpStack {
 
-    override fun toString(): String =
-        "HurlStack(connectTimeout=${connectTimeout},readTimeout=${readTimeout},userAgent=${userAgent})"
-
     @Throws(IOException::class)
     override fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
         var newUri = url
@@ -74,6 +71,36 @@ class HurlStack(
         }
         throw IOException("Unable to get response")
     }
+
+    override fun toString(): String =
+        "HurlStack(connectTimeout=${connectTimeout},readTimeout=${readTimeout},userAgent=${userAgent})"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HurlStack
+
+        if (readTimeout != other.readTimeout) return false
+        if (connectTimeout != other.connectTimeout) return false
+        if (userAgent != other.userAgent) return false
+        if (extraHeaders != other.extraHeaders) return false
+        if (addExtraHeaders != other.addExtraHeaders) return false
+        if (processRequest != other.processRequest) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = readTimeout
+        result = 31 * result + connectTimeout
+        result = 31 * result + (userAgent?.hashCode() ?: 0)
+        result = 31 * result + (extraHeaders?.hashCode() ?: 0)
+        result = 31 * result + (addExtraHeaders?.hashCode() ?: 0)
+        result = 31 * result + (processRequest?.hashCode() ?: 0)
+        return result
+    }
+
 
     private class HurlResponse(private val connection: HttpURLConnection) : HttpStack.Response {
 

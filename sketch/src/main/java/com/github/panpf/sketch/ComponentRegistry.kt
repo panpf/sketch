@@ -93,18 +93,32 @@ class ComponentRegistry private constructor(
                     )
                 })"
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ComponentRegistry
+
+        if (fetcherFactoryList != other.fetcherFactoryList) return false
+        if (bitmapDecoderFactoryList != other.bitmapDecoderFactoryList) return false
+        if (drawableDecoderFactoryList != other.drawableDecoderFactoryList) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = fetcherFactoryList.hashCode()
+        result = 31 * result + bitmapDecoderFactoryList.hashCode()
+        result = 31 * result + drawableDecoderFactoryList.hashCode()
+        return result
+    }
+
     companion object {
         fun new(
             configBlock: (Builder.() -> Unit)? = null
         ): ComponentRegistry = Builder().apply {
             configBlock?.invoke(this)
         }.build()
-
-        fun newBuilder(
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder().apply {
-            configBlock?.invoke(this)
-        }
     }
 
     class Builder {
@@ -146,7 +160,7 @@ class ComponentRegistry private constructor(
     }
 }
 
-class ComponentService(private val sketch: Sketch, private val registry: ComponentRegistry) {
+class ComponentService(private val sketch: Sketch, internal val registry: ComponentRegistry) {
 
     @WorkerThread
     fun newFetcher(request: ImageRequest): Fetcher = registry.newFetcher(sketch, request)

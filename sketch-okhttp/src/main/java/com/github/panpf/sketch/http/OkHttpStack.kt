@@ -10,9 +10,6 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
 
-    override fun toString(): String =
-        "OkHttpStack(connectTimeout=${okHttpClient.connectTimeoutMillis()},readTimeout=${okHttpClient.readTimeoutMillis()})"
-
     override fun getResponse(request: ImageRequest, url: String): Response {
         val httpRequest = Request.Builder().apply {
             url(url)
@@ -27,6 +24,25 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
         }.build()
         return OkHttpResponse(okHttpClient.newCall(httpRequest).execute())
     }
+
+    override fun toString(): String =
+        "OkHttpStack(connectTimeout=${okHttpClient.connectTimeoutMillis()},readTimeout=${okHttpClient.readTimeoutMillis()})"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as OkHttpStack
+
+        if (okHttpClient != other.okHttpClient) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return okHttpClient.hashCode()
+    }
+
 
     private class OkHttpResponse(val response: okhttp3.Response) : Response {
         override val code: Int by lazy {

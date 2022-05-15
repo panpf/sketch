@@ -139,6 +139,25 @@ class Logger(
 
     override fun toString(): String = "Logger(level=$level,proxy=$proxy)"
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Logger
+
+        if (_level != other._level) return false
+        if (proxy != other.proxy) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = _level.hashCode()
+        result = 31 * result + proxy.hashCode()
+        return result
+    }
+
+
     enum class Level {
         VERBOSE,
         DEBUG,
@@ -183,5 +202,15 @@ class Logger(
         }
 
         override fun toString(): String = "LogProxy"
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
     }
 }

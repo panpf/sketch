@@ -37,4 +37,19 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
     }
 
     override fun toString(): String = "PauseLoadWhenScrollingDisplayInterceptor"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PauseLoadWhenScrollingDisplayInterceptor
+
+        if (enabled != other.enabled) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return enabled.hashCode()
+    }
 }

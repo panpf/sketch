@@ -24,6 +24,7 @@ class ContentUriFetcher(
     }
 
     class Factory : Fetcher.Factory {
+
         override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? =
             if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 ContentUriFetcher(sketch, request, request.uri)
@@ -32,5 +33,15 @@ class ContentUriFetcher(
             }
 
         override fun toString(): String = "ContentUriFetcher"
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
     }
 }

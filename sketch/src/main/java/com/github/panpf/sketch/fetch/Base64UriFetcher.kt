@@ -36,6 +36,7 @@ class Base64UriFetcher(
     }
 
     class Factory : Fetcher.Factory {
+
         override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? =
             if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 val base64ImageString = request.uriString
@@ -58,5 +59,15 @@ class Base64UriFetcher(
             }
 
         override fun toString(): String = "Base64UriFetcher"
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
     }
 }

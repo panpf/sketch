@@ -195,6 +195,27 @@ class LruDiskCache constructor(
     override fun toString(): String =
         "$MODULE(maxSize=${maxSize.formatFileSize()},version=${version},directory='${directory.path}')"
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as LruDiskCache
+
+        if (maxSize != other.maxSize) return false
+        if (_directory != other._directory) return false
+        if (version != other.version) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = maxSize.hashCode()
+        result = 31 * result + (_directory?.hashCode() ?: 0)
+        result = 31 * result + version
+        return result
+    }
+
+
     class LruDiskCacheSnapshot(
         private val lruDiskCache: LruDiskCache,
         private val logger: Logger?,

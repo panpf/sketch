@@ -37,4 +37,19 @@ class SaveCellularTrafficDisplayInterceptor : RequestInterceptor {
     }
 
     override fun toString(): String = "SaveCellularTrafficDisplayInterceptor"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SaveCellularTrafficDisplayInterceptor
+
+        if (enabled != other.enabled) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return enabled.hashCode()
+    }
 }
