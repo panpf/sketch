@@ -25,6 +25,7 @@ import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
+import com.github.panpf.sketch.resize.DefaultSizeResolver
 import com.github.panpf.sketch.resize.DisplaySizeResolver
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -108,7 +109,7 @@ interface ImageRequest {
     /** The size of the desired bitmap */
     val resize: Resize?
     val resizeSize: Size?
-    val resizeSizeResolver: SizeResolver
+    val resizeSizeResolver: SizeResolver?
     val resizePrecisionDecider: PrecisionDecider
     val resizeScaleDecider: ScaleDecider
 
@@ -161,6 +162,7 @@ interface ImageRequest {
     ): ImageRequest
 
     abstract class Builder {
+
         private val context: Context
         private val uriString: String
         private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? = null
@@ -170,8 +172,9 @@ interface ImageRequest {
         private var globalOptions: ImageOptions? = null
         private var viewTargetOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
+        private var resizeSizeResolver: SizeResolver? = null
 
-        protected  constructor(context: Context, uriString: String?) {
+        protected constructor(context: Context, uriString: String?) {
             this.context = context
             this.uriString = uriString.orEmpty()
             this.definedOptionsBuilder = ImageOptions.Builder()
@@ -192,6 +195,7 @@ interface ImageRequest {
             this.lifecycle = request.lifecycle
             this.globalOptions = request.globalOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
+            this.resizeSizeResolver = request.resizeSizeResolver
         }
 
         protected fun listener(listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?): Builder =
@@ -393,7 +397,7 @@ interface ImageRequest {
         }
 
         open fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
-            definedOptionsBuilder.resizeSizeResolver(sizeResolver)
+            this.resizeSizeResolver = sizeResolver
         }
 
         open fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
@@ -531,11 +535,17 @@ interface ImageRequest {
             @Suppress("DEPRECATION") val preferQualityOverSpeed =
                 finalOptions.preferQualityOverSpeed ?: false
             val resizeSize = finalOptions.resizeSize
-            var resolvedResizeSize = false
-            val resizeSizeResolver = finalOptions.resizeSizeResolver
-                ?: resolveResizeSizeResolver().apply { resolvedResizeSize = true }
+            val resizeSizeResolver = resizeSizeResolver ?: if (resizeSize == null) {
+                DefaultSizeResolver(resolveResizeSizeResolver())
+            } else {
+                null
+            }
             val resizePrecisionDecider = finalOptions.resizePrecisionDecider
-                ?: fixedPrecision(if (resizeSize != null || !resolvedResizeSize) EXACTLY else LESS_PIXELS)
+                ?: if (resizeSize == null || resizeSizeResolver is DefaultSizeResolver) {
+                    fixedPrecision(LESS_PIXELS)
+                } else {
+                    fixedPrecision(EXACTLY)
+                }
             val resizeScaleDecider = finalOptions.resizeScaleDecider
                 ?: fixedScale(resolveResizeScale())
             val transformations = finalOptions.transformations

@@ -393,7 +393,7 @@ interface DisplayRequest : ImageRequest {
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean,
         override val resizeSize: Size?,
-        override val resizeSizeResolver: SizeResolver,
+        override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,
@@ -406,5 +406,10 @@ interface DisplayRequest : ImageRequest {
         override val disabledAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,
         override val bitmapMemoryCachePolicy: CachePolicy,
-    ) : BaseImageRequest(), DisplayRequest
+    ) : BaseImageRequest(), DisplayRequest {
+
+        override fun toString(): String {
+            return "DisplayRequest(${key})"
+        }
+    }
 }

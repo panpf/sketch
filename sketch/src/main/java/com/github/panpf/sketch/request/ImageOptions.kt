@@ -22,7 +22,6 @@ import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.fixedPrecision
 import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.stateimage.DrawableStateImage
@@ -61,7 +60,6 @@ interface ImageOptions {
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val preferQualityOverSpeed: Boolean?
     val resizeSize: Size?
-    val resizeSizeResolver: SizeResolver?
     val resizePrecisionDecider: PrecisionDecider?
     val resizeScaleDecider: ScaleDecider?
     val transformations: List<Transformation>?
@@ -104,7 +102,6 @@ interface ImageOptions {
             && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
             && preferQualityOverSpeed == null
             && resizeSize == null
-            && resizeSizeResolver == null
             && resizePrecisionDecider == null
             && resizeScaleDecider == null
             && transformations == null
@@ -130,7 +127,6 @@ interface ImageOptions {
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
         private var resizeSize: Size? = null
-        private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScaleDecider: ScaleDecider? = null
         private var transformations: MutableList<Transformation>? = null
@@ -161,7 +157,6 @@ interface ImageOptions {
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resizeSize = request.resizeSize
-            this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScaleDecider = request.resizeScaleDecider
             this.transformations = request.transformations?.toMutableList()
@@ -336,10 +331,6 @@ interface ImageOptions {
         fun resizeSize(@Px width: Int, @Px height: Int): Builder =
             resizeSize(Size(width, height))
 
-        fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
-            this.resizeSizeResolver = sizeResolver
-        }
-
         fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
             this.resizePrecisionDecider = precisionDecider
         }
@@ -487,9 +478,6 @@ interface ImageOptions {
             if (this.resizeSize == null) {
                 this.resizeSize = options.resizeSize
             }
-            if (this.resizeSizeResolver == null) {
-                this.resizeSizeResolver = options.resizeSizeResolver
-            }
             if (this.resizePrecisionDecider == null) {
                 this.resizePrecisionDecider = options.resizePrecisionDecider
             }
@@ -541,7 +529,6 @@ interface ImageOptions {
             colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
             preferQualityOverSpeed = preferQualityOverSpeed,
             resizeSize = resizeSize,
-            resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScaleDecider = resizeScaleDecider,
             transformations = transformations?.takeIf { it.isNotEmpty() },
@@ -569,7 +556,6 @@ interface ImageOptions {
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         override val preferQualityOverSpeed: Boolean?,
         override val resizeSize: Size?,
-        override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider?,
         override val resizeScaleDecider: ScaleDecider?,
         override val transformations: List<Transformation>?,
@@ -598,7 +584,6 @@ interface ImageOptions {
             if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != other.colorSpace) return false
             @Suppress("DEPRECATION") if (preferQualityOverSpeed != other.preferQualityOverSpeed) return false
             if (resizeSize != other.resizeSize) return false
-            if (resizeSizeResolver != other.resizeSizeResolver) return false
             if (resizePrecisionDecider != other.resizePrecisionDecider) return false
             if (resizeScaleDecider != other.resizeScaleDecider) return false
             if (transformations != other.transformations) return false
@@ -627,7 +612,6 @@ interface ImageOptions {
             @Suppress("DEPRECATION")
             result = 31 * result + (preferQualityOverSpeed?.hashCode() ?: 0)
             result = 31 * result + (resizeSize?.hashCode() ?: 0)
-            result = 31 * result + (resizeSizeResolver?.hashCode() ?: 0)
             result = 31 * result + (resizePrecisionDecider?.hashCode() ?: 0)
             result = 31 * result + (resizeScaleDecider?.hashCode() ?: 0)
             result = 31 * result + (transformations?.hashCode() ?: 0)
@@ -657,7 +641,6 @@ interface ImageOptions {
                 @Suppress("DEPRECATION")
                 append("preferQualityOverSpeed=$preferQualityOverSpeed, ")
                 append("resizeSize=$resizeSize, ")
-                append("resizeSizeResolver=$resizeSizeResolver, ")
                 append("resizePrecisionDecider=$resizePrecisionDecider, ")
                 append("resizeScaleDecider=$resizeScaleDecider, ")
                 append("transformations=$transformations, ")

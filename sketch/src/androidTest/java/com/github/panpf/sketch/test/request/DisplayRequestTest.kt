@@ -34,6 +34,7 @@ import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.request.updateDisplayImageOptions
+import com.github.panpf.sketch.resize.DefaultSizeResolver
 import com.github.panpf.sketch.resize.DisplaySizeResolver
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
@@ -67,6 +68,7 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -97,7 +99,10 @@ class DisplayRequestTest {
             @Suppress("DEPRECATION")
             Assert.assertFalse(this.preferQualityOverSpeed)
             Assert.assertNull(this.resizeSize)
-            Assert.assertEquals(DisplaySizeResolver(context1), this.resizeSizeResolver)
+            Assert.assertEquals(
+                DefaultSizeResolver(DisplaySizeResolver(context1)),
+                this.resizeSizeResolver
+            )
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.resizePrecisionDecider)
             Assert.assertEquals(FixedScaleDecider(CENTER_CROP), this.resizeScaleDecider)
             Assert.assertNull(this.transformations)
@@ -132,7 +137,10 @@ class DisplayRequestTest {
             @Suppress("DEPRECATION")
             Assert.assertFalse(this.preferQualityOverSpeed)
             Assert.assertNull(this.resizeSize)
-            Assert.assertEquals(ViewSizeResolver(imageView1), this.resizeSizeResolver)
+            Assert.assertEquals(
+                DefaultSizeResolver(ViewSizeResolver(imageView1)),
+                this.resizeSizeResolver
+            )
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.resizePrecisionDecider)
             Assert.assertEquals(FixedScaleDecider(CENTER_CROP), this.resizeScaleDecider)
             Assert.assertNull(this.transformations)
@@ -905,7 +913,10 @@ class DisplayRequestTest {
 
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertEquals(DisplaySizeResolver(context1), resizeSizeResolver)
+                Assert.assertEquals(
+                    DefaultSizeResolver(DisplaySizeResolver(context1)),
+                    resizeSizeResolver
+                )
             }
 
             resizeSizeResolver(ViewSizeResolver(imageView))
@@ -915,7 +926,50 @@ class DisplayRequestTest {
 
             resizeSizeResolver(null)
             build().apply {
-                Assert.assertEquals(DisplaySizeResolver(context1), resizeSizeResolver)
+                Assert.assertEquals(
+                    DefaultSizeResolver(DisplaySizeResolver(context1)),
+                    resizeSizeResolver
+                )
+            }
+        }
+
+        DisplayRequest.Builder(context1, uriString1).apply {
+            target(imageView)
+            build().apply {
+                Assert.assertEquals(
+                    DefaultSizeResolver(ViewSizeResolver(imageView)),
+                    resizeSizeResolver
+                )
+            }
+
+            resizeSizeResolver(null)
+            build().apply {
+                Assert.assertEquals(
+                    DefaultSizeResolver(ViewSizeResolver(imageView)),
+                    resizeSizeResolver
+                )
+            }
+        }
+
+        DisplayRequest.Builder(context1, uriString1).apply {
+            build().apply {
+                Assert.assertEquals(
+                    DefaultSizeResolver(DisplaySizeResolver(context1)),
+                    resizeSizeResolver
+                )
+            }
+
+            resizeSize(100, 100)
+            build().apply {
+                Assert.assertNull(resizeSizeResolver)
+            }
+
+            resizeSize(null)
+            build().apply {
+                Assert.assertEquals(
+                    DefaultSizeResolver(DisplaySizeResolver(context1)),
+                    resizeSizeResolver
+                )
             }
         }
     }
@@ -946,6 +1000,36 @@ class DisplayRequestTest {
             build().apply {
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
             }
+        }
+
+        val request = DisplayRequest(context1, uriString1).apply {
+            Assert.assertNull(resizeSize)
+            Assert.assertEquals(
+                DefaultSizeResolver(DisplaySizeResolver(context1)),
+                resizeSizeResolver
+            )
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+        }
+        val size = runBlocking {
+            request.resizeSizeResolver!!.size()
+        }
+        val request1 = request.newDisplayRequest {
+            resizeSize(size)
+        }.apply {
+            Assert.assertNotNull(resizeSize)
+            Assert.assertEquals(
+                DefaultSizeResolver(DisplaySizeResolver(context1)),
+                resizeSizeResolver
+            )
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+        }
+        request1.newDisplayRequest().apply {
+            Assert.assertNotNull(resizeSize)
+            Assert.assertEquals(
+                DefaultSizeResolver(DisplaySizeResolver(context1)),
+                resizeSizeResolver
+            )
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
         }
     }
 

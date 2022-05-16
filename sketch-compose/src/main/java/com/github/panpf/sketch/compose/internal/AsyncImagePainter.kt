@@ -24,6 +24,7 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
+import com.github.panpf.sketch.resize.DefaultSizeResolver
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transition.CrossfadeTransition
@@ -168,12 +169,13 @@ class AsyncImagePainter(
             target(target)
             configBlock?.invoke(this)
         }.run {
-            val resetSizeResolver = resize == null && definedOptions.resizeSizeResolver == null
+            val resetSizeResolver =
+                resizeSize == null && (resizeSizeResolver == null || resizeSizeResolver is DefaultSizeResolver)
             val resetScale = definedOptions.resizeScaleDecider == null
             if (resetSizeResolver || resetScale) {
                 newDisplayRequest {
                     if (resetSizeResolver) {
-                        resizeSizeResolver(ConstraintsSizeResolver())
+                        resizeSizeResolver(DefaultSizeResolver(ConstraintsSizeResolver()))
                     }
                     if (resetScale) {
                         resizeScale(resizeScale)

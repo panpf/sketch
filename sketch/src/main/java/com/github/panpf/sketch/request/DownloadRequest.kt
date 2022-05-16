@@ -374,7 +374,7 @@ interface DownloadRequest : ImageRequest {
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean,
         override val resizeSize: Size?,
-        override val resizeSizeResolver: SizeResolver,
+        override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,
@@ -387,5 +387,10 @@ interface DownloadRequest : ImageRequest {
         override val disabledAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,
         override val bitmapMemoryCachePolicy: CachePolicy,
-    ) : BaseImageRequest(), DownloadRequest
+    ) : BaseImageRequest(), DownloadRequest {
+
+        override fun toString(): String {
+            return "DownloadRequest(${key})"
+        }
+    }
 }

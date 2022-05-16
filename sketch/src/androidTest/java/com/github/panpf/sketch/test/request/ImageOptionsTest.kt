@@ -10,7 +10,6 @@ import android.graphics.ColorSpace.Named.BT709
 import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.widget.TextView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -25,7 +24,6 @@ import com.github.panpf.sketch.request.RequestDepth.LOCAL
 import com.github.panpf.sketch.request.RequestDepth.MEMORY
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.get
-import com.github.panpf.sketch.resize.DisplaySizeResolver
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
@@ -37,7 +35,6 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.resize.ViewSizeResolver
 import com.github.panpf.sketch.resize.longImageClipPrecision
 import com.github.panpf.sketch.resize.longImageScale
 import com.github.panpf.sketch.stateimage.ColorStateImage
@@ -91,7 +88,7 @@ class ImageOptionsTest {
             @Suppress("DEPRECATION")
             Assert.assertNull(this.preferQualityOverSpeed)
             Assert.assertNull(this.resizeSize)
-            Assert.assertNull(this.resizeSizeResolver)
+//            Assert.assertNull(this.resizeSizeResolver)
             Assert.assertNull(this.resizePrecisionDecider)
             Assert.assertNull(this.resizeScaleDecider)
             Assert.assertNull(this.transformations)
@@ -166,12 +163,12 @@ class ImageOptionsTest {
             Assert.assertNotNull(this.resizeSize)
         }
 
-        ImageOptions {
-            resizeSizeResolver(DisplaySizeResolver(context))
-        }.apply {
-            Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(this.resizeSizeResolver)
-        }
+//        ImageOptions {
+//            resizeSizeResolver(DisplaySizeResolver(context))
+//        }.apply {
+//            Assert.assertFalse(this.isEmpty())
+//            Assert.assertNotNull(this.resizeSizeResolver)
+//        }
 
         ImageOptions {
             resizePrecision(EXACTLY)
@@ -430,17 +427,17 @@ class ImageOptionsTest {
             Assert.assertEquals(Size(100, 100), this.resizeSize)
         }
 
-        ImageOptions().apply {
-            Assert.assertEquals(null, this.resizeSizeResolver)
-        }.merged(ImageOptions {
-            resizeSizeResolver(DisplaySizeResolver(context))
-        }).apply {
-            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
-        }.merged(ImageOptions {
-            resizeSizeResolver(ViewSizeResolver(TextView(context)))
-        }).apply {
-            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
-        }
+//        ImageOptions().apply {
+//            Assert.assertEquals(null, this.resizeSizeResolver)
+//        }.merged(ImageOptions {
+//            resizeSizeResolver(DisplaySizeResolver(context))
+//        }).apply {
+//            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
+//        }.merged(ImageOptions {
+//            resizeSizeResolver(ViewSizeResolver(TextView(context)))
+//        }).apply {
+//            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
+//        }
 
         ImageOptions().apply {
             Assert.assertEquals(null, this.resizePrecisionDecider)
@@ -637,8 +634,8 @@ class ImageOptionsTest {
                     preferQualityOverSpeed(true)
                 }.apply { add(this) }.newOptions {
                     resizeSize(100, 100)
-                }.apply { add(this) }.newOptions {
-                    resizeSizeResolver(DisplaySizeResolver(context))
+//                }.apply { add(this) }.newOptions {
+//                    resizeSizeResolver(DisplaySizeResolver(context))
                 }.apply { add(this) }.newOptions {
                     resizePrecision(SAME_ASPECT_RATIO)
                 }.apply { add(this) }.newOptions {
@@ -1119,26 +1116,26 @@ class ImageOptionsTest {
         }
     }
 
-    @Test
-    fun testResizeSizeResolver() {
-        val context = getContext()
-
-        ImageOptions.Builder().apply {
-            build().apply {
-                Assert.assertNull(resizeSizeResolver)
-            }
-
-            resizeSizeResolver(DisplaySizeResolver(context))
-            build().apply {
-                Assert.assertEquals(DisplaySizeResolver(context), resizeSizeResolver)
-            }
-
-            resizeSizeResolver(null)
-            build().apply {
-                Assert.assertNull(resizeSizeResolver)
-            }
-        }
-    }
+//    @Test
+//    fun testResizeSizeResolver() {
+//        val context = getContext()
+//
+//        ImageOptions.Builder().apply {
+//            build().apply {
+//                Assert.assertNull(resizeSizeResolver)
+//            }
+//
+//            resizeSizeResolver(DisplaySizeResolver(context))
+//            build().apply {
+//                Assert.assertEquals(DisplaySizeResolver(context), resizeSizeResolver)
+//            }
+//
+//            resizeSizeResolver(null)
+//            build().apply {
+//                Assert.assertNull(resizeSizeResolver)
+//            }
+//        }
+//    }
 
     @Test
     fun testResizePrecision() {

@@ -64,7 +64,7 @@ class RequestExecutor {
             }
 
             if (request.resizeSize == null) {
-                val size = request.resizeSizeResolver.size()
+                val size = request.resizeSizeResolver?.size()
                 if (size != null) {
                     request = request.newRequest {
                         resizeSize(size)

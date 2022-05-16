@@ -22,6 +22,7 @@ import com.github.panpf.sketch.compose.internal.ConstraintsSizeResolver
 import com.github.panpf.sketch.compose.internal.contentScale2ResizeScale
 import com.github.panpf.sketch.compose.internal.rememberAsyncImagePainter
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.resize.DefaultSizeResolver
 
 @Composable
 fun AsyncImage(
@@ -46,8 +47,13 @@ fun AsyncImage(
 
     BoxWithConstraints(modifier, alignment) {
         // Resolve the size for the image request.
-        (painter.request.resizeSizeResolver as? ConstraintsSizeResolver)
-            ?.setConstraints(constraints)
+        val resizeSizeResolver = painter.request.resizeSizeResolver
+        if (resizeSizeResolver is DefaultSizeResolver) {
+            val wrapped = resizeSizeResolver.wrapped
+            if (wrapped is ConstraintsSizeResolver) {
+                wrapped.setConstraints(constraints)
+            }
+        }
 
         // Compute the intrinsic size of the content.
         val contentSize = computeContentSize(
