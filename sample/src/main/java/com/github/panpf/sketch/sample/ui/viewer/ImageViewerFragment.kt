@@ -35,7 +35,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
         binding.imageViewerZoomImage.apply {
             showRingProgressIndicator()
-            zoomAbility.readModeEnabled = appSettingsService.readModeEnabled.value
+            zoomAbility.readModeEnabled = appSettingsService.readModeEnabled1.value
             setOnClickListener {
                 findNavController().popBackStack()
             }

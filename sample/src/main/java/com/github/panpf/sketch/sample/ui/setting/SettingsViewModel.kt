@@ -5,6 +5,7 @@ import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.github.panpf.liveevent.Listener
 import com.github.panpf.liveevent.MediatorLiveEvent
 import com.github.panpf.sketch.resize.Precision
@@ -13,11 +14,14 @@ import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.InfoMenu
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
-import com.github.panpf.sketch.sample.model.SwitchMenu
+import com.github.panpf.sketch.sample.model.SwitchMenuFlow
+import com.github.panpf.sketch.sample.model.SwitchMenuLiveData
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.tools4j.io.ktx.formatFileSize
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.launch
 
 class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
 
@@ -26,8 +30,6 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
     private val mediatorLiveData = MediatorLiveEvent<Any>()
 
     init {
-        updateList()
-
         mediatorLiveData.apply {
             val observer = Listener<Any> {
                 postValue(1)
@@ -52,11 +54,16 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             addSource(appSettingsService.disabledReuseBitmap.liveEvent, observer)
             addSource(appSettingsService.showDataFromLogo.liveEvent, observer)
             addSource(appSettingsService.showTileBoundsInHugeImagePage.liveEvent, observer)
-            addSource(appSettingsService.logLevel.liveEvent, observer)
         }
 
         mediatorLiveData.listen(this) {
             updateList()
+        }
+
+        viewModelScope.launch {
+            merge(appSettingsService.logLevel1).collect {
+                updateList()
+            }
         }
     }
 
@@ -75,35 +82,35 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
 
     private fun makeListMenuList(): List<Any> = buildList {
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "MimeType Logo",
                 data = appSettingsService.showMimeTypeLogoInLIst,
                 desc = "Displays the image type in the lower right corner of the ImageView"
             )
         )
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Progress Indicator",
                 data = appSettingsService.showProgressIndicatorInList,
                 desc = "A black translucent mask is displayed on the ImageView surface to indicate progress"
             )
         )
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Show Data From Logo",
                 data = appSettingsService.showDataFromLogo,
                 desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
             )
         )
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Save Cellular Traffic",
                 data = appSettingsService.saveCellularTrafficInList,
                 desc = "Mobile cell traffic does not download pictures"
             )
         )
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Pause Load When Scrolling",
                 data = appSettingsService.pauseLoadWhenScrollInList,
                 desc = "No image is loaded during list scrolling to improve the smoothness"
@@ -175,7 +182,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         }
         if (VERSION.SDK_INT < VERSION_CODES.N) {
             add(
-                SwitchMenu(
+                SwitchMenuLiveData(
                     title = "inPreferQualityOverSpeed",
                     desc = null,
                     data = appSettingsService.inPreferQualityOverSpeed
@@ -183,7 +190,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             )
         }
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Exif Orientation",
                 desc = null,
                 data = appSettingsService.ignoreExifOrientation,
@@ -194,7 +201,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
 
     private fun makeCacheMenuList(): List<Any> = buildList {
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Bitmap Memory Cache",
                 desc = null,
                 data = appSettingsService.disabledBitmapMemoryCache,
@@ -203,7 +210,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         )
 
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Bitmap Pool",
                 desc = null,
                 data = appSettingsService.disabledReuseBitmap,
@@ -212,7 +219,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         )
 
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Bitmap Result Disk Cache",
                 desc = null,
                 data = appSettingsService.disabledBitmapResultDiskCache,
@@ -221,7 +228,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         )
 
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Download Disk Cache",
                 desc = null,
                 data = appSettingsService.disabledDownloadDiskCache,
@@ -272,16 +279,16 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
 
     private fun makeOtherMenuList(): List<Any> = buildList {
         add(
-            SwitchMenu(
+            SwitchMenuLiveData(
                 title = "Show Tile Bounds",
                 data = appSettingsService.showTileBoundsInHugeImagePage,
                 desc = "Only huge image page"
             )
         )
         add(
-            SwitchMenu(
+            SwitchMenuFlow(
                 title = "Read Mode",
-                data = appSettingsService.readModeEnabled,
+                data = appSettingsService.readModeEnabled1,
                 desc = null
             )
         )
@@ -293,7 +300,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                 getValue = { application1.sketch.logger.level.toString() },
                 onSelect = { _, value ->
                     application1.sketch.logger.level = Level.valueOf(value)
-                    appSettingsService.logLevel.value = value
+                    appSettingsService.logLevel1.value = value
                 }
             )
         )

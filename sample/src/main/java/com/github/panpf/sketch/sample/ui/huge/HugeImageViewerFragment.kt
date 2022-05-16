@@ -20,7 +20,7 @@ class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>(
     ) {
         binding.hugeImageViewerZoomImage.apply {
             showRingProgressIndicator()
-            zoomAbility.readModeEnabled = appSettingsService.readModeEnabled.value
+            zoomAbility.readModeEnabled = appSettingsService.readModeEnabled1.value
             zoomAbility.showTileBounds = appSettingsService.showTileBoundsInHugeImagePage.value
             displayImage(args.imageUri) {
                 lifecycle(viewLifecycleOwner.lifecycle)

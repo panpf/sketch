@@ -6,12 +6,18 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
+import com.github.panpf.sketch.sample.util.BooleanMmkvStateFlow
+import com.github.panpf.sketch.sample.util.StringMmkvStateFlow
 import com.github.panpf.sketch.sample.util.prefsdata.BooleanPrefsData
 import com.github.panpf.sketch.sample.util.prefsdata.EnumPrefsData
 import com.github.panpf.sketch.sample.util.prefsdata.StringPrefsData
 import com.github.panpf.sketch.util.Logger
+import com.tencent.mmkv.MMKV
 
 class AppSettingsService(val context: Context) {
+
+    val mmkv = MMKV.defaultMMKV()
+
     // todo 用 flow 加 mmkv 替代 PrefsData
     val photoListLayoutMode by lazy {
         EnumPrefsData(
@@ -57,6 +63,7 @@ class AppSettingsService(val context: Context) {
     val bitmapQuality by lazy {
         StringPrefsData(context, "bitmapQuality", "Default")
     }
+
     @get:RequiresApi(Build.VERSION_CODES.O)
     val colorSpace by lazy {
         StringPrefsData(context, "colorSpace", "Default")
@@ -87,7 +94,6 @@ class AppSettingsService(val context: Context) {
     val readModeEnabled by lazy {
         BooleanPrefsData(context, "readModeEnabled", true)
     }
-    val logLevel by lazy {
-        StringPrefsData(context, "logLevel", Logger.Level.DEBUG.name)
-    }
+    val readModeEnabled1 = BooleanMmkvStateFlow(mmkv, "readModeEnabled", true)
+    val logLevel1 = StringMmkvStateFlow(mmkv, "logLevel", Logger.Level.DEBUG.name)
 }

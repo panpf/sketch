@@ -37,11 +37,17 @@ import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
 import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.sample.util.SettingsDisplayRequestInterceptor
 import com.github.panpf.sketch.util.Logger
+import com.tencent.mmkv.MMKV
 
 class MyApplication : MultiDexApplication(), SketchFactory {
 
+    override fun onCreate() {
+        super.onCreate()
+        MMKV.initialize(this)
+    }
+
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        logger(Logger(Logger.Level.valueOf(appSettingsService.logLevel.value)))
+        logger(Logger(Logger.Level.valueOf(appSettingsService.logLevel1.value)))
         httpStack(OkHttpStack.Builder().build())
         addRequestInterceptor(SettingsDisplayRequestInterceptor())
         addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
