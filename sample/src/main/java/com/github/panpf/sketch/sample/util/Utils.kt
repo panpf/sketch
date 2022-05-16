@@ -8,7 +8,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.github.panpf.liveevent.LiveEvent
-import java.lang.reflect.ParameterizedType
+import com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
+import com.github.panpf.sketch.sample.ui.base.BindingDialogFragment
+import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 import java.math.BigDecimal
 
 internal fun Float.format(newScale: Int): Float =
@@ -77,20 +81,4 @@ fun <T> LiveData<T>.observeFromViewAndInit(view: View, observer: Observer<T>) {
             removeObserver(observer)
         }
     })
-}
-
-fun Class<*>.instanceViewBinding(viewBindingParamIndex: Int, inflater: LayoutInflater, parent: ViewGroup?): ViewBinding {
-    val type = genericSuperclass
-    if (type is ParameterizedType) {
-        val clazz = type.actualTypeArguments[viewBindingParamIndex] as Class<ViewBinding>
-        val method = clazz.getMethod(
-            "inflate",
-            LayoutInflater::class.java,
-            ViewGroup::class.java,
-            Boolean::class.java
-        )
-        return method.invoke(null, inflater, parent, false) as ViewBinding
-    } else {
-        throw IllegalArgumentException("${this} 需要定义一个泛型参数，例如 class MyFragment<T: ViewBinding>: Fragment()")
-    }
 }

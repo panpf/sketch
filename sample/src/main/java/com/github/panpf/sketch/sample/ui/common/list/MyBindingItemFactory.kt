@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.sample.util.instanceViewBinding
+import com.github.panpf.sketch.sample.util.createViewBinding
 import kotlin.reflect.KClass
 
 abstract class MyBindingItemFactory<DATA : Any, VIEW_BINDING : ViewBinding>(dataClass: KClass<DATA>) :
@@ -15,6 +15,5 @@ abstract class MyBindingItemFactory<DATA : Any, VIEW_BINDING : ViewBinding>(data
         context: Context,
         inflater: LayoutInflater,
         parent: ViewGroup
-    ) = this@MyBindingItemFactory::class.java
-        .instanceViewBinding(1, inflater, parent) as VIEW_BINDING
+    ) = createViewBinding(inflater, parent) as VIEW_BINDING
 }

@@ -24,7 +24,7 @@ import android.view.ViewGroup.LayoutParams
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.util.instanceViewBinding
+import com.github.panpf.sketch.sample.util.createViewBinding
 import com.github.panpf.tools4a.display.ktx.getScreenHeight
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
@@ -39,8 +39,7 @@ abstract class BindingDialogFragment<VIEW_BINDING : ViewBinding> : DialogFragmen
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = (this@BindingDialogFragment::class.java
-        .instanceViewBinding(0, inflater, container) as VIEW_BINDING).apply {
+    ): View = (createViewBinding(inflater, container) as VIEW_BINDING).apply {
         this@BindingDialogFragment.binding = this
     }.root
 

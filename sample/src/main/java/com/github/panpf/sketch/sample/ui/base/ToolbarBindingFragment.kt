@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.util.instanceViewBinding
+import com.github.panpf.sketch.sample.util.createViewBinding
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -30,9 +30,7 @@ abstract class ToolbarBindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment
 
         setTransparentStatusBar(toolbar)
 
-        val binding =
-            this@ToolbarBindingFragment::class.java
-                .instanceViewBinding(0, inflater, contentContainer) as VIEW_BINDING
+        val binding = createViewBinding(inflater, contentContainer) as VIEW_BINDING
         contentContainer.addView(binding.root)
 
         this@ToolbarBindingFragment.toolbar = toolbar

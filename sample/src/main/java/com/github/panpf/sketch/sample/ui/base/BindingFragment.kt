@@ -21,7 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.util.instanceViewBinding
+import com.github.panpf.sketch.sample.util.createViewBinding
 
 abstract class BindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
 
@@ -31,8 +31,7 @@ abstract class BindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = (this@BindingFragment::class.java
-        .instanceViewBinding(0, inflater, container) as VIEW_BINDING).apply {
+    ): View = (createViewBinding(inflater, container) as VIEW_BINDING).apply {
         this@BindingFragment.binding = this
         if (root.background == null) {
             root.setBackgroundResource(R.color.windowBackground)

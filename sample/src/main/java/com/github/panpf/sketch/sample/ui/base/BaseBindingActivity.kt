@@ -25,7 +25,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-import com.github.panpf.sketch.sample.util.instanceViewBinding
+import com.github.panpf.sketch.sample.util.createViewBinding
 
 abstract class BaseBindingActivity<VIEW_BINDING : ViewBinding> : AppCompatActivity() {
 
@@ -35,8 +35,7 @@ abstract class BaseBindingActivity<VIEW_BINDING : ViewBinding> : AppCompatActivi
         setTransparentStatusBar()
 
         val contentParent: ViewGroup = findViewById(android.R.id.content)
-        val binding = this@BaseBindingActivity::class.java
-            .instanceViewBinding(0, LayoutInflater.from(this), contentParent) as VIEW_BINDING
+        val binding = createViewBinding(LayoutInflater.from(this), contentParent) as VIEW_BINDING
         setContentView(binding.root)
         onCreate(binding, savedInstanceState)
     }
