@@ -7,14 +7,14 @@ import com.github.panpf.sketch.util.SketchException
 
 sealed interface LoadResult : ImageResult {
 
-    class Success constructor(
+    data class Success constructor(
         override val request: ImageRequest,
         val bitmap: Bitmap,
         val imageInfo: ImageInfo,
         val dataFrom: DataFrom
     ) : LoadResult, ImageResult.Success
 
-    class Error constructor(
+    data class Error constructor(
         override val request: ImageRequest,
         override val exception: SketchException,
     ) : LoadResult, ImageResult.Error

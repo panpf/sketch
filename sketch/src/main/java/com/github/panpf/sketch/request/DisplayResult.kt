@@ -9,14 +9,14 @@ sealed interface DisplayResult : ImageResult {
 
     val drawable: Drawable?
 
-    class Success constructor(
+    data class Success constructor(
         override val request: ImageRequest,
         override val drawable: Drawable,
         val imageInfo: ImageInfo,
         val dataFrom: DataFrom
     ) : DisplayResult, ImageResult.Success
 
-    class Error constructor(
+    data class Error constructor(
         override val request: ImageRequest,
         override val drawable: Drawable?,
         override val exception: SketchException,
