@@ -3,6 +3,7 @@ package com.github.panpf.sketch.zoom.tile.internal
 import android.graphics.Rect
 import com.github.panpf.sketch.decode.internal.maxBitmapSize
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.zoom.internal.format
 import com.github.panpf.sketch.zoom.tile.Tile
 import kotlin.math.ceil
 
@@ -67,9 +68,7 @@ internal fun findSampleSize(
     previewHeight: Int,
     scale: Float
 ): Int {
-    val widthRatio = imageWidth / previewWidth
-    val heightRatio = imageHeight / previewHeight
-    require(widthRatio == heightRatio) {
+    require(shouldUseTiles(imageWidth, imageHeight, previewWidth, previewHeight)) {
         "imageSize(${imageWidth}x${imageHeight}} and previewSize(${previewWidth}x${previewHeight}) must have the same aspect ratio)"
     }
 
@@ -86,4 +85,12 @@ internal fun Rect.crossWith(other: Rect): Boolean {
             && this.right > other.left
             && this.top < other.bottom
             && this.bottom > other.top
+}
+
+internal fun shouldUseTiles(
+    imageWidth: Int, imageHeight: Int, previewWidth: Int, previewHeight: Int
+): Boolean {
+    val imageRatio = (imageWidth / imageHeight.toFloat()).format(1)
+    val previewRatio = (previewWidth / previewHeight.toFloat()).format(1)
+    return imageRatio == previewRatio
 }

@@ -44,6 +44,7 @@ import com.github.panpf.sketch.zoom.internal.sizeWithoutPaddingOrNull
 import com.github.panpf.sketch.zoom.tile.OnTileChangedListener
 import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
+import com.github.panpf.sketch.zoom.tile.internal.shouldUseTiles
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -536,6 +537,13 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         if (previewWidth >= imageWidth && previewHeight >= imageHeight) {
             logger.d(MODULE) {
                 "Don't need to use Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+            }
+            return null
+        }
+        if (!shouldUseTiles(imageWidth, imageHeight, previewWidth, previewHeight)) {
+            logger.d(MODULE) {
+                "Can't use Tiles. previewSize error. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                     .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
