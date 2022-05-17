@@ -10,7 +10,7 @@ import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.sample.AssetImages
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.util.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.sketch
@@ -31,7 +31,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
         val dataList = readLocalPhotos(startPosition, pageSize)
 
         val photos = urisToPhotos(assetPhotos.plus(exifPhotos).plus(dataList))
-        val nextKey = if (dataList.isNotEmpty()) startPosition + pageSize else null;
+        val nextKey = if (dataList.isNotEmpty()) startPosition + pageSize else null
         return LoadResult.Page(photos, null, nextKey)
     }
 
@@ -86,7 +86,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
             val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrNull()
             if (imageInfo != null) {
                 val exifOrientation =
-                    if (!context.appSettingsService.ignoreExifOrientation.value) {
+                    if (!context.prefsService.ignoreExifOrientation.value) {
                         dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
                     } else {
                         ExifInterface.ORIENTATION_UNDEFINED

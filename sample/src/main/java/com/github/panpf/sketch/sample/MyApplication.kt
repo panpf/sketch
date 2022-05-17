@@ -47,7 +47,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
     }
 
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        logger(Logger(Logger.Level.valueOf(appSettingsService.logLevel1.value)))
+        logger(Logger(Logger.Level.valueOf(prefsService.logLevel.value)))
         httpStack(OkHttpStack.Builder().build())
         addRequestInterceptor(SettingsDisplayRequestInterceptor())
         addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())

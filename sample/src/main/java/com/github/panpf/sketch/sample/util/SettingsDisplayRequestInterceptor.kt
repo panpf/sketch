@@ -12,7 +12,7 @@ import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.widget.MyListImageView
 import com.github.panpf.sketch.target.ViewTarget
 
@@ -26,33 +26,33 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
         }
 
         val newRequest = request.newDisplayRequest {
-            val appSettings = request.context.appSettingsService
-            if (appSettings.disabledBitmapMemoryCache.value) {
+            val prefsService = request.context.prefsService
+            if (prefsService.disabledBitmapMemoryCache.value) {
                 bitmapMemoryCachePolicy(DISABLED)
             }
-            if (appSettings.disabledDownloadDiskCache.value) {
+            if (prefsService.disabledDownloadDiskCache.value) {
                 downloadDiskCachePolicy(DISABLED)
             }
-            if (appSettings.disabledBitmapResultDiskCache.value) {
+            if (prefsService.disabledBitmapResultDiskCache.value) {
                 bitmapResultDiskCachePolicy(DISABLED)
             }
-            if (appSettings.disabledReuseBitmap.value) {
+            if (prefsService.disabledReuseBitmap.value) {
                 disabledReuseBitmap(true)
             }
-            if (appSettings.ignoreExifOrientation.value) {
+            if (prefsService.ignoreExifOrientation.value) {
                 ignoreExifOrientation(true)
             }
-            if (VERSION.SDK_INT < VERSION_CODES.N && appSettings.inPreferQualityOverSpeed.value) {
+            if (VERSION.SDK_INT < VERSION_CODES.N && prefsService.inPreferQualityOverSpeed.value) {
                 @Suppress("DEPRECATION")
                 preferQualityOverSpeed(true)
             }
-            when (appSettings.bitmapQuality.value) {
+            when (prefsService.bitmapQuality.value) {
                 "LOW" -> bitmapConfig(BitmapConfig.LOW_QUALITY)
                 "MIDDEN" -> bitmapConfig(BitmapConfig.MIDDEN_QUALITY)
                 "HIGH" -> bitmapConfig(BitmapConfig.HIGH_QUALITY)
             }
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                when (val value = appSettings.colorSpace.value) {
+                when (val value = prefsService.colorSpace.value) {
                     "Default" -> {
 
                     }
@@ -65,13 +65,13 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
             if (target is ViewTarget<*>) {
                 val view = target.view
                 if (view is MyListImageView) {
-                    if (appSettings.disabledAnimatedImageInList.value) {
+                    if (prefsService.disabledAnimatedImageInList.value) {
                         disabledAnimatedImage(true)
                     }
-                    if (appSettings.pauseLoadWhenScrollInList.value) {
+                    if (prefsService.pauseLoadWhenScrollInList.value) {
                         pauseLoadWhenScrolling(true)
                     }
-                    if (appSettings.saveCellularTrafficInList.value) {
+                    if (prefsService.saveCellularTrafficInList.value) {
                         saveCellularTraffic(true)
                     }
                 }

@@ -20,7 +20,7 @@ import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.resize.longImageClipPrecision
 import com.github.panpf.sketch.resize.longImageScale
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
@@ -127,16 +127,16 @@ class ImageGridItemFactory(val disabledCache: Boolean = false) :
 
             displayImage(data.firstThumbnailUrl) {
                 resizeScale(
-                    when (val value = appSettingsService.resizeScale.value) {
+                    when (val value = prefsService.resizeScale.value) {
                         "LongImageMode" -> longImageScale(
-                            Scale.valueOf(appSettingsService.longImageResizeScale.value),
-                            Scale.valueOf(appSettingsService.otherImageResizeScale.value)
+                            Scale.valueOf(prefsService.longImageResizeScale.value),
+                            Scale.valueOf(prefsService.otherImageResizeScale.value)
                         )
                         else -> fixedScale(Scale.valueOf(value))
                     }
                 )
                 resizePrecision(
-                    when (val value = appSettingsService.resizePrecision.value) {
+                    when (val value = prefsService.resizePrecision.value) {
                         "LongImageMode" -> longImageClipPrecision(precision = SAME_ASPECT_RATIO)
                         else -> fixedPrecision(Precision.valueOf(value))
                     }

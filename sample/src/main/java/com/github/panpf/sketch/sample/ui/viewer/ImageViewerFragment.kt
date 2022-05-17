@@ -10,12 +10,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
+import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.sketch.viewability.showRingProgressIndicator
 import kotlinx.coroutines.launch
 
@@ -26,7 +27,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     private val args by navArgs<ImageViewerFragmentArgs>()
     private val viewModel by viewModels<ImageViewerViewModel>()
     private val pagerViewModel by parentViewModels<ImageViewerPagerViewModel>()
-    private val requestPermissionResult = registerForActivityResult(RequestPermission()) { agree ->
+    private val requestPermissionResult = registerForActivityResult(RequestPermission()) {
         lifecycleScope.launch {
             handleActionResult(viewModel.save(args.imageUri))
         }
@@ -35,7 +36,9 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
         binding.imageViewerZoomImage.apply {
             showRingProgressIndicator()
-            zoomAbility.readModeEnabled = appSettingsService.readModeEnabled1.value
+            prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
+                zoomAbility.readModeEnabled = it
+            }
             setOnClickListener {
                 findNavController().popBackStack()
             }
@@ -46,24 +49,24 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
         pagerViewModel.apply {
             shareEvent.listen(viewLifecycleOwner) {
-                if (userVisibleHint && isResumed) {
+                if (isResumed) {
                     lifecycleScope.launch {
                         handleActionResult(viewModel.share(args.imageUri))
                     }
                 }
             }
             saveEvent.listen(viewLifecycleOwner) {
-                if (userVisibleHint && isResumed) {
+                if (isResumed) {
                     requestPermissionResult.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }
             rotateEvent.listen(viewLifecycleOwner) {
-                if (userVisibleHint && isResumed) {
+                if (isResumed) {
                     binding.imageViewerZoomImage.zoomAbility.rotateBy(90)
                 }
             }
             infoEvent.listen(viewLifecycleOwner) {
-                if (userVisibleHint && isResumed) {
+                if (isResumed) {
                     findNavController().navigate(
                         ImageInfoDialogFragment.createDirectionsFromImageView(
                             binding.imageViewerZoomImage,

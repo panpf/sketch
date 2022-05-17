@@ -1,47 +1,41 @@
 package com.github.panpf.sketch.sample.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.panpf.liveevent.Listener
-import com.github.panpf.liveevent.MediatorLiveEvent
-import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.util.observeFromView
+import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.util.observeWithViewLifecycle
 import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
+import kotlinx.coroutines.flow.merge
 
+@SuppressLint("NotifyDataSetChanged")
 class MyRecyclerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : RecyclerView(context, attrs) {
 
-    private val mediatorLiveData = MediatorLiveEvent<Any>()
-
     init {
         val scrollListener = PauseLoadWhenScrollingMixedScrollListener()
-        appSettingsService.pauseLoadWhenScrollInList.observeFromView(this) {
-            if (it == true) {
+        prefsService.pauseLoadWhenScrollInList.stateFlow.observeWithViewLifecycle(this) {
+            if (it) {
                 addOnScrollListener(scrollListener)
             } else {
                 removeOnScrollListener(scrollListener)
             }
         }
 
-        mediatorLiveData.apply {
-            val observer = Listener<Any> {
-                postValue(1)
-            }
-            addSource(appSettingsService.resizePrecision.liveEvent, observer)
-            addSource(appSettingsService.resizeScale.liveEvent, observer)
-            addSource(appSettingsService.longImageResizeScale.liveEvent, observer)
-            addSource(appSettingsService.otherImageResizeScale.liveEvent, observer)
-        }
-
-        mediatorLiveData.observeFromView(this) {
+        merge(
+            prefsService.resizePrecision.sharedFlow,
+            prefsService.resizeScale.sharedFlow,
+            prefsService.longImageResizeScale.sharedFlow,
+            prefsService.otherImageResizeScale.sharedFlow,
+        ).observeWithViewLifecycle(this@MyRecyclerView) {
             adapter?.notifyDataSetChanged()
         }
 
-        appSettingsService.ignoreExifOrientation.liveEvent.observeFromView(this) {
+        prefsService.ignoreExifOrientation.sharedFlow.observeWithViewLifecycle(this) {
             adapter?.findPagingAdapter()?.refresh()
         }
     }

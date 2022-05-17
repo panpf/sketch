@@ -18,20 +18,22 @@ import com.github.panpf.assemblyadapter.recycler.newAssemblyStaggeredGridLayoutM
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.DialogFragmentItemInfo
 import com.github.panpf.sketch.sample.model.ImageDetail
+import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
 import com.github.panpf.sketch.sample.model.NavMenuItemInfo
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.model.SwitchMenuItemInfo
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
+import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -82,11 +84,11 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
         }
 
         binding.recyclerRecycler.apply {
-            appSettingsService.photoListLayoutMode.observe(viewLifecycleOwner) {
+            prefsService.photoListLayoutMode.stateFlow.observeWithFragmentView(this@GiphyGifListFragment) {
                 (0 until itemDecorationCount).forEach { index ->
                     removeItemDecorationAt(index)
                 }
-                when (it) {
+                when (LayoutMode.valueOf(it)) {
                     GRID -> {
                         layoutManager =
                             newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
@@ -120,14 +122,11 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
                             useSideDividerAsSideHeaderAndFooterDivider()
                         }
                     }
-                    else -> {
-                        throw IllegalArgumentException("Unsupported layout mode: $it")
-                    }
                 }
 
 
                 val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
-                    ImageGridItemFactory().setOnViewClickListener(R.id.imageGridItemImage){ _, _, _, absoluteAdapterPosition, _ ->
+                    ImageGridItemFactory().setOnViewClickListener(R.id.imageGridItemImage) { _, _, _, absoluteAdapterPosition, _ ->
                         startImageDetail(binding, absoluteAdapterPosition)
                     }
                 )).apply {

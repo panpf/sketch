@@ -5,9 +5,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.HugeImageViewerFragmentBinding
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.sketch.viewability.showRingProgressIndicator
 
 class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>() {
@@ -20,8 +21,12 @@ class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>(
     ) {
         binding.hugeImageViewerZoomImage.apply {
             showRingProgressIndicator()
-            zoomAbility.readModeEnabled = appSettingsService.readModeEnabled1.value
-            zoomAbility.showTileBounds = appSettingsService.showTileBoundsInHugeImagePage.value
+            prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
+                zoomAbility.readModeEnabled = it
+            }
+            prefsService.showTileBoundsInHugeImagePage.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
+                zoomAbility.showTileBounds = it
+            }
             displayImage(args.imageUri) {
                 lifecycle(viewLifecycleOwner.lifecycle)
             }

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.model.DialogFragmentItemInfo
 import com.github.panpf.sketch.sample.model.LayoutMode
@@ -41,7 +41,7 @@ class ListMenuViewModel(
             if (showPlayMenu) {
                 add(SwitchMenuItemInfo(
                     values = arrayOf(true, false),
-                    initValue = application1.appSettingsService.disabledAnimatedImageInList.value,
+                    initValue = application1.prefsService.disabledAnimatedImageInList.value,
                     titles = null,
                     iconResIds = arrayOf(
                         R.drawable.ic_pause,
@@ -49,9 +49,7 @@ class ListMenuViewModel(
                     ),
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
                 ) { _, newValue ->
-                    application1.appSettingsService.disabledAnimatedImageInList.postValue(
-                        newValue
-                    )
+                    application1.prefsService.disabledAnimatedImageInList.value = newValue
                     menuList.postValue(menuList.value)
                 })
             }
@@ -62,7 +60,7 @@ class ListMenuViewModel(
                         LayoutMode.GRID,
                         LayoutMode.STAGGERED_GRID,
                     ),
-                    initValue = application1.appSettingsService.photoListLayoutMode.value,
+                    initValue = application1.prefsService.photoListLayoutMode.value,
                     titles = null,
                     iconResIds = arrayOf(
                         R.drawable.ic_layout_grid,
@@ -70,7 +68,7 @@ class ListMenuViewModel(
                     ),
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
                 ) { _, newValue ->
-                    application1.appSettingsService.photoListLayoutMode.postValue(newValue)
+                    application1.prefsService.photoListLayoutMode.value = newValue.toString()
                     menuList.postValue(menuList.value)
                 })
             }
