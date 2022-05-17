@@ -2,6 +2,7 @@ package com.github.panpf.sketch.sample.util
 
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,7 @@ abstract class BaseMmkvData<T>(defaultState: T, private val mmkvAdapter: MmkvAda
 
     private val _stateFlow = MutableStateFlow(defaultState)
     private val _sharedFlow = MutableSharedFlow<T>()
-    private val scope = CoroutineScope(SupervisorJob())
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     val stateFlow: StateFlow<T>
         get() = _stateFlow
