@@ -11,7 +11,7 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.longImageClipPrecision
 import com.github.panpf.sketch.resize.longImageScale
-import com.github.panpf.sketch.test.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

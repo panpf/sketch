@@ -8,7 +8,7 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
-import com.github.panpf.sketch.test.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndSketch
 import com.github.panpf.sketch.transform.RotateTransformed
 import com.github.panpf.sketch.util.toHexString
 import kotlinx.coroutines.Dispatchers

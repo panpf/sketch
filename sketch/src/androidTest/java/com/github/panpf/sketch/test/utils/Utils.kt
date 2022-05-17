@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.test
+package com.github.panpf.sketch.test.utils
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry

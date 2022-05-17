@@ -8,7 +8,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.test.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndSketch
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
 import org.junit.Test

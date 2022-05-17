@@ -56,7 +56,7 @@ import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.target.ImageViewTarget
-import com.github.panpf.sketch.test.getContext
+import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestImageView
 import com.github.panpf.sketch.transform.BlurTransformation

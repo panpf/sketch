@@ -7,7 +7,7 @@ import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.test.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test

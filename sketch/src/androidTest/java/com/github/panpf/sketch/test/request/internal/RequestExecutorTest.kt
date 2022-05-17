@@ -3,7 +3,7 @@ package com.github.panpf.sketch.test.request.internal
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.test.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndSketch
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.util.format
 import kotlinx.coroutines.runBlocking
