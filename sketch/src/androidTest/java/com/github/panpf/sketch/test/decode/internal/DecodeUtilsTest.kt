@@ -15,7 +15,6 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
-import com.github.panpf.sketch.decode.internal.calculateSampleSizeWithTolerance
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.decode.internal.decodeBitmapWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
@@ -83,21 +82,6 @@ class DecodeUtilsTest {
         Assert.assertEquals(4, calculateSampleSize(1000, 1000, 260, 260))
         Assert.assertEquals(4, calculateSampleSize(1000, 1000, 250, 250))
         Assert.assertEquals(8, calculateSampleSize(1000, 1000, 240, 240))
-    }
-
-    @Test
-    fun testCalculateSampleSizeWithTolerance() {
-        Assert.assertEquals(1, calculateSampleSizeWithTolerance(1000, 1000, 1020, 1020))
-        Assert.assertEquals(1, calculateSampleSizeWithTolerance(1000, 1000, 1000, 1000))
-        Assert.assertEquals(1, calculateSampleSizeWithTolerance(1000, 1000, 980, 980))
-
-        Assert.assertEquals(2, calculateSampleSizeWithTolerance(1000, 1000, 520, 520))
-        Assert.assertEquals(2, calculateSampleSizeWithTolerance(1000, 1000, 500, 500))
-        Assert.assertEquals(2, calculateSampleSizeWithTolerance(1000, 1000, 480, 480))
-
-        Assert.assertEquals(4, calculateSampleSizeWithTolerance(1000, 1000, 260, 260))
-        Assert.assertEquals(4, calculateSampleSizeWithTolerance(1000, 1000, 250, 250))
-        Assert.assertEquals(4, calculateSampleSizeWithTolerance(1000, 1000, 240, 240))
     }
 
     @Test

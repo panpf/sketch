@@ -433,7 +433,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            Assert.assertEquals("Bitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(152x253,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(700x1012,'image/bmp')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)

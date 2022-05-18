@@ -6,7 +6,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
@@ -80,7 +79,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
             imageInfo = ImageInfo(info.size.width, info.size.height, info.mimeType)
             val resize = request.resize
             if (resize != null) {
-                inSampleSize = calculateSampleSizeWithTolerance(
+                inSampleSize = calculateSampleSize(
                     info.size.width, info.size.height, resize.width, resize.height
                 )
                 decoder.setTargetSampleSize(inSampleSize)

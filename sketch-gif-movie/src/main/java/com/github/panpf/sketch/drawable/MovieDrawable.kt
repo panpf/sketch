@@ -18,7 +18,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.SystemClock
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.decode.internal.calculateSampleSizeWithTolerance
+import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.internal.allocationByteCountCompat
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
@@ -255,12 +255,7 @@ class MovieDrawable constructor(
             hardwareDy = 0f
         } else {
             hardwareScale =
-                1f / calculateSampleSizeWithTolerance(
-                    bitmapWidth,
-                    bitmapHeight,
-                    boundsWidth,
-                    boundsHeight
-                )
+                1f / calculateSampleSize(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight)
             hardwareScale =
                 computeSizeMultiplier(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, true)
                     .toFloat()

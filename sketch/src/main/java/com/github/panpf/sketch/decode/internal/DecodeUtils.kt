@@ -48,7 +48,6 @@ import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 val maxBitmapSize: Size by lazy {
     OpenGLTextureHelper.maxSize?.let {
@@ -75,43 +74,21 @@ fun limitedMaxBitmapSize(@Px imageWidth: Int, @Px imageHeight: Int, inSampleSize
 /**
  * Calculate the sample size for [BitmapFactory.Options]
  */
-private fun realCalculateSampleSize(
-    @Px imageWidth: Int,
-    @Px imageHeight: Int,
-    @Px targetWidth: Int,
-    @Px targetHeight: Int,
-    targetPixelsScale: Float = 1f
-): Int {
-    val targetPixels = targetWidth.times(targetHeight).times(targetPixelsScale).roundToInt()
-    var sampleSize = 1
-    while (
-        samplingSize(imageWidth, sampleSize)
-            .times(samplingSize(imageHeight, sampleSize)) > targetPixels
-    ) {
-        sampleSize *= 2
-    }
-    return limitedMaxBitmapSize(imageWidth, imageHeight, sampleSize)
-}
-
-/**
- * Calculate the sample size for [BitmapFactory.Options]
- */
 fun calculateSampleSize(
     @Px imageWidth: Int,
     @Px imageHeight: Int,
     @Px targetWidth: Int,
     @Px targetHeight: Int,
-): Int = realCalculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1f)
-
-/**
- * Calculate the sample size for [BitmapFactory.Options]. 10% tolerance
- */
-fun calculateSampleSizeWithTolerance(
-    @Px imageWidth: Int,
-    @Px imageHeight: Int,
-    @Px targetWidth: Int,
-    @Px targetHeight: Int,
-): Int = realCalculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1.1f)
+): Int {
+    val targetPixels = targetWidth * targetHeight
+    var sampleSize = 1
+    while (
+        samplingSize(imageWidth, sampleSize) * samplingSize(imageHeight, sampleSize) > targetPixels
+    ) {
+        sampleSize *= 2
+    }
+    return limitedMaxBitmapSize(imageWidth, imageHeight, sampleSize)
+}
 
 
 fun samplingSize(size: Int, sampleSize: Double): Int {
@@ -220,7 +197,7 @@ fun realDecode(
             resizeScale = scale,
         )
         // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
-        decodeConfig.inSampleSize = calculateSampleSizeWithTolerance(
+        decodeConfig.inSampleSize = calculateSampleSize(
             resizeMapping.srcRect.width(),
             resizeMapping.srcRect.height(),
             resizeMapping.destRect.width(),
@@ -236,7 +213,7 @@ fun realDecode(
     } else {
         resizeTransformed = null
         decodeConfig.inSampleSize = addedResize?.let {
-            calculateSampleSizeWithTolerance(imageInfo.width, imageInfo.height, it.width, it.height)
+            calculateSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
         } ?: limitedMaxBitmapSize(imageInfo.width, imageInfo.height, 1)
         decodeFull(decodeConfig)
     }
@@ -280,7 +257,7 @@ fun BitmapDecodeResult.applyResize(
     val inBitmap = bitmap
     val precision = resize.getPrecision(sketch, inBitmap.width, inBitmap.height)
     val newBitmap = if (precision == LESS_PIXELS) {
-        val sampleSize = calculateSampleSizeWithTolerance(
+        val sampleSize = calculateSampleSize(
             inBitmap.width, inBitmap.height, resize.width, resize.height
         )
         if (sampleSize != 1) {
