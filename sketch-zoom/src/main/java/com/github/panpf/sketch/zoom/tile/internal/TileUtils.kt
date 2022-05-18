@@ -5,6 +5,7 @@ import com.github.panpf.sketch.decode.internal.maxBitmapSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.internal.format
 import com.github.panpf.sketch.zoom.tile.Tile
+import kotlin.math.abs
 import kotlin.math.ceil
 
 internal fun initializeTileMap(imageSize: Size, tileMaxSize: Size): Map<Int, List<Tile>> {
@@ -92,5 +93,5 @@ internal fun shouldUseTiles(
 ): Boolean {
     val imageRatio = (imageWidth / imageHeight.toFloat()).format(1)
     val previewRatio = (previewWidth / previewHeight.toFloat()).format(1)
-    return imageRatio == previewRatio
+    return abs(imageRatio - previewRatio).format(1) <= 0.1f
 }
