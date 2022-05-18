@@ -62,8 +62,8 @@ val maxBitmapSize: Size by lazy {
 fun limitedMaxBitmapSize(@Px imageWidth: Int, @Px imageHeight: Int, inSampleSize: Int): Int {
     val maximumBitmapSize = maxBitmapSize
     var finalInSampleSize = inSampleSize.coerceAtLeast(1)
-    while ((calculateSamplingSize(imageWidth, finalInSampleSize) > maximumBitmapSize.width)
-        || (calculateSamplingSize(imageHeight, finalInSampleSize) > maximumBitmapSize.height)
+    while ((samplingSize(imageWidth, finalInSampleSize) > maximumBitmapSize.width)
+        || (samplingSize(imageHeight, finalInSampleSize) > maximumBitmapSize.height)
     ) {
         finalInSampleSize *= 2
     }
@@ -83,8 +83,8 @@ private fun realCalculateSampleSize(
     val targetPixels = targetWidth.times(targetHeight).times(targetPixelsScale).roundToInt()
     var sampleSize = 1
     while (
-        calculateSamplingSize(imageWidth, sampleSize)
-            .times(calculateSamplingSize(imageHeight, sampleSize)) > targetPixels
+        samplingSize(imageWidth, sampleSize)
+            .times(samplingSize(imageHeight, sampleSize)) > targetPixels
     ) {
         sampleSize *= 2
     }
@@ -111,12 +111,12 @@ fun calculateSampleSizeWithTolerance(
     @Px targetHeight: Int,
 ): Int = realCalculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1.1f)
 
-fun calculateSamplingSize(size: Int, sampleSize: Int): Int {
-    return ceil((size / sampleSize.toDouble())).toInt()
+fun samplingSize(size: Int, sampleSize: Int): Int {
+    return ceil(size / sampleSize.toDouble()).toInt()
 }
 
-fun calculateSamplingSizeForRegion(size: Int, sampleSize: Int): Int {
-    return floor((size / sampleSize.toDouble())).toInt()
+fun samplingSizeForRegion(size: Int, sampleSize: Int): Int {
+    return floor(size / sampleSize.toDouble()).toInt()
 }
 
 fun computeSizeMultiplier(

@@ -202,16 +202,16 @@ class LruBitmapPool constructor(
 
         var inSampleSize = options.inSampleSize.coerceAtLeast(1)
         val inBitmap: Bitmap? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            var finalWidth = calculateSamplingSize(imageWidth, inSampleSize)
-            var finalHeight = calculateSamplingSize(imageHeight, inSampleSize)
+            var finalWidth = samplingSize(imageWidth, inSampleSize)
+            var finalHeight = samplingSize(imageHeight, inSampleSize)
             while (finalWidth <= 0 || finalHeight <= 0) {
                 inSampleSize /= 2
                 if (inSampleSize == 0) {
                     finalWidth = imageWidth
                     finalHeight = imageHeight
                 } else {
-                    finalWidth = calculateSamplingSize(imageWidth, inSampleSize)
-                    finalHeight = calculateSamplingSize(imageHeight, inSampleSize)
+                    finalWidth = samplingSize(imageWidth, inSampleSize)
+                    finalHeight = samplingSize(imageHeight, inSampleSize)
                 }
             }
             @Suppress("ReplaceGetOrSet")
@@ -260,16 +260,16 @@ class LruBitmapPool constructor(
         }
 
         var inSampleSize = options.inSampleSize.coerceAtLeast(1)
-        var finalWidth = calculateSamplingSizeForRegion(imageWidth, inSampleSize)
-        var finalHeight = calculateSamplingSizeForRegion(imageHeight, inSampleSize)
+        var finalWidth = samplingSizeForRegion(imageWidth, inSampleSize)
+        var finalHeight = samplingSizeForRegion(imageHeight, inSampleSize)
         while (finalWidth <= 0 || finalHeight <= 0) {
             inSampleSize /= 2
             if (inSampleSize == 0) {
                 finalWidth = imageWidth
                 finalHeight = imageHeight
             } else {
-                finalWidth = calculateSamplingSizeForRegion(imageWidth, inSampleSize)
-                finalHeight = calculateSamplingSizeForRegion(imageHeight, inSampleSize)
+                finalWidth = samplingSizeForRegion(imageWidth, inSampleSize)
+                finalHeight = samplingSizeForRegion(imageHeight, inSampleSize)
             }
         }
         options.inSampleSize = inSampleSize

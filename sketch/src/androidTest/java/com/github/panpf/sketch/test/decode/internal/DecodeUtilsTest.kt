@@ -3,6 +3,7 @@ package com.github.panpf.sketch.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
+import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -16,8 +17,8 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeWithTolerance
-import com.github.panpf.sketch.decode.internal.calculateSamplingSize
-import com.github.panpf.sketch.decode.internal.calculateSamplingSizeForRegion
+import com.github.panpf.sketch.decode.internal.samplingSize
+import com.github.panpf.sketch.decode.internal.samplingSizeForRegion
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.decode.internal.decodeBitmapWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
@@ -97,14 +98,14 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSamplingSize() {
-        Assert.assertEquals(75, calculateSamplingSize(150, 2))
-        Assert.assertEquals(76, calculateSamplingSize(151, 2))
+        Assert.assertEquals(75, samplingSize(150, 2))
+        Assert.assertEquals(76, samplingSize(151, 2))
     }
 
     @Test
     fun testCalculateSamplingSizeForRegion() {
-        Assert.assertEquals(75, calculateSamplingSizeForRegion(150, 2))
-        Assert.assertEquals(75, calculateSamplingSizeForRegion(151, 2))
+        Assert.assertEquals(75, samplingSizeForRegion(150, 2))
+        Assert.assertEquals(75, samplingSizeForRegion(151, 2))
     }
 
     @Test
