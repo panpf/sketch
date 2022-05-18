@@ -192,7 +192,7 @@ class DecodeUtilsTest {
         result = newResult()
         result.applyResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("36x22", this.bitmap.sizeString)
+            Assert.assertEquals("20x13", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, LESS_PIXELS)

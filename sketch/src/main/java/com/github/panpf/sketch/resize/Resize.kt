@@ -129,7 +129,7 @@ data class Resize constructor(
                 val resizeAspectRatio = width.toFloat().div(height).format(1)
                 imageAspectRatio != resizeAspectRatio
             }
-            Precision.LESS_PIXELS -> imageWidth * imageHeight > width * height
+            Precision.LESS_PIXELS -> false
         }
 
     override fun toString(): String {

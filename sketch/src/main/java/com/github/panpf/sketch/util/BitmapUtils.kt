@@ -2,8 +2,13 @@ package com.github.panpf.sketch.util
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
+import android.graphics.Bitmap.Config.ARGB_8888
+import android.graphics.Canvas
+import android.graphics.Matrix
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.internal.samplingSize
 
 internal val Bitmap.allocationByteCountCompat: Int
     get() {
@@ -51,3 +56,16 @@ internal val Bitmap.Config?.getCompressFormat: CompressFormat
 
 internal fun Bitmap.Config.isAndSupportHardware(): Boolean =
     VERSION.SDK_INT >= VERSION_CODES.O && this == Bitmap.Config.HARDWARE
+
+internal fun Bitmap.scaled(scale: Double, bitmapPool: BitmapPool): Bitmap {
+    val config = this.config ?: ARGB_8888
+    val scaledWidth = samplingSize(width, scale)
+    val scaledHeight = samplingSize(height, scale)
+    val newBitmap = bitmapPool.getOrCreate(scaledWidth, scaledHeight, config)
+    val canvas = Canvas(newBitmap)
+    val matrix = Matrix().apply {
+        postScale(scale.toFloat(), scale.toFloat())
+    }
+    canvas.drawBitmap(this, matrix, null)
+    return newBitmap
+}

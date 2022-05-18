@@ -78,12 +78,12 @@ class ResizeTest {
         val (_, sketch) = getContextAndSketch()
         Resize(100, 100, LESS_PIXELS).apply {
             Assert.assertFalse(shouldClip(sketch, 100, 50))
-            Assert.assertTrue(shouldClip(sketch, 100, 150))
+            Assert.assertFalse(shouldClip(sketch, 100, 150))
             Assert.assertFalse(shouldClip(sketch, 50, 100))
-            Assert.assertTrue(shouldClip(sketch, 150, 100))
+            Assert.assertFalse(shouldClip(sketch, 150, 100))
             Assert.assertFalse(shouldClip(sketch, 100, 100))
             Assert.assertFalse(shouldClip(sketch, 50, 50))
-            Assert.assertTrue(shouldClip(sketch, 150, 150))
+            Assert.assertFalse(shouldClip(sketch, 150, 150))
         }
 
         Resize(100, 100, SAME_ASPECT_RATIO).apply {
@@ -113,7 +113,7 @@ class ResizeTest {
             Assert.assertTrue(shouldClip(sketch, 250, 100))
             Assert.assertFalse(shouldClip(sketch, 100, 100))
             Assert.assertFalse(shouldClip(sketch, 50, 50))
-            Assert.assertTrue(shouldClip(sketch, 150, 150))
+            Assert.assertFalse(shouldClip(sketch, 150, 150))
         }
     }
 

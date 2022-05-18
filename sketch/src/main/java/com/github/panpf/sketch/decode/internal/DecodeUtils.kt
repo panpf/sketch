@@ -41,6 +41,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.calculateResizeMapping
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toHexString
 import java.io.IOException
 import kotlin.math.ceil
@@ -113,22 +114,38 @@ fun calculateSampleSizeWithTolerance(
 ): Int = realCalculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1.1f)
 
 
-fun samplingSize(size: Int, sampleSize: Int): Int {
-    return ceil(size / sampleSize.toDouble()).toInt()
+fun samplingSize(size: Int, sampleSize: Double): Int {
+    return ceil(size / sampleSize).toInt()
 }
 
-fun samplingSizeForRegion(size: Int, sampleSize: Int): Int {
-    val value = size / sampleSize.toDouble()
+fun samplingSize(size: Int, sampleSize: Int): Int {
+    return samplingSize(size, sampleSize.toDouble())
+}
+
+fun samplingSizeForRegion(size: Int, sampleSize: Double): Int {
+    val value = size / sampleSize
     return if (VERSION.SDK_INT >= VERSION_CODES.O) ceil(value).toInt() else floor(value).toInt()
 }
 
+fun samplingSizeForRegion(size: Int, sampleSize: Int): Int {
+    return samplingSizeForRegion(size, sampleSize.toDouble())
+}
 
-fun Size.sampling(sampleSize: Int): Size {
+
+fun Size.sampling(sampleSize: Double): Size {
     return Size(samplingSize(width, sampleSize), samplingSize(height, sampleSize))
 }
 
-fun Size.samplingForRegion(sampleSize: Int): Size {
+fun Size.sampling(sampleSize: Int): Size {
+    return sampling(sampleSize.toDouble())
+}
+
+fun Size.samplingForRegion(sampleSize: Double): Size {
     return Size(samplingSizeForRegion(width, sampleSize), samplingSizeForRegion(height, sampleSize))
+}
+
+fun Size.samplingForRegion(sampleSize: Int): Size {
+    return samplingForRegion(sampleSize.toDouble())
 }
 
 
@@ -244,18 +261,14 @@ fun BitmapDecodeResult.applyExifOrientation(
         ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)
     }
     val inBitmap = bitmap
-    val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, bitmapPool)
-    return if (newBitmap != null) {
-        bitmapPool.free(inBitmap)
-        newResult(newBitmap) {
-            addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
-            val newSize = exifOrientationHelper.applyToSize(
-                Size(imageInfo.width, imageInfo.height)
-            )
-            imageInfo(ImageInfo(newSize.width, newSize.height, imageInfo.mimeType))
-        }
-    } else {
-        this
+    val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, bitmapPool) ?: return this
+    bitmapPool.free(inBitmap)
+    return newResult(newBitmap) {
+        addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
+        val newSize = exifOrientationHelper.applyToSize(
+            Size(imageInfo.width, imageInfo.height)
+        )
+        imageInfo(ImageInfo(newSize.width, newSize.height, imageInfo.mimeType))
     }
 }
 
@@ -263,9 +276,19 @@ fun BitmapDecodeResult.applyResize(
     sketch: Sketch,
     resize: Resize?,
 ): BitmapDecodeResult {
+    if (resize == null) return this
     val inBitmap = bitmap
-    return if (resize?.shouldClip(sketch, inBitmap.width, inBitmap.height) == true) {
-        val precision = resize.getPrecision(sketch, inBitmap.width, inBitmap.height)
+    val precision = resize.getPrecision(sketch, inBitmap.width, inBitmap.height)
+    val newBitmap = if (precision == LESS_PIXELS) {
+        val sampleSize = calculateSampleSizeWithTolerance(
+            inBitmap.width, inBitmap.height, resize.width, resize.height
+        )
+        if (sampleSize != 1) {
+            inBitmap.scaled(sampleSize.toDouble(), sketch.bitmapPool)
+        } else {
+            null
+        }
+    } else if (resize.shouldClip(sketch, inBitmap.width, inBitmap.height)) {
         val scale = resize.getScale(sketch, inBitmap.width, inBitmap.height)
         val mapping = calculateResizeMapping(
             imageWidth = inBitmap.width,
@@ -276,9 +299,13 @@ fun BitmapDecodeResult.applyResize(
             resizeScale = scale,
         )
         val config = inBitmap.config ?: ARGB_8888
-        val newBitmap = sketch.bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config)
-        val canvas = Canvas(newBitmap)
-        canvas.drawBitmap(inBitmap, mapping.srcRect, mapping.destRect, null)
+        sketch.bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config).apply {
+            Canvas(this).drawBitmap(inBitmap, mapping.srcRect, mapping.destRect, null)
+        }
+    } else {
+        null
+    }
+    return if (newBitmap != null) {
         sketch.bitmapPool.free(inBitmap)
         newResult(newBitmap) {
             addTransformed(ResizeTransformed(resize))
@@ -287,7 +314,6 @@ fun BitmapDecodeResult.applyResize(
         this
     }
 }
-
 
 @Throws(IOException::class)
 fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
