@@ -175,7 +175,7 @@ fun realDecode(
             resizeMapping.destRect.width(),
             resizeMapping.destRect.height(),
         )
-        if (decodeRegion != null) {
+        if (precision != LESS_PIXELS && decodeRegion != null) {
             resizeTransformed = ResizeTransformed(resize)
             decodeRegion(resizeMapping.srcRect, decodeConfig)
         } else {
