@@ -48,3 +48,6 @@ internal fun computeByteCount(width: Int, height: Int, config: Bitmap.Config?): 
 @Suppress("unused")
 internal val Bitmap.Config?.getCompressFormat: CompressFormat
     get() = if (this == Bitmap.Config.RGB_565) CompressFormat.JPEG else CompressFormat.PNG
+
+internal fun Bitmap.Config.isAndSupportHardware(): Boolean =
+    VERSION.SDK_INT >= VERSION_CODES.O && this == Bitmap.Config.HARDWARE
