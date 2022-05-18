@@ -3,10 +3,12 @@ package com.github.panpf.sketch.test.cache.internal
 import android.content.ComponentCallbacks2
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
+import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.test.R
@@ -34,13 +36,13 @@ class LruBitmapPoolTest {
     fun testAllowedConfigs() {
         LruBitmapPool(10L * 1024 * 1024).apply {
             when {
-                Build.VERSION.SDK_INT >= 26 -> {
+                VERSION.SDK_INT >= 26 -> {
                     Assert.assertEquals(
                         "[null, ALPHA_8, RGB_565, ARGB_4444, ARGB_8888, RGBA_F16, HARDWARE]",
                         allowedConfigs.toString()
                     )
                 }
-                Build.VERSION.SDK_INT >= 19 -> {
+                VERSION.SDK_INT >= 19 -> {
                     Assert.assertEquals(
                         "[null, ALPHA_8, RGB_565, ARGB_4444, ARGB_8888]",
                         allowedConfigs.toString()
@@ -209,7 +211,7 @@ class LruBitmapPoolTest {
             10L * 1024 * 1024,
             allowedConfigs = setOf(RGB_565, ARGB_8888)
         ).apply {
-            val strategy = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            val strategy = if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 "SizeConfigStrategy"
             } else {
                 "AttributeStrategy"
@@ -222,82 +224,201 @@ class LruBitmapPoolTest {
     }
 
     @Test
-    fun testSetInBitmapForBitmapFactory() {
-        LruBitmapPool(10L * 1024 * 1024).apply {
-            Assert.assertFalse(
-                setInBitmapForBitmapFactory(BitmapFactory.Options(), 0, 100, "image/jpeg")
-            )
-            Assert.assertFalse(
-                setInBitmapForBitmapFactory(BitmapFactory.Options(), 100, 0, "image/jpeg")
-            )
-            Assert.assertFalse(
-                setInBitmapForBitmapFactory(BitmapFactory.Options(), 100, 100, null)
-            )
-            Assert.assertFalse(
-                setInBitmapForBitmapFactory(BitmapFactory.Options(), 100, 100, "")
-            )
-            Assert.assertFalse(
-                setInBitmapForBitmapFactory(BitmapFactory.Options(), 100, 100, "image/jpeg")
-            )
+    fun testSetInBitmap() {
+        val bitmapPool = LruBitmapPool(10L * 1024 * 1024)
 
-            put(Bitmap.createBitmap(100, 100, ARGB_8888))
-            Assert.assertTrue(
-                setInBitmapForBitmapFactory(BitmapFactory.Options(), 100, 100, "image/jpeg")
-            )
+        bitmapPool.clear()
+        BitmapFactory.Options().apply {
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertFalse(bitmapPool.setInBitmap(this, 0, 100, "image/jpeg"))
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+        }
 
-            put(Bitmap.createBitmap(100, 100, ARGB_8888))
-            Assert.assertTrue(
-                setInBitmapForBitmapFactory(
-                    BitmapFactory.Options().apply { inSampleSize = 2 },
-                    200,
-                    200,
-                    "image/jpeg"
-                )
-            )
+        bitmapPool.clear()
+        BitmapFactory.Options().apply {
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertFalse(bitmapPool.setInBitmap(this, 100, 0, "image/jpeg"))
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+        }
 
-            put(Bitmap.createBitmap(100, 100, ARGB_8888))
-            Assert.assertFalse(
-                setInBitmapForBitmapFactory(
-                    BitmapFactory.Options().apply { inSampleSize = 2 },
-                    300,
-                    300,
-                    "image/jpeg"
-                )
-            )
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            bitmapPool.clear()
+            BitmapFactory.Options().apply {
+                inPreferredConfig = HARDWARE
+                Assert.assertFalse(bitmapPool.setInBitmap(this, 100, 100, "image/jpeg"))
+            }
+        }
+
+        bitmapPool.clear()
+        bitmapPool.put(Bitmap.createBitmap(100, 100, ARGB_8888))
+        BitmapFactory.Options().apply {
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertTrue(bitmapPool.setInBitmap(this, 100, 100, null))
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertNotNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            } else {
+                Assert.assertNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            }
+        }
+
+        bitmapPool.clear()
+        bitmapPool.put(Bitmap.createBitmap(100, 100, ARGB_8888))
+        BitmapFactory.Options().apply {
+            inSampleSize = 2
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertTrue(bitmapPool.setInBitmap(this, 200, 200, null))
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertNotNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            } else {
+                Assert.assertNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            }
+        }
+
+        bitmapPool.clear()
+        BitmapFactory.Options().apply {
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertFalse(bitmapPool.setInBitmap(this, 100, 100, "image/jpeg"))
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            } else {
+                Assert.assertNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            }
+        }
+
+        bitmapPool.clear()
+        bitmapPool.put(Bitmap.createBitmap(100, 100, ARGB_8888))
+        BitmapFactory.Options().apply {
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertTrue(bitmapPool.setInBitmap(this, 100, 100, "image/jpeg"))
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertNotNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            } else {
+                Assert.assertNotNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            }
+        }
+
+        bitmapPool.clear()
+        bitmapPool.put(Bitmap.createBitmap(100, 100, ARGB_8888))
+        BitmapFactory.Options().apply {
+            inSampleSize = 2
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertTrue(bitmapPool.setInBitmap(this, 200, 200, "image/jpeg"))
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertNotNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            } else {
+                Assert.assertNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            }
+        }
+
+        bitmapPool.clear()
+        bitmapPool.put(Bitmap.createBitmap(100, 100, ARGB_8888))
+        BitmapFactory.Options().apply {
+            inSampleSize = 2
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertFalse(bitmapPool.setInBitmap(this, 300, 300, "image/jpeg"))
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            } else {
+                Assert.assertNull(inBitmap)
+                Assert.assertTrue(inMutable)
+            }
         }
     }
 
     @Test
-    fun testSetInBitmapForRegionDecoder() {
-        LruBitmapPool(10L * 1024 * 1024).apply {
-            Assert.assertFalse(
-                setInBitmapForRegionDecoder(BitmapFactory.Options(), 0, 100)
-            )
-            Assert.assertFalse(
-                setInBitmapForRegionDecoder(BitmapFactory.Options(), 100, 0)
-            )
-            Assert.assertTrue(
-                setInBitmapForRegionDecoder(BitmapFactory.Options(), 100, 100)
-            )
+    fun testSetInBitmapForRegion() {
+        val bitmapPool = LruBitmapPool(10L * 1024 * 1024)
 
-            put(Bitmap.createBitmap(100, 100, ARGB_8888))
-            Assert.assertTrue(
-                setInBitmapForRegionDecoder(BitmapFactory.Options(), 100, 100)
-            )
+        bitmapPool.clear()
+        BitmapFactory.Options().apply {
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertFalse(bitmapPool.setInBitmapForRegion(this, 0, 100))
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+        }
 
-            put(Bitmap.createBitmap(100, 100, ARGB_8888))
-            Assert.assertTrue(
-                setInBitmapForRegionDecoder(
-                    BitmapFactory.Options().apply { inSampleSize = 2 }, 200, 200,
-                )
-            )
+        bitmapPool.clear()
+        BitmapFactory.Options().apply {
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertFalse(bitmapPool.setInBitmapForRegion(this, 100, 0))
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+        }
 
-            put(Bitmap.createBitmap(100, 100, ARGB_8888))
-            Assert.assertTrue(
-                setInBitmapForRegionDecoder(
-                    BitmapFactory.Options().apply { inSampleSize = 2 }, 300, 300,
-                )
-            )
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            bitmapPool.clear()
+            BitmapFactory.Options().apply {
+                inPreferredConfig = HARDWARE
+                Assert.assertNull(inBitmap)
+                Assert.assertFalse(inMutable)
+                Assert.assertFalse(bitmapPool.setInBitmapForRegion(this, 100, 100))
+                Assert.assertNull(inBitmap)
+                Assert.assertFalse(inMutable)
+            }
+        }
+
+        bitmapPool.clear()
+        BitmapFactory.Options().apply {
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertTrue(bitmapPool.setInBitmapForRegion(this, 100, 100))
+            Assert.assertNotNull(inBitmap)
+            Assert.assertFalse(inMutable)
+        }
+
+        bitmapPool.clear()
+        bitmapPool.put(Bitmap.createBitmap(100, 100, ARGB_8888))
+        BitmapFactory.Options().apply {
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertTrue(bitmapPool.setInBitmapForRegion(this, 100, 100))
+            Assert.assertNotNull(inBitmap)
+            Assert.assertFalse(inMutable)
+        }
+
+        bitmapPool.clear()
+        bitmapPool.put(Bitmap.createBitmap(100, 100, ARGB_8888))
+        BitmapFactory.Options().apply {
+            inSampleSize = 2
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertTrue(bitmapPool.setInBitmapForRegion(this, 200, 200))
+            Assert.assertNotNull(inBitmap)
+            Assert.assertFalse(inMutable)
+        }
+
+        bitmapPool.clear()
+        bitmapPool.put(Bitmap.createBitmap(100, 100, ARGB_8888))
+        BitmapFactory.Options().apply {
+            inSampleSize = 2
+            Assert.assertNull(inBitmap)
+            Assert.assertFalse(inMutable)
+            Assert.assertTrue(bitmapPool.setInBitmapForRegion(this, 300, 300))
+            Assert.assertNotNull(inBitmap)
+            Assert.assertFalse(inMutable)
         }
     }
 

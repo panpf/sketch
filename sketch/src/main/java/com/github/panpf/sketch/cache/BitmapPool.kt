@@ -63,7 +63,7 @@ interface BitmapPool {
      *
      * @return If true is returned, inBitmap is set
      */
-    fun setInBitmapForBitmapFactory(
+    fun setInBitmap(
         options: BitmapFactory.Options, imageWidth: Int, imageHeight: Int, imageMimeType: String?,
     ): Boolean
 
@@ -73,7 +73,7 @@ interface BitmapPool {
      *
      * @return If true is returned, inBitmap is set
      */
-    fun setInBitmapForRegionDecoder(
+    fun setInBitmapForRegion(
         options: BitmapFactory.Options,
         imageWidth: Int,
         imageHeight: Int,

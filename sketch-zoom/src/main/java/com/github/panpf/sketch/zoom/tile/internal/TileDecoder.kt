@@ -131,7 +131,7 @@ class TileDecoder internal constructor(
         val options = BitmapFactory.Options().apply {
             this.inSampleSize = inSampleSize
             if (!disableInBitmap) {
-                bitmapPool.setInBitmapForRegionDecoder(
+                bitmapPool.setInBitmapForRegion(
                     this, newSrcRect.width(), newSrcRect.height()
                 )
             }
