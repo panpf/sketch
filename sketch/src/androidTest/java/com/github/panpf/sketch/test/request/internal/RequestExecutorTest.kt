@@ -3,9 +3,15 @@ package com.github.panpf.sketch.test.request.internal
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.samplingByTarget
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.RequestDepth.LOCAL
+import com.github.panpf.sketch.request.RequestDepth.MEMORY
+import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -14,8 +20,11 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.size
@@ -30,6 +39,114 @@ import org.junit.runner.RunWith
 class RequestExecutorTest {
 
     @Test
+    fun testDepth() {
+        val context = getContext()
+        val sketch = getSketch {
+            httpStack(TestHttpStack(context))
+        }
+        val imageUri = TestHttpStack.testUris.first().uriString
+
+        // default
+        sketch.diskCache.clear()
+        sketch.memoryCache.clear()
+        DisplayRequest(context, imageUri) {
+            bitmapResultDiskCachePolicy(DISABLED)
+        }.let {
+            runBlocking { sketch.execute(it) }
+        }.asOrNull<DisplayResult.Success>()!!.apply {
+            Assert.assertEquals(DataFrom.NETWORK, dataFrom)
+        }
+
+        // NETWORK
+        sketch.diskCache.clear()
+        sketch.memoryCache.clear()
+        DisplayRequest(context, imageUri) {
+            bitmapResultDiskCachePolicy(DISABLED)
+            depth(NETWORK)
+        }.let {
+            runBlocking { sketch.execute(it) }
+        }.asOrNull<DisplayResult.Success>()!!.apply {
+            Assert.assertEquals(DataFrom.NETWORK, dataFrom)
+        }
+
+        // LOCAL
+        sketch.diskCache.clear()
+        sketch.memoryCache.clear()
+        runBlocking {
+            sketch.execute(DisplayRequest(context, imageUri) {
+                bitmapResultDiskCachePolicy(DISABLED)
+            })
+        }
+        sketch.memoryCache.clear()
+        Assert.assertTrue(sketch.diskCache.exist(imageUri))
+        DisplayRequest(context, imageUri) {
+            bitmapResultDiskCachePolicy(DISABLED)
+            depth(LOCAL)
+        }.let {
+            runBlocking { sketch.execute(it) }
+        }.asOrNull<DisplayResult.Success>()!!.apply {
+            Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
+        }
+
+        sketch.diskCache.clear()
+        sketch.memoryCache.clear()
+        DisplayRequest(context, imageUri) {
+            bitmapResultDiskCachePolicy(DISABLED)
+            depth(LOCAL)
+        }.let {
+            runBlocking { sketch.execute(it) }
+        }.asOrNull<DisplayResult.Error>()!!.apply {
+            Assert.assertTrue(exception is RequestDepthException)
+        }
+
+        // MEMORY
+        sketch.memoryCache.clear()
+        runBlocking {
+            sketch.execute(DisplayRequest(context, imageUri) {
+                bitmapResultDiskCachePolicy(DISABLED)
+            })
+        }
+        DisplayRequest(context, imageUri) {
+            bitmapResultDiskCachePolicy(DISABLED)
+            depth(MEMORY)
+        }.let {
+            runBlocking { sketch.execute(it) }
+        }.asOrNull<DisplayResult.Success>()!!.apply {
+            Assert.assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
+        }
+
+        sketch.memoryCache.clear()
+        DisplayRequest(context, imageUri) {
+            bitmapResultDiskCachePolicy(DISABLED)
+            depth(MEMORY)
+        }.let {
+            runBlocking { sketch.execute(it) }
+        }.asOrNull<DisplayResult.Error>()!!.apply {
+            Assert.assertTrue(exception is RequestDepthException)
+        }
+    }
+
+    @Test
+    fun testDownloadDiskCachePolicy() {
+        // todo Write test cases
+    }
+
+    @Test
+    fun testBitmapConfig() {
+        // todo Write test cases
+    }
+
+    @Test
+    fun testColorSpace() {
+        // todo Write test cases
+    }
+
+    @Test
+    fun testPreferQualityOverSpeed() {
+        // todo Write test cases
+    }
+
+    @Test
     fun testResize() {
         val (context, sketch) = getContextAndSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
@@ -39,7 +156,10 @@ class RequestExecutorTest {
         }
 
         // default
-        DisplayRequest(context, imageUri)
+        DisplayRequest(context, imageUri) {
+            bitmapResultDiskCachePolicy(DISABLED)
+            bitmapMemoryCachePolicy(DISABLED)
+        }
             .let { runBlocking { sketch.execute(it) } }
             .asOrNull<DisplayResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -326,31 +446,6 @@ class RequestExecutorTest {
             exactlyFillCropBitmap!!.corners()
         )
         Assert.assertNotEquals(exactlyEndCropBitmap!!.corners(), exactlyFillCropBitmap!!.corners())
-    }
-
-    @Test
-    fun testDepth() {
-        // todo Write test cases
-    }
-
-    @Test
-    fun testDownloadDiskCachePolicy() {
-        // todo Write test cases
-    }
-
-    @Test
-    fun testBitmapConfig() {
-        // todo Write test cases
-    }
-
-    @Test
-    fun testColorSpace() {
-        // todo Write test cases
-    }
-
-    @Test
-    fun testPreferQualityOverSpeed() {
-        // todo Write test cases
     }
 
     @Test
