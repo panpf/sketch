@@ -200,43 +200,30 @@ class LruBitmapPool constructor(
             return false
         }
 
-        var inSampleSize = options.inSampleSize.coerceAtLeast(1)
-        val inBitmap: Bitmap? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            var finalWidth = samplingSize(imageWidth, inSampleSize)
-            var finalHeight = samplingSize(imageHeight, inSampleSize)
-            while (finalWidth <= 0 || finalHeight <= 0) {
-                inSampleSize /= 2
-                if (inSampleSize == 0) {
-                    finalWidth = imageWidth
-                    finalHeight = imageHeight
-                } else {
-                    finalWidth = samplingSize(imageWidth, inSampleSize)
-                    finalHeight = samplingSize(imageHeight, inSampleSize)
-                }
+        val inSampleSize = options.inSampleSize.coerceAtLeast(1)
+        val finalWidth = samplingSize(imageWidth, inSampleSize)
+        val finalHeight = samplingSize(imageHeight, inSampleSize)
+        // The following versions of KITKAT only support inBitmap of the same size and the format must be jpeg or png
+        @Suppress("ReplaceGetOrSet")
+        val inBitmap: Bitmap? = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
+                this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
-            @Suppress("ReplaceGetOrSet")
-            this.get(finalWidth, finalHeight, options.inPreferredConfig)
-        } else if (inSampleSize == 1) {
-            // The following versions of KITKAT only support inBitmap of the same size and the format must be jpeg or png
-            val imageType = ImageFormat.valueOfMimeType(imageMimeType)
-            if (imageType == ImageFormat.JPEG || imageType == ImageFormat.PNG) {
-                @Suppress("ReplaceGetOrSet")
-                this.get(imageWidth, imageHeight, options.inPreferredConfig)
-            } else {
+            options.inSampleSize <= 1 && ImageFormat.JPEG.mimeType.equals(imageMimeType, true) -> {
+                this.get(finalWidth, finalHeight, options.inPreferredConfig)
+            }
+            options.inSampleSize <= 1 && ImageFormat.PNG.mimeType.equals(imageMimeType, true) -> {
+                this.get(finalWidth, finalHeight, options.inPreferredConfig)
+            }
+            else -> {
                 null
             }
-        } else {
-            null
         }
-        options.inSampleSize = inSampleSize
-
-        options.inBitmap = inBitmap
-        options.inMutable = true
         if (inBitmap != null) {
             logger?.d(MODULE) {
                 "setInBitmapForBitmapFactory. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
-                    imageWidth,
-                    imageHeight,
+                    finalWidth,
+                    finalHeight,
                     options.inPreferredConfig,
                     inSampleSize,
                     inBitmap.toHexString(),
@@ -244,6 +231,9 @@ class LruBitmapPool constructor(
                 )
             }
         }
+
+        options.inBitmap = inBitmap
+        options.inMutable = true
         return inBitmap != null
     }
 
@@ -259,26 +249,13 @@ class LruBitmapPool constructor(
             return false
         }
 
-        var inSampleSize = options.inSampleSize.coerceAtLeast(1)
-        var finalWidth = samplingSizeForRegion(imageWidth, inSampleSize)
-        var finalHeight = samplingSizeForRegion(imageHeight, inSampleSize)
-        while (finalWidth <= 0 || finalHeight <= 0) {
-            inSampleSize /= 2
-            if (inSampleSize == 0) {
-                finalWidth = imageWidth
-                finalHeight = imageHeight
-            } else {
-                finalWidth = samplingSizeForRegion(imageWidth, inSampleSize)
-                finalHeight = samplingSizeForRegion(imageHeight, inSampleSize)
-            }
-        }
-        options.inSampleSize = inSampleSize
-
+        val inSampleSize = options.inSampleSize.coerceAtLeast(1)
+        val finalWidth = samplingSizeForRegion(imageWidth, inSampleSize)
+        val finalHeight = samplingSizeForRegion(imageHeight, inSampleSize)
         // BitmapRegionDecoder does not support inMutable, so creates Bitmap
         @Suppress("ReplaceGetOrSet")
         val inBitmap = this.get(finalWidth, finalHeight, options.inPreferredConfig)
             ?: Bitmap.createBitmap(finalWidth, finalHeight, options.inPreferredConfig)
-        options.inBitmap = inBitmap
         logger?.d(MODULE) {
             "setInBitmapForRegionDecoder. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
                 finalWidth,
@@ -289,6 +266,8 @@ class LruBitmapPool constructor(
                 inBitmap.allocationByteCountCompat.formatFileSize()
             )
         }
+
+        options.inBitmap = inBitmap
         return inBitmap != null
     }
 
