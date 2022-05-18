@@ -190,7 +190,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            Assert.assertEquals("Bitmap(645x968,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(646x968,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -210,7 +210,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            Assert.assertEquals("Bitmap(322x484,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(323x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -232,7 +232,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(323x194,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -253,7 +253,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(291x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -550,7 +550,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            Assert.assertEquals("Bitmap(645x968,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(646x968,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -570,7 +570,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            Assert.assertEquals("Bitmap(322x484,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(323x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -592,7 +592,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(323x194,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -613,7 +613,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(291x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -732,7 +732,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            Assert.assertEquals("Bitmap(968x645,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(968x646,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -753,7 +753,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            Assert.assertEquals("Bitmap(484x322,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(484x323,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -776,7 +776,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            Assert.assertEquals("Bitmap(484x290,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(484x291,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -798,7 +798,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            Assert.assertEquals("Bitmap(193x322,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(194x323,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)

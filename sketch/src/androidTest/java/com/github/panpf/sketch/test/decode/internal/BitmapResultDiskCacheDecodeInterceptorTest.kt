@@ -36,7 +36,7 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         val result = runBlocking {
             chain.proceed()
         }
-        Assert.assertEquals(322, result.bitmap.width)
+        Assert.assertEquals(323, result.bitmap.width)
         Assert.assertEquals(484, result.bitmap.height)
         Assert.assertEquals(
             "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
@@ -45,14 +45,14 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
         Assert.assertEquals(
-            "InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            "InSampledTransformed(4)",
             result.transformedList?.joinToString()
         )
 
         val result1 = runBlocking {
             chain.proceed()
         }
-        Assert.assertEquals(322, result1.bitmap.width)
+        Assert.assertEquals(323, result1.bitmap.width)
         Assert.assertEquals(484, result1.bitmap.height)
         Assert.assertEquals(
             "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
@@ -61,7 +61,7 @@ class BitmapResultDiskCacheDecodeInterceptorTest {
         Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
         Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, result1.dataFrom)
         Assert.assertEquals(
-            "InSampledTransformed(4), ResizeTransformed(500x500,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            "InSampledTransformed(4)",
             result.transformedList?.joinToString()
         )
     }

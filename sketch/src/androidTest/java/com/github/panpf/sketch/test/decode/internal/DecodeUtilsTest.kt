@@ -3,7 +3,6 @@ package com.github.panpf.sketch.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
-import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -17,8 +16,6 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeWithTolerance
-import com.github.panpf.sketch.decode.internal.samplingSize
-import com.github.panpf.sketch.decode.internal.samplingSizeForRegion
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.decode.internal.decodeBitmapWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
@@ -29,6 +26,12 @@ import com.github.panpf.sketch.decode.internal.maxBitmapSize
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
+import com.github.panpf.sketch.decode.internal.sampling
+import com.github.panpf.sketch.decode.internal.samplingByTarget
+import com.github.panpf.sketch.decode.internal.samplingForRegion
+import com.github.panpf.sketch.decode.internal.samplingForRegionByTarget
+import com.github.panpf.sketch.decode.internal.samplingSize
+import com.github.panpf.sketch.decode.internal.samplingSizeForRegion
 import com.github.panpf.sketch.decode.internal.sizeString
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -40,6 +43,7 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -97,15 +101,55 @@ class DecodeUtilsTest {
     }
 
     @Test
-    fun testCalculateSamplingSize() {
+    fun testSamplingSize() {
+        // todo 测试 从 api 19 到 api 31 的结果
         Assert.assertEquals(75, samplingSize(150, 2))
         Assert.assertEquals(76, samplingSize(151, 2))
     }
 
     @Test
-    fun testCalculateSamplingSizeForRegion() {
+    fun testSamplingSizeForRegion() {
+        // todo 测试 从 api 19 到 api 31 的结果
         Assert.assertEquals(75, samplingSizeForRegion(150, 2))
-        Assert.assertEquals(75, samplingSizeForRegion(151, 2))
+        Assert.assertEquals(
+            if (VERSION.SDK_INT >= VERSION_CODES.O) 76 else 75,
+            samplingSizeForRegion(151, 2)
+        )
+    }
+
+    @Test
+    fun testSampling() {
+        // todo 测试 从 api 19 到 api 31 的结果
+        Assert.assertEquals(Size(75, 76), Size(150, 151).sampling(2))
+    }
+
+    @Test
+    fun testSamplingForRegion() {
+        // todo 测试 从 api 19 到 api 31 的结果
+        Assert.assertEquals(
+            if (VERSION.SDK_INT >= VERSION_CODES.O) Size(75, 76) else Size(75, 75),
+            Size(150, 151).samplingForRegion(2)
+        )
+    }
+
+    @Test
+    fun testSamplingByTarget() {
+        // todo 测试 从 api 19 到 api 31 的结果
+        Assert.assertEquals(Size(75, 76), Size(150, 151).samplingByTarget(80, 80))
+        Assert.assertEquals(Size(75, 76), Size(150, 151).samplingByTarget(Size(80, 80)))
+    }
+
+    @Test
+    fun testSamplingForRegionByTarget() {
+        // todo 测试 从 api 19 到 api 31 的结果
+        Assert.assertEquals(
+            if (VERSION.SDK_INT >= VERSION_CODES.O) Size(75, 76) else Size(75, 75),
+            Size(150, 151).samplingForRegionByTarget(80, 80)
+        )
+        Assert.assertEquals(
+            if (VERSION.SDK_INT >= VERSION_CODES.O) Size(75, 76) else Size(75, 75),
+            Size(150, 151).samplingForRegionByTarget(Size(80, 80))
+        )
     }
 
     @Test

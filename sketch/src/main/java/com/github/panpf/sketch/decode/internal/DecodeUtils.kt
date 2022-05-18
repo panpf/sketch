@@ -36,6 +36,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.calculateResizeMapping
@@ -111,12 +112,45 @@ fun calculateSampleSizeWithTolerance(
     @Px targetHeight: Int,
 ): Int = realCalculateSampleSize(imageWidth, imageHeight, targetWidth, targetHeight, 1.1f)
 
+
 fun samplingSize(size: Int, sampleSize: Int): Int {
     return ceil(size / sampleSize.toDouble()).toInt()
 }
 
 fun samplingSizeForRegion(size: Int, sampleSize: Int): Int {
-    return floor(size / sampleSize.toDouble()).toInt()
+    val value = size / sampleSize.toDouble()
+    return if (VERSION.SDK_INT >= VERSION_CODES.O) ceil(value).toInt() else floor(value).toInt()
+}
+
+
+fun Size.sampling(sampleSize: Int): Size {
+    return Size(samplingSize(width, sampleSize), samplingSize(height, sampleSize))
+}
+
+fun Size.samplingForRegion(sampleSize: Int): Size {
+    return Size(samplingSizeForRegion(width, sampleSize), samplingSizeForRegion(height, sampleSize))
+}
+
+
+fun Size.samplingByTarget(@Px targetWidth: Int, @Px targetHeight: Int): Size {
+    val sampleSize = calculateSampleSize(width, height, targetWidth, targetHeight)
+    return sampling(sampleSize)
+}
+
+fun Size.samplingByTarget(targetSize: Size): Size {
+    val sampleSize = calculateSampleSize(width, height, targetSize.width, targetSize.height)
+    return sampling(sampleSize)
+}
+
+
+fun Size.samplingForRegionByTarget(@Px targetWidth: Int, @Px targetHeight: Int): Size {
+    val sampleSize = calculateSampleSize(width, height, targetWidth, targetHeight)
+    return samplingForRegion(sampleSize)
+}
+
+fun Size.samplingForRegionByTarget(targetSize: Size): Size {
+    val sampleSize = calculateSampleSize(width, height, targetSize.width, targetSize.height)
+    return samplingForRegion(sampleSize)
 }
 
 fun computeSizeMultiplier(
