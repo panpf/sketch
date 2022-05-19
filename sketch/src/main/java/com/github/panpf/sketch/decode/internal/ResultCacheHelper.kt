@@ -40,20 +40,24 @@ suspend fun <R> tryLockResultCache(
     }
 }
 
+fun ImageRequest.newResultCacheDataKey(): String = "${cacheKey}_result_data"
+
+fun ImageRequest.newResultCacheMetaKey(): String = "${cacheKey}_result_meta"
+
 fun newResultCacheHelper(
     sketch: Sketch,
     request: ImageRequest
 ): ResultCacheHelper? {
     val cachePolicy = request.resultCachePolicy
     if (!cachePolicy.isReadOrWrite) return null
-    val bitmapDataDiskCacheKey = "${request.cacheKey}_result_data"
-    val metaDataDiskCacheKey = "${request.cacheKey}_result_meta"
+    val bitmapDataDiskCacheKey = request.newResultCacheDataKey()
+    val bitmapMetaDiskCacheKey = request.newResultCacheMetaKey()
     return ResultCacheHelper(
         request,
         sketch.diskCache,
         cachePolicy,
         bitmapDataDiskCacheKey,
-        metaDataDiskCacheKey
+        bitmapMetaDiskCacheKey
     )
 }
 
@@ -62,7 +66,7 @@ class ResultCacheHelper internal constructor(
     private val diskCache: DiskCache,
     private val cachePolicy: CachePolicy,
     private val bitmapDataDiskCacheKey: String,
-    private val metaDataDiskCacheKey: String,
+    private val bitmapMetaDiskCacheKey: String,
 ) {
 
     companion object {
@@ -74,10 +78,10 @@ class ResultCacheHelper internal constructor(
         requiredWorkThread()
         return if (cachePolicy.readEnabled) {
             val bitmapDataDiskCacheSnapshot = diskCache[bitmapDataDiskCacheKey]
-            val metaDataDiskCacheSnapshot = diskCache[metaDataDiskCacheKey]
+            val bitmapMetaDiskCacheSnapshot = diskCache[bitmapMetaDiskCacheKey]
             try {
-                if (bitmapDataDiskCacheSnapshot != null && metaDataDiskCacheSnapshot != null) {
-                    val jsonString = metaDataDiskCacheSnapshot.newInputStream().use {
+                if (bitmapDataDiskCacheSnapshot != null && bitmapMetaDiskCacheSnapshot != null) {
+                    val jsonString = bitmapMetaDiskCacheSnapshot.newInputStream().use {
                         it.bufferedReader().readText()
                     }
                     val metaDataSerializer = MetaData.Serializer()
@@ -97,13 +101,13 @@ class ResultCacheHelper internal constructor(
                     )
                 } else {
                     bitmapDataDiskCacheSnapshot?.remove()
-                    metaDataDiskCacheSnapshot?.remove()
+                    bitmapMetaDiskCacheSnapshot?.remove()
                     null
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
                 bitmapDataDiskCacheSnapshot?.remove()
-                metaDataDiskCacheSnapshot?.remove()
+                bitmapMetaDiskCacheSnapshot?.remove()
                 null
             }
         } else {
@@ -116,7 +120,7 @@ class ResultCacheHelper internal constructor(
         requiredWorkThread()
         return if (cachePolicy.writeEnabled && result.transformedList?.any { it.cacheResultToDisk } == true) {
             val bitmapDataEditor = diskCache.edit(bitmapDataDiskCacheKey)
-            val metaDataEditor = diskCache.edit(metaDataDiskCacheKey)
+            val metaDataEditor = diskCache.edit(bitmapMetaDiskCacheKey)
             try {
                 if (bitmapDataEditor != null && metaDataEditor != null) {
                     bitmapDataEditor.newOutputStream().use {
@@ -142,7 +146,7 @@ class ResultCacheHelper internal constructor(
                 bitmapDataEditor?.abort()
                 metaDataEditor?.abort()
                 diskCache.remove(bitmapDataDiskCacheKey)
-                diskCache.remove(metaDataDiskCacheKey)
+                diskCache.remove(bitmapMetaDiskCacheKey)
                 false
             }
         } else {
