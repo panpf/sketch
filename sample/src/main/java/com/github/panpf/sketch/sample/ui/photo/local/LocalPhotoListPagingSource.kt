@@ -43,7 +43,8 @@ class LocalPhotoListPagingSource(private val context: Context) :
     }
 
     private suspend fun readExifPhotos(): List<String> = withToIO {
-        ExifOrientationTestFileHelper(context, "exif_origin_girl_ver.jpeg").files()
+        // The exif_origin_girl_ver image is relatively large, and some devices may crash due to insufficient memory
+        ExifOrientationTestFileHelper(context, "exif_origin_girl_ver.jpeg", 2).files()
             .map { it.file.path }
             .plus(
                 ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg")

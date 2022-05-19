@@ -3,13 +3,18 @@ package com.github.panpf.sketch.sample.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.BitmapFactory.Options
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class ExifOrientationTestFileHelper(val context: Context, private val assetFileName: String) {
+class ExifOrientationTestFileHelper constructor(
+    val context: Context,
+    private val assetFileName: String,
+    private val inSampleSize: Int? = null
+) {
 
     private val cacheDir: File = File(
         context.getExternalFilesDir(null) ?: context.filesDir,
@@ -31,7 +36,9 @@ class ExifOrientationTestFileHelper(val context: Context, private val assetFileN
             cacheDir.deleteRecursively()
             cacheDir.mkdirs()
             val originBitmap = context.assets.open(assetFileName).use {
-                BitmapFactory.decodeStream(it)
+                BitmapFactory.decodeStream(it, null, Options().apply {
+                    inSampleSize = this@ExifOrientationTestFileHelper.inSampleSize ?: 1
+                })
             }!!
             for (config in configs) {
                 val file = config.file
