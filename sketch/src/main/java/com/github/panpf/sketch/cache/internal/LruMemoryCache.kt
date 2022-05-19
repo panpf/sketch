@@ -98,6 +98,15 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
             }
         }
 
+    override fun exist(key: String): Boolean =
+        cache[key]?.takeIf {
+            (!it.isRecycled).apply {
+                if (!this) {
+                    cache.remove(key)
+                }
+            }
+        } != null
+
     override fun trim(level: Int) {
         val oldSize = size
         if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {

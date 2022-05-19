@@ -50,6 +50,11 @@ interface MemoryCache {
     operator fun get(key: String): CountBitmap?
 
     /**
+     * Returns exist of the entry named [key]
+     */
+    fun exist(key: String): Boolean
+
+    /**
      * Trim memory based on the [level]
      *
      * @param level see [android.content.ComponentCallbacks2].TRIM_MEMORY_*
