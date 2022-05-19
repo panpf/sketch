@@ -57,7 +57,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
             }
             true
         } else {
-            logger?.w(MODULE, String.format("Exist. key=$key"))
+            logger?.w(MODULE, "Exist. key=$key")
             false
         }
     }
