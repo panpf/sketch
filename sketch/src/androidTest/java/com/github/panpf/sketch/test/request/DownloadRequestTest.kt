@@ -587,17 +587,12 @@ class DownloadRequestTest {
 
             lowQualityBitmapConfig()
             build().apply {
-                Assert.assertEquals(BitmapConfig.LOW_QUALITY, bitmapConfig)
-            }
-
-            middenQualityBitmapConfig()
-            build().apply {
-                Assert.assertEquals(BitmapConfig.MIDDEN_QUALITY, bitmapConfig)
+                Assert.assertEquals(BitmapConfig.LowQuality, bitmapConfig)
             }
 
             highQualityBitmapConfig()
             build().apply {
-                Assert.assertEquals(BitmapConfig.HIGH_QUALITY, bitmapConfig)
+                Assert.assertEquals(BitmapConfig.HighQuality, bitmapConfig)
             }
 
             bitmapConfig(null)
@@ -942,7 +937,7 @@ class DownloadRequestTest {
         val size = runBlocking {
             request.resizeSizeResolver!!.size()
         }
-        val request1 = request.newDownloadRequest() {
+        val request1 = request.newDownloadRequest {
             resizeSize(size)
         }.apply {
             Assert.assertNotNull(resizeSize)

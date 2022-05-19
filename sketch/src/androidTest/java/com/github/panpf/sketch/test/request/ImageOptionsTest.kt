@@ -73,8 +73,6 @@ class ImageOptionsTest {
 
     @Test
     fun testIsEmpty() {
-        val context = getContext()
-
         ImageOptions().apply {
             Assert.assertTrue(this.isEmpty())
             Assert.assertNull(this.depth)
@@ -315,8 +313,6 @@ class ImageOptionsTest {
 
     @Test
     fun testMerged() {
-        val context = getContext()
-
         val options = ImageOptions()
         Assert.assertTrue(options == options.merged(ImageOptions()))
         Assert.assertTrue(options != options.merged(ImageOptions {
@@ -608,7 +604,6 @@ class ImageOptionsTest {
 
     @Test
     fun testEqualsHashCodeToString() {
-        val context = getContext()
         val optionsList = buildList {
             ImageOptions()
                 .apply { add(this) }.newOptions {
@@ -886,17 +881,12 @@ class ImageOptionsTest {
 
             lowQualityBitmapConfig()
             build().apply {
-                Assert.assertEquals(BitmapConfig.LOW_QUALITY, bitmapConfig)
-            }
-
-            middenQualityBitmapConfig()
-            build().apply {
-                Assert.assertEquals(BitmapConfig.MIDDEN_QUALITY, bitmapConfig)
+                Assert.assertEquals(BitmapConfig.LowQuality, bitmapConfig)
             }
 
             highQualityBitmapConfig()
             build().apply {
-                Assert.assertEquals(BitmapConfig.HIGH_QUALITY, bitmapConfig)
+                Assert.assertEquals(BitmapConfig.HighQuality, bitmapConfig)
             }
 
             bitmapConfig(null)

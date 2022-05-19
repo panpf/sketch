@@ -3,103 +3,96 @@ package com.github.panpf.sketch.decode
 import android.graphics.Bitmap
 import android.os.Build
 import com.github.panpf.sketch.ImageFormat
+import com.github.panpf.sketch.decode.BitmapConfig.FixedBitmapConfig
 
-class BitmapConfig(private val config: Bitmap.Config) {
+fun BitmapConfig(config: Bitmap.Config): BitmapConfig = FixedBitmapConfig(config)
 
-    val key: String by lazy {
-        val configName = when {
-            this === LOW_QUALITY -> "LOW_QUALITY"
-            this === MIDDEN_QUALITY -> "MIDDEN_QUALITY"
-            this === HIGH_QUALITY -> "HIGH_QUALITY"
-            else -> config
-        }
-        "BitmapConfig($configName)"
-    }
+sealed interface BitmapConfig {
+    val key: String
+
+    fun getConfig(mimeType: String?): Bitmap.Config
 
     val isLowQuality: Boolean
-        get() = this === LOW_QUALITY
-
-    val isMiddenQuality: Boolean
-        get() = this === MIDDEN_QUALITY
+        get() = this === LowQuality
 
     val isHighQuality: Boolean
-        get() = this === HIGH_QUALITY
+        get() = this === HighQuality
 
-    fun getConfigByMimeType(mimeType: String?): Bitmap.Config = when {
-        isLowQuality -> {
+    val isFixed: Boolean
+        get() = this is FixedBitmapConfig
+
+    val isDynamic: Boolean
+        get() = this !is FixedBitmapConfig
+
+    /**
+     * Lower quality bitmap config are preferred.
+     * Use [Bitmap.Config.RGB_565] if the image format is JPEG,
+     * otherwise use [Bitmap.Config.ARGB_4444] for JELLY_BEAN_MR2 and below,
+     * KITKAT and later use [Bitmap.Config.ARGB_8888]
+     */
+    object LowQuality : BitmapConfig {
+
+        override val key: String
+            get() = "BitmapConfig(LowQuality)"
+
+        override fun getConfig(mimeType: String?): Bitmap.Config =
             when {
                 ImageFormat.valueOfMimeType(mimeType) == ImageFormat.JPEG -> {
                     Bitmap.Config.RGB_565
                 }
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT -> {
+                    @Suppress("DEPRECATION")
                     Bitmap.Config.ARGB_4444
                 }
                 else -> {
                     Bitmap.Config.ARGB_8888
                 }
             }
-        }
-        isMiddenQuality -> {
-            Bitmap.Config.ARGB_8888
-        }
-        isHighQuality -> {
+
+        override fun toString(): String = key
+    }
+
+    /**
+     * [Bitmap.Config.RGBA_F16] is preferred, otherwise [Bitmap.Config.ARGB_8888] is used.
+     */
+    object HighQuality : BitmapConfig {
+
+        override val key: String
+            get() = "BitmapConfig(HighQuality)"
+
+        override fun getConfig(mimeType: String?): Bitmap.Config =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Bitmap.Config.RGBA_F16
             } else {
                 Bitmap.Config.ARGB_8888
             }
-        }
-        else -> {
-            config
-        }
+
+        override fun toString(): String = LowQuality.key
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as BitmapConfig
-        return when {
-            this === LOW_QUALITY -> other === LOW_QUALITY
-            this === MIDDEN_QUALITY -> other === MIDDEN_QUALITY
-            this === HIGH_QUALITY -> other === HIGH_QUALITY
-            else -> this.config == other.config
+    class FixedBitmapConfig(private val config: Bitmap.Config) : BitmapConfig {
+
+        override val key: String by lazy {
+            "BitmapConfig($config)"
         }
-    }
 
-    override fun hashCode(): Int = when {
-        this === LOW_QUALITY -> super.hashCode()
-        this === MIDDEN_QUALITY -> super.hashCode()
-        this === HIGH_QUALITY -> super.hashCode()
-        else -> config.hashCode()
-    }
+        override fun getConfig(mimeType: String?): Bitmap.Config = config
 
-    override fun toString(): String = key
+        override fun toString(): String = key
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
 
-    companion object {
-        /**
-         * Lower quality bitmap config are preferred.
-         * Use [Bitmap.Config.RGB_565] if the image format is JPEG,
-         * otherwise use [Bitmap.Config.ARGB_4444] for JELLY_BEAN_MR2 and below,
-         * KITKAT and later use [Bitmap.Config.ARGB_8888]
-         */
-        @JvmStatic
-        val LOW_QUALITY = BitmapConfig(Bitmap.Config.RGB_565)
+            other as FixedBitmapConfig
 
-        /**
-         * Always use [Bitmap.Config.ARGB_8888]
-         */
-        @JvmStatic
-        val MIDDEN_QUALITY = BitmapConfig(Bitmap.Config.ARGB_8888)
+            if (config != other.config) return false
 
-        /**
-         * [Bitmap.Config.RGBA_F16] is preferred, otherwise [Bitmap.Config.ARGB_8888] is used.
-         */
-        @JvmStatic
-        val HIGH_QUALITY = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            BitmapConfig(Bitmap.Config.RGBA_F16)
-        } else {
-            BitmapConfig(Bitmap.Config.ARGB_8888)
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return config.hashCode()
         }
     }
 }

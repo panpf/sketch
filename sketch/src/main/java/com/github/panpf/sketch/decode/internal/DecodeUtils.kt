@@ -385,7 +385,7 @@ fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig 
             inPreferQualityOverSpeed = true
         }
 
-        val newConfig = bitmapConfig?.getConfigByMimeType(mimeType)
+        val newConfig = bitmapConfig?.getConfig(mimeType)
         if (newConfig != null) {
             inPreferredConfig = newConfig
         }

@@ -15,34 +15,44 @@ import org.junit.runner.RunWith
 class BitmapConfigTest {
 
     @Test
-    fun testQualityLevel() {
-        BitmapConfig.LOW_QUALITY.apply {
-            Assert.assertTrue(isLowQuality)
-            Assert.assertFalse(isMiddenQuality)
-            Assert.assertFalse(isHighQuality)
-        }
-        BitmapConfig.MIDDEN_QUALITY.apply {
-            Assert.assertFalse(isLowQuality)
-            Assert.assertTrue(isMiddenQuality)
-            Assert.assertFalse(isHighQuality)
-        }
-        BitmapConfig.HIGH_QUALITY.apply {
-            Assert.assertFalse(isLowQuality)
-            Assert.assertFalse(isMiddenQuality)
-            Assert.assertTrue(isHighQuality)
-        }
+    fun testIsLowQuality() {
+        Assert.assertTrue(BitmapConfig.LowQuality.isLowQuality)
+        Assert.assertFalse(BitmapConfig.HighQuality.isLowQuality)
+        Assert.assertFalse(BitmapConfig(RGB_565).isLowQuality)
+        Assert.assertFalse(BitmapConfig(ARGB_8888).isLowQuality)
     }
 
     @Test
-    fun testCacheKey() {
-        BitmapConfig.LOW_QUALITY.apply {
-            Assert.assertEquals("BitmapConfig(LOW_QUALITY)", key)
+    fun testIsHighQuality() {
+        Assert.assertFalse(BitmapConfig.LowQuality.isHighQuality)
+        Assert.assertTrue(BitmapConfig.HighQuality.isHighQuality)
+        Assert.assertFalse(BitmapConfig(RGB_565).isHighQuality)
+        Assert.assertFalse(BitmapConfig(ARGB_8888).isHighQuality)
+    }
+
+    @Test
+    fun testIsFixed() {
+        Assert.assertFalse(BitmapConfig.LowQuality.isFixed)
+        Assert.assertFalse(BitmapConfig.HighQuality.isFixed)
+        Assert.assertTrue(BitmapConfig(RGB_565).isFixed)
+        Assert.assertTrue(BitmapConfig(ARGB_8888).isFixed)
+    }
+
+    @Test
+    fun testIsDynamic() {
+        Assert.assertTrue(BitmapConfig.LowQuality.isDynamic)
+        Assert.assertTrue(BitmapConfig.HighQuality.isDynamic)
+        Assert.assertFalse(BitmapConfig(RGB_565).isDynamic)
+        Assert.assertFalse(BitmapConfig(ARGB_8888).isDynamic)
+    }
+
+    @Test
+    fun testKey() {
+        BitmapConfig.LowQuality.apply {
+            Assert.assertEquals("BitmapConfig(LowQuality)", key)
         }
-        BitmapConfig.MIDDEN_QUALITY.apply {
-            Assert.assertEquals("BitmapConfig(MIDDEN_QUALITY)", key)
-        }
-        BitmapConfig.HIGH_QUALITY.apply {
-            Assert.assertEquals("BitmapConfig(HIGH_QUALITY)", key)
+        BitmapConfig.HighQuality.apply {
+            Assert.assertEquals("BitmapConfig(HighQuality)", key)
         }
         BitmapConfig(RGB_565).apply {
             Assert.assertEquals("BitmapConfig(RGB_565)", key)
@@ -50,40 +60,34 @@ class BitmapConfigTest {
     }
 
     @Test
-    fun testGetConfigByMimeType() {
-        BitmapConfig.LOW_QUALITY.apply {
-            Assert.assertEquals(RGB_565, getConfigByMimeType("image/jpeg"))
+    fun testGetConfig() {
+        BitmapConfig.LowQuality.apply {
+            Assert.assertEquals(RGB_565, getConfig("image/jpeg"))
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 @Suppress("DEPRECATION")
-                Assert.assertEquals(ARGB_4444, getConfigByMimeType("image/png"))
+                Assert.assertEquals(ARGB_4444, getConfig("image/png"))
             } else {
-                Assert.assertEquals(ARGB_8888, getConfigByMimeType("image/png"))
+                Assert.assertEquals(ARGB_8888, getConfig("image/png"))
             }
-            Assert.assertEquals(ARGB_8888, getConfigByMimeType(null))
+            Assert.assertEquals(ARGB_8888, getConfig(null))
         }
 
-        BitmapConfig.MIDDEN_QUALITY.apply {
-            Assert.assertEquals(ARGB_8888, getConfigByMimeType("image/jpeg"))
-            Assert.assertEquals(ARGB_8888, getConfigByMimeType("image/png"))
-            Assert.assertEquals(ARGB_8888, getConfigByMimeType(null))
-        }
-
-        BitmapConfig.HIGH_QUALITY.apply {
+        BitmapConfig.HighQuality.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Assert.assertEquals(RGBA_F16, getConfigByMimeType("image/jpeg"))
-                Assert.assertEquals(RGBA_F16, getConfigByMimeType("image/png"))
-                Assert.assertEquals(RGBA_F16, getConfigByMimeType(null))
+                Assert.assertEquals(RGBA_F16, getConfig("image/jpeg"))
+                Assert.assertEquals(RGBA_F16, getConfig("image/png"))
+                Assert.assertEquals(RGBA_F16, getConfig(null))
             } else {
-                Assert.assertEquals(ARGB_8888, getConfigByMimeType("image/jpeg"))
-                Assert.assertEquals(ARGB_8888, getConfigByMimeType("image/png"))
-                Assert.assertEquals(ARGB_8888, getConfigByMimeType(null))
+                Assert.assertEquals(ARGB_8888, getConfig("image/jpeg"))
+                Assert.assertEquals(ARGB_8888, getConfig("image/png"))
+                Assert.assertEquals(ARGB_8888, getConfig(null))
             }
         }
 
         BitmapConfig(RGB_565).apply {
-            Assert.assertEquals(RGB_565, getConfigByMimeType("image/jpeg"))
-            Assert.assertEquals(RGB_565, getConfigByMimeType("image/png"))
-            Assert.assertEquals(RGB_565, getConfigByMimeType(null))
+            Assert.assertEquals(RGB_565, getConfig("image/jpeg"))
+            Assert.assertEquals(RGB_565, getConfig("image/png"))
+            Assert.assertEquals(RGB_565, getConfig(null))
         }
     }
 }

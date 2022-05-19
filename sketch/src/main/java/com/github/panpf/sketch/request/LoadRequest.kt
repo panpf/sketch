@@ -177,10 +177,6 @@ interface LoadRequest : ImageRequest {
             super.lowQualityBitmapConfig()
         }
 
-        override fun middenQualityBitmapConfig(): Builder = apply {
-            super.middenQualityBitmapConfig()
-        }
-
         override fun highQualityBitmapConfig(): Builder = apply {
             super.highQualityBitmapConfig()
         }

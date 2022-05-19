@@ -171,9 +171,8 @@ open class SketchImageView @JvmOverloads constructor(
 
     private fun parseBitmapConfigAttribute(value: Int): BitmapConfig =
         when (value) {
-            1 -> BitmapConfig.LOW_QUALITY
-            2 -> BitmapConfig.MIDDEN_QUALITY
-            3 -> BitmapConfig.HIGH_QUALITY
+            1 -> BitmapConfig.LowQuality
+            3 -> BitmapConfig.HighQuality
             4 -> BitmapConfig(Bitmap.Config.ALPHA_8)
             5 -> BitmapConfig(Bitmap.Config.RGB_565)
             6 -> BitmapConfig(Bitmap.Config.ARGB_4444)

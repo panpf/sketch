@@ -640,17 +640,12 @@ class DisplayRequestTest {
 
             lowQualityBitmapConfig()
             build().apply {
-                Assert.assertEquals(BitmapConfig.LOW_QUALITY, bitmapConfig)
-            }
-
-            middenQualityBitmapConfig()
-            build().apply {
-                Assert.assertEquals(BitmapConfig.MIDDEN_QUALITY, bitmapConfig)
+                Assert.assertEquals(BitmapConfig.LowQuality, bitmapConfig)
             }
 
             highQualityBitmapConfig()
             build().apply {
-                Assert.assertEquals(BitmapConfig.HIGH_QUALITY, bitmapConfig)
+                Assert.assertEquals(BitmapConfig.HighQuality, bitmapConfig)
             }
 
             bitmapConfig(null)

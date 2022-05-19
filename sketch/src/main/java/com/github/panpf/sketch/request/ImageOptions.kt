@@ -262,11 +262,9 @@ interface ImageOptions {
         fun bitmapConfig(bitmapConfig: Bitmap.Config): Builder =
             bitmapConfig(BitmapConfig(bitmapConfig))
 
-        fun lowQualityBitmapConfig(): Builder = bitmapConfig(BitmapConfig.LOW_QUALITY)
+        fun lowQualityBitmapConfig(): Builder = bitmapConfig(BitmapConfig.LowQuality)
 
-        fun middenQualityBitmapConfig(): Builder = bitmapConfig(BitmapConfig.MIDDEN_QUALITY)
-
-        fun highQualityBitmapConfig(): Builder = bitmapConfig(BitmapConfig.HIGH_QUALITY)
+        fun highQualityBitmapConfig(): Builder = bitmapConfig(BitmapConfig.HighQuality)
 
         @RequiresApi(VERSION_CODES.O)
         fun colorSpace(colorSpace: ColorSpace?): Builder = apply {

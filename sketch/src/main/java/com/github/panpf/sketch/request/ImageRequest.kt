@@ -315,10 +315,6 @@ interface ImageRequest {
             definedOptionsBuilder.lowQualityBitmapConfig()
         }
 
-        open fun middenQualityBitmapConfig(): Builder = apply {
-            definedOptionsBuilder.middenQualityBitmapConfig()
-        }
-
         open fun highQualityBitmapConfig(): Builder = apply {
             definedOptionsBuilder.highQualityBitmapConfig()
         }

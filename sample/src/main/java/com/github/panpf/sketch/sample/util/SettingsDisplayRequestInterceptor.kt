@@ -47,9 +47,8 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                 preferQualityOverSpeed(true)
             }
             when (prefsService.bitmapQuality.value) {
-                "LOW" -> bitmapConfig(BitmapConfig.LOW_QUALITY)
-                "MIDDEN" -> bitmapConfig(BitmapConfig.MIDDEN_QUALITY)
-                "HIGH" -> bitmapConfig(BitmapConfig.HIGH_QUALITY)
+                "LOW" -> bitmapConfig(BitmapConfig.LowQuality)
+                "HIGH" -> bitmapConfig(BitmapConfig.HighQuality)
             }
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 when (val value = prefsService.colorSpace.value) {

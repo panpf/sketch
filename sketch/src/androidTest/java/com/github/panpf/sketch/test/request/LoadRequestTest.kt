@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.test.request
 
-import android.R.drawable
 import android.graphics.Bitmap.Config.ALPHA_8
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
@@ -588,17 +587,12 @@ class LoadRequestTest {
 
             lowQualityBitmapConfig()
             build().apply {
-                Assert.assertEquals(BitmapConfig.LOW_QUALITY, bitmapConfig)
-            }
-
-            middenQualityBitmapConfig()
-            build().apply {
-                Assert.assertEquals(BitmapConfig.MIDDEN_QUALITY, bitmapConfig)
+                Assert.assertEquals(BitmapConfig.LowQuality, bitmapConfig)
             }
 
             highQualityBitmapConfig()
             build().apply {
-                Assert.assertEquals(BitmapConfig.HIGH_QUALITY, bitmapConfig)
+                Assert.assertEquals(BitmapConfig.HighQuality, bitmapConfig)
             }
 
             bitmapConfig(null)
@@ -943,7 +937,7 @@ class LoadRequestTest {
         val size = runBlocking {
             request.resizeSizeResolver!!.size()
         }
-        val request1 = request.newLoadRequest() {
+        val request1 = request.newLoadRequest {
             resizeSize(size)
         }.apply {
             Assert.assertNotNull(resizeSize)
@@ -1210,7 +1204,7 @@ class LoadRequestTest {
             placeholder(android.R.drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    DrawableStateImage(drawable.bottom_bar),
+                    DrawableStateImage(android.R.drawable.bottom_bar),
                     placeholderImage
                 )
             }
@@ -1247,7 +1241,7 @@ class LoadRequestTest {
             error(android.R.drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage.Builder(DrawableStateImage(drawable.bottom_bar))
+                    ErrorStateImage.Builder(DrawableStateImage(android.R.drawable.bottom_bar))
                         .build(),
                     errorImage
                 )
@@ -1258,7 +1252,7 @@ class LoadRequestTest {
             }
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage.Builder(DrawableStateImage(drawable.bottom_bar))
+                    ErrorStateImage.Builder(DrawableStateImage(android.R.drawable.bottom_bar))
                         .uriEmptyError(android.R.drawable.alert_dark_frame).build(),
                     errorImage
                 )
