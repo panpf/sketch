@@ -311,14 +311,6 @@ interface ImageRequest {
             definedOptionsBuilder.bitmapConfig(bitmapConfig)
         }
 
-        open fun lowQualityBitmapConfig(): Builder = apply {
-            definedOptionsBuilder.lowQualityBitmapConfig()
-        }
-
-        open fun highQualityBitmapConfig(): Builder = apply {
-            definedOptionsBuilder.highQualityBitmapConfig()
-        }
-
         @RequiresApi(VERSION_CODES.O)
         open fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
             definedOptionsBuilder.colorSpace(colorSpace)

@@ -42,7 +42,6 @@ import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.newErrorStateImage
-import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.test.utils.TestTransition
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -879,12 +878,12 @@ class ImageOptionsTest {
                 Assert.assertEquals(BitmapConfig(ARGB_8888), bitmapConfig)
             }
 
-            lowQualityBitmapConfig()
+            bitmapConfig(BitmapConfig.LowQuality)
             build().apply {
                 Assert.assertEquals(BitmapConfig.LowQuality, bitmapConfig)
             }
 
-            highQualityBitmapConfig()
+            bitmapConfig(BitmapConfig.HighQuality)
             build().apply {
                 Assert.assertEquals(BitmapConfig.HighQuality, bitmapConfig)
             }

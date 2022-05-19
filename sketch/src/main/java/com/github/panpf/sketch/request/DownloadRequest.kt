@@ -171,14 +171,6 @@ interface DownloadRequest : ImageRequest {
             super.bitmapConfig(bitmapConfig)
         }
 
-        override fun lowQualityBitmapConfig(): Builder = apply {
-            super.lowQualityBitmapConfig()
-        }
-
-        override fun highQualityBitmapConfig(): Builder = apply {
-            super.highQualityBitmapConfig()
-        }
-
         override fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 super.colorSpace(colorSpace)

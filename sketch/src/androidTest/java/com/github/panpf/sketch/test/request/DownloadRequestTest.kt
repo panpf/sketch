@@ -585,12 +585,12 @@ class DownloadRequestTest {
                 Assert.assertEquals(BitmapConfig(ARGB_8888), bitmapConfig)
             }
 
-            lowQualityBitmapConfig()
+            bitmapConfig(BitmapConfig.LowQuality)
             build().apply {
                 Assert.assertEquals(BitmapConfig.LowQuality, bitmapConfig)
             }
 
-            highQualityBitmapConfig()
+            bitmapConfig(BitmapConfig.HighQuality)
             build().apply {
                 Assert.assertEquals(BitmapConfig.HighQuality, bitmapConfig)
             }
