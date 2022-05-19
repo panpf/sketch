@@ -61,10 +61,10 @@ open class SketchImageView @JvmOverloads constructor(
                 typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_depth)?.apply {
                     depth(parseDepthAttribute(this))
                 }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_downloadDiskCachePolicy)
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_downloadCachePolicy)
                     ?.apply {
-                        downloadDiskCachePolicy(
-                            parseCachePolicyAttribute(this, "sketch_downloadDiskCachePolicy")
+                        downloadCachePolicy(
+                            parseCachePolicyAttribute(this, "sketch_downloadCachePolicy")
                         )
                     }
                 typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_preferQualityOverSpeed)
@@ -105,16 +105,16 @@ open class SketchImageView @JvmOverloads constructor(
                 typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation)?.apply {
                     transformations(parseTransformation(this, typedArray))
                 }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_bitmapResultDiskCachePolicy)
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_resultCachePolicy)
                     ?.apply {
-                        bitmapResultDiskCachePolicy(
-                            parseCachePolicyAttribute(this, "sketch_bitmapResultDiskCachePolicy")
+                        resultCachePolicy(
+                            parseCachePolicyAttribute(this, "sketch_resultCachePolicy")
                         )
                     }
-                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_bitmapMemoryCachePolicy)
+                typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_memoryCachePolicy)
                     ?.apply {
-                        bitmapMemoryCachePolicy(
-                            parseCachePolicyAttribute(this, "sketch_bitmapMemoryCachePolicy")
+                        memoryCachePolicy(
+                            parseCachePolicyAttribute(this, "sketch_memoryCachePolicy")
                         )
                     }
                 typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_crossfade)

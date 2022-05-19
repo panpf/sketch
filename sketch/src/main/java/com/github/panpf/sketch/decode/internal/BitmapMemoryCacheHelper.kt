@@ -37,11 +37,11 @@ suspend fun <R> tryLockBitmapMemoryCache(
 }
 
 fun newBitmapMemoryCacheHelper(sketch: Sketch, request: ImageRequest): BitmapMemoryCacheHelper? {
-    val cachePolicy = request.bitmapMemoryCachePolicy
+    val cachePolicy = request.memoryCachePolicy
     if (!cachePolicy.isReadOrWrite) return null
     return BitmapMemoryCacheHelper(
         sketch.memoryCache,
-        request.bitmapMemoryCachePolicy,
+        request.memoryCachePolicy,
         request.cacheKey,
         sketch.logger,
         request,

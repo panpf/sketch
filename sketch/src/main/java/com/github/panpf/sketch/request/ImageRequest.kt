@@ -78,7 +78,7 @@ interface ImageRequest {
     val parameters: Parameters?
 
     val httpHeaders: HttpHeaders?
-    val downloadDiskCachePolicy: CachePolicy
+    val downloadCachePolicy: CachePolicy
 
     /**
      * Specify [Bitmap.Config] to use when creating the bitmap.
@@ -123,14 +123,14 @@ interface ImageRequest {
     val ignoreExifOrientation: Boolean
 
     /** @see com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheDecodeInterceptor */
-    val bitmapResultDiskCachePolicy: CachePolicy
+    val resultCachePolicy: CachePolicy
 
     val placeholderImage: StateImage?
     val errorImage: StateImage?
     val transition: Transition.Factory?
     val disabledAnimatedImage: Boolean
     val resizeApplyToDrawable: Boolean
-    val bitmapMemoryCachePolicy: CachePolicy
+    val memoryCachePolicy: CachePolicy
 
     abstract class BaseImageRequest : ImageRequest {
         override val uri: Uri by lazy { Uri.parse(uriString) }
@@ -298,8 +298,8 @@ interface ImageRequest {
             definedOptionsBuilder.removeHttpHeader(name)
         }
 
-        open fun downloadDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            definedOptionsBuilder.downloadDiskCachePolicy(cachePolicy)
+        open fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            definedOptionsBuilder.downloadCachePolicy(cachePolicy)
         }
 
 
@@ -448,8 +448,8 @@ interface ImageRequest {
             definedOptionsBuilder.ignoreExifOrientation(ignore)
         }
 
-        open fun bitmapResultDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            definedOptionsBuilder.bitmapResultDiskCachePolicy(cachePolicy)
+        open fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            definedOptionsBuilder.resultCachePolicy(cachePolicy)
         }
 
 
@@ -502,8 +502,8 @@ interface ImageRequest {
             definedOptionsBuilder.resizeApplyToDrawable(resizeApplyToDrawable)
         }
 
-        open fun bitmapMemoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            definedOptionsBuilder.bitmapMemoryCachePolicy(cachePolicy)
+        open fun memoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            definedOptionsBuilder.memoryCachePolicy(cachePolicy)
         }
 
 
@@ -527,8 +527,8 @@ interface ImageRequest {
             val depth = finalOptions.depth ?: NETWORK
             val parameters = finalOptions.parameters
             val httpHeaders = finalOptions.httpHeaders
-            val downloadDiskCachePolicy = finalOptions.downloadDiskCachePolicy ?: ENABLED
-            val bitmapResultDiskCachePolicy = finalOptions.bitmapResultDiskCachePolicy ?: ENABLED
+            val downloadCachePolicy = finalOptions.downloadCachePolicy ?: ENABLED
+            val resultCachePolicy = finalOptions.resultCachePolicy ?: ENABLED
             val bitmapConfig = finalOptions.bitmapConfig
             val colorSpace =
                 if (VERSION.SDK_INT >= VERSION_CODES.O) finalOptions.colorSpace else null
@@ -556,7 +556,7 @@ interface ImageRequest {
             val transition = finalOptions.transition
             val disabledAnimatedImage = finalOptions.disabledAnimatedImage ?: false
             val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
-            val bitmapMemoryCachePolicy = finalOptions.bitmapMemoryCachePolicy ?: ENABLED
+            val memoryCachePolicy = finalOptions.memoryCachePolicy ?: ENABLED
 
             return when (this@Builder) {
                 is DisplayRequest.Builder -> {
@@ -572,8 +572,8 @@ interface ImageRequest {
                         depth = depth,
                         parameters = parameters,
                         httpHeaders = httpHeaders,
-                        downloadDiskCachePolicy = downloadDiskCachePolicy,
-                        bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                        downloadCachePolicy = downloadCachePolicy,
+                        resultCachePolicy = resultCachePolicy,
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
@@ -589,7 +589,7 @@ interface ImageRequest {
                         transition = transition,
                         disabledAnimatedImage = disabledAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
-                        bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
+                        memoryCachePolicy = memoryCachePolicy,
                     )
                 }
                 is LoadRequest.Builder -> {
@@ -605,8 +605,8 @@ interface ImageRequest {
                         depth = depth,
                         parameters = parameters,
                         httpHeaders = httpHeaders,
-                        downloadDiskCachePolicy = downloadDiskCachePolicy,
-                        bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                        downloadCachePolicy = downloadCachePolicy,
+                        resultCachePolicy = resultCachePolicy,
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
@@ -622,7 +622,7 @@ interface ImageRequest {
                         transition = transition,
                         disabledAnimatedImage = disabledAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
-                        bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
+                        memoryCachePolicy = memoryCachePolicy,
                     )
                 }
                 is DownloadRequest.Builder -> {
@@ -638,8 +638,8 @@ interface ImageRequest {
                         depth = depth,
                         parameters = parameters,
                         httpHeaders = httpHeaders,
-                        downloadDiskCachePolicy = downloadDiskCachePolicy,
-                        bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                        downloadCachePolicy = downloadCachePolicy,
+                        resultCachePolicy = resultCachePolicy,
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
@@ -655,7 +655,7 @@ interface ImageRequest {
                         transition = transition,
                         disabledAnimatedImage = disabledAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
-                        bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
+                        memoryCachePolicy = memoryCachePolicy,
                     )
                 }
                 else -> throw UnsupportedOperationException("Unsupported ImageRequest.Builder: ${this@Builder::class.java}")

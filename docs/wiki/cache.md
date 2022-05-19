@@ -79,16 +79,16 @@ try {
 
 Sketch 默认会将 Http uri 的内容缓存到磁盘缓存，避免重复下载，以提高加载速度
 
-你可以通过 [ImageRequest] 或 [ImageOptions] 的 downloadDiskCachePolicy 属性控制下载缓存:
+你可以通过 [ImageRequest] 或 [ImageOptions] 的 downloadCachePolicy 属性控制下载缓存:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
     // 禁用
-    downloadDiskCachePolicy(CachePolicy.DISABLED)
+    downloadCachePolicy(CachePolicy.DISABLED)
     // 只读
-    downloadDiskCachePolicy(CachePolicy.READ_ONLY)
+    downloadCachePolicy(CachePolicy.READ_ONLY)
     // 只写
-    downloadDiskCachePolicy(CachePolicy.WRITE_ONLY)
+    downloadCachePolicy(CachePolicy.WRITE_ONLY)
 }
 ```
 
@@ -99,16 +99,16 @@ Sketch 默认会在以下情况将 Bitmap 缓存到磁盘缓存中，避免重�
 * Resize 不为 null 且解码后的 Bitmap 与原图有缩小或尺寸调整
 * 经过 Transformation 转换
 
-你可以通过 [ImageRequest] 或 [ImageOptions] 的 bitmapResultDiskCachePolicy 属性控制 Bitmap 结果缓存:
+你可以通过 [ImageRequest] 或 [ImageOptions] 的 resultCachePolicy 属性控制 Bitmap 结果缓存:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
     // 禁用
-    bitmapResultDiskCachePolicy(CachePolicy.DISABLED)
+    resultCachePolicy(CachePolicy.DISABLED)
     // 只读
-    bitmapResultDiskCachePolicy(CachePolicy.READ_ONLY)
+    resultCachePolicy(CachePolicy.READ_ONLY)
     // 只写
-    bitmapResultDiskCachePolicy(CachePolicy.WRITE_ONLY)
+    resultCachePolicy(CachePolicy.WRITE_ONLY)
 }
 ```
 
@@ -116,16 +116,16 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 Sketch 默认会将最终得到的 Bitmap 缓存到内存缓存中，避免重复加载，以提高加载速度：
 
-你可以通过 [ImageRequest] 或 [ImageOptions] 的 bitmapMemoryCachePolicy 属性控制 Bitmap 内存缓存:
+你可以通过 [ImageRequest] 或 [ImageOptions] 的 memoryCachePolicy 属性控制 Bitmap 内存缓存:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
     // 禁用
-    bitmapMemoryCachePolicy(CachePolicy.DISABLED)
+    memoryCachePolicy(CachePolicy.DISABLED)
     // 只读
-    bitmapMemoryCachePolicy(CachePolicy.READ_ONLY)
+    memoryCachePolicy(CachePolicy.READ_ONLY)
     // 只写
-    bitmapMemoryCachePolicy(CachePolicy.WRITE_ONLY)
+    memoryCachePolicy(CachePolicy.WRITE_ONLY)
 }
 ```
 

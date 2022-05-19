@@ -50,7 +50,7 @@ class RequestExecutorTest {
         sketch.diskCache.clear()
         sketch.memoryCache.clear()
         DisplayRequest(context, imageUri) {
-            bitmapResultDiskCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Success>()!!.apply {
@@ -61,7 +61,7 @@ class RequestExecutorTest {
         sketch.diskCache.clear()
         sketch.memoryCache.clear()
         DisplayRequest(context, imageUri) {
-            bitmapResultDiskCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             depth(NETWORK)
         }.let {
             runBlocking { sketch.execute(it) }
@@ -74,13 +74,13 @@ class RequestExecutorTest {
         sketch.memoryCache.clear()
         runBlocking {
             sketch.execute(DisplayRequest(context, imageUri) {
-                bitmapResultDiskCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
             })
         }
         sketch.memoryCache.clear()
         Assert.assertTrue(sketch.diskCache.exist(imageUri))
         DisplayRequest(context, imageUri) {
-            bitmapResultDiskCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             depth(LOCAL)
         }.let {
             runBlocking { sketch.execute(it) }
@@ -91,7 +91,7 @@ class RequestExecutorTest {
         sketch.diskCache.clear()
         sketch.memoryCache.clear()
         DisplayRequest(context, imageUri) {
-            bitmapResultDiskCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             depth(LOCAL)
         }.let {
             runBlocking { sketch.execute(it) }
@@ -103,11 +103,11 @@ class RequestExecutorTest {
         sketch.memoryCache.clear()
         runBlocking {
             sketch.execute(DisplayRequest(context, imageUri) {
-                bitmapResultDiskCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
             })
         }
         DisplayRequest(context, imageUri) {
-            bitmapResultDiskCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             depth(MEMORY)
         }.let {
             runBlocking { sketch.execute(it) }
@@ -117,7 +117,7 @@ class RequestExecutorTest {
 
         sketch.memoryCache.clear()
         DisplayRequest(context, imageUri) {
-            bitmapResultDiskCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             depth(MEMORY)
         }.let {
             runBlocking { sketch.execute(it) }
@@ -127,7 +127,7 @@ class RequestExecutorTest {
     }
 
     @Test
-    fun testDownloadDiskCachePolicy() {
+    fun testDownloadCachePolicy() {
         // todo Write test cases
     }
 
@@ -157,8 +157,8 @@ class RequestExecutorTest {
 
         // default
         DisplayRequest(context, imageUri) {
-            bitmapResultDiskCachePolicy(DISABLED)
-            bitmapMemoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
         }
             .let { runBlocking { sketch.execute(it) } }
             .asOrNull<DisplayResult.Success>()!!.apply {
@@ -464,7 +464,7 @@ class RequestExecutorTest {
     }
 
     @Test
-    fun testBitmapResultDiskCachePolicy() {
+    fun testResultCachePolicy() {
         // todo Write test cases
     }
 
@@ -494,7 +494,7 @@ class RequestExecutorTest {
     }
 
     @Test
-    fun testBitmapMemoryCachePolicy() {
+    fun testMemoryCachePolicy() {
         // todo Write test cases
     }
 }

@@ -91,7 +91,7 @@ class DisplayRequestTest {
             Assert.assertEquals(NETWORK, this.depth)
             Assert.assertNull(this.parameters)
             Assert.assertNull(this.httpHeaders)
-            Assert.assertEquals(ENABLED, this.downloadDiskCachePolicy)
+            Assert.assertEquals(ENABLED, this.downloadCachePolicy)
             Assert.assertNull(this.bitmapConfig)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 Assert.assertNull(this.colorSpace)
@@ -108,13 +108,13 @@ class DisplayRequestTest {
             Assert.assertNull(this.transformations)
             Assert.assertFalse(this.disabledReuseBitmap)
             Assert.assertFalse(this.ignoreExifOrientation)
-            Assert.assertEquals(ENABLED, this.bitmapResultDiskCachePolicy)
+            Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholderImage)
             Assert.assertNull(this.errorImage)
             Assert.assertNull(this.transition)
             Assert.assertFalse(this.disabledAnimatedImage)
             Assert.assertFalse(this.resizeApplyToDrawable)
-            Assert.assertEquals(ENABLED, this.bitmapMemoryCachePolicy)
+            Assert.assertEquals(ENABLED, this.memoryCachePolicy)
         }
 
         val imageView1 = ImageView(context1)
@@ -129,7 +129,7 @@ class DisplayRequestTest {
             Assert.assertEquals(NETWORK, this.depth)
             Assert.assertNull(this.parameters)
             Assert.assertNull(this.httpHeaders)
-            Assert.assertEquals(ENABLED, this.downloadDiskCachePolicy)
+            Assert.assertEquals(ENABLED, this.downloadCachePolicy)
             Assert.assertNull(this.bitmapConfig)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 Assert.assertNull(this.colorSpace)
@@ -146,13 +146,13 @@ class DisplayRequestTest {
             Assert.assertNull(this.transformations)
             Assert.assertFalse(this.disabledReuseBitmap)
             Assert.assertFalse(this.ignoreExifOrientation)
-            Assert.assertEquals(ENABLED, this.bitmapResultDiskCachePolicy)
+            Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholderImage)
             Assert.assertNull(this.errorImage)
             Assert.assertNull(this.transition)
             Assert.assertFalse(this.disabledAnimatedImage)
             Assert.assertFalse(this.resizeApplyToDrawable)
-            Assert.assertEquals(ENABLED, this.bitmapMemoryCachePolicy)
+            Assert.assertEquals(ENABLED, this.memoryCachePolicy)
         }
     }
 
@@ -250,19 +250,19 @@ class DisplayRequestTest {
         }
 
         imageView.updateDisplayImageOptions {
-            bitmapMemoryCachePolicy(WRITE_ONLY)
+            memoryCachePolicy(WRITE_ONLY)
         }
 
         DisplayRequest(imageView, uriString1).apply {
             Assert.assertEquals(ImageViewTarget(imageView), target)
-            Assert.assertEquals(WRITE_ONLY, bitmapMemoryCachePolicy)
+            Assert.assertEquals(WRITE_ONLY, memoryCachePolicy)
         }
 
         DisplayRequest(imageView, uriString1) {
             target(null)
         }.apply {
             Assert.assertNull(target)
-            Assert.assertEquals(ENABLED, bitmapMemoryCachePolicy)
+            Assert.assertEquals(ENABLED, memoryCachePolicy)
         }
     }
 
@@ -312,7 +312,7 @@ class DisplayRequestTest {
         }
 
         DisplayRequest(context1, uriString1) {
-            bitmapMemoryCachePolicy(WRITE_ONLY)
+            memoryCachePolicy(WRITE_ONLY)
         }.apply {
             Assert.assertEquals(newKey(), key)
         }
@@ -396,23 +396,23 @@ class DisplayRequestTest {
 
             merge(ImageOptions {
                 resize(100, 50)
-                bitmapMemoryCachePolicy(DISABLED)
+                memoryCachePolicy(DISABLED)
                 addTransformations(CircleCropTransformation())
                 crossfade()
             })
             build().apply {
                 Assert.assertEquals(Resize(100, 50, EXACTLY, CENTER_CROP), resize)
-                Assert.assertEquals(DISABLED, bitmapMemoryCachePolicy)
+                Assert.assertEquals(DISABLED, memoryCachePolicy)
                 Assert.assertEquals(listOf(CircleCropTransformation()), transformations)
                 Assert.assertEquals(CrossfadeTransition.Factory(), transition)
             }
 
             merge(ImageOptions {
-                bitmapMemoryCachePolicy(READ_ONLY)
+                memoryCachePolicy(READ_ONLY)
             })
             build().apply {
                 Assert.assertEquals(Resize(100, 50, EXACTLY, CENTER_CROP), resize)
-                Assert.assertEquals(DISABLED, bitmapMemoryCachePolicy)
+                Assert.assertEquals(DISABLED, memoryCachePolicy)
                 Assert.assertEquals(listOf(CircleCropTransformation()), transformations)
                 Assert.assertEquals(CrossfadeTransition.Factory(), transition)
             }
@@ -594,27 +594,27 @@ class DisplayRequestTest {
     }
 
     @Test
-    fun testDownloadDiskCachePolicy() {
+    fun testDownloadCachePolicy() {
         val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertEquals(ENABLED, downloadDiskCachePolicy)
+                Assert.assertEquals(ENABLED, downloadCachePolicy)
             }
 
-            downloadDiskCachePolicy(READ_ONLY)
+            downloadCachePolicy(READ_ONLY)
             build().apply {
-                Assert.assertEquals(READ_ONLY, downloadDiskCachePolicy)
+                Assert.assertEquals(READ_ONLY, downloadCachePolicy)
             }
 
-            downloadDiskCachePolicy(DISABLED)
+            downloadCachePolicy(DISABLED)
             build().apply {
-                Assert.assertEquals(DISABLED, downloadDiskCachePolicy)
+                Assert.assertEquals(DISABLED, downloadCachePolicy)
             }
 
-            downloadDiskCachePolicy(null)
+            downloadCachePolicy(null)
             build().apply {
-                Assert.assertEquals(ENABLED, downloadDiskCachePolicy)
+                Assert.assertEquals(ENABLED, downloadCachePolicy)
             }
         }
     }
@@ -1207,27 +1207,27 @@ class DisplayRequestTest {
     }
 
     @Test
-    fun testBitmapResultDiskCachePolicy() {
+    fun testResultCachePolicy() {
         val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertEquals(ENABLED, bitmapResultDiskCachePolicy)
+                Assert.assertEquals(ENABLED, resultCachePolicy)
             }
 
-            bitmapResultDiskCachePolicy(READ_ONLY)
+            resultCachePolicy(READ_ONLY)
             build().apply {
-                Assert.assertEquals(READ_ONLY, bitmapResultDiskCachePolicy)
+                Assert.assertEquals(READ_ONLY, resultCachePolicy)
             }
 
-            bitmapResultDiskCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             build().apply {
-                Assert.assertEquals(DISABLED, bitmapResultDiskCachePolicy)
+                Assert.assertEquals(DISABLED, resultCachePolicy)
             }
 
-            bitmapResultDiskCachePolicy(null)
+            resultCachePolicy(null)
             build().apply {
-                Assert.assertEquals(ENABLED, bitmapResultDiskCachePolicy)
+                Assert.assertEquals(ENABLED, resultCachePolicy)
             }
         }
     }
@@ -1389,27 +1389,27 @@ class DisplayRequestTest {
     }
 
     @Test
-    fun testBitmapMemoryCachePolicy() {
+    fun testMemoryCachePolicy() {
         val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertEquals(ENABLED, bitmapMemoryCachePolicy)
+                Assert.assertEquals(ENABLED, memoryCachePolicy)
             }
 
-            bitmapMemoryCachePolicy(READ_ONLY)
+            memoryCachePolicy(READ_ONLY)
             build().apply {
-                Assert.assertEquals(READ_ONLY, bitmapMemoryCachePolicy)
+                Assert.assertEquals(READ_ONLY, memoryCachePolicy)
             }
 
-            bitmapMemoryCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
             build().apply {
-                Assert.assertEquals(DISABLED, bitmapMemoryCachePolicy)
+                Assert.assertEquals(DISABLED, memoryCachePolicy)
             }
 
-            bitmapMemoryCachePolicy(null)
+            memoryCachePolicy(null)
             build().apply {
-                Assert.assertEquals(ENABLED, bitmapMemoryCachePolicy)
+                Assert.assertEquals(ENABLED, memoryCachePolicy)
             }
         }
     }

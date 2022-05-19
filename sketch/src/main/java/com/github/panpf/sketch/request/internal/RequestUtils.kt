@@ -50,8 +50,8 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
     httpHeaders?.takeIf { !it.isEmpty() }?.let {
         appendQueryParameter("_httpHeaders", it.toString())
     }
-    downloadDiskCachePolicy.takeIf { it != ENABLED }?.let {
-        appendQueryParameter("_downloadDiskCachePolicy", it.toString())
+    downloadCachePolicy.takeIf { it != ENABLED }?.let {
+        appendQueryParameter("_downloadCachePolicy", it.toString())
     }
 
     if (this@newKey is LoadRequest || this@newKey is DisplayRequest) {
@@ -81,8 +81,8 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
         if (ignoreExifOrientation) {
             appendQueryParameter("_ignoreExifOrientation", true.toString())
         }
-        bitmapResultDiskCachePolicy.takeIf { it != ENABLED }?.let {
-            appendQueryParameter("_bitmapResultDiskCachePolicy", it.name)
+        resultCachePolicy.takeIf { it != ENABLED }?.let {
+            appendQueryParameter("_resultCachePolicy", it.name)
         }
     }
 
@@ -90,8 +90,8 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
         if (disabledAnimatedImage) {
             appendQueryParameter("_disabledAnimatedImage", true.toString())
         }
-        bitmapMemoryCachePolicy.takeIf { it != ENABLED }?.let {
-            appendQueryParameter("_bitmapMemoryCachePolicy", it.name)
+        memoryCachePolicy.takeIf { it != ENABLED }?.let {
+            appendQueryParameter("_memoryCachePolicy", it.name)
         }
     }
 }.build().toString()

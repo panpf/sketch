@@ -28,13 +28,13 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
         val newRequest = request.newDisplayRequest {
             val prefsService = request.context.prefsService
             if (prefsService.disabledBitmapMemoryCache.value) {
-                bitmapMemoryCachePolicy(DISABLED)
+                memoryCachePolicy(DISABLED)
             }
             if (prefsService.disabledDownloadDiskCache.value) {
-                downloadDiskCachePolicy(DISABLED)
+                downloadCachePolicy(DISABLED)
             }
             if (prefsService.disabledBitmapResultDiskCache.value) {
-                bitmapResultDiskCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
             }
             if (prefsService.disabledReuseBitmap.value) {
                 disabledReuseBitmap(true)

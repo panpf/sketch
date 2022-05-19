@@ -6,7 +6,7 @@
         <enum name="memory" value="3" />
     </attr>
 
-    <attr name="sketch_downloadDiskCachePolicy" format="enum">
+    <attr name="sketch_downloadCachePolicy" format="enum">
         <enum name="enabled" value="1" />
         <enum name="readOnly" value="2" />
         <enum name="writeOnly" value="3" />
@@ -61,14 +61,14 @@
         <enum name="endCrop" value="3" />
         <enum name="fill" value="4" />
     </attr>
-    <attr name="sketch_bitmapResultDiskCachePolicy" format="enum">
+    <attr name="sketch_resultCachePolicy" format="enum">
         <enum name="enabled" value="1" />
         <enum name="readOnly" value="2" />
         <enum name="writeOnly" value="3" />
         <enum name="disabled" value="4" />
     </attr>
 
-    <attr name="sketch_bitmapMemoryCachePolicy" format="enum">
+    <attr name="sketch_memoryCachePolicy" format="enum">
         <enum name="enabled" value="1" />
         <enum name="readOnly" value="2" />
         <enum name="writeOnly" value="3" />
@@ -84,7 +84,7 @@
 
     <declare-styleable name="SketchImageView">
         <attr name="sketch_depth" />
-        <attr name="sketch_downloadDiskCachePolicy" />
+        <attr name="sketch_downloadCachePolicy" />
         <attr name="sketch_preferQualityOverSpeed" />
         <attr name="sketch_bitmapConfig" />
         <attr name="sketch_disabledReuseBitmap" />
@@ -104,8 +104,8 @@
         <attr name="sketch_transformation_roundedCorners_radiusBottomLeft" />
         <attr name="sketch_transformation_roundedCorners_radiusBottomRight" />
         <attr name="sketch_transformation_circleCrop_scale" />
-        <attr name="sketch_bitmapResultDiskCachePolicy" />
-        <attr name="sketch_bitmapMemoryCachePolicy" />
+        <attr name="sketch_resultCachePolicy" />
+        <attr name="sketch_memoryCachePolicy" />
         <attr name="sketch_crossfade" />
         <attr name="sketch_crossfadeDurationMillis" />
         <attr name="sketch_crossfadePreferExactIntrinsicSize" />

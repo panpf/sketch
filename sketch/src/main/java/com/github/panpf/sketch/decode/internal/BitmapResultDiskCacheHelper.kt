@@ -44,7 +44,7 @@ fun newBitmapResultDiskCacheHelper(
     sketch: Sketch,
     request: ImageRequest
 ): BitmapResultDiskCacheHelper? {
-    val cachePolicy = request.bitmapResultDiskCachePolicy
+    val cachePolicy = request.resultCachePolicy
     if (!cachePolicy.isReadOrWrite) return null
     val bitmapDataDiskCacheKey = "${request.cacheKey}_result_data"
     val metaDataDiskCacheKey = "${request.cacheKey}_result_meta"

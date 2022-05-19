@@ -90,9 +90,9 @@ class ImageGridItemFactory(val disabledCache: Boolean = false) :
                 crossfade()
                 resizeApplyToDrawable()
                 if (disabledCache) {
-                    downloadDiskCachePolicy(DISABLED)
-                    bitmapResultDiskCachePolicy(DISABLED)
-                    bitmapMemoryCachePolicy(DISABLED)
+                    downloadCachePolicy(DISABLED)
+                    resultCachePolicy(DISABLED)
+                    memoryCachePolicy(DISABLED)
                 }
             }
         }

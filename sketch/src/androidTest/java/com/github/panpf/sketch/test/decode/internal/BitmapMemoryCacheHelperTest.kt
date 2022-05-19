@@ -34,22 +34,22 @@ class BitmapMemoryCacheHelperTest {
         )
         Assert.assertNotNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(ENABLED)
+                memoryCachePolicy(ENABLED)
             })
         )
         Assert.assertNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(DISABLED)
+                memoryCachePolicy(DISABLED)
             })
         )
         Assert.assertNotNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(READ_ONLY)
+                memoryCachePolicy(READ_ONLY)
             })
         )
         Assert.assertNotNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(WRITE_ONLY)
+                memoryCachePolicy(WRITE_ONLY)
             })
         )
     }
@@ -86,17 +86,17 @@ class BitmapMemoryCacheHelperTest {
 
         Assert.assertNotNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(ENABLED)
+                memoryCachePolicy(ENABLED)
             })!!.read()
         )
         Assert.assertNotNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(READ_ONLY)
+                memoryCachePolicy(READ_ONLY)
             })!!.read()
         )
         Assert.assertNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(WRITE_ONLY)
+                memoryCachePolicy(WRITE_ONLY)
             })!!.read()
         )
     }
@@ -126,17 +126,17 @@ class BitmapMemoryCacheHelperTest {
 
         Assert.assertNotNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(ENABLED)
+                memoryCachePolicy(ENABLED)
             })!!.write(bitmapDecodeResult)
         )
         Assert.assertNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(READ_ONLY)
+                memoryCachePolicy(READ_ONLY)
             })!!.write(bitmapDecodeResult)
         )
         Assert.assertNotNull(
             newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                bitmapMemoryCachePolicy(WRITE_ONLY)
+                memoryCachePolicy(WRITE_ONLY)
             })!!.write(bitmapDecodeResult)
         )
 

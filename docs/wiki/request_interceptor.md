@@ -10,7 +10,7 @@ class MyRequestInterceptor : RequestInterceptor {
     override suspend fun intercept(chain: Chain): ImageData {
         // 所有请求禁止使用内存缓存
         val newRequest = chain.request.newRequest {
-            bitmapMemoryCachePolicy(CachePolicy.DISABLED)
+            memoryCachePolicy(CachePolicy.DISABLED)
         }
         return chain.proceed(newRequest)
     }

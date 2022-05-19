@@ -296,7 +296,7 @@ class HttpUriFetcher(
 
         companion object {
             fun from(sketch: Sketch, request: ImageRequest): HttpDiskCacheHelper? {
-                val cachePolicy = request.downloadDiskCachePolicy
+                val cachePolicy = request.downloadCachePolicy
                 return if (cachePolicy.isReadOrWrite) {
                     val diskCache = sketch.diskCache
                     val dataDiskCacheKey = request.uriString

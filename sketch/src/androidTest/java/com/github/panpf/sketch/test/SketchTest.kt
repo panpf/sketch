@@ -311,8 +311,8 @@ class SketchTest {
             disposable3?.job?.cancel()
         }
         val request3 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-            bitmapMemoryCachePolicy(DISABLED)
-            bitmapResultDiskCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
         }
         runBlocking {
@@ -354,8 +354,8 @@ class SketchTest {
             deferred3?.cancel()
         }
         val request3 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-            bitmapMemoryCachePolicy(DISABLED)
-            bitmapResultDiskCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
         }
         runBlocking {
@@ -399,8 +399,8 @@ class SketchTest {
             disposable3?.job?.cancel()
         }
         val request3 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-            bitmapMemoryCachePolicy(DISABLED)
-            bitmapResultDiskCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
         }
         runBlocking {
@@ -442,8 +442,8 @@ class SketchTest {
             deferred3?.cancel()
         }
         val request3 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-            bitmapMemoryCachePolicy(DISABLED)
-            bitmapResultDiskCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
         }
         runBlocking {
@@ -495,8 +495,8 @@ class SketchTest {
             disposable3?.job?.cancel()
         }
         val request3 = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
-            bitmapMemoryCachePolicy(DISABLED)
-            bitmapResultDiskCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
         }
         runBlocking {
@@ -549,8 +549,8 @@ class SketchTest {
             deferred3?.cancel()
         }
         val request3 = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
-            bitmapMemoryCachePolicy(DISABLED)
-            bitmapResultDiskCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
         }
         runBlocking {

@@ -139,7 +139,7 @@ class HttpUriFetcherTest {
         // CachePolicy.ENABLED
         runBlocking {
             val request = DownloadRequest(context, testUri.uriString) {
-                downloadDiskCachePolicy(CachePolicy.ENABLED)
+                downloadCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher = HttpUriFetcher.Factory().create(sketch, request)!!
 
@@ -170,7 +170,7 @@ class HttpUriFetcherTest {
         // CachePolicy.DISABLED
         runBlocking {
             val request = DownloadRequest(context, testUri.uriString) {
-                downloadDiskCachePolicy(CachePolicy.DISABLED)
+                downloadCachePolicy(CachePolicy.DISABLED)
             }
             val httpUriFetcher = HttpUriFetcher.Factory().create(sketch, request)!!
 
@@ -201,7 +201,7 @@ class HttpUriFetcherTest {
         // CachePolicy.READ_ONLY
         runBlocking {
             val request = DownloadRequest(context, testUri.uriString) {
-                downloadDiskCachePolicy(CachePolicy.READ_ONLY)
+                downloadCachePolicy(CachePolicy.READ_ONLY)
             }
             val httpUriFetcher = HttpUriFetcher.Factory().create(sketch, request)!!
 
@@ -229,7 +229,7 @@ class HttpUriFetcherTest {
             Assert.assertNull(diskCache[diskCacheKey])
 
             val request2 = DownloadRequest(context, testUri.uriString) {
-                downloadDiskCachePolicy(CachePolicy.ENABLED)
+                downloadCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher2 = HttpUriFetcher.Factory().create(sketch, request2)!!
             httpUriFetcher2.fetch()
@@ -248,7 +248,7 @@ class HttpUriFetcherTest {
         // CachePolicy.WRITE_ONLY
         runBlocking {
             val request = DownloadRequest(context, testUri.uriString) {
-                downloadDiskCachePolicy(CachePolicy.WRITE_ONLY)
+                downloadCachePolicy(CachePolicy.WRITE_ONLY)
             }
             val httpUriFetcher = HttpUriFetcher.Factory().create(sketch, request)!!
 

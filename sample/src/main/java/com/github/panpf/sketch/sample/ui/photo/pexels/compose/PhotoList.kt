@@ -48,9 +48,9 @@ fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
         error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
         crossfade()
         if (disabledCache) {
-            downloadDiskCachePolicy(DISABLED)
-            bitmapResultDiskCachePolicy(DISABLED)
-            bitmapMemoryCachePolicy(DISABLED)
+            downloadCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
         }
     }
 }

@@ -80,7 +80,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.depth)
             Assert.assertNull(this.parameters)
             Assert.assertNull(this.httpHeaders)
-            Assert.assertNull(this.downloadDiskCachePolicy)
+            Assert.assertNull(this.downloadCachePolicy)
             Assert.assertNull(this.bitmapConfig)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 Assert.assertNull(this.colorSpace)
@@ -94,13 +94,13 @@ class ImageOptionsTest {
             Assert.assertNull(this.transformations)
             Assert.assertNull(this.disabledReuseBitmap)
             Assert.assertNull(this.ignoreExifOrientation)
-            Assert.assertNull(this.bitmapResultDiskCachePolicy)
+            Assert.assertNull(this.resultCachePolicy)
             Assert.assertNull(this.placeholderImage)
             Assert.assertNull(this.errorImage)
             Assert.assertNull(this.transition)
             Assert.assertNull(this.disabledAnimatedImage)
             Assert.assertNull(this.resizeApplyToDrawable)
-            Assert.assertNull(this.bitmapMemoryCachePolicy)
+            Assert.assertNull(this.memoryCachePolicy)
         }
 
         ImageOptions {
@@ -125,10 +125,10 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            downloadDiskCachePolicy(READ_ONLY)
+            downloadCachePolicy(READ_ONLY)
         }.apply {
             Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(this.downloadDiskCachePolicy)
+            Assert.assertNotNull(this.downloadCachePolicy)
         }
 
         ImageOptions {
@@ -206,10 +206,10 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            bitmapResultDiskCachePolicy(ENABLED)
+            resultCachePolicy(ENABLED)
         }.apply {
             Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(this.bitmapResultDiskCachePolicy)
+            Assert.assertNotNull(this.resultCachePolicy)
         }
 
         ImageOptions {
@@ -248,10 +248,10 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            bitmapMemoryCachePolicy(ENABLED)
+            memoryCachePolicy(ENABLED)
         }.apply {
             Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(this.bitmapMemoryCachePolicy)
+            Assert.assertNotNull(this.memoryCachePolicy)
         }
     }
 
@@ -274,10 +274,10 @@ class ImageOptionsTest {
         }
 
         ImageOptions().newBuilder {
-            downloadDiskCachePolicy(DISABLED)
+            downloadCachePolicy(DISABLED)
         }.build().apply {
             Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(downloadDiskCachePolicy)
+            Assert.assertNotNull(downloadCachePolicy)
         }
     }
 
@@ -299,16 +299,16 @@ class ImageOptionsTest {
         }
 
         ImageOptions().newOptions {
-            downloadDiskCachePolicy(DISABLED)
+            downloadCachePolicy(DISABLED)
         }.apply {
             Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(downloadDiskCachePolicy)
+            Assert.assertNotNull(downloadCachePolicy)
         }
 
         val options = ImageOptions()
         Assert.assertTrue(options == options.newOptions())
         Assert.assertFalse(options == options.newOptions {
-            downloadDiskCachePolicy(DISABLED)
+            downloadCachePolicy(DISABLED)
         })
         Assert.assertFalse(options === options.newOptions())
     }
@@ -365,15 +365,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.downloadDiskCachePolicy)
+            Assert.assertEquals(null, this.downloadCachePolicy)
         }.merged(ImageOptions {
-            downloadDiskCachePolicy(DISABLED)
+            downloadCachePolicy(DISABLED)
         }).apply {
-            Assert.assertEquals(DISABLED, this.downloadDiskCachePolicy)
+            Assert.assertEquals(DISABLED, this.downloadCachePolicy)
         }.merged(ImageOptions {
-            downloadDiskCachePolicy(READ_ONLY)
+            downloadCachePolicy(READ_ONLY)
         }).apply {
-            Assert.assertEquals(DISABLED, this.downloadDiskCachePolicy)
+            Assert.assertEquals(DISABLED, this.downloadCachePolicy)
         }
 
         ImageOptions().apply {
@@ -510,15 +510,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.bitmapResultDiskCachePolicy)
+            Assert.assertEquals(null, this.resultCachePolicy)
         }.merged(ImageOptions {
-            bitmapResultDiskCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
         }).apply {
-            Assert.assertEquals(DISABLED, this.bitmapResultDiskCachePolicy)
+            Assert.assertEquals(DISABLED, this.resultCachePolicy)
         }.merged(ImageOptions {
-            bitmapResultDiskCachePolicy(READ_ONLY)
+            resultCachePolicy(READ_ONLY)
         }).apply {
-            Assert.assertEquals(DISABLED, this.bitmapResultDiskCachePolicy)
+            Assert.assertEquals(DISABLED, this.resultCachePolicy)
         }
 
         ImageOptions().apply {
@@ -594,15 +594,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.bitmapMemoryCachePolicy)
+            Assert.assertEquals(null, this.memoryCachePolicy)
         }.merged(ImageOptions {
-            bitmapMemoryCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
         }).apply {
-            Assert.assertEquals(DISABLED, this.bitmapMemoryCachePolicy)
+            Assert.assertEquals(DISABLED, this.memoryCachePolicy)
         }.merged(ImageOptions {
-            bitmapMemoryCachePolicy(READ_ONLY)
+            memoryCachePolicy(READ_ONLY)
         }).apply {
-            Assert.assertEquals(DISABLED, this.bitmapMemoryCachePolicy)
+            Assert.assertEquals(DISABLED, this.memoryCachePolicy)
         }
     }
 
@@ -618,7 +618,7 @@ class ImageOptionsTest {
                 }.apply { add(this) }.newOptions {
                     setHttpHeader("key1", "value1")
                 }.apply { add(this) }.newOptions {
-                    downloadDiskCachePolicy(WRITE_ONLY)
+                    downloadCachePolicy(WRITE_ONLY)
                 }.apply { add(this) }.newOptions {
                     bitmapConfig(RGB_565)
                 }.apply { add(this) }.let { options ->
@@ -647,7 +647,7 @@ class ImageOptionsTest {
                 }.apply { add(this) }.newOptions {
                     ignoreExifOrientation(true)
                 }.apply { add(this) }.newOptions {
-                    bitmapResultDiskCachePolicy(READ_ONLY)
+                    resultCachePolicy(READ_ONLY)
                 }.apply { add(this) }.newOptions {
                     disabledAnimatedImage(true)
                 }.apply { add(this) }.newOptions {
@@ -659,7 +659,7 @@ class ImageOptionsTest {
                 }.apply { add(this) }.newOptions {
                     resizeApplyToDrawable(true)
                 }.apply { add(this) }.newOptions {
-                    bitmapMemoryCachePolicy(ENABLED)
+                    memoryCachePolicy(ENABLED)
                 }.apply { add(this) }
         }
 
@@ -844,25 +844,25 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testDownloadDiskCachePolicy() {
+    fun testDownloadCachePolicy() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(downloadDiskCachePolicy)
+                Assert.assertNull(downloadCachePolicy)
             }
 
-            downloadDiskCachePolicy(ENABLED)
+            downloadCachePolicy(ENABLED)
             build().apply {
-                Assert.assertEquals(ENABLED, downloadDiskCachePolicy)
+                Assert.assertEquals(ENABLED, downloadCachePolicy)
             }
 
-            downloadDiskCachePolicy(DISABLED)
+            downloadCachePolicy(DISABLED)
             build().apply {
-                Assert.assertEquals(DISABLED, downloadDiskCachePolicy)
+                Assert.assertEquals(DISABLED, downloadCachePolicy)
             }
 
-            downloadDiskCachePolicy(null)
+            downloadCachePolicy(null)
             build().apply {
-                Assert.assertNull(downloadDiskCachePolicy)
+                Assert.assertNull(downloadCachePolicy)
             }
         }
     }
@@ -1330,25 +1330,25 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testBitmapResultDiskCachePolicy() {
+    fun testResultCachePolicy() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(bitmapResultDiskCachePolicy)
+                Assert.assertNull(resultCachePolicy)
             }
 
-            bitmapResultDiskCachePolicy(ENABLED)
+            resultCachePolicy(ENABLED)
             build().apply {
-                Assert.assertEquals(ENABLED, bitmapResultDiskCachePolicy)
+                Assert.assertEquals(ENABLED, resultCachePolicy)
             }
 
-            bitmapResultDiskCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             build().apply {
-                Assert.assertEquals(DISABLED, bitmapResultDiskCachePolicy)
+                Assert.assertEquals(DISABLED, resultCachePolicy)
             }
 
-            bitmapResultDiskCachePolicy(null)
+            resultCachePolicy(null)
             build().apply {
-                Assert.assertNull(bitmapResultDiskCachePolicy)
+                Assert.assertNull(resultCachePolicy)
             }
         }
     }
@@ -1500,25 +1500,25 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testBitmapMemoryCachePolicy() {
+    fun testMemoryCachePolicy() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(bitmapMemoryCachePolicy)
+                Assert.assertNull(memoryCachePolicy)
             }
 
-            bitmapMemoryCachePolicy(ENABLED)
+            memoryCachePolicy(ENABLED)
             build().apply {
-                Assert.assertEquals(ENABLED, bitmapMemoryCachePolicy)
+                Assert.assertEquals(ENABLED, memoryCachePolicy)
             }
 
-            bitmapMemoryCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
             build().apply {
-                Assert.assertEquals(DISABLED, bitmapMemoryCachePolicy)
+                Assert.assertEquals(DISABLED, memoryCachePolicy)
             }
 
-            bitmapMemoryCachePolicy(null)
+            memoryCachePolicy(null)
             build().apply {
-                Assert.assertNull(bitmapMemoryCachePolicy)
+                Assert.assertNull(memoryCachePolicy)
             }
         }
     }

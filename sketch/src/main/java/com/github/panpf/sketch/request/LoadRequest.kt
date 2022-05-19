@@ -161,8 +161,8 @@ interface LoadRequest : ImageRequest {
             super.removeHttpHeader(name)
         }
 
-        override fun downloadDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            super.downloadDiskCachePolicy(cachePolicy)
+        override fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            super.downloadCachePolicy(cachePolicy)
         }
 
         override fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
@@ -291,8 +291,8 @@ interface LoadRequest : ImageRequest {
             super.ignoreExifOrientation(ignore)
         }
 
-        override fun bitmapResultDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            super.bitmapResultDiskCachePolicy(cachePolicy)
+        override fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            super.resultCachePolicy(cachePolicy)
         }
 
         override fun placeholder(stateImage: StateImage?): Builder = apply {
@@ -343,8 +343,8 @@ interface LoadRequest : ImageRequest {
             super.resizeApplyToDrawable(resizeApplyToDrawable)
         }
 
-        override fun bitmapMemoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            super.bitmapMemoryCachePolicy(cachePolicy)
+        override fun memoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            super.memoryCachePolicy(cachePolicy)
         }
 
 
@@ -369,7 +369,7 @@ interface LoadRequest : ImageRequest {
         override val depth: RequestDepth,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
-        override val downloadDiskCachePolicy: CachePolicy,
+        override val downloadCachePolicy: CachePolicy,
         override val bitmapConfig: BitmapConfig?,
         override val colorSpace: ColorSpace?,
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
@@ -382,13 +382,13 @@ interface LoadRequest : ImageRequest {
         override val transformations: List<Transformation>?,
         override val disabledReuseBitmap: Boolean,
         override val ignoreExifOrientation: Boolean,
-        override val bitmapResultDiskCachePolicy: CachePolicy,
+        override val resultCachePolicy: CachePolicy,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Factory?,
         override val disabledAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,
-        override val bitmapMemoryCachePolicy: CachePolicy,
+        override val memoryCachePolicy: CachePolicy,
     ) : BaseImageRequest(), LoadRequest {
 
         override fun toString(): String {

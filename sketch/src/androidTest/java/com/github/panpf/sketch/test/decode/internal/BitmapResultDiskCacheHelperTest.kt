@@ -36,22 +36,22 @@ class BitmapResultDiskCacheHelperTest {
         )
         Assert.assertNotNull(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(ENABLED)
+                resultCachePolicy(ENABLED)
             })
         )
         Assert.assertNull(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
             })
         )
         Assert.assertNotNull(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(READ_ONLY)
+                resultCachePolicy(READ_ONLY)
             })
         )
         Assert.assertNotNull(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(WRITE_ONLY)
+                resultCachePolicy(WRITE_ONLY)
             })
         )
     }
@@ -81,17 +81,17 @@ class BitmapResultDiskCacheHelperTest {
 
         Assert.assertNotNull(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(ENABLED)
+                resultCachePolicy(ENABLED)
             })!!.read()
         )
         Assert.assertNotNull(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(READ_ONLY)
+                resultCachePolicy(READ_ONLY)
             })!!.read()
         )
         Assert.assertNull(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(WRITE_ONLY)
+                resultCachePolicy(WRITE_ONLY)
             })!!.read()
         )
     }
@@ -132,17 +132,17 @@ class BitmapResultDiskCacheHelperTest {
 
         Assert.assertTrue(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(ENABLED)
+                resultCachePolicy(ENABLED)
             })!!.write(bitmapDecodeResult1)
         )
         Assert.assertFalse(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(READ_ONLY)
+                resultCachePolicy(READ_ONLY)
             })!!.write(bitmapDecodeResult1)
         )
         Assert.assertTrue(
             newBitmapResultDiskCacheHelper(sketch, request.newLoadRequest {
-                bitmapResultDiskCachePolicy(WRITE_ONLY)
+                resultCachePolicy(WRITE_ONLY)
             })!!.write(bitmapDecodeResult1)
         )
 

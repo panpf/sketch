@@ -49,7 +49,7 @@ interface ImageOptions {
 
     /* Download */
     val httpHeaders: HttpHeaders?
-    val downloadDiskCachePolicy: CachePolicy?
+    val downloadCachePolicy: CachePolicy?
 
     /* Load */
     val bitmapConfig: BitmapConfig?
@@ -65,7 +65,7 @@ interface ImageOptions {
     val transformations: List<Transformation>?
     val disabledReuseBitmap: Boolean?
     val ignoreExifOrientation: Boolean?
-    val bitmapResultDiskCachePolicy: CachePolicy?
+    val resultCachePolicy: CachePolicy?
 
     /* Display */
     val placeholderImage: StateImage?
@@ -73,7 +73,7 @@ interface ImageOptions {
     val transition: Transition.Factory?
     val disabledAnimatedImage: Boolean?
     val resizeApplyToDrawable: Boolean?
-    val bitmapMemoryCachePolicy: CachePolicy?
+    val memoryCachePolicy: CachePolicy?
 
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -97,7 +97,7 @@ interface ImageOptions {
     fun isEmpty(): Boolean = depth == null
             && parameters?.isEmpty() != false
             && httpHeaders?.isEmpty() != false
-            && downloadDiskCachePolicy == null
+            && downloadCachePolicy == null
             && bitmapConfig == null
             && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
             && preferQualityOverSpeed == null
@@ -107,13 +107,13 @@ interface ImageOptions {
             && transformations == null
             && disabledReuseBitmap == null
             && ignoreExifOrientation == null
-            && bitmapResultDiskCachePolicy == null
+            && resultCachePolicy == null
             && placeholderImage == null
             && errorImage == null
             && transition == null
             && disabledAnimatedImage == null
             && resizeApplyToDrawable == null
-            && bitmapMemoryCachePolicy == null
+            && memoryCachePolicy == null
 
     class Builder {
 
@@ -121,7 +121,7 @@ interface ImageOptions {
         private var parametersBuilder: Parameters.Builder? = null
 
         private var httpHeaders: HttpHeaders.Builder? = null
-        private var downloadDiskCachePolicy: CachePolicy? = null
+        private var downloadCachePolicy: CachePolicy? = null
 
         private var bitmapConfig: BitmapConfig? = null
         private var colorSpace: ColorSpace? = null
@@ -132,14 +132,14 @@ interface ImageOptions {
         private var transformations: MutableList<Transformation>? = null
         private var disabledReuseBitmap: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
-        private var bitmapResultDiskCachePolicy: CachePolicy? = null
+        private var resultCachePolicy: CachePolicy? = null
 
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
         private var disabledAnimatedImage: Boolean? = null
         private var resizeApplyToDrawable: Boolean? = null
-        private var bitmapMemoryCachePolicy: CachePolicy? = null
+        private var memoryCachePolicy: CachePolicy? = null
 
         constructor()
 
@@ -148,7 +148,7 @@ interface ImageOptions {
             this.parametersBuilder = request.parameters?.newBuilder()
 
             this.httpHeaders = request.httpHeaders?.newBuilder()
-            this.downloadDiskCachePolicy = request.downloadDiskCachePolicy
+            this.downloadCachePolicy = request.downloadCachePolicy
 
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -162,14 +162,14 @@ interface ImageOptions {
             this.transformations = request.transformations?.toMutableList()
             this.disabledReuseBitmap = request.disabledReuseBitmap
             this.ignoreExifOrientation = request.ignoreExifOrientation
-            this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
+            this.resultCachePolicy = request.resultCachePolicy
 
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
             this.disabledAnimatedImage = request.disabledAnimatedImage
             this.resizeApplyToDrawable = request.resizeApplyToDrawable
-            this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
+            this.memoryCachePolicy = request.memoryCachePolicy
         }
 
 
@@ -250,8 +250,8 @@ interface ImageOptions {
             this.httpHeaders?.removeAll(name)
         }
 
-        fun downloadDiskCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            this.downloadDiskCachePolicy = cachePolicy
+        fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            this.downloadCachePolicy = cachePolicy
         }
 
 
@@ -381,9 +381,9 @@ interface ImageOptions {
             this.ignoreExifOrientation = ignore
         }
 
-        fun bitmapResultDiskCachePolicy(cachePolicy: CachePolicy?): Builder =
+        fun resultCachePolicy(cachePolicy: CachePolicy?): Builder =
             apply {
-                this.bitmapResultDiskCachePolicy = cachePolicy
+                this.resultCachePolicy = cachePolicy
             }
 
 
@@ -435,8 +435,8 @@ interface ImageOptions {
             this.resizeApplyToDrawable = apply
         }
 
-        fun bitmapMemoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
-            this.bitmapMemoryCachePolicy = cachePolicy
+        fun memoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            this.memoryCachePolicy = cachePolicy
         }
 
 
@@ -461,8 +461,8 @@ interface ImageOptions {
                     }
                 }
             }
-            if (this.downloadDiskCachePolicy == null) {
-                this.downloadDiskCachePolicy = options.downloadDiskCachePolicy
+            if (this.downloadCachePolicy == null) {
+                this.downloadCachePolicy = options.downloadCachePolicy
             }
 
             if (this.bitmapConfig == null) {
@@ -493,8 +493,8 @@ interface ImageOptions {
             if (this.ignoreExifOrientation == null) {
                 this.ignoreExifOrientation = options.ignoreExifOrientation
             }
-            if (this.bitmapResultDiskCachePolicy == null) {
-                this.bitmapResultDiskCachePolicy = options.bitmapResultDiskCachePolicy
+            if (this.resultCachePolicy == null) {
+                this.resultCachePolicy = options.resultCachePolicy
             }
 
             if (this.placeholderImage == null) {
@@ -512,8 +512,8 @@ interface ImageOptions {
             if (this.resizeApplyToDrawable == null) {
                 this.resizeApplyToDrawable = options.resizeApplyToDrawable
             }
-            if (this.bitmapMemoryCachePolicy == null) {
-                this.bitmapMemoryCachePolicy = options.bitmapMemoryCachePolicy
+            if (this.memoryCachePolicy == null) {
+                this.memoryCachePolicy = options.memoryCachePolicy
             }
         }
 
@@ -523,8 +523,8 @@ interface ImageOptions {
             depth = depth,
             parameters = parametersBuilder?.build()?.takeIf { it.isNotEmpty() },
             httpHeaders = httpHeaders?.build()?.takeIf { it.isNotEmpty() },
-            downloadDiskCachePolicy = downloadDiskCachePolicy,
-            bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+            downloadCachePolicy = downloadCachePolicy,
+            resultCachePolicy = resultCachePolicy,
             bitmapConfig = bitmapConfig,
             colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
             preferQualityOverSpeed = preferQualityOverSpeed,
@@ -539,7 +539,7 @@ interface ImageOptions {
             transition = transition,
             disabledAnimatedImage = disabledAnimatedImage,
             resizeApplyToDrawable = resizeApplyToDrawable,
-            bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
+            memoryCachePolicy = memoryCachePolicy,
         )
     }
 
@@ -548,7 +548,7 @@ interface ImageOptions {
         override val parameters: Parameters?,
 
         override val httpHeaders: HttpHeaders?,
-        override val downloadDiskCachePolicy: CachePolicy?,
+        override val downloadCachePolicy: CachePolicy?,
 
         override val bitmapConfig: BitmapConfig?,
         @get:RequiresApi(VERSION_CODES.O)
@@ -561,13 +561,13 @@ interface ImageOptions {
         override val transformations: List<Transformation>?,
         override val disabledReuseBitmap: Boolean?,
         override val ignoreExifOrientation: Boolean?,
-        override val bitmapResultDiskCachePolicy: CachePolicy?,
+        override val resultCachePolicy: CachePolicy?,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Transition.Factory?,
         override val disabledAnimatedImage: Boolean?,
         override val resizeApplyToDrawable: Boolean?,
-        override val bitmapMemoryCachePolicy: CachePolicy?,
+        override val memoryCachePolicy: CachePolicy?,
     ) : ImageOptions {
 
         override fun equals(other: Any?): Boolean {
@@ -579,7 +579,7 @@ interface ImageOptions {
             if (depth != other.depth) return false
             if (parameters != other.parameters) return false
             if (httpHeaders != other.httpHeaders) return false
-            if (downloadDiskCachePolicy != other.downloadDiskCachePolicy) return false
+            if (downloadCachePolicy != other.downloadCachePolicy) return false
             if (bitmapConfig != other.bitmapConfig) return false
             if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != other.colorSpace) return false
             @Suppress("DEPRECATION") if (preferQualityOverSpeed != other.preferQualityOverSpeed) return false
@@ -589,13 +589,13 @@ interface ImageOptions {
             if (transformations != other.transformations) return false
             if (disabledReuseBitmap != other.disabledReuseBitmap) return false
             if (ignoreExifOrientation != other.ignoreExifOrientation) return false
-            if (bitmapResultDiskCachePolicy != other.bitmapResultDiskCachePolicy) return false
+            if (resultCachePolicy != other.resultCachePolicy) return false
             if (placeholderImage != other.placeholderImage) return false
             if (errorImage != other.errorImage) return false
             if (transition != other.transition) return false
             if (disabledAnimatedImage != other.disabledAnimatedImage) return false
             if (resizeApplyToDrawable != other.resizeApplyToDrawable) return false
-            if (bitmapMemoryCachePolicy != other.bitmapMemoryCachePolicy) return false
+            if (memoryCachePolicy != other.memoryCachePolicy) return false
 
             return true
         }
@@ -604,7 +604,7 @@ interface ImageOptions {
             var result = depth?.hashCode() ?: 0
             result = 31 * result + (parameters?.hashCode() ?: 0)
             result = 31 * result + (httpHeaders?.hashCode() ?: 0)
-            result = 31 * result + (downloadDiskCachePolicy?.hashCode() ?: 0)
+            result = 31 * result + (downloadCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (bitmapConfig?.hashCode() ?: 0)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 result = 31 * result + (colorSpace?.hashCode() ?: 0)
@@ -617,13 +617,13 @@ interface ImageOptions {
             result = 31 * result + (transformations?.hashCode() ?: 0)
             result = 31 * result + (disabledReuseBitmap?.hashCode() ?: 0)
             result = 31 * result + (ignoreExifOrientation?.hashCode() ?: 0)
-            result = 31 * result + (bitmapResultDiskCachePolicy?.hashCode() ?: 0)
+            result = 31 * result + (resultCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (placeholderImage?.hashCode() ?: 0)
             result = 31 * result + (errorImage?.hashCode() ?: 0)
             result = 31 * result + (transition?.hashCode() ?: 0)
             result = 31 * result + (disabledAnimatedImage?.hashCode() ?: 0)
             result = 31 * result + (resizeApplyToDrawable?.hashCode() ?: 0)
-            result = 31 * result + (bitmapMemoryCachePolicy?.hashCode() ?: 0)
+            result = 31 * result + (memoryCachePolicy?.hashCode() ?: 0)
             return result
         }
 
@@ -633,7 +633,7 @@ interface ImageOptions {
                 append("depth=$depth, ")
                 append("parameters=$parameters, ")
                 append("httpHeaders=$httpHeaders, ")
-                append("downloadDiskCachePolicy=$downloadDiskCachePolicy, ")
+                append("downloadCachePolicy=$downloadCachePolicy, ")
                 append("bitmapConfig=$bitmapConfig, ")
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     append("colorSpace=$colorSpace, ")
@@ -646,13 +646,13 @@ interface ImageOptions {
                 append("transformations=$transformations, ")
                 append("disabledReuseBitmap=$disabledReuseBitmap, ")
                 append("ignoreExifOrientation=$ignoreExifOrientation, ")
-                append("bitmapResultDiskCachePolicy=$bitmapResultDiskCachePolicy, ")
+                append("resultCachePolicy=$resultCachePolicy, ")
                 append("placeholderImage=$placeholderImage, ")
                 append("errorImage=$errorImage, ")
                 append("transition=$transition, ")
                 append("disabledAnimatedImage=$disabledAnimatedImage, ")
                 append("resizeApplyToDrawable=$resizeApplyToDrawable")
-                append("bitmapMemoryCachePolicy=$bitmapMemoryCachePolicy, ")
+                append("memoryCachePolicy=$memoryCachePolicy, ")
                 append(")")
             }
         }
