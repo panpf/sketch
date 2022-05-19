@@ -101,7 +101,7 @@ fun samplingSize(size: Int, sampleSize: Int): Int {
 
 fun samplingSizeForRegion(size: Int, sampleSize: Double): Int {
     val value = size / sampleSize
-    return if (VERSION.SDK_INT >= VERSION_CODES.O) ceil(value).toInt() else floor(value).toInt()
+    return if (VERSION.SDK_INT >= VERSION_CODES.N) ceil(value).toInt() else floor(value).toInt()
 }
 
 fun samplingSizeForRegion(size: Int, sampleSize: Int): Int {
