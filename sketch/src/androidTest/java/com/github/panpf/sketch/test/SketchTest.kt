@@ -10,7 +10,7 @@ import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
@@ -213,7 +213,7 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     listOf(
-                        BitmapResultDiskCacheDecodeInterceptor(),
+                        ResultCacheDecodeInterceptor(),
                         BitmapTransformationDecodeInterceptor(),
                         BitmapEngineDecodeInterceptor()
                     ),
@@ -225,7 +225,7 @@ class SketchTest {
                 Assert.assertEquals(
                     listOf(
                         TestBitmapDecodeInterceptor(),
-                        BitmapResultDiskCacheDecodeInterceptor(),
+                        ResultCacheDecodeInterceptor(),
                         BitmapTransformationDecodeInterceptor(),
                         BitmapEngineDecodeInterceptor()
                     ),
@@ -233,7 +233,7 @@ class SketchTest {
                 )
                 Assert.assertNotEquals(
                     listOf(
-                        BitmapResultDiskCacheDecodeInterceptor(),
+                        ResultCacheDecodeInterceptor(),
                         BitmapTransformationDecodeInterceptor(),
                         BitmapEngineDecodeInterceptor()
                     ),

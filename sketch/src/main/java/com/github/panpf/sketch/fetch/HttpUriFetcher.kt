@@ -42,7 +42,7 @@ class HttpUriFetcher(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun fetch(): FetchResult {
-        val diskCacheHelper = HttpDiskCacheHelper.from(sketch, request)
+        val diskCacheHelper = DownloadCacheHelper.from(sketch, request)
         diskCacheHelper?.lock?.lock()
         try {
             val result = diskCacheHelper?.read()
@@ -63,7 +63,7 @@ class HttpUriFetcher(
 
     @Throws(IOException::class)
     @Suppress("BlockingMethodInNonBlockingContext")
-    private suspend fun execute(diskCacheHelper: HttpDiskCacheHelper?): FetchResult =
+    private suspend fun execute(diskCacheHelper: DownloadCacheHelper?): FetchResult =
         withContext(sketch.networkTaskDispatcher) {
             val response = sketch.httpStack.getResponse(request, url)
             val responseCode = response.code
@@ -173,7 +173,7 @@ class HttpUriFetcher(
         }
     }
 
-    private class HttpDiskCacheHelper(
+    private class DownloadCacheHelper(
         val sketch: Sketch,
         val request: ImageRequest,
         val diskCache: DiskCache,
@@ -295,13 +295,13 @@ class HttpUriFetcher(
         }
 
         companion object {
-            fun from(sketch: Sketch, request: ImageRequest): HttpDiskCacheHelper? {
+            fun from(sketch: Sketch, request: ImageRequest): DownloadCacheHelper? {
                 val cachePolicy = request.downloadCachePolicy
                 return if (cachePolicy.isReadOrWrite) {
                     val diskCache = sketch.diskCache
                     val dataDiskCacheKey = request.uriString
                     val contentTypeDiskCacheKey = request.uriString + "_contentType"
-                    HttpDiskCacheHelper(
+                    DownloadCacheHelper(
                         sketch = sketch,
                         request = request,
                         diskCache = diskCache,

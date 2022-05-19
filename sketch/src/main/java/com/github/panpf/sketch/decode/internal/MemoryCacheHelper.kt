@@ -16,12 +16,12 @@ import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
 
-suspend fun <R> tryLockBitmapMemoryCache(
+suspend fun <R> tryLockMemoryCache(
     sketch: Sketch,
     request: ImageRequest,
-    block: suspend (helper: BitmapMemoryCacheHelper?) -> R
+    block: suspend (helper: MemoryCacheHelper?) -> R
 ): R {
-    val helper = newBitmapMemoryCacheHelper(sketch, request)
+    val helper = newMemoryCacheHelper(sketch, request)
     return if (helper != null) {
         val lockKey = request.cacheKey
         val lock: Mutex = sketch.diskCache.editLock(lockKey)
@@ -36,10 +36,10 @@ suspend fun <R> tryLockBitmapMemoryCache(
     }
 }
 
-fun newBitmapMemoryCacheHelper(sketch: Sketch, request: ImageRequest): BitmapMemoryCacheHelper? {
+fun newMemoryCacheHelper(sketch: Sketch, request: ImageRequest): MemoryCacheHelper? {
     val cachePolicy = request.memoryCachePolicy
     if (!cachePolicy.isReadOrWrite) return null
-    return BitmapMemoryCacheHelper(
+    return MemoryCacheHelper(
         sketch.memoryCache,
         request.memoryCachePolicy,
         request.cacheKey,
@@ -49,7 +49,7 @@ fun newBitmapMemoryCacheHelper(sketch: Sketch, request: ImageRequest): BitmapMem
     )
 }
 
-class BitmapMemoryCacheHelper internal constructor(
+class MemoryCacheHelper internal constructor(
     private val memoryCache: MemoryCache,
     private val cachePolicy: CachePolicy,
     private val cacheKey: String,

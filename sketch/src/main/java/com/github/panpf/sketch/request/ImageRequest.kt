@@ -122,7 +122,7 @@ interface ImageRequest {
     /** Ignore exif orientation */
     val ignoreExifOrientation: Boolean
 
-    /** @see com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheDecodeInterceptor */
+    /** @see com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor */
     val resultCachePolicy: CachePolicy
 
     val placeholderImage: StateImage?

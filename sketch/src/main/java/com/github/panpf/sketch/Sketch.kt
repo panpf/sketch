@@ -14,7 +14,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
@@ -293,7 +293,7 @@ class Sketch private constructor(
 
             val bitmapDecodeInterceptors: List<DecodeInterceptor<BitmapDecodeResult>> =
                 (bitmapDecodeInterceptors ?: listOf()) +
-                        BitmapResultDiskCacheDecodeInterceptor() +
+                        ResultCacheDecodeInterceptor() +
                         BitmapTransformationDecodeInterceptor() +
                         BitmapEngineDecodeInterceptor()
             val drawableDecodeInterceptors: List<DecodeInterceptor<DrawableDecodeResult>> =

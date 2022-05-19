@@ -11,7 +11,7 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.newBitmapMemoryCacheHelper
+import com.github.panpf.sketch.decode.internal.newMemoryCacheHelper
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestDepth
@@ -21,7 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class BitmapMemoryCacheHelperTest {
+class MemoryCacheHelperTest {
 
     @Test
     fun testNewBitmapMemoryCacheHelper() {
@@ -30,25 +30,25 @@ class BitmapMemoryCacheHelperTest {
         val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
 
         Assert.assertNotNull(
-            newBitmapMemoryCacheHelper(sketch, request)
+            newMemoryCacheHelper(sketch, request)
         )
         Assert.assertNotNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(ENABLED)
             })
         )
         Assert.assertNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(DISABLED)
             })
         )
         Assert.assertNotNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(READ_ONLY)
             })
         )
         Assert.assertNotNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(WRITE_ONLY)
             })
         )
@@ -63,11 +63,11 @@ class BitmapMemoryCacheHelperTest {
         sketch.memoryCache.clear()
 
         // Is there really no
-        val helper = newBitmapMemoryCacheHelper(sketch, request)!!
+        val helper = newMemoryCacheHelper(sketch, request)!!
         Assert.assertNull(helper.read())
 
         Assert.assertNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 depth(RequestDepth.LOCAL)
             })!!.read()
         )
@@ -85,17 +85,17 @@ class BitmapMemoryCacheHelperTest {
         Assert.assertNotNull(helper.read())
 
         Assert.assertNotNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(ENABLED)
             })!!.read()
         )
         Assert.assertNotNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(READ_ONLY)
             })!!.read()
         )
         Assert.assertNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(WRITE_ONLY)
             })!!.read()
         )
@@ -109,7 +109,7 @@ class BitmapMemoryCacheHelperTest {
 
         sketch.memoryCache.clear()
 
-        Assert.assertNull(newBitmapMemoryCacheHelper(sketch, request)!!.read())
+        Assert.assertNull(newMemoryCacheHelper(sketch, request)!!.read())
 
         val bitmapDecodeResult = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
@@ -119,27 +119,27 @@ class BitmapMemoryCacheHelperTest {
             null
         )
         Assert.assertNotNull(
-            newBitmapMemoryCacheHelper(sketch, request)!!.write(bitmapDecodeResult)
+            newMemoryCacheHelper(sketch, request)!!.write(bitmapDecodeResult)
         )
 
-        Assert.assertNotNull(newBitmapMemoryCacheHelper(sketch, request)!!.read())
+        Assert.assertNotNull(newMemoryCacheHelper(sketch, request)!!.read())
 
         Assert.assertNotNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(ENABLED)
             })!!.write(bitmapDecodeResult)
         )
         Assert.assertNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(READ_ONLY)
             })!!.write(bitmapDecodeResult)
         )
         Assert.assertNotNull(
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
+            newMemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(WRITE_ONLY)
             })!!.write(bitmapDecodeResult)
         )
 
-        Assert.assertNotNull(newBitmapMemoryCacheHelper(sketch, request)!!.read())
+        Assert.assertNotNull(newMemoryCacheHelper(sketch, request)!!.read())
     }
 }

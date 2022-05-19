@@ -6,7 +6,7 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.newBitmapMemoryCacheHelper
+import com.github.panpf.sketch.decode.internal.newMemoryCacheHelper
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.fetch.HttpUriFetcher
@@ -43,7 +43,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         requestExtras: RequestExtras,
     ): DisplayData {
         /* check memory cache */
-        val result = newBitmapMemoryCacheHelper(sketch, request)?.read()
+        val result = newMemoryCacheHelper(sketch, request)?.read()
         if (result != null) {
             val drawable = result.drawable
             if (drawable is SketchCountBitmapDrawable) {

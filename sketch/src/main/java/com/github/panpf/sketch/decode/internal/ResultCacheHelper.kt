@@ -20,12 +20,12 @@ import kotlinx.coroutines.sync.Mutex
 import org.json.JSONArray
 import org.json.JSONObject
 
-suspend fun <R> tryLockBitmapResultDiskCache(
+suspend fun <R> tryLockResultCache(
     sketch: Sketch,
     request: ImageRequest,
-    block: suspend (helper: BitmapResultDiskCacheHelper?) -> R
+    block: suspend (helper: ResultCacheHelper?) -> R
 ): R {
-    val helper = newBitmapResultDiskCacheHelper(sketch, request)
+    val helper = newResultCacheHelper(sketch, request)
     return if (helper != null) {
         val lockKey = "${request.cacheKey}_result"
         val lock: Mutex = sketch.diskCache.editLock(lockKey)
@@ -40,15 +40,15 @@ suspend fun <R> tryLockBitmapResultDiskCache(
     }
 }
 
-fun newBitmapResultDiskCacheHelper(
+fun newResultCacheHelper(
     sketch: Sketch,
     request: ImageRequest
-): BitmapResultDiskCacheHelper? {
+): ResultCacheHelper? {
     val cachePolicy = request.resultCachePolicy
     if (!cachePolicy.isReadOrWrite) return null
     val bitmapDataDiskCacheKey = "${request.cacheKey}_result_data"
     val metaDataDiskCacheKey = "${request.cacheKey}_result_meta"
-    return BitmapResultDiskCacheHelper(
+    return ResultCacheHelper(
         request,
         sketch.diskCache,
         cachePolicy,
@@ -57,7 +57,7 @@ fun newBitmapResultDiskCacheHelper(
     )
 }
 
-class BitmapResultDiskCacheHelper internal constructor(
+class ResultCacheHelper internal constructor(
     private val request: ImageRequest,
     private val diskCache: DiskCache,
     private val cachePolicy: CachePolicy,
