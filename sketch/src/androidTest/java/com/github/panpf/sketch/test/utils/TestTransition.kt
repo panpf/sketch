@@ -11,7 +11,8 @@ class TestTransition : Transition {
     }
 
     class Factory : Transition.Factory {
-        override fun create(target: TransitionTarget, result: DisplayResult): Transition? {
+
+        override fun create(target: TransitionTarget, result: DisplayResult, fitScale: Boolean): Transition {
             return TestTransition()
         }
 

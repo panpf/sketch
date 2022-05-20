@@ -23,6 +23,6 @@ fun interface Transition {
 
     fun interface Factory {
 
-        fun create(target: TransitionTarget, result: DisplayResult): Transition?
+        fun create(target: TransitionTarget, result: DisplayResult, fitScale: Boolean): Transition?
     }
 }

@@ -13,7 +13,7 @@ interface TransitionTarget : DisplayTarget {
     /**
      * The [View] used by this [Target].
      */
-    val view: View
+//    val view: View
 
     /**
      * The [view]'s current [Drawable].

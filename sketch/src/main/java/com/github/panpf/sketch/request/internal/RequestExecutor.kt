@@ -1,5 +1,8 @@
 package com.github.panpf.sketch.request.internal
 
+import android.view.View
+import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
@@ -18,6 +21,7 @@ import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.OtherException
 import com.github.panpf.sketch.util.SketchException
@@ -218,7 +222,8 @@ class RequestExecutor {
             return
         }
 
-        val transition = result.request.transition?.create(target, result)
+        val fitScale = target.asOrNull<ViewTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
+        val transition = result.request.transition?.create(target, result, fitScale)
         if (transition == null) {
             setDrawable()
             return
@@ -226,4 +231,10 @@ class RequestExecutor {
 
         transition.transition()
     }
+
+    private val ImageView.fitScale: Boolean
+        get() = when (scaleType) {
+            ScaleType.FIT_START, ScaleType.FIT_CENTER, ScaleType.FIT_END, ScaleType.CENTER_INSIDE -> true
+            else -> false
+        }
 }
