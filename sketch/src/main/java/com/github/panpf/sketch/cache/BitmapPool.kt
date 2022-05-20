@@ -37,7 +37,7 @@ interface BitmapPool {
     /**
      * Get a reusable [Bitmap]. Note that all colors are erased before returning
      */
-    operator fun get(width: Int, height: Int, config: Bitmap.Config): Bitmap?
+    fun get(width: Int, height: Int, config: Bitmap.Config): Bitmap?
 
     /**
      * Get a reusable [Bitmap]If none is available, create a new one. Note that all colors are erased before returning.
