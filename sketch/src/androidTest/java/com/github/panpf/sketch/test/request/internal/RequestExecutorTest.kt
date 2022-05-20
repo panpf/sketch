@@ -13,6 +13,7 @@ import android.graphics.ColorSpace
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -20,10 +21,11 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.internal.newMemoryCacheKey
 import com.github.panpf.sketch.decode.internal.newResultCacheDataKey
 import com.github.panpf.sketch.decode.internal.samplingByTarget
-import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.RequestDepth.LOCAL
@@ -33,10 +35,12 @@ import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.corners
@@ -46,6 +50,14 @@ import com.github.panpf.sketch.test.utils.getSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.transform.BlurTransformation
+import com.github.panpf.sketch.transform.CircleCropTransformation
+import com.github.panpf.sketch.transform.RotateTransformation
+import com.github.panpf.sketch.transform.RoundedCornersTransformation
+import com.github.panpf.sketch.transform.getBlurTransformed
+import com.github.panpf.sketch.transform.getCircleCropTransformed
+import com.github.panpf.sketch.transform.getRotateTransformed
+import com.github.panpf.sketch.transform.getRoundedCornersTransformed
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.runBlocking
@@ -800,17 +812,201 @@ class RequestExecutorTest {
 
     @Test
     fun testTransformations() {
-        // todo Write test cases
+        val context = getContext()
+        val sketch = getSketch()
+        val imageUri = TestAssets.SAMPLE_JPEG_URI
+        val request = DisplayRequest(context, imageUri) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+        }
+
+        request.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.apply {
+                Assert.assertTrue(this.asOrNull<SketchDrawable>()!!.transformedList?.all {
+                    it is ResizeTransformed || it is InSampledTransformed
+                } != false)
+            }
+
+        request.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.apply {
+                Assert.assertNotEquals(
+                    listOf(0, 0, 0, 0),
+                    this.asOrNull<BitmapDrawable>()!!.bitmap.corners()
+                )
+                Assert.assertNull(
+                    this.asOrNull<SketchDrawable>()!!.transformedList?.getRoundedCornersTransformed()
+                )
+            }
+        request.newDisplayRequest {
+            addTransformations(RoundedCornersTransformation(30f))
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.apply {
+                Assert.assertEquals(
+                    listOf(0, 0, 0, 0),
+                    this.asOrNull<BitmapDrawable>()!!.bitmap.corners()
+                )
+                Assert.assertNotNull(
+                    this.asOrNull<SketchDrawable>()!!.transformedList?.getRoundedCornersTransformed()
+                )
+            }
+
+        request.newDisplayRequest {
+            resize(500, 500, LESS_PIXELS)
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.apply {
+                Assert.assertEquals(Size(323, 484), intrinsicSize)
+                Assert.assertNull(
+                    this.asOrNull<SketchDrawable>()!!.transformedList?.getRotateTransformed()
+                )
+            }
+        request.newDisplayRequest {
+            resize(500, 500, LESS_PIXELS)
+            addTransformations(RotateTransformation(90))
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.apply {
+                Assert.assertEquals(Size(484, 323), intrinsicSize)
+                Assert.assertNotNull(
+                    this.asOrNull<SketchDrawable>()!!.transformedList?.getRotateTransformed()
+                )
+            }
+
+        request.newDisplayRequest {
+            resize(500, 500, LESS_PIXELS)
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.apply {
+                Assert.assertEquals(Size(323, 484), intrinsicSize)
+                Assert.assertNotEquals(
+                    listOf(0, 0, 0, 0),
+                    this.asOrNull<BitmapDrawable>()!!.bitmap.corners()
+                )
+                Assert.assertNull(
+                    this.asOrNull<SketchDrawable>()!!.transformedList?.getCircleCropTransformed()
+                )
+            }
+        request.newDisplayRequest {
+            resize(500, 500, LESS_PIXELS)
+            addTransformations(CircleCropTransformation())
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.apply {
+                Assert.assertEquals(Size(323, 323), intrinsicSize)
+                Assert.assertEquals(
+                    listOf(0, 0, 0, 0),
+                    this.asOrNull<BitmapDrawable>()!!.bitmap.corners()
+                )
+                Assert.assertNotNull(
+                    this.asOrNull<SketchDrawable>()!!.transformedList?.getCircleCropTransformed()
+                )
+            }
+
+        request.newDisplayRequest {
+            resize(500, 500, LESS_PIXELS)
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.apply {
+                Assert.assertEquals(Size(323, 484), intrinsicSize)
+                Assert.assertNull(
+                    this.asOrNull<SketchDrawable>()!!.transformedList?.getBlurTransformed()
+                )
+            }
+        request.newDisplayRequest {
+            resize(500, 500, LESS_PIXELS)
+            addTransformations(BlurTransformation())
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.apply {
+                Assert.assertEquals(Size(323, 484), intrinsicSize)
+                Assert.assertNotNull(
+                    this.asOrNull<SketchDrawable>()!!.transformedList?.getBlurTransformed()
+                )
+            }
     }
 
     @Test
     fun testDisabledReuseBitmap() {
-        // todo Write test cases
+        val context = getContext()
+        val sketch = getSketch {
+            httpStack(TestHttpStack(context))
+        }
+        val bitmapPool = sketch.bitmapPool
+        val imageUri = TestAssets.SAMPLE_JPEG_URI
+        val request = DisplayRequest(context, imageUri) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            resize(500, 500, LESS_PIXELS)
+        }
+
+        bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
+        Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
+        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+
+        bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
+        request.newDisplayRequest {
+            disabledReuseBitmap(true)
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
+        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+
+        bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
+        request.newDisplayRequest {
+            disabledReuseBitmap(false)
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+
+        bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
+        request.newDisplayRequest {
+            disabledReuseBitmap(null)
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
     }
 
     @Test
     fun testIgnoreExifOrientation() {
-        // todo Write test cases
+        val context = getContext()
+        val sketch = getSketch()
+        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
+            Assert.assertNotEquals(ExifInterface.ORIENTATION_UNDEFINED, it.exifOrientation)
+
+            DisplayRequest(context, it.file.path)
+                .let { runBlocking { sketch.execute(it) } }
+                .asOrNull<DisplayResult.Success>()!!
+                .drawable.asOrNull<SketchDrawable>()!!
+                .apply {
+                    Assert.assertEquals(it.exifOrientation, imageExifOrientation)
+                    Assert.assertEquals(Size(1500, 750), imageInfo.size)
+                }
+
+            DisplayRequest(context, it.file.path) {
+                ignoreExifOrientation(true)
+            }.let { runBlocking { sketch.execute(it) } }
+                .asOrNull<DisplayResult.Success>()!!
+                .drawable.asOrNull<SketchDrawable>()!!
+                .apply {
+                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+                    if (it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
+                        || it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
+                    ) {
+                        Assert.assertEquals(Size(750, 1500), imageInfo.size)
+                    } else {
+                        Assert.assertEquals(Size(1500, 750), imageInfo.size)
+                    }
+                }
+        }
+
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+            .let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!
+            .drawable.asOrNull<SketchDrawable>()!!
+            .apply {
+                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+                Assert.assertEquals(Size(1291, 1936), imageInfo.size)
+            }
     }
 
     @Test
@@ -820,7 +1016,7 @@ class RequestExecutorTest {
             httpStack(TestHttpStack(context))
         }
         val diskCache = sketch.diskCache
-        val imageUri = newAssetUri("sample.jpeg")
+        val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
             resize(500, 500)
@@ -955,16 +1151,16 @@ class RequestExecutorTest {
             httpStack(TestHttpStack(context))
         }
         val memoryCache = sketch.memoryCache
-        val imageUri = newAssetUri("sample.jpeg")
+        val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             resize(500, 500)
         }
-        val memoryCacheDataKey = request.newMemoryCacheKey()
+        val memoryCacheKey = request.newMemoryCacheKey()
 
         /* ENABLED */
         memoryCache.clear()
-        Assert.assertFalse(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(ENABLED)
         }.let {
@@ -973,7 +1169,7 @@ class RequestExecutorTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertTrue(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertTrue(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(ENABLED)
         }.let {
@@ -984,7 +1180,7 @@ class RequestExecutorTest {
 
         /* DISABLED */
         memoryCache.clear()
-        Assert.assertFalse(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(DISABLED)
         }.let {
@@ -993,7 +1189,7 @@ class RequestExecutorTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertFalse(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(DISABLED)
         }.let {
@@ -1004,7 +1200,7 @@ class RequestExecutorTest {
 
         /* READ_ONLY */
         memoryCache.clear()
-        Assert.assertFalse(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(READ_ONLY)
         }.let {
@@ -1013,7 +1209,7 @@ class RequestExecutorTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertFalse(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(READ_ONLY)
         }.let {
@@ -1022,13 +1218,13 @@ class RequestExecutorTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertFalse(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(ENABLED)
         }.let {
             runBlocking { sketch.execute(it) }
         }
-        Assert.assertTrue(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertTrue(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(READ_ONLY)
         }.let {
@@ -1039,7 +1235,7 @@ class RequestExecutorTest {
 
         /* WRITE_ONLY */
         memoryCache.clear()
-        Assert.assertFalse(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(WRITE_ONLY)
         }.let {
@@ -1048,7 +1244,7 @@ class RequestExecutorTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertTrue(memoryCache.exist(memoryCacheDataKey))
+        Assert.assertTrue(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
             memoryCachePolicy(WRITE_ONLY)
         }.let {
