@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test
 
+import android.graphics.Bitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
@@ -10,10 +11,10 @@ import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -28,6 +29,7 @@ import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
@@ -47,6 +49,8 @@ import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.test.utils.getContextAndSketch
 import com.github.panpf.sketch.test.utils.getSketch
+import com.github.panpf.sketch.transform.TransformResult
+import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.DefaultLongImageDecider
 import com.github.panpf.sketch.util.Logger
@@ -55,6 +59,7 @@ import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -311,6 +316,18 @@ class SketchTest {
             disposable3?.job?.cancel()
         }
         val request3 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            // Make the execution slower, cancellation can take effect
+            addTransformations(object : Transformation {
+                override val key: String
+                    get() = "TestTransformation"
+
+                override suspend fun transform(
+                    sketch: Sketch, request: ImageRequest, input: Bitmap
+                ): TransformResult? {
+                    delay(1000)
+                    return null
+                }
+            })
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)

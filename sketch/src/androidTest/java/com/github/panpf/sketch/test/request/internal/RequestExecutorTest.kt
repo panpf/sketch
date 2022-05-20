@@ -9,8 +9,11 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.Bitmap.Config.RGBA_F16
 import android.graphics.Bitmap.Config.RGB_565
+import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
@@ -21,11 +24,17 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.newMemoryCacheKey
 import com.github.panpf.sketch.decode.internal.newResultCacheDataKey
 import com.github.panpf.sketch.decode.internal.samplingByTarget
+import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
+import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.internal.ResizeDrawable
+import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.RequestDepth.LOCAL
@@ -40,6 +49,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestHttpStack
@@ -58,6 +68,8 @@ import com.github.panpf.sketch.transform.getBlurTransformed
 import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
+import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.runBlocking
@@ -931,9 +943,7 @@ class RequestExecutorTest {
     @Test
     fun testDisabledReuseBitmap() {
         val context = getContext()
-        val sketch = getSketch {
-            httpStack(TestHttpStack(context))
-        }
+        val sketch = getSketch()
         val bitmapPool = sketch.bitmapPool
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
@@ -991,10 +1001,20 @@ class RequestExecutorTest {
                     Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
                     if (it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
                         || it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
+                        || it.exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
+                        || it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE
                     ) {
-                        Assert.assertEquals(Size(750, 1500), imageInfo.size)
+                        Assert.assertEquals(
+                            exifOrientationName(it.exifOrientation),
+                            Size(750, 1500),
+                            imageInfo.size
+                        )
                     } else {
-                        Assert.assertEquals(Size(1500, 750), imageInfo.size)
+                        Assert.assertEquals(
+                            exifOrientationName(it.exifOrientation),
+                            Size(1500, 750),
+                            imageInfo.size
+                        )
                     }
                 }
         }
@@ -1004,7 +1024,7 @@ class RequestExecutorTest {
             .asOrNull<DisplayResult.Success>()!!
             .drawable.asOrNull<SketchDrawable>()!!
             .apply {
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, imageExifOrientation)
                 Assert.assertEquals(Size(1291, 1936), imageInfo.size)
             }
     }
@@ -1012,9 +1032,7 @@ class RequestExecutorTest {
     @Test
     fun testResultCachePolicy() {
         val context = getContext()
-        val sketch = getSketch {
-            httpStack(TestHttpStack(context))
-        }
+        val sketch = getSketch()
         val diskCache = sketch.diskCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
@@ -1121,35 +1139,208 @@ class RequestExecutorTest {
 
     @Test
     fun testPlaceholderImage() {
-        // todo Write test cases
+        val context = getContext()
+        val sketch = getSketch()
+        val imageUri = TestAssets.SAMPLE_JPEG_URI
+        var onStartDrawable: Drawable?
+        val request = DisplayRequest(context, imageUri) {
+            resize(500, 500)
+            target(
+                onStart = {
+                    onStartDrawable = it
+                }
+            )
+        }
+        val memoryCacheKey = request.newMemoryCacheKey()
+        val memoryCache = sketch.memoryCache
+        val colorDrawable = ColorDrawable(Color.BLUE)
+
+        memoryCache.clear()
+        onStartDrawable = null
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
+        request.newDisplayRequest()
+            .let { runBlocking { sketch.execute(it) } }
+        Assert.assertNull(onStartDrawable)
+
+        onStartDrawable = null
+        Assert.assertTrue(memoryCache.exist(memoryCacheKey))
+        request.newDisplayRequest {
+            placeholder(colorDrawable)
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertNull(onStartDrawable)
+
+        onStartDrawable = null
+        Assert.assertTrue(memoryCache.exist(memoryCacheKey))
+        request.newDisplayRequest {
+            memoryCachePolicy(DISABLED)
+            placeholder(colorDrawable)
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertNotNull(onStartDrawable)
+        Assert.assertNotNull(onStartDrawable === colorDrawable)
     }
 
     @Test
     fun testErrorImage() {
-        // todo Write test cases
+        val context = getContext()
+        val sketch = getSketch()
+        val imageUri = TestAssets.SAMPLE_JPEG_URI
+        var onErrorDrawable: Drawable?
+        val request = DisplayRequest(context, imageUri) {
+            resize(500, 500)
+            target(
+                onError = {
+                    onErrorDrawable = it
+                }
+            )
+        }
+        val errorRequest = DisplayRequest(context, newAssetUri("error.jpeg")) {
+            resize(500, 500)
+            target(
+                onError = {
+                    onErrorDrawable = it
+                }
+            )
+        }
+        val colorDrawable = ColorDrawable(Color.BLUE)
+
+        onErrorDrawable = null
+        request.newDisplayRequest()
+            .let { runBlocking { sketch.execute(it) } }
+        Assert.assertNull(onErrorDrawable)
+
+        onErrorDrawable = null
+        request.newDisplayRequest {
+            error(colorDrawable)
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertNull(onErrorDrawable)
+
+        onErrorDrawable = null
+        errorRequest.newDisplayRequest()
+            .let { runBlocking { sketch.execute(it) } }
+        Assert.assertNull(onErrorDrawable)
+
+        onErrorDrawable = null
+        errorRequest.newDisplayRequest {
+            error(colorDrawable)
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertNotNull(onErrorDrawable)
+        Assert.assertNotNull(onErrorDrawable === colorDrawable)
     }
 
     @Test
     fun testTransition() {
-        // todo Write test cases
+        val context = getContext()
+        val sketch = getSketch()
+        val imageUri = TestAssets.SAMPLE_JPEG_URI
+        val testTarget = TestTarget()
+        val request = DisplayRequest(context, imageUri) {
+            resize(500, 500)
+            target(testTarget)
+        }
+        val memoryCache = sketch.memoryCache
+        val memoryCacheKey = request.newMemoryCacheKey()
+
+        memoryCache.clear()
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
+        request.newDisplayRequest()
+            .let { runBlocking { sketch.enqueue(it).job.join() } }
+        Assert.assertFalse(testTarget.drawable!! is CrossfadeDrawable)
+
+        Assert.assertTrue(memoryCache.exist(memoryCacheKey))
+        request.newDisplayRequest {
+            transition(CrossfadeTransition.Factory())
+        }.let { runBlocking { sketch.enqueue(it).job.join() } }
+        Assert.assertFalse(testTarget.drawable!! is CrossfadeDrawable)
+
+        memoryCache.clear()
+        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
+        request.newDisplayRequest {
+            transition(CrossfadeTransition.Factory())
+        }.let { runBlocking { sketch.enqueue(it).job.join() } }
+        Assert.assertTrue(testTarget.drawable!! is CrossfadeDrawable)
     }
 
     @Test
     fun testDisabledAnimatedImage() {
-        // todo Write test cases
+        if (VERSION.SDK_INT < VERSION_CODES.P) return
+
+        val context = getContext()
+        val sketch = getSketch {
+            components {
+                addDrawableDecoder(GifAnimatedDrawableDecoder.Factory())
+            }
+            httpStack(TestHttpStack(context))
+        }
+        val imageUri = TestAssets.SAMPLE_ANIM_GIF_URI
+        val request = DisplayRequest(context, imageUri)
+
+        request.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!.apply {
+                Assert.assertTrue(drawable is SketchAnimatableDrawable)
+            }
+
+        request.newDisplayRequest {
+            disabledAnimatedImage(false)
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!.apply {
+                Assert.assertTrue(drawable is SketchAnimatableDrawable)
+            }
+
+        request.newDisplayRequest {
+            disabledAnimatedImage(null)
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!.apply {
+                Assert.assertTrue(drawable is SketchAnimatableDrawable)
+            }
+
+        request.newDisplayRequest {
+            disabledAnimatedImage(true)
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!.apply {
+                Assert.assertFalse(drawable is SketchAnimatableDrawable)
+            }
     }
 
     @Test
     fun testResizeApplyToDrawable() {
-        // todo Write test cases
+        val context = getContext()
+        val sketch = getSketch()
+        val imageUri = TestAssets.SAMPLE_JPEG_URI
+        val request = DisplayRequest(context, imageUri) {
+            resize(500, 500)
+        }
+
+        request.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!.apply {
+                Assert.assertFalse(drawable is ResizeDrawable)
+            }
+
+        request.newDisplayRequest {
+            resizeApplyToDrawable(false)
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!.apply {
+                Assert.assertFalse(drawable is ResizeDrawable)
+            }
+
+        request.newDisplayRequest {
+            resizeApplyToDrawable(null)
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!.apply {
+                Assert.assertFalse(drawable is ResizeDrawable)
+            }
+
+        request.newDisplayRequest {
+            resizeApplyToDrawable(true)
+        }.let { runBlocking { sketch.execute(it) } }
+            .asOrNull<DisplayResult.Success>()!!.apply {
+                Assert.assertTrue(drawable is ResizeDrawable)
+            }
     }
 
     @Test
     fun testMemoryCachePolicy() {
         val context = getContext()
-        val sketch = getSketch {
-            httpStack(TestHttpStack(context))
-        }
+        val sketch = getSketch()
         val memoryCache = sketch.memoryCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
@@ -1251,6 +1442,23 @@ class RequestExecutorTest {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Success>()!!.apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+        }
+    }
+
+    class TestTarget : DisplayTarget, TransitionTarget {
+
+        override var drawable: Drawable? = null
+
+        override fun onStart(placeholder: Drawable?) {
+            this.drawable = placeholder
+        }
+
+        override fun onSuccess(result: Drawable) {
+            this.drawable = result
+        }
+
+        override fun onError(error: Drawable?) {
+            this.drawable = error
         }
     }
 }
