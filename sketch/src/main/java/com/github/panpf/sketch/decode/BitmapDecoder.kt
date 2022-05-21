@@ -6,7 +6,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.request.internal.RequestContext
 
 /**
  * A [BitmapDecoder] converts a [DataSource] into a [Bitmap].
@@ -21,7 +21,7 @@ interface BitmapDecoder {
         fun create(
             sketch: Sketch,
             request: ImageRequest,
-            requestExtras: RequestExtras,
+            requestContext: RequestContext,
             fetchResult: FetchResult
         ): BitmapDecoder?
     }

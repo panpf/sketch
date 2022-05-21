@@ -53,7 +53,7 @@ class RequestExecutor {
         requestDelegate.assertActive()
 
         val target = request.target
-        val requestExtras = RequestExtras()
+        val requestContext = RequestContext()
         try {
             if (request.uriString.isEmpty() || request.uriString.isBlank()) {
                 throw UriInvalidException(request, "Request uri is empty or blank")
@@ -82,7 +82,7 @@ class RequestExecutor {
                 sketch = sketch,
                 initialRequest = request,
                 request = request,
-                requestExtras = requestExtras,
+                requestContext = requestContext,
                 interceptors = sketch.requestInterceptors,
                 index = 0,
             ).proceed(request)
@@ -132,9 +132,7 @@ class RequestExecutor {
                 return errorResult
             }
         } finally {
-            requestExtras.getCountDrawablePendingManagerKey()?.let {
-                sketch.countDrawablePendingManager.complete("RequestCompleted", it)
-            }
+            requestContext.completeCountDrawable("RequestCompleted")
             requestDelegate.finish()
         }
     }
@@ -222,7 +220,8 @@ class RequestExecutor {
             return
         }
 
-        val fitScale = target.asOrNull<ViewTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
+        val fitScale =
+            target.asOrNull<ViewTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
         val transition = result.request.transition?.create(target, result, fitScale)
         if (transition == null) {
             setDrawable()

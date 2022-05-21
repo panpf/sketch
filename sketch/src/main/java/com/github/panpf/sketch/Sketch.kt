@@ -3,7 +3,6 @@ package com.github.panpf.sketch
 import android.content.Context
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.cache.CountDrawablePendingManager
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
@@ -14,10 +13,10 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -80,7 +79,6 @@ class Sketch private constructor(
     private val isShutdown = AtomicBoolean(false)
 
     val systemCallbacks = SystemCallbacks(context, this)
-    val countDrawablePendingManager = CountDrawablePendingManager(logger)
     val components = ComponentService(this, componentRegistry)
 
     /* Limit the number of concurrent network tasks, too many network tasks will cause network congestion */

@@ -12,7 +12,7 @@ import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toBitmap
 
 class XmlDrawableBitmapDecoder(
@@ -48,7 +48,7 @@ class XmlDrawableBitmapDecoder(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            requestExtras: RequestExtras,
+            requestContext: RequestContext,
             fetchResult: FetchResult
         ): BitmapDecoder? {
             val dataSource = fetchResult.dataSource

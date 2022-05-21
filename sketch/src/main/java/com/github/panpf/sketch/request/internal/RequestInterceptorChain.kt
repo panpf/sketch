@@ -11,7 +11,7 @@ internal class RequestInterceptorChain(
     override val sketch: Sketch,
     override val initialRequest: ImageRequest,
     override val request: ImageRequest,
-    override val requestExtras: RequestExtras,
+    override val requestContext: RequestContext,
     private val interceptors: List<RequestInterceptor>,
     private val index: Int,
 ) : RequestInterceptor.Chain {
@@ -25,5 +25,5 @@ internal class RequestInterceptorChain(
     }
 
     private fun copy(index: Int, request: ImageRequest): RequestInterceptorChain =
-        RequestInterceptorChain(sketch, initialRequest, request, requestExtras, interceptors, index)
+        RequestInterceptorChain(sketch, initialRequest, request, requestContext, interceptors, index)
 }

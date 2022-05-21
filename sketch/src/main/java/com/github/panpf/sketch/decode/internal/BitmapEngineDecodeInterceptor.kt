@@ -15,7 +15,7 @@ class BitmapEngineDecodeInterceptor : DecodeInterceptor<BitmapDecodeResult> {
         val fetcher = components.newFetcher(request)
         val fetchResult = chain.fetchResult ?: fetcher.fetch()
         return components
-            .newBitmapDecoder(request, chain.requestExtras, fetchResult)
+            .newBitmapDecoder(request, chain.requestContext, fetchResult)
             .decode()
     }
 

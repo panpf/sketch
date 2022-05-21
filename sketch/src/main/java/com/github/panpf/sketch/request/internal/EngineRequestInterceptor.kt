@@ -31,25 +31,24 @@ class EngineRequestInterceptor : RequestInterceptor {
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): ImageData =
         when (val request = chain.request) {
-            is DisplayRequest -> display(chain.sketch, request, chain.requestExtras)
+            is DisplayRequest -> display(chain.sketch, request, chain.requestContext)
             is LoadRequest -> load(chain.sketch, request, chain)
             is DownloadRequest -> download(chain.sketch, request)
             else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${request::class.java}")
         }
 
+    @MainThread
     private suspend fun display(
         sketch: Sketch,
         request: DisplayRequest,
-        requestExtras: RequestExtras,
+        requestContext: RequestContext,
     ): DisplayData {
         /* check memory cache */
         val result = newMemoryCacheHelper(sketch, request)?.read()
         if (result != null) {
             val drawable = result.drawable
             if (drawable is SketchCountBitmapDrawable) {
-                requestExtras.putCountDrawablePendingManagerKey(request.key)
-                sketch.countDrawablePendingManager
-                    .mark("EngineRequestInterceptor", request.key, drawable)
+                requestContext.pendingCountDrawable(drawable, "displayBefore")
             }
             return result.toDisplayData()
         }
@@ -72,7 +71,7 @@ class EngineRequestInterceptor : RequestInterceptor {
             DrawableDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
-                requestExtras = requestExtras,
+                requestContext = requestContext,
                 fetchResult = null,
                 interceptors = sketch.drawableDecodeInterceptors,
                 index = 0,
@@ -80,6 +79,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         }
     }
 
+    @MainThread
     private suspend fun load(
         sketch: Sketch,
         request: LoadRequest,
@@ -96,7 +96,7 @@ class EngineRequestInterceptor : RequestInterceptor {
             BitmapDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
-                requestExtras = chain.requestExtras,
+                requestContext = chain.requestContext,
                 fetchResult = null,
                 interceptors = sketch.bitmapDecodeInterceptors,
                 index = 0,
@@ -104,6 +104,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         }
     }
 
+    @MainThread
     private suspend fun download(sketch: Sketch, request: DownloadRequest): DownloadData {
         /* callback target start */
         val target = request.target

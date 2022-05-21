@@ -24,7 +24,7 @@ import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
-import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 
 /**
@@ -114,7 +114,7 @@ class GifMovieDrawableDecoder constructor(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            requestExtras: RequestExtras,
+            requestContext: RequestContext,
             fetchResult: FetchResult
         ): GifMovieDrawableDecoder? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !request.disabledAnimatedImage) {

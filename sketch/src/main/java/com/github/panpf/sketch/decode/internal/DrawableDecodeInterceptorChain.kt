@@ -6,13 +6,13 @@ import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.requiredWorkThread
 
 internal class DrawableDecodeInterceptorChain constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    override val requestExtras: RequestExtras,
+    override val requestContext: RequestContext,
     override val fetchResult: FetchResult?,
     private val interceptors: List<DecodeInterceptor<DrawableDecodeResult>>,
     private val index: Int,
@@ -28,6 +28,6 @@ internal class DrawableDecodeInterceptorChain constructor(
 
     private fun copy(index: Int): DrawableDecodeInterceptorChain =
         DrawableDecodeInterceptorChain(
-            sketch, request, requestExtras, fetchResult, interceptors, index
+            sketch, request, requestContext, fetchResult, interceptors, index
         )
 }

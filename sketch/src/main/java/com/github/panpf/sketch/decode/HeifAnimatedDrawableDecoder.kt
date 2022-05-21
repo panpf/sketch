@@ -9,7 +9,7 @@ import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isAnimatedHeif
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.request.internal.RequestContext
 
 /**
  * Only the following attributes are supported:
@@ -39,7 +39,7 @@ class HeifAnimatedDrawableDecoder(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            requestExtras: RequestExtras,
+            requestContext: RequestContext,
             fetchResult: FetchResult
         ): HeifAnimatedDrawableDecoder? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !request.disabledAnimatedImage) {

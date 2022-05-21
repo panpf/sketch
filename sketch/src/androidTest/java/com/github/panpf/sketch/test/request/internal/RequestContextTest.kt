@@ -1,16 +1,16 @@
-package com.github.panpf.sketch.test.cache
+package com.github.panpf.sketch.test.request.internal
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.cache.CountDrawablePendingManager
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -20,11 +20,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class CountDrawablePendingManagerTest {
+class RequestContextTest {
 
     @Test
     fun test() {
-        val (context, _) = getContextAndSketch()
+        val context = getContext()
         val logger = Logger()
         val bitmapPool = LruBitmapPool(context.defaultMemoryCacheBytes())
         val countDrawable = SketchCountBitmapDrawable(
@@ -54,56 +54,31 @@ class CountDrawablePendingManagerTest {
             ), NETWORK
         )
 
-        CountDrawablePendingManager(logger).apply {
+        RequestContext().apply {
             assertThrow(IllegalStateException::class) {
-                mark("test", countDrawable.requestKey, countDrawable)
+                pendingCountDrawable(countDrawable, "test")
             }
             assertThrow(IllegalStateException::class) {
-                complete("test", countDrawable1.requestKey)
+                completeCountDrawable("test")
             }
 
             runBlocking(Dispatchers.Main) {
-                Assert.assertEquals(0, size)
                 Assert.assertEquals(0, countDrawable.getPendingCount())
                 Assert.assertEquals(0, countDrawable1.getPendingCount())
 
-                mark("test", countDrawable.requestKey, countDrawable)
-                Assert.assertEquals(1, size)
+                pendingCountDrawable(countDrawable, "test")
                 Assert.assertEquals(1, countDrawable.getPendingCount())
                 Assert.assertEquals(0, countDrawable1.getPendingCount())
 
-                mark("test", countDrawable1.requestKey, countDrawable1)
-                Assert.assertEquals(2, size)
-                Assert.assertEquals(1, countDrawable.getPendingCount())
-                Assert.assertEquals(1, countDrawable1.getPendingCount())
-
-                mark("test", countDrawable.requestKey, countDrawable)
-                Assert.assertEquals(2, size)
-                Assert.assertEquals(2, countDrawable.getPendingCount())
-                Assert.assertEquals(1, countDrawable1.getPendingCount())
-
-                mark("test", countDrawable1.requestKey, countDrawable1)
-                Assert.assertEquals(2, size)
-                Assert.assertEquals(2, countDrawable.getPendingCount())
-                Assert.assertEquals(2, countDrawable1.getPendingCount())
-
-                complete("test", countDrawable.requestKey)
-                Assert.assertEquals(2, size)
-                Assert.assertEquals(1, countDrawable.getPendingCount())
-                Assert.assertEquals(2, countDrawable1.getPendingCount())
-
-                complete("test", countDrawable1.requestKey)
-                Assert.assertEquals(2, size)
-                Assert.assertEquals(1, countDrawable.getPendingCount())
-                Assert.assertEquals(1, countDrawable1.getPendingCount())
-
-                complete("test", countDrawable.requestKey)
-                Assert.assertEquals(1, size)
+                pendingCountDrawable(countDrawable1, "test")
                 Assert.assertEquals(0, countDrawable.getPendingCount())
                 Assert.assertEquals(1, countDrawable1.getPendingCount())
 
-                complete("test", countDrawable1.requestKey)
-                Assert.assertEquals(0, size)
+                pendingCountDrawable(countDrawable, "test")
+                Assert.assertEquals(1, countDrawable.getPendingCount())
+                Assert.assertEquals(0, countDrawable1.getPendingCount())
+
+                completeCountDrawable("test")
                 Assert.assertEquals(0, countDrawable.getPendingCount())
                 Assert.assertEquals(0, countDrawable1.getPendingCount())
             }

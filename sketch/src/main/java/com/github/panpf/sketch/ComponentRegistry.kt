@@ -6,7 +6,7 @@ import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.requiredWorkThread
 
 class ComponentRegistry private constructor(
@@ -42,12 +42,12 @@ class ComponentRegistry private constructor(
     internal fun newBitmapDecoder(
         sketch: Sketch,
         request: ImageRequest,
-        requestExtras: RequestExtras,
+        requestContext: RequestContext,
         fetchResult: FetchResult,
     ): BitmapDecoder {
         requiredWorkThread()
         return bitmapDecoderFactoryList.firstNotNullOfOrNull {
-            it.create(sketch, request, requestExtras, fetchResult)
+            it.create(sketch, request, requestContext, fetchResult)
         } ?: throw IllegalArgumentException(
             "No BitmapDecoder can handle this uri '${request.uriString}', " +
                     "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
@@ -58,12 +58,12 @@ class ComponentRegistry private constructor(
     internal fun newDrawableDecoder(
         sketch: Sketch,
         request: ImageRequest,
-        requestExtras: RequestExtras,
+        requestContext: RequestContext,
         fetchResult: FetchResult,
     ): DrawableDecoder {
         requiredWorkThread()
         return drawableDecoderFactoryList.firstNotNullOfOrNull {
-            it.create(sketch, request, requestExtras, fetchResult)
+            it.create(sketch, request, requestContext, fetchResult)
         } ?: throw IllegalArgumentException(
             "No DrawableDecoder can handle this uri '${request.uriString}', " +
                     "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"
@@ -168,14 +168,14 @@ class ComponentService(private val sketch: Sketch, internal val registry: Compon
     @WorkerThread
     fun newBitmapDecoder(
         request: ImageRequest,
-        requestExtras: RequestExtras,
+        requestContext: RequestContext,
         fetchResult: FetchResult,
-    ): BitmapDecoder = registry.newBitmapDecoder(sketch, request, requestExtras, fetchResult)
+    ): BitmapDecoder = registry.newBitmapDecoder(sketch, request, requestContext, fetchResult)
 
     @WorkerThread
     fun newDrawableDecoder(
         request: ImageRequest,
-        requestExtras: RequestExtras,
+        requestContext: RequestContext,
         fetchResult: FetchResult,
-    ): DrawableDecoder = registry.newDrawableDecoder(sketch, request, requestExtras, fetchResult)
+    ): DrawableDecoder = registry.newDrawableDecoder(sketch, request, requestContext, fetchResult)
 }

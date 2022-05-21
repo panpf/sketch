@@ -5,7 +5,7 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.request.internal.RequestContext
 
 class TestDrawableDecoder : DrawableDecoder {
 
@@ -18,7 +18,7 @@ class TestDrawableDecoder : DrawableDecoder {
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            requestExtras: RequestExtras,
+            requestContext: RequestContext,
             fetchResult: FetchResult
         ): DrawableDecoder {
             return TestDrawableDecoder()

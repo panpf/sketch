@@ -7,7 +7,7 @@ import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.utils.getContextAndSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -22,9 +22,9 @@ class BitmapEngineDecodeInterceptorTest {
         val (context, sketch) = getContextAndSketch()
         val interceptors = listOf(BitmapEngineDecodeInterceptor())
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
-        val requestExtras = RequestExtras()
+        val requestContext = RequestContext()
         val chain =
-            BitmapDecodeInterceptorChain(sketch, loadRequest, requestExtras, null, interceptors, 0)
+            BitmapDecodeInterceptorChain(sketch, loadRequest, requestContext, null, interceptors, 0)
         val result = runBlocking {
             chain.proceed()
         }
