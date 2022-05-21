@@ -1,11 +1,11 @@
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.decode.DecodeInterceptor
+import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 
-class TestDrawableDecodeInterceptor : DecodeInterceptor<DrawableDecodeResult> {
+class TestDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
-    override suspend fun intercept(chain: DecodeInterceptor.Chain<DrawableDecodeResult>): DrawableDecodeResult {
+    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
         TODO("Not yet implemented")
     }
 

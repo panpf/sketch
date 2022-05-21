@@ -5,7 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -23,7 +23,7 @@ class ResultCacheDecodeInterceptorTest {
     fun testIntercept() {
         val (context, sketch) = getContextAndSketch()
         val interceptors =
-            listOf(ResultCacheDecodeInterceptor(), BitmapEngineDecodeInterceptor())
+            listOf(BitmapResultCacheDecodeInterceptor(), BitmapEngineDecodeInterceptor())
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg")) {
             resize(500, 500, LESS_PIXELS)
         }
@@ -69,8 +69,8 @@ class ResultCacheDecodeInterceptorTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "BitmapResultDiskCacheDecodeInterceptor",
-            ResultCacheDecodeInterceptor().toString()
+            "BitmapResultCacheDecodeInterceptor",
+            BitmapResultCacheDecodeInterceptor().toString()
         )
     }
 }

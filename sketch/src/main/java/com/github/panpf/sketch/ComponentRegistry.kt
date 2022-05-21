@@ -16,10 +16,9 @@
 package com.github.panpf.sketch
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.DecodeInterceptor
-import com.github.panpf.sketch.decode.DrawableDecodeResult
+import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
@@ -30,7 +29,7 @@ import com.github.panpf.sketch.util.requiredWorkThread
 
 /**
  * Register components that are required to perform [ImageRequest] and can be extended,
- * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [DecodeInterceptor]
+ * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [BitmapDecodeInterceptor], [DrawableDecodeInterceptor]
  */
 class ComponentRegistry private constructor(
     /**
@@ -50,13 +49,13 @@ class ComponentRegistry private constructor(
      */
     val requestInterceptorList: List<RequestInterceptor>,
     /**
-     * All Bitmap [DecodeInterceptor]
+     * All [BitmapDecodeInterceptor]
      */
-    val bitmapDecodeInterceptorList: List<DecodeInterceptor<BitmapDecodeResult>>,
+    val bitmapDecodeInterceptorList: List<BitmapDecodeInterceptor>,
     /**
-     * All Drawable [DecodeInterceptor]
+     * All [DrawableDecodeInterceptor]
      */
-    val drawableDecodeInterceptorList: List<DecodeInterceptor<DrawableDecodeResult>>,
+    val drawableDecodeInterceptorList: List<DrawableDecodeInterceptor>,
 ) {
 
     /**
@@ -194,8 +193,8 @@ class ComponentRegistry private constructor(
         private val bitmapDecoderFactoryList: MutableList<BitmapDecoder.Factory>
         private val drawableDecoderFactoryList: MutableList<DrawableDecoder.Factory>
         private val requestInterceptors: MutableList<RequestInterceptor>
-        private val bitmapDecodeInterceptors: MutableList<DecodeInterceptor<BitmapDecodeResult>>
-        private val drawableDecodeInterceptors: MutableList<DecodeInterceptor<DrawableDecodeResult>>
+        private val bitmapDecodeInterceptors: MutableList<BitmapDecodeInterceptor>
+        private val drawableDecodeInterceptors: MutableList<DrawableDecodeInterceptor>
 
         constructor() {
             this.fetcherFactoryList = mutableListOf()
@@ -249,17 +248,17 @@ class ComponentRegistry private constructor(
             }
 
         /**
-         * Append an Bitmap [DecodeInterceptor]
+         * Append an [BitmapDecodeInterceptor]
          */
-        fun addBitmapDecodeInterceptor(bitmapDecodeInterceptor: DecodeInterceptor<BitmapDecodeResult>): Builder =
+        fun addBitmapDecodeInterceptor(bitmapDecodeInterceptor: BitmapDecodeInterceptor): Builder =
             apply {
                 this.bitmapDecodeInterceptors.add(bitmapDecodeInterceptor)
             }
 
         /**
-         * Append an Drawable [DecodeInterceptor]
+         * Append an [DrawableDecodeInterceptor]
          */
-        fun addDrawableDecodeInterceptor(drawableDecodeInterceptor: DecodeInterceptor<DrawableDecodeResult>): Builder =
+        fun addDrawableDecodeInterceptor(drawableDecodeInterceptor: DrawableDecodeInterceptor): Builder =
             apply {
                 this.drawableDecodeInterceptors.add(drawableDecodeInterceptor)
             }
@@ -286,15 +285,15 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     val requestInterceptors: List<RequestInterceptor> = registry.requestInterceptorList
 
     /**
-     * All Bitmap [DecodeInterceptor]
+     * All [BitmapDecodeInterceptor]
      */
-    val bitmapDecodeInterceptors: List<DecodeInterceptor<BitmapDecodeResult>> =
+    val bitmapDecodeInterceptors: List<BitmapDecodeInterceptor> =
         registry.bitmapDecodeInterceptorList
 
     /**
-     * All Drawable [DecodeInterceptor]
+     * All [DrawableDecodeInterceptor]
      */
-    val drawableDecodeInterceptors: List<DecodeInterceptor<DrawableDecodeResult>> =
+    val drawableDecodeInterceptors: List<DrawableDecodeInterceptor> =
         registry.drawableDecodeInterceptorList
 
     /**

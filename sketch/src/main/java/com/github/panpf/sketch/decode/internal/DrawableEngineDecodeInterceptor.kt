@@ -1,14 +1,14 @@
 package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.decode.DecodeInterceptor
+import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 
-class DrawableEngineDecodeInterceptor : DecodeInterceptor<DrawableDecodeResult> {
+class DrawableEngineDecodeInterceptor : DrawableDecodeInterceptor {
 
     @WorkerThread
     override suspend fun intercept(
-        chain: DecodeInterceptor.Chain<DrawableDecodeResult>,
+        chain: DrawableDecodeInterceptor.Chain,
     ): DrawableDecodeResult {
         val request = chain.request
         val components = chain.sketch.components

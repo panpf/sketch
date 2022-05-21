@@ -2,8 +2,8 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -14,9 +14,9 @@ internal class BitmapDecodeInterceptorChain constructor(
     override val request: ImageRequest,
     override val requestContext: RequestContext,
     override val fetchResult: FetchResult?,
-    private val interceptors: List<DecodeInterceptor<BitmapDecodeResult>>,
+    private val interceptors: List<BitmapDecodeInterceptor>,
     private val index: Int,
-) : DecodeInterceptor.Chain<BitmapDecodeResult> {
+) : BitmapDecodeInterceptor.Chain {
 
     @WorkerThread
     override suspend fun proceed(): BitmapDecodeResult {

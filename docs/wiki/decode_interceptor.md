@@ -1,15 +1,16 @@
-# DecodeInterceptor
+# Decode Interceptor
 
-Sketch 通过 [DecodeInterceptor] 来拦截解码过程，你可以借此改变解码前后的输入和输出
+Sketch 的解码过程支持拦截器，你可以通过拦截器来拦截解码过程改变解码前后的输入和输出
 
-Sketch 将解码分为 Drawable 和 Bitmap 两种，因此拦截也同样分为两种，如下：
+Sketch 将解码分为 Drawable 和 Bitmap 两种，因此拦截也同样分为两种 [BitmapDecodeInterceptor]
+和 [DrawableDecodeInterceptor]，如下：
 
 ```kotlin
-class MyBitmapDecodeInterceptor : DecodeInterceptor<BitmapDecodeResult> {
+class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
     @WorkerThread
     override suspend fun intercept(
-        chain: DecodeInterceptor.Chain<BitmapDecodeResult>,
+        chain: BitmapDecodeInterceptor.Chain,
     ): BitmapDecodeResult {
         val newRequest = chain.request.newRequest {
             bitmapConfig(Bitmap.Config.ARGB_4444)
@@ -18,11 +19,11 @@ class MyBitmapDecodeInterceptor : DecodeInterceptor<BitmapDecodeResult> {
     }
 }
 
-class MyDrawableDecodeInterceptor : DecodeInterceptor<DrawableDecodeResult> {
+class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
     @WorkerThread
     override suspend fun intercept(
-        chain: DecodeInterceptor.Chain<DrawableDecodeResult>,
+        chain: DrawableDecodeInterceptor.Chain,
     ): DrawableDecodeResult {
         val newRequest = chain.request.newRequest {
             disabledAnimatedImage()
@@ -51,9 +52,9 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-[DecodeInterceptor]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/DecodeInterceptor.kt
+[BitmapDecodeInterceptor]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/BitmapDecodeInterceptor.kt
 
-[DecodeResult]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/DecodeResult.kt
+[DrawableDecodeInterceptor]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/DrawableDecodeInterceptor.kt
 
 [BitmapDecodeResult]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/BitmapDecodeResult.kt
 

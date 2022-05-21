@@ -2,16 +2,16 @@ package com.github.panpf.sketch.transform.internal
 
 import android.graphics.Bitmap
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.Transformed
 import java.util.LinkedList
 
-class BitmapTransformationDecodeInterceptor : DecodeInterceptor<BitmapDecodeResult> {
+class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
 
     @WorkerThread
     override suspend fun intercept(
-        chain: DecodeInterceptor.Chain<BitmapDecodeResult>,
+        chain: BitmapDecodeInterceptor.Chain,
     ): BitmapDecodeResult {
         val request = chain.request
         val result = chain.proceed()

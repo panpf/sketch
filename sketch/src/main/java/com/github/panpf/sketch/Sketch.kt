@@ -27,14 +27,15 @@ import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
+import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.DecodeInterceptor
+import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -149,7 +150,7 @@ class Sketch private constructor(
 
     /**
      * Register components that are required to perform [ImageRequest] and can be extended,
-     * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [DecodeInterceptor]
+     * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [BitmapDecodeInterceptor], [DrawableDecodeInterceptor]
      */
     val components: Components
 
@@ -190,7 +191,7 @@ class Sketch private constructor(
 
                 addRequestInterceptor(EngineRequestInterceptor())
 
-                addBitmapDecodeInterceptor(ResultCacheDecodeInterceptor())
+                addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
                 addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
                 addBitmapDecodeInterceptor(BitmapEngineDecodeInterceptor())
 

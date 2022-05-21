@@ -8,8 +8,8 @@ import com.github.panpf.sketch.datasource.DataFrom
  */
 data class DrawableDecodeResult constructor(
     val drawable: Drawable,
-    override val imageInfo: ImageInfo,
-    override val exifOrientation: Int,
-    override val dataFrom: DataFrom,
-    override val transformedList: List<Transformed>?
-): DecodeResult
+    val imageInfo: ImageInfo,
+    val exifOrientation: Int,
+    val dataFrom: DataFrom,
+    val transformedList: List<Transformed>?
+)

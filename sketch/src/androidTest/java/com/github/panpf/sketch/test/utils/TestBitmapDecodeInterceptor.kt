@@ -1,11 +1,11 @@
 package com.github.panpf.sketch.test.utils
 
+import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.decode.DecodeInterceptor
 
-class TestBitmapDecodeInterceptor : DecodeInterceptor<BitmapDecodeResult> {
+class TestBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
-    override suspend fun intercept(chain: DecodeInterceptor.Chain<BitmapDecodeResult>): BitmapDecodeResult {
+    override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
         TODO("Not yet implemented")
     }
 
