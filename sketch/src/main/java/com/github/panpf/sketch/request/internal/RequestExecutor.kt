@@ -83,7 +83,7 @@ class RequestExecutor {
                 initialRequest = request,
                 request = request,
                 requestContext = requestContext,
-                interceptors = sketch.requestInterceptors,
+                interceptors = sketch.components.requestInterceptors,
                 index = 0,
             ).proceed(request)
 

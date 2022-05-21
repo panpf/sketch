@@ -49,10 +49,11 @@ class MyApplication : MultiDexApplication(), SketchFactory {
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         logger(Logger(Logger.Level.valueOf(prefsService.logLevel.value)))
         httpStack(OkHttpStack.Builder().build())
-        addRequestInterceptor(SettingsDisplayRequestInterceptor())
-        addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
-        addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
         components {
+            addRequestInterceptor(SettingsDisplayRequestInterceptor())
+            addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+            addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
+
             addFetcher(AppIconUriFetcher.Factory())
 
             addBitmapDecoder(SvgBitmapDecoder.Factory())

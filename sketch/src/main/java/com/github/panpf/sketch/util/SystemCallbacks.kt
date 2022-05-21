@@ -3,12 +3,17 @@ package com.github.panpf.sketch.util
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.res.Configuration
+import android.net.ConnectivityManager.NetworkCallback
 import com.github.panpf.sketch.Sketch
+import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * Proxies [ComponentCallbacks2] and [NetworkCallback]. Clear memory cache when system memory is low, and monitor network connection status
+ */
 class SystemCallbacks(
-    val context: Context,
-    val sketch: Sketch,
+    private val context: Context,
+    private val sketch: WeakReference<Sketch>,
 ) {
 
     private val networkObserver by lazy { NetworkObserver(context) }
@@ -18,13 +23,13 @@ class SystemCallbacks(
         }
 
         override fun onLowMemory() {
-            sketch.memoryCache.clear()
-            sketch.bitmapPool.clear()
+            sketch.get()?.memoryCache?.clear()
+            sketch.get()?.bitmapPool?.clear()
         }
 
         override fun onTrimMemory(level: Int) {
-            sketch.memoryCache.trim(level)
-            sketch.bitmapPool.trim(level)
+            sketch.get()?.memoryCache?.trim(level)
+            sketch.get()?.bitmapPool?.trim(level)
         }
     }
 

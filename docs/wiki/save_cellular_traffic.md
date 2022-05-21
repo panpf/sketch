@@ -12,7 +12,9 @@
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+        components {
+            addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+        }
     }.build()
 }
 ```

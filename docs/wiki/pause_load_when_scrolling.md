@@ -23,7 +23,9 @@ listView.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
+        components {
+            addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
+        }
     }.build()
 }
 ```

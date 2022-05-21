@@ -43,8 +43,10 @@ class MyDrawableDecodeInterceptor : DecodeInterceptor<DrawableDecodeResult> {
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        addBitmapDecodeInterceptor(MyBitmapDecodeInterceptor())
-        addDrawableDecodeInterceptor(MyDrawableDecodeInterceptor())
+        components {
+            addBitmapDecodeInterceptor(MyBitmapDecodeInterceptor())
+            addDrawableDecodeInterceptor(MyDrawableDecodeInterceptor())
+        }
     }.build()
 }
 ```

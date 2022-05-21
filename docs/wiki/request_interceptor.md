@@ -27,7 +27,9 @@ class MyRequestInterceptor : RequestInterceptor {
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        addRequestInterceptor(MyRequestInterceptor())
+        components {
+            addRequestInterceptor(MyRequestInterceptor())
+        }
     }.build()
 }
 ```
