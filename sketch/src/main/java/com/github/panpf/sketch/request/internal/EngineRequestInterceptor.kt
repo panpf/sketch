@@ -121,10 +121,10 @@ class EngineRequestInterceptor : RequestInterceptor {
 
             val fetchResult = fetcher.fetch()
             when (val source = fetchResult.dataSource) {
-                is ByteArrayDataSource -> DownloadData.Bytes(source.data, fetchResult.from)
+                is ByteArrayDataSource -> DownloadData.Bytes(source.data, fetchResult.dataFrom)
                 is DiskCacheDataSource -> DownloadData.Cache(
                     source.diskCacheSnapshot,
-                    fetchResult.from
+                    fetchResult.dataFrom
                 )
                 else -> throw IllegalArgumentException("The unknown source: ${source::class.qualifiedName}")
             }

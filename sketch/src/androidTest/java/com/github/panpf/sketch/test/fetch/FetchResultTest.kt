@@ -24,14 +24,14 @@ class FetchResultTest {
             FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
             "image/jpeg"
         ).apply {
-            Assert.assertEquals(DataFrom.LOCAL, from)
+            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
         FetchResult(
             ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf()),
             "image/jpeg"
         ).apply {
-            Assert.assertEquals(DataFrom.NETWORK, from)
+            Assert.assertEquals(DataFrom.NETWORK, dataFrom)
         }
     }
 
