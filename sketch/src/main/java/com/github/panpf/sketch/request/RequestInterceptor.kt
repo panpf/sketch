@@ -4,7 +4,7 @@ import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
 
-interface RequestInterceptor {
+fun interface RequestInterceptor {
 
     @MainThread
     suspend fun intercept(chain: Chain): ImageData

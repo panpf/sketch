@@ -1,17 +1,33 @@
 package com.github.panpf.sketch.util
 
+/**
+ * Determine whether it is a long image given the image size and target size
+ */
 interface LongImageDecider {
 
+    /**
+     * Determine whether it is a long image given the image size and target size
+     */
     fun isLongImage(
         imageWidth: Int, imageHeight: Int, targetWidth: Int, targetHeight: Int
     ): Boolean
 }
 
+/**
+ * Default [LongImageDecider] implementation
+ */
 open class DefaultLongImageDecider(
     val smallRatioMultiple: Float = 2.5f,
     val bigRatioMultiple: Float = 5.0f,
 ) : LongImageDecider {
 
+    /**
+     * Determine whether it is a long image given the image size and target size
+     *
+     * If the directions of image and target are the same, then the aspect ratio of
+     * the two is considered as a long image when the aspect ratio reaches [smallRatioMultiple] times,
+     * otherwise it is considered as a long image when it reaches [bigRatioMultiple] times
+     */
     override fun isLongImage(
         imageWidth: Int, imageHeight: Int, targetWidth: Int, targetHeight: Int
     ): Boolean {

@@ -20,6 +20,9 @@ interface FetchResult {
     val from: DataFrom
         get() = dataSource.dataFrom
 
+    /**
+     * 1024 bytes of header
+     */
     val headerBytes: HeaderBytes
 }
 

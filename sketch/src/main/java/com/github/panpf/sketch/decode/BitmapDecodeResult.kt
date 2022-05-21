@@ -3,9 +3,13 @@ package com.github.panpf.sketch.decode
 import android.graphics.Bitmap
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.exifOrientationName
+import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.util.toInfoString
 import java.util.LinkedList
 
+/**
+ * The result of [BitmapDecoder.decode]
+ */
 data class BitmapDecodeResult constructor(
     val bitmap: Bitmap,
     override val imageInfo: ImageInfo,

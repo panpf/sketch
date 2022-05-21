@@ -143,7 +143,7 @@ class Sketch private constructor(
     val globalImageOptions: ImageOptions? = _globalImageOptions
 
     /**
-     * Determine if the image is a long image
+     * Determine whether it is a long image given the image size and target size
      */
     val longImageDecider: LongImageDecider = _longImageDecider ?: DefaultLongImageDecider()
 

@@ -2,7 +2,7 @@ package com.github.panpf.sketch.fetch.internal
 
 import kotlin.experimental.and
 
-class HeaderBytes(private val headerBytes: ByteArray) {
+class HeaderBytes constructor(private val headerBytes: ByteArray) {
 
     fun rangeEquals(offset: Int, bytes: ByteArray): Boolean {
         require(bytes.isNotEmpty()) { "bytes is empty" }
