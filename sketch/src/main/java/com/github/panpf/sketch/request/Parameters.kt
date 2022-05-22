@@ -98,9 +98,20 @@ class Parameters private constructor(
     /**
      * Create a new [Parameters.Builder] based on the current [Parameters].
      */
-    fun newBuilder() = Builder(this)
+    fun newBuilder(
+        configBlock: (Builder.() -> Unit)? = null
+    ): Builder = Builder(this).apply {
+        configBlock?.invoke(this)
+    }
 
-    // todo add newParameters
+    /**
+     * Create a new [Parameters] based on the current [Parameters].
+     */
+    fun newParameters(
+        configBlock: (Builder.() -> Unit)? = null
+    ): Parameters = Builder(this).apply {
+        configBlock?.invoke(this)
+    }.build()
 
     data class Entry(
         val value: Any?,
