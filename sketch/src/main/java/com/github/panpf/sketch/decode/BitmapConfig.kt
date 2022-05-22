@@ -1,13 +1,21 @@
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.decode.BitmapConfig.FixedBitmapConfig
 
+/**
+ * Build a [BitmapConfig] with the specified [config]
+ */
 fun BitmapConfig(config: Bitmap.Config): BitmapConfig = FixedBitmapConfig(config)
 
+/**
+ * Adapt the appropriate [Bitmap.Config] according to the mimeType and set it to the [BitmapFactory.Options.inPreferredConfig] parameter
+ */
 sealed interface BitmapConfig {
+
     val key: String
 
     fun getConfig(mimeType: String?): Bitmap.Config
@@ -70,6 +78,9 @@ sealed interface BitmapConfig {
         override fun toString(): String = LowQuality.key
     }
 
+    /**
+     * Fixed Bitmap Config, whatever mimeTye is will return the specified [Bitmap.Config]
+     */
     class FixedBitmapConfig(private val config: Bitmap.Config) : BitmapConfig {
 
         override val key: String by lazy {

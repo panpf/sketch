@@ -27,6 +27,9 @@ import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition.Factory
 import com.github.panpf.sketch.util.Size
 
+/**
+ * Build and set the [DisplayRequest]
+ */
 fun DisplayRequest(
     context: Context,
     uriString: String?,
@@ -35,6 +38,9 @@ fun DisplayRequest(
     configBlock?.invoke(this)
 }.build()
 
+/**
+ * Build and set the [DisplayRequest], target is an ImageView
+ */
 fun DisplayRequest(
     imageView: ImageView,
     uriString: String?,
@@ -44,6 +50,12 @@ fun DisplayRequest(
     configBlock?.invoke(this)
 }.build()
 
+
+/**
+ * Display the image request, and finally get a Drawable.
+ *
+ * [Target] can only be [DisplayTarget], [ImageResult] can only be [DisplayResult]
+ */
 interface DisplayRequest : ImageRequest {
 
     override fun newBuilder(
@@ -58,12 +70,22 @@ interface DisplayRequest : ImageRequest {
         configBlock?.invoke(this)
     }.build()
 
+    /**
+     * Create a new [DisplayRequest.Builder] based on the current [DisplayRequest].
+     *
+     * You can extend it with a trailing lambda function [configBlock]
+     */
     fun newDisplayBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
         configBlock?.invoke(this)
     }
 
+    /**
+     * Create a new [DisplayRequest] based on the current [DisplayRequest].
+     *
+     * You can extend it with a trailing lambda function [configBlock]
+     */
     fun newDisplayRequest(
         configBlock: (Builder.() -> Unit)? = null
     ): DisplayRequest = Builder(this).apply {
@@ -76,6 +98,9 @@ interface DisplayRequest : ImageRequest {
 
         constructor(request: DisplayRequest) : super(request)
 
+        /**
+         * Set the [Listener]
+         */
         fun listener(
             listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?
         ): Builder = apply {
@@ -104,6 +129,9 @@ interface DisplayRequest : ImageRequest {
             ) = onSuccess(request, result)
         })
 
+        /**
+         * Set the [ProgressListener]
+         */
         fun progressListener(
             progressListener: ProgressListener<DisplayRequest>?
         ): Builder = apply {
@@ -111,12 +139,11 @@ interface DisplayRequest : ImageRequest {
             super.progressListener(progressListener as ProgressListener<ImageRequest>?)
         }
 
+        /**
+         * Set the [Target]. Can only be an implementation of [DisplayTarget]
+         */
         fun target(target: DisplayTarget?): Builder = apply {
             super.target(target)
-        }
-
-        fun target(imageView: ImageView): Builder = apply {
-            super.target(ImageViewTarget(imageView))
         }
 
         /**
@@ -131,6 +158,13 @@ interface DisplayRequest : ImageRequest {
             override fun onError(error: Drawable?) = onError(error)
             override fun onSuccess(result: Drawable) = onSuccess(result)
         })
+
+        /**
+         * Set the target to the ImageView
+         */
+        fun target(imageView: ImageView): Builder = apply {
+            super.target(ImageViewTarget(imageView))
+        }
 
         override fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
             super.lifecycle(lifecycle)

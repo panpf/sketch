@@ -4,6 +4,9 @@ package com.github.panpf.sketch.http
 
 import java.util.LinkedList
 
+/**
+ * Set headers for http requests
+ */
 class HttpHeaders(
     val addList: List<Pair<String, String>>,
     val setList: List<Pair<String, String>>,
@@ -27,7 +30,33 @@ class HttpHeaders(
 
     fun isEmpty(): Boolean = addList.isEmpty() && setList.isEmpty()
 
+    /**
+     * Create a new [HttpHeaders.Builder] based on the current [HttpHeaders].
+     */
     fun newBuilder(): Builder = Builder(this)
+
+    // todo add newHttpHeaders
+//    /**
+//     * Create a new [HttpHeaders.Builder] based on the current [HttpHeaders].
+//     *
+//     * You can extend it with a trailing lambda function [configBlock]
+//     */
+//    fun newBuilder(
+//        configBlock: (Builder.() -> Unit)?
+//    ): Builder = Builder(this).apply {
+//        configBlock?.invoke(this)
+//    }
+//
+//    /**
+//     * Create a new [HttpHeaders] based on the current [HttpHeaders].
+//     *
+//     * You can extend it with a trailing lambda function [configBlock]
+//     */
+//    fun newHttpHeaders(
+//        configBlock: (Builder.() -> Unit)?
+//    ): HttpHeaders = Builder(this).apply {
+//        configBlock?.invoke(this)
+//    }.build()
 
     override fun toString(): String {
         val addListString =

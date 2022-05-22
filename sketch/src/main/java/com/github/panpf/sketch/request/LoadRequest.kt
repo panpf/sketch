@@ -26,6 +26,9 @@ import com.github.panpf.sketch.transition.Transition.Factory
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Build and set the [LoadRequest]
+ */
 fun LoadRequest(
     context: Context,
     uriString: String?,
@@ -34,6 +37,12 @@ fun LoadRequest(
     configBlock?.invoke(this)
 }.build()
 
+
+/**
+ * Display the image request, and finally get a Bitmap.
+ *
+ * [Target] can only be [LoadTarget], [ImageResult] can only be [LoadResult]
+ */
 interface LoadRequest : ImageRequest {
 
     override fun newBuilder(
@@ -48,12 +57,22 @@ interface LoadRequest : ImageRequest {
         configBlock?.invoke(this)
     }.build()
 
+    /**
+     * Create a new [LoadRequest.Builder] based on the current [LoadRequest].
+     *
+     * You can extend it with a trailing lambda function [configBlock]
+     */
     fun newLoadBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
         configBlock?.invoke(this)
     }
 
+    /**
+     * Create a new [LoadRequest] based on the current [LoadRequest].
+     *
+     * You can extend it with a trailing lambda function [configBlock]
+     */
     fun newLoadRequest(
         configBlock: (Builder.() -> Unit)? = null
     ): LoadRequest = Builder(this).apply {
@@ -66,6 +85,9 @@ interface LoadRequest : ImageRequest {
 
         constructor(request: LoadRequest) : super(request)
 
+        /**
+         * Set the [Listener]
+         */
         fun listener(listener: Listener<LoadRequest, LoadResult.Success, LoadResult.Error>?): Builder =
             apply {
                 @Suppress("UNCHECKED_CAST")
@@ -92,6 +114,9 @@ interface LoadRequest : ImageRequest {
                     onSuccess(request, result)
             })
 
+        /**
+         * Set the [ProgressListener]
+         */
         fun progressListener(
             progressListener: ProgressListener<LoadRequest>?
         ): Builder = apply {
@@ -99,6 +124,9 @@ interface LoadRequest : ImageRequest {
             super.progressListener(progressListener as ProgressListener<ImageRequest>?)
         }
 
+        /**
+         * Set the [Target]. Can only be an implementation of [LoadTarget]
+         */
         fun target(target: LoadTarget?): Builder = apply {
             super.target(target)
         }

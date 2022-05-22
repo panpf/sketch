@@ -25,6 +25,9 @@ import com.github.panpf.sketch.transition.Transition.Factory
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Build and set the [DownloadRequest]
+ */
 fun DownloadRequest(
     context: Context,
     uriString: String?,
@@ -33,6 +36,12 @@ fun DownloadRequest(
     configBlock?.invoke(this)
 }.build()
 
+
+/**
+ * Display the image request, and finally get a [DownloadData].
+ *
+ * [Target] can only be [DownloadTarget], [ImageResult] can only be [DownloadResult]
+ */
 interface DownloadRequest : ImageRequest {
 
     override fun newBuilder(
@@ -47,12 +56,22 @@ interface DownloadRequest : ImageRequest {
         configBlock?.invoke(this)
     }.build()
 
+    /**
+     * Create a new [DownloadRequest.Builder] based on the current [DownloadRequest].
+     *
+     * You can extend it with a trailing lambda function [configBlock]
+     */
     fun newDownloadBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
         configBlock?.invoke(this)
     }
 
+    /**
+     * Create a new [DownloadRequest] based on the current [DownloadRequest].
+     *
+     * You can extend it with a trailing lambda function [configBlock]
+     */
     fun newDownloadRequest(
         configBlock: (Builder.() -> Unit)? = null
     ): DownloadRequest = Builder(this).apply {
@@ -65,6 +84,9 @@ interface DownloadRequest : ImageRequest {
 
         constructor(request: DownloadRequest) : super(request)
 
+        /**
+         * Set the [Listener]
+         */
         fun listener(listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>?): Builder =
             apply {
                 @Suppress("UNCHECKED_CAST")
@@ -90,6 +112,9 @@ interface DownloadRequest : ImageRequest {
                 onSuccess(request, result)
         })
 
+        /**
+         * Set the [ProgressListener]
+         */
         fun progressListener(
             progressListener: ProgressListener<DownloadRequest>?
         ): Builder = apply {
@@ -97,6 +122,9 @@ interface DownloadRequest : ImageRequest {
             super.progressListener(progressListener as ProgressListener<ImageRequest>?)
         }
 
+        /**
+         * Set the [Target]. Can only be an implementation of [DownloadTarget]
+         */
         fun target(target: DownloadTarget?): Builder = apply {
             super.target(target)
         }

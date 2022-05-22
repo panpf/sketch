@@ -74,6 +74,7 @@ class ComponentRegistry private constructor(
      *
      * You can extend it with a trailing lambda function [configBlock]
      */
+    // todo rename
     fun new(
         configBlock: (Builder.() -> Unit)? = null
     ): ComponentRegistry = Builder(this).apply {
@@ -180,6 +181,7 @@ class ComponentRegistry private constructor(
     }
 
     companion object {
+        // todo remove
         fun new(
             configBlock: (Builder.() -> Unit)? = null
         ): ComponentRegistry = Builder().apply {

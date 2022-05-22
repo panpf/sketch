@@ -17,7 +17,14 @@ package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
 
+/**
+ * Download progress callback for [ImageRequest]
+ */
 fun interface ProgressListener<REQUEST : ImageRequest> {
+
+    /**
+     * Called when the request download progress changed.
+     */
     @MainThread
     fun onUpdateProgress(request: REQUEST, totalLength: Long, completedLength: Long)
 }
