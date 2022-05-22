@@ -74,8 +74,7 @@ class ComponentRegistry private constructor(
      *
      * You can extend it with a trailing lambda function [configBlock]
      */
-    // todo rename
-    fun new(
+    fun newRegistry(
         configBlock: (Builder.() -> Unit)? = null
     ): ComponentRegistry = Builder(this).apply {
         configBlock?.invoke(this)
