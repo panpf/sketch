@@ -10,10 +10,10 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Depth
-import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.request.DepthException
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
@@ -52,7 +52,7 @@ class HttpUriFetcher(
 
             val depth = request.depth
             if (depth >= Depth.LOCAL) {
-                throw DepthException(request, depth, request.depthFrom)
+                throw DepthException(request, depth)
             }
 
             return execute(diskCacheHelper)

@@ -22,14 +22,13 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.request.Depth.LOCAL
+import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Parameters
-import com.github.panpf.sketch.request.Depth.LOCAL
-import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
@@ -55,8 +54,8 @@ import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.target.DownloadTarget
-import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.test.utils.TestActivity
+import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -337,7 +336,6 @@ class DownloadRequestTest {
         DownloadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertEquals(NETWORK, depth)
-                Assert.assertNull(depthFrom)
                 Assert.assertNull(parameters)
             }
 
@@ -372,7 +370,6 @@ class DownloadRequestTest {
         val uriString1 = newAssetUri("sample.jpeg")
         DownloadRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
             Assert.assertNull(parameters)
         }
 
@@ -380,7 +377,6 @@ class DownloadRequestTest {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
-            Assert.assertNull(depthFrom)
             Assert.assertNull(parameters)
         }
 
@@ -388,29 +384,6 @@ class DownloadRequestTest {
             depth(null)
         }.apply {
             Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
-            Assert.assertNull(parameters)
-        }
-
-        DownloadRequest(context1, uriString1).apply {
-            Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
-            Assert.assertNull(parameters)
-        }
-
-        DownloadRequest(context1, uriString1) {
-            depthFrom("testDepthFrom")
-        }.apply {
-            Assert.assertEquals(NETWORK, depth)
-            Assert.assertEquals("testDepthFrom", depthFrom)
-            Assert.assertNotNull("testDepthFrom", parameters?.get(ImageRequest.REQUEST_DEPTH_FROM))
-        }
-
-        DownloadRequest(context1, uriString1) {
-            depthFrom(null)
-        }.apply {
-            Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
             Assert.assertNull(parameters)
         }
     }

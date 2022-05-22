@@ -67,4 +67,4 @@ val ImageOptions.isDepthFromPauseLoadWhenScrolling: Boolean
 val SketchException.isCausedByPauseLoadWhenScrolling: Boolean
     get() = this is DepthException
             && depth == Depth.MEMORY
-            && depthFrom == KEY
+            && thenRequest.depthFrom == KEY

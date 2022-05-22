@@ -55,7 +55,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         }
         val depth = request.depth
         if (depth >= MEMORY) {
-            throw DepthException(request, depth, request.depthFrom)
+            throw DepthException(request, depth)
         }
 
         /* callback target start */

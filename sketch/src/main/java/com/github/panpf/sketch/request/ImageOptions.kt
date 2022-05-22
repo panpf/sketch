@@ -50,8 +50,6 @@ interface ImageOptions {
     /* Base */
 
     val depth: Depth?
-    val depthFrom: String?
-        get() = parameters?.value(ImageRequest.REQUEST_DEPTH_FROM)
     val parameters: Parameters?
 
     /* Download */
@@ -185,17 +183,6 @@ interface ImageOptions {
          */
         fun depth(depth: Depth?): Builder = apply {
             this.depth = depth
-        }
-
-        /**
-         * Set the source of the request depth
-         */
-        fun depthFrom(from: String?): Builder = apply {
-            if (from != null) {
-                setParameter(ImageRequest.REQUEST_DEPTH_FROM, from, null)
-            } else {
-                removeParameter(ImageRequest.REQUEST_DEPTH_FROM)
-            }
         }
 
 

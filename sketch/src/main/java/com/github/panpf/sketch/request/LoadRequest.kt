@@ -129,10 +129,6 @@ interface LoadRequest : ImageRequest {
             super.depth(depth)
         }
 
-        override fun depthFrom(from: String?): Builder = apply {
-            super.depthFrom(from)
-        }
-
         override fun parameters(parameters: Parameters?): Builder = apply {
             super.parameters(parameters)
         }

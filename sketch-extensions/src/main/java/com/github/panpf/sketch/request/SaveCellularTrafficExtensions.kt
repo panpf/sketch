@@ -70,4 +70,4 @@ val ImageOptions.isDepthFromSaveCellularTraffic: Boolean
 val SketchException.isCausedBySaveCellularTraffic: Boolean
     get() = this is DepthException
             && depth == Depth.LOCAL
-            && depthFrom == KEY
+            && thenRequest.depthFrom == KEY

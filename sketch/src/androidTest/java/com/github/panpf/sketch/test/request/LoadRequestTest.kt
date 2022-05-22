@@ -24,7 +24,6 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.Parameters
@@ -337,7 +336,6 @@ class LoadRequestTest {
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertEquals(NETWORK, depth)
-                Assert.assertNull(depthFrom)
                 Assert.assertNull(parameters)
             }
 
@@ -372,7 +370,6 @@ class LoadRequestTest {
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
             Assert.assertNull(parameters)
         }
 
@@ -380,7 +377,6 @@ class LoadRequestTest {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
-            Assert.assertNull(depthFrom)
             Assert.assertNull(parameters)
         }
 
@@ -388,29 +384,6 @@ class LoadRequestTest {
             depth(null)
         }.apply {
             Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
-            Assert.assertNull(parameters)
-        }
-
-        LoadRequest(context1, uriString1).apply {
-            Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
-            Assert.assertNull(parameters)
-        }
-
-        LoadRequest(context1, uriString1) {
-            depthFrom("testDepthFrom")
-        }.apply {
-            Assert.assertEquals(NETWORK, depth)
-            Assert.assertEquals("testDepthFrom", depthFrom)
-            Assert.assertNotNull("testDepthFrom", parameters?.get(ImageRequest.REQUEST_DEPTH_FROM))
-        }
-
-        LoadRequest(context1, uriString1) {
-            depthFrom(null)
-        }.apply {
-            Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
             Assert.assertNull(parameters)
         }
     }

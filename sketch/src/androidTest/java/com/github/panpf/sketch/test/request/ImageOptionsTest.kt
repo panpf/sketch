@@ -17,12 +17,11 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
+import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
@@ -679,40 +678,18 @@ class ImageOptionsTest {
     fun testDepth() {
         ImageOptions().apply {
             Assert.assertNull(depth)
-            Assert.assertNull(depthFrom)
-            Assert.assertNull(parameters)
         }
 
         ImageOptions {
             depth(null)
         }.apply {
             Assert.assertNull(depth)
-            Assert.assertNull(depthFrom)
-            Assert.assertNull(parameters)
         }
 
         ImageOptions {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
-            Assert.assertNull(depthFrom)
-            Assert.assertNull(parameters)
-        }
-
-        ImageOptions {
-            depthFrom(null)
-        }.apply {
-            Assert.assertNull(depth)
-            Assert.assertNull(depthFrom)
-            Assert.assertNull(parameters)
-        }
-
-        ImageOptions {
-            depthFrom("testDepthFrom")
-        }.apply {
-            Assert.assertNull(depth)
-            Assert.assertEquals("testDepthFrom", depthFrom)
-            Assert.assertNotNull("testDepthFrom", parameters?.get(ImageRequest.REQUEST_DEPTH_FROM))
         }
     }
 

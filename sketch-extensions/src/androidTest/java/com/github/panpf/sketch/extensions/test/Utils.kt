@@ -8,3 +8,7 @@ fun getContextAndSketch(): Pair<Context, Sketch> {
     val context = InstrumentationRegistry.getInstrumentation().context
     return context to Sketch.Builder(context).build()
 }
+
+fun getContext(): Context {
+    return InstrumentationRegistry.getInstrumentation().context
+}

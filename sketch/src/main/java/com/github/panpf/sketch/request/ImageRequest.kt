@@ -54,10 +54,6 @@ import com.github.panpf.sketch.util.getLifecycle
 
 interface ImageRequest {
 
-    companion object {
-        const val REQUEST_DEPTH_FROM = "sketch#depthFrom"
-    }
-
     val context: Context
     val uriString: String
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
@@ -73,8 +69,6 @@ interface ImageRequest {
     val globalOptions: ImageOptions?
 
     val depth: Depth
-    val depthFrom: String?
-        get() = parameters?.value(REQUEST_DEPTH_FROM)
     val parameters: Parameters?
 
     val httpHeaders: HttpHeaders?
@@ -242,10 +236,6 @@ interface ImageRequest {
 
         open fun depth(depth: Depth?): Builder = apply {
             definedOptionsBuilder.depth(depth)
-        }
-
-        open fun depthFrom(from: String?): Builder = apply {
-            definedOptionsBuilder.depthFrom(from)
         }
 
         open fun parameters(parameters: Parameters?): Builder = apply {
