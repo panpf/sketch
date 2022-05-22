@@ -20,9 +20,9 @@ import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Parameters
-import com.github.panpf.sketch.request.RequestDepth.LOCAL
-import com.github.panpf.sketch.request.RequestDepth.MEMORY
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.Depth.LOCAL
+import com.github.panpf.sketch.request.Depth.MEMORY
+import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider

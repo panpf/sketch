@@ -17,7 +17,8 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.RequestDepth.MEMORY
+import com.github.panpf.sketch.request.Depth.MEMORY
+import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.toDisplayData
 import com.github.panpf.sketch.request.toLoadData
@@ -52,9 +53,9 @@ class EngineRequestInterceptor : RequestInterceptor {
             }
             return result.toDisplayData()
         }
-        val requestDepth = request.depth
-        if (requestDepth >= MEMORY) {
-            throw RequestDepthException(request, requestDepth, request.depthFrom)
+        val depth = request.depth
+        if (depth >= MEMORY) {
+            throw DepthException(request, depth, request.depthFrom)
         }
 
         /* callback target start */

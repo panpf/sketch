@@ -6,7 +6,7 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.Depth.NETWORK
 
 internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
     parameters?.key?.takeIf { it.isNotEmpty() }?.let {

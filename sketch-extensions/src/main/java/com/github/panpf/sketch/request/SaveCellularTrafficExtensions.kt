@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.SketchException
 
 private const val KEY = "sketch#SaveCellularTraffic"
@@ -69,6 +68,6 @@ val ImageOptions.isDepthFromSaveCellularTraffic: Boolean
 
 
 val SketchException.isCausedBySaveCellularTraffic: Boolean
-    get() = this is RequestDepthException
-            && depth == RequestDepth.LOCAL
+    get() = this is DepthException
+            && depth == Depth.LOCAL
             && depthFrom == KEY

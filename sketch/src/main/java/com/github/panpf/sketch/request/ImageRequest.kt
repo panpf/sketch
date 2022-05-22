@@ -20,7 +20,7 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.newCacheKey
@@ -55,7 +55,7 @@ import com.github.panpf.sketch.util.getLifecycle
 interface ImageRequest {
 
     companion object {
-        const val REQUEST_DEPTH_FROM = "sketch#requestDepthFrom"
+        const val REQUEST_DEPTH_FROM = "sketch#depthFrom"
     }
 
     val context: Context
@@ -72,7 +72,7 @@ interface ImageRequest {
     val definedOptions: ImageOptions
     val globalOptions: ImageOptions?
 
-    val depth: RequestDepth
+    val depth: Depth
     val depthFrom: String?
         get() = parameters?.value(REQUEST_DEPTH_FROM)
     val parameters: Parameters?
@@ -240,7 +240,7 @@ interface ImageRequest {
         }
 
 
-        open fun depth(depth: RequestDepth?): Builder = apply {
+        open fun depth(depth: Depth?): Builder = apply {
             definedOptionsBuilder.depth(depth)
         }
 

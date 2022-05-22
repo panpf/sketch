@@ -18,7 +18,7 @@ package com.github.panpf.sketch.request
 /**
  * The processing depth of the request.
  */
-enum class RequestDepth {
+enum class Depth {
     /**
      * Allows loading images from memory, local, and network. Works with [DisplayRequest], [LoadRequest], [DownloadRequest]
      */

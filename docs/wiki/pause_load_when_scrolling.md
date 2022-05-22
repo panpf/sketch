@@ -1,6 +1,6 @@
 # 列表滑动中暂停加载图片
 
-列表滑动中暂停加载功能可以在列表滑动中将 [ImageRequest] 的 depth 参数设置为 [RequestDepth]
+列表滑动中暂停加载功能可以在列表滑动中将 [ImageRequest] 的 depth 参数设置为 [Depth]
 .MEMORY，这样就只会从内存中去找图片，不会再加载新图片，这在性能较差的设备上能帮助提高列表滑动流畅度
 
 ### 配置
@@ -60,4 +60,4 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[RequestDepth]: ../../sketch/src/main/java/com/github/panpf/sketch/request/RequestDepth.kt
+[Depth]: ../../sketch/src/main/java/com/github/panpf/sketch/request/Depth.kt

@@ -18,16 +18,16 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
             return chain.proceed(request)
         }
 
-        val requestDepth = request.depth
+        val depth = request.depth
         val finalRequest = if (
             enabled
             && scrolling
             && request.isPauseLoadWhenScrolling
             && !request.isIgnoredPauseLoadWhenScrolling
-            && requestDepth < RequestDepth.MEMORY
+            && depth < Depth.MEMORY
         ) {
             request.newDisplayRequest {
-                depth(RequestDepth.MEMORY)
+                depth(Depth.MEMORY)
                 setDepthFromPauseLoadWhenScrolling()
             }
         } else {

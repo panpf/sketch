@@ -1,6 +1,6 @@
 # 节省蜂窝流量
 
-节省蜂窝流量功能可以在检测到当前是蜂窝流量时将 [ImageRequest] 的 depth 参数设置为 [RequestDepth].LOCAL，这样就不会再从网络下载图片
+节省蜂窝流量功能可以在检测到当前是蜂窝流量时将 [ImageRequest] 的 depth 参数设置为 [Depth].LOCAL，这样就不会再从网络下载图片
 
 ### 配置
 
@@ -59,4 +59,4 @@ sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
 
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[RequestDepth]: ../../sketch/src/main/java/com/github/panpf/sketch/request/RequestDepth.kt
+[Depth]: ../../sketch/src/main/java/com/github/panpf/sketch/request/Depth.kt

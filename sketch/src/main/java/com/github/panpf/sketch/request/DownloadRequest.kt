@@ -123,7 +123,7 @@ interface DownloadRequest : ImageRequest {
         }
 
 
-        override fun depth(depth: RequestDepth?): Builder = apply {
+        override fun depth(depth: Depth?): Builder = apply {
             super.depth(depth)
         }
 
@@ -352,7 +352,7 @@ interface DownloadRequest : ImageRequest {
         override val lifecycle: Lifecycle,
         override val definedOptions: ImageOptions,
         override val globalOptions: ImageOptions?,
-        override val depth: RequestDepth,
+        override val depth: Depth,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
         override val downloadCachePolicy: CachePolicy,

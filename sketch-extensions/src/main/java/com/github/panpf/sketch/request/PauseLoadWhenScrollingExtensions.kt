@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.SketchException
 
 private const val KEY = "sketch#PauseLoadWhenScrolling"
@@ -66,6 +65,6 @@ val ImageOptions.isDepthFromPauseLoadWhenScrolling: Boolean
 
 
 val SketchException.isCausedByPauseLoadWhenScrolling: Boolean
-    get() = this is RequestDepthException
-            && depth == RequestDepth.MEMORY
+    get() = this is DepthException
+            && depth == Depth.MEMORY
             && depthFrom == KEY

@@ -34,15 +34,22 @@ import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import java.util.LinkedList
 
+/**
+ * Build and set the [ImageOptions]
+ */
 fun ImageOptions(
     configBlock: (ImageOptions.Builder.() -> Unit)? = null
 ): ImageOptions = ImageOptions.Builder().apply {
     configBlock?.invoke(this)
 }.build()
 
+/**
+ * Stores parameters required to download, load, display images
+ */
 interface ImageOptions {
     /* Base */
-    val depth: RequestDepth?
+
+    val depth: Depth?
     val depthFrom: String?
         get() = parameters?.value(ImageRequest.REQUEST_DEPTH_FROM)
     val parameters: Parameters?
@@ -117,7 +124,7 @@ interface ImageOptions {
 
     class Builder {
 
-        private var depth: RequestDepth? = null
+        private var depth: Depth? = null
         private var parametersBuilder: Parameters.Builder? = null
 
         private var httpHeaders: HttpHeaders.Builder? = null
@@ -176,7 +183,7 @@ interface ImageOptions {
         /**
          * Set the requested depth
          */
-        fun depth(depth: RequestDepth?): Builder = apply {
+        fun depth(depth: Depth?): Builder = apply {
             this.depth = depth
         }
 
@@ -538,7 +545,7 @@ interface ImageOptions {
     }
 
     class ImageOptionsImpl(
-        override val depth: RequestDepth?,
+        override val depth: Depth?,
         override val parameters: Parameters?,
 
         override val httpHeaders: HttpHeaders?,

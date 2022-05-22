@@ -28,8 +28,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.Parameters
-import com.github.panpf.sketch.request.RequestDepth.LOCAL
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.Depth.LOCAL
+import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey

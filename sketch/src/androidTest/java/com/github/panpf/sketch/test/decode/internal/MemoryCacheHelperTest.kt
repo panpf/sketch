@@ -14,7 +14,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.newMemoryCacheHelper
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.RequestDepth
+import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.test.utils.getContextAndSketch
 import org.junit.Assert
 import org.junit.Test
@@ -68,7 +68,7 @@ class MemoryCacheHelperTest {
 
         Assert.assertNull(
             newMemoryCacheHelper(sketch, request.newDisplayRequest {
-                depth(RequestDepth.LOCAL)
+                depth(Depth.LOCAL)
             })!!.read()
         )
 

@@ -35,12 +35,12 @@ import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.request.Depth.LOCAL
+import com.github.panpf.sketch.request.Depth.MEMORY
+import com.github.panpf.sketch.request.Depth.NETWORK
+import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.RequestDepth.LOCAL
-import com.github.panpf.sketch.request.RequestDepth.MEMORY
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
-import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -138,7 +138,7 @@ class RequestExecutorTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Error>()!!.apply {
-            Assert.assertTrue(exception is RequestDepthException)
+            Assert.assertTrue(exception is DepthException)
         }
 
         // MEMORY
@@ -164,7 +164,7 @@ class RequestExecutorTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Error>()!!.apply {
-            Assert.assertTrue(exception is RequestDepthException)
+            Assert.assertTrue(exception is DepthException)
         }
     }
 

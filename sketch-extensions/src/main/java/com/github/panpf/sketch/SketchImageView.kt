@@ -14,7 +14,7 @@ import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
-import com.github.panpf.sketch.request.RequestDepth
+import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -152,11 +152,11 @@ open class SketchImageView @JvmOverloads constructor(
         }
     }
 
-    private fun parseDepthAttribute(value: Int): RequestDepth =
+    private fun parseDepthAttribute(value: Int): Depth =
         when (value) {
-            1 -> RequestDepth.NETWORK
-            2 -> RequestDepth.LOCAL
-            3 -> RequestDepth.MEMORY
+            1 -> Depth.NETWORK
+            2 -> Depth.LOCAL
+            3 -> Depth.MEMORY
             else -> throw IllegalArgumentException("Value not supported by the 'sketch_depth' attribute: $this")
         }
 
