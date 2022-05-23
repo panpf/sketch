@@ -25,7 +25,9 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
             val inputBitmap = transformedBitmap ?: oldBitmap
             val transformResult = it.transform(chain.sketch, request, inputBitmap)
             if (transformResult != null) {
-                chain.sketch.bitmapPool.free(inputBitmap)
+                if (transformResult.bitmap !== inputBitmap) {
+                    chain.sketch.bitmapPool.free(inputBitmap)
+                }
                 transformedBitmap = transformResult.bitmap
                 transformedList.add(transformResult.transformed)
             }
