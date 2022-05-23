@@ -3,8 +3,8 @@ package com.github.panpf.sketch.decode
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.decode.BitmapConfig.FixedBitmapConfig
+import com.github.panpf.sketch.decode.internal.ImageFormat
 
 /**
  * Build a [BitmapConfig] with the specified [config]

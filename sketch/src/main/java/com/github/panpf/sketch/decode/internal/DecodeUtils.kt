@@ -25,9 +25,8 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.ImageFormat
-import com.github.panpf.sketch.ImageFormat.HEIC
-import com.github.panpf.sketch.ImageFormat.HEIF
+import com.github.panpf.sketch.decode.internal.ImageFormat.HEIC
+import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataFrom

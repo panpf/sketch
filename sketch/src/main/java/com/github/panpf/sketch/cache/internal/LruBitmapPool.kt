@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
-import com.github.panpf.sketch.ImageFormat
+import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.samplingSize
