@@ -83,10 +83,10 @@ class LruBitmapPool constructor(
         }
 
         synchronized(this) {
+            trimToSize(maxSize - bitmapSize)
             strategy.put(bitmap)
             puts++
             this._size += bitmapSize
-            trimToSize(maxSize)
             logger?.d(MODULE) {
                 "put. Successful. ${size.formatFileSize()}. ${bitmap.logString}"
             }
