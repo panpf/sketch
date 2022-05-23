@@ -74,37 +74,37 @@ class CountBitmap constructor(
     }
 
     @MainThread
-    fun setIsDisplayed(callingStation: String, displayed: Boolean) {
+    fun setIsDisplayed(displayed: Boolean, caller: String? = null) {
         requiredMainThread()
         if (displayed) {
             displayedCount++
-            countChanged(callingStation)
+            countChanged("$caller:displayed:true")
         } else if (displayedCount > 0) {
             displayedCount--
-            countChanged(callingStation)
+            countChanged("$caller:displayed:false")
         }
     }
 
     @Synchronized
-    fun setIsCached(callingStation: String, cached: Boolean) {
+    fun setIsCached(cached: Boolean, caller: String? = null) {
         if (cached) {
             cachedCount++
-            countChanged(callingStation)
+            countChanged("$caller:cached:true")
         } else if (cachedCount > 0) {
             cachedCount--
-            countChanged(callingStation)
+            countChanged("$caller:cached:false")
         }
     }
 
     @MainThread
-    fun setIsPending(callingStation: String, waitingUse: Boolean) {
+    fun setIsPending(waitingUse: Boolean, caller: String? = null) {
         requiredMainThread()
         if (waitingUse) {
             pendingCount++
-            countChanged(callingStation)
+            countChanged("$caller:pending:true")
         } else if (pendingCount > 0) {
             pendingCount--
-            countChanged(callingStation)
+            countChanged("$caller:pending:false")
         }
     }
 
@@ -114,23 +114,22 @@ class CountBitmap constructor(
         return pendingCount
     }
 
-    private fun countChanged(callingStation: String) {
+    private fun countChanged(caller: String? = null) {
         val bitmapHolder = this.bitmapHolder
         if (bitmapHolder == null) {
-            logger.e(MODULE, "Recycled. $callingStation. $requestKey")
+            logger.w(
+                MODULE,
+                "Known Recycled. $caller. $cachedCount/$displayedCount/$pendingCount. $requestKey"
+            )
         } else if (isRecycled) {
-            logger.e(MODULE, "Recycled. $callingStation. ${bitmapHolder.logString}. $requestKey")
+            throw IllegalStateException("Unexpected Recycled. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmapHolder.logString}. $requestKey")
         } else if (cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
-            bitmapPool.free(bitmapHolder)
+            bitmapPool.free(bitmapHolder, caller)
             this.bitmapHolder = null
-            logger.d(MODULE) {
-                "Free. $callingStation. ${bitmapHolder.logString}. $requestKey"
-            }
+            logger.w(MODULE, "Free. $caller. ${bitmapHolder.logString}. $requestKey")
         } else {
             logger.d(MODULE) {
-                "Keep. $callingStation. " +
-                        "$cachedCount/$displayedCount/$pendingCount. " +
-                        "${bitmapHolder.logString}. $requestKey"
+                "Keep. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmapHolder.logString}. $requestKey"
             }
         }
     }

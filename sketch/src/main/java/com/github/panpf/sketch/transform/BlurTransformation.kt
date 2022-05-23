@@ -40,6 +40,7 @@ class BlurTransformation(
         request: ImageRequest,
         input: Bitmap
     ): TransformResult? {
+        // todo 最终的 Bitmap 偶尔会有黑色的部分
         // blur handle
         val canReuseInBitmap = input.config != null && input.isMutable
         val blurBitmap = fastGaussianBlur(input, radius, canReuseInBitmap) ?: return null

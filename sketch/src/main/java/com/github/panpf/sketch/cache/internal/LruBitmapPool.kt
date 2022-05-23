@@ -5,8 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
-import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.samplingSize
 import com.github.panpf.sketch.decode.internal.samplingSizeForRegion
@@ -59,36 +59,36 @@ class LruBitmapPool constructor(
     override val size: Long
         get() = _size
 
-    override fun put(bitmap: Bitmap): Boolean {
+    override fun put(bitmap: Bitmap, caller: String?): Boolean {
         if (bitmap.isRecycled) {
-            logger?.w(MODULE, "put. Reject. Recycled, ${bitmap.logString}")
+            logger?.w(MODULE, "put reject. Recycled. $caller. ${bitmap.logString}")
             return false
         }
         if (!bitmap.isMutable) {
-            logger?.w(MODULE, "put. Reject. Immutable, ${bitmap.logString}")
+            logger?.w(MODULE, "put reject. Immutable. $caller. ${bitmap.logString}")
             return false
         }
         val bitmapSize = strategy.getSize(bitmap).toLong()
         if (bitmapSize > maxSize * 0.7f) {
             logger?.w(MODULE) {
-                "put. Reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}, ${bitmap.logString}"
+                "put reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}. $caller. ${bitmap.logString}"
             }
             return false
         }
         if (!allowedConfigs.contains(bitmap.config)) {
             logger?.w(MODULE) {
-                "put. Reject. Disallowed config: ${bitmap.config}, ${bitmap.logString}"
+                "put reject. Disallowed config ${bitmap.config}. $caller. ${bitmap.logString}"
             }
             return false
         }
 
         synchronized(this) {
-            trimToSize(maxSize - bitmapSize)
+            trimToSize(maxSize - bitmapSize, "$caller:putBefore")
             strategy.put(bitmap)
             puts++
             this._size += bitmapSize
             logger?.d(MODULE) {
-                "put. Successful. ${size.formatFileSize()}. ${bitmap.logString}"
+                "put successful. bitmap size ${bitmapSize.formatFileSize()}, pool size ${size.formatFileSize()}. $caller. ${bitmap.logString}"
             }
         }
         return true
@@ -148,9 +148,9 @@ class LruBitmapPool constructor(
         synchronized(this) {
             val oldSize = this.size
             if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
-                trimToSize(0)
+                trimToSize(0, "trim")
             } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
-                trimToSize(maxSize / 2)
+                trimToSize(maxSize / 2, "trim")
             }
             val releasedSize = (oldSize - size)
             logger?.w(MODULE) {
@@ -162,12 +162,12 @@ class LruBitmapPool constructor(
     override fun clear() {
         synchronized(this) {
             val oldSize = size
-            trimToSize(0)
+            trimToSize(0, "clear")
             logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
         }
     }
 
-    private fun trimToSize(size: Long) {
+    private fun trimToSize(size: Long, caller: String? = null) {
         synchronized(this) {
             while (this.size > size) {
                 val removed = strategy.removeLast()
@@ -178,7 +178,7 @@ class LruBitmapPool constructor(
                     removed.recycle()
                     evictions++
                     logger?.d(MODULE) {
-                        "Evicting bitmap. ${removed.logString}"
+                        "trimToSize. Recycle bitmap. $caller. ${removed.logString}"
                     }
                 }
             }
@@ -271,18 +271,18 @@ class LruBitmapPool constructor(
         return inBitmap != null
     }
 
-    override fun free(bitmap: Bitmap?): Boolean {
+    override fun free(bitmap: Bitmap?, caller: String?): Boolean {
         if (bitmap == null || bitmap.isRecycled) return false
 
-        val success = put(bitmap)
+        val success = put(bitmap, caller)
         if (success) {
             logger?.d(MODULE) {
-                "Put to bitmap pool. ${bitmap.logString}"
+                "free success. $caller. ${bitmap.logString}"
             }
         } else {
             bitmap.recycle()
-            logger?.d(MODULE) {
-                "Recycle bitmap. ${bitmap.logString}"
+            logger?.w(MODULE) {
+                "free failed recycle. $caller. ${bitmap.logString}"
             }
         }
         return success

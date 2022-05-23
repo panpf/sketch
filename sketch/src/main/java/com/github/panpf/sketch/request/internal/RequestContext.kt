@@ -9,17 +9,17 @@ class RequestContext {
     private var pendingCountDrawable: SketchCountBitmapDrawable? = null
 
     @MainThread
-    fun pendingCountDrawable(drawable: SketchCountBitmapDrawable, callingStation: String) {
+    fun pendingCountDrawable(drawable: SketchCountBitmapDrawable, caller: String) {
         requiredMainThread()
-        completeCountDrawable(callingStation)
+        completeCountDrawable(caller)
         pendingCountDrawable = drawable.apply {
-            setIsPending(callingStation, true)
+            setIsPending(true, caller)
         }
     }
 
     @MainThread
-    fun completeCountDrawable(callingStation: String) {
+    fun completeCountDrawable(caller: String) {
         requiredMainThread()
-        pendingCountDrawable?.setIsPending(callingStation, false)
+        pendingCountDrawable?.setIsPending(false, caller)
     }
 }

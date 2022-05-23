@@ -9,9 +9,9 @@ class Tile constructor(val srcRect: Rect, val inSampleSize: Int) {
 
     var countBitmap: CountBitmap? = null
         set(value) {
-            field?.setIsDisplayed("Tile", false)
+            field?.setIsDisplayed(false, "Tile")
             field = value
-            value?.setIsDisplayed("Tile", true)
+            value?.setIsDisplayed(true, "Tile")
         }
     val bitmap: Bitmap?
         get() = countBitmap?.bitmap

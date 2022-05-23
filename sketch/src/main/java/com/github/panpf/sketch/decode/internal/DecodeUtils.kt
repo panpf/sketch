@@ -238,7 +238,7 @@ fun BitmapDecodeResult.applyExifOrientation(
     }
     val inBitmap = bitmap
     val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, bitmapPool) ?: return this
-    bitmapPool.free(inBitmap)
+    bitmapPool.free(inBitmap, "applyExifOrientation")
     return newResult(newBitmap) {
         addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
         val newSize = exifOrientationHelper.applyToSize(
@@ -282,7 +282,7 @@ fun BitmapDecodeResult.applyResize(
         null
     }
     return if (newBitmap != null) {
-        sketch.bitmapPool.free(inBitmap)
+        sketch.bitmapPool.free(inBitmap, "applyResize")
         newResult(newBitmap) {
             addTransformed(ResizeTransformed(resize))
         }

@@ -27,7 +27,7 @@ interface BitmapPool {
      * @see android.graphics.Bitmap.isMutable
      * @see android.graphics.Bitmap.recycle
      */
-    fun put(bitmap: Bitmap): Boolean
+    fun put(bitmap: Bitmap, caller: String? = null): Boolean
 
     /**
      * Get a reusable [Bitmap].
@@ -84,7 +84,7 @@ interface BitmapPool {
      *
      * @return If true is returned, it is in the pool
      */
-    fun free(bitmap: Bitmap?): Boolean
+    fun free(bitmap: Bitmap?, caller: String? = null): Boolean
 
     var logger: Logger?
 }

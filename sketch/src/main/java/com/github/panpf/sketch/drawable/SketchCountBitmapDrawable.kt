@@ -40,13 +40,13 @@ class SketchCountBitmapDrawable constructor(
         get() = countBitmap.isRecycled
 
     @MainThread
-    fun setIsDisplayed(callingStation: String, displayed: Boolean) {
-        countBitmap.setIsDisplayed(callingStation, displayed)
+    fun setIsDisplayed(displayed: Boolean, caller: String? = null) {
+        countBitmap.setIsDisplayed(displayed, caller)
     }
 
     @MainThread
-    fun setIsPending(callingStation: String, waitingUse: Boolean) {
-        countBitmap.setIsPending(callingStation, waitingUse)
+    fun setIsPending(waitingUse: Boolean, caller: String? = null) {
+        countBitmap.setIsPending(waitingUse, caller)
     }
 
     @MainThread

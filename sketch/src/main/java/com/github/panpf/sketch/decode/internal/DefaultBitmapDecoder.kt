@@ -76,7 +76,7 @@ open class DefaultBitmapDecoder(
                     logger.e(MODULE, throwable, message)
 
                     decodeOptions.inBitmap = null
-                    bitmapPool.free(inBitmap)
+                    bitmapPool.free(inBitmap, "decodeRegion:error")
                     try {
                         dataSource.decodeRegionBitmap(srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
@@ -124,7 +124,7 @@ open class DefaultBitmapDecoder(
                 logger.e(MODULE, throwable, message)
 
                 decodeOptions.inBitmap = null
-                bitmapPool.free(inBitmap)
+                bitmapPool.free(inBitmap, "decode:error")
                 try {
                     dataSource.decodeBitmapWithBitmapFactory(decodeOptions)
                 } catch (throwable2: Throwable) {

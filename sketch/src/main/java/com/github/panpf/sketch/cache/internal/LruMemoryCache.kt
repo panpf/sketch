@@ -155,7 +155,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         LruCache<String, CountBitmap>(maxSize.toInt()) {
 
         override fun put(key: String, countBitmap: CountBitmap): CountBitmap? {
-            countBitmap.setIsCached("$MODULE:put", true)
+            countBitmap.setIsCached(true, MODULE)
             return super.put(key, countBitmap)
         }
 
@@ -167,7 +167,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         override fun entryRemoved(
             evicted: Boolean, key: String, oldCountBitmap: CountBitmap, newCountBitmap: CountBitmap?
         ) {
-            oldCountBitmap.setIsCached("$MODULE:entryRemoved", false)
+            oldCountBitmap.setIsCached(false, MODULE)
         }
     }
 }

@@ -151,7 +151,7 @@ class TileDecoder internal constructor(
                 )
 
                 options.inBitmap = null
-                bitmapPool.free(inBitmap)
+                bitmapPool.free(inBitmap, "tile:decodeRegion:error")
                 try {
                     regionDecoder.decodeRegion(newSrcRect, options)
                 } catch (throwable1: Throwable) {
@@ -178,7 +178,7 @@ class TileDecoder internal constructor(
 
         val newBitmap = exifOrientationHelper.applyToBitmap(bitmap, bitmapPool)
         return if (newBitmap != null && newBitmap != bitmap) {
-            bitmapPool.free(bitmap)
+            bitmapPool.free(bitmap, "tile:applyExifOrientation")
             newBitmap
         } else {
             bitmap

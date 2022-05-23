@@ -275,7 +275,7 @@ class TileManager constructor(
                     logger.w(Tiles.MODULE) {
                         "loadTile. canceled. $tile. $imageUri"
                     }
-                    bitmapPool.free(bitmap)
+                    bitmapPool.free(bitmap, "tile:jobCanceled")
                 }
             }
         }

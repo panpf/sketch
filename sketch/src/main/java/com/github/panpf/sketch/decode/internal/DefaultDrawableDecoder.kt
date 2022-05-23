@@ -47,7 +47,7 @@ class DefaultDrawableDecoder(
         }.apply {
             if (drawable is SketchCountBitmapDrawable) {
                 withContext(Dispatchers.Main) {
-                    requestContext.pendingCountDrawable(drawable, "decodeAfter")
+                    requestContext.pendingCountDrawable(drawable, "DefaultDrawableDecoder")
                 }
             }
         }

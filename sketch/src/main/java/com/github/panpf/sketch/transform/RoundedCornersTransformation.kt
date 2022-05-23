@@ -59,6 +59,7 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
         request: ImageRequest,
         input: Bitmap
     ): TransformResult {
+        // todo 不创建新的 bitmap
         val bitmapPool = sketch.bitmapPool
         val roundedCornersBitmap =
             bitmapPool.getOrCreate(
