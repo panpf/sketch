@@ -64,8 +64,8 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
             if (target is ViewTarget<*>) {
                 val view = target.view
                 if (view is MyListImageView) {
-                    if (prefsService.disabledAnimatedImageInList.value) {
-                        disabledAnimatedImage(true)
+                    if (prefsService.disallowAnimatedImageInList.value) {
+                        disallowAnimatedImage(true)
                     }
                     if (prefsService.pauseLoadWhenScrollInList.value) {
                         pauseLoadWhenScrolling(true)

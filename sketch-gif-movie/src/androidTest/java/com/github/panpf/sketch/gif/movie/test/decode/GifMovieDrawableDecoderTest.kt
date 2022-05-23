@@ -43,9 +43,9 @@ class GifMovieDrawableDecoderTest {
                 .create(sketch, request1, RequestContext(), fetchResult1)
         )
 
-        // disabledAnimatedImage true
+        // disallowAnimatedImage true
         val request2 = DisplayRequest(context, newAssetUri("sample_anim.gif")) {
-            disabledAnimatedImage()
+            disallowAnimatedImage()
         }
         val fetchResult2 = FetchResult(ErrorDataSource(sketch, request2, LOCAL), null)
         Assert.assertNull(

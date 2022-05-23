@@ -17,8 +17,8 @@ class PrefsService(val context: Context) {
     val photoListLayoutMode by lazy {
         StringMmkvData(mmkv, "photoListLayoutMode", GRID.name)
     }
-    val disabledAnimatedImageInList by lazy {
-        BooleanMmkvData(mmkv, "disabledAnimatedImageInList", false)
+    val disallowAnimatedImageInList by lazy {
+        BooleanMmkvData(mmkv, "disallowAnimatedImageInList", false)
     }
 
     val showMimeTypeLogoInLIst by lazy {

@@ -347,8 +347,8 @@ interface LoadRequest : ImageRequest {
             super.crossfade(durationMillis, preferExactIntrinsicSize)
         }
 
-        override fun disabledAnimatedImage(disabled: Boolean?): Builder = apply {
-            super.disabledAnimatedImage(disabled)
+        override fun disallowAnimatedImage(disabled: Boolean?): Builder = apply {
+            super.disallowAnimatedImage(disabled)
         }
 
         override fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean?): Builder = apply {
@@ -398,7 +398,7 @@ interface LoadRequest : ImageRequest {
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Factory?,
-        override val disabledAnimatedImage: Boolean,
+        override val disallowAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,
         override val memoryCachePolicy: CachePolicy,
     ) : BaseImageRequest(), LoadRequest {

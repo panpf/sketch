@@ -94,7 +94,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.placeholderImage)
             Assert.assertNull(this.errorImage)
             Assert.assertNull(this.transition)
-            Assert.assertNull(this.disabledAnimatedImage)
+            Assert.assertNull(this.disallowAnimatedImage)
             Assert.assertNull(this.resizeApplyToDrawable)
             Assert.assertNull(this.memoryCachePolicy)
         }
@@ -209,10 +209,10 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            disabledAnimatedImage(false)
+            disallowAnimatedImage(false)
         }.apply {
             Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(this.disabledAnimatedImage)
+            Assert.assertNotNull(this.disallowAnimatedImage)
         }
 
         ImageOptions {
@@ -516,15 +516,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.disabledAnimatedImage)
+            Assert.assertEquals(null, this.disallowAnimatedImage)
         }.merged(ImageOptions {
-            disabledAnimatedImage(true)
+            disallowAnimatedImage(true)
         }).apply {
-            Assert.assertEquals(true, this.disabledAnimatedImage)
+            Assert.assertEquals(true, this.disallowAnimatedImage)
         }.merged(ImageOptions {
-            disabledAnimatedImage(false)
+            disallowAnimatedImage(false)
         }).apply {
-            Assert.assertEquals(true, this.disabledAnimatedImage)
+            Assert.assertEquals(true, this.disallowAnimatedImage)
         }
 
         ImageOptions().apply {
@@ -642,7 +642,7 @@ class ImageOptionsTest {
                 }.apply { add(this) }.newOptions {
                     resultCachePolicy(READ_ONLY)
                 }.apply { add(this) }.newOptions {
-                    disabledAnimatedImage(true)
+                    disallowAnimatedImage(true)
                 }.apply { add(this) }.newOptions {
                     placeholder(android.R.drawable.bottom_bar)
                 }.apply { add(this) }.newOptions {
@@ -1320,25 +1320,25 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testDisabledAnimatedImage() {
+    fun testDisallowAnimatedImage() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(disabledAnimatedImage)
+                Assert.assertNull(disallowAnimatedImage)
             }
 
-            disabledAnimatedImage(true)
+            disallowAnimatedImage(true)
             build().apply {
-                Assert.assertEquals(true, disabledAnimatedImage)
+                Assert.assertEquals(true, disallowAnimatedImage)
             }
 
-            disabledAnimatedImage(false)
+            disallowAnimatedImage(false)
             build().apply {
-                Assert.assertEquals(false, disabledAnimatedImage)
+                Assert.assertEquals(false, disallowAnimatedImage)
             }
 
-            disabledAnimatedImage(null)
+            disallowAnimatedImage(null)
             build().apply {
-                Assert.assertNull(disabledAnimatedImage)
+                Assert.assertNull(disallowAnimatedImage)
             }
         }
     }

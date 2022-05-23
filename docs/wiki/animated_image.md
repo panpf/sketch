@@ -52,7 +52,7 @@ class MyApplication : Application(), SketchFactory {
 ```kotlin
 imageView.displayImage("https://www.example.com/image.gif") {
     // 禁用动图。有些情况下列表中需要禁用动图播放，点击进入详情页的时候才可以播放
-    disabledAnimatedImage()
+    disallowAnimatedImage()
 
     // 配置动图播放 1 次就停止，默认无限循环播放
     repeatCount(1)

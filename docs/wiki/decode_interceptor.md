@@ -26,7 +26,7 @@ class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
         chain: DrawableDecodeInterceptor.Chain,
     ): DrawableDecodeResult {
         val newRequest = chain.request.newRequest {
-            disabledAnimatedImage()
+            disallowAnimatedImage()
         }
         return chain.proceed(newRequest)
     }

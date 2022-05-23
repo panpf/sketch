@@ -131,7 +131,6 @@ interface ImageOptions {
     /**
      * Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
      */
-    // todo disabled change to disallow
     val disallowReuseBitmap: Boolean?
 
     /**
@@ -168,7 +167,7 @@ interface ImageOptions {
     /**
      * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
      */
-    val disabledAnimatedImage: Boolean?
+    val disallowAnimatedImage: Boolean?
 
     /**
      * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
@@ -233,7 +232,7 @@ interface ImageOptions {
             && placeholderImage == null
             && errorImage == null
             && transition == null
-            && disabledAnimatedImage == null
+            && disallowAnimatedImage == null
             && resizeApplyToDrawable == null
             && memoryCachePolicy == null
 
@@ -259,7 +258,7 @@ interface ImageOptions {
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
-        private var disabledAnimatedImage: Boolean? = null
+        private var disallowAnimatedImage: Boolean? = null
         private var resizeApplyToDrawable: Boolean? = null
         private var memoryCachePolicy: CachePolicy? = null
 
@@ -289,7 +288,7 @@ interface ImageOptions {
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
-            this.disabledAnimatedImage = request.disabledAnimatedImage
+            this.disallowAnimatedImage = request.disallowAnimatedImage
             this.resizeApplyToDrawable = request.resizeApplyToDrawable
             this.memoryCachePolicy = request.memoryCachePolicy
         }
@@ -666,8 +665,8 @@ interface ImageOptions {
         /**
          * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
          */
-        fun disabledAnimatedImage(disabled: Boolean? = true): Builder = apply {
-            this.disabledAnimatedImage = disabled
+        fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
+            this.disallowAnimatedImage = disabled
         }
 
         /**
@@ -754,8 +753,8 @@ interface ImageOptions {
             if (this.transition == null) {
                 this.transition = options.transition
             }
-            if (this.disabledAnimatedImage == null) {
-                this.disabledAnimatedImage = options.disabledAnimatedImage
+            if (this.disallowAnimatedImage == null) {
+                this.disallowAnimatedImage = options.disallowAnimatedImage
             }
             if (this.resizeApplyToDrawable == null) {
                 this.resizeApplyToDrawable = options.resizeApplyToDrawable
@@ -785,7 +784,7 @@ interface ImageOptions {
             placeholderImage = placeholderImage,
             errorImage = errorImage,
             transition = transition,
-            disabledAnimatedImage = disabledAnimatedImage,
+            disallowAnimatedImage = disallowAnimatedImage,
             resizeApplyToDrawable = resizeApplyToDrawable,
             memoryCachePolicy = memoryCachePolicy,
         )
@@ -813,7 +812,7 @@ interface ImageOptions {
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Transition.Factory?,
-        override val disabledAnimatedImage: Boolean?,
+        override val disallowAnimatedImage: Boolean?,
         override val resizeApplyToDrawable: Boolean?,
         override val memoryCachePolicy: CachePolicy?,
     ) : ImageOptions {
@@ -841,7 +840,7 @@ interface ImageOptions {
             if (placeholderImage != other.placeholderImage) return false
             if (errorImage != other.errorImage) return false
             if (transition != other.transition) return false
-            if (disabledAnimatedImage != other.disabledAnimatedImage) return false
+            if (disallowAnimatedImage != other.disallowAnimatedImage) return false
             if (resizeApplyToDrawable != other.resizeApplyToDrawable) return false
             if (memoryCachePolicy != other.memoryCachePolicy) return false
 
@@ -869,7 +868,7 @@ interface ImageOptions {
             result = 31 * result + (placeholderImage?.hashCode() ?: 0)
             result = 31 * result + (errorImage?.hashCode() ?: 0)
             result = 31 * result + (transition?.hashCode() ?: 0)
-            result = 31 * result + (disabledAnimatedImage?.hashCode() ?: 0)
+            result = 31 * result + (disallowAnimatedImage?.hashCode() ?: 0)
             result = 31 * result + (resizeApplyToDrawable?.hashCode() ?: 0)
             result = 31 * result + (memoryCachePolicy?.hashCode() ?: 0)
             return result
@@ -898,7 +897,7 @@ interface ImageOptions {
                 append("placeholderImage=$placeholderImage, ")
                 append("errorImage=$errorImage, ")
                 append("transition=$transition, ")
-                append("disabledAnimatedImage=$disabledAnimatedImage, ")
+                append("disallowAnimatedImage=$disallowAnimatedImage, ")
                 append("resizeApplyToDrawable=$resizeApplyToDrawable")
                 append("memoryCachePolicy=$memoryCachePolicy, ")
                 append(")")

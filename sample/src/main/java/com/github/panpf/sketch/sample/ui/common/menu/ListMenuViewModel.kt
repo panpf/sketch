@@ -41,7 +41,7 @@ class ListMenuViewModel(
             if (showPlayMenu) {
                 add(SwitchMenuItemInfo(
                     values = arrayOf(true, false),
-                    initValue = application1.prefsService.disabledAnimatedImageInList.value,
+                    initValue = application1.prefsService.disallowAnimatedImageInList.value,
                     titles = null,
                     iconResIds = arrayOf(
                         R.drawable.ic_pause,
@@ -49,7 +49,7 @@ class ListMenuViewModel(
                     ),
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
                 ) { _, newValue ->
-                    application1.prefsService.disabledAnimatedImageInList.value = newValue
+                    application1.prefsService.disallowAnimatedImageInList.value = newValue
                     menuList.postValue(menuList.value)
                 })
             }

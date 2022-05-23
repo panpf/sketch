@@ -196,7 +196,7 @@ interface ImageRequest {
     /**
      * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
      */
-    val disabledAnimatedImage: Boolean
+    val disallowAnimatedImage: Boolean
 
     /**
      * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
@@ -725,8 +725,8 @@ interface ImageRequest {
         /**
          * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
          */
-        open fun disabledAnimatedImage(disabled: Boolean? = true): Builder = apply {
-            definedOptionsBuilder.disabledAnimatedImage(disabled)
+        open fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
+            definedOptionsBuilder.disallowAnimatedImage(disabled)
         }
 
         /**
@@ -797,7 +797,7 @@ interface ImageRequest {
             val placeholderImage = finalOptions.placeholderImage
             val errorImage = finalOptions.errorImage
             val transition = finalOptions.transition
-            val disabledAnimatedImage = finalOptions.disabledAnimatedImage ?: false
+            val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: ENABLED
 
@@ -830,7 +830,7 @@ interface ImageRequest {
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
-                        disabledAnimatedImage = disabledAnimatedImage,
+                        disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
                         memoryCachePolicy = memoryCachePolicy,
                     )
@@ -863,7 +863,7 @@ interface ImageRequest {
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
-                        disabledAnimatedImage = disabledAnimatedImage,
+                        disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
                         memoryCachePolicy = memoryCachePolicy,
                     )
@@ -896,7 +896,7 @@ interface ImageRequest {
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
                         transition = transition,
-                        disabledAnimatedImage = disabledAnimatedImage,
+                        disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
                         memoryCachePolicy = memoryCachePolicy,
                     )

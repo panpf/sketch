@@ -1261,7 +1261,7 @@ class RequestExecutorTest {
     }
 
     @Test
-    fun testDisabledAnimatedImage() {
+    fun testDisallowAnimatedImage() {
         if (VERSION.SDK_INT < VERSION_CODES.P) return
 
         val context = getContext()
@@ -1280,21 +1280,21 @@ class RequestExecutorTest {
             }
 
         request.newDisplayRequest {
-            disabledAnimatedImage(false)
+            disallowAnimatedImage(false)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<DisplayResult.Success>()!!.apply {
                 Assert.assertTrue(drawable is SketchAnimatableDrawable)
             }
 
         request.newDisplayRequest {
-            disabledAnimatedImage(null)
+            disallowAnimatedImage(null)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<DisplayResult.Success>()!!.apply {
                 Assert.assertTrue(drawable is SketchAnimatableDrawable)
             }
 
         request.newDisplayRequest {
-            disabledAnimatedImage(true)
+            disallowAnimatedImage(true)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<DisplayResult.Success>()!!.apply {
                 Assert.assertFalse(drawable is SketchAnimatableDrawable)

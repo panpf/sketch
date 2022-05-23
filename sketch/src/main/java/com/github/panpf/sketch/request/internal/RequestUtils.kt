@@ -35,8 +35,8 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
     if (ignoreExifOrientation) {
         appendQueryParameter("_ignoreExifOrientation", true.toString())
     }
-    if (disabledAnimatedImage) {
-        appendQueryParameter("_disabledAnimatedImage", true.toString())
+    if (disallowAnimatedImage) {
+        appendQueryParameter("_disallowAnimatedImage", true.toString())
     }
 }.build().toString()
 
@@ -87,8 +87,8 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
     }
 
     if (this@newKey is DisplayRequest) {
-        if (disabledAnimatedImage) {
-            appendQueryParameter("_disabledAnimatedImage", true.toString())
+        if (disallowAnimatedImage) {
+            appendQueryParameter("_disallowAnimatedImage", true.toString())
         }
         memoryCachePolicy.takeIf { it != ENABLED }?.let {
             appendQueryParameter("_memoryCachePolicy", it.name)

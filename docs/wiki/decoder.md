@@ -84,7 +84,7 @@ class MyApplication : Application(), SketchFactory {
 > 注意：自定义 Decoder 需要应用 ImageRequest 中的很多与图片质量和尺寸相关的属性，例如 bitmapConfig、resize、colorSpace 等，可参考其它 Decoder 实现
 
 3.自定义 [DrawableDecoder] 和 [BitmapDecoder] 流程一样，唯一区别在于注册到 Sketch 时要调用 addDrawableDecoder() 方法
-> 注意 :如果你自定义的 [DrawableDecoder] 是解码动图的话一定要判断 [ImageRequest].disabledAnimatedImage 参数
+> 注意 :如果你自定义的 [DrawableDecoder] 是解码动图的话一定要判断 [ImageRequest].disallowAnimatedImage 参数
 
 
 [comment]: <> (class)

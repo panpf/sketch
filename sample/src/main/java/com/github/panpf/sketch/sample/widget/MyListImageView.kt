@@ -46,7 +46,7 @@ class MyListImageView @JvmOverloads constructor(
     init {
         context.prefsService.apply {
             merge(
-                disabledAnimatedImageInList.sharedFlow,
+                disallowAnimatedImageInList.sharedFlow,
                 pauseLoadWhenScrollInList.sharedFlow,
                 saveCellularTrafficInList.sharedFlow,
             ).observeWithViewLifecycle(this@MyListImageView) {

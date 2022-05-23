@@ -108,7 +108,7 @@ class DownloadRequestTest {
             Assert.assertNull(this.placeholderImage)
             Assert.assertNull(this.errorImage)
             Assert.assertNull(this.transition)
-            Assert.assertFalse(this.disabledAnimatedImage)
+            Assert.assertFalse(this.disallowAnimatedImage)
             Assert.assertFalse(this.resizeApplyToDrawable)
             Assert.assertEquals(ENABLED, this.memoryCachePolicy)
         }
@@ -1130,27 +1130,27 @@ class DownloadRequestTest {
     }
 
     @Test
-    fun testDisabledAnimatedImage() {
+    fun testDisallowAnimatedImage() {
         val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DownloadRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertFalse(disabledAnimatedImage)
+                Assert.assertFalse(disallowAnimatedImage)
             }
 
-            disabledAnimatedImage(true)
+            disallowAnimatedImage(true)
             build().apply {
-                Assert.assertEquals(true, disabledAnimatedImage)
+                Assert.assertEquals(true, disallowAnimatedImage)
             }
 
-            disabledAnimatedImage(false)
+            disallowAnimatedImage(false)
             build().apply {
-                Assert.assertEquals(false, disabledAnimatedImage)
+                Assert.assertEquals(false, disallowAnimatedImage)
             }
 
-            disabledAnimatedImage(null)
+            disallowAnimatedImage(null)
             build().apply {
-                Assert.assertFalse(disabledAnimatedImage)
+                Assert.assertFalse(disallowAnimatedImage)
             }
         }
     }
