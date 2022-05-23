@@ -15,6 +15,11 @@
  */
 package com.github.panpf.sketch
 
+import android.app.Application
+
+/**
+ * A factory for creating [Sketch] instances. Usually used to configure [Sketch] singletons, you need to implement this interface in your [Application]
+ */
 fun interface SketchFactory {
     fun createSketch(): Sketch
 }

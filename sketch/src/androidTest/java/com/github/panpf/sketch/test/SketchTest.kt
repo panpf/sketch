@@ -16,6 +16,7 @@ import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
+import com.github.panpf.sketch.dispose
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher
@@ -33,6 +34,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
 import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
 import com.github.panpf.sketch.test.utils.LoadListenerSupervisor
@@ -333,24 +335,14 @@ class SketchTest {
 
         /* cancel */
         var disposable3: Disposable<DisplayResult>? = null
-        val listenerSupervisor3 = DisplayListenerSupervisor {
-            disposable3?.job?.cancel()
-        }
+        val listenerSupervisor3 = DisplayListenerSupervisor()
         val request3 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-            // Make the execution slower, cancellation can take effect
-            addTransformations(object : Transformation {
-                override val key: String
-                    get() = "TestTransformation"
-
-                override suspend fun transform(
-                    sketch: Sketch, request: ImageRequest, input: Bitmap
-                ): TransformResult? {
-                    delay(2000)
-                    return null
-                }
-            })
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
+            // Make the execution slower, cancellation can take effect
+            addTransformations(DelayTransformation{
+                disposable3?.job?.cancel()
+            })
             listener(listenerSupervisor3)
         }
         runBlocking {

@@ -15,27 +15,32 @@
  */
 package com.github.panpf.sketch
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.github.panpf.sketch.Sketch.Builder
 
+/**
+ * Get Sketch singleton from any Context
+ */
 val Context.sketch: Sketch
     get() = SketchSingleton.sketch(this)
 
 internal object SketchSingleton {
 
+    @SuppressLint("StaticFieldLeak")
     private var sketch: Sketch? = null
 
     @JvmStatic
     fun sketch(context: Context): Sketch =
         sketch ?: synchronized(this) {
             sketch ?: synchronized(this) {
-                newSketch(context).apply {
+                createSketch(context).apply {
                     sketch = this
                 }
             }
         }
 
-    private fun newSketch(context: Context): Sketch {
+    private fun createSketch(context: Context): Sketch {
         val appContext = context.applicationContext
         return if (appContext is SketchFactory) {
             appContext.createSketch()

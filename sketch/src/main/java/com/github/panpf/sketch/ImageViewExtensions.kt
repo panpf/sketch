@@ -27,42 +27,77 @@ import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.util.SketchUtils
 import java.io.File
 
+/**
+ * Load the image from [uri] and display it on this [ImageView]
+ *
+ * You can set request params with a trailing lambda function [configBlock]
+ */
 fun ImageView.displayImage(
     uri: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
     context.sketch.enqueue(DisplayRequest(this, uri, configBlock))
 
-fun ImageView.displayImage(
-    @DrawableRes drawableResId: Int?,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): Disposable<DisplayResult> =
-    displayImage(drawableResId?.let { context.newResourceUri(it) }, configBlock)
-
+/**
+ * Load the image from [uri] and display it on this [ImageView]
+ *
+ * You can set request params with a trailing lambda function [configBlock]
+ */
 fun ImageView.displayImage(
     uri: Uri?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
     displayImage(uri?.toString(), configBlock)
 
+/**
+ * Load the image from drawable res and display it on this [ImageView]
+ *
+ * You can set request params with a trailing lambda function [configBlock]
+ */
+fun ImageView.displayImage(
+    @DrawableRes drawableResId: Int?,
+    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
+): Disposable<DisplayResult> =
+    displayImage(drawableResId?.let { context.newResourceUri(it) }, configBlock)
+
+/**
+ * Load the image from local file and display it on this [ImageView]
+ *
+ * You can set request params with a trailing lambda function [configBlock]
+ */
 fun ImageView.displayImage(
     file: File?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
     displayImage(file?.let { newFileUri(it.path) }, configBlock)
 
+/**
+ * Load the image from app assets and display it on this [ImageView]
+ *
+ * You can set request params with a trailing lambda function [configBlock]
+ */
 fun ImageView.displayAssetImage(
     assetFileName: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
     displayImage(assetFileName?.let { newAssetUri(assetFileName) }, configBlock)
 
+/**
+ * Load the image from drawable res and display it on this [ImageView]
+ *
+ * You can set request params with a trailing lambda function [configBlock]
+ */
 fun ImageView.displayResourceImage(
     @DrawableRes drawableResId: Int?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
     displayImage(drawableResId?.let { newResourceUri(context.packageName, it) }, configBlock)
 
+/**
+ * Load the image from drawable res and display it on this [ImageView]
+ *
+ * You can set request params with a trailing lambda function [configBlock]
+ */
 fun ImageView.displayResourceImage(
     packageName: String,
     @DrawableRes drawableResId: Int,
