@@ -35,7 +35,7 @@ open class DefaultBitmapDecoder(
         } else {
             ExifInterface.ORIENTATION_UNDEFINED
         }
-        val canDecodeRegion = ImageFormat.valueOfMimeType(imageInfo.mimeType)
+        val canDecodeRegion = mimeTypeToImageFormat(imageInfo.mimeType)
             ?.supportBitmapRegionDecoder() == true
         return realDecode(
             sketch = sketch,

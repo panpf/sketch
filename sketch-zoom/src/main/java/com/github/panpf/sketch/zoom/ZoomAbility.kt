@@ -17,7 +17,7 @@ import androidx.lifecycle.Lifecycle.Event.ON_START
 import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleEventObserver
-import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
@@ -548,7 +548,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             }
             return null
         }
-        if (ImageFormat.valueOfMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
+        if (mimeTypeToImageFormat(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
                 "MimeType does not support Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                     .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)

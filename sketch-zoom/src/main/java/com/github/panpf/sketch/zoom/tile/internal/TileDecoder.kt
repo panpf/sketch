@@ -25,7 +25,6 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
@@ -33,6 +32,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
+import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
 import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
@@ -72,7 +72,7 @@ fun createTileDecoder(
     val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
     val imageSize =
         exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
-    val imageFormat = ImageFormat.valueOfMimeType(imageInfo.mimeType)
+    val imageFormat = mimeTypeToImageFormat(imageInfo.mimeType)
     if (imageFormat?.supportBitmapRegionDecoder() != true) {
         return null
     }

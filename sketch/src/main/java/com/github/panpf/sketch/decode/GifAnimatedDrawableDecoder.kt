@@ -6,6 +6,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isAnimatedHeif
 import com.github.panpf.sketch.request.ImageRequest
@@ -43,7 +44,7 @@ class GifAnimatedDrawableDecoder(
             fetchResult: FetchResult
         ): GifAnimatedDrawableDecoder? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !request.disallowAnimatedImage) {
-                val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
+                val imageFormat = mimeTypeToImageFormat(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
                 if (imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isAnimatedHeif()) {
                     return GifAnimatedDrawableDecoder(request, fetchResult.dataSource)

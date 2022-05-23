@@ -14,6 +14,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -118,7 +119,7 @@ class GifMovieDrawableDecoder constructor(
             fetchResult: FetchResult
         ): GifMovieDrawableDecoder? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !request.disallowAnimatedImage) {
-                val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
+                val imageFormat = mimeTypeToImageFormat(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
                 if (imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()) {
                     return GifMovieDrawableDecoder(sketch, request, fetchResult.dataSource)

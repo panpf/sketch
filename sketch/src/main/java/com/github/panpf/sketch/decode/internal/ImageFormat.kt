@@ -24,18 +24,15 @@ enum class ImageFormat(val mimeType: String) {
     HEIC("image/heic"),
     HEIF("image/heif"),
     ;
+}
 
-    companion object {
-        @JvmStatic
-        fun valueOfMimeType(mimeType: String?): ImageFormat? = when {
-            JPEG.mimeType.equals(mimeType, ignoreCase = true) -> JPEG
-            PNG.mimeType.equals(mimeType, ignoreCase = true) -> PNG
-            WEBP.mimeType.equals(mimeType, ignoreCase = true) -> WEBP
-            GIF.mimeType.equals(mimeType, ignoreCase = true) -> GIF
-            BMP.mimeType.equals(mimeType, ignoreCase = true) -> BMP
-            HEIC.mimeType.equals(mimeType, ignoreCase = true) -> HEIC
-            HEIF.mimeType.equals(mimeType, ignoreCase = true) -> HEIF
-            else -> null
-        }
-    }
+fun mimeTypeToImageFormat(mimeType: String?): ImageFormat? = when {
+    ImageFormat.JPEG.mimeType.equals(mimeType, ignoreCase = true) -> ImageFormat.JPEG
+    ImageFormat.PNG.mimeType.equals(mimeType, ignoreCase = true) -> ImageFormat.PNG
+    ImageFormat.WEBP.mimeType.equals(mimeType, ignoreCase = true) -> ImageFormat.WEBP
+    ImageFormat.GIF.mimeType.equals(mimeType, ignoreCase = true) -> ImageFormat.GIF
+    ImageFormat.BMP.mimeType.equals(mimeType, ignoreCase = true) -> ImageFormat.BMP
+    ImageFormat.HEIC.mimeType.equals(mimeType, ignoreCase = true) -> ImageFormat.HEIC
+    ImageFormat.HEIF.mimeType.equals(mimeType, ignoreCase = true) -> ImageFormat.HEIF
+    else -> null
 }
