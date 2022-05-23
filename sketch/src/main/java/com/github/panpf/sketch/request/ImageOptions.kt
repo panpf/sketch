@@ -151,8 +151,8 @@ interface ImageOptions {
     /**
      * Placeholder image when loading
      */
-    // todo placeholderImage change to placeholder
-    val placeholderImage: StateImage?
+    // todo placeholder change to placeholder
+    val placeholder: StateImage?
 
     /**
      * Image to display when loading fails
@@ -229,7 +229,7 @@ interface ImageOptions {
             && disallowReuseBitmap == null
             && ignoreExifOrientation == null
             && resultCachePolicy == null
-            && placeholderImage == null
+            && placeholder == null
             && errorImage == null
             && transition == null
             && disallowAnimatedImage == null
@@ -255,7 +255,7 @@ interface ImageOptions {
         private var ignoreExifOrientation: Boolean? = null
         private var resultCachePolicy: CachePolicy? = null
 
-        private var placeholderImage: StateImage? = null
+        private var placeholder: StateImage? = null
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
         private var disallowAnimatedImage: Boolean? = null
@@ -285,7 +285,7 @@ interface ImageOptions {
             this.ignoreExifOrientation = request.ignoreExifOrientation
             this.resultCachePolicy = request.resultCachePolicy
 
-            this.placeholderImage = request.placeholderImage
+            this.placeholder = request.placeholder
             this.errorImage = request.errorImage
             this.transition = request.transition
             this.disallowAnimatedImage = request.disallowAnimatedImage
@@ -596,7 +596,7 @@ interface ImageOptions {
          * Set placeholder image when loading
          */
         fun placeholder(stateImage: StateImage?): Builder = apply {
-            this.placeholderImage = stateImage
+            this.placeholder = stateImage
         }
 
         /**
@@ -744,8 +744,8 @@ interface ImageOptions {
                 this.resultCachePolicy = options.resultCachePolicy
             }
 
-            if (this.placeholderImage == null) {
-                this.placeholderImage = options.placeholderImage
+            if (this.placeholder == null) {
+                this.placeholder = options.placeholder
             }
             if (this.errorImage == null) {
                 this.errorImage = options.errorImage
@@ -781,7 +781,7 @@ interface ImageOptions {
             transformations = transformations?.takeIf { it.isNotEmpty() },
             disallowReuseBitmap = disallowReuseBitmap,
             ignoreExifOrientation = ignoreExifOrientation,
-            placeholderImage = placeholderImage,
+            placeholder = placeholder,
             errorImage = errorImage,
             transition = transition,
             disallowAnimatedImage = disallowAnimatedImage,
@@ -809,7 +809,7 @@ interface ImageOptions {
         override val disallowReuseBitmap: Boolean?,
         override val ignoreExifOrientation: Boolean?,
         override val resultCachePolicy: CachePolicy?,
-        override val placeholderImage: StateImage?,
+        override val placeholder: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Transition.Factory?,
         override val disallowAnimatedImage: Boolean?,
@@ -837,7 +837,7 @@ interface ImageOptions {
             if (disallowReuseBitmap != other.disallowReuseBitmap) return false
             if (ignoreExifOrientation != other.ignoreExifOrientation) return false
             if (resultCachePolicy != other.resultCachePolicy) return false
-            if (placeholderImage != other.placeholderImage) return false
+            if (placeholder != other.placeholder) return false
             if (errorImage != other.errorImage) return false
             if (transition != other.transition) return false
             if (disallowAnimatedImage != other.disallowAnimatedImage) return false
@@ -865,7 +865,7 @@ interface ImageOptions {
             result = 31 * result + (disallowReuseBitmap?.hashCode() ?: 0)
             result = 31 * result + (ignoreExifOrientation?.hashCode() ?: 0)
             result = 31 * result + (resultCachePolicy?.hashCode() ?: 0)
-            result = 31 * result + (placeholderImage?.hashCode() ?: 0)
+            result = 31 * result + (placeholder?.hashCode() ?: 0)
             result = 31 * result + (errorImage?.hashCode() ?: 0)
             result = 31 * result + (transition?.hashCode() ?: 0)
             result = 31 * result + (disallowAnimatedImage?.hashCode() ?: 0)
@@ -894,7 +894,7 @@ interface ImageOptions {
                 append("disallowReuseBitmap=$disallowReuseBitmap, ")
                 append("ignoreExifOrientation=$ignoreExifOrientation, ")
                 append("resultCachePolicy=$resultCachePolicy, ")
-                append("placeholderImage=$placeholderImage, ")
+                append("placeholder=$placeholder, ")
                 append("errorImage=$errorImage, ")
                 append("transition=$transition, ")
                 append("disallowAnimatedImage=$disallowAnimatedImage, ")

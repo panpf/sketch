@@ -181,7 +181,7 @@ interface ImageRequest {
     /**
      * Placeholder image when loading
      */
-    val placeholderImage: StateImage?
+    val placeholder: StateImage?
 
     /**
      * Image to display when loading fails
@@ -794,7 +794,7 @@ interface ImageRequest {
             val transformations = finalOptions.transformations
             val disallowReuseBitmap = finalOptions.disallowReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
-            val placeholderImage = finalOptions.placeholderImage
+            val placeholder = finalOptions.placeholder
             val errorImage = finalOptions.errorImage
             val transition = finalOptions.transition
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
@@ -827,7 +827,7 @@ interface ImageRequest {
                         transformations = transformations,
                         disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
-                        placeholderImage = placeholderImage,
+                        placeholder = placeholder,
                         errorImage = errorImage,
                         transition = transition,
                         disallowAnimatedImage = disallowAnimatedImage,
@@ -860,7 +860,7 @@ interface ImageRequest {
                         transformations = transformations,
                         disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
-                        placeholderImage = placeholderImage,
+                        placeholder = placeholder,
                         errorImage = errorImage,
                         transition = transition,
                         disallowAnimatedImage = disallowAnimatedImage,
@@ -893,7 +893,7 @@ interface ImageRequest {
                         transformations = transformations,
                         disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
-                        placeholderImage = placeholderImage,
+                        placeholder = placeholder,
                         errorImage = errorImage,
                         transition = transition,
                         disallowAnimatedImage = disallowAnimatedImage,

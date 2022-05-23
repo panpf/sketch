@@ -1138,7 +1138,7 @@ class RequestExecutorTest {
     }
 
     @Test
-    fun testPlaceholderImage() {
+    fun testPlaceholder() {
         val context = getContext()
         val sketch = getSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI

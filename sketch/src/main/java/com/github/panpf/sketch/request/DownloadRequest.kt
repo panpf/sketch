@@ -393,7 +393,7 @@ interface DownloadRequest : ImageRequest {
         override val disallowReuseBitmap: Boolean,
         override val ignoreExifOrientation: Boolean,
         override val resultCachePolicy: CachePolicy,
-        override val placeholderImage: StateImage?,
+        override val placeholder: StateImage?,
         override val errorImage: StateImage?,
         override val transition: Factory?,
         override val disallowAnimatedImage: Boolean,

@@ -105,7 +105,7 @@ class LoadRequestTest {
             Assert.assertFalse(this.disallowReuseBitmap)
             Assert.assertFalse(this.ignoreExifOrientation)
             Assert.assertEquals(ENABLED, this.resultCachePolicy)
-            Assert.assertNull(this.placeholderImage)
+            Assert.assertNull(this.placeholder)
             Assert.assertNull(this.errorImage)
             Assert.assertNull(this.transition)
             Assert.assertFalse(this.disallowAnimatedImage)
@@ -1156,35 +1156,35 @@ class LoadRequestTest {
     }
 
     @Test
-    fun testPlaceholderImage() {
+    fun testPlaceholder() {
         val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertNull(placeholderImage)
+                Assert.assertNull(placeholder)
             }
 
             placeholder(ColorStateImage(IntColor(Color.BLUE)))
             build().apply {
-                Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), placeholderImage)
+                Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), placeholder)
             }
 
             placeholder(ColorDrawable(Color.GREEN))
             build().apply {
-                Assert.assertEquals(true, placeholderImage is DrawableStateImage)
+                Assert.assertEquals(true, placeholder is DrawableStateImage)
             }
 
             placeholder(android.R.drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
                     DrawableStateImage(android.R.drawable.bottom_bar),
-                    placeholderImage
+                    placeholder
                 )
             }
 
             placeholder(null)
             build().apply {
-                Assert.assertNull(placeholderImage)
+                Assert.assertNull(placeholder)
             }
         }
     }

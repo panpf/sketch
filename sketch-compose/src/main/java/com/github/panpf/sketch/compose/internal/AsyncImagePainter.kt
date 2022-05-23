@@ -87,7 +87,7 @@ class AsyncImagePainter(
     override fun onRemembered() {
         if (isPreview) {
             state = State.Loading(
-                request.placeholderImage
+                request.placeholder
                     ?.getDrawable(sketch, request, null)
                     ?.toPainter(filterQuality)
             )

@@ -91,7 +91,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.disallowReuseBitmap)
             Assert.assertNull(this.ignoreExifOrientation)
             Assert.assertNull(this.resultCachePolicy)
-            Assert.assertNull(this.placeholderImage)
+            Assert.assertNull(this.placeholder)
             Assert.assertNull(this.errorImage)
             Assert.assertNull(this.transition)
             Assert.assertNull(this.disallowAnimatedImage)
@@ -219,7 +219,7 @@ class ImageOptionsTest {
             placeholder(ColorDrawable(Color.BLUE))
         }.apply {
             Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(this.placeholderImage)
+            Assert.assertNotNull(this.placeholder)
         }
 
         ImageOptions {
@@ -528,20 +528,20 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.placeholderImage)
+            Assert.assertEquals(null, this.placeholder)
         }.merged(ImageOptions {
             placeholder(android.R.drawable.bottom_bar)
         }).apply {
             Assert.assertEquals(
                 DrawableStateImage(android.R.drawable.bottom_bar),
-                this.placeholderImage
+                this.placeholder
             )
         }.merged(ImageOptions {
             placeholder(android.R.drawable.arrow_up_float)
         }).apply {
             Assert.assertEquals(
                 DrawableStateImage(android.R.drawable.bottom_bar),
-                this.placeholderImage
+                this.placeholder
             )
         }
 
@@ -1344,33 +1344,33 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testPlaceholderImage() {
+    fun testPlaceholder() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(placeholderImage)
+                Assert.assertNull(placeholder)
             }
 
             placeholder(ColorStateImage(IntColor(Color.BLUE)))
             build().apply {
-                Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), placeholderImage)
+                Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), placeholder)
             }
 
             placeholder(ColorDrawable(Color.GREEN))
             build().apply {
-                Assert.assertEquals(true, placeholderImage is DrawableStateImage)
+                Assert.assertEquals(true, placeholder is DrawableStateImage)
             }
 
             placeholder(android.R.drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
                     DrawableStateImage(android.R.drawable.bottom_bar),
-                    placeholderImage
+                    placeholder
                 )
             }
 
             placeholder(null)
             build().apply {
-                Assert.assertNull(placeholderImage)
+                Assert.assertNull(placeholder)
             }
         }
     }
