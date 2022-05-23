@@ -9,16 +9,16 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.viewer.ImageFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ImageFormatTestFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {
+class DecoderTestFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {
 
-    private val viewModel by viewModels<ImageFormatTestViewModel>()
+    private val viewModel by viewModels<DecoderTestViewModel>()
 
     override fun onViewCreated(
         toolbar: Toolbar,
         binding: TabPagerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Image Format"
+        toolbar.title = "Decoder"
 
         viewModel.data.observe(viewLifecycleOwner) {
             it ?: return@observe

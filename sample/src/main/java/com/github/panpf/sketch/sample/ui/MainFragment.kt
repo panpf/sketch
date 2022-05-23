@@ -70,15 +70,10 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                     ),
 
                     ListSeparator("Test"),
-                    Link(
-                        "Image Format",
-                        MainFragmentDirections.actionImageFormatTestFragment()
-                    ),
                     Link("Fetcher", MainFragmentDirections.actionFetcherTestFragment()),
-                    Link(
-                        "Insanity Test",
-                        MainFragmentDirections.actionInsanityTestFragment()
-                    ),
+                    Link("Decoder", MainFragmentDirections.actionDecoderTestFragment()),
+                    Link("Transformation", MainFragmentDirections.actionTransformationTestPagerFragment()),
+                    Link("Insanity Test", MainFragmentDirections.actionInsanityTestFragment()),
                     Link("Other Test", MainFragmentDirections.actionTestFragment()),
                     // todo 增加更多的示例
 //                    Link(

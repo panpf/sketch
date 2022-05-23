@@ -59,8 +59,8 @@
             app:popExitAnim="@anim/nav_pop_exit" />
 
         <action
-            android:id="@+id/action_imageFormatTestFragment"
-            app:destination="@id/imageFormatTestFragment"
+            android:id="@+id/action_decoderTestFragment"
+            app:destination="@id/decoderTestFragment"
             app:enterAnim="@anim/nav_enter"
             app:exitAnim="@anim/nav_exit"
             app:popEnterAnim="@anim/nav_pop_enter"
@@ -68,6 +68,13 @@
         <action
             android:id="@+id/action_fetcherTestFragment"
             app:destination="@id/fetcherTestFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_transformationTestPagerFragment"
+            app:destination="@id/transformationTestPagerFragment"
             app:enterAnim="@anim/nav_enter"
             app:exitAnim="@anim/nav_exit"
             app:popEnterAnim="@anim/nav_pop_enter"
@@ -143,8 +150,13 @@
         android:label="FetcherTestFragment" />
 
     <fragment
-        android:id="@+id/imageFormatTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.format.ImageFormatTestFragment"
+        android:id="@+id/decoderTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.format.DecoderTestFragment"
+        android:label="ImageFormatTestFragment" />
+
+    <fragment
+        android:id="@+id/transformationTestPagerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.transform.TransformationTestPagerFragment"
         android:label="ImageFormatTestFragment" />
 
     <fragment

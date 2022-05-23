@@ -55,7 +55,7 @@
     <string name="button_width_height_swap">WIDTH HEIGHT SWAP</string>
     <string name="button_in_sample_size_is_2">IN_SAMPLE_SIZE IS 2</string>
     <string name="text_transparency">Transparency</string>
-    <string name="text_rounded_radius">Rounded Radius</string>
+    <string name="text_rounded_radius">Rounded Corners Radius</string>
     <string name="text_mask_opacity">Mask Opacity</string>
     <string name="button_rotate_45">Rotate 45°</string>
     <string name="text_stroke_width">Stroke Width</string>

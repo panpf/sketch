@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ImageFormatTestViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
+class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
 
     val data = MutableLiveData<Pair<Array<String>, List<ImageDetail>>>()
 
