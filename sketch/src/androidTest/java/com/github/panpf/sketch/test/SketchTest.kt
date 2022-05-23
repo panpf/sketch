@@ -219,7 +219,7 @@ class SketchTest {
             }
 
             build().apply {
-                Assert.assertEquals(listOf(EngineRequestInterceptor()), components.requestInterceptors)
+                Assert.assertEquals(listOf(EngineRequestInterceptor()), components.requestInterceptorList)
             }
             components {
                 addRequestInterceptor(TestRequestInterceptor())
@@ -227,9 +227,9 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     listOf(TestRequestInterceptor(), EngineRequestInterceptor()),
-                    components.requestInterceptors
+                    components.requestInterceptorList
                 )
-                Assert.assertNotEquals(listOf(EngineRequestInterceptor()), components.requestInterceptors)
+                Assert.assertNotEquals(listOf(EngineRequestInterceptor()), components.requestInterceptorList)
             }
 
             build().apply {
@@ -239,7 +239,7 @@ class SketchTest {
                         BitmapTransformationDecodeInterceptor(),
                         BitmapEngineDecodeInterceptor()
                     ),
-                    components.bitmapDecodeInterceptors
+                    components.bitmapDecodeInterceptorList
                 )
             }
             components {
@@ -253,7 +253,7 @@ class SketchTest {
                         BitmapTransformationDecodeInterceptor(),
                         BitmapEngineDecodeInterceptor()
                     ),
-                    components.bitmapDecodeInterceptors
+                    components.bitmapDecodeInterceptorList
                 )
                 Assert.assertNotEquals(
                     listOf(
@@ -261,14 +261,14 @@ class SketchTest {
                         BitmapTransformationDecodeInterceptor(),
                         BitmapEngineDecodeInterceptor()
                     ),
-                    components.bitmapDecodeInterceptors
+                    components.bitmapDecodeInterceptorList
                 )
             }
 
             build().apply {
                 Assert.assertEquals(
                     listOf(DrawableEngineDecodeInterceptor()),
-                    components.drawableDecodeInterceptors
+                    components.drawableDecodeInterceptorList
                 )
             }
             components {
@@ -277,11 +277,11 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     listOf(TestDrawableDecodeInterceptor(), DrawableEngineDecodeInterceptor()),
-                    components.drawableDecodeInterceptors
+                    components.drawableDecodeInterceptorList
                 )
                 Assert.assertNotEquals(
                     listOf(DrawableEngineDecodeInterceptor()),
-                    components.drawableDecodeInterceptors
+                    components.drawableDecodeInterceptorList
                 )
             }
 

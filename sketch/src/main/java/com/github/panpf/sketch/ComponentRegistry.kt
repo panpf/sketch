@@ -147,10 +147,11 @@ class ComponentRegistry private constructor(
             .joinToString(prefix = "[", postfix = "]", separator = ",")
         return "ComponentRegistry(fetcherFactoryList=${fetchersString}," +
                 "bitmapDecoderFactoryList=${bitmapDecodersString}," +
-                "drawableDecoderFactoryList=${drawableDecodersString})" +
-                "requestInterceptorList=${requestInterceptorsString})" +
-                "bitmapDecodeInterceptorList=${bitmapDecodeInterceptorsString})" +
-                "drawableDecodeInterceptorList=${drawableDecodeInterceptorsString})"
+                "drawableDecoderFactoryList=${drawableDecodersString}," +
+                "requestInterceptorList=${requestInterceptorsString}," +
+                "bitmapDecodeInterceptorList=${bitmapDecodeInterceptorsString}," +
+                "drawableDecodeInterceptorList=${drawableDecodeInterceptorsString}" +
+                ")"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -274,18 +275,18 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     /**
      * All [RequestInterceptor]
      */
-    val requestInterceptors: List<RequestInterceptor> = registry.requestInterceptorList
+    val requestInterceptorList: List<RequestInterceptor> = registry.requestInterceptorList
 
     /**
      * All [BitmapDecodeInterceptor]
      */
-    val bitmapDecodeInterceptors: List<BitmapDecodeInterceptor> =
+    val bitmapDecodeInterceptorList: List<BitmapDecodeInterceptor> =
         registry.bitmapDecodeInterceptorList
 
     /**
      * All [DrawableDecodeInterceptor]
      */
-    val drawableDecodeInterceptors: List<DrawableDecodeInterceptor> =
+    val drawableDecodeInterceptorList: List<DrawableDecodeInterceptor> =
         registry.drawableDecodeInterceptorList
 
     /**

@@ -74,7 +74,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                 request = request,
                 requestContext = requestContext,
                 fetchResult = null,
-                interceptors = sketch.components.drawableDecodeInterceptors,
+                interceptors = sketch.components.drawableDecodeInterceptorList,
                 index = 0,
             ).proceed().toDisplayData()
         }
@@ -99,7 +99,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                 request = request,
                 requestContext = chain.requestContext,
                 fetchResult = null,
-                interceptors = sketch.components.bitmapDecodeInterceptors,
+                interceptors = sketch.components.bitmapDecodeInterceptorList,
                 index = 0,
             ).proceed().toLoadData()
         }

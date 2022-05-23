@@ -31,7 +31,7 @@ class DefaultDrawableDecoder(
                     request = request,
                     requestContext = requestContext,
                     fetchResult = fetchResult,
-                    interceptors = sketch.components.bitmapDecodeInterceptors,
+                    interceptors = sketch.components.bitmapDecodeInterceptorList,
                     index = 0,
                 ).proceed()
                 val drawable = helper?.write(bitmapResult)
