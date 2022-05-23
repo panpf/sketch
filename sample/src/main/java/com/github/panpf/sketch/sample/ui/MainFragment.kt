@@ -72,32 +72,16 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                     ListSeparator("Test"),
                     Link("Fetcher", MainFragmentDirections.actionFetcherTestFragment()),
                     Link("Decoder", MainFragmentDirections.actionDecoderTestFragment()),
-                    Link("Transformation", MainFragmentDirections.actionTransformationTestPagerFragment()),
+                    Link(
+                        "Transformation",
+                        MainFragmentDirections.actionTransformationTestPagerFragment()
+                    ),
+                    Link(
+                        "ExifOrientation",
+                        MainFragmentDirections.actionExifOrientationTestPagerFragment()
+                    ),
                     Link("Insanity Test", MainFragmentDirections.actionInsanityTestFragment()),
                     Link("Other Test", MainFragmentDirections.actionTestFragment()),
-                    // todo 增加更多的示例
-//                    Link(
-//                        "ImageProcessor Test",
-//                        MainFragmentDirections.actionImageProcessorTestFragment()
-//                    ),
-//                    Link(
-//                        "ImageShaper Test",
-//                        MainFragmentDirections.actionImageShaperTestFragment()
-//                    ),
-//                    Link(
-//                        "Repeat Load Or Download Test",
-//                        MainFragmentDirections.actionRepeatLoadOrDownloadTestFragment()
-//                    ),
-//                    Link("inBitmap Test", MainFragmentDirections.actionInBitmapTestFragment()),
-//                    Link(
-//                        "Image Orientation Test",
-//                        MainFragmentDirections.actionImageOrientationTestHomeFragment()
-//                    ),
-//                    Link("Other Test", MainFragmentDirections.actionOtherTestFragment()),
-//
-//                    ListSeparator("App"),
-//                    Link("Settings", MainFragmentDirections.actionSettingsFragment()),
-//                    Link("About", MainFragmentDirections.actionAboutFragment()),
                 )
             )
         }

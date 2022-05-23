@@ -39,6 +39,7 @@ class BlurTransformationTestFragment : BindingFragment<BlurTransformationTestFra
                 override fun onProgressChanged(
                     seekBar: SeekBar, progress: Int, fromUser: Boolean
                 ) {
+                    // todo 快速拖动时崩溃
                     viewModel.changeRadius(progress)
                 }
             })

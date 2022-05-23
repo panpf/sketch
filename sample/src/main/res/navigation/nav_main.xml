@@ -80,6 +80,13 @@
             app:popEnterAnim="@anim/nav_pop_enter"
             app:popExitAnim="@anim/nav_pop_exit" />
         <action
+            android:id="@+id/action_exifOrientationTestPagerFragment"
+            app:destination="@id/exifOrientationTestPagerFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
             android:id="@+id/action_insanityTestFragment"
             app:destination="@id/insanityTestFragment"
             app:enterAnim="@anim/nav_enter"
@@ -152,12 +159,17 @@
     <fragment
         android:id="@+id/decoderTestFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.format.DecoderTestFragment"
-        android:label="ImageFormatTestFragment" />
+        android:label="DecoderTestFragment" />
 
     <fragment
         android:id="@+id/transformationTestPagerFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.transform.TransformationTestPagerFragment"
-        android:label="ImageFormatTestFragment" />
+        android:label="TransformationTestPagerFragment" />
+
+    <fragment
+        android:id="@+id/exifOrientationTestPagerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.exif.ExifOrientationTestPagerFragment"
+        android:label="ExifOrientationTestPagerFragment" />
 
     <fragment
         android:id="@+id/hugeImageHomeFragment"
