@@ -20,7 +20,7 @@ open class MyImageView @JvmOverloads constructor(
                 disabledBitmapMemoryCache.sharedFlow,
                 disabledDownloadDiskCache.sharedFlow,
                 disabledBitmapResultDiskCache.sharedFlow,
-                disabledReuseBitmap.sharedFlow,
+                disallowReuseBitmap.sharedFlow,
                 inPreferQualityOverSpeed.sharedFlow,
                 bitmapQuality.sharedFlow,
             ).observeWithViewLifecycle(this@MyImageView) {

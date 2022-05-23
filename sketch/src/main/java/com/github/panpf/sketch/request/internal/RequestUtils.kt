@@ -75,8 +75,8 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
                 it.key.replace("Transformation", "")
             })
         }
-        if (disabledReuseBitmap) {
-            appendQueryParameter("_disabledReuseBitmap", true.toString())
+        if (disallowReuseBitmap) {
+            appendQueryParameter("_disallowReuseBitmap", true.toString())
         }
         if (ignoreExifOrientation) {
             appendQueryParameter("_ignoreExifOrientation", true.toString())

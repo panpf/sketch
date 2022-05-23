@@ -36,8 +36,8 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
             if (prefsService.disabledBitmapResultDiskCache.value) {
                 resultCachePolicy(DISABLED)
             }
-            if (prefsService.disabledReuseBitmap.value) {
-                disabledReuseBitmap(true)
+            if (prefsService.disallowReuseBitmap.value) {
+                disallowReuseBitmap(true)
             }
             if (prefsService.ignoreExifOrientation.value) {
                 ignoreExifOrientation(true)

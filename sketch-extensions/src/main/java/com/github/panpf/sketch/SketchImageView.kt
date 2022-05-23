@@ -75,9 +75,9 @@ open class SketchImageView @JvmOverloads constructor(
                     ?.apply {
                         bitmapConfig(parseBitmapConfigAttribute(this))
                     }
-                typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_disabledReuseBitmap)
+                typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_disallowReuseBitmap)
                     ?.apply {
-                        disabledReuseBitmap(this)
+                        disallowReuseBitmap(this)
                     }
                 typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_ignoreExifOrientation)
                     ?.apply {

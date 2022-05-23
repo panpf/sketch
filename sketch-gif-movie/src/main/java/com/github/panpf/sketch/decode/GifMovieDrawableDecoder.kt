@@ -40,7 +40,7 @@ import com.github.panpf.sketch.request.repeatCount
  *
  * onAnimationEnd
  *
- * disabledReuseBitmap
+ * disallowReuseBitmap
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifMovieDrawableDecoder constructor(
@@ -63,7 +63,7 @@ class GifMovieDrawableDecoder constructor(
                 movie.isOpaque && request.bitmapConfig?.isLowQuality == true -> RGB_565
                 else -> ARGB_8888
             },
-            if (!request.disabledReuseBitmap) {
+            if (!request.disallowReuseBitmap) {
                 object : MovieDrawable.BitmapCreator {
                     override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
                         sketch.bitmapPool.getOrCreate(width, height, config)

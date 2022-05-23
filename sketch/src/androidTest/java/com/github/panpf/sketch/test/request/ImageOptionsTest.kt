@@ -88,7 +88,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.resizePrecisionDecider)
             Assert.assertNull(this.resizeScaleDecider)
             Assert.assertNull(this.transformations)
-            Assert.assertNull(this.disabledReuseBitmap)
+            Assert.assertNull(this.disallowReuseBitmap)
             Assert.assertNull(this.ignoreExifOrientation)
             Assert.assertNull(this.resultCachePolicy)
             Assert.assertNull(this.placeholderImage)
@@ -188,10 +188,10 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            disabledReuseBitmap(true)
+            disallowReuseBitmap(true)
         }.apply {
             Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(this.disabledReuseBitmap)
+            Assert.assertNotNull(this.disallowReuseBitmap)
         }
 
         ImageOptions {
@@ -480,15 +480,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.disabledReuseBitmap)
+            Assert.assertEquals(null, this.disallowReuseBitmap)
         }.merged(ImageOptions {
-            disabledReuseBitmap(true)
+            disallowReuseBitmap(true)
         }).apply {
-            Assert.assertEquals(true, this.disabledReuseBitmap)
+            Assert.assertEquals(true, this.disallowReuseBitmap)
         }.merged(ImageOptions {
-            disabledReuseBitmap(false)
+            disallowReuseBitmap(false)
         }).apply {
-            Assert.assertEquals(true, this.disabledReuseBitmap)
+            Assert.assertEquals(true, this.disallowReuseBitmap)
         }
 
         ImageOptions().apply {
@@ -636,7 +636,7 @@ class ImageOptionsTest {
                 }.apply { add(this) }.newOptions {
                     transformations(BlurTransformation())
                 }.apply { add(this) }.newOptions {
-                    disabledReuseBitmap(false)
+                    disallowReuseBitmap(false)
                 }.apply { add(this) }.newOptions {
                     ignoreExifOrientation(true)
                 }.apply { add(this) }.newOptions {
@@ -1248,25 +1248,25 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testDisabledReuseBitmap() {
+    fun testDisallowReuseBitmap() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(disabledReuseBitmap)
+                Assert.assertNull(disallowReuseBitmap)
             }
 
-            disabledReuseBitmap(true)
+            disallowReuseBitmap(true)
             build().apply {
-                Assert.assertEquals(true, disabledReuseBitmap)
+                Assert.assertEquals(true, disallowReuseBitmap)
             }
 
-            disabledReuseBitmap(false)
+            disallowReuseBitmap(false)
             build().apply {
-                Assert.assertEquals(false, disabledReuseBitmap)
+                Assert.assertEquals(false, disallowReuseBitmap)
             }
 
-            disabledReuseBitmap(null)
+            disallowReuseBitmap(null)
             build().apply {
-                Assert.assertNull(disabledReuseBitmap)
+                Assert.assertNull(disallowReuseBitmap)
             }
         }
     }

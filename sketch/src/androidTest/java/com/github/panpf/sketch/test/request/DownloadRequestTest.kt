@@ -102,7 +102,7 @@ class DownloadRequestTest {
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.resizePrecisionDecider)
             Assert.assertEquals(FixedScaleDecider(CENTER_CROP), this.resizeScaleDecider)
             Assert.assertNull(this.transformations)
-            Assert.assertFalse(this.disabledReuseBitmap)
+            Assert.assertFalse(this.disallowReuseBitmap)
             Assert.assertFalse(this.ignoreExifOrientation)
             Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholderImage)
@@ -1052,27 +1052,27 @@ class DownloadRequestTest {
     }
 
     @Test
-    fun testDisabledReuseBitmap() {
+    fun testDisallowReuseBitmap() {
         val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DownloadRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertFalse(disabledReuseBitmap)
+                Assert.assertFalse(disallowReuseBitmap)
             }
 
-            disabledReuseBitmap(true)
+            disallowReuseBitmap(true)
             build().apply {
-                Assert.assertEquals(true, disabledReuseBitmap)
+                Assert.assertEquals(true, disallowReuseBitmap)
             }
 
-            disabledReuseBitmap(false)
+            disallowReuseBitmap(false)
             build().apply {
-                Assert.assertEquals(false, disabledReuseBitmap)
+                Assert.assertEquals(false, disallowReuseBitmap)
             }
 
-            disabledReuseBitmap(null)
+            disallowReuseBitmap(null)
             build().apply {
-                Assert.assertFalse(disabledReuseBitmap)
+                Assert.assertFalse(disallowReuseBitmap)
             }
         }
     }

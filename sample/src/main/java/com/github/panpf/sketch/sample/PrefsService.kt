@@ -73,8 +73,8 @@ class PrefsService(val context: Context) {
     val disabledDownloadDiskCache by lazy {
         BooleanMmkvData(mmkv, "disabledDownloadDiskCache", false)
     }
-    val disabledReuseBitmap by lazy {
-        BooleanMmkvData(mmkv, "disabledReuseBitmap", false)
+    val disallowReuseBitmap by lazy {
+        BooleanMmkvData(mmkv, "disallowReuseBitmap", false)
     }
 
     val showTileBoundsInHugeImagePage by lazy {

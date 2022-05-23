@@ -941,7 +941,7 @@ class RequestExecutorTest {
     }
 
     @Test
-    fun testDisabledReuseBitmap() {
+    fun testDisallowReuseBitmap() {
         val context = getContext()
         val sketch = getSketch()
         val bitmapPool = sketch.bitmapPool
@@ -958,20 +958,20 @@ class RequestExecutorTest {
 
         bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
         request.newDisplayRequest {
-            disabledReuseBitmap(true)
+            disallowReuseBitmap(true)
         }.let { runBlocking { sketch.execute(it) } }
         Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
         Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
 
         bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
         request.newDisplayRequest {
-            disabledReuseBitmap(false)
+            disallowReuseBitmap(false)
         }.let { runBlocking { sketch.execute(it) } }
         Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
 
         bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
         request.newDisplayRequest {
-            disabledReuseBitmap(null)
+            disallowReuseBitmap(null)
         }.let { runBlocking { sketch.execute(it) } }
         Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
     }

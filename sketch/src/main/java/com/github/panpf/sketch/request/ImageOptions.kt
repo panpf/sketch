@@ -132,7 +132,7 @@ interface ImageOptions {
      * Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
      */
     // todo disabled change to disallow
-    val disabledReuseBitmap: Boolean?
+    val disallowReuseBitmap: Boolean?
 
     /**
      * Ignore Orientation property in file Exif info
@@ -227,7 +227,7 @@ interface ImageOptions {
             && resizePrecisionDecider == null
             && resizeScaleDecider == null
             && transformations == null
-            && disabledReuseBitmap == null
+            && disallowReuseBitmap == null
             && ignoreExifOrientation == null
             && resultCachePolicy == null
             && placeholderImage == null
@@ -252,7 +252,7 @@ interface ImageOptions {
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScaleDecider: ScaleDecider? = null
         private var transformations: MutableList<Transformation>? = null
-        private var disabledReuseBitmap: Boolean? = null
+        private var disallowReuseBitmap: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
         private var resultCachePolicy: CachePolicy? = null
 
@@ -282,7 +282,7 @@ interface ImageOptions {
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScaleDecider = request.resizeScaleDecider
             this.transformations = request.transformations?.toMutableList()
-            this.disabledReuseBitmap = request.disabledReuseBitmap
+            this.disallowReuseBitmap = request.disallowReuseBitmap
             this.ignoreExifOrientation = request.ignoreExifOrientation
             this.resultCachePolicy = request.resultCachePolicy
 
@@ -573,8 +573,8 @@ interface ImageOptions {
         /**
          * Set disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
          */
-        fun disabledReuseBitmap(disabled: Boolean? = true): Builder = apply {
-            this.disabledReuseBitmap = disabled
+        fun disallowReuseBitmap(disabled: Boolean? = true): Builder = apply {
+            this.disallowReuseBitmap = disabled
         }
 
         /**
@@ -735,8 +735,8 @@ interface ImageOptions {
             options.transformations?.takeIf { it.isNotEmpty() }?.let {
                 addTransformations(it)
             }
-            if (this.disabledReuseBitmap == null) {
-                this.disabledReuseBitmap = options.disabledReuseBitmap
+            if (this.disallowReuseBitmap == null) {
+                this.disallowReuseBitmap = options.disallowReuseBitmap
             }
             if (this.ignoreExifOrientation == null) {
                 this.ignoreExifOrientation = options.ignoreExifOrientation
@@ -780,7 +780,7 @@ interface ImageOptions {
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScaleDecider = resizeScaleDecider,
             transformations = transformations?.takeIf { it.isNotEmpty() },
-            disabledReuseBitmap = disabledReuseBitmap,
+            disallowReuseBitmap = disallowReuseBitmap,
             ignoreExifOrientation = ignoreExifOrientation,
             placeholderImage = placeholderImage,
             errorImage = errorImage,
@@ -807,7 +807,7 @@ interface ImageOptions {
         override val resizePrecisionDecider: PrecisionDecider?,
         override val resizeScaleDecider: ScaleDecider?,
         override val transformations: List<Transformation>?,
-        override val disabledReuseBitmap: Boolean?,
+        override val disallowReuseBitmap: Boolean?,
         override val ignoreExifOrientation: Boolean?,
         override val resultCachePolicy: CachePolicy?,
         override val placeholderImage: StateImage?,
@@ -835,7 +835,7 @@ interface ImageOptions {
             if (resizePrecisionDecider != other.resizePrecisionDecider) return false
             if (resizeScaleDecider != other.resizeScaleDecider) return false
             if (transformations != other.transformations) return false
-            if (disabledReuseBitmap != other.disabledReuseBitmap) return false
+            if (disallowReuseBitmap != other.disallowReuseBitmap) return false
             if (ignoreExifOrientation != other.ignoreExifOrientation) return false
             if (resultCachePolicy != other.resultCachePolicy) return false
             if (placeholderImage != other.placeholderImage) return false
@@ -863,7 +863,7 @@ interface ImageOptions {
             result = 31 * result + (resizePrecisionDecider?.hashCode() ?: 0)
             result = 31 * result + (resizeScaleDecider?.hashCode() ?: 0)
             result = 31 * result + (transformations?.hashCode() ?: 0)
-            result = 31 * result + (disabledReuseBitmap?.hashCode() ?: 0)
+            result = 31 * result + (disallowReuseBitmap?.hashCode() ?: 0)
             result = 31 * result + (ignoreExifOrientation?.hashCode() ?: 0)
             result = 31 * result + (resultCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (placeholderImage?.hashCode() ?: 0)
@@ -892,7 +892,7 @@ interface ImageOptions {
                 append("resizePrecisionDecider=$resizePrecisionDecider, ")
                 append("resizeScaleDecider=$resizeScaleDecider, ")
                 append("transformations=$transformations, ")
-                append("disabledReuseBitmap=$disabledReuseBitmap, ")
+                append("disallowReuseBitmap=$disallowReuseBitmap, ")
                 append("ignoreExifOrientation=$ignoreExifOrientation, ")
                 append("resultCachePolicy=$resultCachePolicy, ")
                 append("placeholderImage=$placeholderImage, ")

@@ -25,7 +25,7 @@
         <enum name="rgbaF16" value="8" />
         <enum name="hardware" value="9" />
     </attr>
-    <attr name="sketch_disabledReuseBitmap" format="boolean|reference" />
+    <attr name="sketch_disallowReuseBitmap" format="boolean|reference" />
     <attr name="sketch_ignoreExifOrientation" format="boolean|reference" />
     <attr name="sketch_resizeWidth" format="dimension|reference" />
     <attr name="sketch_resizeHeight" format="dimension|reference" />
@@ -87,7 +87,7 @@
         <attr name="sketch_downloadCachePolicy" />
         <attr name="sketch_preferQualityOverSpeed" />
         <attr name="sketch_bitmapConfig" />
-        <attr name="sketch_disabledReuseBitmap" />
+        <attr name="sketch_disallowReuseBitmap" />
         <attr name="sketch_ignoreExifOrientation" />
         <attr name="sketch_resizeWidth" />
         <attr name="sketch_resizeHeight" />

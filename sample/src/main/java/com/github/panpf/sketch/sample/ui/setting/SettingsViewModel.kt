@@ -42,7 +42,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             prefsService.disabledBitmapMemoryCache.sharedFlow,
             prefsService.disabledBitmapResultDiskCache.sharedFlow,
             prefsService.disabledDownloadDiskCache.sharedFlow,
-            prefsService.disabledReuseBitmap.sharedFlow,
+            prefsService.disallowReuseBitmap.sharedFlow,
             prefsService.showDataFromLogo.sharedFlow,
             prefsService.showTileBoundsInHugeImagePage.sharedFlow,
             prefsService.logLevel.sharedFlow,
@@ -202,7 +202,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             SwitchMenuFlow(
                 title = "Bitmap Pool",
                 desc = null,
-                data = prefsService.disabledReuseBitmap,
+                data = prefsService.disallowReuseBitmap,
                 reverse = true
             )
         )

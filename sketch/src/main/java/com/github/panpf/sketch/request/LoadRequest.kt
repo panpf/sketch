@@ -295,8 +295,8 @@ interface LoadRequest : ImageRequest {
                 super.removeTransformations(*transformations)
             }
 
-        override fun disabledReuseBitmap(disabled: Boolean?): Builder = apply {
-            super.disabledReuseBitmap(disabled)
+        override fun disallowReuseBitmap(disabled: Boolean?): Builder = apply {
+            super.disallowReuseBitmap(disabled)
         }
 
         override fun ignoreExifOrientation(ignore: Boolean?): Builder = apply {
@@ -392,7 +392,7 @@ interface LoadRequest : ImageRequest {
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,
-        override val disabledReuseBitmap: Boolean,
+        override val disallowReuseBitmap: Boolean,
         override val ignoreExifOrientation: Boolean,
         override val resultCachePolicy: CachePolicy,
         override val placeholderImage: StateImage?,

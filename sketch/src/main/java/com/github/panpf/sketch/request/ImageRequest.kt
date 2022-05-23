@@ -161,7 +161,7 @@ interface ImageRequest {
     /**
      * Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
      */
-    val disabledReuseBitmap: Boolean
+    val disallowReuseBitmap: Boolean
 
     /**
      * Ignore Orientation property in file Exif info
@@ -632,8 +632,8 @@ interface ImageRequest {
         /**
          * Set disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
          */
-        open fun disabledReuseBitmap(disabled: Boolean? = true): Builder = apply {
-            definedOptionsBuilder.disabledReuseBitmap(disabled)
+        open fun disallowReuseBitmap(disabled: Boolean? = true): Builder = apply {
+            definedOptionsBuilder.disallowReuseBitmap(disabled)
         }
 
         /**
@@ -792,7 +792,7 @@ interface ImageRequest {
             val resizeScaleDecider = finalOptions.resizeScaleDecider
                 ?: fixedScale(resolveResizeScale())
             val transformations = finalOptions.transformations
-            val disabledReuseBitmap = finalOptions.disabledReuseBitmap ?: false
+            val disallowReuseBitmap = finalOptions.disallowReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
             val placeholderImage = finalOptions.placeholderImage
             val errorImage = finalOptions.errorImage
@@ -825,7 +825,7 @@ interface ImageRequest {
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
                         transformations = transformations,
-                        disabledReuseBitmap = disabledReuseBitmap,
+                        disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
@@ -858,7 +858,7 @@ interface ImageRequest {
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
                         transformations = transformations,
-                        disabledReuseBitmap = disabledReuseBitmap,
+                        disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
@@ -891,7 +891,7 @@ interface ImageRequest {
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
                         transformations = transformations,
-                        disabledReuseBitmap = disabledReuseBitmap,
+                        disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholderImage = placeholderImage,
                         errorImage = errorImage,
