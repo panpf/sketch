@@ -115,7 +115,7 @@ class RequestExecutor {
                     ?: OtherException(request, throwable.toString(), throwable)
                 val errorResult = when (request) {
                     is DisplayRequest -> {
-                        val errorDrawable = request.errorImage
+                        val errorDrawable = request.error
                             ?.getDrawable(sketch, request, exception)
                             ?.tryToResizeDrawable(sketch, request)
                             ?: request.placeholder

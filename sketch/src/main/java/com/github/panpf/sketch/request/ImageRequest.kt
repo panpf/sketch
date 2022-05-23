@@ -186,7 +186,7 @@ interface ImageRequest {
     /**
      * Image to display when loading fails
      */
-    val errorImage: StateImage?
+    val error: StateImage?
 
     /**
      * How the current image and the new image transition
@@ -795,7 +795,7 @@ interface ImageRequest {
             val disallowReuseBitmap = finalOptions.disallowReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
             val placeholder = finalOptions.placeholder
-            val errorImage = finalOptions.errorImage
+            val error = finalOptions.error
             val transition = finalOptions.transition
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
@@ -828,7 +828,7 @@ interface ImageRequest {
                         disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholder = placeholder,
-                        errorImage = errorImage,
+                        error = error,
                         transition = transition,
                         disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
@@ -861,7 +861,7 @@ interface ImageRequest {
                         disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholder = placeholder,
-                        errorImage = errorImage,
+                        error = error,
                         transition = transition,
                         disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
@@ -894,7 +894,7 @@ interface ImageRequest {
                         disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholder = placeholder,
-                        errorImage = errorImage,
+                        error = error,
                         transition = transition,
                         disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,

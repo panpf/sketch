@@ -419,7 +419,7 @@ interface DisplayRequest : ImageRequest {
         override val ignoreExifOrientation: Boolean,
         override val resultCachePolicy: CachePolicy,
         override val placeholder: StateImage?,
-        override val errorImage: StateImage?,
+        override val error: StateImage?,
         override val transition: Factory?,
         override val disallowAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,

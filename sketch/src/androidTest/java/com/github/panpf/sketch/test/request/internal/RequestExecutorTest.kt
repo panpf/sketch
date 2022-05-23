@@ -1180,7 +1180,7 @@ class RequestExecutorTest {
     }
 
     @Test
-    fun testErrorImage() {
+    fun testError() {
         val context = getContext()
         val sketch = getSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI

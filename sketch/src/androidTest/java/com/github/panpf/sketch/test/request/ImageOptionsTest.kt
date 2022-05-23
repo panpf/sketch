@@ -92,7 +92,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.ignoreExifOrientation)
             Assert.assertNull(this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
-            Assert.assertNull(this.errorImage)
+            Assert.assertNull(this.error)
             Assert.assertNull(this.transition)
             Assert.assertNull(this.disallowAnimatedImage)
             Assert.assertNull(this.resizeApplyToDrawable)
@@ -226,7 +226,7 @@ class ImageOptionsTest {
             error(ColorDrawable(Color.BLUE))
         }.apply {
             Assert.assertFalse(this.isEmpty())
-            Assert.assertNotNull(this.errorImage)
+            Assert.assertNotNull(this.error)
         }
 
         ImageOptions {
@@ -546,20 +546,20 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.errorImage)
+            Assert.assertEquals(null, this.error)
         }.merged(ImageOptions {
             error(android.R.drawable.bottom_bar)
         }).apply {
             Assert.assertEquals(
                 newErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
-                this.errorImage
+                this.error
             )
         }.merged(ImageOptions {
             error(android.R.drawable.arrow_up_float)
         }).apply {
             Assert.assertEquals(
                 newErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
-                this.errorImage
+                this.error
             )
         }
 
@@ -1376,23 +1376,23 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testErrorImage() {
+    fun testError() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(errorImage)
+                Assert.assertNull(error)
             }
 
             error(ColorStateImage(IntColor(Color.BLUE)))
             build().apply {
                 Assert.assertEquals(
                     ErrorStateImage.Builder(ColorStateImage(IntColor(Color.BLUE))).build(),
-                    errorImage
+                    error
                 )
             }
 
             error(ColorDrawable(Color.GREEN))
             build().apply {
-                Assert.assertEquals(true, errorImage is ErrorStateImage)
+                Assert.assertEquals(true, error is ErrorStateImage)
             }
 
             error(android.R.drawable.bottom_bar)
@@ -1400,7 +1400,7 @@ class ImageOptionsTest {
                 Assert.assertEquals(
                     ErrorStateImage.Builder(DrawableStateImage(android.R.drawable.bottom_bar))
                         .build(),
-                    errorImage
+                    error
                 )
             }
 
@@ -1411,13 +1411,13 @@ class ImageOptionsTest {
                 Assert.assertEquals(
                     ErrorStateImage.Builder(DrawableStateImage(android.R.drawable.bottom_bar))
                         .uriEmptyError(android.R.drawable.alert_dark_frame).build(),
-                    errorImage
+                    error
                 )
             }
 
             error(null)
             build().apply {
-                Assert.assertNull(errorImage)
+                Assert.assertNull(error)
             }
         }
     }

@@ -109,7 +109,7 @@ class DisplayRequestTest {
             Assert.assertFalse(this.ignoreExifOrientation)
             Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
-            Assert.assertNull(this.errorImage)
+            Assert.assertNull(this.error)
             Assert.assertNull(this.transition)
             Assert.assertFalse(this.disallowAnimatedImage)
             Assert.assertFalse(this.resizeApplyToDrawable)
@@ -147,7 +147,7 @@ class DisplayRequestTest {
             Assert.assertFalse(this.ignoreExifOrientation)
             Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
-            Assert.assertNull(this.errorImage)
+            Assert.assertNull(this.error)
             Assert.assertNull(this.transition)
             Assert.assertFalse(this.disallowAnimatedImage)
             Assert.assertFalse(this.resizeApplyToDrawable)
@@ -1261,25 +1261,25 @@ class DisplayRequestTest {
     }
 
     @Test
-    fun testErrorImage() {
+    fun testError() {
         val context1 = getContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertNull(errorImage)
+                Assert.assertNull(error)
             }
 
             error(ColorStateImage(IntColor(Color.BLUE)))
             build().apply {
                 Assert.assertEquals(
                     ErrorStateImage.Builder(ColorStateImage(IntColor(Color.BLUE))).build(),
-                    errorImage
+                    error
                 )
             }
 
             error(ColorDrawable(Color.GREEN))
             build().apply {
-                Assert.assertEquals(true, errorImage is ErrorStateImage)
+                Assert.assertEquals(true, error is ErrorStateImage)
             }
 
             error(android.R.drawable.bottom_bar)
@@ -1287,7 +1287,7 @@ class DisplayRequestTest {
                 Assert.assertEquals(
                     ErrorStateImage.Builder(DrawableStateImage(android.R.drawable.bottom_bar))
                         .build(),
-                    errorImage
+                    error
                 )
             }
 
@@ -1298,13 +1298,13 @@ class DisplayRequestTest {
                 Assert.assertEquals(
                     ErrorStateImage.Builder(DrawableStateImage(android.R.drawable.bottom_bar))
                         .uriEmptyError(android.R.drawable.alert_dark_frame).build(),
-                    errorImage
+                    error
                 )
             }
 
             error(null)
             build().apply {
-                Assert.assertNull(errorImage)
+                Assert.assertNull(error)
             }
         }
     }
