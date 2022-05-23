@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.ui.test.transform
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.RoundedCornersTransformationTestFragmentBinding
@@ -20,6 +21,8 @@ class RoundedCornersTransformationTestFragment :
     ) {
         viewModel.radiusData.observe(viewLifecycleOwner) {
             binding.roundedCornersTransformationTestImage.displayImage(AssetImages.FORMATS.first()) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
                 addTransformations(RoundedCornersTransformation(it.toFloat()))
             }
 

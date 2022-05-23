@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.JsonSerializable
@@ -24,10 +23,26 @@ class RotateTransformation(val degrees: Int) : Transformation {
         input: Bitmap
     ): TransformResult? {
         if (degrees % 360 == 0) return null
-        return TransformResult(
-            rotate(input, degrees, sketch.bitmapPool),
-            RotateTransformed(degrees)
-        )
+        val matrix = Matrix().apply {
+            setRotate(degrees.toFloat())
+        }
+        val newRect = RectF(0f, 0f, input.width.toFloat(), input.height.toFloat()).apply {
+            matrix.mapRect(this)
+        }
+        val newWidth = newRect.width().toInt()
+        val newHeight = newRect.height().toInt()
+
+        // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
+        var config = input.config ?: Bitmap.Config.ARGB_8888
+        if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
+            config = Bitmap.Config.ARGB_8888
+        }
+        val result = sketch.bitmapPool.getOrCreate(newWidth, newHeight, config)
+        matrix.postTranslate(-newRect.left, -newRect.top)
+        val canvas = Canvas(result)
+        val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
+        canvas.drawBitmap(input, matrix, paint)
+        return TransformResult(result, RotateTransformed(degrees))
     }
 
     override fun toString(): String = key
@@ -45,31 +60,6 @@ class RotateTransformation(val degrees: Int) : Transformation {
 
     override fun hashCode(): Int {
         return degrees
-    }
-
-
-    companion object {
-        fun rotate(bitmap: Bitmap, degrees: Int, bitmapPool: BitmapPool): Bitmap {
-            val matrix = Matrix()
-            matrix.setRotate(degrees.toFloat())
-
-            val newRect = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
-            matrix.mapRect(newRect)
-            val newWidth = newRect.width().toInt()
-            val newHeight = newRect.height().toInt()
-
-            // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
-            var config = bitmap.config ?: Bitmap.Config.ARGB_8888
-            if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
-                config = Bitmap.Config.ARGB_8888
-            }
-            val result = bitmapPool.getOrCreate(newWidth, newHeight, config)
-            matrix.postTranslate(-newRect.left, -newRect.top)
-            val canvas = Canvas(result)
-            val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
-            canvas.drawBitmap(bitmap, matrix, paint)
-            return result
-        }
     }
 }
 

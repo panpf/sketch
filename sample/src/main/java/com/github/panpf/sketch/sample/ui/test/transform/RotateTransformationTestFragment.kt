@@ -2,6 +2,7 @@ package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.os.Bundle
 import androidx.fragment.app.viewModels
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.RotateTransformationTestFragmentBinding
@@ -23,6 +24,8 @@ class RotateTransformationTestFragment :
 
         viewModel.rotateData.observe(viewLifecycleOwner) {
             binding.rotateTransformationTestImage.displayImage(AssetImages.FORMATS.first()) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
                 addTransformations(RotateTransformation(it))
             }
         }

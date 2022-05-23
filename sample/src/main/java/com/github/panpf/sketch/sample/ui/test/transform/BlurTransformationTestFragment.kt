@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.ui.test.transform
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.BlurTransformationTestFragmentBinding
@@ -19,6 +20,8 @@ class BlurTransformationTestFragment : BindingFragment<BlurTransformationTestFra
     ) {
         viewModel.radiusData.observe(viewLifecycleOwner) {
             binding.blurTransformationTestImage.displayImage(AssetImages.FORMATS.first()) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
                 addTransformations(BlurTransformation(it))
             }
 

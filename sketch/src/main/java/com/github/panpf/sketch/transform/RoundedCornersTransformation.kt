@@ -59,34 +59,26 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
         request: ImageRequest,
         input: Bitmap
     ): TransformResult {
-        // todo 不创建新的 bitmap
+        val config = input.config ?: Bitmap.Config.ARGB_8888
         val bitmapPool = sketch.bitmapPool
-        val roundedCornersBitmap =
-            bitmapPool.getOrCreate(
-                input.width,
-                input.height,
-                input.config ?: Bitmap.Config.ARGB_8888
-            )
-        val canvas = Canvas(roundedCornersBitmap)
-        val paint = Paint()
-        paint.isAntiAlias = true
-        canvas.drawARGB(0, 0, 0, 0)
-        paint.color = -0x10000
-
-        // Draw a rounded mask
-        val path = Path()
-        path.addRoundRect(
-            RectF(0f, 0f, input.width.toFloat(), input.height.toFloat()),
-            radiusArray,
-            Path.Direction.CW
-        )
+        val newBitmap = bitmapPool.getOrCreate(input.width, input.height, config)
+        val paint = Paint().apply {
+            isAntiAlias = true
+            color = -0x10000
+        }
+        val canvas = Canvas(newBitmap).apply {
+            drawARGB(0, 0, 0, 0)
+        }
+        val path = Path().apply {
+            val rect = RectF(0f, 0f, input.width.toFloat(), input.height.toFloat())
+            addRoundRect(rect, radiusArray, Path.Direction.CW)
+        }
         canvas.drawPath(path, paint)
 
-        // Apply mask mode and draw the image
         paint.xfermode = PorterDuffXfermode(SRC_IN)
         val rect = Rect(0, 0, input.width, input.height)
         canvas.drawBitmap(input, rect, rect, paint)
-        return TransformResult(roundedCornersBitmap, RoundedCornersTransformed(radiusArray))
+        return TransformResult(newBitmap, RoundedCornersTransformed(radiusArray))
     }
 
     override fun toString(): String = key

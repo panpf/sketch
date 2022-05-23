@@ -40,16 +40,11 @@ class BlurTransformation(
         request: ImageRequest,
         input: Bitmap
     ): TransformResult? {
-        // todo 最终的 Bitmap 偶尔会有黑色的部分
-        // blur handle
-        val canReuseInBitmap = input.config != null && input.isMutable
-        val blurBitmap = fastGaussianBlur(input, radius, canReuseInBitmap) ?: return null
-
-        // layer color handle
-        if (maskColor != null) {
-            Canvas(blurBitmap).drawColor(maskColor)
+        val outBitmap = fastGaussianBlur(input, radius) ?: return null
+        maskColor?.let {
+            Canvas(outBitmap).drawColor(it)
         }
-        return TransformResult(blurBitmap, BlurTransformed(radius, maskColor))
+        return TransformResult(outBitmap, BlurTransformed(radius, maskColor))
     }
 
     override fun toString(): String = key
@@ -73,26 +68,22 @@ class BlurTransformation(
     }
 
     companion object {
-        /**
-         * 快速高斯模糊
-         */
-        fun fastGaussianBlur(sentBitmap: Bitmap, radius: Int, canReuseInBitmap: Boolean): Bitmap? {
-            val bitmap: Bitmap? = if (canReuseInBitmap) {
-                sentBitmap
+        fun fastGaussianBlur(inBitmap: Bitmap, radius: Int): Bitmap? {
+            val outBitmap: Bitmap? = if (inBitmap.config != null && inBitmap.isMutable) {
+                inBitmap
             } else {
-                sentBitmap.copy(
-                    if (sentBitmap.config != null) sentBitmap.config else Bitmap.Config.ARGB_8888,
-                    true
-                )
+                val config =
+                    if (inBitmap.config != null) inBitmap.config else Bitmap.Config.ARGB_8888
+                inBitmap.copy(config, true)
             }
             return try {
                 if (radius < 1) {
                     return null
                 }
-                val w = bitmap!!.width
-                val h = bitmap.height
+                val w = outBitmap!!.width
+                val h = outBitmap.height
                 val pix = IntArray(w * h)
-                bitmap.getPixels(pix, 0, w, 0, 0, w, h)
+                outBitmap.getPixels(pix, 0, w, 0, 0, w, h)
                 val wm = w - 1
                 val hm = h - 1
                 val wh = w * h
@@ -286,12 +277,12 @@ class BlurTransformation(
                     }
                     x++
                 }
-                bitmap.setPixels(pix, 0, w, 0, 0, w, h)
-                bitmap
+                outBitmap.setPixels(pix, 0, w, 0, 0, w, h)
+                outBitmap
             } catch (throwable: Throwable) {
                 throwable.printStackTrace()
-                if (bitmap != null && bitmap !== sentBitmap) {
-                    bitmap.recycle()
+                if (outBitmap != null && outBitmap !== inBitmap) {
+                    outBitmap.recycle()
                 }
                 null
             }

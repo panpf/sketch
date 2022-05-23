@@ -15,36 +15,40 @@ import com.github.panpf.sketch.resize.calculateResizeMapping
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
+import java.lang.Integer.min
 
 class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transformation {
 
     override val key: String = "CircleCropTransformation($scale)"
 
-    override suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult {
-        val newSize = input.width.coerceAtMost(input.height)
+    override suspend fun transform(
+        sketch: Sketch,
+        request: ImageRequest,
+        input: Bitmap
+    ): TransformResult {
+        val newSize = min(input.width, input.height)
         val resizeMapping = calculateResizeMapping(
             input.width, input.height, newSize, newSize, SAME_ASPECT_RATIO, scale
         )
-
-        val circleBitmap = sketch.bitmapPool.getOrCreate(
+        val outBitmap = sketch.bitmapPool.getOrCreate(
             resizeMapping.newWidth, resizeMapping.newHeight, input.config ?: Bitmap.Config.ARGB_8888
         )
-        val canvas = Canvas(circleBitmap)
-        val paint = Paint()
-        paint.isAntiAlias = true
-        canvas.drawARGB(0, 0, 0, 0)
-        paint.color = -0x10000
-
+        val paint = Paint().apply {
+            isAntiAlias = true
+            color = -0x10000
+        }
+        val canvas = Canvas(outBitmap).apply {
+            drawARGB(0, 0, 0, 0)
+        }
         canvas.drawCircle(
-            (resizeMapping.newWidth / 2).toFloat(),
-            (resizeMapping.newHeight / 2).toFloat(),
-            (resizeMapping.newWidth.coerceAtMost(resizeMapping.newHeight) / 2).toFloat(),
+            resizeMapping.newWidth / 2f,
+            resizeMapping.newHeight / 2f,
+            min(resizeMapping.newWidth, resizeMapping.newHeight) / 2f,
             paint
         )
-
         paint.xfermode = PorterDuffXfermode(SRC_IN)
         canvas.drawBitmap(input, resizeMapping.srcRect, resizeMapping.destRect, paint)
-        return TransformResult(circleBitmap, CircleCropTransformed(scale))
+        return TransformResult(outBitmap, CircleCropTransformed(scale))
     }
 
     override fun toString(): String = key

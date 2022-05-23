@@ -2,6 +2,7 @@ package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.os.Bundle
 import androidx.fragment.app.viewModels
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
@@ -23,6 +24,8 @@ class CircleCropTransformationTestFragment :
     ) {
         viewModel.scaleData.observe(viewLifecycleOwner) {
             binding.circleCropTransformationTestImage.displayImage(AssetImages.FORMATS.first()) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
                 addTransformations(CircleCropTransformation(it))
             }
         }
