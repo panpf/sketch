@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
-import pl.droidsonroids.gif.GifInfoHandleCompat
+import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
 import pl.droidsonroids.gif.transforms.Transform
 
@@ -49,18 +49,18 @@ class GifDrawableDrawableDecoder(
 
     @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
-        val gifInfoHandleCompat = GifInfoHandleCompat(dataSource)
-        val imageWidth = gifInfoHandleCompat.width
-        val imageHeight = gifInfoHandleCompat.height
+        val gifInfoHandleHelper = GifInfoHandleHelper(dataSource)
+        val imageWidth = gifInfoHandleHelper.width
+        val imageHeight = gifInfoHandleHelper.height
         val resize = request.resize
         var inSampleSize = 1
         if (resize != null) {
             inSampleSize = calculateSampleSize(imageWidth, imageHeight, resize.width, resize.height)
-            gifInfoHandleCompat.setOptions(GifOptions().apply {
+            gifInfoHandleHelper.setOptions(GifOptions().apply {
                 setInSampleSize(inSampleSize)
             })
         }
-        val gifDrawable = gifInfoHandleCompat.toGifDrawable().apply {
+        val gifDrawable = gifInfoHandleHelper.createGifDrawable().apply {
             loopCount =
                 (request.repeatCount() ?: ANIMATION_REPEAT_INFINITE).takeIf { it != -1 } ?: 0
 
@@ -104,7 +104,7 @@ class GifDrawableDrawableDecoder(
             imageInfo = imageInfo,
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
-            transformedList = null,
+            transformedList = transformedList,
         )
     }
 

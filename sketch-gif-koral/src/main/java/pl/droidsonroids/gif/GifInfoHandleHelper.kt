@@ -8,7 +8,7 @@ import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 
-class GifInfoHandleCompat(private val dataSource: DataSource) {
+class GifInfoHandleHelper(private val dataSource: DataSource) {
 
     private val gifInfoHandle: GifInfoHandle by lazy {
         when (dataSource) {
@@ -52,5 +52,5 @@ class GifInfoHandleCompat(private val dataSource: DataSource) {
         gifInfoHandle.setOptions(options.inSampleSize, options.inIsOpaque)
     }
 
-    fun toGifDrawable(): GifDrawable = GifDrawable(gifInfoHandle, null, null, true)
+    fun createGifDrawable(): GifDrawable = GifDrawable(gifInfoHandle, null, null, true)
 }
