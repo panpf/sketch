@@ -7,6 +7,8 @@ import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.internal.crossWith
 import com.github.panpf.sketch.zoom.tile.internal.findSampleSize
 import com.github.panpf.sketch.zoom.tile.internal.initializeTileMap
+import com.github.panpf.tools4j.test.ktx.assertNoThrow
+import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -142,8 +144,6 @@ class TileUtilsTest {
     @Test
     fun testFindSampleSize() {
         val imageSize = Size(9798, 6988)
-        val errorPreviewSize = Size(9798 / 16, 6988 / 15)
-        val error1PreviewSize = Size(9798 / 15, 6988 / 16)
 
         val findSampleSize1: (Size, Size, Float) -> Int = { imageSize1, previewSize, scale ->
             findSampleSize(
@@ -151,11 +151,20 @@ class TileUtilsTest {
             )
         }
 
-        Assert.assertThrows(IllegalArgumentException::class.java) {
-            findSampleSize1(imageSize, errorPreviewSize, 1f)
+        assertNoThrow {
+            findSampleSize1(imageSize, Size(9798 / 16, 6988 / 16), 1f)
         }
-        Assert.assertThrows(IllegalArgumentException::class.java) {
-            findSampleSize1(imageSize, error1PreviewSize, 1f)
+        assertNoThrow {
+            findSampleSize1(imageSize, Size(9798 / 16, 6988 / 15), 1f)
+        }
+        assertNoThrow {
+            findSampleSize1(imageSize, Size(9798 / 15, 6988 / 16), 1f)
+        }
+        assertNoThrow {
+            findSampleSize1(imageSize, Size(9798 / 15, 6988 / 15), 1f)
+        }
+        assertThrow(IllegalArgumentException::class) {
+            findSampleSize1(imageSize, Size(9798 / 16, 6988 / 14), 1f)
         }
 
         Assert.assertEquals(16, findSampleSize1(Size(800, 800), Size(50, 50), 1f))

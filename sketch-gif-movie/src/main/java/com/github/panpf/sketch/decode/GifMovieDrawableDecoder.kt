@@ -129,7 +129,7 @@ class GifMovieDrawableDecoder constructor(
             return null
         }
 
-        override fun toString(): String = "GifDrawableDecoder"
+        override fun toString(): String = "GifMovieDrawableDecoder"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

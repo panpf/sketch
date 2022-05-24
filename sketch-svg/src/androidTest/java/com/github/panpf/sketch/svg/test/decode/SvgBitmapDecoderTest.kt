@@ -5,16 +5,12 @@ import android.graphics.Bitmap.Config.RGB_565
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -24,8 +20,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.FileDescriptor
-import java.io.InputStream
 
 @RunWith(AndroidJUnit4::class)
 class SvgBitmapDecoderTest {
@@ -34,26 +28,33 @@ class SvgBitmapDecoderTest {
     fun testFactory() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
+        val factory = SvgBitmapDecoder.Factory(false)
+
+        Assert.assertEquals("SvgBitmapDecoder", factory.toString())
 
         // normal
-        val request = LoadRequest(context, newAssetUri("sample.svg"))
-        val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample.svg"), null)
-        Assert.assertNotNull(
-            SvgBitmapDecoder.Factory(false).create(sketch, request, RequestContext(), fetchResult)
-        )
+        LoadRequest(context, newAssetUri("sample.svg")).let {
+            val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.svg"), null)
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNotNull(this)
+        }
 
-        // not svg
-        val request1 = LoadRequest(context, newAssetUri("sample.png"))
-        val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
-        Assert.assertNull(
-            SvgBitmapDecoder.Factory(false).create(sketch, request1, RequestContext(), fetchResult1)
-        )
+        // data error
+        LoadRequest(context, newAssetUri("sample.png")).let {
+            val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), null)
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNull(this)
+        }
 
-        // external mimeType it's right
-        val fetchResult2 = FetchResult(ErrorDataSource(sketch, request, LOCAL), "image/svg+xml")
-        Assert.assertNotNull(
-            SvgBitmapDecoder.Factory(false).create(sketch, request, RequestContext(), fetchResult2)
-        )
+        // mimeType error
+        LoadRequest(context, newAssetUri("sample.svg")).let {
+            val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.svg"), "image/svg")
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNotNull(this)
+        }
     }
 
     @Test
@@ -62,8 +63,6 @@ class SvgBitmapDecoderTest {
         val sketch = context.sketch
 
         val factory = SvgBitmapDecoder.Factory()
-
-        Assert.assertEquals("SvgBitmapDecoder", factory.toString())
 
         LoadRequest(context, newAssetUri("sample.svg")).run {
             val fetcher = sketch.components.newFetcher(this)
@@ -120,20 +119,6 @@ class SvgBitmapDecoderTest {
                 }
             }
         }
-    }
-
-    private class ErrorDataSource(
-        override val sketch: Sketch,
-        override val request: ImageRequest,
-        override val dataFrom: DataFrom
-    ) : DataSource {
-        override fun length(): Long = throw UnsupportedOperationException("Unsupported length()")
-
-        override fun newFileDescriptor(): FileDescriptor =
-            throw UnsupportedOperationException("Unsupported newFileDescriptor()")
-
-        override fun newInputStream(): InputStream =
-            throw UnsupportedOperationException("Unsupported newInputStream()")
     }
 
     private fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"

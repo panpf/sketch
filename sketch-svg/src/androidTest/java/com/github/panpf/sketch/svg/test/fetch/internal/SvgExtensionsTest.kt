@@ -25,7 +25,7 @@ class SvgExtensionsTest {
         val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample.svg"), null)
         Assert.assertTrue(fetchResult.headerBytes.isSvg())
 
-        // not svg
+        // error
         val request1 = LoadRequest(context, newAssetUri("sample.png"))
         val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
         Assert.assertFalse(fetchResult1.headerBytes.isSvg())

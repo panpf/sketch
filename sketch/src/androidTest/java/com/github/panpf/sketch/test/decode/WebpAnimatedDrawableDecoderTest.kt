@@ -4,11 +4,8 @@ import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.WebpAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
@@ -17,7 +14,6 @@ import com.github.panpf.sketch.drawable.internal.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.sketch
@@ -25,8 +21,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.FileDescriptor
-import java.io.InputStream
 
 @RunWith(AndroidJUnit4::class)
 class WebpAnimatedDrawableDecoderTest {
@@ -37,59 +31,64 @@ class WebpAnimatedDrawableDecoderTest {
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
+        val factory = WebpAnimatedDrawableDecoder.Factory()
+
+        Assert.assertEquals("WebpAnimatedDrawableDecoder", factory.toString())
 
         // normal
-        val request = DisplayRequest(context, newAssetUri("sample_anim.webp"))
-        val fetchResult =
-            FetchResult(AssetDataSource(sketch, request, "sample_anim.webp"), "image/webp")
-        Assert.assertNotNull(
-            WebpAnimatedDrawableDecoder.Factory()
-                .create(sketch, request, RequestContext(), fetchResult)
-        )
-        val fetchResult0 = FetchResult(AssetDataSource(sketch, request, "sample_anim.webp"), null)
-        Assert.assertNotNull(
-            WebpAnimatedDrawableDecoder.Factory()
-                .create(sketch, request, RequestContext(), fetchResult0)
-        )
+        DisplayRequest(context, newAssetUri("sample_anim.webp")).let {
+            val fetchResult =
+                FetchResult(AssetDataSource(sketch, it, "sample_anim.webp"), "image/webp")
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNotNull(this)
+        }
 
-        // not webp
-        val request1 = DisplayRequest(context, newAssetUri("sample.png"))
-        val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
-        Assert.assertNull(
-            WebpAnimatedDrawableDecoder.Factory()
-                .create(sketch, request1, RequestContext(), fetchResult1)
-        )
+        DisplayRequest(context, newAssetUri("sample_anim.webp")).let {
+            val fetchResult =
+                FetchResult(AssetDataSource(sketch, it, "sample_anim.webp"), null)
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNotNull(this)
+        }
 
         // disallowAnimatedImage true
-        val request2 = DisplayRequest(context, newAssetUri("sample_anim.webp")) {
+        DisplayRequest(context, newAssetUri("sample_anim.webp")) {
             disallowAnimatedImage()
+        }.let {
+            val fetchResult =
+                FetchResult(AssetDataSource(sketch, it, "sample_anim.webp"), null)
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNull(this)
         }
-        val fetchResult2 = FetchResult(ErrorDataSource(sketch, request2, LOCAL), null)
-        Assert.assertNull(
-            WebpAnimatedDrawableDecoder.Factory()
-                .create(sketch, request2, RequestContext(), fetchResult2)
-        )
+
+        // data error
+        DisplayRequest(context, newAssetUri("sample.png")).let {
+            val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), null)
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNull(this)
+        }
+
+        DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
+            val fetchResult =
+                FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), "image/webp")
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNull(this)
+        }
 
         // mimeType error
-        val request3 = DisplayRequest(context, newAssetUri("sample_anim.webp"))
-        val fetchResult3 = FetchResult(
-            AssetDataSource(sketch, request3, "sample_anim.webp"),
-            "image/jpeg",
-        )
-        Assert.assertNull(
-            WebpAnimatedDrawableDecoder.Factory()
-                .create(sketch, request3, RequestContext(), fetchResult3)
-        )
-
-        val request4 = DisplayRequest(context, newAssetUri("sample_anim.gif"))
-        val fetchResult4 = FetchResult(
-            AssetDataSource(sketch, request4, "sample_anim.gif"),
-            "image/webp",
-        )
-        Assert.assertNull(
-            WebpAnimatedDrawableDecoder.Factory()
-                .create(sketch, request4, RequestContext(), fetchResult4)
-        )
+        DisplayRequest(context, newAssetUri("sample_anim.webp")).let {
+            val fetchResult = FetchResult(
+                AssetDataSource(sketch, it, "sample_anim.webp"),
+                "image/jpeg",
+            )
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNull(this)
+        }
     }
 
     @Test
@@ -98,11 +97,11 @@ class WebpAnimatedDrawableDecoderTest {
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
+        val factory = WebpAnimatedDrawableDecoder.Factory()
 
         val request = DisplayRequest(context, newAssetUri("sample_anim.webp"))
         val fetchResult = sketch.components.newFetcher(request).let { runBlocking { it.fetch() } }
-        WebpAnimatedDrawableDecoder.Factory()
-            .create(sketch, request, RequestContext(), fetchResult)!!
+        factory.create(sketch, request, RequestContext(), fetchResult)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
@@ -120,8 +119,7 @@ class WebpAnimatedDrawableDecoderTest {
             resize(300, 300)
         }
         val fetchResult1 = sketch.components.newFetcher(request1).let { runBlocking { it.fetch() } }
-        WebpAnimatedDrawableDecoder.Factory()
-            .create(sketch, request1, RequestContext(), fetchResult1)!!
+        factory.create(sketch, request1, RequestContext(), fetchResult1)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
                 Assert.assertEquals(240, this.drawable.intrinsicWidth)
@@ -133,19 +131,5 @@ class WebpAnimatedDrawableDecoderTest {
                     ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as ScaledAnimatedImageDrawable).child
                 Assert.assertEquals(3, animatedImageDrawable.repeatCount)
             }
-    }
-
-    private class ErrorDataSource(
-        override val sketch: Sketch,
-        override val request: ImageRequest,
-        override val dataFrom: DataFrom
-    ) : DataSource {
-        override fun length(): Long = throw UnsupportedOperationException("Unsupported length()")
-
-        override fun newFileDescriptor(): FileDescriptor =
-            throw UnsupportedOperationException("Unsupported newFileDescriptor()")
-
-        override fun newInputStream(): InputStream =
-            throw UnsupportedOperationException("Unsupported newInputStream()")
     }
 }

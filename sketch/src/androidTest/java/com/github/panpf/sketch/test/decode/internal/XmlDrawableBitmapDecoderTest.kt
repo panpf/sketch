@@ -24,43 +24,39 @@ class XmlDrawableBitmapDecoderTest {
     @Test
     fun testFactory() {
         val (context, sketch) = getContextAndSketch()
-
         val factory = XmlDrawableBitmapDecoder.Factory()
 
         Assert.assertEquals("XmlDrawableBitmapDecoder", factory.toString())
 
-        LoadRequest(context, context.newResourceUri(R.drawable.test)).apply {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking {
-                fetcher.fetch()
-            }
-            Assert.assertNotNull(factory.create(sketch, this, RequestContext(), fetchResult))
+        LoadRequest(context, context.newResourceUri(R.drawable.test)).let {
+            val fetcher = sketch.components.newFetcher(it)
+            val fetchResult = runBlocking { fetcher.fetch() }
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNotNull(this)
         }
 
-        LoadRequest(context, context.newResourceUri(R.drawable.test_error)).apply {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking {
-                fetcher.fetch()
-            }
-            Assert.assertNotNull(factory.create(sketch, this, RequestContext(), fetchResult))
+        LoadRequest(context, context.newResourceUri(R.drawable.test_error)).let {
+            val fetcher = sketch.components.newFetcher(it)
+            val fetchResult = runBlocking { fetcher.fetch() }
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNotNull(this)
         }
 
-        LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)).apply {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking {
-                fetcher.fetch()
-            }
-            Assert.assertNull(factory.create(sketch, this, RequestContext(), fetchResult))
+        LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)).let {
+            val fetcher = sketch.components.newFetcher(it)
+            val fetchResult = runBlocking { fetcher.fetch() }
+            factory.create(sketch, it, RequestContext(), fetchResult)
+        }.apply {
+            Assert.assertNull(this)
         }
     }
 
     @Test
     fun testDecode() {
         val (context, sketch) = getContextAndSketch()
-
         val factory = XmlDrawableBitmapDecoder.Factory()
-
-        Assert.assertEquals("XmlDrawableBitmapDecoder", factory.toString())
 
         LoadRequest(context, context.newResourceUri(R.drawable.test)).run {
             val fetcher = sketch.components.newFetcher(this)
