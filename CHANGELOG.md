@@ -1,3 +1,108 @@
+# v3.0.0-alpha04
+
+### sketch
+
+ImageRequest:
+
+* fix: Fix the bug that GlobalLifecycle does not adapt to LifecycleEventObserver, causing the
+  request to fail when the target is not ViewTarget
+* remove: Remove lowQualityBitmapConfig() and highQualityBitmapConfig()
+* remove: Remove the downloadDiskCacheKey property of ImageRequest
+* remove: Remove MIDDEN_QUALITY
+* remove: DisplayRequest, DownloadRequest, LoadRequest, ImageOptions remove Builder top-level
+  creation functions
+* rename: errorImage rename to error
+* rename: placeholderImage rename to placeholder
+* rename: disabledAnimatedImage rename to disallowAnimatedImage
+* rename: disabledReuseBitmap rename to disallowReuseBitmap
+* rename: RequestDepth rename to Depth
+* rename: LOW_QUALITY rename to LowQuality, HIGH_QUALITY rename to HighQuality
+* rename: downloadDiskCachePolicy rename to downloadCachePolicy, bitmapResultDiskCachePolicy rename
+* rename: The resizeSize(SizeResolver) method of ImageRequest and ImageOptions has been renamed to
+  resizeSizeResolver(SizeResolver)
+* rename: The merge() method of HttpHeaders and Parameters has been renamed to merged()
+  to resultCachePolicy, bitmapMemoryCachePolicy rename to memoryCachePolicy
+* change: depthFrom moved to 'sketch-extensions' module
+* change: ImageRequest no longer holds Sketch
+* change: ScreenSizeResolver rename to DisplaySizeResolver
+* change: DisplayRequest(String?, ImageView, (DisplayRequest.Builder.() -> Unit)) method signature
+  changed to DisplayRequest(ImageView, String?, (DisplayRequest.Builder.() -> Unit))
+* change: Refactor ImageRequest and ImageOptions resize
+* change: Now GenericViewTarget updates drawable on errors even if errorDrawable is null
+* improve: All ImageResult implementations are now data classes
+* improve: ImageRequest uses ImageOptions to store property
+* new: HttpHeaders added newHttpHeaders(), Parameters added newParameters()
+* new: ImageRequest adds newMemoryCacheKey(), newResultCacheDataKey(), newResultCacheMetaKey()
+  extension methods
+* new: Added isNotEmpty() extension method to HttpHeaders and ImageOptions
+
+Sketch:
+
+* remove: Remove static ComponentRegistry.new()
+* rename: ComponentRegistry.new() rename to newRegistry()
+* change: addRequestInterceptor(), addBitmapDecodeInterceptor(), addDrawableDecodeInterceptor() from
+  Sketch moved to ComponentRegistry
+* new: Sketch added shutdown() method
+
+Decoder:
+
+* fix: Fix the bug of samplingSizeForRegion() returning wrong result in api 24 and 25
+* fix: Fix the bug that the returned Bitmap has the wrong size when the difference between the
+  resize and the original image's number of pixels does not exceed 10% and the precision is
+  LESS_PIXELS
+* fix: Fix bug that resizePrecision is 'EXACTLY' when resizeSize is not set
+* fix: Fixed HARDWARE crash when setting inBitmap
+* move: ImageFormat move to 'com.github.panpf.sketch.decode.internal' package
+* rename: calculateSamplingSize() rename to samplingSize(), calculateSamplingSizeForRegion() rename
+* removes: BitmapPool's get() method removes the operator
+* change: ImageFormat.valueOfMimeType() change to mimeTypeToImageFormat()
+* change: DecodeInterceptor is split into BitmapDecodeInterceptor and DrawableDecodeInterceptor
+* change: RequestExtras and CountDrawablePendingManager merged into RequestContext
+* change: No longer scales resize by 10% when calculating inSampleSize
+* change: precision is LESS_PIXELS must not use BitmapRegionDecoder
+* improve: ApkIconBitmapDecoder and AppIconBitmapDecoder now supported bitmapConfig panpf 23 minutes
+  ago
+* improve: Improve the decision rule of DrawableDecoder.Factory
+* improve: Improved DefaultDrawableDecoder to samplingSizeForRegion()
+* new: Added Bitmap.Config.isAndSupportHardware()
+
+Transformation:
+
+* fix: Fix the bug that if the Bitmap of the transformation result is not new, the current Bitmap is
+  incorrectly reclaimed, causing a crash
+* improve: Improve Transformation
+
+Cache:
+
+* fix: Fixed a crash bug when adding an existing cache to LruMemoryCache
+* improve: Improve logging for CountBitmap and LruBitmap
+* improve: Clear enough space before put
+* improve: Improve LruBitmapPool's setInBitmap() and setInBitmapForRegion()
+* new: MemoryCache adds exist(String) method
+
+Fetcher:
+
+* rename: FetchResult.from rename to dataFrom
+
+Transition:
+
+* move: TransitionTarget's view property moved to Transition.Factory.create() method
+
+other:
+
+* improve: Added equals and hashCode implementations
+* comment: Add code comments
+
+### sketch-gif-koral
+
+* fix: Fixed the bug that the transformedList of DrawableDecodeResult returned by
+  GifDrawableDrawableDecoder was always null
+
+### sketch-zoom
+
+* fix: Fixed the bug that some pictures could not use the large block picture function
+* fix: Fixed a crash bug when the preview image ratio was inconsistent with the original image ratio
+
 # v3.0.0-alpha03
 
 ### sketch

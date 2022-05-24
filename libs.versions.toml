@@ -4,8 +4,8 @@ composeMinSdk = "21"
 targetSdk = "28"
 compileSdk = "31"
 
-versionCode = "3003"
-versionName = "3.0.0-alpha03"
+versionCode = "3004"
+versionName = "3.0.0-alpha04"
 
 # plugin
 android-buildtools = "7.2.0"
