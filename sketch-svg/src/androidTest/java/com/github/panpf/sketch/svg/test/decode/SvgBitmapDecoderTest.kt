@@ -1,5 +1,8 @@
 package com.github.panpf.sketch.svg.test.decode
 
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.RGB_565
+import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
@@ -8,12 +11,16 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
+import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sketch
+import com.github.panpf.tools4j.test.ktx.assertThrow
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,8 +57,69 @@ class SvgBitmapDecoderTest {
     }
 
     @Test
-    fun testDecodeBitmap() {
-        // todo Write test cases
+    fun testDecode() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val sketch = context.sketch
+
+        val factory = SvgBitmapDecoder.Factory()
+
+        Assert.assertEquals("SvgBitmapDecoder", factory.toString())
+
+        LoadRequest(context, newAssetUri("sample.svg")).run {
+            val fetcher = sketch.components.newFetcher(this)
+            val fetchResult = runBlocking { fetcher.fetch() }
+            runBlocking {
+                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+            }
+        }.apply {
+            Assert.assertEquals("Bitmap(841x595,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertNull(transformedList)
+        }
+
+        LoadRequest(context, newAssetUri("sample.svg")) {
+            bitmapConfig(RGB_565)
+        }.run {
+            val fetcher = sketch.components.newFetcher(this)
+            val fetchResult = runBlocking { fetcher.fetch() }
+            runBlocking {
+                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+            }
+        }.apply {
+            Assert.assertEquals("Bitmap(841x595,RGB_565)", bitmap.toShortInfoString())
+            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertNull(transformedList)
+        }
+
+        LoadRequest(context, newAssetUri("sample.svg")) {
+            resize(600, 600, LESS_PIXELS)
+        }.run {
+            val fetcher = sketch.components.newFetcher(this)
+            val fetchResult = runBlocking { fetcher.fetch() }
+            runBlocking {
+                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+            }
+        }.apply {
+            Assert.assertEquals("Bitmap(421x298,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals(listOf(InSampledTransformed(2)), transformedList)
+            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(LOCAL, dataFrom)
+        }
+
+        LoadRequest(context, newAssetUri("sample.png")).run {
+            val fetcher = sketch.components.newFetcher(this)
+            val fetchResult = runBlocking { fetcher.fetch() }
+            assertThrow(NullPointerException::class) {
+                runBlocking {
+                    factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                }
+            }
+        }
     }
 
     private class ErrorDataSource(
@@ -67,4 +135,6 @@ class SvgBitmapDecoderTest {
         override fun newInputStream(): InputStream =
             throw UnsupportedOperationException("Unsupported newInputStream()")
     }
+
+    private fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"
 }

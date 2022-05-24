@@ -55,7 +55,7 @@ class XmlDrawableBitmapDecoderTest {
     }
 
     @Test
-    fun testExecuteDecode() {
+    fun testDecode() {
         val (context, sketch) = getContextAndSketch()
 
         val factory = XmlDrawableBitmapDecoder.Factory()

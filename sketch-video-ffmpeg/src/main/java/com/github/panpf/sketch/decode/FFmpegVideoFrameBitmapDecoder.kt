@@ -154,7 +154,7 @@ class FFmpegVideoFrameBitmapDecoder(
             return null
         }
 
-        override fun toString(): String = "FFmpegVideoFrameDecoder"
+        override fun toString(): String = "FFmpegVideoFrameBitmapDecoder"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
