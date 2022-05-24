@@ -71,10 +71,25 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
 
 class CircleCropTransformed(val scale: Scale) : Transformed {
 
-    override val key: String by lazy { toString() }
+    override val key: String by lazy { "CircleCropTransformed($scale)" }
     override val cacheResultToDisk: Boolean = true
 
-    override fun toString(): String = "CircleCropTransformed($scale)"
+    override fun toString(): String = key
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CircleCropTransformed
+
+        if (scale != other.scale) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return scale.hashCode()
+    }
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

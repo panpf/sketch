@@ -8,10 +8,27 @@ import org.json.JSONObject
 
 class ResizeTransformed constructor(val resize: Resize) : Transformed {
 
-    override val key: String by lazy { toString() }
+    override val key: String by lazy {
+        resize.key.replace("Resize", "ResizeTransformed")
+    }
     override val cacheResultToDisk: Boolean = true
 
-    override fun toString(): String = resize.key.replace("Resize", "ResizeTransformed")
+    override fun toString(): String = key
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ResizeTransformed
+
+        if (resize != other.resize) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return resize.hashCode()
+    }
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

@@ -113,7 +113,11 @@ data class Resize constructor(
         scale: ScaleDecider
     ) : this(size.width, size.height, precision, scale)
 
-    val key: String by lazy { toString() }
+    val key: String by lazy {
+        val precisionDeciderString = precision.key.replace("PrecisionDecider", "")
+        val scaleDeciderString = scale.key.replace("ScaleDecider", "")
+        "Resize(${width}x$height,${precisionDeciderString},${scaleDeciderString})"
+    }
 
     fun getPrecision(sketch: Sketch, imageWidth: Int, imageHeight: Int): Precision =
         precision.get(sketch, imageWidth, imageHeight, width, height)
@@ -132,11 +136,7 @@ data class Resize constructor(
             Precision.LESS_PIXELS -> false
         }
 
-    override fun toString(): String {
-        val precisionDeciderString = precision.key.replace("PrecisionDecider", "")
-        val scaleDeciderString = scale.key.replace("ScaleDecider", "")
-        return "Resize(${width}x$height,${precisionDeciderString},${scaleDeciderString})"
-    }
+    override fun toString(): String = key
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

@@ -65,10 +65,25 @@ class RotateTransformation(val degrees: Int) : Transformation {
 
 class RotateTransformed(val degrees: Int) : Transformed {
 
-    override val key: String by lazy { toString() }
+    override val key: String by lazy { "RotateTransformed($degrees)" }
     override val cacheResultToDisk: Boolean = true
 
-    override fun toString(): String = "RotateTransformed($degrees)"
+    override fun toString(): String = key
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RotateTransformed
+
+        if (degrees != other.degrees) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return degrees
+    }
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

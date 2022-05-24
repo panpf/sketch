@@ -101,10 +101,27 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
 
 class RoundedCornersTransformed(val radiusArray: FloatArray) : Transformed {
 
-    override val key: String by lazy { toString() }
+    override val key: String by lazy {
+        "RoundedCornersTransformed($radiusArray)"
+    }
     override val cacheResultToDisk: Boolean = true
 
-    override fun toString(): String = "RoundedCornersTransformed($radiusArray)"
+    override fun toString(): String = key
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RoundedCornersTransformed
+
+        if (!radiusArray.contentEquals(other.radiusArray)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

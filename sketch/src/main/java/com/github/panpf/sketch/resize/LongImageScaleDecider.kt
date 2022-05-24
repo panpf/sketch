@@ -27,7 +27,7 @@ data class LongImageScaleDecider constructor(
         other = exifOrientationHelper.addToScale(other, imageSize),
     )
 
-    override val key: String by lazy { toString() }
+    override val key: String by lazy { "LongImageScaleDecider($longImage,$other)" }
 
     override fun get(
         sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
@@ -37,8 +37,7 @@ data class LongImageScaleDecider constructor(
             longImage else other
     }
 
-    override fun toString(): String =
-        "LongImageScaleDecider($longImage,$other)"
+    override fun toString(): String = key
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

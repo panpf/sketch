@@ -13,7 +13,7 @@ fun fixedPrecision(precision: Precision): FixedPrecisionDecider = FixedPrecision
  */
 data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDecider {
 
-    override val key: String by lazy { toString() }
+    override val key: String by lazy { "FixedPrecisionDecider($precision)" }
 
     override fun get(
         sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
@@ -21,7 +21,7 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
         return precision
     }
 
-    override fun toString(): String = "FixedPrecisionDecider($precision)"
+    override fun toString(): String = key
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

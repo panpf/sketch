@@ -292,10 +292,28 @@ class BlurTransformation(
 
 class BlurTransformed(val radius: Int, val maskColor: Int?) : Transformed {
 
-    override val key: String by lazy { toString() }
+    override val key: String by lazy { "BlurTransformed($radius,${maskColor ?: -1})" }
     override val cacheResultToDisk: Boolean = true
 
-    override fun toString(): String = "BlurTransformed($radius,${maskColor ?: -1})"
+    override fun toString(): String = key
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BlurTransformed
+
+        if (radius != other.radius) return false
+        if (maskColor != other.maskColor) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = radius
+        result = 31 * result + (maskColor ?: 0)
+        return result
+    }
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

@@ -15,7 +15,7 @@ fun fixedScale(precision: Scale): FixedScaleDecider = FixedScaleDecider(precisio
  */
 data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
 
-    override val key: String by lazy { toString() }
+    override val key: String by lazy { "FixedScaleDecider($scale)" }
 
     override fun get(
         sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
@@ -30,7 +30,7 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
         return FixedScaleDecider(exifOrientationHelper.addToScale(scale, imageSize))
     }
 
-    override fun toString(): String = "FixedScaleDecider($scale)"
+    override fun toString(): String = key
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

@@ -30,7 +30,7 @@ data class LongImageClipPrecisionDecider constructor(
         }
     }
 
-    override val key: String by lazy { toString() }
+    override val key: String by lazy { "LongImageClipPrecisionDecider($precision)" }
 
     override fun get(
         sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
@@ -40,7 +40,7 @@ data class LongImageClipPrecisionDecider constructor(
             precision else Precision.LESS_PIXELS
     }
 
-    override fun toString(): String = "LongImageClipPrecisionDecider($precision)"
+    override fun toString(): String = key
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")
