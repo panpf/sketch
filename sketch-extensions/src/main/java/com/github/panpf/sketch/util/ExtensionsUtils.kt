@@ -17,9 +17,9 @@ internal fun Float.format(newScale: Int): Float =
 /**
  * Drawable into Bitmap. Each time a new bitmap is drawn
  */
-internal fun Drawable.toBitmap(lowQuality: Boolean = false, bitmapPool: BitmapPool? = null): Bitmap {
+internal fun Drawable.toBitmap(preferredConfig: Bitmap.Config? = null, bitmapPool: BitmapPool? = null): Bitmap {
     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-    val config = if (lowQuality) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
+    val config = preferredConfig ?: Bitmap.Config.ARGB_8888
     val bitmap: Bitmap = bitmapPool?.getOrCreate(intrinsicWidth, intrinsicHeight, config)
         ?: Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, config)
     val canvas = Canvas(bitmap)

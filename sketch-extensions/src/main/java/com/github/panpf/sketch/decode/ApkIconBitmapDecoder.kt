@@ -32,7 +32,10 @@ class ApkIconBitmapDecoder(
         packageInfo.applicationInfo.sourceDir = file.path
         packageInfo.applicationInfo.publicSourceDir = file.path
         val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
-        val bitmap = drawable.toBitmap(bitmapPool = sketch.bitmapPool)
+        val bitmap = drawable.toBitmap(
+            request.bitmapConfig?.getConfig(MIME_TYPE),
+            bitmapPool = sketch.bitmapPool
+        )
         val imageInfo = ImageInfo(bitmap.width, bitmap.height, MIME_TYPE)
         return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
             .applyResize(sketch, request.resize)
