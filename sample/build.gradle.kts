@@ -121,11 +121,11 @@ fun getGitVersion(): String =
 
 fun readReleaseSigningConfig(): ReleaseSigningConfig? {
     val localProperties = `java.util`.Properties().apply {
-        rootProject.file("local.properties")
+        project.file("local.properties")
             .takeIf { it.exists() }
             ?.inputStream().use { this@apply.load(it) }
     }
-    val jksFile = rootProject.file("release.jks")
+    val jksFile = project.file("release.jks")
     return if (
         localProperties.containsKey("signing.storePassword")
         && localProperties.containsKey("signing.keyAlias")
