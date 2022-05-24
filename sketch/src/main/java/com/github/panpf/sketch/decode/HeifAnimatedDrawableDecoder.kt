@@ -45,7 +45,7 @@ class HeifAnimatedDrawableDecoder(
         ): HeifAnimatedDrawableDecoder? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !request.disallowAnimatedImage) {
                 val imageFormat = mimeTypeToImageFormat(fetchResult.mimeType)
-                if ((imageFormat == ImageFormat.HEIC || imageFormat == ImageFormat.HEIF)
+                if ((imageFormat == null || imageFormat == ImageFormat.HEIC || imageFormat == ImageFormat.HEIF)
                     && fetchResult.headerBytes.isAnimatedHeif()
                 ) {
                     return HeifAnimatedDrawableDecoder(request, fetchResult.dataSource)
