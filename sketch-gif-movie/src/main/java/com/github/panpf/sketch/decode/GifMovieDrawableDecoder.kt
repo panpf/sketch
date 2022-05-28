@@ -75,10 +75,10 @@ class GifMovieDrawableDecoder constructor(
                 }
             } else null,
         ).apply {
-            setRepeatCount(request.repeatCount() ?: ANIMATION_REPEAT_INFINITE)
+            setRepeatCount(request.repeatCount ?: ANIMATION_REPEAT_INFINITE)
 
             // Set the animated transformation to be applied on each frame.
-            setAnimatedTransformation(request.animatedTransformation())
+            setAnimatedTransformation(request.animatedTransformation)
         }
 
         val imageInfo = ImageInfo(width, height, ImageFormat.GIF.mimeType)
@@ -94,8 +94,8 @@ class GifMovieDrawableDecoder constructor(
             "MovieDrawable"
         ).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.
-            val onStart = request.animationStartCallback()
-            val onEnd = request.animationEndCallback()
+            val onStart = request.animationStartCallback
+            val onEnd = request.animationEndCallback
             if (onStart != null || onEnd != null) {
                 registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
             }

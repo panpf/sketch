@@ -62,10 +62,10 @@ class GifDrawableDrawableDecoder(
         }
         val gifDrawable = gifInfoHandleHelper.createGifDrawable().apply {
             loopCount =
-                (request.repeatCount() ?: ANIMATION_REPEAT_INFINITE).takeIf { it != -1 } ?: 0
+                (request.repeatCount ?: ANIMATION_REPEAT_INFINITE).takeIf { it != -1 } ?: 0
 
             // Set the animated transformation to be applied on each frame.
-            val transformation = request.animatedTransformation()
+            val transformation = request.animatedTransformation
             if (transformation != null) {
                 transform = object : Transform {
                     override fun onBoundsChange(bounds: Rect?) {
@@ -92,8 +92,8 @@ class GifDrawableDrawableDecoder(
             "GifDrawable"
         ).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.
-            val onStart = request.animationStartCallback()
-            val onEnd = request.animationEndCallback()
+            val onStart = request.animationStartCallback
+            val onEnd = request.animationEndCallback
             if (onStart != null || onEnd != null) {
                 registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
             }

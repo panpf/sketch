@@ -89,13 +89,13 @@ abstract class BaseAnimatedImageDrawableDecoder(
                 }
 
                 // Set the animated transformation to be applied on each frame.
-                decoder.postProcessor = request.animatedTransformation()?.asPostProcessor()
+                decoder.postProcessor = request.animatedTransformation?.asPostProcessor()
             }
         }
         if (drawable !is AnimatedImageDrawable) {
             throw Exception("Only support AnimatedImageDrawable")
         }
-        drawable.repeatCount = request.repeatCount()
+        drawable.repeatCount = request.repeatCount
             ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
             ?: AnimatedImageDrawable.REPEAT_INFINITE
 
@@ -113,8 +113,8 @@ abstract class BaseAnimatedImageDrawableDecoder(
             animatableDrawable = ScaledAnimatedImageDrawable(drawable),
             drawable::class.java.simpleName
         ).apply {
-            val onStart = request.animationStartCallback()
-            val onEnd = request.animationEndCallback()
+            val onStart = request.animationStartCallback
+            val onEnd = request.animationEndCallback
             if (onStart != null || onEnd != null) {
                 registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
             }
