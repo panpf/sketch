@@ -114,9 +114,9 @@ class VideoFrameBitmapDecoder(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig
     ): Bitmap {
-        val option = request.videoFrameOption() ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
-        val frameMicros = request.videoFrameMicros()
-            ?: request.videoFramePercentDuration()?.let { percentDuration ->
+        val option = request.videoFrameOption ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
+        val frameMicros = request.videoFrameMicros
+            ?: request.videoFramePercentDuration?.let { percentDuration ->
                 val duration =
                     mediaMetadataRetriever
                         .extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)

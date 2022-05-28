@@ -35,7 +35,7 @@ DisplayRequest(context, "file:///sdcard/sample.mp4") {
     videoFrameMicros(1000000)
 
     // 或 提取 10000 毫秒处的帧
-    videoFrameMillis(1000000)
+    videoFrameMillis(10000)
 
     // 或 获取提取中间的帧
     videoFramePercentDuration(0.5f)
