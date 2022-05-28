@@ -9,7 +9,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.Depth.NETWORK
 
 internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
-    parameters?.key?.takeIf { it.isNotEmpty() }?.let {
+    parameters?.cacheKey?.takeIf { it.isNotEmpty() }?.let {
         appendQueryParameter("_parameters", it)
     }
     bitmapConfig?.let {
