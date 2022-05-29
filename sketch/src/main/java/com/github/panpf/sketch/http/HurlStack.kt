@@ -21,13 +21,39 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class HurlStack(
-    val readTimeout: Int,
-    val connectTimeout: Int,
+/**
+ * Use [HttpURLConnection] to request HTTP
+ */
+class HurlStack private constructor(
+    /**
+     * Read timeout, in milliseconds
+     */
+    val readTimeoutMillis: Int,
+
+    /**
+     * Connection timeout, in milliseconds
+     */
+    val connectTimeoutMillis: Int,
+
+    /**
+     * HTTP UserAgent
+     */
     val userAgent: String?,
-    val extraHeaders: Map<String, String>?,
-    val addExtraHeaders: Map<String, String>?,
-    val processRequest: ((url: String, connection: HttpURLConnection) -> Unit)?
+
+    /**
+     * HTTP header
+     */
+    val headers: Map<String, String>?,
+
+    /**
+     * Repeatable HTTP headers
+     */
+    val addHeaders: List<Pair<String, String>>?,
+
+    /**
+     * Callback before executing connection
+     */
+    val onBeforeConnect: ((url: String, connection: HttpURLConnection) -> Unit)?
 ) : HttpStack {
 
     @Throws(IOException::class)
@@ -35,19 +61,19 @@ class HurlStack(
         var newUri = url
         while (newUri.isNotEmpty()) {
             val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
-                this@apply.connectTimeout = this@HurlStack.connectTimeout
-                this@apply.readTimeout = this@HurlStack.readTimeout
+                this@apply.connectTimeout = this@HurlStack.connectTimeoutMillis
+                this@apply.readTimeout = this@HurlStack.readTimeoutMillis
                 doInput = true
                 if (this@HurlStack.userAgent != null) {
                     setRequestProperty("User-Agent", this@HurlStack.userAgent)
                 }
-                if (addExtraHeaders != null && addExtraHeaders.isNotEmpty()) {
-                    for ((key, value) in addExtraHeaders) {
+                if (addHeaders != null && addHeaders.isNotEmpty()) {
+                    for ((key, value) in addHeaders) {
                         addRequestProperty(key, value)
                     }
                 }
-                if (extraHeaders != null && extraHeaders.isNotEmpty()) {
-                    for ((key, value) in extraHeaders) {
+                if (headers != null && headers.isNotEmpty()) {
+                    for ((key, value) in headers) {
                         setRequestProperty(key, value)
                     }
                 }
@@ -59,8 +85,8 @@ class HurlStack(
                         setRequestProperty(it.first, it.second)
                     }
                 }
-                processRequest?.invoke(url, this)
             }
+            onBeforeConnect?.invoke(url, connection)
             connection.connect()
             val code = connection.responseCode
             if (code == 301 || code == 302 || code == 307) {
@@ -73,7 +99,7 @@ class HurlStack(
     }
 
     override fun toString(): String =
-        "HurlStack(connectTimeout=${connectTimeout},readTimeout=${readTimeout},userAgent=${userAgent})"
+        "HurlStack(connectTimeout=${connectTimeoutMillis},readTimeout=${readTimeoutMillis},userAgent=${userAgent})"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -81,23 +107,23 @@ class HurlStack(
 
         other as HurlStack
 
-        if (readTimeout != other.readTimeout) return false
-        if (connectTimeout != other.connectTimeout) return false
+        if (readTimeoutMillis != other.readTimeoutMillis) return false
+        if (connectTimeoutMillis != other.connectTimeoutMillis) return false
         if (userAgent != other.userAgent) return false
-        if (extraHeaders != other.extraHeaders) return false
-        if (addExtraHeaders != other.addExtraHeaders) return false
-        if (processRequest != other.processRequest) return false
+        if (headers != other.headers) return false
+        if (addHeaders != other.addHeaders) return false
+        if (onBeforeConnect != other.onBeforeConnect) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = readTimeout
-        result = 31 * result + connectTimeout
+        var result = readTimeoutMillis
+        result = 31 * result + connectTimeoutMillis
         result = 31 * result + (userAgent?.hashCode() ?: 0)
-        result = 31 * result + (extraHeaders?.hashCode() ?: 0)
-        result = 31 * result + (addExtraHeaders?.hashCode() ?: 0)
-        result = 31 * result + (processRequest?.hashCode() ?: 0)
+        result = 31 * result + (headers?.hashCode() ?: 0)
+        result = 31 * result + (addHeaders?.hashCode() ?: 0)
+        result = 31 * result + (onBeforeConnect?.hashCode() ?: 0)
         return result
     }
 
@@ -128,61 +154,81 @@ class HurlStack(
     }
 
     class Builder {
-        private var readTimeout: Int = HttpStack.DEFAULT_TIMEOUT
-        private var connectTimeout: Int = HttpStack.DEFAULT_TIMEOUT
+        private var connectTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
+        private var readTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
         private var userAgent: String? = null
         private var extraHeaders: MutableMap<String, String>? = null
-        private var addExtraHeaders: MutableMap<String, String>? = null
-        private var processRequest: ((url: String, connection: HttpURLConnection) -> Unit)? = null
+        private var addExtraHeaders: MutableList<Pair<String, String>>? = null
+        private var onBeforeConnect: ((url: String, connection: HttpURLConnection) -> Unit)? = null
 
-        fun connectTimeout(connectTimeout: Int) = apply {
-            this.connectTimeout = connectTimeout
+        /**
+         * Set connection timeout, in milliseconds
+         */
+        fun connectTimeoutMillis(connectTimeoutMillis: Int) = apply {
+            this.connectTimeoutMillis = connectTimeoutMillis
         }
 
-        fun readTimeout(readTimeout: Int): Builder = apply {
-            this.readTimeout = readTimeout
+        /**
+         * Set read timeout, in milliseconds
+         */
+        fun readTimeoutMillis(readTimeoutMillis: Int): Builder = apply {
+            this.readTimeoutMillis = readTimeoutMillis
         }
 
+        /**
+         * Set HTTP UserAgent
+         */
         fun userAgent(userAgent: String?): Builder = apply {
             this.userAgent = userAgent
         }
 
-        fun extraHeaders(headers: Map<String, String>): Builder = apply {
-            this.extraHeaders = (this.extraHeaders ?: HashMap<String, String>()).apply {
+        /**
+         * Set HTTP header
+         */
+        fun headers(headers: Map<String, String>): Builder = apply {
+            this.extraHeaders = (this.extraHeaders ?: HashMap()).apply {
                 putAll(headers)
             }
         }
 
-        fun extraHeaders(vararg headers: Pair<String, String>): Builder = apply {
-            this.extraHeaders = (this.extraHeaders ?: HashMap<String, String>()).apply {
-                putAll(headers.toMap())
+        /**
+         * Set HTTP header
+         */
+        fun headers(vararg headers: Pair<String, String>): Builder = apply {
+            headers(headers.toMap())
+        }
+
+        /**
+         * Set repeatable HTTP headers
+         */
+        fun addHeaders(headers: List<Pair<String, String>>): Builder = apply {
+            this.addExtraHeaders = (this.addExtraHeaders ?: ArrayList()).apply {
+                addAll(headers)
             }
         }
 
-        fun addExtraHeaders(headers: Map<String, String>): Builder = apply {
-            this.addExtraHeaders = (this.addExtraHeaders ?: HashMap<String, String>()).apply {
-                putAll(headers)
-            }
+        /**
+         * Set repeatable HTTP headers
+         */
+        fun addHeaders(vararg headers: Pair<String, String>): Builder = apply {
+            addHeaders(headers.toList())
         }
 
-        fun addExtraHeaders(vararg headers: Pair<String, String>): Builder = apply {
-            this.addExtraHeaders = (this.addExtraHeaders ?: HashMap<String, String>()).apply {
-                putAll(headers.toMap())
-            }
-        }
-
-        fun processRequest(block: (url: String, connection: HttpURLConnection) -> Unit): Builder =
+        /**
+         * Callback before executing connection
+         */
+        fun onBeforeConnect(block: (url: String, connection: HttpURLConnection) -> Unit): Builder =
             apply {
-                this.processRequest = block
+                this.onBeforeConnect = block
             }
 
         fun build(): HurlStack = HurlStack(
-            readTimeout = readTimeout,
-            connectTimeout = connectTimeout,
+            readTimeoutMillis = readTimeoutMillis,
+            connectTimeoutMillis = connectTimeoutMillis,
             userAgent = userAgent,
-            extraHeaders = extraHeaders,
-            addExtraHeaders = addExtraHeaders,
-            processRequest = processRequest,
+            headers = extraHeaders?.takeIf { it.isNotEmpty() },
+            addHeaders = addExtraHeaders?.takeIf { it.isNotEmpty() },
+            onBeforeConnect = onBeforeConnect,
         )
     }
 }
