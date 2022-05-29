@@ -66,58 +66,85 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
     }
 
     class Builder {
-        private var readTimeout: Int = HttpStack.DEFAULT_TIMEOUT
-        private var connectTimeout: Int = HttpStack.DEFAULT_TIMEOUT
+        private var connectTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
+        private var readTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
         private var userAgent: String? = null
         private var extraHeaders: MutableMap<String, String>? = null
         private var addExtraHeaders: MutableList<Pair<String, String>>? = null
         private var interceptors: List<Interceptor>? = null
         private var networkInterceptors: List<Interceptor>? = null
 
-        fun connectTimeout(connectTimeout: Int) = apply {
-            this.connectTimeout = connectTimeout
+        /**
+         * Set connection timeout, in milliseconds
+         */
+        fun connectTimeoutMillis(connectTimeout: Int) = apply {
+            this.connectTimeoutMillis = connectTimeout
         }
 
-        fun readTimeout(readTimeout: Int): Builder = apply {
-            this.readTimeout = readTimeout
+        /**
+         * Set read timeout, in milliseconds
+         */
+        fun readTimeoutMillis(readTimeout: Int): Builder = apply {
+            this.readTimeoutMillis = readTimeout
         }
 
+        /**
+         * Set HTTP UserAgent
+         */
         fun userAgent(userAgent: String?): Builder = apply {
             this.userAgent = userAgent
         }
 
-        fun extraHeaders(headers: Map<String, String>): Builder = apply {
+        /**
+         * Set HTTP header
+         */
+        fun headers(headers: Map<String, String>): Builder = apply {
             this.extraHeaders = (this.extraHeaders ?: HashMap()).apply {
                 putAll(headers)
             }
         }
 
-        fun extraHeaders(vararg headers: Pair<String, String>): Builder = apply {
-            extraHeaders(headers.toMap())
+        /**
+         * Set HTTP header
+         */
+        fun headers(vararg headers: Pair<String, String>): Builder = apply {
+            headers(headers.toMap())
         }
 
-        fun addExtraHeaders(headers: List<Pair<String, String>>): Builder = apply {
+        /**
+         * Set repeatable HTTP headers
+         */
+        fun addHeaders(headers: List<Pair<String, String>>): Builder = apply {
             this.addExtraHeaders = (this.addExtraHeaders ?: ArrayList()).apply {
                 addAll(headers)
             }
         }
 
-        fun addExtraHeaders(vararg headers: Pair<String, String>): Builder = apply {
-            addExtraHeaders(headers.toList())
+        /**
+         * Set repeatable HTTP headers
+         */
+        fun addHeaders(vararg headers: Pair<String, String>): Builder = apply {
+            addHeaders(headers.toList())
         }
 
+        /**
+         * Set interceptor
+         */
         fun interceptors(vararg interceptors: Interceptor): Builder = apply {
             this.interceptors = interceptors.toList()
         }
 
+        /**
+         * Set network interceptor
+         */
         fun networkInterceptors(vararg networkInterceptors: Interceptor): Builder = apply {
             this.networkInterceptors = networkInterceptors.toList()
         }
 
         fun build(): OkHttpStack {
             val okHttpClient = OkHttpClient.Builder().apply {
-                readTimeout(readTimeout.toLong(), MILLISECONDS)
-                connectTimeout(connectTimeout.toLong(), MILLISECONDS)
+                connectTimeout(connectTimeoutMillis.toLong(), MILLISECONDS)
+                readTimeout(readTimeoutMillis.toLong(), MILLISECONDS)
                 val userAgent = userAgent
                 val extraHeaders = extraHeaders?.toMap()?.takeIf { it.isNotEmpty() }
                 val addExtraHeaders = addExtraHeaders?.toList()?.takeIf { it.isNotEmpty() }
@@ -137,8 +164,8 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
     class MyInterceptor(
         val userAgent: String?,
-        val extraHeaders: Map<String, String>? = null,
-        val addExtraHeaders: List<Pair<String, String>>? = null,
+        val headers: Map<String, String>? = null,
+        val addHeaders: List<Pair<String, String>>? = null,
     ) : Interceptor {
 
         override fun intercept(chain: Chain): okhttp3.Response =
@@ -149,10 +176,10 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
                 if (userAgent?.isNotEmpty() == true) {
                     header("User-Agent", userAgent)
                 }
-                addExtraHeaders?.forEach {
+                addHeaders?.forEach {
                     addHeader(it.first, it.second)
                 }
-                extraHeaders?.entries?.forEach {
+                headers?.entries?.forEach {
                     header(it.key, it.value)
                 }
             }.build()
