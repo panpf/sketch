@@ -3,12 +3,13 @@ package com.github.panpf.sketch.http
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.ImageRequest
 import okhttp3.Interceptor
+import okhttp3.Interceptor.Chain
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.InputStream
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
-class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
+class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
     override fun getResponse(request: ImageRequest, url: String): Response {
         val httpRequest = Request.Builder().apply {
@@ -69,7 +70,7 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
         private var connectTimeout: Int = HttpStack.DEFAULT_TIMEOUT
         private var userAgent: String? = null
         private var extraHeaders: MutableMap<String, String>? = null
-        private var addExtraHeaders: MutableMap<String, String>? = null
+        private var addExtraHeaders: MutableList<Pair<String, String>>? = null
         private var interceptors: List<Interceptor>? = null
         private var networkInterceptors: List<Interceptor>? = null
 
@@ -86,27 +87,23 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
         }
 
         fun extraHeaders(headers: Map<String, String>): Builder = apply {
-            this.extraHeaders = (this.extraHeaders ?: HashMap<String, String>()).apply {
+            this.extraHeaders = (this.extraHeaders ?: HashMap()).apply {
                 putAll(headers)
             }
         }
 
         fun extraHeaders(vararg headers: Pair<String, String>): Builder = apply {
-            this.extraHeaders = (this.extraHeaders ?: HashMap<String, String>()).apply {
-                putAll(headers.toMap())
-            }
+            extraHeaders(headers.toMap())
         }
 
-        fun addExtraHeaders(headers: Map<String, String>): Builder = apply {
-            this.addExtraHeaders = (this.addExtraHeaders ?: HashMap<String, String>()).apply {
-                putAll(headers)
+        fun addExtraHeaders(headers: List<Pair<String, String>>): Builder = apply {
+            this.addExtraHeaders = (this.addExtraHeaders ?: ArrayList()).apply {
+                addAll(headers)
             }
         }
 
         fun addExtraHeaders(vararg headers: Pair<String, String>): Builder = apply {
-            this.addExtraHeaders = (this.addExtraHeaders ?: HashMap<String, String>()).apply {
-                putAll(headers.toMap())
-            }
+            addExtraHeaders(headers.toList())
         }
 
         fun interceptors(vararg interceptors: Interceptor): Builder = apply {
@@ -118,30 +115,14 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
         }
 
         fun build(): OkHttpStack {
-            val userAgent = userAgent
-            val extraHeaders = extraHeaders?.toMap()
-            val addExtraHeaders = addExtraHeaders?.toMap()
             val okHttpClient = OkHttpClient.Builder().apply {
                 readTimeout(readTimeout.toLong(), MILLISECONDS)
                 connectTimeout(connectTimeout.toLong(), MILLISECONDS)
-                addInterceptor { chain ->
-                    val newRequest =
-                        if (userAgent != null || extraHeaders?.isNotEmpty() == true || addExtraHeaders?.isNotEmpty() == true) {
-                            chain.request().newBuilder().apply {
-                                if (userAgent != null) {
-                                    header("User-Agent", userAgent)
-                                }
-                                addExtraHeaders?.entries?.forEach {
-                                    addHeader(it.key, it.value)
-                                }
-                                extraHeaders?.entries?.forEach {
-                                    header(it.key, it.value)
-                                }
-                            }.build()
-                        } else {
-                            chain.request()
-                        }
-                    chain.proceed(newRequest)
+                val userAgent = userAgent
+                val extraHeaders = extraHeaders?.toMap()?.takeIf { it.isNotEmpty() }
+                val addExtraHeaders = addExtraHeaders?.toList()?.takeIf { it.isNotEmpty() }
+                if (userAgent != null || extraHeaders?.isNotEmpty() == true || addExtraHeaders?.isNotEmpty() == true) {
+                    addInterceptor(MyInterceptor(userAgent, extraHeaders, addExtraHeaders))
                 }
                 interceptors?.forEach { interceptor ->
                     addInterceptor(interceptor)
@@ -152,5 +133,28 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
             }.build()
             return OkHttpStack(okHttpClient)
         }
+    }
+
+    class MyInterceptor(
+        val userAgent: String?,
+        val extraHeaders: Map<String, String>? = null,
+        val addExtraHeaders: List<Pair<String, String>>? = null,
+    ) : Interceptor {
+
+        override fun intercept(chain: Chain): okhttp3.Response =
+            chain.proceed(setupAttrs(chain.request()))
+
+        fun setupAttrs(request: Request): Request =
+            request.newBuilder().apply {
+                if (userAgent?.isNotEmpty() == true) {
+                    header("User-Agent", userAgent)
+                }
+                addExtraHeaders?.forEach {
+                    addHeader(it.first, it.second)
+                }
+                extraHeaders?.entries?.forEach {
+                    header(it.key, it.value)
+                }
+            }.build()
     }
 }
