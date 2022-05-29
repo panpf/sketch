@@ -3,10 +3,10 @@ package com.github.panpf.sketch.request.internal
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
+import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.Depth.NETWORK
 
 internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
     parameters?.cacheKey?.takeIf { it.isNotEmpty() }?.let {
@@ -28,9 +28,12 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
         appendQueryParameter("_resize", it.key)
     }
     transformations?.takeIf { it.isNotEmpty() }?.let { list ->
-        appendQueryParameter("_transformations", list.joinToString(separator = ",") {
-            it.key.replace("Transformation", "")
-        })
+        appendQueryParameter(
+            "_transformations",
+            list.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                it.key.replace("Transformation", "")
+            }
+        )
     }
     if (ignoreExifOrientation) {
         appendQueryParameter("_ignoreExifOrientation", true.toString())
@@ -71,9 +74,12 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
             appendQueryParameter("_resize", it.key)
         }
         transformations?.takeIf { it.isNotEmpty() }?.let { list ->
-            appendQueryParameter("_transformations", list.joinToString(separator = ",") {
-                it.key.replace("Transformation", "")
-            })
+            appendQueryParameter(
+                "_transformations",
+                list.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                    it.key.replace("Transformation", "")
+                }
+            )
         }
         if (disallowReuseBitmap) {
             appendQueryParameter("_disallowReuseBitmap", true.toString())
