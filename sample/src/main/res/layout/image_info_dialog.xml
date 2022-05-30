@@ -62,16 +62,16 @@
             android:layout_marginTop="8dp">
 
             <TextView
-                android:id="@+id/imageInfoDrawableTitle"
+                android:id="@+id/imageInfoOptionsTitle"
                 android:layout_width="76dp"
                 android:layout_height="wrap_content"
                 android:gravity="right"
-                android:text="Drawable："
+                android:text="Options："
                 android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
-                android:id="@+id/imageInfoDrawableContent"
+                android:id="@+id/imageInfoOptionsContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_title"
@@ -84,16 +84,16 @@
             android:layout_marginTop="8dp">
 
             <TextView
-                android:id="@+id/imageInfoOptionsTitle"
+                android:id="@+id/imageInfoDrawableTitle"
                 android:layout_width="76dp"
                 android:layout_height="wrap_content"
                 android:gravity="right"
-                android:text="Options："
+                android:text="Drawable："
                 android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
-                android:id="@+id/imageInfoOptionsContent"
+                android:id="@+id/imageInfoDrawableContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_title"
