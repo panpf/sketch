@@ -1,12 +1,14 @@
 package com.github.panpf.sketch.viewability.internal
 
 import android.graphics.Canvas
+import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
+import androidx.core.view.ViewCompat
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
@@ -18,6 +20,7 @@ import com.github.panpf.sketch.viewability.DrawForegroundObserver
 import com.github.panpf.sketch.viewability.DrawObserver
 import com.github.panpf.sketch.viewability.DrawableObserver
 import com.github.panpf.sketch.viewability.Host
+import com.github.panpf.sketch.viewability.ImageMatrixObserver
 import com.github.panpf.sketch.viewability.LayoutObserver
 import com.github.panpf.sketch.viewability.LongClickObserver
 import com.github.panpf.sketch.viewability.RequestListenerObserver
@@ -27,19 +30,19 @@ import com.github.panpf.sketch.viewability.SizeChangeObserver
 import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.ViewAbilityContainer
-import com.github.panpf.sketch.viewability.ViewAbilityOwner
+import com.github.panpf.sketch.viewability.ViewAbilityManager
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
 import java.lang.ref.WeakReference
 
-class RealViewAbilityContainer(
-    private val owner: ViewAbilityOwner,
+class RealViewAbilityManager(
+    private val container: ViewAbilityContainer,
     view: View
-) : ViewAbilityContainer {
+) : ViewAbilityManager {
 
     private val displayRequestListener: DisplayRequestListener by lazy {
-        DisplayRequestListener(WeakReference(this@RealViewAbilityContainer))
+        DisplayRequestListener(WeakReference(this@RealViewAbilityManager))
     }
-    private val host = Host(view, owner)
+    private val host = Host(view, container)
 
     private var clickListenerWrapper: OnClickListener? = null
     private var longClickListenerWrapper: OnLongClickListener? = null
@@ -58,6 +61,7 @@ class RealViewAbilityContainer(
     private var visibilityChangedObserverList: List<VisibilityChangedObserver>? = null
     private var drawableObserverList: List<DrawableObserver>? = null
     private var scaleTypeAbilityList: List<ScaleTypeObserver>? = null
+    private var imageMatrixAbilityList: List<ImageMatrixObserver>? = null
     private var requestListenerAbilityList: List<RequestListenerObserver>? = null
     private var requestProgressListenerAbilityList: List<RequestProgressListenerObserver>? = null
 
@@ -69,34 +73,42 @@ class RealViewAbilityContainer(
         layoutAbilityList = _viewAbilityList.filterIsInstance(LayoutObserver::class.java)
         sizeChangeAbilityList = _viewAbilityList.filterIsInstance(SizeChangeObserver::class.java)
         drawObserverList = _viewAbilityList.filterIsInstance(DrawObserver::class.java)
-        drawForegroundObserverList = _viewAbilityList.filterIsInstance(DrawForegroundObserver::class.java)
+        drawForegroundObserverList =
+            _viewAbilityList.filterIsInstance(DrawForegroundObserver::class.java)
         touchEventObserverList = _viewAbilityList.filterIsInstance(TouchEventObserver::class.java)
         clickObserverList = _viewAbilityList.filterIsInstance(ClickObserver::class.java)
         longClickAbilityList = _viewAbilityList.filterIsInstance(LongClickObserver::class.java)
         visibilityChangedObserverList = _viewAbilityList
             .filterIsInstance(VisibilityChangedObserver::class.java)
         drawableObserverList = _viewAbilityList.filterIsInstance(DrawableObserver::class.java)
-        scaleTypeAbilityList = _viewAbilityList
-            .filterIsInstance(ScaleTypeObserver::class.java).apply {
-                require(size <= 1) { "Only one ScaleTypeObserver can be added" }
-            }
-        requestListenerAbilityList = _viewAbilityList
-            .filterIsInstance(RequestListenerObserver::class.java)
-        requestProgressListenerAbilityList = _viewAbilityList
-            .filterIsInstance(RequestProgressListenerObserver::class.java)
+        scaleTypeAbilityList = _viewAbilityList.filterIsInstance(ScaleTypeObserver::class.java)
+        imageMatrixAbilityList = _viewAbilityList.filterIsInstance(ImageMatrixObserver::class.java)
+        requestListenerAbilityList =
+            _viewAbilityList.filterIsInstance(RequestListenerObserver::class.java)
+        requestProgressListenerAbilityList =
+            _viewAbilityList.filterIsInstance(RequestProgressListenerObserver::class.java)
         _viewAbilityImmutableList = _viewAbilityList.toList()
         refreshOnClickListener()
         refreshOnLongClickListener()
     }
 
-    override fun addViewAbility(viewAbility: ViewAbility): ViewAbilityContainer = apply {
+    override fun addViewAbility(viewAbility: ViewAbility): ViewAbilityManager = apply {
+        if (viewAbility is ScaleTypeObserver) {
+            require(scaleTypeAbilityList?.isNotEmpty() != true) {
+                "Only one ScaleTypeObserver can be added"
+            }
+        } else if (viewAbility is ImageMatrixObserver) {
+            require(imageMatrixAbilityList?.isNotEmpty() != true) {
+                "Only one ImageMatrixObserver can be added"
+            }
+        }
         _viewAbilityList.add(viewAbility)
         onAbilityListChanged()
 
         viewAbility.host = host
 
         val view = host.view
-        if (view.isAttachedToWindowCompat) {
+        if (ViewCompat.isAttachedToWindow(view)) {
             if (viewAbility is AttachObserver) {
                 viewAbility.onAttachedToWindow()
             }
@@ -110,10 +122,10 @@ class RealViewAbilityContainer(
             }
         }
 
-        host.invalidate()
+        host.view.invalidate()
     }
 
-    override fun removeViewAbility(viewAbility: ViewAbility): ViewAbilityContainer = apply {
+    override fun removeViewAbility(viewAbility: ViewAbility): ViewAbilityManager = apply {
         if (viewAbility is AttachObserver) {
             viewAbility.onDetachedFromWindow()
         }
@@ -123,7 +135,7 @@ class RealViewAbilityContainer(
         _viewAbilityList.remove(viewAbility)
         onAbilityListChanged()
 
-        host.invalidate()
+        host.view.invalidate()
     }
 
     override fun onAttachedToWindow() {
@@ -242,6 +254,14 @@ class RealViewAbilityContainer(
         return scaleTypeAbilityList?.firstOrNull()?.getScaleType()
     }
 
+    override fun setImageMatrix(imageMatrix: Matrix?): Boolean {
+        return imageMatrixAbilityList?.firstOrNull()?.setImageMatrix(imageMatrix) == true
+    }
+
+    override fun getImageMatrix(): Matrix? {
+        return imageMatrixAbilityList?.firstOrNull()?.getImageMatrix()
+    }
+
     override fun getRequestListener(): Listener<DisplayRequest, Success, Error>? {
         return if (requestListenerAbilityList?.isNotEmpty() == true) {
             displayRequestListener
@@ -262,7 +282,7 @@ class RealViewAbilityContainer(
         val clickListenerWrapper = clickListenerWrapper
         val clickAbilityList = clickObserverList
         if (clickListenerWrapper != null || clickAbilityList?.any { it.canIntercept } == true) {
-            owner.superSetOnClickListener { view ->
+            container.superSetOnClickListener { view ->
                 if (clickAbilityList != null) {
                     for (item in clickAbilityList) {
                         if (item.onClick(view)) {
@@ -273,7 +293,7 @@ class RealViewAbilityContainer(
                 clickListenerWrapper?.onClick(view)
             }
         } else {
-            owner.superSetOnClickListener(null)
+            container.superSetOnClickListener(null)
         }
     }
 
@@ -281,7 +301,7 @@ class RealViewAbilityContainer(
         val longClickListenerWrapper = longClickListenerWrapper
         val longClickAbilityList = longClickAbilityList
         if (longClickListenerWrapper != null || longClickAbilityList?.any { it.canIntercept } == true) {
-            owner.superSetOnLongClickListener { view ->
+            container.superSetOnLongClickListener { view ->
                 if (longClickAbilityList != null) {
                     for (item in longClickAbilityList) {
                         if (item.onLongClick(view)) {
@@ -292,11 +312,11 @@ class RealViewAbilityContainer(
                 longClickListenerWrapper?.onLongClick(view) == true
             }
         } else {
-            owner.superSetOnLongClickListener(null)
+            container.superSetOnLongClickListener(null)
         }
     }
 
-    private class DisplayRequestListener(private val realView: WeakReference<RealViewAbilityContainer>) :
+    private class DisplayRequestListener(private val realView: WeakReference<RealViewAbilityManager>) :
         Listener<DisplayRequest, Success, Error>,
         ProgressListener<DisplayRequest> {
 

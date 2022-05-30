@@ -2,6 +2,7 @@ package com.github.panpf.sketch.viewability
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
@@ -12,68 +13,71 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.viewability.internal.RealViewAbilityContainer
+import com.github.panpf.sketch.viewability.internal.RealViewAbilityManager
 
+/**
+ * ImageView base class that supports [ViewAbility]
+ */
 abstract class AbsAbilityImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
-) : AppCompatImageView(context, attrs, defStyle), ViewAbilityOwner {
+) : AppCompatImageView(context, attrs, defStyle), ViewAbilityContainer {
 
-    private var viewAbilityContainer: ViewAbilityContainer? = null
+    private var viewAbilityManager: ViewAbilityManager? = null
 
     override val viewAbilityList: List<ViewAbility>
-        get() = viewAbilityContainer?.viewAbilityList ?: emptyList()
+        get() = viewAbilityManager?.viewAbilityList ?: emptyList()
 
     init {
-        viewAbilityContainer = RealViewAbilityContainer(this, this)
+        viewAbilityManager = RealViewAbilityManager(this, this)
     }
 
     final override fun addViewAbility(viewAbility: ViewAbility) {
-        viewAbilityContainer?.addViewAbility(viewAbility)
+        viewAbilityManager?.addViewAbility(viewAbility)
     }
 
     override fun removeViewAbility(viewAbility: ViewAbility) {
-        viewAbilityContainer?.removeViewAbility(viewAbility)
+        viewAbilityManager?.removeViewAbility(viewAbility)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        viewAbilityContainer?.onAttachedToWindow()
+        viewAbilityManager?.onAttachedToWindow()
     }
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility)
-        viewAbilityContainer?.onVisibilityChanged(changedView, visibility)
+        viewAbilityManager?.onVisibilityChanged(changedView, visibility)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        viewAbilityContainer?.onLayout(changed, left, top, right, bottom)
+        viewAbilityManager?.onLayout(changed, left, top, right, bottom)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        viewAbilityContainer?.onSizeChanged(w, h, oldw, oldh)
+        viewAbilityManager?.onSizeChanged(w, h, oldw, oldh)
     }
 
     override fun onDraw(canvas: Canvas) {
-        viewAbilityContainer?.onDrawBefore(canvas)
+        viewAbilityManager?.onDrawBefore(canvas)
         super.onDraw(canvas)
-        viewAbilityContainer?.onDraw(canvas)
+        viewAbilityManager?.onDraw(canvas)
     }
 
     override fun onDrawForeground(canvas: Canvas) {
-        viewAbilityContainer?.onDrawForegroundBefore(canvas)
+        viewAbilityManager?.onDrawForegroundBefore(canvas)
         super.onDrawForeground(canvas)
-        viewAbilityContainer?.onDrawForeground(canvas)
+        viewAbilityManager?.onDrawForeground(canvas)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return viewAbilityContainer?.onTouchEvent(event) == true || super.onTouchEvent(event)
+        return viewAbilityManager?.onTouchEvent(event) == true || super.onTouchEvent(event)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        viewAbilityContainer?.onDetachedFromWindow()
+        viewAbilityManager?.onDetachedFromWindow()
     }
 
     override fun setImageDrawable(drawable: Drawable?) {
@@ -81,7 +85,7 @@ abstract class AbsAbilityImageView @JvmOverloads constructor(
         super.setImageDrawable(drawable)
         val newDrawable = this.drawable
         if (oldDrawable !== newDrawable) {
-            viewAbilityContainer?.onDrawableChanged(oldDrawable, newDrawable)
+            viewAbilityManager?.onDrawableChanged(oldDrawable, newDrawable)
         }
     }
 
@@ -90,16 +94,16 @@ abstract class AbsAbilityImageView @JvmOverloads constructor(
         super.setImageURI(uri)
         val newDrawable = this.drawable
         if (oldDrawable !== newDrawable) {
-            viewAbilityContainer?.onDrawableChanged(oldDrawable, newDrawable)
+            viewAbilityManager?.onDrawableChanged(oldDrawable, newDrawable)
         }
     }
 
     final override fun setOnClickListener(l: OnClickListener?) {
-        viewAbilityContainer?.setOnClickListener(l)
+        viewAbilityManager?.setOnClickListener(l)
     }
 
     final override fun setOnLongClickListener(l: OnLongClickListener?) {
-        viewAbilityContainer?.setOnLongClickListener(l)
+        viewAbilityManager?.setOnLongClickListener(l)
     }
 
     final override fun superSetOnClickListener(listener: OnClickListener?) {
@@ -125,24 +129,38 @@ abstract class AbsAbilityImageView @JvmOverloads constructor(
     }
 
     final override fun setScaleType(scaleType: ScaleType) {
-        if (viewAbilityContainer?.setScaleType(scaleType) != true) {
+        if (viewAbilityManager?.setScaleType(scaleType) != true) {
             super.setScaleType(scaleType)
         }
     }
 
     final override fun getScaleType(): ScaleType {
-        return viewAbilityContainer?.getScaleType() ?: super.getScaleType()
+        return viewAbilityManager?.getScaleType() ?: super.getScaleType()
     }
 
-    final override fun superGetDrawable(): Drawable? {
-        return super.getDrawable()
+    final override fun superSetImageMatrix(matrix: Matrix?) {
+        super.setImageMatrix(matrix)
+    }
+
+    final override fun superGetImageMatrix(): Matrix {
+        return super.getImageMatrix()
+    }
+
+    final override fun setImageMatrix(matrix: Matrix?) {
+        if (viewAbilityManager?.setImageMatrix(matrix) != true) {
+            super.setImageMatrix(matrix)
+        }
+    }
+
+    final override fun getImageMatrix(): Matrix {
+        return viewAbilityManager?.getImageMatrix() ?: super.getImageMatrix()
     }
 
     override fun getListener(): Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>? {
-        return viewAbilityContainer?.getRequestListener()
+        return viewAbilityManager?.getRequestListener()
     }
 
     override fun getProgressListener(): ProgressListener<DisplayRequest>? {
-        return viewAbilityContainer?.getRequestProgressListener()
+        return viewAbilityManager?.getRequestProgressListener()
     }
 }

@@ -31,13 +31,13 @@
 
 ### 其它功能
 
-得益于实现了 [ViewAbilityOwner] 接口，[SketchImageView] 还支持以下功能：
+得益于实现了 [ViewAbilityContainer] 接口，[SketchImageView] 还支持以下功能：
 * [显示下载进度][show_download_progress]
 * [显示图片类型角标][show_image_type]
 
 [SketchImageView]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/SketchImageView.kt
 
-[ViewAbilityOwner]: ../../sketch-viewability/src/main/java/com/github/panpf/sketch/viewability/ViewAbilityOwner.kt
+[ViewAbilityContainer]: ../../sketch-viewability/src/main/java/com/github/panpf/sketch/viewability/ViewAbilityContainer.kt
 
 [attrs]: ../../sketch-extensions/src/main/res/values/attrs.xml
 

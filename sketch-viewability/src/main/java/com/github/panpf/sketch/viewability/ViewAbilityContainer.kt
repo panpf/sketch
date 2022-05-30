@@ -1,56 +1,70 @@
 package com.github.panpf.sketch.viewability
 
-import android.graphics.Canvas
+import android.graphics.Matrix
 import android.graphics.drawable.Drawable
-import android.view.MotionEvent
-import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.target.ListenerProvider
 
-interface ViewAbilityContainer {
+/**
+ * Provides access services for ViewAbility registration, uninstallation, and event callbacks and properties
+ */
+interface ViewAbilityContainer : ListenerProvider {
 
+    /**
+     * ViewAbility List
+     */
     val viewAbilityList: List<ViewAbility>
 
-    fun addViewAbility(viewAbility: ViewAbility): ViewAbilityContainer
+    /**
+     * Add a ViewAbility and run it
+     */
+    fun addViewAbility(viewAbility: ViewAbility)
 
-    fun removeViewAbility(viewAbility: ViewAbility): ViewAbilityContainer
+    /**
+     * Delete a ViewAbility
+     */
+    fun removeViewAbility(viewAbility: ViewAbility)
 
-    fun getRequestListener(): Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?
+    /**
+     * Call the parent class's setOnClickListener() method
+     */
+    fun superSetOnClickListener(listener: OnClickListener?)
 
-    fun getRequestProgressListener(): ProgressListener<DisplayRequest>?
+    /**
+     * Call the parent class's setOnLongClickListener() method
+     */
+    fun superSetOnLongClickListener(listener: OnLongClickListener?)
 
-    fun onAttachedToWindow()
+    /**
+     * Call the parent class's setScaleType() method
+     */
+    fun superSetScaleType(scaleType: ScaleType)
 
-    fun onDetachedFromWindow()
+    /**
+     * Call the parent class's getScaleType() method
+     */
+    fun superGetScaleType(): ScaleType
 
-    fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int)
+    /**
+     * Call the parent class's setImageMatrix() method
+     */
+    fun superSetImageMatrix(matrix: Matrix?)
 
-    fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int)
+    /**
+     * Call the parent class's getImageMatrix() method
+     */
+    fun superGetImageMatrix(): Matrix?
 
-    fun onVisibilityChanged(changedView: View, visibility: Int)
+    /**
+     * Get Drawable
+     */
+    fun getDrawable(): Drawable?
 
-    fun onDrawBefore(canvas: Canvas)
-
-    fun onDraw(canvas: Canvas)
-
-    fun onDrawForegroundBefore(canvas: Canvas)
-
-    fun onDrawForeground(canvas: Canvas)
-
-    fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?)
-
-    fun onTouchEvent(event: MotionEvent): Boolean
-
-    fun setOnClickListener(l: OnClickListener?)
-
-    fun setOnLongClickListener(l: OnLongClickListener?)
-
-    fun setScaleType(scaleType: ScaleType): Boolean
-
-    fun getScaleType(): ScaleType?
+    /**
+     * Submit an display image request
+     */
+    fun submitRequest(request: DisplayRequest)
 }

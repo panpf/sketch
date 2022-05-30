@@ -17,7 +17,7 @@ class MimeTypeLogoAbility(
 
     override fun onAttachedToWindow() {
         reset()
-        host?.invalidate()
+        host?.view?.invalidate()
     }
 
     override fun onDetachedFromWindow() {
@@ -26,12 +26,12 @@ class MimeTypeLogoAbility(
 
     override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
         reset()
-        host?.invalidate()
+        host?.view?.invalidate()
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         reset()
-        host?.invalidate()
+        host?.view?.invalidate()
     }
 
     override fun onDrawBefore(canvas: Canvas) {
@@ -46,7 +46,7 @@ class MimeTypeLogoAbility(
         logoDrawable = null
         val host = host ?: return
         val view = host.view
-        val lastDrawable = host.drawable?.findLastSketchDrawable() ?: return
+        val lastDrawable = host.container.getDrawable()?.findLastSketchDrawable() ?: return
         val mimeType = lastDrawable.imageInfo.mimeType
         val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return
         if (mimeTypeLogo.hiddenWhenAnimatable && lastDrawable is Animatable) return
@@ -62,14 +62,14 @@ class MimeTypeLogoAbility(
 }
 
 
-fun ViewAbilityOwner.showMimeTypeLogo(mimeTypeLogoAbility: MimeTypeLogoAbility?) {
+fun ViewAbilityContainer.showMimeTypeLogo(mimeTypeLogoAbility: MimeTypeLogoAbility?) {
     removeMimeTypeLogo()
     if (mimeTypeLogoAbility != null) {
         addViewAbility(mimeTypeLogoAbility)
     }
 }
 
-fun ViewAbilityOwner.showMimeTypeLogoWith(
+fun ViewAbilityContainer.showMimeTypeLogoWith(
     mimeTypeIconMap: Map<String, MimeTypeLogo>?,
     margin: Int = 0
 ) {
@@ -81,7 +81,7 @@ fun ViewAbilityOwner.showMimeTypeLogoWith(
     showMimeTypeLogo(mimeTypeLogoViewAbility)
 }
 
-fun ViewAbilityOwner.showMimeTypeLogoWithDrawable(
+fun ViewAbilityContainer.showMimeTypeLogoWithDrawable(
     mimeTypeIconMap: Map<String, Drawable>?,
     margin: Int = 0
 ) {
@@ -96,7 +96,7 @@ fun ViewAbilityOwner.showMimeTypeLogoWithDrawable(
     showMimeTypeLogo(mimeTypeLogoViewAbility)
 }
 
-fun ViewAbilityOwner.showMimeTypeLogoWithResId(
+fun ViewAbilityContainer.showMimeTypeLogoWithResId(
     mimeTypeIconMap: Map<String, Int>?,
     margin: Int = 0
 ) {
@@ -111,7 +111,7 @@ fun ViewAbilityOwner.showMimeTypeLogoWithResId(
     showMimeTypeLogo(mimeTypeLogoViewAbility)
 }
 
-fun ViewAbilityOwner.removeMimeTypeLogo() {
+fun ViewAbilityContainer.removeMimeTypeLogo() {
     viewAbilityList
         .find { it is MimeTypeLogoAbility }
         ?.let { removeViewAbility(it) }

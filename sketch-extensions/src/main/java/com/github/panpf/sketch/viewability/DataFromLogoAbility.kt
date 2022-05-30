@@ -30,7 +30,7 @@ class DataFromLogoAbility(
 
     override fun onAttachedToWindow() {
         reset()
-        host?.invalidate()
+        host?.view?.invalidate()
     }
 
     override fun onDetachedFromWindow() {
@@ -39,12 +39,12 @@ class DataFromLogoAbility(
 
     override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
         reset()
-        host?.invalidate()
+        host?.view?.invalidate()
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         reset()
-        host?.invalidate()
+        host?.view?.invalidate()
     }
 
     override fun onDrawBefore(canvas: Canvas) {
@@ -61,7 +61,7 @@ class DataFromLogoAbility(
         path.reset()
         val host = host ?: return false
 
-        val lastDrawable = host.drawable?.findLastSketchDrawable() ?: return false
+        val lastDrawable = host.container.getDrawable()?.findLastSketchDrawable() ?: return false
         when (lastDrawable.dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
             DataFrom.MEMORY -> paint.color = FROM_FLAG_COLOR_MEMORY
@@ -92,12 +92,12 @@ class DataFromLogoAbility(
     }
 }
 
-fun ViewAbilityOwner.showDataFromLogo(sizeDp: Float = DataFromLogoAbility.DEFAULT_SIZE_DP) {
+fun ViewAbilityContainer.showDataFromLogo(sizeDp: Float = DataFromLogoAbility.DEFAULT_SIZE_DP) {
     removeDataFromLogo()
     addViewAbility(DataFromLogoAbility(sizeDp))
 }
 
-fun ViewAbilityOwner.removeDataFromLogo() {
+fun ViewAbilityContainer.removeDataFromLogo() {
     viewAbilityList
         .find { it is DataFromLogoAbility }
         ?.let { removeViewAbility(it) }

@@ -25,7 +25,7 @@ class ClickIgnoreSaveCellularTrafficAbility
         val newRequest = request.newDisplayRequest {
             ignoreSaveCellularTraffic(true)
         }
-        host.submitRequest(newRequest)
+        host.container.submitRequest(newRequest)
         return true
     }
 
@@ -49,7 +49,7 @@ class ClickIgnoreSaveCellularTrafficAbility
     }
 }
 
-fun ViewAbilityOwner.setClickIgnoreSaveCellularTrafficEnabled(enabled: Boolean) {
+fun ViewAbilityContainer.setClickIgnoreSaveCellularTrafficEnabled(enabled: Boolean) {
     viewAbilityList
         .find { it is ClickIgnoreSaveCellularTrafficAbility }
         ?.let { removeViewAbility(it) }

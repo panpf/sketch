@@ -57,7 +57,7 @@ class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) :
     // It must be defined here because Drawable holds the callback with a weak reference, so something other than Drawable needs to hold the callback
     private val drawableCallback = object : Callback {
         override fun invalidateDrawable(who: Drawable) {
-            host?.invalidate()
+            host?.view?.invalidate()
         }
 
         override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
@@ -200,19 +200,19 @@ class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) :
     }
 }
 
-fun ViewAbilityOwner.showProgressIndicator(progressDrawable: ProgressDrawable) {
+fun ViewAbilityContainer.showProgressIndicator(progressDrawable: ProgressDrawable) {
     removeProgressIndicator()
     val indicator = ProgressIndicatorAbility(progressDrawable)
     addViewAbility(indicator)
 }
 
-fun ViewAbilityOwner.removeProgressIndicator() {
+fun ViewAbilityContainer.removeProgressIndicator() {
     viewAbilityList
         .find { it is ProgressIndicatorAbility }
         ?.let { removeViewAbility(it) }
 }
 
-fun ViewAbilityOwner.showArcProgressIndicator(
+fun ViewAbilityContainer.showArcProgressIndicator(
     size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
     color: Int = Color.WHITE,
     backgroundColor: Int = 0x44000000,
@@ -227,11 +227,11 @@ fun ViewAbilityOwner.showArcProgressIndicator(
     showProgressIndicator(progressDrawable)
 }
 
-fun ViewAbilityOwner.showMaskProgressIndicator(
+fun ViewAbilityContainer.showMaskProgressIndicator(
     @ColorInt maskColor: Int = MaskProgressDrawable.DEFAULT_MASK_COLOR,
 ) = showProgressIndicator(MaskProgressDrawable(maskColor))
 
-fun ViewAbilityOwner.showRingProgressIndicator(
+fun ViewAbilityContainer.showRingProgressIndicator(
     size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
     ringWidth: Float = size * 0.1f,
     @ColorInt ringColor: Int = Color.WHITE,

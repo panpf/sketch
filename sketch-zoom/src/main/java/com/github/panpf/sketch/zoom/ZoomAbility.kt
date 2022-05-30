@@ -30,6 +30,7 @@ import com.github.panpf.sketch.viewability.AttachObserver
 import com.github.panpf.sketch.viewability.DrawObserver
 import com.github.panpf.sketch.viewability.DrawableObserver
 import com.github.panpf.sketch.viewability.Host
+import com.github.panpf.sketch.viewability.ImageMatrixObserver
 import com.github.panpf.sketch.viewability.RequestListenerObserver
 import com.github.panpf.sketch.viewability.ScaleTypeObserver
 import com.github.panpf.sketch.viewability.SizeChangeObserver
@@ -55,7 +56,7 @@ import kotlinx.coroutines.launch
 
 class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver,
     DrawableObserver, TouchEventObserver, SizeChangeObserver, VisibilityChangedObserver,
-    RequestListenerObserver {
+    RequestListenerObserver, ImageMatrixObserver {
 
     companion object {
         private const val MODULE = "ZoomAbility"
@@ -98,7 +99,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         set(value) {
             val oldZoomer = zoomer
             if (oldZoomer != null) {
-                field?.superScaleType = oldZoomer.scaleType
+                field?.container?.superSetScaleType(oldZoomer.scaleType)
                 oldZoomer.recycle()
             }
 
@@ -106,7 +107,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             val newZoomer = if (value != null) newZoomer(value) else null
             zoomer = newZoomer
             if (newZoomer != null) {
-                field?.superScaleType = ScaleType.MATRIX
+                field?.container?.superSetScaleType(ScaleType.MATRIX)
             }
 
             lifecycle = value?.context.getLifecycle()
@@ -189,7 +190,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     init {
         addOnMatrixChangeListener { zoomer ->
-            host?.imageMatrix = imageMatrix.apply { zoomer.getDrawMatrix(this) }
+            host?.container?.superSetImageMatrix(imageMatrix.apply { zoomer.getDrawMatrix(this) })
         }
     }
 
@@ -464,7 +465,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     }
 
     private fun newZoomer(host: Host): Zoomer {
-        val scaleType = host.superScaleType
+        val scaleType = host.container.superGetScaleType()
         require(scaleType != ScaleType.MATRIX) {
             "ScaleType cannot be MATRIX"
         }
@@ -502,7 +503,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private fun setZoomerDrawable() {
         val host = host ?: return
         val zoomer = zoomer ?: return
-        val previewDrawable = host.drawable
+        val previewDrawable = host.container.getDrawable()
         zoomer.drawableSize =
             Size(previewDrawable?.intrinsicWidth ?: 0, previewDrawable?.intrinsicHeight ?: 0)
         val sketchDrawable = previewDrawable?.findLastSketchDrawable()
@@ -520,7 +521,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             logger.d(MODULE) { "Can't use Tiles. View size error" }
             return null
         }
-        val previewDrawable = host.drawable
+        val previewDrawable = host.container.getDrawable()
         val sketchDrawable = previewDrawable?.findLastSketchDrawable()?.takeIf { it !is Animatable }
         if (sketchDrawable == null) {
             logger.d(MODULE) { "Can't use Tiles. Drawable error" }
@@ -585,5 +586,13 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     }
 
     override fun onRequestSuccess(request: DisplayRequest, result: Success) {
+    }
+
+    override fun setImageMatrix(imageMatrix: Matrix?): Boolean {
+        return true
+    }
+
+    override fun getImageMatrix(): Matrix? {
+        return null
     }
 }
