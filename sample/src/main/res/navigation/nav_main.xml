@@ -101,6 +101,13 @@
             app:popEnterAnim="@anim/nav_pop_enter"
             app:popExitAnim="@anim/nav_pop_exit" />
         <action
+            android:id="@+id/action_progressIndicatorTestFragment"
+            app:destination="@id/progressIndicatorTestFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
             android:id="@+id/action_testFragment"
             app:destination="@id/testFragment"
             app:enterAnim="@anim/nav_enter"
@@ -254,6 +261,11 @@
         android:id="@+id/insanityTestComposeFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.insanity.compose.InsanityTestComposeFragment"
         android:label="InsanityTestComposeFragment" />
+
+    <fragment
+        android:id="@+id/progressIndicatorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestFragment"
+        android:label="ProgressIndicatorTestFragment" />
 
     <dialog
         android:id="@+id/imageInfoDialogFragment"

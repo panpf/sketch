@@ -17,7 +17,7 @@ import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
-import com.github.panpf.sketch.viewability.showRingProgressIndicator
+import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.launch
 
 // todo 增加上下滑动退出功能
@@ -35,7 +35,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
         binding.imageViewerZoomImage.apply {
-            showRingProgressIndicator()
+            showSectorProgressIndicator()
             prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
                 zoomAbility.readModeEnabled = it
             }

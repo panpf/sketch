@@ -80,6 +80,10 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                         "ExifOrientation",
                         MainFragmentDirections.actionExifOrientationTestPagerFragment()
                     ),
+                    Link(
+                        "ProgressIndicator",
+                        MainFragmentDirections.actionProgressIndicatorTestFragment()
+                    ),
                     Link("Insanity Test", MainFragmentDirections.actionInsanityTestFragment()),
                     Link("Other Test", MainFragmentDirections.actionTestFragment()),
                 )
