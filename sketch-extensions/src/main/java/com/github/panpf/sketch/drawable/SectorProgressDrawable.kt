@@ -1,7 +1,9 @@
 package com.github.panpf.sketch.drawable
 
 import android.animation.ValueAnimator
+import android.content.res.Resources
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.Paint.Style.FILL
@@ -14,11 +16,11 @@ import com.github.panpf.sketch.util.format
  * Sector progress Drawable
  */
 class SectorProgressDrawable(
-    private val size: Int,
-    private val backgroundColor: Int,
-    private val strokeColor: Int,
-    private val progressColor: Int,
-    private val strokeWidth: Float,
+    private val size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
+    private val backgroundColor: Int = 0x44000000,
+    private val strokeColor: Int = Color.WHITE,
+    private val progressColor: Int = Color.WHITE,
+    private val strokeWidth: Float = size * 0.02f,
 ) : ProgressDrawable() {
 
     private val backgroundPaint = Paint().apply {
@@ -99,7 +101,7 @@ class SectorProgressDrawable(
         canvas.drawCircle(cx, cy, radius, strokePaint)
 
         // progress
-        val space = strokeWidth * 2
+        val space = strokeWidth * 3
         progressOval.set(
             cx - radius + space,
             cy - radius + space,

@@ -2,6 +2,7 @@ package com.github.panpf.sketch.drawable
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -21,7 +22,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.github.panpf.sketch.util.format
 
 class RingProgressDrawable(
-    private val size: Int,
+    private val size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
     private val ringWidth: Float = size * 0.1f,
     @ColorInt private val ringColor: Int = Color.WHITE,
 ) : ProgressDrawable(), Animatable {
