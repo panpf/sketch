@@ -25,8 +25,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.decode.internal.ImageFormat.HEIC
-import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataFrom
@@ -34,6 +32,8 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.ImageFormat.HEIC
+import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
@@ -42,6 +42,7 @@ import com.github.panpf.sketch.resize.calculateResizeMapping
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toHexString
+import java.io.BufferedInputStream
 import java.io.IOException
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -330,7 +331,9 @@ fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
 @Throws(IOException::class)
 fun DataSource.decodeBitmapWithBitmapFactory(options: BitmapFactory.Options? = null): Bitmap? =
     newInputStream().use {
-        BitmapFactory.decodeStream(it, null, options)
+        BufferedInputStream(it).use { bufferedInput ->
+            BitmapFactory.decodeStream(bufferedInput, null, options)
+        }
     }
 
 fun ImageFormat.supportBitmapRegionDecoder(): Boolean =

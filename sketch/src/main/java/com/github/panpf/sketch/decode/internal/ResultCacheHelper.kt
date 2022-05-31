@@ -19,6 +19,8 @@ import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.BufferedInputStream
+import java.io.FileInputStream
 
 suspend fun <R> tryLockResultCache(
     sketch: Sketch,
@@ -87,18 +89,24 @@ class ResultCacheHelper internal constructor(
                     val metaDataSerializer = MetaData.Serializer()
                     val metaData = metaDataSerializer.fromJson(JSONObject(jsonString))
                     val imageInfo = metaData.imageInfo
-                    val bitmap = BitmapFactory.decodeFile(
-                        bitmapDataDiskCacheSnapshot.file.path,
-                        request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-                            .toBitmapOptions()
-                    )
-                    BitmapDecodeResult(
-                        bitmap,
-                        metaData.imageInfo,
-                        metaData.exifOrientation,
-                        RESULT_DISK_CACHE,
-                        metaData.transformedList
-                    )
+                    val bitmap = FileInputStream(bitmapDataDiskCacheSnapshot.file.path).use {
+                        BufferedInputStream(it).use { bufferedInput ->
+                            val options = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+                                .toBitmapOptions()
+                            BitmapFactory.decodeStream(bufferedInput, null, options)
+                        }
+                    }
+                    if (bitmap != null) {
+                        BitmapDecodeResult(
+                            bitmap,
+                            metaData.imageInfo,
+                            metaData.exifOrientation,
+                            RESULT_DISK_CACHE,
+                            metaData.transformedList
+                        )
+                    } else {
+                        null
+                    }
                 } else {
                     bitmapDataDiskCacheSnapshot?.remove()
                     bitmapMetaDiskCacheSnapshot?.remove()
