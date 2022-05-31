@@ -8,7 +8,7 @@ import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ProgressIndicatorTestFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.viewability.ProgressIndicatorAbility
 import com.github.panpf.sketch.viewability.ViewAbilityContainer
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
@@ -17,7 +17,7 @@ import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class ProgressIndicatorTestFragment : BindingFragment<ProgressIndicatorTestFragmentBinding>() {
+class ProgressIndicatorTestFragment : ToolbarBindingFragment<ProgressIndicatorTestFragmentBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +28,12 @@ class ProgressIndicatorTestFragment : BindingFragment<ProgressIndicatorTestFragm
     }
 
     override fun onViewCreated(
+        toolbar: androidx.appcompat.widget.Toolbar,
         binding: ProgressIndicatorTestFragmentBinding,
         savedInstanceState: Bundle?
     ) {
+        toolbar.title = "ProgressIndicator"
+
         binding.testIndicatorTestImage1.setImageResource(R.drawable.im_placeholder)
         binding.testIndicatorTestImage2.setImageResource(R.drawable.im_placeholder)
         binding.testIndicatorTestImage3.setImageResource(R.drawable.im_placeholder)
