@@ -23,6 +23,8 @@ import wseemann.media.FFmpegMediaMetadataRetriever
 import kotlin.math.roundToInt
 
 /**
+ * Decode a frame of a video file and convert it to Bitmap
+ *
  * Notes: It is not support MediaMetadataRetriever.BitmapParams
  *
  * Notes：LoadRequest's preferQualityOverSpeed, bitmapConfig, colorSpace attributes will not take effect

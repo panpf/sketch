@@ -24,6 +24,8 @@ import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 
 /**
+ * Decode a frame of a video file and convert it to Bitmap
+ *
  * Notes: Android O(26/8.0) and before versions do not support scale to read frames,
  * resulting in slow decoding speed and large memory consumption in the case of large videos and causes memory jitter
  *

@@ -21,6 +21,9 @@ import androidx.core.graphics.ColorUtils
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.github.panpf.sketch.util.format
 
+/**
+ * Ring Progress Drawable
+ */
 class RingProgressDrawable(
     private val size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
     private val ringWidth: Float = size * 0.1f,

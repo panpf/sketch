@@ -15,6 +15,9 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toBitmap
 
+/**
+ * Decode Android xml drawable and convert to Bitmap
+ */
 class XmlDrawableBitmapDecoder(
     private val sketch: Sketch,
     private val request: ImageRequest,

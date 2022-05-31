@@ -13,7 +13,7 @@ import android.graphics.RectF
 import com.github.panpf.sketch.util.format
 
 /**
- * Sector progress Drawable
+ * Sector Progress Drawable
  */
 class SectorProgressDrawable(
     private val size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),

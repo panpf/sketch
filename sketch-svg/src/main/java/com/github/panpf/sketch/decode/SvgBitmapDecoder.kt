@@ -19,6 +19,9 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import kotlin.math.roundToInt
 
+/**
+ * Decode svg file and convert to Bitmap
+ */
 class SvgBitmapDecoder(
     private val sketch: Sketch,
     private val request: ImageRequest,

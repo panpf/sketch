@@ -14,17 +14,13 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
-        if (request !is DisplayRequest) {
-            return chain.proceed(request)
-        }
-
-        val depth = request.depth
         val finalRequest = if (
-            enabled
+            request is DisplayRequest
+            && enabled
             && scrolling
             && request.isPauseLoadWhenScrolling
             && !request.isIgnoredPauseLoadWhenScrolling
-            && depth < Depth.MEMORY
+            && request.depth < Depth.MEMORY
         ) {
             request.newDisplayRequest {
                 depth(Depth.MEMORY)

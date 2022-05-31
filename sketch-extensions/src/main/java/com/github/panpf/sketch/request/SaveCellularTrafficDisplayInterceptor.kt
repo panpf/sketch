@@ -1,30 +1,34 @@
 package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 
 /**
  * To save cellular traffic. Prohibit downloading images from the Internet if the current network is cellular, Then can also cooperate with [saveCellularTrafficError] custom error image display
  */
-class SaveCellularTrafficDisplayInterceptor : RequestInterceptor {
+class SaveCellularTrafficDisplayInterceptor constructor(
+    isCellularNetworkConnected: ((Sketch) -> Boolean)? = null
+) : RequestInterceptor {
 
     var enabled = true
+
+    private val isCellularNetworkConnected: (Sketch) -> Boolean =
+        isCellularNetworkConnected ?: { sketch ->
+            sketch.systemCallbacks.isCellularNetworkConnected
+        }
 
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
-        if (request !is DisplayRequest) {
-            return chain.proceed(request)
-        }
-
-        val depth = request.depth
         val finalRequest = if (
-            enabled
+            request is DisplayRequest
+            && enabled
             && request.isSaveCellularTraffic
             && !request.isIgnoredSaveCellularTraffic
-            && chain.sketch.systemCallbacks.isCellularNetworkConnected
-            && depth < Depth.LOCAL
+            && isCellularNetworkConnected(chain.sketch)
+            && request.depth < Depth.LOCAL
         ) {
             request.newDisplayRequest {
                 depth(Depth.LOCAL)

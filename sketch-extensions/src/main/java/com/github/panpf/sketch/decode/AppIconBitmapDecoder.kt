@@ -14,6 +14,9 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toBitmap
 
+/**
+ * Extract the icon of the installed app and convert it to Bitmap
+ */
 class AppIconBitmapDecoder(
     private val sketch: Sketch,
     private val request: ImageRequest,

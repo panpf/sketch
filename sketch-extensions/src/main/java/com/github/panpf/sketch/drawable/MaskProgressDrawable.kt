@@ -8,6 +8,9 @@ import android.graphics.PixelFormat
 import androidx.annotation.ColorInt
 import com.github.panpf.sketch.util.format
 
+/**
+ * Mask Progress Drawable
+ */
 class MaskProgressDrawable(
     @ColorInt private val maskColor: Int = DEFAULT_MASK_COLOR
 ) : ProgressDrawable() {

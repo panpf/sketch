@@ -16,16 +16,20 @@ import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import androidx.lifecycle.LifecycleEventObserver
-import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.drawable.RingProgressDrawable
+import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.isSketchGlobalLifecycle
 import com.github.panpf.sketch.util.getLifecycle
 
+/**
+ * A ViewAbility that displays [ImageRequest] progress indicator functionality on the View surface
+ */
 class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) : ViewAbility,
     LayoutObserver, RequestListenerObserver, RequestProgressListenerObserver,
     DrawObserver, VisibilityChangedObserver, AttachObserver {
@@ -54,7 +58,8 @@ class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) :
         }
     }
 
-    // It must be defined here because Drawable holds the callback with a weak reference, so something other than Drawable needs to hold the callback
+    // It must be defined here because Drawable holds the callback with a weak reference,
+    // so something other than Drawable needs to hold the callback
     private val drawableCallback = object : Callback {
         override fun invalidateDrawable(who: Drawable) {
             host?.view?.invalidate()
@@ -200,37 +205,46 @@ class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) :
     }
 }
 
+/**
+ * Display a progress indicator, [progressDrawable] is responsible for the specific style
+ */
 fun ViewAbilityContainer.showProgressIndicator(progressDrawable: ProgressDrawable) {
     removeProgressIndicator()
     val indicator = ProgressIndicatorAbility(progressDrawable)
     addViewAbility(indicator)
 }
 
+/**
+ * Remove progress indicator
+ */
 fun ViewAbilityContainer.removeProgressIndicator() {
     viewAbilityList
         .find { it is ProgressIndicatorAbility }
         ?.let { removeViewAbility(it) }
 }
 
+/**
+ * Display a sector progress indicator
+ */
 fun ViewAbilityContainer.showSectorProgressIndicator(
     size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
     color: Int = Color.WHITE,
     backgroundColor: Int = 0x44000000,
 ) {
-    val progressDrawable = SectorProgressDrawable(
-        size = size,
-        backgroundColor = backgroundColor,
-        strokeColor = color,
-        progressColor = color,
-        strokeWidth = size * 0.02f
-    )
+    val progressDrawable = SectorProgressDrawable(size, backgroundColor, color, color, size * 0.02f)
     showProgressIndicator(progressDrawable)
 }
 
+/**
+ * Displays a mask progress indicator
+ */
 fun ViewAbilityContainer.showMaskProgressIndicator(
     @ColorInt maskColor: Int = MaskProgressDrawable.DEFAULT_MASK_COLOR,
 ) = showProgressIndicator(MaskProgressDrawable(maskColor))
 
+/**
+ * Display a ring progress indicator
+ */
 fun ViewAbilityContainer.showRingProgressIndicator(
     size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
     ringWidth: Float = size * 0.1f,

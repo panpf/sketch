@@ -12,6 +12,9 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toBitmap
 import java.io.IOException
 
+/**
+ * Extract the icon of the Apk file and convert it to Bitmap
+ */
 class ApkIconBitmapDecoder(
     private val sketch: Sketch,
     private val request: ImageRequest,
