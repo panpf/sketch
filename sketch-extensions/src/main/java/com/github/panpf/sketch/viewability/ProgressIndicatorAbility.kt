@@ -16,7 +16,7 @@ import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import androidx.lifecycle.LifecycleEventObserver
-import com.github.panpf.sketch.drawable.ArcProgressDrawable
+import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.drawable.RingProgressDrawable
@@ -212,12 +212,12 @@ fun ViewAbilityContainer.removeProgressIndicator() {
         ?.let { removeViewAbility(it) }
 }
 
-fun ViewAbilityContainer.showArcProgressIndicator(
+fun ViewAbilityContainer.showSectorProgressIndicator(
     size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
     color: Int = Color.WHITE,
     backgroundColor: Int = 0x44000000,
 ) {
-    val progressDrawable = ArcProgressDrawable(
+    val progressDrawable = SectorProgressDrawable(
         size = size,
         backgroundColor = backgroundColor,
         strokeColor = color,

@@ -39,8 +39,8 @@ sketch-extensions 模块提供的 [SketchImageView] 支持多种样式显示下�
 // 在 SketchImageView 最上层显示一层浅黑色半透明蒙层，蒙层随着进度的进行从上到下消失
 sketchImageView.showMaskProgressIndicator()
 
-// 在 SketchImageView 最上层显示一个弧形的进度条
-sketchImageView.showArcProgressIndicator()
+// 在 SketchImageView 最上层显示一个扇形的进度条
+sketchImageView.showSrctorProgressIndicator()
 
 // 在 SketchImageView 最上层显示一个环形的进度条
 sketchImageView.showRingProgressIndicator()

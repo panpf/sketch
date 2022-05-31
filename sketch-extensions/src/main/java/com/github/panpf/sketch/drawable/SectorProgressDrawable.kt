@@ -10,7 +10,10 @@ import android.graphics.PixelFormat
 import android.graphics.RectF
 import com.github.panpf.sketch.util.format
 
-class ArcProgressDrawable(
+/**
+ * Sector progress Drawable
+ */
+class SectorProgressDrawable(
     private val size: Int,
     private val backgroundColor: Int,
     private val strokeColor: Int,
@@ -25,7 +28,7 @@ class ArcProgressDrawable(
     private val strokePaint = Paint().apply {
         isAntiAlias = true
         color = strokeColor
-        strokeWidth = this@ArcProgressDrawable.strokeWidth
+        strokeWidth = this@SectorProgressDrawable.strokeWidth
         style = STROKE
     }
     private val progressPaint = Paint().apply {
