@@ -6,29 +6,41 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Set the error image when the loading is paused in the scrolling of the list
+ */
 fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(): ErrorStateImage.Builder = apply {
     addMatcher(PauseLoadWhenScrollingMatcher(null))
 }
 
+/**
+ * Set the error image when the loading is paused in the scrolling of the list
+ */
 fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(
     stateImage: StateImage
 ): ErrorStateImage.Builder = apply {
     addMatcher(PauseLoadWhenScrollingMatcher(stateImage))
 }
 
+/**
+ * Set the error image when the loading is paused in the scrolling of the list
+ */
 fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(
     drawable: Drawable
 ): ErrorStateImage.Builder = apply {
     addMatcher(PauseLoadWhenScrollingMatcher(DrawableStateImage(drawable)))
 }
 
+/**
+ * Set the error image when the loading is paused in the scrolling of the list
+ */
 fun ErrorStateImage.Builder.pauseLoadWhenScrollingError(
     resId: Int
 ): ErrorStateImage.Builder = apply {
     addMatcher(PauseLoadWhenScrollingMatcher(DrawableStateImage(resId)))
 }
 
-private class PauseLoadWhenScrollingMatcher(val stateImage: StateImage?) :
+class PauseLoadWhenScrollingMatcher(val stateImage: StateImage?) :
     ErrorStateImage.Matcher {
 
     override fun match(request: ImageRequest, exception: SketchException?): Boolean =

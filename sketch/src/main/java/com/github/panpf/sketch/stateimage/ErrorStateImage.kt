@@ -37,7 +37,7 @@ fun newErrorStateImageBuilder(
     configBlock?.invoke(this)
 }
 
-class ErrorStateImage private constructor(private val matcherList: List<Matcher>) : StateImage {
+class ErrorStateImage private constructor(val matcherList: List<Matcher>) : StateImage {
 
     override fun getDrawable(
         sketch: Sketch,

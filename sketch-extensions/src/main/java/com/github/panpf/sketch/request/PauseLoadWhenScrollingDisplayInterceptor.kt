@@ -2,7 +2,17 @@ package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
+import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
 
+/**
+ * Pause loading new images while the list is scrolling
+ *
+ * @see DisplayRequest.Builder.pauseLoadWhenScrolling
+ * @see PauseLoadWhenScrollingMixedScrollListener
+ * @see ErrorStateImage.Builder.pauseLoadWhenScrollingError
+ */
 class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
 
     companion object {

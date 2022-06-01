@@ -3,11 +3,11 @@ package com.github.panpf.sketch.extensions.test.request
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageRequest.Builder
 import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
@@ -28,31 +28,45 @@ class PauseLoadWhenScrollingExtensionsTest {
     fun testPauseLoadWhenScrolling() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        (DisplayRequest(context, newAssetUri("sample.svg")) as ImageRequest).apply {
+        DisplayRequest(context, "http://sample.com/sample.jpeg").apply {
             Assert.assertFalse(isPauseLoadWhenScrolling)
-        }
-        (DisplayRequest(context, newAssetUri("sample.svg")) {
-            (this as Builder).pauseLoadWhenScrolling(true)
-        } as ImageRequest).apply {
-            Assert.assertEquals(true, isPauseLoadWhenScrolling)
         }
 
-        DisplayRequest(context, newAssetUri("sample.svg")).apply {
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            (this as Builder).pauseLoadWhenScrolling(true)
+        }.apply {
+            Assert.assertTrue(isPauseLoadWhenScrolling)
+        }
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            (this as Builder).pauseLoadWhenScrolling(false)
+        }.apply {
             Assert.assertFalse(isPauseLoadWhenScrolling)
         }
-        DisplayRequest(context, newAssetUri("sample.svg")) {
+
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
             pauseLoadWhenScrolling(true)
         }.apply {
-            Assert.assertEquals(true, isPauseLoadWhenScrolling)
+            Assert.assertTrue(isPauseLoadWhenScrolling)
+        }
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            pauseLoadWhenScrolling(false)
+        }.apply {
+            Assert.assertFalse(isPauseLoadWhenScrolling)
         }
 
         ImageOptions().apply {
             Assert.assertFalse(isPauseLoadWhenScrolling)
         }
+
         ImageOptions {
             pauseLoadWhenScrolling(true)
         }.apply {
-            Assert.assertEquals(true, isPauseLoadWhenScrolling)
+            Assert.assertTrue(isPauseLoadWhenScrolling)
+        }
+        ImageOptions {
+            pauseLoadWhenScrolling(false)
+        }.apply {
+            Assert.assertFalse(isPauseLoadWhenScrolling)
         }
 
         val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
@@ -72,31 +86,45 @@ class PauseLoadWhenScrollingExtensionsTest {
     fun testIgnorePauseLoadWhenScrolling() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        (DisplayRequest(context, newAssetUri("sample.svg")) as ImageRequest).apply {
+        DisplayRequest(context, "http://sample.com/sample.jpeg").apply {
             Assert.assertFalse(isIgnoredPauseLoadWhenScrolling)
-        }
-        (DisplayRequest(context, newAssetUri("sample.svg")) {
-            (this as Builder).ignorePauseLoadWhenScrolling(true)
-        } as ImageRequest).apply {
-            Assert.assertEquals(true, isIgnoredPauseLoadWhenScrolling)
         }
 
-        DisplayRequest(context, newAssetUri("sample.svg")).apply {
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            (this as Builder).ignorePauseLoadWhenScrolling(true)
+        }.apply {
+            Assert.assertTrue(isIgnoredPauseLoadWhenScrolling)
+        }
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            (this as Builder).ignorePauseLoadWhenScrolling(false)
+        }.apply {
             Assert.assertFalse(isIgnoredPauseLoadWhenScrolling)
         }
-        DisplayRequest(context, newAssetUri("sample.svg")) {
+
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
             ignorePauseLoadWhenScrolling(true)
         }.apply {
-            Assert.assertEquals(true, isIgnoredPauseLoadWhenScrolling)
+            Assert.assertTrue(isIgnoredPauseLoadWhenScrolling)
+        }
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            ignorePauseLoadWhenScrolling(false)
+        }.apply {
+            Assert.assertFalse(isIgnoredPauseLoadWhenScrolling)
         }
 
         ImageOptions().apply {
             Assert.assertFalse(isIgnoredPauseLoadWhenScrolling)
         }
+
         ImageOptions {
             ignorePauseLoadWhenScrolling(true)
         }.apply {
-            Assert.assertEquals(true, isIgnoredPauseLoadWhenScrolling)
+            Assert.assertTrue(isIgnoredPauseLoadWhenScrolling)
+        }
+        ImageOptions {
+            ignorePauseLoadWhenScrolling(false)
+        }.apply {
+            Assert.assertFalse(isIgnoredPauseLoadWhenScrolling)
         }
 
         val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
@@ -113,34 +141,48 @@ class PauseLoadWhenScrollingExtensionsTest {
     }
 
     @Test
-    fun testDepthFromPauseLoadWhenScrolling() {
+    fun testSetDepthFromPauseLoadWhenScrolling() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        (DisplayRequest(context, newAssetUri("sample.svg")) as ImageRequest).apply {
+        DisplayRequest(context, "http://sample.com/sample.jpeg").apply {
             Assert.assertFalse(isDepthFromPauseLoadWhenScrolling)
-        }
-        (DisplayRequest(context, newAssetUri("sample.svg")) {
-            (this as Builder).setDepthFromPauseLoadWhenScrolling()
-        } as ImageRequest).apply {
-            Assert.assertEquals(true, isDepthFromPauseLoadWhenScrolling)
         }
 
-        DisplayRequest(context, newAssetUri("sample.svg")).apply {
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            (this as Builder).setDepthFromPauseLoadWhenScrolling(true)
+        }.apply {
+            Assert.assertTrue(isDepthFromPauseLoadWhenScrolling)
+        }
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            (this as Builder).setDepthFromPauseLoadWhenScrolling(false)
+        }.apply {
             Assert.assertFalse(isDepthFromPauseLoadWhenScrolling)
         }
-        DisplayRequest(context, newAssetUri("sample.svg")) {
-            setDepthFromPauseLoadWhenScrolling()
+
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            setDepthFromPauseLoadWhenScrolling(true)
         }.apply {
-            Assert.assertEquals(true, isDepthFromPauseLoadWhenScrolling)
+            Assert.assertTrue(isDepthFromPauseLoadWhenScrolling)
+        }
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            setDepthFromPauseLoadWhenScrolling(false)
+        }.apply {
+            Assert.assertFalse(isDepthFromPauseLoadWhenScrolling)
         }
 
         ImageOptions().apply {
             Assert.assertFalse(isDepthFromPauseLoadWhenScrolling)
         }
+
         ImageOptions {
-            setDepthFromPauseLoadWhenScrolling()
+            setDepthFromPauseLoadWhenScrolling(true)
         }.apply {
-            Assert.assertEquals(true, isDepthFromPauseLoadWhenScrolling)
+            Assert.assertTrue(isDepthFromPauseLoadWhenScrolling)
+        }
+        ImageOptions {
+            setDepthFromPauseLoadWhenScrolling(false)
+        }.apply {
+            Assert.assertFalse(isDepthFromPauseLoadWhenScrolling)
         }
 
         val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
@@ -159,11 +201,40 @@ class PauseLoadWhenScrollingExtensionsTest {
     @Test
     fun testIsCausedByPauseLoadWhenScrolling() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, newAssetUri("sample.svg")) {
+
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            depth(MEMORY)
             setDepthFromPauseLoadWhenScrolling()
+        }.let {
+            DepthException(it, it.depth)
+        }.apply {
+            Assert.assertTrue(isCausedByPauseLoadWhenScrolling)
         }
 
-        Assert.assertFalse(OtherException(request, null, null).isCausedByPauseLoadWhenScrolling)
-        Assert.assertTrue(DepthException(request, MEMORY).isCausedByPauseLoadWhenScrolling)
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            depth(MEMORY)
+            setDepthFromPauseLoadWhenScrolling()
+        }.let {
+            OtherException(it, null)
+        }.apply {
+            Assert.assertFalse(isCausedByPauseLoadWhenScrolling)
+        }
+
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            depth(LOCAL)
+            setDepthFromPauseLoadWhenScrolling()
+        }.let {
+            DepthException(it, it.depth)
+        }.apply {
+            Assert.assertFalse(isCausedByPauseLoadWhenScrolling)
+        }
+
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            depth(MEMORY)
+        }.let {
+            DepthException(it, it.depth)
+        }.apply {
+            Assert.assertFalse(isCausedByPauseLoadWhenScrolling)
+        }
     }
 }

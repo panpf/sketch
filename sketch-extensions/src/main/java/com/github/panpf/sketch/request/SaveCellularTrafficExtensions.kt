@@ -107,16 +107,25 @@ val ImageOptions.isIgnoredSaveCellularTraffic: Boolean
 /**
  * Set Depth from cellular data saving feature
  */
-internal fun ImageRequest.Builder.setDepthFromSaveCellularTraffic(): ImageRequest.Builder = apply {
-    depthFrom(KEY)
-}
+internal fun ImageRequest.Builder.setDepthFromSaveCellularTraffic(enabled: Boolean = true): ImageRequest.Builder =
+    apply {
+        if (enabled) {
+            depthFrom(KEY)
+        } else {
+            depthFrom(null)
+        }
+    }
 
 /**
  * Set Depth from cellular data saving feature
  */
-internal fun DisplayRequest.Builder.setDepthFromSaveCellularTraffic(): DisplayRequest.Builder =
+internal fun DisplayRequest.Builder.setDepthFromSaveCellularTraffic(enabled: Boolean = true): DisplayRequest.Builder =
     apply {
-        depthFrom(KEY)
+        if (enabled) {
+            depthFrom(KEY)
+        } else {
+            depthFrom(null)
+        }
     }
 
 /**
@@ -128,9 +137,14 @@ val ImageRequest.isDepthFromSaveCellularTraffic: Boolean
 /**
  * Set Depth from cellular data saving feature
  */
-internal fun ImageOptions.Builder.setDepthFromSaveCellularTraffic(): ImageOptions.Builder = apply {
-    depthFrom(KEY)
-}
+internal fun ImageOptions.Builder.setDepthFromSaveCellularTraffic(enabled: Boolean = true): ImageOptions.Builder =
+    apply {
+        if (enabled) {
+            depthFrom(KEY)
+        } else {
+            depthFrom(null)
+        }
+    }
 
 /**
  * Returns true if Depth is from the cellular saving feature

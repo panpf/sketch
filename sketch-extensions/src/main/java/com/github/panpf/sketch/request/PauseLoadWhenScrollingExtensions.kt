@@ -107,17 +107,25 @@ val ImageOptions.isIgnoredPauseLoadWhenScrolling: Boolean
 /**
  * Set Depth from pause load when scrolling feature
  */
-internal fun ImageRequest.Builder.setDepthFromPauseLoadWhenScrolling(): ImageRequest.Builder =
+internal fun ImageRequest.Builder.setDepthFromPauseLoadWhenScrolling(enabled: Boolean = true): ImageRequest.Builder =
     apply {
-        depthFrom(KEY)
+        if (enabled) {
+            depthFrom(KEY)
+        } else {
+            depthFrom(null)
+        }
     }
 
 /**
  * Set Depth from pause load when scrolling feature
  */
-internal fun DisplayRequest.Builder.setDepthFromPauseLoadWhenScrolling(): DisplayRequest.Builder =
+internal fun DisplayRequest.Builder.setDepthFromPauseLoadWhenScrolling(enabled: Boolean = true): DisplayRequest.Builder =
     apply {
-        depthFrom(KEY)
+        if (enabled) {
+            depthFrom(KEY)
+        } else {
+            depthFrom(null)
+        }
     }
 
 /**
@@ -129,9 +137,13 @@ val ImageRequest.isDepthFromPauseLoadWhenScrolling: Boolean
 /**
  * Set Depth from pause load when scrolling feature
  */
-internal fun ImageOptions.Builder.setDepthFromPauseLoadWhenScrolling(): ImageOptions.Builder =
+internal fun ImageOptions.Builder.setDepthFromPauseLoadWhenScrolling(enabled: Boolean = true): ImageOptions.Builder =
     apply {
-        depthFrom(KEY)
+        if (enabled) {
+            depthFrom(KEY)
+        } else {
+            depthFrom(null)
+        }
     }
 
 /**

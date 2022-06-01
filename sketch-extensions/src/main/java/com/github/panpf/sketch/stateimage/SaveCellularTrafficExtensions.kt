@@ -7,11 +7,25 @@ import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 import com.github.panpf.sketch.util.SketchException
 
 
+/**
+ * Set the error image when the save cellular traffic
+ */
+fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder =
+    apply {
+        addMatcher(SaveCellularTrafficMatcher(null))
+    }
+
+/**
+ * Set the error image when the save cellular traffic
+ */
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImage: StateImage): ErrorStateImage.Builder =
     apply {
         addMatcher(SaveCellularTrafficMatcher(saveCellularTrafficImage))
     }
 
+/**
+ * Set the error image when the save cellular traffic
+ */
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficDrawable: Drawable): ErrorStateImage.Builder =
     apply {
         addMatcher(
@@ -19,6 +33,9 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficDrawable
         )
     }
 
+/**
+ * Set the error image when the save cellular traffic
+ */
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageResId: Int): ErrorStateImage.Builder =
     apply {
         addMatcher(
@@ -26,7 +43,7 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageRes
         )
     }
 
-private class SaveCellularTrafficMatcher(val stateImage: StateImage) :
+class SaveCellularTrafficMatcher(val stateImage: StateImage?) :
     ErrorStateImage.Matcher {
 
     override fun match(request: ImageRequest, exception: SketchException?): Boolean =
@@ -34,7 +51,7 @@ private class SaveCellularTrafficMatcher(val stateImage: StateImage) :
 
     override fun getDrawable(
         sketch: Sketch, request: ImageRequest, throwable: SketchException?
-    ): Drawable? = stateImage.getDrawable(sketch, request, throwable)
+    ): Drawable? = stateImage?.getDrawable(sketch, request, throwable)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
