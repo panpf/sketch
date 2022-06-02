@@ -4,9 +4,33 @@ import android.view.View
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 
+/**
+ * Set to enable click View to force ignore the data saving function
+ */
+fun ViewAbilityContainer.setClickIgnoreSaveCellularTrafficEnabled(enable: Boolean = true) {
+    val enabled = isClickIgnoreSaveCellularTrafficEnabled
+    if (enable && !enabled) {
+        addViewAbility(ClickIgnoreSaveCellularTrafficAbility())
+    } else if (!enable && enabled) {
+        viewAbilityList
+            .find { it is ClickIgnoreSaveCellularTrafficAbility }
+            ?.let { removeViewAbility(it) }
+    }
+}
+
+/**
+ * Returns true if click View force ignore data saving feature is enabled
+ */
+val ViewAbilityContainer.isClickIgnoreSaveCellularTrafficEnabled: Boolean
+    get() = viewAbilityList.find { it is ClickIgnoreSaveCellularTrafficAbility } != null
+
+/**
+ * Click View to force ignoring the data saving function, generally used with [SaveCellularTrafficDisplayInterceptor]
+ */
 class ClickIgnoreSaveCellularTrafficAbility
     : ViewAbility, ClickObserver, RequestListenerObserver {
 
@@ -46,14 +70,5 @@ class ClickIgnoreSaveCellularTrafficAbility
     override fun onRequestSuccess(request: DisplayRequest, result: Success) {
         errorFromSaveCellularTraffic = false
         this.request = null
-    }
-}
-
-fun ViewAbilityContainer.setClickIgnoreSaveCellularTrafficEnabled(enabled: Boolean) {
-    viewAbilityList
-        .find { it is ClickIgnoreSaveCellularTrafficAbility }
-        ?.let { removeViewAbility(it) }
-    if (enabled) {
-        addViewAbility(ClickIgnoreSaveCellularTrafficAbility())
     }
 }

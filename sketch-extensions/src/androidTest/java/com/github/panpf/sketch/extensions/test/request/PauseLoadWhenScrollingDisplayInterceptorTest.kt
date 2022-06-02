@@ -38,184 +38,187 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
         val sketch = context.sketch
         val interceptor = PauseLoadWhenScrollingDisplayInterceptor()
 
-        // default
-        DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
-            val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+        try {// default
+            DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
+                val chain =
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
 
-            Assert.assertTrue(interceptor.enabled)
-            Assert.assertFalse(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
-            Assert.assertFalse(request.isPauseLoadWhenScrolling)
-            Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
-            Assert.assertEquals(Depth.NETWORK, request.depth)
-            Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
+                Assert.assertTrue(interceptor.enabled)
+                Assert.assertFalse(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
+                Assert.assertFalse(request.isPauseLoadWhenScrolling)
+                Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
+                Assert.assertEquals(Depth.NETWORK, request.depth)
+                Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
 
-            runBlocking {
-                interceptor.intercept(chain)
+                runBlocking {
+                    interceptor.intercept(chain)
+                }
+                Assert.assertEquals(Depth.NETWORK, chain.request.depth)
+                Assert.assertFalse(chain.request.isDepthFromPauseLoadWhenScrolling)
             }
-            Assert.assertEquals(Depth.NETWORK, chain.request.depth)
-            Assert.assertFalse(chain.request.isDepthFromPauseLoadWhenScrolling)
-        }
 
-        // success
-        interceptor.enabled = true
-        PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            pauseLoadWhenScrolling()
-        }.let { request ->
-            val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+            // success
+            interceptor.enabled = true
+            PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+            DisplayRequest(context, "http://sample.com/sample.jpeg") {
+                pauseLoadWhenScrolling()
+            }.let { request ->
+                val chain =
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
 
-            Assert.assertTrue(interceptor.enabled)
-            Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
-            Assert.assertTrue(request.isPauseLoadWhenScrolling)
-            Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
-            Assert.assertEquals(Depth.NETWORK, request.depth)
-            Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
+                Assert.assertTrue(interceptor.enabled)
+                Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
+                Assert.assertTrue(request.isPauseLoadWhenScrolling)
+                Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
+                Assert.assertEquals(Depth.NETWORK, request.depth)
+                Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
 
-            runBlocking {
-                interceptor.intercept(chain)
+                runBlocking {
+                    interceptor.intercept(chain)
+                }
+                Assert.assertEquals(MEMORY, chain.finalRequest.depth)
+                Assert.assertTrue(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
             }
-            Assert.assertEquals(MEMORY, chain.finalRequest.depth)
-            Assert.assertTrue(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
-        }
 
-        // Request type error
-        interceptor.enabled = true
-        PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
-        LoadRequest(context, "http://sample.com/sample.jpeg") {
-            pauseLoadWhenScrolling()
-        }.let { request ->
-            val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+            // Request type error
+            interceptor.enabled = true
+            PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+            LoadRequest(context, "http://sample.com/sample.jpeg") {
+                pauseLoadWhenScrolling()
+            }.let { request ->
+                val chain =
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
 
-            Assert.assertTrue(interceptor.enabled)
-            Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
-            Assert.assertTrue(request.isPauseLoadWhenScrolling)
-            Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
-            Assert.assertEquals(Depth.NETWORK, request.depth)
-            Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
+                Assert.assertTrue(interceptor.enabled)
+                Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
+                Assert.assertTrue(request.isPauseLoadWhenScrolling)
+                Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
+                Assert.assertEquals(Depth.NETWORK, request.depth)
+                Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
 
-            runBlocking {
-                interceptor.intercept(chain)
+                runBlocking {
+                    interceptor.intercept(chain)
+                }
+                Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
+                Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
             }
-            Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
-            Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
-        }
 
-        // enabled false
-        interceptor.enabled = false
-        PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            pauseLoadWhenScrolling()
-        }.let { request ->
-            val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+            // enabled false
+            interceptor.enabled = false
+            PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+            DisplayRequest(context, "http://sample.com/sample.jpeg") {
+                pauseLoadWhenScrolling()
+            }.let { request ->
+                val chain =
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
 
-            Assert.assertFalse(interceptor.enabled)
-            Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
-            Assert.assertTrue(request.isPauseLoadWhenScrolling)
-            Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
-            Assert.assertEquals(Depth.NETWORK, request.depth)
-            Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
+                Assert.assertFalse(interceptor.enabled)
+                Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
+                Assert.assertTrue(request.isPauseLoadWhenScrolling)
+                Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
+                Assert.assertEquals(Depth.NETWORK, request.depth)
+                Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
 
-            runBlocking {
-                interceptor.intercept(chain)
+                runBlocking {
+                    interceptor.intercept(chain)
+                }
+                Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
+                Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
             }
-            Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
-            Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
-        }
 
-        // scrolling false
-        interceptor.enabled = true
-        PauseLoadWhenScrollingDisplayInterceptor.scrolling = false
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            pauseLoadWhenScrolling()
-        }.let { request ->
-            val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+            // scrolling false
+            interceptor.enabled = true
+            PauseLoadWhenScrollingDisplayInterceptor.scrolling = false
+            DisplayRequest(context, "http://sample.com/sample.jpeg") {
+                pauseLoadWhenScrolling()
+            }.let { request ->
+                val chain =
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
 
-            Assert.assertTrue(interceptor.enabled)
-            Assert.assertFalse(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
-            Assert.assertTrue(request.isPauseLoadWhenScrolling)
-            Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
-            Assert.assertEquals(Depth.NETWORK, request.depth)
-            Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
+                Assert.assertTrue(interceptor.enabled)
+                Assert.assertFalse(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
+                Assert.assertTrue(request.isPauseLoadWhenScrolling)
+                Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
+                Assert.assertEquals(Depth.NETWORK, request.depth)
+                Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
 
-            runBlocking {
-                interceptor.intercept(chain)
+                runBlocking {
+                    interceptor.intercept(chain)
+                }
+                Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
+                Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
             }
-            Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
-            Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
-        }
 
-        // isPauseLoadWhenScrolling false
-        interceptor.enabled = true
-        PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
-        DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
-            val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+            // isPauseLoadWhenScrolling false
+            interceptor.enabled = true
+            PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+            DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
+                val chain =
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
 
-            Assert.assertTrue(interceptor.enabled)
-            Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
-            Assert.assertFalse(request.isPauseLoadWhenScrolling)
-            Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
-            Assert.assertEquals(Depth.NETWORK, request.depth)
-            Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
+                Assert.assertTrue(interceptor.enabled)
+                Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
+                Assert.assertFalse(request.isPauseLoadWhenScrolling)
+                Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
+                Assert.assertEquals(Depth.NETWORK, request.depth)
+                Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
 
-            runBlocking {
-                interceptor.intercept(chain)
+                runBlocking {
+                    interceptor.intercept(chain)
+                }
+                Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
+                Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
             }
-            Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
-            Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
-        }
 
-        // isIgnoredPauseLoadWhenScrolling true
-        interceptor.enabled = true
-        PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            pauseLoadWhenScrolling()
-            ignorePauseLoadWhenScrolling()
-        }.let { request ->
-            val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+            // isIgnoredPauseLoadWhenScrolling true
+            interceptor.enabled = true
+            PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+            DisplayRequest(context, "http://sample.com/sample.jpeg") {
+                pauseLoadWhenScrolling()
+                ignorePauseLoadWhenScrolling()
+            }.let { request ->
+                val chain =
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
 
-            Assert.assertTrue(interceptor.enabled)
-            Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
-            Assert.assertTrue(request.isPauseLoadWhenScrolling)
-            Assert.assertTrue(request.isIgnoredPauseLoadWhenScrolling)
-            Assert.assertEquals(Depth.NETWORK, request.depth)
-            Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
+                Assert.assertTrue(interceptor.enabled)
+                Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
+                Assert.assertTrue(request.isPauseLoadWhenScrolling)
+                Assert.assertTrue(request.isIgnoredPauseLoadWhenScrolling)
+                Assert.assertEquals(Depth.NETWORK, request.depth)
+                Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
 
-            runBlocking {
-                interceptor.intercept(chain)
+                runBlocking {
+                    interceptor.intercept(chain)
+                }
+                Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
+                Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
             }
-            Assert.assertEquals(Depth.NETWORK, chain.finalRequest.depth)
-            Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
-        }
 
-        // depth MEMORY
-        interceptor.enabled = true
-        PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            pauseLoadWhenScrolling()
-            depth(MEMORY)
-        }.let { request ->
-            val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+            // depth MEMORY
+            interceptor.enabled = true
+            PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+            DisplayRequest(context, "http://sample.com/sample.jpeg") {
+                pauseLoadWhenScrolling()
+                depth(MEMORY)
+            }.let { request ->
+                val chain =
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
 
-            Assert.assertTrue(interceptor.enabled)
-            Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
-            Assert.assertTrue(request.isPauseLoadWhenScrolling)
-            Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
-            Assert.assertEquals(MEMORY, request.depth)
-            Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
+                Assert.assertTrue(interceptor.enabled)
+                Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
+                Assert.assertTrue(request.isPauseLoadWhenScrolling)
+                Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
+                Assert.assertEquals(MEMORY, request.depth)
+                Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
 
-            runBlocking {
-                interceptor.intercept(chain)
+                runBlocking {
+                    interceptor.intercept(chain)
+                }
+                Assert.assertEquals(MEMORY, chain.finalRequest.depth)
+                Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
             }
-            Assert.assertEquals(MEMORY, chain.finalRequest.depth)
-            Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
+        } finally {
+            PauseLoadWhenScrollingDisplayInterceptor.scrolling = false
         }
     }
 

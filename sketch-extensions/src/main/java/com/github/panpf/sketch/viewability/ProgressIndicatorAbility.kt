@@ -28,9 +28,57 @@ import com.github.panpf.sketch.request.isSketchGlobalLifecycle
 import com.github.panpf.sketch.util.getLifecycle
 
 /**
+ * Display a progress indicator, [progressDrawable] is responsible for the specific style
+ */
+fun ViewAbilityContainer.showProgressIndicator(progressDrawable: ProgressDrawable) {
+    removeProgressIndicator()
+    addViewAbility(ProgressIndicatorAbility(progressDrawable))
+}
+
+/**
+ * Remove progress indicator
+ */
+fun ViewAbilityContainer.removeProgressIndicator() {
+    viewAbilityList
+        .find { it is ProgressIndicatorAbility }
+        ?.let { removeViewAbility(it) }
+}
+
+/**
+ * Display a sector progress indicator
+ */
+fun ViewAbilityContainer.showSectorProgressIndicator(
+    size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
+    color: Int = Color.WHITE,
+    backgroundColor: Int = 0x44000000,
+) = showProgressIndicator(SectorProgressDrawable(size, backgroundColor, color, color, size * 0.02f))
+
+/**
+ * Displays a mask progress indicator
+ */
+fun ViewAbilityContainer.showMaskProgressIndicator(
+    @ColorInt maskColor: Int = MaskProgressDrawable.DEFAULT_MASK_COLOR,
+) = showProgressIndicator(MaskProgressDrawable(maskColor))
+
+/**
+ * Display a ring progress indicator
+ */
+fun ViewAbilityContainer.showRingProgressIndicator(
+    size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
+    ringWidth: Float = size * 0.1f,
+    @ColorInt ringColor: Int = Color.WHITE,
+) = showProgressIndicator(RingProgressDrawable(size, ringWidth, ringColor))
+
+/**
+ * Returns true if progress indicator feature is enabled
+ */
+val ViewAbilityContainer.isShowProgressIndicator: Boolean
+    get() = viewAbilityList.find { it is ProgressIndicatorAbility } != null
+
+/**
  * A ViewAbility that displays [ImageRequest] progress indicator functionality on the View surface
  */
-class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) : ViewAbility,
+class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbility,
     LayoutObserver, RequestListenerObserver, RequestProgressListenerObserver,
     DrawObserver, VisibilityChangedObserver, AttachObserver {
 
@@ -204,49 +252,3 @@ class ProgressIndicatorAbility(private val progressDrawable: ProgressDrawable) :
         }
     }
 }
-
-/**
- * Display a progress indicator, [progressDrawable] is responsible for the specific style
- */
-fun ViewAbilityContainer.showProgressIndicator(progressDrawable: ProgressDrawable) {
-    removeProgressIndicator()
-    val indicator = ProgressIndicatorAbility(progressDrawable)
-    addViewAbility(indicator)
-}
-
-/**
- * Remove progress indicator
- */
-fun ViewAbilityContainer.removeProgressIndicator() {
-    viewAbilityList
-        .find { it is ProgressIndicatorAbility }
-        ?.let { removeViewAbility(it) }
-}
-
-/**
- * Display a sector progress indicator
- */
-fun ViewAbilityContainer.showSectorProgressIndicator(
-    size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
-    color: Int = Color.WHITE,
-    backgroundColor: Int = 0x44000000,
-) {
-    val progressDrawable = SectorProgressDrawable(size, backgroundColor, color, color, size * 0.02f)
-    showProgressIndicator(progressDrawable)
-}
-
-/**
- * Displays a mask progress indicator
- */
-fun ViewAbilityContainer.showMaskProgressIndicator(
-    @ColorInt maskColor: Int = MaskProgressDrawable.DEFAULT_MASK_COLOR,
-) = showProgressIndicator(MaskProgressDrawable(maskColor))
-
-/**
- * Display a ring progress indicator
- */
-fun ViewAbilityContainer.showRingProgressIndicator(
-    size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
-    ringWidth: Float = size * 0.1f,
-    @ColorInt ringColor: Int = Color.WHITE,
-) = showProgressIndicator(RingProgressDrawable(size, ringWidth, ringColor))

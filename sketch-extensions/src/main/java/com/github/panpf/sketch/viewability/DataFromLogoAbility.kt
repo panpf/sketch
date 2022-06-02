@@ -8,6 +8,32 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.util.findLastSketchDrawable
 
+/**
+ * Set to enable the data source identification function
+ */
+fun ViewAbilityContainer.showDataFromLogo(sizeDp: Float = DataFromLogoAbility.DEFAULT_SIZE_DP) {
+    removeDataFromLogo()
+    addViewAbility(DataFromLogoAbility(sizeDp))
+}
+
+/**
+ * Remove the data source identification function
+ */
+fun ViewAbilityContainer.removeDataFromLogo() {
+    viewAbilityList
+        .find { it is DataFromLogoAbility }
+        ?.let { removeViewAbility(it) }
+}
+
+/**
+ * Returns true if data source identification feature is enabled
+ */
+val ViewAbilityContainer.isShowDataFromLogo: Boolean
+    get() = viewAbilityList.find { it is DataFromLogoAbility } != null
+
+/**
+ * In the upper right corner of the View, a semi-transparent color block called Samsung is displayed to indicate where the image is loaded this time.
+ */
 class DataFromLogoAbility(
     sizeDp: Float = DEFAULT_SIZE_DP
 ) : ViewAbility, AttachObserver, DrawObserver, LayoutObserver, DrawableObserver {
@@ -90,15 +116,4 @@ class DataFromLogoAbility(
         }
         return true
     }
-}
-
-fun ViewAbilityContainer.showDataFromLogo(sizeDp: Float = DataFromLogoAbility.DEFAULT_SIZE_DP) {
-    removeDataFromLogo()
-    addViewAbility(DataFromLogoAbility(sizeDp))
-}
-
-fun ViewAbilityContainer.removeDataFromLogo() {
-    viewAbilityList
-        .find { it is DataFromLogoAbility }
-        ?.let { removeViewAbility(it) }
 }

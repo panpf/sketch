@@ -17,6 +17,8 @@ fun newAppIconUri(packageName: String, versionCode: Int): String =
     "$SCHEME://$packageName/$versionCode"
 
 /**
+ * Extract the icon of the installed app
+ *
  * Support 'app.icon://com.github.panpf.sketch.sample/1120' uri
  */
 class AppIconUriFetcher(

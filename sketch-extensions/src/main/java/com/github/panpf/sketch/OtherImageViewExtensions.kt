@@ -6,6 +6,11 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
 
+/**
+ * Load the icon of the installed app and and display it on this [ImageView]
+ *
+ * You can set request params with a trailing lambda function [configBlock]
+ */
 fun ImageView.displayAppIconImage(
     packageName: String,
     versionCode: Int,
