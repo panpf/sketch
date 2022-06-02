@@ -5,7 +5,7 @@
 sketch-extensions 模块提供的 [SketchImageView] 支持在 View 右下角显示图片类型角标，如下：
 
 ```kotlin
-sketchImageView.showMimeTypeLogoWithResId(
+sketchImageView.showMimeTypeLogoWithRes(
     mimeTypeIconMap = mapOf(
         "image/gif" to R.drawable.image_type_gif,
         "image/png" to R.drawable.image_type_png,

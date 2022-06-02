@@ -7,6 +7,54 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.util.findLastSketchDrawable
 
+/**
+ * Display the MimeType logo in the lower right corner of the View
+ */
+fun ViewAbilityContainer.showMimeTypeLogoWithDrawable(
+    mimeTypeIconMap: Map<String, Drawable>,
+    margin: Int = 0
+) {
+    removeMimeTypeLogo()
+    addViewAbility(
+        MimeTypeLogoAbility(
+            mimeTypeIconMap.mapValues { MimeTypeLogo(it.value) },
+            margin
+        )
+    )
+}
+
+/**
+ * Display the MimeType logo in the lower right corner of the View
+ */
+fun ViewAbilityContainer.showMimeTypeLogoWithRes(
+    mimeTypeIconMap: Map<String, Int>,
+    margin: Int = 0
+) {
+    removeMimeTypeLogo()
+    addViewAbility(
+        MimeTypeLogoAbility(
+            mimeTypeIconMap.mapValues { MimeTypeLogo(it.value) },
+            margin
+        )
+    )
+}
+
+/**
+ * Remove MimeType logo
+ */
+fun ViewAbilityContainer.removeMimeTypeLogo() {
+    viewAbilityList
+        .find { it is MimeTypeLogoAbility }
+        ?.let { removeViewAbility(it) }
+}
+
+/**
+ * Returns true if MimeType logo feature is enabled
+ */
+val ViewAbilityContainer.isShowMimeTypeLogo: Boolean
+    get() = viewAbilityList.find { it is MimeTypeLogoAbility } != null
+
+
 class MimeTypeLogoAbility(
     private val mimeTypeIconMap: Map<String, MimeTypeLogo>,
     private val margin: Int = 0
@@ -59,62 +107,6 @@ class MimeTypeLogoAbility(
         )
         this.logoDrawable = logoDrawable
     }
-}
-
-
-fun ViewAbilityContainer.showMimeTypeLogo(mimeTypeLogoAbility: MimeTypeLogoAbility?) {
-    removeMimeTypeLogo()
-    if (mimeTypeLogoAbility != null) {
-        addViewAbility(mimeTypeLogoAbility)
-    }
-}
-
-fun ViewAbilityContainer.showMimeTypeLogoWith(
-    mimeTypeIconMap: Map<String, MimeTypeLogo>?,
-    margin: Int = 0
-) {
-    val mimeTypeLogoViewAbility = if (mimeTypeIconMap?.isNotEmpty() == true) {
-        MimeTypeLogoAbility(mimeTypeIconMap, margin)
-    } else {
-        null
-    }
-    showMimeTypeLogo(mimeTypeLogoViewAbility)
-}
-
-fun ViewAbilityContainer.showMimeTypeLogoWithDrawable(
-    mimeTypeIconMap: Map<String, Drawable>?,
-    margin: Int = 0
-) {
-    val mimeTypeLogoViewAbility = if (mimeTypeIconMap?.isNotEmpty() == true) {
-        val newMap = mimeTypeIconMap.mapValues {
-            MimeTypeLogo(it.value)
-        }
-        MimeTypeLogoAbility(newMap, margin)
-    } else {
-        null
-    }
-    showMimeTypeLogo(mimeTypeLogoViewAbility)
-}
-
-fun ViewAbilityContainer.showMimeTypeLogoWithResId(
-    mimeTypeIconMap: Map<String, Int>?,
-    margin: Int = 0
-) {
-    val mimeTypeLogoViewAbility = if (mimeTypeIconMap?.isNotEmpty() == true) {
-        val newMap = mimeTypeIconMap.mapValues {
-            MimeTypeLogo(it.value)
-        }
-        MimeTypeLogoAbility(newMap, margin)
-    } else {
-        null
-    }
-    showMimeTypeLogo(mimeTypeLogoViewAbility)
-}
-
-fun ViewAbilityContainer.removeMimeTypeLogo() {
-    viewAbilityList
-        .find { it is MimeTypeLogoAbility }
-        ?.let { removeViewAbility(it) }
 }
 
 class MimeTypeLogo {
