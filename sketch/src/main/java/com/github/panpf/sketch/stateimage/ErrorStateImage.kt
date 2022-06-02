@@ -131,7 +131,7 @@ class ErrorStateImage private constructor(val matcherList: List<Matcher>) : Stat
         }
     }
 
-    private class UriEmptyMatcher(val stateImage: StateImage) : Matcher {
+    class UriEmptyMatcher(val stateImage: StateImage) : Matcher {
 
         override fun match(request: ImageRequest, exception: SketchException?): Boolean =
             exception is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())

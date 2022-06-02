@@ -400,7 +400,7 @@ interface ImageOptions {
          * IDCT method will be used instead.
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
-        fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
+        fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): Builder = apply {
             this.preferQualityOverSpeed = inPreferQualityOverSpeed
         }
 

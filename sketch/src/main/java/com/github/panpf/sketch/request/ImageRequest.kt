@@ -448,7 +448,7 @@ interface ImageRequest {
          * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
-        open fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
+        open fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): Builder = apply {
             @Suppress("DEPRECATION")
             definedOptionsBuilder.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }

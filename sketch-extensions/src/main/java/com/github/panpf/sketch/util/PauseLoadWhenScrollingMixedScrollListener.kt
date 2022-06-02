@@ -20,7 +20,9 @@ class PauseLoadWhenScrollingMixedScrollListener(
         val adapter = recyclerView.adapter
         if (adapter != null) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+                if (!PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+                }
             } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 if (PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
                     PauseLoadWhenScrollingDisplayInterceptor.scrolling = false
@@ -44,7 +46,9 @@ class PauseLoadWhenScrollingMixedScrollListener(
         val listAdapter = view.adapter?.let { getFinalWrappedAdapter(it) }
         if (listAdapter is BaseAdapter) {
             if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+                if (!PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+                }
             } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
                 if (PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
                     PauseLoadWhenScrollingDisplayInterceptor.scrolling = false

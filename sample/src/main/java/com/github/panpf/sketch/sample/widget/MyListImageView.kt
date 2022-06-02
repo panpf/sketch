@@ -8,6 +8,7 @@ import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.util.observeWithViewLifecycle
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.removeDataFromLogo
+import com.github.panpf.sketch.viewability.removeMimeTypeLogo
 import com.github.panpf.sketch.viewability.removeProgressIndicator
 import com.github.panpf.sketch.viewability.showDataFromLogo
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
@@ -61,10 +62,11 @@ class MyListImageView @JvmOverloads constructor(
                 }
             }
             showMimeTypeLogoInLIst.stateFlow.observeWithViewLifecycle(this@MyListImageView) {
-                showMimeTypeLogoWithDrawable(
-                    mimeTypeIconMap = if (it) mimeTypeLogoMap else null,
-                    margin = 4.dp2px
-                )
+                if (it) {
+                    showMimeTypeLogoWithDrawable(mimeTypeLogoMap, 4.dp2px)
+                } else {
+                    removeMimeTypeLogo()
+                }
             }
             showDataFromLogo.stateFlow.observeWithViewLifecycle(this@MyListImageView) {
                 if (it) {

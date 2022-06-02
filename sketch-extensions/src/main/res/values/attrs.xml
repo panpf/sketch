@@ -47,10 +47,10 @@
         <enum name="roundedCorners" value="3" />
         <enum name="circleCrop" value="4" />
     </attr>
-    <attr name="sketch_transformation_blur_radius" format="dimension|reference" />
+    <attr name="sketch_transformation_blur_radius" format="integer|reference" />
     <attr name="sketch_transformation_blur_maskColor" format="color|reference" />
     <attr name="sketch_transformation_rotate_degrees" format="integer|reference" />
-    <attr name="sketch_transformation_roundedCorners_radius" format="integer|reference" />
+    <attr name="sketch_transformation_roundedCorners_radius" format="dimension|reference" />
     <attr name="sketch_transformation_roundedCorners_radiusTopLeft" format="dimension|reference" />
     <attr name="sketch_transformation_roundedCorners_radiusTopRight" format="dimension|reference" />
     <attr name="sketch_transformation_roundedCorners_radiusBottomLeft" format="dimension|reference" />
