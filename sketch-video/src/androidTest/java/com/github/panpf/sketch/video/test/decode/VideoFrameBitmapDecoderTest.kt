@@ -14,11 +14,8 @@ import com.github.panpf.sketch.decode.VideoFrameBitmapDecoder
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercentDuration
@@ -93,7 +90,7 @@ class VideoFrameBitmapDecoderTest {
                 Assert.assertEquals("Bitmap(500x250,RGB_565)", bitmap.toShortInfoString())
             }
             Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -110,7 +107,7 @@ class VideoFrameBitmapDecoderTest {
             }.apply {
                 Assert.assertEquals("Bitmap(500x250,RGB_565)", bitmap.toShortInfoString())
                 Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
                 Assert.assertEquals(LOCAL, dataFrom)
                 Assert.assertNull(transformedList)
             }
@@ -136,7 +133,7 @@ class VideoFrameBitmapDecoderTest {
                 Assert.assertNull(transformedList)
             }
             Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
         }
 

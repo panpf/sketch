@@ -12,7 +12,18 @@ import java.util.LinkedList
 data class BitmapDecodeResult constructor(
     val bitmap: Bitmap,
     val imageInfo: ImageInfo,
-    val exifOrientation: Int,
+    /**
+     * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_UNDEFINED
+     * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+     * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_HORIZONTAL
+     * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_VERTICAL
+     * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90
+     * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180
+     * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270
+     * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSPOSE
+     * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSVERSE
+     */
+    val imageExifOrientation: Int,
     val dataFrom: DataFrom,
     val transformedList: List<Transformed>? = null
 ) {
@@ -21,7 +32,7 @@ data class BitmapDecodeResult constructor(
         Builder(
             bitmap = bitmap,
             imageInfo = imageInfo,
-            exifOrientation = exifOrientation,
+            imageExifOrientation = imageExifOrientation,
             dataFrom = dataFrom,
             transformedList = transformedList?.toMutableList()
         ).apply {
@@ -31,14 +42,25 @@ data class BitmapDecodeResult constructor(
     override fun toString(): String =
         "BitmapDecodeResult(bitmap=${bitmap.toInfoString()}, " +
                 "imageInfo=$imageInfo, " +
-                "exifOrientation=${exifOrientationName(exifOrientation)}, " +
+                "exifOrientation=${exifOrientationName(imageExifOrientation)}, " +
                 "dataFrom=$dataFrom, " +
                 "transformedList=$transformedList)"
 
     class Builder(
         private val bitmap: Bitmap,
         private var imageInfo: ImageInfo,
-        private val exifOrientation: Int,
+        /**
+         * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_UNDEFINED
+         * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+         * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_HORIZONTAL
+         * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_VERTICAL
+         * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90
+         * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180
+         * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270
+         * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSPOSE
+         * @see androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSVERSE
+         */
+        private val imageExifOrientation: Int,
         private val dataFrom: DataFrom,
         private var transformedList: MutableList<Transformed>? = null
     ) {
@@ -58,7 +80,7 @@ data class BitmapDecodeResult constructor(
         fun build(): BitmapDecodeResult = BitmapDecodeResult(
             bitmap = bitmap,
             imageInfo = imageInfo,
-            exifOrientation = exifOrientation,
+            imageExifOrientation = imageExifOrientation,
             dataFrom = dataFrom,
             transformedList = transformedList?.toList()
         )

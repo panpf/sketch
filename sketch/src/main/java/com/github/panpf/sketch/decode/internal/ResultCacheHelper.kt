@@ -137,7 +137,7 @@ class ResultCacheHelper internal constructor(
                     bitmapDataEditor.commit()
 
                     val metaData =
-                        MetaData(result.imageInfo, result.exifOrientation, result.transformedList)
+                        MetaData(result.imageInfo, result.imageExifOrientation, result.transformedList)
                     metaDataEditor.newOutputStream().bufferedWriter().use {
                         val metaDataSerializer = MetaData.Serializer()
                         val metaDataJsonString = metaDataSerializer.toJson(metaData).toString()

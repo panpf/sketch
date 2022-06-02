@@ -106,7 +106,7 @@ class WebpAnimatedDrawableDecoderTest {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
                 Assert.assertEquals(270, this.drawable.intrinsicHeight)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.exifOrientation)
+                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val animatedImageDrawable =
@@ -124,7 +124,7 @@ class WebpAnimatedDrawableDecoderTest {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
                 Assert.assertEquals(240, this.drawable.intrinsicWidth)
                 Assert.assertEquals(135, this.drawable.intrinsicHeight)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.exifOrientation)
+                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertEquals(listOf(InSampledTransformed(2)), this.transformedList)
                 val animatedImageDrawable =

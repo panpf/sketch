@@ -34,7 +34,7 @@ class BitmapEngineDecodeInterceptorTest {
             "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
             result.imageInfo.toString()
         )
-        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
+        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
         Assert.assertNull(result.transformedList)
     }

@@ -153,7 +153,7 @@ class DecodeUtilsTest {
             BitmapDecodeResult(
                 bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
                 imageInfo = ImageInfo(80, 50, "image/png"),
-                exifOrientation = 0,
+                imageExifOrientation = 0,
                 dataFrom = MEMORY,
                 transformedList = null
             )

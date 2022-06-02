@@ -99,7 +99,7 @@ class GifMovieDrawableDecoderTest {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
                 Assert.assertEquals(480, this.drawable.intrinsicHeight)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.exifOrientation)
+                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val movieDrawable =
@@ -119,7 +119,7 @@ class GifMovieDrawableDecoderTest {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
                 Assert.assertEquals(480, this.drawable.intrinsicHeight)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.exifOrientation)
+                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val movieDrawable =

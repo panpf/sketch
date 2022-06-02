@@ -233,7 +233,7 @@ fun BitmapDecodeResult.applyExifOrientation(
     ignoreExifOrientation: Boolean,
 ): BitmapDecodeResult {
     val exifOrientationHelper = if (!ignoreExifOrientation) {
-        ExifOrientationHelper(exifOrientation)
+        ExifOrientationHelper(imageExifOrientation)
     } else {
         ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)
     }

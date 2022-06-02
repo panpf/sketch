@@ -79,7 +79,7 @@ class MemoryCacheHelper internal constructor(
                             MEMORY_CACHE
                         ),
                         imageInfo = cachedCountBitmap.imageInfo,
-                        exifOrientation = cachedCountBitmap.exifOrientation,
+                        imageExifOrientation = cachedCountBitmap.exifOrientation,
                         dataFrom = MEMORY_CACHE,
                         transformedList = null,
                     )
@@ -100,7 +100,7 @@ class MemoryCacheHelper internal constructor(
                     requestKey = request.key,
                     imageUri = request.uriString,
                     imageInfo = result.imageInfo,
-                    exifOrientation = result.exifOrientation,
+                    exifOrientation = result.imageExifOrientation,
                     transformedList = result.transformedList,
                     logger = logger,
                     bitmapPool = bitmapPool

@@ -122,7 +122,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
         return DrawableDecodeResult(
             drawable = animatableDrawable,
             imageInfo = imageInfo!!,
-            exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
+            imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList
         )

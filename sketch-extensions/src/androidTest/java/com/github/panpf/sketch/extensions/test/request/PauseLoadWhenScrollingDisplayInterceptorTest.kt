@@ -234,7 +234,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
         @MainThread
         override suspend fun proceed(request: ImageRequest): ImageData {
             finalRequest = request
-            return DisplayData(ColorDrawable(Color.BLUE), ImageInfo(100, 100, "image/xml"), LOCAL)
+            return DisplayData(
+                ColorDrawable(Color.BLUE),
+                ImageInfo(100, 100, "image/xml"),
+                LOCAL,
+                null
+            )
         }
     }
 }

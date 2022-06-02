@@ -73,7 +73,7 @@ class SvgBitmapDecoderTest {
         }.apply {
             Assert.assertEquals("Bitmap(841x595,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -89,7 +89,7 @@ class SvgBitmapDecoderTest {
         }.apply {
             Assert.assertEquals("Bitmap(841x595,RGB_565)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -106,7 +106,7 @@ class SvgBitmapDecoderTest {
             Assert.assertEquals("Bitmap(421x298,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(listOf(InSampledTransformed(2)), transformedList)
             Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
         }
 

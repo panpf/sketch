@@ -111,7 +111,7 @@ class AppIconBitmapDecoderTest {
                 "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.app-icon')",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -135,7 +135,7 @@ class AppIconBitmapDecoderTest {
                 "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.app-icon')",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -163,7 +163,7 @@ class AppIconBitmapDecoderTest {
                 "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.app-icon')",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(ResizeTransformed(Resize(100, 100, LESS_PIXELS, CENTER_CROP))),

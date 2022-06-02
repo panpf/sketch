@@ -89,16 +89,20 @@ class RequestExecutor {
 
             val successResult = when (data) {
                 is DisplayData -> DisplayResult.Success(
-                    request,
-                    data.drawable.tryToResizeDrawable(sketch, request),
-                    data.imageInfo,
-                    data.dataFrom
+                    request = request,
+                    drawable = data.drawable.tryToResizeDrawable(sketch, request),
+                    imageInfo = data.imageInfo,
+                    imageExifOrientation = data.imageExifOrientation,
+                    dataFrom = data.dataFrom,
+                    transformedList = data.transformedList
                 )
                 is LoadData -> LoadResult.Success(
-                    request,
-                    data.bitmap,
-                    data.imageInfo,
-                    data.dataFrom
+                    request = request,
+                    bitmap = data.bitmap,
+                    imageInfo = data.imageInfo,
+                    imageExifOrientation = data.imageExifOrientation,
+                    dataFrom = data.dataFrom,
+                    transformedList = data.transformedList
                 )
                 is DownloadData -> DownloadResult.Success(request, data, data.dataFrom)
                 else -> throw UnsupportedOperationException("Unsupported ImageData: ${data::class.java}")

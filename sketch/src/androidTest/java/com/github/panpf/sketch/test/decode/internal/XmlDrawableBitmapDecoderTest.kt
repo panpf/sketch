@@ -75,7 +75,7 @@ class XmlDrawableBitmapDecoderTest {
                 "ImageInfo(${50.dp2px}x${40.dp2px},'image/android-xml')",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }

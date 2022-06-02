@@ -84,7 +84,7 @@ class FFmpegVideoFrameBitmapDecoderTest {
         }.apply {
             Assert.assertEquals("Bitmap(500x250,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -100,7 +100,7 @@ class FFmpegVideoFrameBitmapDecoderTest {
         }.apply {
             Assert.assertEquals("Bitmap(250x125,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(InSampledTransformed(2)), transformedList)
         }

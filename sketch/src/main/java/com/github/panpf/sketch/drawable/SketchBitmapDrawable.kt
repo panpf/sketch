@@ -58,7 +58,7 @@ fun BitmapDecodeResult.toSketchBitmapDrawable(request: ImageRequest): SketchBitm
         requestKey = request.key,
         requestUri = request.uriString,
         imageInfo = this.imageInfo,
-        imageExifOrientation = this.exifOrientation,
+        imageExifOrientation = this.imageExifOrientation,
         dataFrom = this.dataFrom,
         transformedList = this.transformedList,
         resources = request.context.resources,

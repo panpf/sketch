@@ -39,7 +39,7 @@ class DefaultDrawableDecoder(
                 DrawableDecodeResult(
                     drawable = drawable,
                     imageInfo = bitmapResult.imageInfo,
-                    exifOrientation = bitmapResult.exifOrientation,
+                    imageExifOrientation = bitmapResult.imageExifOrientation,
                     dataFrom = bitmapResult.dataFrom,
                     transformedList = bitmapResult.transformedList
                 )

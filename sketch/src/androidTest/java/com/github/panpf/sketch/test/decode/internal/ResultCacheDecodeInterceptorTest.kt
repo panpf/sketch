@@ -42,7 +42,7 @@ class ResultCacheDecodeInterceptorTest {
             "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
             result.imageInfo.toString()
         )
-        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
+        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
         Assert.assertEquals(
             "InSampledTransformed(4)",
@@ -58,7 +58,7 @@ class ResultCacheDecodeInterceptorTest {
             "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
             result1.imageInfo.toString()
         )
-        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
+        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
         Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, result1.dataFrom)
         Assert.assertEquals(
             "InSampledTransformed(4)",

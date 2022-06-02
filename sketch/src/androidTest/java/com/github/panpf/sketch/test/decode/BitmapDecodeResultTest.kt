@@ -28,7 +28,7 @@ class BitmapDecodeResultTest {
                 "ImageInfo(width=3000, height=500, mimeType='image/png')",
                 imageInfo.toString()
             )
-            Assert.assertEquals(0, exifOrientation)
+            Assert.assertEquals(0, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4), RotateTransformed(45)",
