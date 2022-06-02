@@ -79,7 +79,7 @@ class HttpUriFetcherTest {
         }
 
         // Loop the test 50 times without making any mistakes
-        val testUri = TestHttpStack.testUris.first()
+        val testUri = TestHttpStack.testImages.first()
         repeat(50) {
             runBlocking {
                 val request = DownloadRequest(context, testUri.uriString)
@@ -134,7 +134,7 @@ class HttpUriFetcherTest {
             httpStack(TestHttpStack(it))
         }
 
-        val testUri = TestHttpStack.testUris.first()
+        val testUri = TestHttpStack.testImages.first()
 
         // CachePolicy.ENABLED
         runBlocking {
@@ -283,7 +283,7 @@ class HttpUriFetcherTest {
             httpStack(TestHttpStack(it))
         }
 
-        val testUri = TestHttpStack.testUris.first()
+        val testUri = TestHttpStack.testImages.first()
         val progressList = mutableListOf<Long>()
         val request = DownloadRequest(context, testUri.uriString) {
             progressListener { _, _, completedLength ->
@@ -319,7 +319,7 @@ class HttpUriFetcherTest {
             httpStack(TestHttpStack(it, readDelayMillis = 1000))
         }
 
-        val testUri = TestHttpStack.testUris.first()
+        val testUri = TestHttpStack.testImages.first()
         val progressList = mutableListOf<Long>()
         val request = DownloadRequest(context, testUri.uriString) {
             progressListener { _, _, completedLength ->
@@ -350,9 +350,9 @@ class HttpUriFetcherTest {
             httpStack(TestHttpStack(it))
         }
 
-        val testUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
+        val testImage = TestHttpStack.TestImage("http://fake.jpeg", 43235)
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest(context, testUri.uriString) {
+        val request = DownloadRequest(context, testImage.uriString) {
             progressListener { _, _, completedLength ->
                 progressList.add(completedLength)
             }

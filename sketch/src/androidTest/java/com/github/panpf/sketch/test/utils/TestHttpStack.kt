@@ -8,8 +8,8 @@ import java.io.InputStream
 class TestHttpStack(private val context: Context, val readDelayMillis: Long? = null) : HttpStack {
 
     companion object {
-        val testUris = arrayOf(
-            TestUri(
+        val testImages = arrayOf(
+            TestImage(
                 "http://5b0988e595225.cdn.sohucs.com/images/20171219/sample.jpeg",
                 540456
             )
@@ -67,5 +67,5 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
             }
     }
 
-    class TestUri(val uriString: String, val contentLength: Long)
+    class TestImage(val uriString: String, val contentLength: Long)
 }

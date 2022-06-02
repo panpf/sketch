@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.test
 
-import android.graphics.Bitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
@@ -16,7 +15,6 @@ import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
-import com.github.panpf.sketch.dispose
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher
@@ -30,7 +28,6 @@ import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
@@ -51,8 +48,6 @@ import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.test.utils.getContextAndSketch
 import com.github.panpf.sketch.test.utils.getSketch
-import com.github.panpf.sketch.transform.TransformResult
-import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.DefaultLongImageDecider
 import com.github.panpf.sketch.util.Logger
@@ -61,7 +56,6 @@ import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -493,7 +487,7 @@ class SketchTest {
 
         /* success */
         val listenerSupervisor1 = DownloadListenerSupervisor()
-        val request1 = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
+        val request1 = DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
             listener(listenerSupervisor1)
         }
         val result1 = runBlocking {
@@ -524,7 +518,7 @@ class SketchTest {
         val listenerSupervisor3 = DownloadListenerSupervisor {
             disposable3?.job?.cancel()
         }
-        val request3 = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
+        val request3 = DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
@@ -547,7 +541,7 @@ class SketchTest {
 
         /* success */
         val listenerSupervisor1 = DownloadListenerSupervisor()
-        val request1 = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
+        val request1 = DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
             listener(listenerSupervisor1)
         }
         val result1 = runBlocking {
@@ -578,7 +572,7 @@ class SketchTest {
         val listenerSupervisor3 = DownloadListenerSupervisor {
             deferred3?.cancel()
         }
-        val request3 = DownloadRequest(context, TestHttpStack.testUris.first().uriString) {
+        val request3 = DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)

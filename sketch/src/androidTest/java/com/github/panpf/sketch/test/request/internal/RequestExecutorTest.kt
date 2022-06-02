@@ -14,9 +14,15 @@ import android.graphics.ColorSpace
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.StateListDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle.State.CREATED
+import androidx.lifecycle.Lifecycle.State.STARTED
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -41,6 +47,7 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -49,10 +56,13 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.target.DisplayTarget
+import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.TestDisplayTarget
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestTransitionDisplayTarget
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.test.utils.getContextAndSketch
@@ -69,10 +79,14 @@ import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
 import com.github.panpf.sketch.transition.CrossfadeTransition
-import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -86,7 +100,7 @@ class RequestExecutorTest {
         val sketch = getSketch {
             httpStack(TestHttpStack(context))
         }
-        val imageUri = TestHttpStack.testUris.first().uriString
+        val imageUri = TestHttpStack.testImages.first().uriString
 
         // default
         sketch.diskCache.clear()
@@ -175,7 +189,7 @@ class RequestExecutorTest {
             httpStack(TestHttpStack(context))
         }
         val diskCache = sketch.diskCache
-        val imageUri = TestHttpStack.testUris.first().uriString
+        val imageUri = TestHttpStack.testImages.first().uriString
 
         /* ENABLED */
         diskCache.clear()
@@ -1232,7 +1246,7 @@ class RequestExecutorTest {
         val context = getContext()
         val sketch = getSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
-        val testTarget = TestTarget()
+        val testTarget = TestTransitionDisplayTarget()
         val request = DisplayRequest(context, imageUri) {
             resize(500, 500)
             target(testTarget)
@@ -1445,22 +1459,219 @@ class RequestExecutorTest {
         }
     }
 
-    // todo listener, progressListener, target, lifecycle
+    @Test
+    fun testListener() {
+        val context = getContext()
+        val sketch = getSketch()
+        val imageUri = TestAssets.SAMPLE_JPEG_URI
+        val errorImageUri = TestAssets.SAMPLE_JPEG_URI + ".fake"
 
-    class TestTarget : DisplayTarget, TransitionTarget {
+        DisplayListenerSupervisor().let { listenerSupervisor ->
+            Assert.assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
 
-        override var drawable: Drawable? = null
-
-        override fun onStart(placeholder: Drawable?) {
-            this.drawable = placeholder
+            DisplayRequest(context, imageUri) {
+                listener(listenerSupervisor)
+            }.let { request ->
+                runBlocking { sketch.execute(request) }
+            }
+            Assert.assertEquals(
+                listOf("onStart", "onSuccess"),
+                listenerSupervisor.callbackActionList
+            )
         }
 
-        override fun onSuccess(result: Drawable) {
-            this.drawable = result
+        DisplayListenerSupervisor().let { listenerSupervisor ->
+            Assert.assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
+
+            DisplayRequest(context, errorImageUri) {
+                listener(listenerSupervisor)
+            }.let { request ->
+                runBlocking { sketch.execute(request) }
+            }
+            Assert.assertEquals(listOf("onStart", "onError"), listenerSupervisor.callbackActionList)
         }
 
-        override fun onError(error: Drawable?) {
-            this.drawable = error
+        var deferred: Deferred<DisplayResult>? = null
+        val listenerSupervisor = DisplayListenerSupervisor {
+            deferred?.cancel()
+        }
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            listener(listenerSupervisor)
+        }.let { request ->
+            runBlocking {
+                deferred = async {
+                    sketch.execute(request)
+                }
+                deferred?.join()
+            }
+        }
+        Assert.assertEquals(listOf("onStart", "onCancel"), listenerSupervisor.callbackActionList)
+    }
+
+    @Test
+    fun testProgressListener() {
+        val context = getContext()
+        val sketch = getSketch {
+            httpStack(TestHttpStack(context, 20))
+        }
+        val testImage = TestHttpStack.testImages.first()
+
+        ProgressListenerSupervisor().let { listenerSupervisor ->
+            Assert.assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
+
+            DisplayRequest(context, testImage.uriString) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(DISABLED)
+                progressListener(listenerSupervisor)
+            }.let { request ->
+                runBlocking { sketch.execute(request) }
+            }
+
+            Assert.assertTrue(listenerSupervisor.callbackActionList.size > 1)
+            listenerSupervisor.callbackActionList.forEachIndexed { index, _ ->
+                if (index > 0) {
+                    Assert.assertTrue(listenerSupervisor.callbackActionList[index - 1].toLong() < listenerSupervisor.callbackActionList[index].toLong())
+                }
+            }
+            Assert.assertEquals(
+                testImage.contentLength,
+                listenerSupervisor.callbackActionList.last().toLong()
+            )
+        }
+    }
+
+    @Test
+    fun testTarget() {
+        val context = getContext()
+        val sketch = getSketch()
+
+        TestDisplayTarget().let { testTarget ->
+            Assert.assertNull(testTarget.startDrawable)
+            Assert.assertNull(testTarget.successDrawable)
+            Assert.assertNull(testTarget.errorDrawable)
+        }
+
+        TestDisplayTarget().let { testTarget ->
+            DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                target(testTarget)
+            }.let { request ->
+                runBlocking { sketch.execute(request) }
+            }
+            Assert.assertNull(testTarget.startDrawable)
+            Assert.assertNotNull(testTarget.successDrawable)
+            Assert.assertNull(testTarget.errorDrawable)
+        }
+
+        TestDisplayTarget().let { testTarget ->
+            DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI + ".fake") {
+                placeholder(ColorDrawable(Color.BLUE))
+                error(android.R.drawable.btn_radio)
+                target(testTarget)
+            }.let { request ->
+                runBlocking { sketch.execute(request) }
+            }
+            Assert.assertNotNull(testTarget.startDrawable)
+            Assert.assertTrue(testTarget.startDrawable is ColorDrawable)
+            Assert.assertNull(testTarget.successDrawable)
+            Assert.assertNotNull(testTarget.errorDrawable)
+            Assert.assertTrue(testTarget.errorDrawable is StateListDrawable)
+        }
+
+        TestDisplayTarget().let { testTarget ->
+            var deferred: Deferred<DisplayResult>? = null
+            val listenerSupervisor = DisplayListenerSupervisor {
+                deferred?.cancel()
+            }
+            DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                listener(listenerSupervisor)
+            }.let { request ->
+                runBlocking {
+                    deferred = async {
+                        sketch.execute(request)
+                    }
+                    deferred?.join()
+                }
+            }
+            Assert.assertNull(testTarget.startDrawable)
+            Assert.assertNull(testTarget.successDrawable)
+            Assert.assertNull(testTarget.errorDrawable)
+        }
+
+        TestDisplayTarget().let { testTarget ->
+            var deferred: Deferred<DisplayResult>? = null
+            val listenerSupervisor = DisplayListenerSupervisor {
+                deferred?.cancel()
+            }
+            DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI + ".fake") {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                listener(listenerSupervisor)
+                error(android.R.drawable.btn_radio)
+                target(testTarget)
+            }.let { request ->
+                runBlocking {
+                    deferred = async {
+                        sketch.execute(request)
+                    }
+                    deferred?.join()
+                }
+            }
+            Assert.assertNull(testTarget.startDrawable)
+            Assert.assertNull(testTarget.successDrawable)
+            Assert.assertNull(testTarget.errorDrawable)
+        }
+    }
+
+    @Test
+    fun testLifecycle() {
+        val context = getContext()
+        val sketch = getSketch()
+        val lifecycleOwner = object : LifecycleOwner {
+            private var lifecycle: Lifecycle? = null
+            override fun getLifecycle(): Lifecycle {
+                return lifecycle ?: LifecycleRegistry(this).apply {
+                    lifecycle = this
+                }
+            }
+        }
+        val myLifecycle = lifecycleOwner.lifecycle as LifecycleRegistry
+        runBlocking(Dispatchers.Main) {
+            myLifecycle.currentState = CREATED
+        }
+
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
+            Assert.assertSame(GlobalLifecycle, request.lifecycle)
+            runBlocking {
+                sketch.execute(request)
+            }
+        }.apply {
+            Assert.assertTrue(this is DisplayResult.Success)
+        }
+
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            lifecycle(myLifecycle)
+        }.let { request ->
+            Assert.assertSame(myLifecycle, request.lifecycle)
+            runBlocking {
+                val deferred = async {
+                    sketch.execute(request)
+                }
+                delay(2000)
+                if (!deferred.isCompleted) {
+                    withContext(Dispatchers.Main) {
+                        myLifecycle.currentState = STARTED
+                    }
+                }
+                delay(2000)
+                deferred.await()
+            }
+        }.apply {
+            Assert.assertTrue(this is DisplayResult.Success)
         }
     }
 }
