@@ -16,8 +16,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class BitmapDecodeTest {
 
-    // todo 测试 从 api 19 到 api 31 的结果
-
     @Test
     fun testBitmapFactoryMutable() {
         val context = getContext()

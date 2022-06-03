@@ -93,7 +93,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class DisplayRequestExecutorTest {
-    // todo LoadRequest DownloadRequest 也要有
+
     @Test
     fun testDepth() {
         val context = getContext()

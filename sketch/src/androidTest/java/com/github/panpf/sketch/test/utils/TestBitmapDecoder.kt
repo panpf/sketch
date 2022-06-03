@@ -10,7 +10,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 class TestBitmapDecoder : BitmapDecoder {
 
     override suspend fun decode(): BitmapDecodeResult {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 
     class Factory : BitmapDecoder.Factory {

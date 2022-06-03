@@ -6,7 +6,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 class TestBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
     override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 
     override fun equals(other: Any?): Boolean {

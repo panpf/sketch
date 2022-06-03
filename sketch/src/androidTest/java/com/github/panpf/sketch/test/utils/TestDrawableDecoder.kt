@@ -10,7 +10,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 class TestDrawableDecoder : DrawableDecoder {
 
     override suspend fun decode(): DrawableDecodeResult {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 
     class Factory : DrawableDecoder.Factory {

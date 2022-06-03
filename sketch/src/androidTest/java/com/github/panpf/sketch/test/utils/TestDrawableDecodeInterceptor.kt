@@ -6,7 +6,7 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 class TestDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
     override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 
     override fun equals(other: Any?): Boolean {

@@ -8,7 +8,7 @@ import com.github.panpf.sketch.request.ImageRequest
 class TestFetcher : Fetcher {
 
     override suspend fun fetch(): FetchResult {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 
     class Factory : Fetcher.Factory {

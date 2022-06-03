@@ -86,52 +86,46 @@ class DecodeUtilsTest {
 
     @Test
     fun testSamplingSize() {
-        // todo 测试 从 api 19 到 api 31 的结果
         Assert.assertEquals(75, samplingSize(150, 2))
         Assert.assertEquals(76, samplingSize(151, 2))
     }
 
     @Test
     fun testSamplingSizeForRegion() {
-        // todo 测试 从 api 19 到 api 31 的结果
         Assert.assertEquals(75, samplingSizeForRegion(150, 2))
         Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.O) 76 else 75,
+            if (VERSION.SDK_INT >= VERSION_CODES.N) 76 else 75,
             samplingSizeForRegion(151, 2)
         )
     }
 
     @Test
     fun testSampling() {
-        // todo 测试 从 api 19 到 api 31 的结果
         Assert.assertEquals(Size(75, 76), Size(150, 151).sampling(2))
     }
 
     @Test
     fun testSamplingForRegion() {
-        // todo 测试 从 api 19 到 api 31 的结果
         Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.O) Size(75, 76) else Size(75, 75),
+            if (VERSION.SDK_INT >= VERSION_CODES.N) Size(75, 76) else Size(75, 75),
             Size(150, 151).samplingForRegion(2)
         )
     }
 
     @Test
     fun testSamplingByTarget() {
-        // todo 测试 从 api 19 到 api 31 的结果
         Assert.assertEquals(Size(75, 76), Size(150, 151).samplingByTarget(80, 80))
         Assert.assertEquals(Size(75, 76), Size(150, 151).samplingByTarget(Size(80, 80)))
     }
 
     @Test
     fun testSamplingForRegionByTarget() {
-        // todo 测试 从 api 19 到 api 31 的结果
         Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.O) Size(75, 76) else Size(75, 75),
+            if (VERSION.SDK_INT >= VERSION_CODES.N) Size(75, 76) else Size(75, 75),
             Size(150, 151).samplingForRegionByTarget(80, 80)
         )
         Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.O) Size(75, 76) else Size(75, 75),
+            if (VERSION.SDK_INT >= VERSION_CODES.N) Size(75, 76) else Size(75, 75),
             Size(150, 151).samplingForRegionByTarget(Size(80, 80))
         )
     }
