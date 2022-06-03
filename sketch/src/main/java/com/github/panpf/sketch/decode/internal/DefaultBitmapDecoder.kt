@@ -118,7 +118,7 @@ open class DefaultBitmapDecoder(
         }
 
         val bitmap: Bitmap = try {
-            dataSource.decodeBitmapWithBitmapFactory(decodeOptions)
+            dataSource.decodeBitmap(decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
@@ -129,7 +129,7 @@ open class DefaultBitmapDecoder(
                 decodeOptions.inBitmap = null
                 bitmapPool.free(inBitmap, "decode:error")
                 try {
-                    dataSource.decodeBitmapWithBitmapFactory(decodeOptions)
+                    dataSource.decodeBitmap(decodeOptions)
                 } catch (throwable2: Throwable) {
                     throw BitmapDecodeException(request, "Bitmap decode error", throwable2)
                 }

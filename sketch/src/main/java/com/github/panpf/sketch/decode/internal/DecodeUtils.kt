@@ -229,17 +229,19 @@ fun realDecode(
 }
 
 fun BitmapDecodeResult.applyExifOrientation(
-    bitmapPool: BitmapPool,
-    ignoreExifOrientation: Boolean,
+    bitmapPool: BitmapPool? = null,
+    ignoreExifOrientation: Boolean = false,
 ): BitmapDecodeResult {
-    val exifOrientationHelper = if (!ignoreExifOrientation) {
-        ExifOrientationHelper(imageExifOrientation)
-    } else {
-        ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)
+    if (ignoreExifOrientation
+        || imageExifOrientation == ExifInterface.ORIENTATION_UNDEFINED
+        || imageExifOrientation == ExifInterface.ORIENTATION_NORMAL
+    ) {
+        return this
     }
+    val exifOrientationHelper = ExifOrientationHelper(imageExifOrientation)
     val inBitmap = bitmap
     val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, bitmapPool) ?: return this
-    bitmapPool.free(inBitmap, "applyExifOrientation")
+    bitmapPool?.free(inBitmap, "applyExifOrientation")
     return newResult(newBitmap) {
         addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
         val newSize = exifOrientationHelper.applyToSize(
@@ -297,7 +299,7 @@ fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
     }
-    decodeBitmapWithBitmapFactory(boundOptions)
+    decodeBitmap(boundOptions)
     return ImageInfo(
         width = boundOptions.outWidth,
         height = boundOptions.outHeight,
@@ -329,7 +331,7 @@ fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
 
 
 @Throws(IOException::class)
-fun DataSource.decodeBitmapWithBitmapFactory(options: BitmapFactory.Options? = null): Bitmap? =
+fun DataSource.decodeBitmap(options: BitmapFactory.Options? = null): Bitmap? =
     newInputStream().use {
         BufferedInputStream(it).use { bufferedInput ->
             BitmapFactory.decodeStream(bufferedInput, null, options)
