@@ -21,6 +21,7 @@ import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.isNotEmpty
+import com.github.panpf.sketch.http.merged
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.PrecisionDecider
@@ -240,7 +241,7 @@ interface ImageOptions {
         private var depth: Depth? = null
         private var parametersBuilder: Parameters.Builder? = null
 
-        private var httpHeaders: HttpHeaders.Builder? = null
+        private var httpHeadersBuilder: HttpHeaders.Builder? = null
         private var downloadCachePolicy: CachePolicy? = null
 
         private var bitmapConfig: BitmapConfig? = null
@@ -267,7 +268,7 @@ interface ImageOptions {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
 
-            this.httpHeaders = request.httpHeaders?.newBuilder()
+            this.httpHeadersBuilder = request.httpHeaders?.newBuilder()
             this.downloadCachePolicy = request.downloadCachePolicy
 
             this.bitmapConfig = request.bitmapConfig
@@ -331,14 +332,14 @@ interface ImageOptions {
          * Bulk set headers for any network request for this request
          */
         fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
-            this.httpHeaders = httpHeaders?.newBuilder()
+            this.httpHeadersBuilder = httpHeaders?.newBuilder()
         }
 
         /**
          * Add a header for any network operations performed by this request.
          */
         fun addHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
+            this.httpHeadersBuilder = (this.httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
                 add(name, value)
             }
         }
@@ -347,7 +348,7 @@ interface ImageOptions {
          * Set a header for any network operations performed by this request.
          */
         fun setHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
+            this.httpHeadersBuilder = (this.httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
                 set(name, value)
             }
         }
@@ -356,7 +357,7 @@ interface ImageOptions {
          * Remove all network headers with the key [name].
          */
         fun removeHttpHeader(name: String): Builder = apply {
-            this.httpHeaders?.removeAll(name)
+            this.httpHeadersBuilder?.removeAll(name)
         }
 
         /**
@@ -688,24 +689,16 @@ interface ImageOptions {
          */
         fun merge(options: ImageOptions?): Builder = apply {
             if (options == null) return@apply
+
             if (this.depth == null) {
                 this.depth = options.depth
             }
-            options.parameters?.takeIf { it.isNotEmpty() }?.forEach { entry ->
-                if (parametersBuilder?.exist(entry.first) != true) {
-                    setParameter(entry.first, entry.second.value, entry.second.cacheKey)
-                }
+            options.parameters?.let {
+                parametersBuilder = parametersBuilder?.build().merged(it)?.newBuilder()
             }
 
-            options.httpHeaders?.takeIf { !it.isEmpty() }?.let { headers ->
-                headers.addList.forEach {
-                    addHttpHeader(it.first, it.second)
-                }
-                headers.setList.forEach {
-                    if (httpHeaders?.setExist(it.first) != true) {
-                        setHttpHeader(it.first, it.second)
-                    }
-                }
+            options.httpHeaders?.let {
+                httpHeadersBuilder = httpHeadersBuilder?.build().merged(it)?.newBuilder()
             }
             if (this.downloadCachePolicy == null) {
                 this.downloadCachePolicy = options.downloadCachePolicy
@@ -768,7 +761,7 @@ interface ImageOptions {
         fun build(): ImageOptions = ImageOptionsImpl(
             depth = depth,
             parameters = parametersBuilder?.build()?.takeIf { it.isNotEmpty() },
-            httpHeaders = httpHeaders?.build()?.takeIf { it.isNotEmpty() },
+            httpHeaders = httpHeadersBuilder?.build()?.takeIf { it.isNotEmpty() },
             downloadCachePolicy = downloadCachePolicy,
             resultCachePolicy = resultCachePolicy,
             bitmapConfig = bitmapConfig,

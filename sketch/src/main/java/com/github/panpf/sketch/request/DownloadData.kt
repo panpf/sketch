@@ -26,8 +26,6 @@ sealed interface DownloadData: ImageData {
         override val dataFrom: DataFrom
     ) : DownloadData {
 
-        override fun newInputStream(): InputStream {
-            return diskCacheSnapshot.newInputStream()
-        }
+        override fun newInputStream(): InputStream = diskCacheSnapshot.newInputStream()
     }
 }

@@ -15,14 +15,9 @@
  */
 package com.github.panpf.sketch.util
 
-open class Size(var width: Int, var height: Int) {
+open class Size(val width: Int, val height: Int) {
 
     constructor() : this(0, 0)
-
-    fun set(width: Int, height: Int) {
-        this.width = width
-        this.height = height
-    }
 
     val isEmpty: Boolean
         get() = width == 0 || height == 0
@@ -70,3 +65,6 @@ open class Size(var width: Int, var height: Int) {
         }
     }
 }
+
+val Size.isNotEmpty: Boolean
+    get() = !isEmpty

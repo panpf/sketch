@@ -53,15 +53,13 @@ class HttpHeaders(
     }.build()
 
     override fun toString(): String {
-        val addListString =
-            addList.takeIf { it.isNotEmpty() }?.joinToString(prefix = "[", postfix = ",") {
-                "${it.first},${it.second}"
-            }
-        val setListString =
-            setList.takeIf { it.isNotEmpty() }?.joinToString(prefix = "[", postfix = ",") {
-                "${it.first},${it.second}"
-            }
-        return "HttpHeaders(adds=$addListString,sets=$setListString)"
+        val setListString = setList.joinToString(prefix = "[", postfix = "]", separator = ",") {
+            "${it.first}:${it.second}"
+        }
+        val addListString = addList.joinToString(prefix = "[", postfix = "]", separator = ",") {
+            "${it.first}:${it.second}"
+        }
+        return "HttpHeaders(sets=$setListString,adds=$addListString)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -116,10 +114,6 @@ class HttpHeaders(
             }
         }
 
-        fun setExist(name: String): Boolean = setList.find { it.first == name } != null
-
-        fun addExist(name: String): Boolean = addList.find { it.first == name } != null
-
         fun build(): HttpHeaders = HttpHeaders(addList.toList(), setList.toList())
     }
 }
@@ -132,7 +126,7 @@ fun HttpHeaders?.merged(other: HttpHeaders?): HttpHeaders? =
         if (other != null) {
             this.newBuilder().apply {
                 other.setList.forEach {
-                    if (!setExist(it.first)) {
+                    if (this@merged.getSet(it.first) == null) {
                         set(it.first, it.second)
                     }
                 }

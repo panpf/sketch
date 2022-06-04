@@ -20,6 +20,32 @@ class Parameters private constructor(
     /** Returns the number of parameters in this object. */
     val size: Int @JvmName("size") get() = map.size
 
+    val key: String? by lazy {
+        val keys = map.mapNotNull {
+            it.value.value?.let { value ->
+                "${it.key}:$value"
+            }
+        }.sorted().joinToString(separator = ",")
+        if (keys.isNotEmpty()) {
+            "Parameters($keys)"
+        } else {
+            null
+        }
+    }
+
+    val cacheKey: String? by lazy {
+        val keys = map.mapNotNull {
+            it.value.cacheKey?.let { cacheKey ->
+                "${it.key}:$cacheKey"
+            }
+        }.sorted().joinToString(separator = ",")
+        if (keys.isNotEmpty()) {
+            "Parameters($keys)"
+        } else {
+            null
+        }
+    }
+
     /** Returns the value associated with [key] or null if [key] has no mapping. */
     @Suppress("UNCHECKED_CAST")
     fun <T> value(key: String): T? = map[key]?.value as T?
@@ -52,32 +78,6 @@ class Parameters private constructor(
                     it.key to cacheKey
                 }
             }.toMap()
-        }
-    }
-
-    val key: String? by lazy {
-        val keys = map.mapNotNull {
-            it.value.value?.let { value ->
-                "${it.key}:$value"
-            }
-        }.sorted().joinToString(separator = ",")
-        if (keys.isNotEmpty()) {
-            "Parameters($keys)"
-        } else {
-            null
-        }
-    }
-
-    val cacheKey: String? by lazy {
-        val keys = map.mapNotNull {
-            it.value.cacheKey?.let { cacheKey ->
-                "${it.key}:$cacheKey"
-            }
-        }.sorted().joinToString(separator = ",")
-        if (keys.isNotEmpty()) {
-            "Parameters($keys)"
-        } else {
-            null
         }
     }
 
@@ -151,8 +151,6 @@ class Parameters private constructor(
             map.remove(key)
         }
 
-        fun exist(key: String): Boolean = map[key] != null
-
         /** Create a new [Parameters] instance. */
         fun build() = Parameters(map.toMap())
     }
@@ -177,7 +175,7 @@ fun Parameters?.merged(other: Parameters?): Parameters? =
         if (other != null) {
             this.newBuilder().apply {
                 other.values().forEach {
-                    if (!exist(it.key)) {
+                    if (this@merged.entry(it.key) == null) {
                         set(it.key, it.value)
                     }
                 }
