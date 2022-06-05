@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.request
 
 import android.view.View
+import androidx.lifecycle.DefaultLifecycleObserver
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.requestManager
 import kotlinx.coroutines.Deferred
@@ -61,7 +62,7 @@ class ViewTargetDisposable(
         get() = view.requestManager.isDisposed(this)
 
     override fun dispose() {
-        if (!isDisposed){
+        if (!isDisposed) {
             view.requestManager.dispose()
         }
     }

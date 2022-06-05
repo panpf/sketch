@@ -18,11 +18,11 @@ open class ImageViewTarget(override val view: ImageView) : GenericViewTarget<Ima
         set(value) {
             val oldDrawable = view.drawable
             value?.foreachSketchCountDrawable {
-                it.setIsDisplayed(true, "ImageView")
+                it.countBitmap.setIsDisplayed(true, "ImageView")
             }
             view.setImageDrawable(value)
             oldDrawable?.foreachSketchCountDrawable {
-                it.setIsDisplayed(false, "ImageView")
+                it.countBitmap.setIsDisplayed(false, "ImageView")
             }
         }
 

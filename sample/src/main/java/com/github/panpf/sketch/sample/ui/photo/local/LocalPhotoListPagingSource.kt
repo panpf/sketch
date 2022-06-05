@@ -36,7 +36,8 @@ class LocalPhotoListPagingSource(private val context: Context) :
     }
 
     private suspend fun readAssetPhotos(): List<String> = withToIO {
-        AssetImages.FORMATS
+        AssetImages.STATICS
+            .plus(AssetImages.ANIMATEDS)
             .plus(AssetImages.NUMBERS)
             .plus(AssetImages.HUGES)
             .plus(AssetImages.LONGS).toList()

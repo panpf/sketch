@@ -13,13 +13,13 @@ class RequestContext {
         requiredMainThread()
         completeCountDrawable(caller)
         pendingCountDrawable = drawable.apply {
-            setIsPending(true, caller)
+            countBitmap.setIsPending(true, caller)
         }
     }
 
     @MainThread
     fun completeCountDrawable(caller: String) {
         requiredMainThread()
-        pendingCountDrawable?.setIsPending(false, caller)
+        pendingCountDrawable?.countBitmap?.setIsPending(false, caller)
     }
 }

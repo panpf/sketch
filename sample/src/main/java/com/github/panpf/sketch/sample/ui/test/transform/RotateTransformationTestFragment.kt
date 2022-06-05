@@ -23,7 +23,7 @@ class RotateTransformationTestFragment :
         }
 
         viewModel.rotateData.observe(viewLifecycleOwner) {
-            binding.rotateTransformationTestImage.displayImage(AssetImages.FORMATS.first()) {
+            binding.rotateTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RotateTransformation(it))

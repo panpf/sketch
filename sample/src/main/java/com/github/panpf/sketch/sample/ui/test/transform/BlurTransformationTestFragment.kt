@@ -19,7 +19,7 @@ class BlurTransformationTestFragment : BindingFragment<BlurTransformationTestFra
         savedInstanceState: Bundle?
     ) {
         viewModel.radiusData.observe(viewLifecycleOwner) {
-            binding.blurTransformationTestImage.displayImage(AssetImages.FORMATS.first()) {
+            binding.blurTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(BlurTransformation(it))

@@ -40,7 +40,7 @@ class FetcherTestViewModel(application1: Application) : LifecycleAndroidViewMode
                 if (localFirstPhotoPath != null) {
                     add("FILE" to localFirstPhotoPath)
                 }
-                add("ASSET" to AssetImages.FORMATS.first())
+                add("ASSET" to AssetImages.STATICS.first())
                 add("RES_ID" to application1.newResourceUri(R.mipmap.ic_launcher))
                 add("RES_NAME" to application1.newResourceUri("drawable", "im_placeholder"))
                 add(

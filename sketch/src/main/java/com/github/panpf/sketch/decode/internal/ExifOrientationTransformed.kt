@@ -1,12 +1,15 @@
 package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.Keep
+import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
 
-class ExifOrientationTransformed(val exifOrientation: Int) : Transformed {
+class ExifOrientationTransformed(
+    @ExifOrientation val exifOrientation: Int
+) : Transformed {
 
     override val key: String by lazy {
         "ExifOrientationTransformed(${exifOrientationName(exifOrientation)})"

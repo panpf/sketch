@@ -102,7 +102,7 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
 class RoundedCornersTransformed(val radiusArray: FloatArray) : Transformed {
 
     override val key: String by lazy {
-        "RoundedCornersTransformed($radiusArray)"
+        "RoundedCornersTransformed(${radiusArray.contentToString()})"
     }
     override val cacheResultToDisk: Boolean = true
 
@@ -120,7 +120,7 @@ class RoundedCornersTransformed(val radiusArray: FloatArray) : Transformed {
     }
 
     override fun hashCode(): Int {
-        return javaClass.hashCode()
+        return radiusArray.contentHashCode()
     }
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {

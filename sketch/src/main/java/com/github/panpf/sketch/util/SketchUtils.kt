@@ -14,14 +14,25 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
 
 class SketchUtils {
+
     companion object {
-        private fun requestManagerOrNull(view: View): ViewTargetRequestManager? =
+
+        internal fun requestManagerOrNull(view: View): ViewTargetRequestManager? =
             view.getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?
 
+        /**
+         * Dispose the request that's attached to this view (if there is one).
+         */
         fun dispose(view: View) = requestManagerOrNull(view)?.dispose()
 
+        /**
+         * Get the [DisplayResult] of the most recently executed image request that's attached to this view.
+         */
         fun getResult(view: View): DisplayResult? = requestManagerOrNull(view)?.getResult()
 
+        /**
+         * Restart ImageRequest
+         */
         fun restart(view: View) = requestManagerOrNull(view)?.restart()
     }
 }
@@ -33,13 +44,13 @@ class SketchUtils {
 fun Drawable.findLastSketchDrawable(): SketchDrawable? {
     val drawable = this
     return when {
+        drawable is SketchDrawable -> drawable
         drawable is CrossfadeDrawable -> {
             drawable.end?.findLastSketchDrawable()
         }
         drawable is LayerDrawable -> {
             drawable.getLastChildDrawable()?.findLastSketchDrawable()
         }
-        drawable is SketchDrawable -> drawable
         drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {
             drawable.wrappedDrawable?.findLastSketchDrawable()
         }
@@ -67,6 +78,7 @@ fun Drawable.foreachSketchCountDrawable(block: (SketchCountBitmapDrawable) -> Un
             }
         }
         drawable is CrossfadeDrawable -> {
+            drawable.start?.foreachSketchCountDrawable(block)
             drawable.end?.foreachSketchCountDrawable(block)
         }
         drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {

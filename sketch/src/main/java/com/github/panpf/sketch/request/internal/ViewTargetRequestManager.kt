@@ -23,7 +23,7 @@ class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChang
     private var pendingClear: Job? = null
 
     // Only accessed from the main thread.
-    private var currentRequest: ViewTargetRequestDelegate? = null
+    private var currentRequestDelegate: ViewTargetRequestDelegate? = null
     private var isRestart = false
 
     /** Return 'true' if [disposable] is not attached to this view. */
@@ -55,7 +55,7 @@ class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChang
         }
     }
 
-    /** Cancel any in progress work and detach [currentRequest] from this view. */
+    /** Cancel any in progress work and detach [currentRequestDelegate] from this view. */
     @Synchronized
     @OptIn(DelicateCoroutinesApi::class)
     fun dispose() {
@@ -72,11 +72,11 @@ class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChang
         return currentDisposable?.job?.getCompletedOrNull()
     }
 
-    /** Attach [request] to this view and cancel the old request. */
+    /** Attach [requestDelegate] to this view and cancel the old request. */
     @MainThread
-    internal fun setRequest(request: ViewTargetRequestDelegate?) {
-        currentRequest?.dispose()
-        currentRequest = request
+    internal fun setRequest(requestDelegate: ViewTargetRequestDelegate?) {
+        currentRequestDelegate?.dispose()
+        currentRequestDelegate = requestDelegate
     }
 
     @MainThread
@@ -86,17 +86,17 @@ class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChang
 
     @MainThread
     override fun onViewDetachedFromWindow(v: View) {
-        currentRequest?.dispose()
-        currentRequest?.onViewDetachedFromWindow()
+        currentRequestDelegate?.dispose()
+        currentRequestDelegate?.onViewDetachedFromWindow()
     }
 
     fun restart() {
-        val request = currentRequest ?: return
+        val requestDelegate = currentRequestDelegate ?: return
 
         // As this is called from the main thread, isRestart will
         // be cleared synchronously as part of request.restart().
         isRestart = true
-        request.restart()
+        requestDelegate.restart()
     }
 }
 

@@ -16,43 +16,24 @@
 package com.github.panpf.sketch.drawable
 
 import android.content.res.Resources
-import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 
 class SketchCountBitmapDrawable constructor(
     resources: Resources,
-    private val countBitmap: CountBitmap,
+    val countBitmap: CountBitmap,
     dataFrom: DataFrom,
 ) : SketchBitmapDrawable(
     requestKey = countBitmap.requestKey,
     requestUri = countBitmap.imageUri,
     imageInfo = countBitmap.imageInfo,
-    imageExifOrientation = countBitmap.exifOrientation,
+    imageExifOrientation = countBitmap.imageExifOrientation,
     dataFrom = dataFrom,
     transformedList = countBitmap.transformedList,
     resources = resources,
     bitmap = countBitmap.bitmap!!
 ) {
-
-    val isRecycled: Boolean
-        get() = countBitmap.isRecycled
-
-    @MainThread
-    fun setIsDisplayed(displayed: Boolean, caller: String? = null) {
-        countBitmap.setIsDisplayed(displayed, caller)
-    }
-
-    @MainThread
-    fun setIsPending(waitingUse: Boolean, caller: String? = null) {
-        countBitmap.setIsPending(waitingUse, caller)
-    }
-
-    @MainThread
-    fun getPendingCount(): Int {
-        return countBitmap.getPendingCount()
-    }
 
     override fun hashCode(): Int {
         return countBitmap.hashCode()

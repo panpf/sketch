@@ -23,7 +23,7 @@ class CircleCropTransformationTestFragment :
         savedInstanceState: Bundle?
     ) {
         viewModel.scaleData.observe(viewLifecycleOwner) {
-            binding.circleCropTransformationTestImage.displayImage(AssetImages.FORMATS.first()) {
+            binding.circleCropTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(CircleCropTransformation(it))

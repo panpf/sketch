@@ -13,7 +13,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.SystemClock
 import androidx.annotation.RequiresApi
-import androidx.annotation.VisibleForTesting
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.graphics.withSave
@@ -45,6 +44,14 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     val fadeStart: Boolean = true,
     val preferExactIntrinsicSize: Boolean = false,
 ) : Drawable(), Drawable.Callback, Animatable2Compat {
+
+    companion object {
+        private const val STATE_START = 0
+        private const val STATE_RUNNING = 1
+        private const val STATE_DONE = 2
+
+        const val DEFAULT_DURATION = 100
+    }
 
     private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()
 
@@ -253,8 +260,7 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     override fun clearAnimationCallbacks() = callbacks.clear()
 
     /** Update the [Drawable]'s bounds inside [targetBounds] preserving aspect ratio. */
-    @VisibleForTesting
-    internal fun updateBounds(drawable: Drawable, targetBounds: Rect) {
+    private fun updateBounds(drawable: Drawable, targetBounds: Rect) {
         val width = drawable.intrinsicWidth
         val height = drawable.intrinsicHeight
         if (width <= 0 || height <= 0) {
@@ -284,13 +290,5 @@ open class CrossfadeDrawable @JvmOverloads constructor(
         state = STATE_DONE
         start = null
         callbacks.forEach { it.onAnimationEnd(this) }
-    }
-
-    companion object {
-        private const val STATE_START = 0
-        private const val STATE_RUNNING = 1
-        private const val STATE_DONE = 2
-
-        const val DEFAULT_DURATION = 100
     }
 }

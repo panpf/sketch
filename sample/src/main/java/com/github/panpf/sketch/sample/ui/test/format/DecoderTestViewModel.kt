@@ -29,7 +29,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
             val headerUserPackageInfo = loadUserAppPackageInfo(true)
             val footerUserPackageInfo = loadUserAppPackageInfo(false)
 
-            val imageDetails = AssetImages.FORMATS.plus(
+            val imageDetails = AssetImages.STATICS.plus(AssetImages.ANIMATEDS).plus(
                 arrayOf(
                     application1.newResourceUri(drawable.im_placeholder),
                     application1.newResourceUri(drawable.ic_play),
@@ -42,8 +42,14 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
             ).map {
                 ImageDetail(it, it, null)
             }
-            val titles = AssetImages.FORMATS.map {
-                it.substring(it.lastIndexOf(".") + 1).uppercase()
+            val titles = AssetImages.STATICS.plus(AssetImages.ANIMATEDS).map { uri ->
+                uri.substring(uri.lastIndexOf(".") + 1).uppercase().let { suffix ->
+                    if (uri.endsWith("anim.webp") || uri.endsWith("anim.heif")) {
+                        suffix + "_ANIM"
+                    } else {
+                        suffix
+                    }
+                }
             }.plus(
                 listOf(
                     "XML",
