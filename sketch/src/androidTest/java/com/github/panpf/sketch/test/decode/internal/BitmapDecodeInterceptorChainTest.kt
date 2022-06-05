@@ -1,10 +1,15 @@
 package com.github.panpf.sketch.test.decode.internal
 
-import androidx.exifinterface.media.ExifInterface
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.RGB_565
+import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
+import com.github.panpf.sketch.decode.BitmapDecodeInterceptor.Chain
+import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -18,24 +23,85 @@ import org.junit.runner.RunWith
 class BitmapDecodeInterceptorChainTest {
 
     @Test
-    fun testIntercept() {
+    fun test() {
         val (context, sketch) = getContextAndSketch()
-        val interceptors = listOf(BitmapEngineDecodeInterceptor())
-        val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
-        val requestContext = RequestContext()
-        val chain =
-            BitmapDecodeInterceptorChain(sketch, loadRequest, requestContext, null, interceptors, 0)
-        val result = runBlocking {
-            chain.proceed()
+
+        mutableListOf<String>().apply {
+            val interceptors = listOf(
+                TestBitmapDecoderInterceptor1(this),
+                TestBitmapDecoderInterceptor2(this),
+                TestBitmapDecoderInterceptor3(this)
+            )
+            val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
+            val requestContext = RequestContext()
+            val chain = BitmapDecodeInterceptorChain(
+                sketch, loadRequest, requestContext, null, interceptors, 0
+            )
+            runBlocking {
+                chain.proceed()
+            }
+        }.apply {
+            Assert.assertEquals(
+                listOf(
+                    "TestBitmapDecoderInterceptor1",
+                    "TestBitmapDecoderInterceptor2",
+                    "TestBitmapDecoderInterceptor3",
+                ), this
+            )
         }
-        Assert.assertEquals(1291, result.bitmap.width)
-        Assert.assertEquals(1936, result.bitmap.height)
-        Assert.assertEquals(
-            "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
-            result.imageInfo.toString()
-        )
-        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
-        Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
-        Assert.assertNull(result.transformedList)
+
+        mutableListOf<String>().apply {
+            val interceptors = listOf(
+                TestBitmapDecoderInterceptor2(this),
+                TestBitmapDecoderInterceptor1(this),
+                TestBitmapDecoderInterceptor3(this),
+            )
+            val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
+            val requestContext = RequestContext()
+            val chain = BitmapDecodeInterceptorChain(
+                sketch, loadRequest, requestContext, null, interceptors, 0
+            )
+            runBlocking {
+                chain.proceed()
+            }
+        }.apply {
+            Assert.assertEquals(
+                listOf(
+                    "TestBitmapDecoderInterceptor2",
+                    "TestBitmapDecoderInterceptor1",
+                    "TestBitmapDecoderInterceptor3",
+                ), this
+            )
+        }
+    }
+
+    private class TestBitmapDecoderInterceptor1(val historyList: MutableList<String>) :
+        BitmapDecodeInterceptor {
+        override suspend fun intercept(chain: Chain): BitmapDecodeResult {
+            historyList.add("TestBitmapDecoderInterceptor1")
+            return chain.proceed()
+        }
+    }
+
+    private class TestBitmapDecoderInterceptor2(val historyList: MutableList<String>) :
+        BitmapDecodeInterceptor {
+        override suspend fun intercept(chain: Chain): BitmapDecodeResult {
+            historyList.add("TestBitmapDecoderInterceptor2")
+            return chain.proceed()
+        }
+    }
+
+    private class TestBitmapDecoderInterceptor3(val historyList: MutableList<String>) :
+        BitmapDecodeInterceptor {
+        override suspend fun intercept(chain: Chain): BitmapDecodeResult {
+            historyList.add("TestBitmapDecoderInterceptor3")
+            return BitmapDecodeResult(
+                Bitmap.createBitmap(12, 45, RGB_565),
+                ImageInfo(12, 45, "image/jpeg"),
+                0,
+                LOCAL,
+                null
+            )
+        }
     }
 }

@@ -17,6 +17,8 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.utils.intrinsicSize
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -104,8 +106,7 @@ class WebpAnimatedDrawableDecoderTest {
         factory.create(sketch, request, RequestContext(), fetchResult)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
-                Assert.assertEquals(480, this.drawable.intrinsicWidth)
-                Assert.assertEquals(270, this.drawable.intrinsicHeight)
+                Assert.assertEquals(Size(480, 270), this.drawable.intrinsicSize)
                 Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
@@ -122,8 +123,7 @@ class WebpAnimatedDrawableDecoderTest {
         factory.create(sketch, request1, RequestContext(), fetchResult1)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
-                Assert.assertEquals(240, this.drawable.intrinsicWidth)
-                Assert.assertEquals(135, this.drawable.intrinsicHeight)
+                Assert.assertEquals(Size(240, 135), this.drawable.intrinsicSize)
                 Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertEquals(listOf(InSampledTransformed(2)), this.transformedList)

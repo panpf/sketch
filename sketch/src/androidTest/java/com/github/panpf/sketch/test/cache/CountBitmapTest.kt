@@ -268,7 +268,7 @@ class CountBitmapTest {
             requestKey = requestKey,
             imageUri = imageUri,
             imageInfo = imageInfo,
-            exifOrientation = 0,
+            imageExifOrientation = 0,
             transformedList = transformedList,
             logger = sketch.logger,
             bitmapPool = sketch.bitmapPool

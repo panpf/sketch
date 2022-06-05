@@ -1,12 +1,10 @@
-package com.github.panpf.sketch.test.decode.internal
+package com.github.panpf.sketch.test.transform
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.Transformed
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
-import com.github.panpf.sketch.decode.internal.getInSampledTransformed
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.ResizeTransformed
-import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.transform.CircleCropTransformed
+import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
@@ -14,68 +12,68 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class InSampledTransformedTest {
+class CircleCropTransformedTest {
 
     @Test
     fun test() {
-        InSampledTransformed(2).apply {
-            Assert.assertEquals(2, inSampleSize)
+        CircleCropTransformed(Scale.START_CROP).apply {
+            Assert.assertEquals(Scale.START_CROP, scale)
         }
-        InSampledTransformed(4).apply {
-            Assert.assertEquals(4, inSampleSize)
+        CircleCropTransformed(Scale.CENTER_CROP).apply {
+            Assert.assertEquals(Scale.CENTER_CROP, scale)
         }
     }
 
     @Test
     fun testKey() {
-        InSampledTransformed(2).apply {
-            Assert.assertEquals("InSampledTransformed(2)", key)
+        CircleCropTransformed(Scale.START_CROP).apply {
+            Assert.assertEquals("CircleCropTransformed(START_CROP)", key)
         }
-        InSampledTransformed(4).apply {
-            Assert.assertEquals("InSampledTransformed(4)", key)
+        CircleCropTransformed(Scale.CENTER_CROP).apply {
+            Assert.assertEquals("CircleCropTransformed(CENTER_CROP)", key)
         }
     }
 
     @Test
     fun testToString() {
-        InSampledTransformed(2).apply {
+        CircleCropTransformed(Scale.START_CROP).apply {
             Assert.assertEquals(key, toString())
         }
-        InSampledTransformed(4).apply {
+        CircleCropTransformed(Scale.CENTER_CROP).apply {
             Assert.assertEquals(key, toString())
         }
     }
 
     @Test
     fun testCacheResultToDisk() {
-        InSampledTransformed(2).apply {
+        CircleCropTransformed(Scale.START_CROP).apply {
             Assert.assertTrue(cacheResultToDisk)
         }
-        InSampledTransformed(4).apply {
+        CircleCropTransformed(Scale.CENTER_CROP).apply {
             Assert.assertTrue(cacheResultToDisk)
         }
     }
 
     @Test
     fun testGetInSampledTransformed() {
-        listOf(InSampledTransformed(2)).apply {
-            Assert.assertNotNull(getInSampledTransformed())
+        listOf(CircleCropTransformed(Scale.START_CROP)).apply {
+            Assert.assertNotNull(getCircleCropTransformed())
         }
         listOf<Transformed>().apply {
-            Assert.assertNull(getInSampledTransformed())
+            Assert.assertNull(getCircleCropTransformed())
         }
     }
 
     @Test
     fun testEquals() {
-        val transformed1 = InSampledTransformed(2)
-        val transformed11 = InSampledTransformed(2)
+        val transformed1 = CircleCropTransformed(Scale.START_CROP)
+        val transformed11 = CircleCropTransformed(Scale.START_CROP)
 
-        val transformed2 = InSampledTransformed(4)
-        val transformed21 = InSampledTransformed(4)
+        val transformed2 = CircleCropTransformed(Scale.CENTER_CROP)
+        val transformed21 = CircleCropTransformed(Scale.CENTER_CROP)
 
-        val transformed3 = InSampledTransformed(8)
-        val transformed31 = InSampledTransformed(8)
+        val transformed3 = CircleCropTransformed(Scale.END_CROP)
+        val transformed31 = CircleCropTransformed(Scale.END_CROP)
 
         Assert.assertNotSame(transformed1, transformed11)
         Assert.assertNotSame(transformed2, transformed21)
@@ -92,14 +90,14 @@ class InSampledTransformedTest {
 
     @Test
     fun testHashCode() {
-        val transformed1 = InSampledTransformed(2)
-        val transformed11 = InSampledTransformed(2)
+        val transformed1 = CircleCropTransformed(Scale.START_CROP)
+        val transformed11 = CircleCropTransformed(Scale.START_CROP)
 
-        val transformed2 = InSampledTransformed(4)
-        val transformed21 = InSampledTransformed(4)
+        val transformed2 = CircleCropTransformed(Scale.CENTER_CROP)
+        val transformed21 = CircleCropTransformed(Scale.CENTER_CROP)
 
-        val transformed3 = InSampledTransformed(8)
-        val transformed31 = InSampledTransformed(8)
+        val transformed3 = CircleCropTransformed(Scale.END_CROP)
+        val transformed31 = CircleCropTransformed(Scale.END_CROP)
 
         Assert.assertEquals(transformed1.hashCode(), transformed11.hashCode())
         Assert.assertEquals(transformed2.hashCode(), transformed21.hashCode())
@@ -112,7 +110,7 @@ class InSampledTransformedTest {
 
     @Test
     fun testJsonSerializable() {
-        val transformed = InSampledTransformed(2)
+        val transformed = CircleCropTransformed(Scale.START_CROP)
 
         val serializer =
             transformed.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()

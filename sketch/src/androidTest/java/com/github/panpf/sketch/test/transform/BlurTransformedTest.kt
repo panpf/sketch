@@ -1,12 +1,10 @@
-package com.github.panpf.sketch.test.decode.internal
+package com.github.panpf.sketch.test.transform
 
+import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.Transformed
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
-import com.github.panpf.sketch.decode.internal.getInSampledTransformed
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.ResizeTransformed
-import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.transform.BlurTransformed
+import com.github.panpf.sketch.transform.getBlurTransformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
@@ -14,68 +12,76 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class InSampledTransformedTest {
+class BlurTransformedTest {
 
     @Test
     fun test() {
-        InSampledTransformed(2).apply {
-            Assert.assertEquals(2, inSampleSize)
+        BlurTransformed(30, Color.RED).apply {
+            Assert.assertEquals(30, radius)
+            Assert.assertEquals(Color.RED, maskColor)
         }
-        InSampledTransformed(4).apply {
-            Assert.assertEquals(4, inSampleSize)
+        BlurTransformed(60, Color.GREEN).apply {
+            Assert.assertEquals(60, radius)
+            Assert.assertEquals(Color.GREEN, maskColor)
         }
     }
 
     @Test
     fun testKey() {
-        InSampledTransformed(2).apply {
-            Assert.assertEquals("InSampledTransformed(2)", key)
+        BlurTransformed(30, Color.RED).apply {
+            Assert.assertEquals("BlurTransformed(30,${Color.RED})", key)
         }
-        InSampledTransformed(4).apply {
-            Assert.assertEquals("InSampledTransformed(4)", key)
+        BlurTransformed(60, Color.GREEN).apply {
+            Assert.assertEquals("BlurTransformed(60,${Color.GREEN})", key)
+        }
+        BlurTransformed(120, null).apply {
+            Assert.assertEquals("BlurTransformed(120,-1)", key)
         }
     }
 
     @Test
     fun testToString() {
-        InSampledTransformed(2).apply {
+        BlurTransformed(30, Color.RED).apply {
             Assert.assertEquals(key, toString())
         }
-        InSampledTransformed(4).apply {
+        BlurTransformed(60, Color.GREEN).apply {
+            Assert.assertEquals(key, toString())
+        }
+        BlurTransformed(60, null).apply {
             Assert.assertEquals(key, toString())
         }
     }
 
     @Test
     fun testCacheResultToDisk() {
-        InSampledTransformed(2).apply {
+        BlurTransformed(30, Color.RED).apply {
             Assert.assertTrue(cacheResultToDisk)
         }
-        InSampledTransformed(4).apply {
+        BlurTransformed(60, Color.GREEN).apply {
             Assert.assertTrue(cacheResultToDisk)
         }
     }
 
     @Test
     fun testGetInSampledTransformed() {
-        listOf(InSampledTransformed(2)).apply {
-            Assert.assertNotNull(getInSampledTransformed())
+        listOf(BlurTransformed(30, Color.RED)).apply {
+            Assert.assertNotNull(getBlurTransformed())
         }
         listOf<Transformed>().apply {
-            Assert.assertNull(getInSampledTransformed())
+            Assert.assertNull(getBlurTransformed())
         }
     }
 
     @Test
     fun testEquals() {
-        val transformed1 = InSampledTransformed(2)
-        val transformed11 = InSampledTransformed(2)
+        val transformed1 = BlurTransformed(30, Color.RED)
+        val transformed11 = BlurTransformed(30, Color.RED)
 
-        val transformed2 = InSampledTransformed(4)
-        val transformed21 = InSampledTransformed(4)
+        val transformed2 = BlurTransformed(60, Color.GREEN);
+        val transformed21 = BlurTransformed(60, Color.GREEN)
 
-        val transformed3 = InSampledTransformed(8)
-        val transformed31 = InSampledTransformed(8)
+        val transformed3 = BlurTransformed(120, Color.BLUE);
+        val transformed31 = BlurTransformed(120, Color.BLUE)
 
         Assert.assertNotSame(transformed1, transformed11)
         Assert.assertNotSame(transformed2, transformed21)
@@ -92,14 +98,14 @@ class InSampledTransformedTest {
 
     @Test
     fun testHashCode() {
-        val transformed1 = InSampledTransformed(2)
-        val transformed11 = InSampledTransformed(2)
+        val transformed1 = BlurTransformed(30, Color.RED)
+        val transformed11 = BlurTransformed(30, Color.RED)
 
-        val transformed2 = InSampledTransformed(4)
-        val transformed21 = InSampledTransformed(4)
+        val transformed2 = BlurTransformed(60, Color.GREEN)
+        val transformed21 = BlurTransformed(60, Color.GREEN)
 
-        val transformed3 = InSampledTransformed(8)
-        val transformed31 = InSampledTransformed(8)
+        val transformed3 = BlurTransformed(120, Color.BLUE)
+        val transformed31 = BlurTransformed(120, Color.BLUE)
 
         Assert.assertEquals(transformed1.hashCode(), transformed11.hashCode())
         Assert.assertEquals(transformed2.hashCode(), transformed21.hashCode())
@@ -112,7 +118,7 @@ class InSampledTransformedTest {
 
     @Test
     fun testJsonSerializable() {
-        val transformed = InSampledTransformed(2)
+        val transformed = BlurTransformed(30, Color.RED)
 
         val serializer =
             transformed.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()

@@ -34,7 +34,7 @@ class RequestContextTest {
                 requestKey = "requestKey",
                 imageUri = "imageUri",
                 imageInfo = ImageInfo(100, 100, "image/jpeg"),
-                exifOrientation = 0,
+                imageExifOrientation = 0,
                 transformedList = null,
                 logger = logger,
                 bitmapPool = bitmapPool
@@ -47,7 +47,7 @@ class RequestContextTest {
                 requestKey = "requestKey1",
                 imageUri = "imageUri1",
                 imageInfo = ImageInfo(100, 100, "image/jpeg"),
-                exifOrientation = 0,
+                imageExifOrientation = 0,
                 transformedList = null,
                 logger = logger,
                 bitmapPool = bitmapPool
@@ -63,24 +63,24 @@ class RequestContextTest {
             }
 
             runBlocking(Dispatchers.Main) {
-                Assert.assertEquals(0, countDrawable.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.getPendingCount())
+                Assert.assertEquals(0, countDrawable.countBitmap.getPendingCount())
+                Assert.assertEquals(0, countDrawable1.countBitmap.getPendingCount())
 
                 pendingCountDrawable(countDrawable, "test")
-                Assert.assertEquals(1, countDrawable.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.getPendingCount())
+                Assert.assertEquals(1, countDrawable.countBitmap.getPendingCount())
+                Assert.assertEquals(0, countDrawable1.countBitmap.getPendingCount())
 
                 pendingCountDrawable(countDrawable1, "test")
-                Assert.assertEquals(0, countDrawable.getPendingCount())
-                Assert.assertEquals(1, countDrawable1.getPendingCount())
+                Assert.assertEquals(0, countDrawable.countBitmap.getPendingCount())
+                Assert.assertEquals(1, countDrawable1.countBitmap.getPendingCount())
 
                 pendingCountDrawable(countDrawable, "test")
-                Assert.assertEquals(1, countDrawable.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.getPendingCount())
+                Assert.assertEquals(1, countDrawable.countBitmap.getPendingCount())
+                Assert.assertEquals(0, countDrawable1.countBitmap.getPendingCount())
 
                 completeCountDrawable("test")
-                Assert.assertEquals(0, countDrawable.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.getPendingCount())
+                Assert.assertEquals(0, countDrawable.countBitmap.getPendingCount())
+                Assert.assertEquals(0, countDrawable1.countBitmap.getPendingCount())
             }
         }
     }

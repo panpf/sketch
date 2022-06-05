@@ -1,12 +1,9 @@
-package com.github.panpf.sketch.test.decode.internal
+package com.github.panpf.sketch.test.transform
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.Transformed
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
-import com.github.panpf.sketch.decode.internal.getInSampledTransformed
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.ResizeTransformed
-import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.transform.RotateTransformed
+import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
@@ -14,68 +11,68 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class InSampledTransformedTest {
+class RotateTransformedTest {
 
     @Test
     fun test() {
-        InSampledTransformed(2).apply {
-            Assert.assertEquals(2, inSampleSize)
+        RotateTransformed(45).apply {
+            Assert.assertEquals(45, degrees)
         }
-        InSampledTransformed(4).apply {
-            Assert.assertEquals(4, inSampleSize)
+        RotateTransformed(90).apply {
+            Assert.assertEquals(90, degrees)
         }
     }
 
     @Test
     fun testKey() {
-        InSampledTransformed(2).apply {
-            Assert.assertEquals("InSampledTransformed(2)", key)
+        RotateTransformed(45).apply {
+            Assert.assertEquals("RotateTransformed(45)", key)
         }
-        InSampledTransformed(4).apply {
-            Assert.assertEquals("InSampledTransformed(4)", key)
+        RotateTransformed(90).apply {
+            Assert.assertEquals("RotateTransformed(90)", key)
         }
     }
 
     @Test
     fun testToString() {
-        InSampledTransformed(2).apply {
+        RotateTransformed(45).apply {
             Assert.assertEquals(key, toString())
         }
-        InSampledTransformed(4).apply {
+        RotateTransformed(90).apply {
             Assert.assertEquals(key, toString())
         }
     }
 
     @Test
     fun testCacheResultToDisk() {
-        InSampledTransformed(2).apply {
+        RotateTransformed(45).apply {
             Assert.assertTrue(cacheResultToDisk)
         }
-        InSampledTransformed(4).apply {
+        RotateTransformed(90).apply {
             Assert.assertTrue(cacheResultToDisk)
         }
     }
 
     @Test
     fun testGetInSampledTransformed() {
-        listOf(InSampledTransformed(2)).apply {
-            Assert.assertNotNull(getInSampledTransformed())
+        listOf(RotateTransformed(45)).apply {
+            Assert.assertNotNull(getRotateTransformed())
         }
         listOf<Transformed>().apply {
-            Assert.assertNull(getInSampledTransformed())
+            Assert.assertNull(getRotateTransformed())
         }
     }
 
     @Test
     fun testEquals() {
-        val transformed1 = InSampledTransformed(2)
-        val transformed11 = InSampledTransformed(2)
+        val transformed1 = RotateTransformed(45)
+        val transformed11 = RotateTransformed(45)
 
-        val transformed2 = InSampledTransformed(4)
-        val transformed21 = InSampledTransformed(4)
+        val transformed2 = RotateTransformed(90)
+        val transformed21 = RotateTransformed(90)
 
-        val transformed3 = InSampledTransformed(8)
-        val transformed31 = InSampledTransformed(8)
+        val transformed3 = RotateTransformed(135)
+        val transformed31 = RotateTransformed(135)
 
         Assert.assertNotSame(transformed1, transformed11)
         Assert.assertNotSame(transformed2, transformed21)
@@ -92,14 +89,14 @@ class InSampledTransformedTest {
 
     @Test
     fun testHashCode() {
-        val transformed1 = InSampledTransformed(2)
-        val transformed11 = InSampledTransformed(2)
+        val transformed1 = RotateTransformed(45)
+        val transformed11 = RotateTransformed(45)
 
-        val transformed2 = InSampledTransformed(4)
-        val transformed21 = InSampledTransformed(4)
+        val transformed2 = RotateTransformed(90)
+        val transformed21 = RotateTransformed(90)
 
-        val transformed3 = InSampledTransformed(8)
-        val transformed31 = InSampledTransformed(8)
+        val transformed3 = RotateTransformed(135)
+        val transformed31 = RotateTransformed(135)
 
         Assert.assertEquals(transformed1.hashCode(), transformed11.hashCode())
         Assert.assertEquals(transformed2.hashCode(), transformed21.hashCode())
@@ -112,7 +109,7 @@ class InSampledTransformedTest {
 
     @Test
     fun testJsonSerializable() {
-        val transformed = InSampledTransformed(2)
+        val transformed = RotateTransformed(45)
 
         val serializer =
             transformed.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
