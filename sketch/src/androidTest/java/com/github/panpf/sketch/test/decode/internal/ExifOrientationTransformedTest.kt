@@ -27,10 +27,10 @@ class ExifOrientationTransformedTest {
     @Test
     fun testKey() {
         ExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_270).apply {
-            Assert.assertEquals("ExifOrientation(ROTATE_270)", key)
+            Assert.assertEquals("ExifOrientationTransformed(ROTATE_270)", key)
         }
         ExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_90).apply {
-            Assert.assertEquals("ExifOrientation(ROTATE_90)", key)
+            Assert.assertEquals("ExifOrientationTransformed(ROTATE_90)", key)
         }
     }
 

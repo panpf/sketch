@@ -237,6 +237,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
             return DisplayData(
                 ColorDrawable(Color.BLUE),
                 ImageInfo(100, 100, "image/xml"),
+                androidx.exifinterface.media.ExifInterface.ORIENTATION_UNDEFINED,
                 LOCAL,
                 null
             )

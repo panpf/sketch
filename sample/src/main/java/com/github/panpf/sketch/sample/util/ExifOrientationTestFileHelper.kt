@@ -13,12 +13,12 @@ import java.io.IOException
 class ExifOrientationTestFileHelper constructor(
     val context: Context,
     private val assetFileName: String,
-    private val inSampleSize: Int? = null
+    private val inSampleSize: Int = 1
 ) {
 
     private val cacheDir: File = File(
         context.getExternalFilesDir(null) ?: context.filesDir,
-        "exif_files" + "/" + File(assetFileName).nameWithoutExtension
+        "exif_files" + "/" + File(assetFileName).nameWithoutExtension + "_${inSampleSize}"
     )
     private val configs = arrayOf(
         Config("ROTATE_90", ExifInterface.ORIENTATION_ROTATE_90, cacheDir),
@@ -37,7 +37,7 @@ class ExifOrientationTestFileHelper constructor(
             cacheDir.mkdirs()
             val originBitmap = context.assets.open(assetFileName).use {
                 BitmapFactory.decodeStream(it, null, Options().apply {
-                    inSampleSize = this@ExifOrientationTestFileHelper.inSampleSize ?: 1
+                    inSampleSize = this@ExifOrientationTestFileHelper.inSampleSize
                 })
             }!!
             for (config in configs) {

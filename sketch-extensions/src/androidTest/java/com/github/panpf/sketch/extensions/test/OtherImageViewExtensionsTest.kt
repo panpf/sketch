@@ -25,7 +25,7 @@ class OtherImageViewExtensionsTest {
         imageView.displayAppIconImage(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_CODE)
         Thread.sleep(100)
         val manager = imageView.getTag(R.id.sketch_request_manager) as ViewTargetRequestManager
-        val request = manager.getFieldValue<ViewTargetRequestDelegate>("currentRequest")!!
+        val request = manager.getFieldValue<ViewTargetRequestDelegate>("currentRequestDelegate")!!
             .getFieldValue<DisplayRequest>("initialRequest")!!
         Assert.assertEquals(newAppIconUri(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_CODE), request.uriString)
     }
