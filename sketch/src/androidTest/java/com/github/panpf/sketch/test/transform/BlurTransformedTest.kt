@@ -77,10 +77,10 @@ class BlurTransformedTest {
         val transformed1 = BlurTransformed(30, Color.RED)
         val transformed11 = BlurTransformed(30, Color.RED)
 
-        val transformed2 = BlurTransformed(60, Color.GREEN);
+        val transformed2 = BlurTransformed(60, Color.GREEN)
         val transformed21 = BlurTransformed(60, Color.GREEN)
 
-        val transformed3 = BlurTransformed(120, Color.BLUE);
+        val transformed3 = BlurTransformed(120, Color.BLUE)
         val transformed31 = BlurTransformed(120, Color.BLUE)
 
         Assert.assertNotSame(transformed1, transformed11)
