@@ -1,3 +1,53 @@
+# v3.0.0-beta01
+
+### sketch
+
+ImageRequest:
+
+* fix: Fix the bug that the cacheKey of ImageRequest always contains the parameter whose cacheKey is
+  null
+* improve: Improve the return result of ImageRequest's newKey() and newCacheKey() methods
+* new: DisplayResult, DisplayData, LoadResult, LoadData increased imageExifOrientation and
+  transformedList properties
+
+Decode:
+
+* fix: InSampledTransformed is not added when the decoded Bitmap is not shrunk
+* improve: Use BufferedInputStream when decoding to improve decoding speed
+
+HTTP:
+
+* fix: Fix the bug of deduplication in the addExtraHeaders() method of HurlStack.Builder
+
+StateImage:
+
+* rename: newErrorStateImage() rename to ErrorStateImage()
+
+AnimatedImage:
+
+* change: repeatCount() , animationStartCallback(), animationEndCallback(), animatedTransformation()
+  extension methods are changed to extension properties
+
+### sketch-extensions
+
+* rename: showMimeTypeLogoWithResId() rename to showMimeTypeLogoWithRes()
+* rename: ArcProgressDrawable rename to SectorProgressDrawable
+* improve: RingProgressDrawable and SectorProgressDrawable constructor parameters now have default
+  values
+
+### sketch-viewability
+
+* improve: Improve ViewAbility
+
+### sketch-okhttp
+
+* fix: Fix the bug of deduplication in the addExtraHeaders() method of OkHttpStack.Builder
+
+### sketch-video
+
+* change: videoFrameMicros(), videoFramePercentDuration(), videoFrameOption() extension methods are
+  changed to extension properties
+
 # v3.0.0-alpha04
 
 ### sketch
