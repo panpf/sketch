@@ -78,7 +78,7 @@ class PrefsService(val context: Context) {
     }
 
     val showTileBoundsInHugeImagePage by lazy {
-        BooleanMmkvData(mmkv, "showTileBoundsInHugeImagePage", true)
+        BooleanMmkvData(mmkv, "showTileBoundsInHugeImagePage", false)
     }
     val readModeEnabled by lazy {
         BooleanMmkvData(mmkv, "readModeEnabled", true)
