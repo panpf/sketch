@@ -219,7 +219,7 @@ fun realDecode(
     }
 
     return BitmapDecodeResult.Builder(bitmap, imageInfo, exifOrientation, dataFrom).apply {
-        decodeConfig.inSampleSize?.takeIf { it > 1 }?.let {
+        decodeConfig.inSampleSize?.takeIf { it > 1 && bitmap.width < imageInfo.width }?.let {
             addTransformed(InSampledTransformed(it))
         }
         resizeTransformed?.let {
