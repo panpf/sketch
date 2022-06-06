@@ -33,7 +33,6 @@ import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.sketch.stateimage.newErrorStateImage
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
@@ -621,7 +620,7 @@ interface ImageOptions {
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
             this.error = stateImage?.let {
-                newErrorStateImage(it, configBlock)
+                ErrorStateImage(it, configBlock)
             }
         }
 

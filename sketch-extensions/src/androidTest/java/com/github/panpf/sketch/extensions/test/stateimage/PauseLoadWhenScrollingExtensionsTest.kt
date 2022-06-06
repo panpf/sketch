@@ -5,27 +5,17 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageRequest.Builder
-import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
-import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
-import com.github.panpf.sketch.request.isDepthFromPauseLoadWhenScrolling
-import com.github.panpf.sketch.request.isIgnoredPauseLoadWhenScrolling
-import com.github.panpf.sketch.request.isPauseLoadWhenScrolling
-import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.setDepthFromPauseLoadWhenScrolling
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.PauseLoadWhenScrollingMatcher
-import com.github.panpf.sketch.stateimage.newErrorStateImage
+import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
-import com.github.panpf.sketch.util.OtherException
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,29 +25,29 @@ class PauseLoadWhenScrollingExtensionsTest {
 
     @Test
     fun testPauseLoadWhenScrollingError() {
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))).apply {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))).apply {
             Assert.assertNull(matcherList.find { it is PauseLoadWhenScrollingMatcher })
         }
 
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             pauseLoadWhenScrollingError()
         }.apply {
             Assert.assertNotNull(matcherList.find { it is PauseLoadWhenScrollingMatcher })
         }
 
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             pauseLoadWhenScrollingError(ColorStateImage(IntColor(Color.BLUE)))
         }.apply {
             Assert.assertNotNull(matcherList.find { it is PauseLoadWhenScrollingMatcher })
         }
 
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             pauseLoadWhenScrollingError(ColorDrawable(Color.GREEN))
         }.apply {
             Assert.assertNotNull(matcherList.find { it is PauseLoadWhenScrollingMatcher })
         }
 
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             pauseLoadWhenScrollingError(drawable.btn_dialog)
         }.apply {
             Assert.assertNotNull(matcherList.find { it is PauseLoadWhenScrollingMatcher })

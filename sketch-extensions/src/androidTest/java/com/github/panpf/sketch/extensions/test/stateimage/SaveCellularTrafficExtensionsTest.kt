@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.request.Depth.LOCAL
-import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
@@ -14,8 +13,7 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.SaveCellularTrafficMatcher
-import com.github.panpf.sketch.stateimage.newErrorStateImage
-import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
+import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import org.junit.Assert
 import org.junit.Test
@@ -26,29 +24,29 @@ class SaveCellularTrafficExtensionsTest {
 
     @Test
     fun testSaveCellularTrafficError() {
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))).apply {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))).apply {
             Assert.assertNull(matcherList.find { it is SaveCellularTrafficMatcher })
         }
 
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             saveCellularTrafficError()
         }.apply {
             Assert.assertNotNull(matcherList.find { it is SaveCellularTrafficMatcher })
         }
 
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             saveCellularTrafficError(ColorStateImage(IntColor(Color.BLUE)))
         }.apply {
             Assert.assertNotNull(matcherList.find { it is SaveCellularTrafficMatcher })
         }
 
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             saveCellularTrafficError(ColorDrawable(Color.GREEN))
         }.apply {
             Assert.assertNotNull(matcherList.find { it is SaveCellularTrafficMatcher })
         }
 
-        newErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
+        ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             saveCellularTrafficError(android.R.drawable.btn_dialog)
         }.apply {
             Assert.assertNotNull(matcherList.find { it is SaveCellularTrafficMatcher })

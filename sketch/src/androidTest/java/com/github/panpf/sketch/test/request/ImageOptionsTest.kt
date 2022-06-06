@@ -40,7 +40,6 @@ import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
-import com.github.panpf.sketch.stateimage.newErrorStateImage
 import com.github.panpf.sketch.test.utils.TestTransition
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -551,14 +550,14 @@ class ImageOptionsTest {
             error(android.R.drawable.bottom_bar)
         }).apply {
             Assert.assertEquals(
-                newErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
                 this.error
             )
         }.merged(ImageOptions {
             error(android.R.drawable.arrow_up_float)
         }).apply {
             Assert.assertEquals(
-                newErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
                 this.error
             )
         }

@@ -23,19 +23,12 @@ import com.github.panpf.sketch.stateimage.ErrorStateImage.Builder
 import com.github.panpf.sketch.util.SketchException
 import java.util.LinkedList
 
-fun newErrorStateImage(
+fun ErrorStateImage(
     defaultImage: StateImage,
     configBlock: (Builder.() -> Unit)? = null
 ): ErrorStateImage = Builder(defaultImage).apply {
     configBlock?.invoke(this)
 }.build()
-
-fun newErrorStateImageBuilder(
-    defaultImage: StateImage,
-    configBlock: (Builder.() -> Unit)? = null
-): Builder = Builder(defaultImage).apply {
-    configBlock?.invoke(this)
-}
 
 class ErrorStateImage private constructor(val matcherList: List<Matcher>) : StateImage {
 
