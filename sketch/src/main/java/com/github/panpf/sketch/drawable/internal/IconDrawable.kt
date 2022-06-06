@@ -13,8 +13,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
 
 class IconDrawable constructor(
-    private val icon: Drawable,
-    private val bg: Drawable? = null,
+    val icon: Drawable,
+    val bg: Drawable? = null,
 ) : Drawable(), Drawable.Callback {
 
     init {

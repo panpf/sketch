@@ -57,7 +57,8 @@ class ErrorStateImage private constructor(val matcherList: List<Matcher>) : Stat
     }
 
     override fun toString(): String {
-        return "ErrorStateImage(matcherList=$matcherList)"
+        val matchersString = matcherList.joinToString(prefix = "[", postfix = "]")
+        return "ErrorStateImage(${matchersString})"
     }
 
     class Builder(private val defaultImage: StateImage) {
@@ -120,7 +121,7 @@ class ErrorStateImage private constructor(val matcherList: List<Matcher>) : Stat
         }
 
         override fun toString(): String {
-            return "DefaultMatcher(stateImage=$stateImage)"
+            return "DefaultMatcher($stateImage)"
         }
     }
 
@@ -150,7 +151,7 @@ class ErrorStateImage private constructor(val matcherList: List<Matcher>) : Stat
         }
 
         override fun toString(): String {
-            return "UriEmptyMatcher(stateImage=$stateImage)"
+            return "UriEmptyMatcher($stateImage)"
         }
     }
 }

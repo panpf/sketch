@@ -59,7 +59,7 @@ class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
     }
 
     override fun toString(): String {
-        return "ResDrawable(drawableRes=$drawableRes)"
+        return "ResDrawable($drawableRes)"
     }
 }
 
@@ -85,6 +85,6 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
     }
 
     override fun toString(): String {
-        return "RealDrawable(drawable=$drawable)"
+        return "RealDrawable($drawable)"
     }
 }

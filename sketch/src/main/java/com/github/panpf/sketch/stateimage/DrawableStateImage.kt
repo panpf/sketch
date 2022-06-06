@@ -57,6 +57,6 @@ class DrawableStateImage : StateImage {
     }
 
     override fun toString(): String {
-        return "DrawableStateImage(drawableFetcher=$drawableFetcher)"
+        return "DrawableStateImage(drawable=$drawableFetcher)"
     }
 }

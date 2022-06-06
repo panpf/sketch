@@ -8,30 +8,34 @@ import com.github.panpf.sketch.drawable.internal.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
-class IconStateImage : StateImage {
+class IconStateImage private constructor(
+    private val icon: DrawableFetcher,
+    private val bg: Any?,
+) : StateImage {
 
-    private val icon: DrawableFetcher
-    private val bg: Any?
+    constructor(icon: Drawable, bg: Drawable? = null)
+            : this(RealDrawable(icon), bg?.let { RealDrawable(it) })
 
-    constructor(@DrawableRes icon: Int, bg: ColorFetcher? = null) {
-        this.icon = ResDrawable(icon)
-        this.bg = bg
-    }
+    constructor(icon: Drawable, @DrawableRes bg: Int? = null)
+            : this(RealDrawable(icon), bg?.let { ResDrawable(it) })
 
-    constructor(icon: Drawable, bg: ColorFetcher? = null) {
-        this.icon = RealDrawable(icon)
-        this.bg = bg
-    }
+    constructor(icon: Drawable, bg: ColorFetcher? = null)
+            : this(RealDrawable(icon), bg)
 
-    constructor(@DrawableRes icon: Int, bg: DrawableFetcher? = null) {
-        this.icon = ResDrawable(icon)
-        this.bg = bg
-    }
+    constructor(icon: Drawable)
+            : this(RealDrawable(icon), null)
 
-    constructor(icon: Drawable, bg: DrawableFetcher? = null) {
-        this.icon = RealDrawable(icon)
-        this.bg = bg
-    }
+    constructor(@DrawableRes icon: Int, bg: Drawable? = null)
+            : this(ResDrawable(icon), bg?.let { RealDrawable(it) })
+
+    constructor(@DrawableRes icon: Int, @DrawableRes bg: Int? = null)
+            : this(ResDrawable(icon), bg?.let { ResDrawable(it) })
+
+    constructor(@DrawableRes icon: Int, bg: ColorFetcher? = null)
+            : this(ResDrawable(icon), bg)
+
+    constructor(@DrawableRes icon: Int)
+            : this(ResDrawable(icon), null)
 
     override fun getDrawable(
         sketch: Sketch,
