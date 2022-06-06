@@ -6,21 +6,19 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.os.Looper
 import android.os.Process
-import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.annotation.MainThread
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import kotlin.coroutines.resume
 
 
 /**
@@ -63,9 +61,6 @@ internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
         null
     }
 }
-
-internal val View.isAttachedToWindowCompat: Boolean
-    get() = ViewCompat.isAttachedToWindow(this)
 
 /** Suspend until [Lifecycle.getCurrentState] is at least [Lifecycle.State.STARTED] */
 @MainThread
@@ -110,17 +105,26 @@ internal fun getTrimLevelName(level: Int): String = when (level) {
 
 internal fun Any.toHexString(): String = Integer.toHexString(this.hashCode())
 
-internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): File {
-    val pid = Process.myPid()
-    val processName = (context.getSystemService(Context.ACTIVITY_SERVICE)
-        .asOrNull<ActivityManager>()?.runningAppProcesses)?.find {
-            it.pid == pid
-        }?.processName ?: return file
+internal fun Context.fileNameCompatibilityMultiProcess(file: File): File {
+    val processName = getProcessName()
+    val processNameSuffix = parseProcessNameSuffix(processName)
+    return if (processNameSuffix != null) {
+        File(file.parent, "${file.name}-$processNameSuffix")
+    } else {
+        file
+    }
+}
 
-    val packageName = context.packageName
-    val multiProcessNameSuffix = if (processName == packageName) {
-        null
-    } else if (
+internal fun Context.getProcessName(): String {
+    val pid = Process.myPid()
+    val activityManager = getSystemService(Context.ACTIVITY_SERVICE).asOrNull<ActivityManager>()
+    val processInfo = activityManager?.runningAppProcesses?.find { it.pid == pid }
+    return processInfo?.processName ?: return packageName
+}
+
+internal fun Context.parseProcessNameSuffix(processName: String): String? {
+    val packageName = packageName
+    return if (
         processName.length > packageName.length
         && processName.startsWith(packageName)
         && processName[packageName.length] == ':'
@@ -128,12 +132,6 @@ internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): Fi
         processName.substring(packageName.length + 1)
     } else {
         null
-    }
-
-    return if (multiProcessNameSuffix != null) {
-        File(file.parent, "${file.name}-$multiProcessNameSuffix")
-    } else {
-        file
     }
 }
 
@@ -198,6 +196,13 @@ internal fun Long.formatFileSize(
 }
 
 internal fun Int.formatFileSize(): String = toLong().formatFileSize()
+
+/**
+ * Modified from [MimeTypeMap.getFileExtensionFromUrl] to be more permissive
+ * with special characters.
+ */
+internal fun getMimeTypeFromUrl(url: String?): String? =
+    MimeTypeMap.getSingleton().getMimeTypeFromUrl(url)
 
 /**
  * Modified from [MimeTypeMap.getFileExtensionFromUrl] to be more permissive

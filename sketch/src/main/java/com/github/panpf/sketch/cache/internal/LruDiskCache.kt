@@ -66,7 +66,7 @@ class LruDiskCache constructor(
         get() = _cache?.size() ?: 0
     override val directory: File by lazy {
         (_directory ?: File(context.externalCacheDir ?: context.cacheDir, DEFAULT_DIR_NAME)).run {
-            fileNameCompatibilityMultiProcess(context, this)
+            context.fileNameCompatibilityMultiProcess(this)
         }
     }
 

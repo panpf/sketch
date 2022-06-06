@@ -5,7 +5,6 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
 import android.net.Uri
 import android.util.TypedValue
-import android.webkit.MimeTypeMap
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
@@ -56,7 +55,7 @@ class ResourceUriFetcher(
             .takeIf { it != -1 }
             ?.let { path.substring(it + 1) }
             ?: path.toString()
-        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromUrl(entryName)
+        val mimeType = getMimeTypeFromUrl(entryName)
         return FetchResult(ResourceDataSource(sketch, request, resources, id), mimeType)
     }
 

@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.fetch
 
-import android.webkit.MimeTypeMap
 import androidx.annotation.VisibleForTesting
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
@@ -327,7 +326,7 @@ class HttpUriFetcher(
 @VisibleForTesting
 internal fun getMimeType(url: String, contentType: String?): String? {
     if (contentType == null || contentType.startsWith(HttpUriFetcher.MIME_TYPE_TEXT_PLAIN)) {
-        MimeTypeMap.getSingleton().getMimeTypeFromUrl(url)?.let { return it }
+        getMimeTypeFromUrl(url)?.let { return it }
     }
     return contentType?.substringBefore(';')
 }

@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
@@ -9,7 +10,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.util.removeAndAddObserver
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -95,7 +95,7 @@ class ViewTargetRequestDelegate(
 
     override fun assertActive() {
         val view = target.view
-        if (!view.isAttachedToWindowCompat) {
+        if (!ViewCompat.isAttachedToWindow(view)) {
             view.requestManager.setRequest(this)
             throw CancellationException("'ViewTarget.view' must be attached to a window.")
         }
