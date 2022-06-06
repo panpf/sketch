@@ -17,7 +17,7 @@ import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
 
-class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation {
+class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
 
     constructor(
         @Px topLeft: Float = 0f,

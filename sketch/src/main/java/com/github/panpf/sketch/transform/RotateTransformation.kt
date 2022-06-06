@@ -21,8 +21,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
         sketch: Sketch,
         request: ImageRequest,
         input: Bitmap
-    ): TransformResult? {
-        if (degrees % 360 == 0) return null
+    ): TransformResult {
         val matrix = Matrix().apply {
             setRotate(degrees.toFloat())
         }

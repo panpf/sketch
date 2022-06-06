@@ -27,8 +27,8 @@ class BlurTransformation(
 ) : Transformation {
 
     init {
-        require(radius in 0..100) {
-            "Radius must range from 0 to 100"
+        require(radius in 1..100) {
+            "Radius must range from 1 to 100"
         }
     }
 
@@ -39,8 +39,8 @@ class BlurTransformation(
         sketch: Sketch,
         request: ImageRequest,
         input: Bitmap
-    ): TransformResult? {
-        val outBitmap = fastGaussianBlur(input, radius) ?: return null
+    ): TransformResult {
+        val outBitmap = fastGaussianBlur(input, radius)
         maskColor?.let {
             Canvas(outBitmap).drawColor(it)
         }
@@ -68,7 +68,7 @@ class BlurTransformation(
     }
 
     companion object {
-        fun fastGaussianBlur(inBitmap: Bitmap, radius: Int): Bitmap? {
+        fun fastGaussianBlur(inBitmap: Bitmap, radius: Int): Bitmap {
             val outBitmap: Bitmap? = if (inBitmap.config != null && inBitmap.isMutable) {
                 inBitmap
             } else {
@@ -77,9 +77,6 @@ class BlurTransformation(
                 inBitmap.copy(config, true)
             }
             return try {
-                if (radius < 1) {
-                    return null
-                }
                 val w = outBitmap!!.width
                 val h = outBitmap.height
                 val pix = IntArray(w * h)
@@ -284,7 +281,7 @@ class BlurTransformation(
                 if (outBitmap != null && outBitmap !== inBitmap) {
                     outBitmap.recycle()
                 }
-                null
+                throw throwable
             }
         }
     }

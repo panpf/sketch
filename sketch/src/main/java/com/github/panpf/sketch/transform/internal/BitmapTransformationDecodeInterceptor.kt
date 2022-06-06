@@ -34,6 +34,7 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
         }
         val newBitmap = transformedBitmap
         return if (newBitmap != null) {
+            require(!newBitmap.isRecycled)
             result.newResult(newBitmap) {
                 transformedList.forEach {
                     addTransformed(it)

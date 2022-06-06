@@ -115,6 +115,18 @@ class CountBitmap constructor(
         return pendingCount
     }
 
+    @MainThread
+    fun getDisplayedCount(): Int {
+        requiredMainThread()
+        return displayedCount
+    }
+
+    @MainThread
+    fun getCachedCount(): Int {
+        requiredMainThread()
+        return cachedCount
+    }
+
     private fun countChanged(caller: String? = null) {
         val bitmapHolder = this.bitmapHolder
         if (bitmapHolder == null) {
