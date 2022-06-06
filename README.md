@@ -209,7 +209,7 @@ AsyncImage(
 
 [version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch3/sketch
 
-[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch/
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch3/
 
 [min_api_image]: https://img.shields.io/badge/API-16%2B-orange.svg
 
