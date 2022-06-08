@@ -24,7 +24,7 @@ import com.github.panpf.sketch.util.SketchException
 
 class MemoryCacheStateImage(
     private val memoryCacheKey: String?,
-    private val defaultImage: StateImage?
+    private val defaultImage: StateImage? = null
 ) : StateImage {
 
     override fun getDrawable(

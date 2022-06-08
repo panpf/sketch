@@ -28,8 +28,9 @@ import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.toBitmapInfo
 
 open class SketchBitmapDrawable constructor(
+    override val imageUri: String,
     override val requestKey: String,
-    override val requestUri: String,
+    override val requestCacheKey: String,
     override val imageInfo: ImageInfo,
     override val imageExifOrientation: Int,
     override val dataFrom: DataFrom,
@@ -55,8 +56,9 @@ open class SketchBitmapDrawable constructor(
 
 fun BitmapDecodeResult.toSketchBitmapDrawable(request: ImageRequest): SketchBitmapDrawable =
     SketchBitmapDrawable(
+        imageUri = request.uriString,
         requestKey = request.key,
-        requestUri = request.uriString,
+        requestCacheKey = request.cacheKey,
         imageInfo = this.imageInfo,
         imageExifOrientation = this.imageExifOrientation,
         dataFrom = this.dataFrom,

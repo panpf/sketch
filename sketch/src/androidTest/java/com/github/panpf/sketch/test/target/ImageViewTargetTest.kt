@@ -36,8 +36,9 @@ class ImageViewTargetTest {
 
         val countBitmap = CountBitmap(
             initBitmap = Bitmap.createBitmap(100, 100, RGB_565),
-            requestKey = request.key,
             imageUri = request.uriString,
+            requestKey = request.key,
+            requestCacheKey = request.cacheKey,
             imageInfo = ImageInfo(100, 100, "image/jpeg"),
             imageExifOrientation = 0,
             transformedList = null,
@@ -48,8 +49,9 @@ class ImageViewTargetTest {
             SketchCountBitmapDrawable(context.resources, countBitmap, LOCAL)
         val countBitmap2 = CountBitmap(
             initBitmap = Bitmap.createBitmap(100, 100, RGB_565),
-            requestKey = request.key,
             imageUri = request.uriString,
+            requestKey = request.key,
+            requestCacheKey = request.cacheKey,
             imageInfo = ImageInfo(100, 100, "image/jpeg"),
             imageExifOrientation = 0,
             transformedList = null,

@@ -97,8 +97,9 @@ class MemoryCacheHelper internal constructor(
             if (result.bitmap.allocationByteCountCompat < memoryCache.maxSize * 0.7f) {
                 val countBitmap = CountBitmap(
                     initBitmap = result.bitmap,
-                    requestKey = request.key,
                     imageUri = request.uriString,
+                    requestKey = request.key,
+                    requestCacheKey = request.cacheKey,
                     imageInfo = result.imageInfo,
                     imageExifOrientation = result.imageExifOrientation,
                     transformedList = result.transformedList,

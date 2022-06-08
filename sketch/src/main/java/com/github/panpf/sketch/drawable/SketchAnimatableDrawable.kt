@@ -34,8 +34,9 @@ import com.github.panpf.sketch.util.computeByteCount
 
 @SuppressLint("RestrictedApi")
 class SketchAnimatableDrawable constructor(
+    override val imageUri: String,
     override val requestKey: String,
-    override val requestUri: String,
+    override val requestCacheKey: String,
     override val imageInfo: ImageInfo,
     override val imageExifOrientation: Int,
     override val dataFrom: DataFrom,

@@ -22,9 +22,11 @@ import com.github.panpf.sketch.util.BitmapInfo
 
 interface SketchDrawable {
 
+    val imageUri: String
+
     val requestKey: String
 
-    val requestUri: String
+    val requestCacheKey: String
 
     val imageInfo: ImageInfo
 

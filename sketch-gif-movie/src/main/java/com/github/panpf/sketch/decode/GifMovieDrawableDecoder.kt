@@ -84,14 +84,15 @@ class GifMovieDrawableDecoder constructor(
         val imageInfo = ImageInfo(width, height, ImageFormat.GIF.mimeType)
 
         val animatableDrawable = SketchAnimatableDrawable(
+            imageUri = request.uriString,
             requestKey = request.key,
-            requestUri = request.uriString,
+            requestCacheKey = request.cacheKey,
             imageInfo = imageInfo,
             imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = null,
             animatableDrawable = movieDrawable,
-            "MovieDrawable"
+            animatableDrawableName = "MovieDrawable"
         ).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.
             val onStart = request.animationStartCallback

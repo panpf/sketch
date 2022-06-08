@@ -33,8 +33,9 @@ import com.github.panpf.sketch.util.toHexString
  */
 class CountBitmap constructor(
     initBitmap: Bitmap,
-    val requestKey: String,
     val imageUri: String,
+    val requestKey: String,
+    val requestCacheKey: String,
     val imageInfo: ImageInfo,
     @ExifOrientation val imageExifOrientation: Int,
     val transformedList: List<Transformed>?,

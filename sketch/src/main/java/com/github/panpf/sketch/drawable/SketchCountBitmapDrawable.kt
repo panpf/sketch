@@ -25,8 +25,9 @@ class SketchCountBitmapDrawable constructor(
     val countBitmap: CountBitmap,
     dataFrom: DataFrom,
 ) : SketchBitmapDrawable(
+    imageUri = countBitmap.imageUri,
     requestKey = countBitmap.requestKey,
-    requestUri = countBitmap.imageUri,
+    requestCacheKey = countBitmap.requestCacheKey,
     imageInfo = countBitmap.imageInfo,
     imageExifOrientation = countBitmap.imageExifOrientation,
     dataFrom = dataFrom,

@@ -82,14 +82,15 @@ class GifDrawableDrawableDecoder(
             if (inSampleSize != 1) listOf(InSampledTransformed(inSampleSize)) else null
         val imageInfo = ImageInfo(imageWidth, imageHeight, ImageFormat.GIF.mimeType)
         val animatableDrawable = SketchAnimatableDrawable(
+            imageUri = this.request.uriString,
             requestKey = this.request.key,
-            requestUri = this.request.uriString,
+            requestCacheKey = this.request.cacheKey,
             imageInfo = imageInfo,
             imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
             animatableDrawable = gifDrawable,
-            "GifDrawable"
+            animatableDrawableName = "GifDrawable"
         ).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.
             val onStart = request.animationStartCallback

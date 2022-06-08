@@ -31,8 +31,9 @@ class RequestContextTest {
             context.resources,
             CountBitmap(
                 initBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-                requestKey = "requestKey",
                 imageUri = "imageUri",
+                requestKey = "requestKey",
+                requestCacheKey = "requestCacheKey",
                 imageInfo = ImageInfo(100, 100, "image/jpeg"),
                 imageExifOrientation = 0,
                 transformedList = null,
@@ -44,8 +45,9 @@ class RequestContextTest {
             context.resources,
             CountBitmap(
                 initBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-                requestKey = "requestKey1",
                 imageUri = "imageUri1",
+                requestKey = "requestKey1",
+                requestCacheKey = "requestCacheKey1",
                 imageInfo = ImageInfo(100, 100, "image/jpeg"),
                 imageExifOrientation = 0,
                 transformedList = null,

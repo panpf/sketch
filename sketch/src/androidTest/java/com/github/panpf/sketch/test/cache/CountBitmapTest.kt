@@ -265,8 +265,9 @@ class CountBitmapTest {
         val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
         return CountBitmap(
             initBitmap = bitmap,
-            requestKey = requestKey,
             imageUri = imageUri,
+            requestKey = requestKey,
+            requestCacheKey = requestKey,
             imageInfo = imageInfo,
             imageExifOrientation = 0,
             transformedList = transformedList,

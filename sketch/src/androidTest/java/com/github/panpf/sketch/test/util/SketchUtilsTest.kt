@@ -44,8 +44,9 @@ class SketchUtilsTest {
         val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
         val resources = InstrumentationRegistry.getInstrumentation().context.resources
         val sketchDrawable = SketchBitmapDrawable(
+            imageUri = "uri",
             requestKey = "key",
-            requestUri = "uri",
+            requestCacheKey = "cacheKey",
             imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg"),
             imageExifOrientation = 0,
             dataFrom = LOCAL,
@@ -117,8 +118,9 @@ class SketchUtilsTest {
         val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
         val countBitmap = CountBitmap(
             bitmap,
-            requestKey = "key",
             imageUri = "uri",
+            requestKey = "key",
+            requestCacheKey = "cacheKey",
             imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg"),
             imageExifOrientation = 0,
             transformedList = null,

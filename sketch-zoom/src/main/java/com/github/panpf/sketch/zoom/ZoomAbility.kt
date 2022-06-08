@@ -562,7 +562,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
                 .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
         }
         val exifOrientation: Int = sketchDrawable.imageExifOrientation
-        val imageUri = sketchDrawable.requestUri
+        val imageUri = sketchDrawable.imageUri
         return Tiles(
             context = host.context,
             sketch = sketch,

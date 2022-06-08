@@ -220,14 +220,15 @@ class LruMemoryCacheTest {
         val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
         return put(
             imageUri, CountBitmap(
-                bitmap,
-                imageUri,
-                imageUri,
-                ImageInfo(width, height, "image/jpeg"),
-                0,
-                null,
-                sketch.logger,
-                sketch.bitmapPool
+                initBitmap = bitmap,
+                imageUri = imageUri,
+                requestKey = imageUri,
+                requestCacheKey = imageUri,
+                imageInfo = ImageInfo(width, height, "image/jpeg"),
+                imageExifOrientation = 0,
+                transformedList = null,
+                logger = sketch.logger,
+                bitmapPool = sketch.bitmapPool
             )
         )
     }

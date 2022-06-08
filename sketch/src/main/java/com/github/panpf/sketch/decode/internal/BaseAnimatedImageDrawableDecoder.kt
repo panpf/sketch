@@ -102,8 +102,9 @@ abstract class BaseAnimatedImageDrawableDecoder(
         val transformedList =
             if (inSampleSize != 1) listOf(InSampledTransformed(inSampleSize)) else null
         val animatableDrawable = SketchAnimatableDrawable(
+            imageUri = request.uriString,
             requestKey = request.key,
-            requestUri = request.uriString,
+            requestCacheKey = request.cacheKey,
             imageInfo = imageInfo!!,
             imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
@@ -111,7 +112,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
             // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
             // Use ScaledAnimatedImageDrawable package solution to this it
             animatableDrawable = ScaledAnimatedImageDrawable(drawable),
-            drawable::class.java.simpleName
+            animatableDrawableName = drawable::class.java.simpleName
         ).apply {
             val onStart = request.animationStartCallback
             val onEnd = request.animationEndCallback
