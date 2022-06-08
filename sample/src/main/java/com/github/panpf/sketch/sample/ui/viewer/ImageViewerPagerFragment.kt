@@ -35,6 +35,7 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
 
     private val args by navArgs<ImageViewerPagerFragmentArgs>()
     private val viewModel by viewModels<ImageViewerPagerViewModel>()
+    private val swipeExitViewModel by viewModels<ImageViewerSwipeExitViewModel>()
 
     override fun onViewCreated(
         binding: ImageViewerPagerFragmentBinding,
@@ -94,6 +95,18 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
 
         binding.imageViewerPagerInfo.setOnClickListener {
             viewModel.infoEvent.value = 0
+        }
+
+        swipeExitViewModel.progressChangedEvent.listen(viewLifecycleOwner) {
+            val progress = it ?: 0f
+            binding.root.background = binding.root.background?.mutate()?.apply {
+                alpha = ((1 - progress) * 255).toInt()
+            }
+            binding.imageViewerPagerTools.alpha = 1 - progress
+        }
+
+        swipeExitViewModel.backEvent.listen(viewLifecycleOwner) {
+            requireActivity().finish()
         }
     }
 }

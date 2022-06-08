@@ -10,23 +10,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
+import com.github.panpf.sketch.sample.widget.SwipeBackLayout
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.launch
 
-// todo 增加上下滑动退出功能
 // todo 增加进入和退出过渡动画
 class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
     private val viewModel by viewModels<ImageViewerViewModel>()
     private val pagerViewModel by parentViewModels<ImageViewerPagerViewModel>()
+    private val swipeExitViewModel by parentViewModels<ImageViewerSwipeExitViewModel>()
     private val requestPermissionResult = registerForActivityResult(RequestPermission()) {
         lifecycleScope.launch {
             handleActionResult(viewModel.save(args.imageUri))
@@ -34,18 +35,41 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     }
 
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
+        binding.root.background = null
+
         binding.imageViewerZoomImage.apply {
             showSectorProgressIndicator()
             prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
                 zoomAbility.readModeEnabled = it
             }
             setOnClickListener {
-                findNavController().popBackStack()
+                binding.imageViewerSwipeBack.back()
+            }
+            setOnLongClickListener {
+                val arguments1 =
+                    ImageInfoDialogFragment.createDirectionsFromImageView(this, null).arguments
+                childFragmentManager.beginTransaction()
+                    .add(ImageInfoDialogFragment().apply {
+                        arguments = arguments1
+                    }, null)
+                    .commit()
+                true
             }
             displayImage(args.imageUri) {
                 lifecycle(viewLifecycleOwner.lifecycle)
             }
         }
+
+        binding.imageViewerSwipeBack.callback =
+            object : SwipeBackLayout.Callback {
+                override fun onProgressChanged(progress: Float) {
+                    swipeExitViewModel.progressChangedEvent.value = progress
+                }
+
+                override fun onBack() {
+                    swipeExitViewModel.backEvent.value = true
+                }
+            }
 
         pagerViewModel.apply {
             shareEvent.listen(viewLifecycleOwner) {

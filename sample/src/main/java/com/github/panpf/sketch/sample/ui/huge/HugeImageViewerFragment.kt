@@ -2,12 +2,14 @@ package com.github.panpf.sketch.sample.ui.huge
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.HugeImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.sketch.viewability.showRingProgressIndicator
 
@@ -29,6 +31,12 @@ class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>(
             }
             displayImage(args.imageUri) {
                 lifecycle(viewLifecycleOwner.lifecycle)
+            }
+            setOnLongClickListener {
+                findNavController().navigate(
+                    ImageInfoDialogFragment.createDirectionsFromImageView(this, null)
+                )
+                true
             }
         }
 

@@ -8,4 +8,9 @@
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="android:textAppearance">@style/Text</item>
     </style>
+
+    <style name="AppTheme.Translucent" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

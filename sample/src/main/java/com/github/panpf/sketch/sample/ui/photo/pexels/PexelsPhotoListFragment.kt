@@ -184,7 +184,7 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
                 )
             }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageViewerPagerFragment(
+            NavMainDirections.actionGlobalImageViewerActivity(
                 Json.encodeToString(imageList),
                 null,
                 position,

@@ -193,6 +193,25 @@
             app:nullable="false" />
     </fragment>
 
+    <activity
+        android:id="@+id/imageViewerActivity"
+        android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerActivity"
+        android:label="ImageViewerActivity">
+        <argument
+            android:name="imageDetailJsonArray"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="placeholderImageMemoryKeyJsonArray"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="defaultPosition"
+            android:defaultValue="0"
+            app:argType="integer"
+            app:nullable="false" />
+    </activity>
+
     <fragment
         android:id="@+id/imageViewerPagerFragment"
         android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerPagerFragment"
@@ -313,9 +332,17 @@
             android:defaultValue="null"/>
     </dialog>
 
-    <action
+    <!--<action
         android:id="@+id/action_global_imageViewerPagerFragment"
         app:destination="@id/imageViewerPagerFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />-->
+
+    <action
+        android:id="@+id/action_global_imageViewerActivity"
+        app:destination="@id/imageViewerActivity"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

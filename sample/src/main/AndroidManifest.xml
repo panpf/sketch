@@ -54,6 +54,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.viewer.ImageViewerActivity" android:theme="@style/AppTheme.Translucent"/>
+
         <service
             android:name="com.github.panpf.sketch.sample.service.NotificationService"
             android:process=":notification" />
