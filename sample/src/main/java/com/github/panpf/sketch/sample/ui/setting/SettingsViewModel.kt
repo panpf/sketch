@@ -152,7 +152,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             MultiSelectMenu(
                 title = "Bitmap Quality",
                 desc = null,
-                values = listOf("Default", "LOW", "MIDDEN", "HIGH"),
+                values = listOf("Default", "LOW", "HIGH"),
                 getValue = { prefsService.bitmapQuality.value },
                 onSelect = { _, value -> prefsService.bitmapQuality.value = value }
             )

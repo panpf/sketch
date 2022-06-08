@@ -5,6 +5,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageData
@@ -27,33 +28,48 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
 
         val newRequest = request.newDisplayRequest {
             val prefsService = request.context.prefsService
-            if (prefsService.disabledBitmapMemoryCache.value) {
-                memoryCachePolicy(DISABLED)
+            if (request.definedOptions.memoryCachePolicy == null) {
+                if (prefsService.disabledBitmapMemoryCache.value) {
+                    memoryCachePolicy(DISABLED)
+                } else {
+                    memoryCachePolicy(ENABLED)
+                }
             }
-            if (prefsService.disabledDownloadDiskCache.value) {
-                downloadCachePolicy(DISABLED)
+            if (request.definedOptions.downloadCachePolicy == null) {
+                if (prefsService.disabledDownloadDiskCache.value) {
+                    downloadCachePolicy(DISABLED)
+                } else {
+                    downloadCachePolicy(ENABLED)
+                }
             }
-            if (prefsService.disabledBitmapResultDiskCache.value) {
-                resultCachePolicy(DISABLED)
+            if (request.definedOptions.resultCachePolicy == null) {
+                if (prefsService.disabledBitmapResultDiskCache.value) {
+                    resultCachePolicy(DISABLED)
+                } else {
+                    resultCachePolicy(ENABLED)
+                }
             }
-            if (prefsService.disallowReuseBitmap.value) {
-                disallowReuseBitmap(true)
+            if (request.definedOptions.disallowReuseBitmap == null) {
+                disallowReuseBitmap(prefsService.disallowReuseBitmap.value)
             }
-            if (prefsService.ignoreExifOrientation.value) {
-                ignoreExifOrientation(true)
+            if (request.definedOptions.ignoreExifOrientation == null) {
+                ignoreExifOrientation(prefsService.ignoreExifOrientation.value)
             }
-            if (VERSION.SDK_INT < VERSION_CODES.N && prefsService.inPreferQualityOverSpeed.value) {
-                @Suppress("DEPRECATION")
-                preferQualityOverSpeed(true)
+            @Suppress("DEPRECATION")
+            if (request.definedOptions.preferQualityOverSpeed == null) {
+                preferQualityOverSpeed(VERSION.SDK_INT < VERSION_CODES.N && prefsService.inPreferQualityOverSpeed.value)
             }
-            when (prefsService.bitmapQuality.value) {
-                "LOW" -> bitmapConfig(BitmapConfig.LowQuality)
-                "HIGH" -> bitmapConfig(BitmapConfig.HighQuality)
+            if (request.definedOptions.bitmapConfig == null) {
+                when (prefsService.bitmapQuality.value) {
+                    "LOW" -> bitmapConfig(BitmapConfig.LowQuality)
+                    "HIGH" -> bitmapConfig(BitmapConfig.HighQuality)
+                    else -> bitmapConfig(null)
+                }
             }
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            if (VERSION.SDK_INT >= VERSION_CODES.O && request.definedOptions.colorSpace == null) {
                 when (val value = prefsService.colorSpace.value) {
                     "Default" -> {
-
+                        colorSpace(null)
                     }
                     else -> {
                         colorSpace(ColorSpace.get(ColorSpace.Named.valueOf(value)))
@@ -64,15 +80,11 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
             if (target is ViewTarget<*>) {
                 val view = target.view
                 if (view is MyListImageView) {
-                    if (prefsService.disallowAnimatedImageInList.value) {
-                        disallowAnimatedImage(true)
+                    if (request.definedOptions.disallowAnimatedImage == null) {
+                        disallowAnimatedImage(prefsService.disallowAnimatedImageInList.value)
                     }
-                    if (prefsService.pauseLoadWhenScrollInList.value) {
-                        pauseLoadWhenScrolling(true)
-                    }
-                    if (prefsService.saveCellularTrafficInList.value) {
-                        saveCellularTraffic(true)
-                    }
+                    pauseLoadWhenScrolling(prefsService.pauseLoadWhenScrollInList.value)
+                    saveCellularTraffic(prefsService.saveCellularTrafficInList.value)
                 }
             }
         }
