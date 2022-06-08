@@ -202,10 +202,6 @@
             app:argType="string"
             app:nullable="false" />
         <argument
-            android:name="placeholderImageMemoryKeyJsonArray"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
             android:name="defaultPosition"
             android:defaultValue="0"
             app:argType="integer"
@@ -221,10 +217,6 @@
             app:argType="string"
             app:nullable="false" />
         <argument
-            android:name="placeholderImageMemoryKeyJsonArray"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
             android:name="defaultPosition"
             android:defaultValue="0"
             app:argType="integer"
@@ -239,6 +231,10 @@
             android:name="imageUri"
             app:argType="string"
             app:nullable="false" />
+        <argument
+            android:name="placeholderImageMemoryCacheKey"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <fragment

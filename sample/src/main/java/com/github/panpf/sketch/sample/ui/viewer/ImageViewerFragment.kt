@@ -18,6 +18,7 @@ import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.sketch.sample.widget.SwipeBackLayout
+import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.launch
 
@@ -56,6 +57,10 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
                 true
             }
             displayImage(args.imageUri) {
+                args.placeholderImageMemoryCacheKey?.let {
+                    placeholder(MemoryCacheStateImage(it))
+                }
+                crossfade()
                 lifecycle(viewLifecycleOwner.lifecycle)
             }
         }
@@ -109,7 +114,8 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             absoluteAdapterPosition: Int,
             data: ImageDetail
         ): Fragment = ImageViewerFragment().apply {
-            arguments = ImageViewerFragmentArgs(data.url).toBundle()
+            arguments =
+                ImageViewerFragmentArgs(data.url, data.placeholderImageMemoryCacheKey).toBundle()
         }
     }
 }

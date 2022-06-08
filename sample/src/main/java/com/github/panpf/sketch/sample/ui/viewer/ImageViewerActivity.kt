@@ -17,7 +17,6 @@ class ImageViewerActivity : BaseBindingActivity<FragmentContainerActivityBinding
     override fun onCreate(binding: FragmentContainerActivityBinding, savedInstanceState: Bundle?) {
         val newArgs = ImageViewerPagerFragmentArgs(
             args.imageDetailJsonArray,
-            args.placeholderImageMemoryKeyJsonArray,
             args.defaultPosition
         )
         supportFragmentManager.beginTransaction()

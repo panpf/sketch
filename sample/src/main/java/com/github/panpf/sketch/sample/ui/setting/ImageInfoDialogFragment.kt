@@ -48,7 +48,7 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             var tilesInfo: String? = null
             val sketchDrawable = imageView.drawable.findLastSketchDrawable()
             if (sketchDrawable != null) {
-                uri1 = sketchDrawable.requestUri
+                uri1 = sketchDrawable.imageUri
                 imageInfo = sketchDrawable.imageInfo.run {
                     "${width}x${height}, ${mimeType}, ${exifOrientationName(sketchDrawable.imageExifOrientation)}"
                 }

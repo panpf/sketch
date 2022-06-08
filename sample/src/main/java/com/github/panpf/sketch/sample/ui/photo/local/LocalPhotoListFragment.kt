@@ -17,7 +17,9 @@
 package com.github.panpf.sketch.sample.ui.photo.local
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.forEach
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -34,7 +36,6 @@ import com.github.panpf.assemblyadapter.recycler.newAssemblyStaggeredGridLayoutM
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.DialogFragmentItemInfo
 import com.github.panpf.sketch.sample.model.ImageDetail
@@ -44,12 +45,14 @@ import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
 import com.github.panpf.sketch.sample.model.NavMenuItemInfo
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.model.SwitchMenuItemInfo
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
+import com.github.panpf.sketch.util.findLastSketchDrawable
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -191,20 +194,34 @@ class LocalPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
     }
 
     private fun startImageDetail(binding: RecyclerFragmentBinding, position: Int) {
+        val currentViewCacheKeyMap = mutableMapOf<Int, String>().apply {
+            binding.recyclerRecycler.forEach { view ->
+                val cacheKey =
+                    view.findViewById<ImageView>(R.id.imageGridItemImage).drawable?.findLastSketchDrawable()?.requestCacheKey
+                val adapterPosition = binding.recyclerRecycler.getChildAdapterPosition(view)
+                if (cacheKey != null) {
+                    put(adapterPosition, cacheKey)
+                }
+            }
+        }
         val imageList = binding.recyclerRecycler
             .adapter!!.asOrThrow<ConcatAdapter>()
             .adapters.first().asOrThrow<AssemblyPagingDataAdapter<Photo>>()
-            .currentList.map {
-                ImageDetail(
-                    url = it!!.originalUrl,
-                    middenUrl = it.middenUrl,
-                    placeholderImageMemoryKey = null
-                )
+            .currentList.mapIndexedNotNull { index, photo ->
+                if (index >= position - 50 && index <= position + 50) {
+                    ImageDetail(
+                        position = index,
+                        url = photo!!.originalUrl,
+                        middenUrl = photo.middenUrl,
+                        placeholderImageMemoryCacheKey = currentViewCacheKeyMap[index]
+                    )
+                } else {
+                    null
+                }
             }
         findNavController().navigate(
             NavMainDirections.actionGlobalImageViewerActivity(
                 Json.encodeToString(imageList),
-                null,
                 position,
             )
         )

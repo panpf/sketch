@@ -39,8 +39,8 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         headerUserPackageInfo.versionCode
                     )
                 )
-            ).map {
-                ImageDetail(it, it, null)
+            ).mapIndexed { index, s ->
+                ImageDetail(index, s, s, null)
             }
             val titles = AssetImages.STATICS.plus(AssetImages.ANIMATEDS).map { uri ->
                 uri.substring(uri.lastIndexOf(".") + 1).uppercase().let { suffix ->

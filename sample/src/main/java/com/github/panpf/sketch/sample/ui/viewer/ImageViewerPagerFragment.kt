@@ -53,8 +53,9 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
                 listOf(ImageViewerFragment.ItemFactory()),
                 imageList
             )
+            val currentItem = imageList.indexOfFirst { it.position == args.defaultPosition }.takeIf { it != -1 } ?: 0
             post {
-                setCurrentItem(args.defaultPosition, false)
+                setCurrentItem(currentItem, false)
             }
         }
 
