@@ -123,7 +123,7 @@ fun readReleaseSigningConfig(): ReleaseSigningConfig? {
     val localProperties = `java.util`.Properties().apply {
         project.file("local.properties")
             .takeIf { it.exists() }
-            ?.inputStream().use { this@apply.load(it) }
+            ?.inputStream()?.use { this@apply.load(it) }
     }
     val jksFile = project.file("release.jks")
     return if (
