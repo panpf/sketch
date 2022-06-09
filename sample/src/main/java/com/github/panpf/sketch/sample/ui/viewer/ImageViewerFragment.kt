@@ -2,6 +2,7 @@ package com.github.panpf.sketch.sample.ui.viewer
 
 import android.Manifest
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -36,6 +37,14 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     }
 
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    binding.imageViewerSwipeBack.back()
+                }
+            })
+
         binding.root.background = null
 
         binding.imageViewerZoomImage.apply {
