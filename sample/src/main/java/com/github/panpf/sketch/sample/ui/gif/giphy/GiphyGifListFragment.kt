@@ -180,7 +180,7 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
         val currentViewCacheKeyMap = mutableMapOf<Int, String>().apply {
             binding.recyclerRecycler.forEach { view ->
                 val cacheKey =
-                    view.findViewById<ImageView>(R.id.imageGridItemImage).drawable?.findLastSketchDrawable()?.requestCacheKey
+                    view.findViewById<ImageView>(R.id.imageGridItemImage)?.drawable?.findLastSketchDrawable()?.requestCacheKey
                 val adapterPosition = binding.recyclerRecycler.getChildAdapterPosition(view)
                 if (cacheKey != null) {
                     put(adapterPosition, cacheKey)
