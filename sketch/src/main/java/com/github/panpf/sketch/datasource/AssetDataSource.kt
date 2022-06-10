@@ -17,6 +17,7 @@ package com.github.panpf.sketch.datasource
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.useCompat
 import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
@@ -35,7 +36,7 @@ class AssetDataSource constructor(
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
-            ?: request.context.assets.openFd(assetFileName).use {
+            ?: request.context.assets.openFd(assetFileName).useCompat {
                 it.length
             }.apply {
                 this@AssetDataSource._length = this
