@@ -312,9 +312,8 @@ fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {
     val imageInfo = readImageInfoWithBitmapFactory()
     val width = imageInfo.width
     val height = imageInfo.height
-    val mimeType = imageInfo.mimeType
-    if (width <= 0 || height <= 0 || mimeType.isEmpty()) {
-        throw Exception("Invalid image, size=${width}x${height}, imageType='${mimeType}'")
+    if (width <= 0 || height <= 0) {
+        throw Exception("Invalid image, size=${width}x${height}")
     }
     return imageInfo
 }
@@ -322,7 +321,7 @@ fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {
 fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
     try {
         readImageInfoWithBitmapFactory().takeIf {
-            it.width > 0 && it.height > 0 && it.mimeType.isNotEmpty()
+            it.width > 0 && it.height > 0
         }
     } catch (e: IOException) {
         e.printStackTrace()
