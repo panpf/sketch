@@ -1,8 +1,10 @@
 package com.github.panpf.sketch.test.decode
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
+import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.sampling
 import com.github.panpf.sketch.decode.internal.samplingForRegion
@@ -85,6 +87,55 @@ class BitmapDecodeTest {
             .run { BitmapRegionDecoder.newInstance(this, false) }!!
             .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
         Assert.assertEquals(imageSize.samplingForRegion(2), bitmap.size)
+    }
+
+    @Test
+    fun testBitmapFactoryInPreferredConfig() {
+        val context = getContext()
+        val imageName = "sample.jpeg"
+
+        val options = BitmapFactory.Options()
+        Assert.assertEquals(Bitmap.Config.ARGB_8888, options.inPreferredConfig)
+        val bitmap = context.assets.open(imageName).use {
+            BitmapFactory.decodeStream(it, null, options)
+        }!!
+        Assert.assertEquals(Bitmap.Config.ARGB_8888, bitmap.config)
+
+        options.inPreferredConfig = Bitmap.Config.ARGB_4444
+        Assert.assertEquals(Bitmap.Config.ARGB_4444, options.inPreferredConfig)
+        val bitmap1 = context.assets.open(imageName).use {
+            BitmapFactory.decodeStream(it, null, options)
+        }!!
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            Assert.assertEquals(Bitmap.Config.ARGB_8888, bitmap1.config)
+        } else {
+            Assert.assertEquals(Bitmap.Config.ARGB_4444, bitmap1.config)
+        }
+    }
+
+    @Test
+    fun testBitmapRegionDecoderInPreferredConfig() {
+        val context = getContext()
+        val imageName = "sample.jpeg"
+        val imageSize = Size(1291, 1936)
+
+        val options = BitmapFactory.Options()
+        Assert.assertEquals(Bitmap.Config.ARGB_8888, options.inPreferredConfig)
+        val bitmap = context.assets.open(imageName)
+            .run { BitmapRegionDecoder.newInstance(this, false) }!!
+            .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
+        Assert.assertEquals(Bitmap.Config.ARGB_8888, bitmap.config)
+
+        options.inPreferredConfig = Bitmap.Config.ARGB_4444
+        Assert.assertEquals(Bitmap.Config.ARGB_4444, options.inPreferredConfig)
+        val bitmap1 = context.assets.open(imageName)
+            .run { BitmapRegionDecoder.newInstance(this, false) }!!
+            .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            Assert.assertEquals(Bitmap.Config.ARGB_8888, bitmap1.config)
+        } else {
+            Assert.assertEquals(Bitmap.Config.ARGB_4444, bitmap1.config)
+        }
     }
 
     private fun <R> BitmapRegionDecoder.use(block: BitmapRegionDecoder.() -> R): R {

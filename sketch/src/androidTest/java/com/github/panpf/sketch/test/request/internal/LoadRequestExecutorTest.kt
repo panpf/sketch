@@ -10,6 +10,7 @@ import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.Bitmap.Config.RGBA_F16
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.ColorSpace
+import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
@@ -325,8 +326,7 @@ class LoadRequestExecutorTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!
             .apply {
-                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                    // todo API 19，21，23 上返回 ARGB_4444
+                if (VERSION.SDK_INT > VERSION_CODES.M) {
                     Assert.assertEquals(ARGB_8888, bitmap.config)
                 } else {
                     @Suppress("DEPRECATION")

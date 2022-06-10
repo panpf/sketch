@@ -12,6 +12,7 @@ import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.json.JSONObject
 
+// todo 移除
 class BlurTransformation(
     /**
      * Blur radius

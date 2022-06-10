@@ -342,8 +342,7 @@ class DisplayRequestExecutorTest {
             .asOrNull<DisplayResult.Success>()!!
             .drawable.asOrNull<BitmapDrawable>()!!
             .apply {
-                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                    // todo API 19，21，23 上返回 ARGB_4444
+                if (VERSION.SDK_INT > VERSION_CODES.M) {
                     Assert.assertEquals(ARGB_8888, bitmap.config)
                 } else {
                     @Suppress("DEPRECATION")
