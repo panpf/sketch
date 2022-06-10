@@ -1,3 +1,14 @@
+# v3.0.0-beta02
+
+* fix: Fixed the bug that the length() method of AssetDataSource and ResourceDataSource crashed in
+  versions below KITKAT
+* remove: Remove BlurTransformation
+* change: In order to be compatible with the bug of webp in JELLY_BEAN_M3 and below versions, the
+  imageType is no longer checked after decoding the Image boundary information
+* change: DiskCache implements the Closeable interface and close it when Sketch shutdown
+* new: ImageOptions and ImageRequest add resize(Resize?) method
+* new: SketchDrawable adds requestCacheKey property
+
 # v3.0.0-beta01
 
 ### sketch
