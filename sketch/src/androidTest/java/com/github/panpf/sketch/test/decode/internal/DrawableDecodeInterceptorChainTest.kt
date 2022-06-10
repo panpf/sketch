@@ -12,7 +12,7 @@ import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -23,7 +23,7 @@ class DrawableDecodeInterceptorChainTest {
 
     @Test
     fun test() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         mutableListOf<String>().apply {
             val interceptors = listOf(

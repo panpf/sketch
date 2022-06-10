@@ -11,7 +11,7 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.longImageClipPrecision
 import com.github.panpf.sketch.resize.longImageScale
-import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -75,7 +75,7 @@ class ResizeTest {
 
     @Test
     fun testShouldClip() {
-        val (_, sketch) = getContextAndSketch()
+        val (_, sketch) = getContextAndNewSketch()
         Resize(100, 100, LESS_PIXELS).apply {
             Assert.assertFalse(shouldClip(sketch, 100, 50))
             Assert.assertFalse(shouldClip(sketch, 100, 150))
@@ -119,7 +119,7 @@ class ResizeTest {
 
     @Test
     fun testPrecision() {
-        val (_, sketch) = getContextAndSketch()
+        val (_, sketch) = getContextAndNewSketch()
         Resize(100, 30).apply {
             Assert.assertEquals(EXACTLY, getPrecision(sketch, 0, 0))
         }
@@ -151,7 +151,7 @@ class ResizeTest {
 
     @Test
     fun testScale() {
-        val (_, sketch) = getContextAndSketch()
+        val (_, sketch) = getContextAndNewSketch()
         Resize(100, 30).apply {
             Assert.assertEquals(CENTER_CROP, getScale(sketch, 0, 0))
         }

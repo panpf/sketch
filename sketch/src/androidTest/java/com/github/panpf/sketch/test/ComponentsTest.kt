@@ -17,7 +17,7 @@ import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getContext
-import com.github.panpf.sketch.test.utils.getSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -32,7 +32,7 @@ class ComponentsTest {
 
     @Test
     fun testInterceptors() {
-        val sketch = getSketch()
+        val sketch = newSketch()
         Components(sketch, ComponentRegistry.Builder().build()).apply {
             Assert.assertTrue(requestInterceptorList.isEmpty())
             Assert.assertTrue(bitmapDecodeInterceptorList.isEmpty())
@@ -69,7 +69,7 @@ class ComponentsTest {
     @Test
     fun testNewFetcher() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
 
         Components(sketch, ComponentRegistry.Builder().build()).apply {
             assertThrow(IllegalStateException::class) {
@@ -115,7 +115,7 @@ class ComponentsTest {
     @Test
     fun testBitmapDecoder() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val requestContext = RequestContext()
         val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
 
@@ -156,7 +156,7 @@ class ComponentsTest {
     @Test
     fun testDrawableDecoder() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val requestContext = RequestContext()
         val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
 
@@ -196,7 +196,7 @@ class ComponentsTest {
 
     @Test
     fun testToString() {
-        val sketch = getSketch()
+        val sketch = newSketch()
         Components(sketch, ComponentRegistry.Builder().build()).apply {
             Assert.assertEquals(
                 "Components(registry=ComponentRegistry(" +
@@ -238,7 +238,7 @@ class ComponentsTest {
 
     @Test
     fun testEquals() {
-        val sketch = getSketch()
+        val sketch = newSketch()
         val components0 = Components(sketch, ComponentRegistry.Builder().build())
         val components1 = Components(sketch, ComponentRegistry.Builder().apply {
             addFetcher(HttpUriFetcher.Factory())
@@ -284,7 +284,7 @@ class ComponentsTest {
 
     @Test
     fun testHashCode() {
-        val sketch = getSketch()
+        val sketch = newSketch()
         val components0 = Components(sketch, ComponentRegistry.Builder().build())
         val components1 = Components(sketch, ComponentRegistry.Builder().apply {
             addFetcher(HttpUriFetcher.Factory())

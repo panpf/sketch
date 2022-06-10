@@ -7,7 +7,7 @@ import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -18,7 +18,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         val request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher))
         ResourceDataSource(
             sketch = sketch,
@@ -34,7 +34,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testLength() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
             request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
@@ -58,7 +58,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
             request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
@@ -82,7 +82,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
             request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
@@ -106,7 +106,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
             request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),

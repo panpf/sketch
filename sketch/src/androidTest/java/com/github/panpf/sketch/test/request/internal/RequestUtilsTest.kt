@@ -771,6 +771,6 @@ class RequestUtilsTest {
             keyHistoryList.add(this)
         })
 
-        Assert.assertEquals(keyHistoryList.size - 12, keyHistoryList.distinct().size)
+        Assert.assertEquals(6, keyHistoryList.distinct().size)
     }
 }

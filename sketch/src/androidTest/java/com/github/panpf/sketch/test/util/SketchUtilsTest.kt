@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
+import android.os.Build
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,13 +17,13 @@ import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.utils.InternalDrawableWrapperImpl
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.util.findLastSketchDrawable
 import com.github.panpf.sketch.util.foreachSketchCountDrawable
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import android.graphics.drawable.DrawableWrapper as InternalDrawableWrapper
 import androidx.appcompat.graphics.drawable.DrawableWrapper as CompatDrawableWrapper
 
 @RunWith(AndroidJUnit4::class)
@@ -81,10 +81,12 @@ class SketchUtilsTest {
             sketchDrawable,
             CompatDrawableWrapper(sketchDrawable).findLastSketchDrawable()
         )
-        Assert.assertSame(
-            sketchDrawable,
-            InternalDrawableWrapperImpl(sketchDrawable).findLastSketchDrawable()
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Assert.assertSame(
+                sketchDrawable,
+                InternalDrawableWrapperImpl(sketchDrawable).findLastSketchDrawable()
+            )
+        }
 
         Assert.assertNull(
             colorDrawable.findLastSketchDrawable()
@@ -106,9 +108,11 @@ class SketchUtilsTest {
         Assert.assertNull(
             CompatDrawableWrapper(colorDrawable).findLastSketchDrawable()
         )
-        Assert.assertNull(
-            InternalDrawableWrapperImpl(colorDrawable).findLastSketchDrawable()
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Assert.assertNull(
+                InternalDrawableWrapperImpl(colorDrawable).findLastSketchDrawable()
+            )
+        }
     }
 
     @Test
@@ -212,12 +216,14 @@ class SketchUtilsTest {
             Assert.assertEquals(listOf("SketchCountBitmapDrawable"), this)
         }
 
-        InternalDrawableWrapperImpl(countDrawable).let { drawable ->
-            mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            InternalDrawableWrapperImpl(countDrawable).let { drawable ->
+                mutableListOf<String>().also { list ->
+                    drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                }
+            }.apply {
+                Assert.assertEquals(listOf("SketchCountBitmapDrawable"), this)
             }
-        }.apply {
-            Assert.assertEquals(listOf("SketchCountBitmapDrawable"), this)
         }
 
 
@@ -261,14 +267,14 @@ class SketchUtilsTest {
             Assert.assertEquals(listOf<String>(), this)
         }
 
-        InternalDrawableWrapperImpl(colorDrawable).let { drawable ->
-            mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            InternalDrawableWrapperImpl(colorDrawable).let { drawable ->
+                mutableListOf<String>().also { list ->
+                    drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                }
+            }.apply {
+                Assert.assertEquals(listOf<String>(), this)
             }
-        }.apply {
-            Assert.assertEquals(listOf<String>(), this)
         }
     }
-
-    class InternalDrawableWrapperImpl(dr: Drawable?) : InternalDrawableWrapper(dr)
 }

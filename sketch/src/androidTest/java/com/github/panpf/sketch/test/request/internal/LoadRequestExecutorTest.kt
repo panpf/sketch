@@ -53,8 +53,8 @@ import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestLoadTarget
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getContext
-import com.github.panpf.sketch.test.utils.getContextAndSketch
-import com.github.panpf.sketch.test.utils.getSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -83,7 +83,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testDepth() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
         val imageUri = TestHttpStack.testImages.first().uriString
@@ -171,7 +171,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testDownloadCachePolicy() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
         val diskCache = sketch.diskCache
@@ -296,7 +296,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testBitmapConfig() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
 
         LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             resultCachePolicy(DISABLED)
@@ -326,6 +326,7 @@ class LoadRequestExecutorTest {
             .asOrNull<LoadResult.Success>()!!
             .apply {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    // todo API 19，21，23 上返回 ARGB_4444
                     Assert.assertEquals(ARGB_8888, bitmap.config)
                 } else {
                     @Suppress("DEPRECATION")
@@ -436,7 +437,7 @@ class LoadRequestExecutorTest {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
 
         LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             resultCachePolicy(DISABLED)
@@ -480,7 +481,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testPreferQualityOverSpeed() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
 
         LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             resultCachePolicy(DISABLED)
@@ -508,7 +509,7 @@ class LoadRequestExecutorTest {
 
     @Test
     fun testResize() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val imageSize = Size(1291, 1936)
         val displaySize = context.resources.displayMetrics.let {
@@ -542,7 +543,11 @@ class LoadRequestExecutorTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), bitmap.size)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), bitmap.size)
+                } else {
+                    Assert.assertEquals(Size(322, 268), bitmap.size)
+                }
                 Assert.assertEquals(smallSize1.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -567,7 +572,11 @@ class LoadRequestExecutorTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 388), bitmap.size)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 388), bitmap.size)
+                } else {
+                    Assert.assertEquals(Size(322, 387), bitmap.size)
+                }
                 Assert.assertEquals(smallSize2.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -715,7 +724,11 @@ class LoadRequestExecutorTest {
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarStartCropBitmap = bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), bitmap.size)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), bitmap.size)
+                } else {
+                    Assert.assertEquals(Size(322, 268), bitmap.size)
+                }
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -724,7 +737,11 @@ class LoadRequestExecutorTest {
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarCenterCropBitmap = bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), bitmap.size)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), bitmap.size)
+                } else {
+                    Assert.assertEquals(Size(322, 268), bitmap.size)
+                }
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -733,7 +750,11 @@ class LoadRequestExecutorTest {
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarEndCropBitmap = bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), bitmap.size)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), bitmap.size)
+                } else {
+                    Assert.assertEquals(Size(322, 268), bitmap.size)
+                }
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -742,7 +763,11 @@ class LoadRequestExecutorTest {
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarFillCropBitmap = bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), bitmap.size)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), bitmap.size)
+                } else {
+                    Assert.assertEquals(Size(322, 268), bitmap.size)
+                }
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         Assert.assertNotEquals(sarStartCropBitmap!!.corners(), sarCenterCropBitmap!!.corners())
@@ -811,7 +836,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testTransformations() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = LoadRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
@@ -901,7 +926,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testDisallowReuseBitmap() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val bitmapPool = sketch.bitmapPool
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = LoadRequest(context, imageUri) {
@@ -925,19 +950,49 @@ class LoadRequestExecutorTest {
         request.newLoadRequest {
             disallowReuseBitmap(false)
         }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        } else {
+            Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
+        }
 
         bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
         request.newLoadRequest {
             disallowReuseBitmap(null)
         }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        } else {
+            Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
+        }
+
+        bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
+        request.newLoadRequest {
+            resize(null)
+            disallowReuseBitmap(false)
+        }.let { runBlocking { sketch.execute(it) } }
+        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
+            Assert.assertNull(bitmapPool.get(1291, 1936, ARGB_8888))
+        } else {
+            Assert.assertNotNull(bitmapPool.get(1291, 1936, ARGB_8888))
+        }
+
+        bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
+        request.newLoadRequest {
+            resize(null)
+            disallowReuseBitmap(null)
+        }.let { runBlocking { sketch.execute(it) } }
+        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
+            Assert.assertNull(bitmapPool.get(1291, 1936, ARGB_8888))
+        } else {
+            Assert.assertNotNull(bitmapPool.get(1291, 1936, ARGB_8888))
+        }
     }
 
     @Test
     fun testIgnoreExifOrientation() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             Assert.assertNotEquals(ExifInterface.ORIENTATION_UNDEFINED, it.exifOrientation)
 
@@ -987,7 +1042,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testResultCachePolicy() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val diskCache = sketch.diskCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = LoadRequest(context, imageUri) {
@@ -1095,7 +1150,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testMemoryCachePolicy() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val memoryCache = sketch.memoryCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = LoadRequest(context, imageUri) {
@@ -1203,7 +1258,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testListener() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val errorImageUri = TestAssets.SAMPLE_JPEG_URI + ".fake"
 
@@ -1254,7 +1309,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testProgressListener() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context, 20))
         }
         val testImage = TestHttpStack.testImages.first()
@@ -1287,7 +1342,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testTarget() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
 
         TestLoadTarget().let { testTarget ->
             Assert.assertNull(testTarget.start)
@@ -1368,7 +1423,7 @@ class LoadRequestExecutorTest {
     @Test
     fun testLifecycle() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val lifecycleOwner = object : LifecycleOwner {
             private var lifecycle: Lifecycle? = null
             override fun getLifecycle(): Lifecycle {

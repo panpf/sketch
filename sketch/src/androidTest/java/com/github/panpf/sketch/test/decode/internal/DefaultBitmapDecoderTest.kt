@@ -24,9 +24,9 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.getResizeTransformed
-import com.github.panpf.sketch.test.utils.getContextAndSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.runBlocking
@@ -39,7 +39,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testDefault() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         LoadRequest(context, newAssetUri("sample.jpeg")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
@@ -57,7 +57,11 @@ class DefaultBitmapDecoderTest {
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
+            } else {
+                Assert.assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
+            }
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
@@ -83,7 +87,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testBitmapConfig() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         LoadRequest(context, newAssetUri("sample.jpeg")) {
             bitmapConfig(RGB_565)
@@ -105,7 +109,11 @@ class DefaultBitmapDecoderTest {
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,RGB_565)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
+            } else {
+                Assert.assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
+            }
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertNull(transformedList)
@@ -116,7 +124,7 @@ class DefaultBitmapDecoderTest {
     fun testColorSpace() {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         LoadRequest(context, newAssetUri("sample.jpeg")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
@@ -135,7 +143,11 @@ class DefaultBitmapDecoderTest {
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
+            } else {
+                Assert.assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
+            }
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
@@ -163,7 +175,11 @@ class DefaultBitmapDecoderTest {
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
+            } else {
+                Assert.assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
+            }
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
@@ -173,7 +189,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testResize() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         // precision = LESS_PIXELS
         LoadRequest(context, newAssetUri("sample.jpeg")) {
@@ -232,7 +248,11 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            Assert.assertEquals("Bitmap(323x194,ARGB_8888)", bitmap.toShortInfoString())
+            if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                Assert.assertEquals("Bitmap(323x194,ARGB_8888)", bitmap.toShortInfoString())
+            } else {
+                Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
+            }
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -253,7 +273,11 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            Assert.assertEquals("Bitmap(291x484,ARGB_8888)", bitmap.toShortInfoString())
+            if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                Assert.assertEquals("Bitmap(291x484,ARGB_8888)", bitmap.toShortInfoString())
+            } else {
+                Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
+            }
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -351,7 +375,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testResizeNoRegion() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         // precision = LESS_PIXELS
         LoadRequest(context, newAssetUri("sample.bmp")) {
@@ -530,7 +554,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testResizeExif() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         val testFile = ExifOrientationTestFileHelper(context, "sample.jpeg").files()
             .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!
@@ -592,7 +616,11 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            Assert.assertEquals("Bitmap(323x194,ARGB_8888)", bitmap.toShortInfoString())
+            if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                Assert.assertEquals("Bitmap(323x194,ARGB_8888)", bitmap.toShortInfoString())
+            } else {
+                Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
+            }
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -613,7 +641,11 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            Assert.assertEquals("Bitmap(291x484,ARGB_8888)", bitmap.toShortInfoString())
+            if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                Assert.assertEquals("Bitmap(291x484,ARGB_8888)", bitmap.toShortInfoString())
+            } else {
+                Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
+            }
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -711,7 +743,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testResizeExifIgnore() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         val testFile = ExifOrientationTestFileHelper(context, "sample.jpeg").files()
             .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!
@@ -776,7 +808,11 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            Assert.assertEquals("Bitmap(484x291,ARGB_8888)", bitmap.toShortInfoString())
+            if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                Assert.assertEquals("Bitmap(484x291,ARGB_8888)", bitmap.toShortInfoString())
+            } else {
+                Assert.assertEquals("Bitmap(484x290,ARGB_8888)", bitmap.toShortInfoString())
+            }
             Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -798,7 +834,11 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            Assert.assertEquals("Bitmap(194x323,ARGB_8888)", bitmap.toShortInfoString())
+            if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                Assert.assertEquals("Bitmap(194x323,ARGB_8888)", bitmap.toShortInfoString())
+            } else {
+                Assert.assertEquals("Bitmap(193x322,ARGB_8888)", bitmap.toShortInfoString())
+            }
             Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)

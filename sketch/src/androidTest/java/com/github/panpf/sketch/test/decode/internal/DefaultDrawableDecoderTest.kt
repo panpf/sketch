@@ -12,7 +12,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.size
@@ -27,7 +27,7 @@ class DefaultDrawableDecoderTest {
 
     @Test
     fun testDecode() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         val imageSize = Size(1291, 1936)
         val displaySize = context.resources.displayMetrics.let {
             Size(it.widthPixels, it.heightPixels)

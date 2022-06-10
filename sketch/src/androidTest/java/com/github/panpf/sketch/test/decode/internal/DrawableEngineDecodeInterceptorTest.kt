@@ -8,7 +8,7 @@ import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -19,7 +19,7 @@ class DrawableEngineDecodeInterceptorTest {
 
     @Test
     fun testIntercept() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         val interceptors = listOf(DrawableEngineDecodeInterceptor())
         val loadRequest = DisplayRequest(context, newAssetUri("sample.jpeg"))
         val requestContext = RequestContext()

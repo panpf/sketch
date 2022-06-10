@@ -69,6 +69,7 @@ class BlurTransformation(
 
     companion object {
         fun fastGaussianBlur(inBitmap: Bitmap, radius: Int): Bitmap {
+            // todo  API 18,19 上崩溃 ArrayIndexOutOfBoundsException
             val outBitmap: Bitmap? = if (inBitmap.config != null && inBitmap.isMutable) {
                 inBitmap
             } else {

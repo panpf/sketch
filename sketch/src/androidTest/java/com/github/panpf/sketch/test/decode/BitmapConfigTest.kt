@@ -69,7 +69,12 @@ class BitmapConfigTest {
             } else {
                 Assert.assertEquals(ARGB_8888, getConfig("image/png"))
             }
-            Assert.assertEquals(ARGB_8888, getConfig(null))
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                @Suppress("DEPRECATION")
+                Assert.assertEquals(ARGB_4444, getConfig(null))
+            } else {
+                Assert.assertEquals(ARGB_8888, getConfig(null))
+            }
         }
 
         BitmapConfig.HighQuality.apply {

@@ -5,7 +5,7 @@ import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -17,7 +17,7 @@ class AssetDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
         AssetDataSource(
@@ -33,7 +33,7 @@ class AssetDataSourceTest {
 
     @Test
     fun testLength() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         AssetDataSource(
             sketch = sketch,
@@ -56,7 +56,7 @@ class AssetDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         AssetDataSource(
             sketch = sketch,
@@ -79,7 +79,7 @@ class AssetDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         AssetDataSource(
             sketch = sketch,
@@ -102,7 +102,7 @@ class AssetDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         AssetDataSource(
             sketch = sketch,

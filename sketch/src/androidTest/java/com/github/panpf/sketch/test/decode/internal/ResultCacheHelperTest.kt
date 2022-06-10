@@ -18,7 +18,7 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
-import com.github.panpf.sketch.test.utils.getContextAndSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,7 +28,7 @@ class ResultCacheHelperTest {
 
     @Test
     fun testNewBitmapResultCacheHelper() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         Assert.assertNotNull(
@@ -58,7 +58,7 @@ class ResultCacheHelperTest {
 
     @Test
     fun testRead() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         sketch.diskCache.clear()
@@ -98,7 +98,7 @@ class ResultCacheHelperTest {
 
     @Test
     fun testWrite() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
         sketch.diskCache.clear()

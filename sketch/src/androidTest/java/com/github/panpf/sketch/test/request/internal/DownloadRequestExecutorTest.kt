@@ -25,7 +25,7 @@ import com.github.panpf.sketch.test.utils.DownloadProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestDownloadTarget
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.getContext
-import com.github.panpf.sketch.test.utils.getSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ class DownloadRequestExecutorTest {
     @Test
     fun testDepth() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
         val testImage = TestHttpStack.testImages.first()
@@ -132,7 +132,7 @@ class DownloadRequestExecutorTest {
     @Test
     fun testDownloadCachePolicy() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
         val testImage = TestHttpStack.testImages.first()
@@ -258,7 +258,7 @@ class DownloadRequestExecutorTest {
     @Test
     fun testListener() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
         val testImage = TestHttpStack.testImages.first()
@@ -311,7 +311,7 @@ class DownloadRequestExecutorTest {
     @Test
     fun testProgressListener() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context, 20))
         }
         val testImage = TestHttpStack.testImages.first()
@@ -344,7 +344,7 @@ class DownloadRequestExecutorTest {
     @Test
     fun testTarget() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
         val testImage = TestHttpStack.testImages.first()
@@ -430,7 +430,7 @@ class DownloadRequestExecutorTest {
     @Test
     fun testLifecycle() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
         val testImage = TestHttpStack.testImages.first()

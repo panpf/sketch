@@ -5,36 +5,44 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
-
-fun getContextAndSketch(): Pair<Context, Sketch> {
-    val context = InstrumentationRegistry.getInstrumentation().context
-    return context to Sketch.Builder(context).build()
-}
-
-fun getContextAndSketch(block: Sketch.Builder.(context: Context) -> Unit): Pair<Context, Sketch> {
-    val context = InstrumentationRegistry.getInstrumentation().context
-    return context to Sketch.Builder(context).apply {
-        block.invoke(this, context)
-    }.build()
-}
+import java.io.File
 
 fun getContext(): Context {
     return InstrumentationRegistry.getInstrumentation().context
 }
 
-fun getSketch(): Sketch {
-    val context = InstrumentationRegistry.getInstrumentation().context
-    return Sketch.Builder(context).build()
-}
+var sketchCount = 0
 
-fun getSketch(block: Sketch.Builder.(context: Context) -> Unit): Sketch {
+fun newSketch(block: Sketch.Builder.(context: Context) -> Unit): Sketch {
     val context = InstrumentationRegistry.getInstrumentation().context
     return Sketch.Builder(context).apply {
+        diskCache(LruDiskCache(context, directory = context.newTestDiskCacheDirectory()))
         block.invoke(this, context)
     }.build()
+}
+
+/* 低版本（大概是 21 及以下版本同一个文件不能打开多次，因此必须使用不同的缓存目录）*/
+fun Context.newTestDiskCacheDirectory(): File {
+    return File(externalCacheDir ?: cacheDir, DiskCache.DEFAULT_DIR_NAME + "${sketchCount++}")
+}
+
+fun newSketch(): Sketch {
+    return newSketch {}
+}
+
+fun getContextAndNewSketch(): Pair<Context, Sketch> {
+    val context = InstrumentationRegistry.getInstrumentation().context
+    return context to newSketch()
+}
+
+fun getContextAndNewSketch(block: Sketch.Builder.(context: Context) -> Unit): Pair<Context, Sketch> {
+    val context = InstrumentationRegistry.getInstrumentation().context
+    return context to newSketch(block)
 }
 
 val Drawable.intrinsicSize: Size

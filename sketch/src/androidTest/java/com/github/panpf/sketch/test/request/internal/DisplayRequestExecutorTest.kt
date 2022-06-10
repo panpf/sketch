@@ -57,17 +57,17 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
-import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.DisplayProgressListenerSupervisor
+import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestDisplayTarget
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestTransitionDisplayTarget
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getContext
-import com.github.panpf.sketch.test.utils.getContextAndSketch
-import com.github.panpf.sketch.test.utils.getSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -97,7 +97,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testDepth() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
         val imageUri = TestHttpStack.testImages.first().uriString
@@ -185,7 +185,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testDownloadCachePolicy() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
         val diskCache = sketch.diskCache
@@ -310,7 +310,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testBitmapConfig() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
 
         DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             resultCachePolicy(DISABLED)
@@ -343,6 +343,7 @@ class DisplayRequestExecutorTest {
             .drawable.asOrNull<BitmapDrawable>()!!
             .apply {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    // todo API 19，21，23 上返回 ARGB_4444
                     Assert.assertEquals(ARGB_8888, bitmap.config)
                 } else {
                     @Suppress("DEPRECATION")
@@ -461,7 +462,7 @@ class DisplayRequestExecutorTest {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
 
         DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             resultCachePolicy(DISABLED)
@@ -508,7 +509,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testPreferQualityOverSpeed() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
 
         DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             resultCachePolicy(DISABLED)
@@ -536,7 +537,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testResize() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val imageSize = Size(1291, 1936)
         val displaySize = context.resources.displayMetrics.let {
@@ -570,7 +571,11 @@ class DisplayRequestExecutorTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<DisplayResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                } else {
+                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
+                }
                 Assert.assertEquals(smallSize1.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -595,7 +600,11 @@ class DisplayRequestExecutorTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<DisplayResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 388), drawable.intrinsicSize)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 388), drawable.intrinsicSize)
+                } else {
+                    Assert.assertEquals(Size(322, 387), drawable.intrinsicSize)
+                }
                 Assert.assertEquals(smallSize2.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -743,7 +752,11 @@ class DisplayRequestExecutorTest {
             .asOrNull<DisplayResult.Success>()!!.apply {
                 sarStartCropBitmap = drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                } else {
+                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
+                }
                 Assert.assertEquals(size.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -752,7 +765,11 @@ class DisplayRequestExecutorTest {
             .asOrNull<DisplayResult.Success>()!!.apply {
                 sarCenterCropBitmap = drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                } else {
+                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
+                }
                 Assert.assertEquals(size.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -761,7 +778,11 @@ class DisplayRequestExecutorTest {
             .asOrNull<DisplayResult.Success>()!!.apply {
                 sarEndCropBitmap = drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                } else {
+                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
+                }
                 Assert.assertEquals(size.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -770,7 +791,11 @@ class DisplayRequestExecutorTest {
             .asOrNull<DisplayResult.Success>()!!.apply {
                 sarFillCropBitmap = drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
+                } else {
+                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
+                }
                 Assert.assertEquals(size.ratio, drawable.intrinsicSize.ratio)
             }
         Assert.assertNotEquals(sarStartCropBitmap!!.corners(), sarCenterCropBitmap!!.corners())
@@ -839,7 +864,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testTransformations() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
@@ -957,7 +982,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testDisallowReuseBitmap() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val bitmapPool = sketch.bitmapPool
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
@@ -981,19 +1006,49 @@ class DisplayRequestExecutorTest {
         request.newDisplayRequest {
             disallowReuseBitmap(false)
         }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        } else {
+            Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
+        }
 
         bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
         request.newDisplayRequest {
             disallowReuseBitmap(null)
         }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        } else {
+            Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
+        }
+
+        bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
+        request.newDisplayRequest {
+            resize(null)
+            disallowReuseBitmap(false)
+        }.let { runBlocking { sketch.execute(it) } }
+        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
+            Assert.assertNull(bitmapPool.get(1291, 1936, ARGB_8888))
+        } else {
+            Assert.assertNotNull(bitmapPool.get(1291, 1936, ARGB_8888))
+        }
+
+        bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
+        request.newDisplayRequest {
+            resize(null)
+            disallowReuseBitmap(null)
+        }.let { runBlocking { sketch.execute(it) } }
+        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
+            Assert.assertNull(bitmapPool.get(1291, 1936, ARGB_8888))
+        } else {
+            Assert.assertNotNull(bitmapPool.get(1291, 1936, ARGB_8888))
+        }
     }
 
     @Test
     fun testIgnoreExifOrientation() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             Assert.assertNotEquals(ExifInterface.ORIENTATION_UNDEFINED, it.exifOrientation)
 
@@ -1046,7 +1101,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testResultCachePolicy() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val diskCache = sketch.diskCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
@@ -1154,7 +1209,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testPlaceholder() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         var onStartDrawable: Drawable?
         val request = DisplayRequest(context, imageUri) {
@@ -1196,7 +1251,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testError() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         var onErrorDrawable: Drawable?
         val request = DisplayRequest(context, imageUri) {
@@ -1244,7 +1299,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testTransition() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val testTarget = TestTransitionDisplayTarget()
         val request = DisplayRequest(context, imageUri) {
@@ -1279,7 +1334,7 @@ class DisplayRequestExecutorTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return
 
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             components {
                 addDrawableDecoder(GifAnimatedDrawableDecoder.Factory())
             }
@@ -1318,7 +1373,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testResizeApplyToDrawable() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
             resize(500, 500)
@@ -1354,7 +1409,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testMemoryCachePolicy() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val memoryCache = sketch.memoryCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
@@ -1462,7 +1517,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testListener() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val errorImageUri = TestAssets.SAMPLE_JPEG_URI + ".fake"
 
@@ -1513,7 +1568,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testProgressListener() {
         val context = getContext()
-        val sketch = getSketch {
+        val sketch = newSketch {
             httpStack(TestHttpStack(context, 20))
         }
         val testImage = TestHttpStack.testImages.first()
@@ -1546,7 +1601,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testTarget() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
 
         TestDisplayTarget().let { testTarget ->
             Assert.assertNull(testTarget.startDrawable)
@@ -1631,7 +1686,7 @@ class DisplayRequestExecutorTest {
     @Test
     fun testLifecycle() {
         val context = getContext()
-        val sketch = getSketch()
+        val sketch = newSketch()
         val lifecycleOwner = object : LifecycleOwner {
             private var lifecycle: Lifecycle? = null
             override fun getLifecycle(): Lifecycle {

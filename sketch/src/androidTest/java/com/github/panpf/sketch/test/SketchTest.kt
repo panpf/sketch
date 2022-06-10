@@ -46,8 +46,8 @@ import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestLongImageDecider
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getContext
-import com.github.panpf.sketch.test.utils.getContextAndSketch
-import com.github.panpf.sketch.test.utils.getSketch
+import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.DefaultLongImageDecider
 import com.github.panpf.sketch.util.Logger
@@ -303,7 +303,7 @@ class SketchTest {
 
     @Test
     fun testDisplayEnqueue() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         /* success */
         val listenerSupervisor1 = DisplayListenerSupervisor()
@@ -348,7 +348,7 @@ class SketchTest {
 
     @Test
     fun testDisplayExecute() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         /* success */
         val listenerSupervisor1 = DisplayListenerSupervisor()
@@ -393,7 +393,7 @@ class SketchTest {
 
     @Test
     fun testLoadEnqueue() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         /* success */
         val listenerSupervisor1 = LoadListenerSupervisor()
@@ -436,7 +436,7 @@ class SketchTest {
 
     @Test
     fun testLoadExecute() {
-        val (context, sketch) = getContextAndSketch()
+        val (context, sketch) = getContextAndNewSketch()
 
         /* success */
         val listenerSupervisor1 = LoadListenerSupervisor()
@@ -481,7 +481,7 @@ class SketchTest {
 
     @Test
     fun testDownloadEnqueue() {
-        val (context, sketch) = getContextAndSketch {
+        val (context, sketch) = getContextAndNewSketch {
             httpStack(TestHttpStack(it))
         }
 
@@ -535,7 +535,7 @@ class SketchTest {
 
     @Test
     fun testDownloadExecute() {
-        val (context, sketch) = getContextAndSketch {
+        val (context, sketch) = getContextAndNewSketch {
             httpStack(TestHttpStack(it))
         }
 
@@ -591,7 +591,7 @@ class SketchTest {
 
     @Test
     fun testShutdown() {
-        val sketch = getSketch()
+        val sketch = newSketch()
         sketch.shutdown()
     }
 }
