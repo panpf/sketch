@@ -44,9 +44,9 @@ import java.util.concurrent.atomic.AtomicInteger
 class LruDiskCache constructor(
     context: Context,
     override val maxSize: Long = DiskCache.DEFAULT_MAX_SIZE,
-    private val _directory: File? = null,
+    directory: File? = null,
     val version: Int = 1,
-) : DiskCache, Closeable {
+) : DiskCache {
 
     companion object {
         private const val MODULE = "LruDiskCache"
@@ -65,7 +65,7 @@ class LruDiskCache constructor(
     override val size: Long
         get() = _cache?.size() ?: 0
     override val directory: File by lazy {
-        (_directory ?: File(context.externalCacheDir ?: context.cacheDir, DEFAULT_DIR_NAME)).run {
+        (directory ?: File(context.externalCacheDir ?: context.cacheDir, DEFAULT_DIR_NAME)).run {
             context.fileNameCompatibilityMultiProcess(this)
         }
     }
@@ -202,7 +202,7 @@ class LruDiskCache constructor(
         other as LruDiskCache
 
         if (maxSize != other.maxSize) return false
-        if (_directory != other._directory) return false
+        if (directory != other.directory) return false
         if (version != other.version) return false
 
         return true
@@ -210,7 +210,7 @@ class LruDiskCache constructor(
 
     override fun hashCode(): Int {
         var result = maxSize.hashCode()
-        result = 31 * result + (_directory?.hashCode() ?: 0)
+        result = 31 * result + directory.hashCode()
         result = 31 * result + version
         return result
     }

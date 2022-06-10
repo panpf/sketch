@@ -18,6 +18,7 @@ package com.github.panpf.sketch.cache
 import com.github.panpf.sketch.util.DiskLruCache
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
+import java.io.Closeable
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -26,7 +27,7 @@ import java.io.OutputStream
 /**
  * Disk cache for bitmap or uri data
  */
-interface DiskCache {
+interface DiskCache : Closeable {
 
     companion object {
         const val DEFAULT_DIR_NAME = "sketch3"

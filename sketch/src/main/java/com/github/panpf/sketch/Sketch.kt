@@ -345,6 +345,7 @@ class Sketch private constructor(
         scope.cancel()
         systemCallbacks.shutdown()
         memoryCache.clear()
+        diskCache.close()
         bitmapPool.clear()
     }
 
