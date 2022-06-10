@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.extensions.test
 
 import android.graphics.Bitmap.Config.RGB_565
-import android.graphics.Color
 import android.view.LayoutInflater
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -16,7 +15,6 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyMatcher
-import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -59,13 +57,6 @@ class SketchImageViewTest {
             Assert.assertNotNull(displayImageOptions!!.placeholder)
             Assert.assertNotNull(displayImageOptions!!.error)
             Assert.assertNotNull((displayImageOptions!!.error as ErrorStateImage).matcherList.find { it is UriEmptyMatcher })
-        }
-
-        (LayoutInflater.from(context)
-            .inflate(R.layout.attrs_test_blur, null, false) as SketchImageView).apply {
-            Assert.assertEquals(ImageOptions {
-                transformations(BlurTransformation(23, Color.parseColor("#00FF00")))
-            }, displayImageOptions)
         }
 
         (LayoutInflater.from(context)

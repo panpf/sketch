@@ -38,7 +38,6 @@
     <string name="text_load_end">THE END</string>
     <string name="text_load_error">LOAD ERROR</string>
     <string name="apps_overview_item">Apps: %d (User: %d. Group: %d)</string>
-    <string name="text_blur_radius">Blur Radius</string>
     <string name="text_width">Width</string>
     <string name="text_height">Height</string>
     <string name="button_center_crop">CENTER_CROP</string>

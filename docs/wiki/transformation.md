@@ -2,7 +2,6 @@
 
 通过 [Transformation] 可以对解码得到 Bitmap 进行转换，Sketch 内置了以下几种 [Transformation]
 
-* [BlurTransformation]：高斯模糊转换
 * [CircleCropTransformation]：圆形裁剪转换
 * [RotateTransformation]：旋转转换
 * [RoundedCornersTransformation]：圆角转换
@@ -15,7 +14,7 @@
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    transformations(CircleCropTransformation(), BlurTransformation())
+    transformations(CircleCropTransformation(), RoundedCornersTransformation(20f))
 }
 ```
 
@@ -29,8 +28,6 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 * 同一个 [Transformation] 输入不同的参数输出不同的 key
 
 [Transformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/Transformation.kt
-
-[BlurTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/BlurTransformation.kt
 
 [CircleCropTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/CircleCropTransformation.kt
 

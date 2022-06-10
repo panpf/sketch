@@ -34,6 +34,7 @@ class CircleCropTransformationTestFragment :
             viewModel.scaleData.postValue(START_CROP)
         }
 
+        binding.circleCropTransformationTestCenterButton.isChecked = true
         binding.circleCropTransformationTestCenterButton.setOnClickListener {
             viewModel.scaleData.postValue(CENTER_CROP)
         }

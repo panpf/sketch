@@ -17,7 +17,6 @@ import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -229,19 +228,12 @@ open class SketchImageView @JvmOverloads constructor(
     private fun parseTransformation(value: Int, typedArray: TypedArray): Transformation =
         when (value) {
             1 -> {
-                val radius =
-                    typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation_blur_radius)
-                val maskColor =
-                    typedArray.getColorOrNull(R.styleable.SketchImageView_sketch_transformation_blur_maskColor)
-                BlurTransformation(radius = radius ?: 15, maskColor = maskColor)
-            }
-            2 -> {
                 val degrees =
                     typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation_rotate_degrees)
                         ?: throw IllegalArgumentException("Missing 'sketch_transformation_rotate_degrees' property")
                 RotateTransformation(degrees)
             }
-            3 -> {
+            2 -> {
                 val radius =
                     typedArray.getDimensionOrNull(R.styleable.SketchImageView_sketch_transformation_roundedCorners_radius)
                 val radiusTopLeft =
@@ -259,7 +251,7 @@ open class SketchImageView @JvmOverloads constructor(
                     bottomRight = radiusBottomRight ?: radius ?: 0f,
                 )
             }
-            4 -> {
+            3 -> {
                 val scale =
                     typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation_circleCrop_scale)
                         ?.let { it1 ->

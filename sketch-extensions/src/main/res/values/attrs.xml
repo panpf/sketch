@@ -42,13 +42,10 @@
     </attr>
     <attr name="sketch_resizeApplyToDrawable" format="boolean|reference" />
     <attr name="sketch_transformation" format="enum">
-        <enum name="blur" value="1" />
-        <enum name="rotate" value="2" />
-        <enum name="roundedCorners" value="3" />
-        <enum name="circleCrop" value="4" />
+        <enum name="rotate" value="1" />
+        <enum name="roundedCorners" value="2" />
+        <enum name="circleCrop" value="3" />
     </attr>
-    <attr name="sketch_transformation_blur_radius" format="integer|reference" />
-    <attr name="sketch_transformation_blur_maskColor" format="color|reference" />
     <attr name="sketch_transformation_rotate_degrees" format="integer|reference" />
     <attr name="sketch_transformation_roundedCorners_radius" format="dimension|reference" />
     <attr name="sketch_transformation_roundedCorners_radiusTopLeft" format="dimension|reference" />
@@ -95,8 +92,6 @@
         <attr name="sketch_resizeScale" />
         <attr name="sketch_resizeApplyToDrawable" />
         <attr name="sketch_transformation" />
-        <attr name="sketch_transformation_blur_radius" />
-        <attr name="sketch_transformation_blur_maskColor" />
         <attr name="sketch_transformation_rotate_degrees" />
         <attr name="sketch_transformation_roundedCorners_radius" />
         <attr name="sketch_transformation_roundedCorners_radiusTopLeft" />

@@ -17,8 +17,8 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
-import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
+import com.github.panpf.sketch.transform.RotateTransformation
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -120,7 +120,7 @@ class RequestUtilsTest {
 
         // transformations
         request = request.newDisplayRequest {
-            transformations(CircleCropTransformation(), BlurTransformation())
+            transformations(CircleCropTransformation(), RotateTransformation(40))
         }
         cacheKeyUri = cacheKeyUri.buildUpon().apply {
             appendQueryParameter(
@@ -306,7 +306,7 @@ class RequestUtilsTest {
 
         // transformations
         request = request.newDisplayRequest {
-            transformations(CircleCropTransformation(), BlurTransformation())
+            transformations(CircleCropTransformation(), RotateTransformation(40))
         }
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter(
@@ -514,7 +514,7 @@ class RequestUtilsTest {
 
         // transformations
         request = request.newLoadRequest {
-            transformations(CircleCropTransformation(), BlurTransformation())
+            transformations(CircleCropTransformation(), RotateTransformation(40))
         }
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter(
@@ -710,7 +710,7 @@ class RequestUtilsTest {
 
         // transformations
         request = request.newDownloadRequest {
-            transformations(CircleCropTransformation(), BlurTransformation())
+            transformations(CircleCropTransformation(), RotateTransformation(40))
         }
         keyUri = keyUri.buildUpon().build()
         Assert.assertEquals(keyUri.toString(), request.newKey().apply {
