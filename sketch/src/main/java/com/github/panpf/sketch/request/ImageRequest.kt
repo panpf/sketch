@@ -455,6 +455,13 @@ interface ImageRequest {
 
         /**
          * Set how to resize image
+         */
+        open fun resize(resize: Resize?): Builder = apply {
+            definedOptionsBuilder.resize(resize)
+        }
+
+        /**
+         * Set how to resize image
          *
          * @param size Expected Bitmap size
          * @param precision precision of size, default is [Precision.EXACTLY]

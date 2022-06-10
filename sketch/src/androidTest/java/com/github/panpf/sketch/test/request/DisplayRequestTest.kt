@@ -695,6 +695,25 @@ class DisplayRequestTest {
             }
 
             resize(
+                Resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
+            )
+            build().apply {
+                Assert.assertEquals(Size(100, 100), resizeSize)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    resizePrecisionDecider
+                )
+                Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
+            }
+
+            resize(null)
+            build().apply {
+                Assert.assertNull(resizeSize)
+                Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
+            }
+
+            resize(
                 Size(100, 100),
                 longImageClipPrecision(SAME_ASPECT_RATIO),
                 longImageScale(START_CROP, END_CROP)

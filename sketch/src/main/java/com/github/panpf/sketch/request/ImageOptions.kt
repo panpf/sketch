@@ -25,6 +25,7 @@ import com.github.panpf.sketch.http.merged
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
@@ -402,6 +403,15 @@ interface ImageOptions {
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
         fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): Builder = apply {
             this.preferQualityOverSpeed = inPreferQualityOverSpeed
+        }
+
+        /**
+         * Set how to resize image
+         */
+        fun resize(resize: Resize?): Builder = apply {
+            this.resizeSize = resize?.let { Size(it.width, it.height) }
+            this.resizePrecisionDecider = resize?.precision
+            this.resizeScaleDecider = resize?.scale
         }
 
         /**

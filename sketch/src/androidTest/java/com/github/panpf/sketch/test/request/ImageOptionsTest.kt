@@ -30,6 +30,7 @@ import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
@@ -925,6 +926,25 @@ class ImageOptionsTest {
     @Test
     fun testResize() {
         ImageOptions.Builder().apply {
+            build().apply {
+                Assert.assertNull(resizeSize)
+                Assert.assertNull(resizePrecisionDecider)
+                Assert.assertNull(resizeScaleDecider)
+            }
+
+            resize(
+                Resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
+            )
+            build().apply {
+                Assert.assertEquals(Size(100, 100), resizeSize)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    resizePrecisionDecider
+                )
+                Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
+            }
+
+            resize(null)
             build().apply {
                 Assert.assertNull(resizeSize)
                 Assert.assertNull(resizePrecisionDecider)
