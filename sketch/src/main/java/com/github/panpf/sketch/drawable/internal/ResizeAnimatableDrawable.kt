@@ -14,7 +14,7 @@ open class ResizeAnimatableDrawable(sketch: Sketch, val drawable: SketchAnimatab
     }
 
     override fun stop() {
-        drawable.start()
+        drawable.stop()
     }
 
     override fun isRunning(): Boolean {
