@@ -31,14 +31,6 @@ fun Drawable.tryToResizeDrawable(sketch: Sketch, request: ImageRequest): Drawabl
 open class ResizeDrawable(val sketch: Sketch, drawable: Drawable, val resize: Resize) :
     DrawableWrapper(drawable) {
 
-    override fun getMinimumWidth(): Int {
-        return intrinsicWidth
-    }
-
-    override fun getMinimumHeight(): Int {
-        return intrinsicHeight
-    }
-
     override fun getIntrinsicWidth(): Int {
         return resize.width
     }

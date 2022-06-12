@@ -22,12 +22,11 @@ import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
 import com.github.panpf.sketch.util.DiskLruCache
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.MD5Utils
 import com.github.panpf.sketch.util.fileNameCompatibilityMultiProcess
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.md5
 import kotlinx.coroutines.sync.Mutex
-import java.io.Closeable
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -56,7 +55,7 @@ class LruDiskCache constructor(
     }
 
     private var _cache: DiskLruCache? = null
-    private val keyMapperCache = KeyMapperCache { MD5Utils.md5(it) }
+    private val keyMapperCache = KeyMapperCache { md5(it) }
     private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
     private val getCount = AtomicInteger()
     private val hitCount = AtomicInteger()

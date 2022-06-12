@@ -2,7 +2,7 @@ package com.github.panpf.sketch.test.cache.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.KeyMapperCache
-import com.github.panpf.sketch.util.MD5Utils
+import com.github.panpf.sketch.util.md5
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,13 +13,13 @@ class KeyMapperCacheTest {
     @Test
     fun testMaxSize() {
         KeyMapperCache(5) {
-            MD5Utils.md5(it)
+            md5(it)
         }.apply {
             Assert.assertEquals(5, maxSize)
         }
 
         KeyMapperCache(15) {
-            MD5Utils.md5(it)
+            md5(it)
         }.apply {
             Assert.assertEquals(15, maxSize)
         }
@@ -28,10 +28,10 @@ class KeyMapperCacheTest {
     @Test
     fun testMapper() {
         KeyMapperCache(5) {
-            MD5Utils.md5(it)
+            md5(it)
         }.apply {
-            Assert.assertEquals(MD5Utils.md5("image1"), mapper("image1"))
-            Assert.assertEquals(MD5Utils.md5("image2"), mapper("image2"))
+            Assert.assertEquals(md5("image1"), mapper("image1"))
+            Assert.assertEquals(md5("image2"), mapper("image2"))
         }
 
         KeyMapperCache(5) {
@@ -45,10 +45,10 @@ class KeyMapperCacheTest {
     @Test
     fun testMapKey() {
         KeyMapperCache(5) {
-            MD5Utils.md5(it)
+            md5(it)
         }.apply {
-            Assert.assertEquals(MD5Utils.md5("image1"), mapKey("image1"))
-            Assert.assertEquals(MD5Utils.md5("image2"), mapKey("image2"))
+            Assert.assertEquals(md5("image1"), mapKey("image1"))
+            Assert.assertEquals(md5("image2"), mapKey("image2"))
         }
     }
 }
