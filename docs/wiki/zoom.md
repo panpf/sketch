@@ -230,3 +230,5 @@ sketchZoomImageView.zoomAbility.addOnTileChangedListener { tiles: Tiles ->
 [ReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt
 
 [LongImageReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt
+
+[DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
