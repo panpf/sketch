@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.util
 
+import android.content.ComponentCallbacks2
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.State.STARTED
@@ -11,6 +12,7 @@ import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
+import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.isMainThread
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.requiredWorkThread
@@ -113,5 +115,18 @@ class UtilsTest {
             "image/png",
             getMimeTypeFromUrl("http://sample.com/sample.png#path?name=david")
         )
+    }
+
+    @Test
+    fun testGetTrimLevelName() {
+        Assert.assertEquals("COMPLETE", getTrimLevelName(ComponentCallbacks2.TRIM_MEMORY_COMPLETE))
+        Assert.assertEquals("MODERATE", getTrimLevelName(ComponentCallbacks2.TRIM_MEMORY_MODERATE))
+        Assert.assertEquals("BACKGROUND", getTrimLevelName(ComponentCallbacks2.TRIM_MEMORY_BACKGROUND))
+        Assert.assertEquals("UI_HIDDEN", getTrimLevelName(ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN))
+        Assert.assertEquals("RUNNING_CRITICAL", getTrimLevelName(ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL))
+        Assert.assertEquals("RUNNING_LOW", getTrimLevelName(ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW))
+        Assert.assertEquals("RUNNING_MODERATE", getTrimLevelName(ComponentCallbacks2.TRIM_MEMORY_RUNNING_MODERATE))
+        Assert.assertEquals("UNKNOWN", getTrimLevelName(34))
+        Assert.assertEquals("UNKNOWN", getTrimLevelName(-1))
     }
 }

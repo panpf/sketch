@@ -22,13 +22,13 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.request.Depth.LOCAL
+import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.Parameters
-import com.github.panpf.sketch.request.Depth.LOCAL
-import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
@@ -54,9 +54,8 @@ import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.target.LoadTarget
-import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.transform.BlurTransformation
+import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -985,10 +984,10 @@ class LoadRequestTest {
             }
 
             /* transformations() */
-            transformations(listOf(CircleCropTransformation(), BlurTransformation()))
+            transformations(listOf(CircleCropTransformation()))
             build().apply {
                 Assert.assertEquals(
-                    listOf(CircleCropTransformation(), BlurTransformation()),
+                    listOf(CircleCropTransformation()),
                     transformations
                 )
             }
@@ -1007,63 +1006,55 @@ class LoadRequestTest {
             }
 
             /* addTransformations(List), removeTransformations(List) */
-            addTransformations(listOf(CircleCropTransformation(), BlurTransformation()))
+            addTransformations(listOf(CircleCropTransformation()))
             build().apply {
                 Assert.assertEquals(
-                    listOf(CircleCropTransformation(), BlurTransformation()),
+                    listOf(CircleCropTransformation()),
                     transformations
                 )
             }
             addTransformations(listOf(CircleCropTransformation(), RotateTransformation(40)))
             build().apply {
                 Assert.assertEquals(
-                    listOf(
-                        CircleCropTransformation(),
-                        BlurTransformation(),
-                        RotateTransformation(40)
-                    ),
-                    transformations
-                )
-            }
-            removeTransformations(listOf(BlurTransformation()))
-            build().apply {
-                Assert.assertEquals(
                     listOf(CircleCropTransformation(), RotateTransformation(40)),
                     transformations
                 )
             }
-            removeTransformations(listOf(CircleCropTransformation(), RotateTransformation(40)))
+            removeTransformations(listOf(RotateTransformation(40)))
+            build().apply {
+                Assert.assertEquals(
+                    listOf(CircleCropTransformation()),
+                    transformations
+                )
+            }
+            removeTransformations(listOf(CircleCropTransformation()))
             build().apply {
                 Assert.assertNull(transformations)
             }
 
             /* addTransformations(vararg), removeTransformations(vararg) */
-            addTransformations(CircleCropTransformation(), BlurTransformation())
+            addTransformations(CircleCropTransformation())
             build().apply {
                 Assert.assertEquals(
-                    listOf(CircleCropTransformation(), BlurTransformation()),
+                    listOf(CircleCropTransformation()),
                     transformations
                 )
             }
             addTransformations(CircleCropTransformation(), RotateTransformation(40))
             build().apply {
                 Assert.assertEquals(
-                    listOf(
-                        CircleCropTransformation(),
-                        BlurTransformation(),
-                        RotateTransformation(40)
-                    ),
-                    transformations
-                )
-            }
-            removeTransformations(BlurTransformation())
-            build().apply {
-                Assert.assertEquals(
                     listOf(CircleCropTransformation(), RotateTransformation(40)),
                     transformations
                 )
             }
-            removeTransformations(CircleCropTransformation(), RotateTransformation(40))
+            removeTransformations(RotateTransformation(40))
+            build().apply {
+                Assert.assertEquals(
+                    listOf(CircleCropTransformation()),
+                    transformations
+                )
+            }
+            removeTransformations(CircleCropTransformation())
             build().apply {
                 Assert.assertNull(transformations)
             }

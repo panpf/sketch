@@ -4,8 +4,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.test.utils.getContext
 import com.github.panpf.sketch.test.utils.newTestDiskCacheDirectory
-import com.github.panpf.sketch.util.MD5Utils
 import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.md5
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -295,7 +295,7 @@ class LruDiskCacheTest {
             )
 
             Assert.assertEquals(
-                File(defaultCacheDir, "${MD5Utils.md5("file1")}.0").path,
+                File(defaultCacheDir, "${md5("file1")}.0").path,
                 file1Snapshot.file.path
             )
 

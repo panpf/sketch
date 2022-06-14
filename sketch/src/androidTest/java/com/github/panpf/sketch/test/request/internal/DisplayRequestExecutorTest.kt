@@ -70,11 +70,9 @@ import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.size
-import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
-import com.github.panpf.sketch.transform.getBlurTransformed
 import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
@@ -952,28 +950,6 @@ class DisplayRequestExecutorTest {
                 )
                 Assert.assertNotNull(
                     this.asOrNull<SketchDrawable>()!!.transformedList?.getCircleCropTransformed()
-                )
-            }
-
-        request.newDisplayRequest {
-            resize(500, 500, LESS_PIXELS)
-        }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!
-            .drawable.apply {
-                Assert.assertEquals(Size(323, 484), intrinsicSize)
-                Assert.assertNull(
-                    this.asOrNull<SketchDrawable>()!!.transformedList?.getBlurTransformed()
-                )
-            }
-        request.newDisplayRequest {
-            resize(500, 500, LESS_PIXELS)
-            addTransformations(BlurTransformation())
-        }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!
-            .drawable.apply {
-                Assert.assertEquals(Size(323, 484), intrinsicSize)
-                Assert.assertNotNull(
-                    this.asOrNull<SketchDrawable>()!!.transformedList?.getBlurTransformed()
                 )
             }
     }

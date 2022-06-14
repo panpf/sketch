@@ -58,7 +58,6 @@ import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestImageView
 import com.github.panpf.sketch.test.utils.getContext
-import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -1056,10 +1055,10 @@ class DisplayRequestTest {
             }
 
             /* transformations() */
-            transformations(listOf(CircleCropTransformation(), BlurTransformation()))
+            transformations(listOf(CircleCropTransformation()))
             build().apply {
                 Assert.assertEquals(
-                    listOf(CircleCropTransformation(), BlurTransformation()),
+                    listOf(CircleCropTransformation()),
                     transformations
                 )
             }
@@ -1078,63 +1077,55 @@ class DisplayRequestTest {
             }
 
             /* addTransformations(List), removeTransformations(List) */
-            addTransformations(listOf(CircleCropTransformation(), BlurTransformation()))
+            addTransformations(listOf(CircleCropTransformation()))
             build().apply {
                 Assert.assertEquals(
-                    listOf(CircleCropTransformation(), BlurTransformation()),
+                    listOf(CircleCropTransformation()),
                     transformations
                 )
             }
             addTransformations(listOf(CircleCropTransformation(), RotateTransformation(40)))
             build().apply {
                 Assert.assertEquals(
-                    listOf(
-                        CircleCropTransformation(),
-                        BlurTransformation(),
-                        RotateTransformation(40)
-                    ),
-                    transformations
-                )
-            }
-            removeTransformations(listOf(BlurTransformation()))
-            build().apply {
-                Assert.assertEquals(
                     listOf(CircleCropTransformation(), RotateTransformation(40)),
                     transformations
                 )
             }
-            removeTransformations(listOf(CircleCropTransformation(), RotateTransformation(40)))
+            removeTransformations(listOf(RotateTransformation(40)))
+            build().apply {
+                Assert.assertEquals(
+                    listOf(CircleCropTransformation()),
+                    transformations
+                )
+            }
+            removeTransformations(listOf(CircleCropTransformation()))
             build().apply {
                 Assert.assertNull(transformations)
             }
 
             /* addTransformations(vararg), removeTransformations(vararg) */
-            addTransformations(CircleCropTransformation(), BlurTransformation())
+            addTransformations(CircleCropTransformation())
             build().apply {
                 Assert.assertEquals(
-                    listOf(CircleCropTransformation(), BlurTransformation()),
+                    listOf(CircleCropTransformation()),
                     transformations
                 )
             }
             addTransformations(CircleCropTransformation(), RotateTransformation(40))
             build().apply {
                 Assert.assertEquals(
-                    listOf(
-                        CircleCropTransformation(),
-                        BlurTransformation(),
-                        RotateTransformation(40)
-                    ),
-                    transformations
-                )
-            }
-            removeTransformations(BlurTransformation())
-            build().apply {
-                Assert.assertEquals(
                     listOf(CircleCropTransformation(), RotateTransformation(40)),
                     transformations
                 )
             }
-            removeTransformations(CircleCropTransformation(), RotateTransformation(40))
+            removeTransformations(RotateTransformation(40))
+            build().apply {
+                Assert.assertEquals(
+                    listOf(CircleCropTransformation()),
+                    transformations
+                )
+            }
+            removeTransformations(CircleCropTransformation())
             build().apply {
                 Assert.assertNull(transformations)
             }

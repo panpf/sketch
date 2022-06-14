@@ -13,7 +13,7 @@ import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
 
-class SketchUtils {
+class SketchUtils private constructor() {
 
     companion object {
 

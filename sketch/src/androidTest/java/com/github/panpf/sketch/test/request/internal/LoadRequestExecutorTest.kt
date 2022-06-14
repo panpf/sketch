@@ -10,7 +10,6 @@ import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.Bitmap.Config.RGBA_F16
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.ColorSpace
-import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
@@ -58,11 +57,9 @@ import com.github.panpf.sketch.test.utils.getContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.size
-import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
-import com.github.panpf.sketch.transform.getBlurTransformed
 import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
@@ -902,24 +899,6 @@ class LoadRequestExecutorTest {
                 Assert.assertEquals(Size(323, 323), bitmap.size)
                 Assert.assertEquals(listOf(0, 0, 0, 0), bitmap.corners())
                 Assert.assertNotNull(transformedList?.getCircleCropTransformed())
-            }
-
-        request.newLoadRequest {
-            resize(500, 500, LESS_PIXELS)
-        }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<LoadResult.Success>()!!
-            .apply {
-                Assert.assertEquals(Size(323, 484), bitmap.size)
-                Assert.assertNull(transformedList?.getBlurTransformed())
-            }
-        request.newLoadRequest {
-            resize(500, 500, LESS_PIXELS)
-            addTransformations(BlurTransformation())
-        }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<LoadResult.Success>()!!
-            .apply {
-                Assert.assertEquals(Size(323, 484), bitmap.size)
-                Assert.assertNotNull(transformedList?.getBlurTransformed())
             }
     }
 

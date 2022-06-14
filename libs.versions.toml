@@ -4,8 +4,8 @@ composeMinSdk = "21"
 targetSdk = "28"
 compileSdk = "31"
 
-versionCode = "3005"
-versionName = "3.0.0-beta01"
+versionCode = "3006"
+versionName = "3.0.0-beta02"
 
 # plugin
 android-buildtools = "7.2.0"
@@ -121,6 +121,7 @@ tools4j-date = { module = "io.github.panpf.tools4j:tools4j-date-ktx", version.re
 tools4j-io = { module = "io.github.panpf.tools4j:tools4j-io-ktx", version.ref = "tools4j" }
 tools4j-test = { module = "io.github.panpf.tools4j:tools4j-test-ktx", version.ref = "tools4j" }
 tools4j-reflect = { module = "io.github.panpf.tools4j:tools4j-reflect-ktx", version.ref = "tools4j" }
+tools4j-security = { module = "io.github.panpf.tools4j:tools4j-security-ktx", version.ref = "tools4j" }
 tools4k = { module = "io.github.panpf.tools4k:tools4k", version.ref = "tools4k" }
 liveevent = { module = "io.github.panpf.liveevent:liveevent", version.ref = "liveevent" }
 activitymonitor = { module = "io.github.panpf.activitymonitor:activitymonitor", version.ref = "activitymonitor" }
@@ -177,6 +178,7 @@ tools4j = [
     "tools4j-math",
     "tools4j-date",
     "tools4j-io",
+    "tools4j-security",
 ]
 retrofit2 = [
     "retrofit2",

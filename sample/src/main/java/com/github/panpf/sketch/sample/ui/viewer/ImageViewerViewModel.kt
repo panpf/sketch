@@ -9,8 +9,8 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.ui.common.ActionResult
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.util.MD5Utils
 import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
+import com.github.panpf.tools4j.security.ktx.getMD5Digest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -77,7 +77,7 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
         val outDir = File(picturesDir, "sketch3").apply { mkdirs() }
         val fileExtension = fetchResult.mimeType
             ?.let { readFileExtensionFromMimeType(it) } ?: "jpeg"
-        val imageFile = File(outDir, "${MD5Utils.md5(imageUri)}.$fileExtension")
+        val imageFile = File(outDir, "${imageUri.getMD5Digest()}.$fileExtension")
         if (!imageFile.exists()) {
             try {
                 withContext(Dispatchers.IO) {
