@@ -55,7 +55,7 @@ import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.test.utils.getContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -73,7 +73,7 @@ class LoadRequestTest {
 
     @Test
     fun testFun() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest(context1, uriString1).apply {
             Assert.assertSame(context1, this.context)
@@ -116,7 +116,7 @@ class LoadRequestTest {
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     @Test
     fun testNewBuilder() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         LoadRequest(context1, uriString1).newBuilder {
@@ -184,7 +184,7 @@ class LoadRequestTest {
 
     @Test
     fun testContext() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest(context1, uriString1).apply {
             Assert.assertEquals(context1, context)
@@ -194,7 +194,7 @@ class LoadRequestTest {
 
     @Test
     fun testTarget() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         LoadRequest(context1, uriString1).apply {
@@ -218,7 +218,7 @@ class LoadRequestTest {
 
     @Test
     fun testLifecycle() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         var lifecycle1: Lifecycle? = null
         val lifecycleOwner = LifecycleOwner { lifecycle1!! }
@@ -243,7 +243,7 @@ class LoadRequestTest {
 
     @Test
     fun testKey() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         LoadRequest(context1, uriString1).apply {
@@ -265,7 +265,7 @@ class LoadRequestTest {
 
     @Test
     fun testCacheKey() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         LoadRequest(context1, uriString1).apply {
@@ -287,7 +287,7 @@ class LoadRequestTest {
 
     @Test
     fun testDefinedOptions() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         LoadRequest(context1, uriString1).apply {
@@ -309,7 +309,7 @@ class LoadRequestTest {
 
     @Test
     fun testGlobalOptions() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         LoadRequest(context1, uriString1).apply {
@@ -330,7 +330,7 @@ class LoadRequestTest {
 
     @Test
     fun testMerge() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -365,7 +365,7 @@ class LoadRequestTest {
 
     @Test
     fun testDepth() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
@@ -389,7 +389,7 @@ class LoadRequestTest {
 
     @Test
     fun testParameters() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -444,7 +444,7 @@ class LoadRequestTest {
 
     @Test
     fun testHttpHeaders() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -514,7 +514,7 @@ class LoadRequestTest {
 
     @Test
     fun testLoadDiskCachePolicy() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -540,7 +540,7 @@ class LoadRequestTest {
 
     @Test
     fun testBitmapConfig() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -578,7 +578,7 @@ class LoadRequestTest {
     fun testColorSpace() {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -605,7 +605,7 @@ class LoadRequestTest {
     @Test
     @Suppress("DEPRECATION")
     fun testPreferQualityOverSpeed() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -631,7 +631,7 @@ class LoadRequestTest {
 
     @Test
     fun testResize() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -805,7 +805,7 @@ class LoadRequestTest {
 
     @Test
     fun testResizeSize() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -840,7 +840,7 @@ class LoadRequestTest {
 
     @Test
     fun testResizeSizeResolver() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         val imageView = ImageView(context1)
 
@@ -891,7 +891,7 @@ class LoadRequestTest {
 
     @Test
     fun testResizePrecision() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -950,7 +950,7 @@ class LoadRequestTest {
 
     @Test
     fun testResizeScale() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -976,7 +976,7 @@ class LoadRequestTest {
 
     @Test
     fun testTransformations() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1063,7 +1063,7 @@ class LoadRequestTest {
 
     @Test
     fun testDisallowReuseBitmap() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1089,7 +1089,7 @@ class LoadRequestTest {
 
     @Test
     fun testIgnoreExifOrientation() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1115,7 +1115,7 @@ class LoadRequestTest {
 
     @Test
     fun testResultCachePolicy() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1141,7 +1141,7 @@ class LoadRequestTest {
 
     @Test
     fun testDisallowAnimatedImage() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1167,7 +1167,7 @@ class LoadRequestTest {
 
     @Test
     fun testPlaceholder() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1201,7 +1201,7 @@ class LoadRequestTest {
 
     @Test
     fun testError() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1250,7 +1250,7 @@ class LoadRequestTest {
 
     @Test
     fun testTransition() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1271,7 +1271,7 @@ class LoadRequestTest {
 
     @Test
     fun testResizeApplyToDrawable() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
@@ -1297,7 +1297,7 @@ class LoadRequestTest {
 
     @Test
     fun testMemoryCachePolicy() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {

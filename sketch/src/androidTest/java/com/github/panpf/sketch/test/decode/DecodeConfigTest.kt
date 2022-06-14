@@ -64,6 +64,7 @@ class DecodeConfigTest {
     fun testToBitmapOptions() {
         DecodeConfig().toBitmapOptions().apply {
             Assert.assertEquals(0, inSampleSize)
+            @Suppress("DEPRECATION")
             Assert.assertEquals(false, inPreferQualityOverSpeed)
             Assert.assertEquals(Bitmap.Config.ARGB_8888, inPreferredConfig)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -73,6 +74,7 @@ class DecodeConfigTest {
 
         DecodeConfig().apply {
             inSampleSize = 4
+            @Suppress("DEPRECATION")
             inPreferQualityOverSpeed = true
             inPreferredConfig = RGB_565
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -80,6 +82,7 @@ class DecodeConfigTest {
             }
         }.toBitmapOptions().apply {
             Assert.assertEquals(4, inSampleSize)
+            @Suppress("DEPRECATION")
             if (VERSION.SDK_INT <= VERSION_CODES.M) {
                 Assert.assertEquals(true, inPreferQualityOverSpeed)
             } else {

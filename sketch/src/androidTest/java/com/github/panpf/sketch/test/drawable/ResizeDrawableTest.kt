@@ -20,7 +20,7 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.test.utils.getContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
@@ -32,7 +32,7 @@ class ResizeDrawableTest {
 
     @Test
     fun testTryToResizeDrawable() {
-        val context = getContext()
+        val context = getTestContext()
         val resources = context.resources
         val sketch = context.sketch
 
@@ -87,7 +87,7 @@ class ResizeDrawableTest {
 
     @Test
     fun testIntrinsicSize() {
-        val context = getContext()
+        val context = getTestContext()
         val resources = context.resources
         val sketch = context.sketch
 
@@ -105,7 +105,7 @@ class ResizeDrawableTest {
 
     @Test
     fun testSetBounds() {
-        val context = getContext()
+        val context = getTestContext()
         val resources = context.resources
         val sketch = context.sketch
 
@@ -188,7 +188,7 @@ class ResizeDrawableTest {
 
     @Test
     fun testToString() {
-        val context = getContext()
+        val context = getTestContext()
         val resources = context.resources
         val sketch = context.sketch
 

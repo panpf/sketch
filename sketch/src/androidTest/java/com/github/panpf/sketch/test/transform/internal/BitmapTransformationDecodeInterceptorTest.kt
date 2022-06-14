@@ -9,7 +9,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformed
@@ -25,7 +25,7 @@ class BitmapTransformationDecodeInterceptorTest {
 
     @Test
     fun testIntercept() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val interceptors =
             listOf(BitmapEngineDecodeInterceptor())
         val requestContext = RequestContext()

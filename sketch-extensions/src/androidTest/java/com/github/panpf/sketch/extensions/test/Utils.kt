@@ -7,14 +7,14 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import java.io.File
 
-fun getContextAndSketch(): Pair<Context, Sketch> {
+fun getTestContextAndNewSketch(): Pair<Context, Sketch> {
     val context = InstrumentationRegistry.getInstrumentation().context
     return context to Sketch.Builder(context).apply {
         diskCache(LruDiskCache(context, directory = context.newTestDiskCacheDirectory()))
     }.build()
 }
 
-fun getContext(): Context {
+fun getTestContext(): Context {
     return InstrumentationRegistry.getInstrumentation().context
 }
 

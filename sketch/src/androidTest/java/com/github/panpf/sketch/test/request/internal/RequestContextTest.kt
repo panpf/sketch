@@ -10,7 +10,7 @@ import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.test.utils.getContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ class RequestContextTest {
 
     @Test
     fun test() {
-        val context = getContext()
+        val context = getTestContext()
         val logger = Logger()
         val bitmapPool = LruBitmapPool(context.defaultMemoryCacheBytes())
         val countDrawable = SketchCountBitmapDrawable(

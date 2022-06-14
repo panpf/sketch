@@ -26,7 +26,7 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.getResizeTransformed
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.runBlocking
@@ -39,7 +39,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testDefault() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         LoadRequest(context, newAssetUri("sample.jpeg")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
@@ -87,7 +87,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testBitmapConfig() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         LoadRequest(context, newAssetUri("sample.jpeg")) {
             bitmapConfig(RGB_565)
@@ -124,7 +124,7 @@ class DefaultBitmapDecoderTest {
     fun testColorSpace() {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         LoadRequest(context, newAssetUri("sample.jpeg")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
@@ -189,7 +189,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testResize() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         // precision = LESS_PIXELS
         LoadRequest(context, newAssetUri("sample.jpeg")) {
@@ -375,7 +375,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testResizeNoRegion() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         // precision = LESS_PIXELS
         LoadRequest(context, newAssetUri("sample.bmp")) {
@@ -554,7 +554,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testResizeExif() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         val testFile = ExifOrientationTestFileHelper(context, "sample.jpeg").files()
             .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!
@@ -743,7 +743,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testResizeExifIgnore() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         val testFile = ExifOrientationTestFileHelper(context, "sample.jpeg").files()
             .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!

@@ -11,7 +11,7 @@ import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.test.utils.getContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -22,7 +22,7 @@ class ResizeAnimatableDrawableTest {
 
     @Test
     fun test() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = context.sketch
 
         val imageUri = newAssetUri("sample.jpeg")
@@ -60,7 +60,7 @@ class ResizeAnimatableDrawableTest {
 
     @Test
     fun testToString() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = context.sketch
 
         val imageUri = newAssetUri("sample.jpeg")

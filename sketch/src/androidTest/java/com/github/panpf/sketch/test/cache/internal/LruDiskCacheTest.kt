@@ -2,7 +2,7 @@ package com.github.panpf.sketch.test.cache.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruDiskCache
-import com.github.panpf.sketch.test.utils.getContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newTestDiskCacheDirectory
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.md5
@@ -17,7 +17,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testMaxSize() {
-        val context = getContext()
+        val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = defaultCacheDir).use {
@@ -31,7 +31,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testVersion() {
-        val context = getContext()
+        val context = getTestContext()
 
         val directory = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = directory).use {
@@ -64,7 +64,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testDirectory() {
-        val context = getContext()
+        val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = defaultCacheDir).use {
@@ -82,7 +82,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testSize() {
-        val context = getContext()
+        val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = defaultCacheDir).use {
@@ -103,7 +103,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testPutRemoveGetExist() {
-        val context = getContext()
+        val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = defaultCacheDir).use {
@@ -146,7 +146,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testLRU() {
-        val context = getContext()
+        val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = defaultCacheDir).use {
@@ -210,7 +210,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testClear() {
-        val context = getContext()
+        val context = getTestContext()
 
         val directory = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = directory).use {
@@ -241,7 +241,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testEditLock() {
-        val context = getContext()
+        val context = getTestContext()
         LruDiskCache(
             context,
             10L * 1024 * 1024,
@@ -256,7 +256,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testToString() {
-        val context = getContext()
+        val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = defaultCacheDir).use {
@@ -277,7 +277,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testSnapshot() {
-        val context = getContext()
+        val context = getTestContext()
         val defaultCacheDir = context.newTestDiskCacheDirectory()
 
         LruDiskCache(context, directory = defaultCacheDir).use {
@@ -312,7 +312,7 @@ class LruDiskCacheTest {
 
     @Test
     fun testEditor() {
-        val context = getContext()
+        val context = getTestContext()
 
         val directory = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = directory).use {

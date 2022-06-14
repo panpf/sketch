@@ -15,7 +15,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.sketch.test.utils.getContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
@@ -222,7 +222,7 @@ class ComponentRegistryTest {
 
     @Test
     fun testNewFetcher() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
 
         ComponentRegistry.Builder().build().apply {
@@ -268,7 +268,7 @@ class ComponentRegistryTest {
 
     @Test
     fun testBitmapDecoder() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val requestContext = RequestContext()
         val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
@@ -309,7 +309,7 @@ class ComponentRegistryTest {
 
     @Test
     fun testDrawableDecoder() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val requestContext = RequestContext()
         val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)

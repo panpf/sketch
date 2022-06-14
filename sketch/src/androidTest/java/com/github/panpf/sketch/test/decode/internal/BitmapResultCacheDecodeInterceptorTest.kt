@@ -10,7 +10,7 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -21,7 +21,7 @@ class BitmapResultCacheDecodeInterceptorTest {
 
     @Test
     fun testIntercept() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val interceptors =
             listOf(BitmapResultCacheDecodeInterceptor(), BitmapEngineDecodeInterceptor())
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg")) {

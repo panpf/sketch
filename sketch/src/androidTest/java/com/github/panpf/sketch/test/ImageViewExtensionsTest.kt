@@ -16,7 +16,7 @@ import com.github.panpf.sketch.result
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.sketch.test.utils.getContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +30,7 @@ class ImageViewExtensionsTest {
 
     @Test
     fun testDisplayImage() {
-        val context = getContext()
+        val context = getTestContext()
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView

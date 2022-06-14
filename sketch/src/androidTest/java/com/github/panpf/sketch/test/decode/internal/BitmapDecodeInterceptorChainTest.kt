@@ -12,7 +12,7 @@ import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -23,7 +23,7 @@ class BitmapDecodeInterceptorChainTest {
 
     @Test
     fun test() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         mutableListOf<String>().apply {
             val interceptors = listOf(

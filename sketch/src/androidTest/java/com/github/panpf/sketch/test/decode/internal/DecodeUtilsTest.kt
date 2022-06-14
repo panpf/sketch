@@ -52,7 +52,8 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -479,7 +480,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testApplyResize() {
-        val (_, sketch) = getContextAndNewSketch()
+        val sketch = newSketch()
         val newResult: () -> BitmapDecodeResult = {
             BitmapDecodeResult(
                 bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
@@ -573,7 +574,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactory() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactory().apply {
@@ -608,7 +609,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrThrow() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactoryOrThrow().apply {
@@ -639,7 +640,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrNull() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
@@ -671,7 +672,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeBitmap() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeBitmap()!!.apply {
@@ -704,7 +705,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeRegionBitmap() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg")
             .decodeRegionBitmap(Rect(500, 500, 600, 600))!!.apply {

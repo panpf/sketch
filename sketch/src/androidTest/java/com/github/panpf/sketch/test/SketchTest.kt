@@ -45,8 +45,8 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestLongImageDecider
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
-import com.github.panpf.sketch.test.utils.getContext
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.DefaultLongImageDecider
@@ -67,7 +67,7 @@ class SketchTest {
 
     @Test
     fun testBuilder() {
-        val context1 = getContext()
+        val context1 = getTestContext()
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
         Sketch.Builder(activity).build().apply {
@@ -303,7 +303,7 @@ class SketchTest {
 
     @Test
     fun testDisplayEnqueue() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         /* success */
         val listenerSupervisor1 = DisplayListenerSupervisor()
@@ -348,7 +348,7 @@ class SketchTest {
 
     @Test
     fun testDisplayExecute() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         /* success */
         val listenerSupervisor1 = DisplayListenerSupervisor()
@@ -393,7 +393,7 @@ class SketchTest {
 
     @Test
     fun testLoadEnqueue() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         /* success */
         val listenerSupervisor1 = LoadListenerSupervisor()
@@ -436,7 +436,7 @@ class SketchTest {
 
     @Test
     fun testLoadExecute() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         /* success */
         val listenerSupervisor1 = LoadListenerSupervisor()
@@ -481,7 +481,7 @@ class SketchTest {
 
     @Test
     fun testDownloadEnqueue() {
-        val (context, sketch) = getContextAndNewSketch {
+        val (context, sketch) = getTestContextAndNewSketch {
             httpStack(TestHttpStack(it))
         }
 
@@ -535,7 +535,7 @@ class SketchTest {
 
     @Test
     fun testDownloadExecute() {
-        val (context, sketch) = getContextAndNewSketch {
+        val (context, sketch) = getTestContextAndNewSketch {
             httpStack(TestHttpStack(it))
         }
 

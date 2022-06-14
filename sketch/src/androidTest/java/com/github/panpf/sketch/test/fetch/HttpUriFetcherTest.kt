@@ -11,7 +11,7 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +29,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val httpUri = "http://sample.com/sample.jpg"
         val httpsUri = "https://sample.com/sample.jpg"
         val ftpUri = "ftp://sample.com/sample.jpg"
@@ -74,7 +74,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testFetchBlockingRepeatDownload() {
-        val (context, sketch) = getContextAndNewSketch {
+        val (context, sketch) = getTestContextAndNewSketch {
             httpStack(TestHttpStack(it))
         }
 
@@ -130,7 +130,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testFetchByDiskCachePolicy() {
-        val (context, sketch) = getContextAndNewSketch {
+        val (context, sketch) = getTestContextAndNewSketch {
             httpStack(TestHttpStack(it))
         }
 
@@ -279,7 +279,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testProgress() {
-        val (context, sketch) = getContextAndNewSketch {
+        val (context, sketch) = getTestContextAndNewSketch {
             httpStack(TestHttpStack(it))
         }
 
@@ -315,7 +315,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testCancel() {
-        val (context, sketch) = getContextAndNewSketch {
+        val (context, sketch) = getTestContextAndNewSketch {
             httpStack(TestHttpStack(it, readDelayMillis = 1000))
         }
 
@@ -346,7 +346,7 @@ class HttpUriFetcherTest {
 
     @Test
     fun testException() {
-        val (context, sketch) = getContextAndNewSketch {
+        val (context, sketch) = getTestContextAndNewSketch {
             httpStack(TestHttpStack(it))
         }
 

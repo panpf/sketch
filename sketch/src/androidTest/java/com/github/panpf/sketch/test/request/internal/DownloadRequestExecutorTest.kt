@@ -24,7 +24,7 @@ import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
 import com.github.panpf.sketch.test.utils.DownloadProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestDownloadTarget
 import com.github.panpf.sketch.test.utils.TestHttpStack
-import com.github.panpf.sketch.test.utils.getContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.Deferred
@@ -42,7 +42,7 @@ class DownloadRequestExecutorTest {
 
     @Test
     fun testDepth() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
@@ -131,7 +131,7 @@ class DownloadRequestExecutorTest {
 
     @Test
     fun testDownloadCachePolicy() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
@@ -257,7 +257,7 @@ class DownloadRequestExecutorTest {
 
     @Test
     fun testListener() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
@@ -310,7 +310,7 @@ class DownloadRequestExecutorTest {
 
     @Test
     fun testProgressListener() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             httpStack(TestHttpStack(context, 20))
         }
@@ -343,7 +343,7 @@ class DownloadRequestExecutorTest {
 
     @Test
     fun testTarget() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
@@ -429,7 +429,7 @@ class DownloadRequestExecutorTest {
 
     @Test
     fun testLifecycle() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }

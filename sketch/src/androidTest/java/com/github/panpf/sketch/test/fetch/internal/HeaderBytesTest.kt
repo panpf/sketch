@@ -11,7 +11,8 @@ import com.github.panpf.sketch.fetch.internal.isHeif
 import com.github.panpf.sketch.fetch.internal.isWebP
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -20,7 +21,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class HeaderBytesTest {
 
-    val bytes = "abcdefghijklmnopqrstuvwxyz".toByteArray()
+    private val bytes = "abcdefghijklmnopqrstuvwxyz".toByteArray()
 
     @Test
     fun testRangeEquals() {
@@ -72,7 +73,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsWebP() {
-        val (context, _) = getContextAndNewSketch()
+        val context = getTestContext()
 
         HeaderBytes(context.assets.open("sample.webp").use {
             ByteArray(1024).apply { it.read(this) }
@@ -93,7 +94,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsAnimatedWebP() {
-        val (context, _) = getContextAndNewSketch()
+        val context = getTestContext()
 
         HeaderBytes(context.assets.open("sample_anim.webp").use {
             ByteArray(1024).apply { it.read(this) }
@@ -114,7 +115,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsHeif() {
-        val (context, _) = getContextAndNewSketch()
+        val context = getTestContext()
 
         HeaderBytes(context.assets.open("sample.heic").use {
             ByteArray(1024).apply { it.read(this) }
@@ -135,7 +136,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsAnimatedHeif() {
-        val (context, _) = getContextAndNewSketch()
+        val context = getTestContext()
 
         HeaderBytes(context.assets.open("sample.heic").use {
             ByteArray(1024).apply { it.read(this) }
@@ -156,7 +157,7 @@ class HeaderBytesTest {
 
     @Test
     fun testIsGif() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         // normal
         val request = LoadRequest(context, newAssetUri("sample_anim.gif"))

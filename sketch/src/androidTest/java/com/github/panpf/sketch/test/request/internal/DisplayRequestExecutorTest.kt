@@ -64,8 +64,8 @@ import com.github.panpf.sketch.test.utils.TestDisplayTarget
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestTransitionDisplayTarget
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.getContext
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
@@ -94,7 +94,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testDepth() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
@@ -182,7 +182,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testDownloadCachePolicy() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
@@ -307,7 +307,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testBitmapConfig() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
 
         DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
@@ -458,7 +458,7 @@ class DisplayRequestExecutorTest {
     fun testColorSpace() {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
 
         DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
@@ -505,7 +505,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testPreferQualityOverSpeed() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
 
         DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
@@ -534,7 +534,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testResize() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val imageSize = Size(1291, 1936)
         val displaySize = context.resources.displayMetrics.let {
@@ -860,7 +860,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testTransformations() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
@@ -956,7 +956,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testDisallowReuseBitmap() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val bitmapPool = sketch.bitmapPool
         val imageUri = TestAssets.SAMPLE_JPEG_URI
@@ -1022,7 +1022,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testIgnoreExifOrientation() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             Assert.assertNotEquals(ExifInterface.ORIENTATION_UNDEFINED, it.exifOrientation)
@@ -1075,7 +1075,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testResultCachePolicy() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val diskCache = sketch.diskCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
@@ -1183,7 +1183,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testPlaceholder() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         var onStartDrawable: Drawable?
@@ -1225,7 +1225,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testError() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         var onErrorDrawable: Drawable?
@@ -1273,7 +1273,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testTransition() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val testTarget = TestTransitionDisplayTarget()
@@ -1308,7 +1308,7 @@ class DisplayRequestExecutorTest {
     fun testDisallowAnimatedImage() {
         if (VERSION.SDK_INT < VERSION_CODES.P) return
 
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             components {
                 addDrawableDecoder(GifAnimatedDrawableDecoder.Factory())
@@ -1347,7 +1347,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testResizeApplyToDrawable() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
@@ -1383,7 +1383,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testMemoryCachePolicy() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val memoryCache = sketch.memoryCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
@@ -1491,7 +1491,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testListener() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val errorImageUri = TestAssets.SAMPLE_JPEG_URI + ".fake"
@@ -1542,7 +1542,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testProgressListener() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch {
             httpStack(TestHttpStack(context, 20))
         }
@@ -1575,7 +1575,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testTarget() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
 
         TestDisplayTarget().let { testTarget ->
@@ -1660,7 +1660,7 @@ class DisplayRequestExecutorTest {
 
     @Test
     fun testLifecycle() {
-        val context = getContext()
+        val context = getTestContext()
         val sketch = newSketch()
         val lifecycleOwner = object : LifecycleOwner {
             private var lifecycle: Lifecycle? = null

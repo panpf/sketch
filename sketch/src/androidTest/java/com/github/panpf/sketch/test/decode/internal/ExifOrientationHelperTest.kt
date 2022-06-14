@@ -20,13 +20,14 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
 import com.github.panpf.sketch.test.utils.cornerB
 import com.github.panpf.sketch.test.utils.cornerC
 import com.github.panpf.sketch.test.utils.cornerD
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
@@ -37,7 +38,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientation() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
@@ -77,7 +78,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientationWithMimeType() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
@@ -207,7 +208,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testApplyToBitmap() {
-        val (context, _) = getContextAndNewSketch()
+        val context = getTestContext()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
         }
@@ -292,7 +293,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testAddToBitmap() {
-        val (context, _) = getContextAndNewSketch()
+        val context = getTestContext()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
         }
@@ -377,7 +378,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testAddAndApplyToBitmap() {
-        val (context, sketch) = getContextAndNewSketch()
+        val context = getTestContext()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
         }

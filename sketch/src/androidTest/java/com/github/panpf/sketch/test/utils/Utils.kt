@@ -2,7 +2,10 @@ package com.github.panpf.sketch.test.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapRegionDecoder
 import android.graphics.drawable.Drawable
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
@@ -11,8 +14,9 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import java.io.File
+import java.io.InputStream
 
-fun getContext(): Context {
+fun getTestContext(): Context {
     return InstrumentationRegistry.getInstrumentation().context
 }
 
@@ -35,12 +39,12 @@ fun newSketch(): Sketch {
     return newSketch {}
 }
 
-fun getContextAndNewSketch(): Pair<Context, Sketch> {
+fun getTestContextAndNewSketch(): Pair<Context, Sketch> {
     val context = InstrumentationRegistry.getInstrumentation().context
     return context to newSketch()
 }
 
-fun getContextAndNewSketch(block: Sketch.Builder.(context: Context) -> Unit): Pair<Context, Sketch> {
+fun getTestContextAndNewSketch(block: Sketch.Builder.(context: Context) -> Unit): Pair<Context, Sketch> {
     val context = InstrumentationRegistry.getInstrumentation().context
     return context to newSketch(block)
 }
@@ -56,3 +60,11 @@ val Size.ratio: Float
 
 val Bitmap.size: Size
     get() = Size(width, height)
+
+fun InputStream.newBitmapRegionDecoderInstanceCompat(): BitmapRegionDecoder? =
+    if (VERSION.SDK_INT >= VERSION_CODES.S) {
+        BitmapRegionDecoder.newInstance(this)
+    } else {
+        @Suppress("DEPRECATION")
+        BitmapRegionDecoder.newInstance(this, false)
+    }

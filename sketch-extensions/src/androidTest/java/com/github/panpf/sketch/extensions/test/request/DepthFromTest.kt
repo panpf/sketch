@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.extensions.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.extensions.test.getContext
+import com.github.panpf.sketch.extensions.test.getTestContext
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DEPTH_FROM_KEY
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -43,7 +43,7 @@ class DepthFromTest {
 
     @Test
     fun testImageRequestDepth() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
@@ -70,7 +70,7 @@ class DepthFromTest {
 
     @Test
     fun testDisplayRequestDepth() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
@@ -97,7 +97,7 @@ class DepthFromTest {
 
     @Test
     fun testLoadRequestDepth() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         LoadRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
@@ -124,7 +124,7 @@ class DepthFromTest {
 
     @Test
     fun testDownloadRequestDepth() {
-        val context1 = getContext()
+        val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DownloadRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)

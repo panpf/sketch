@@ -1,14 +1,13 @@
 package com.github.panpf.sketch.test.datasource
 
 import android.net.Uri
-import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.utils.getContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -22,7 +21,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
@@ -45,7 +44,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testLength() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
@@ -78,7 +77,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testNewFileDescriptor() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
@@ -111,7 +110,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
@@ -144,7 +143,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testFile() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
@@ -179,7 +178,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,

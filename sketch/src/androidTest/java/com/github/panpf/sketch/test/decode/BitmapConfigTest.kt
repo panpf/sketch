@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.github.panpf.sketch.test.decode
 
 import android.graphics.Bitmap.Config.ARGB_4444
