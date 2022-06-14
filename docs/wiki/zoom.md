@@ -24,7 +24,7 @@ sketchZoomImageView.displayImage("https://www.sample.com/image.jpg")
 
 > 注意：
 > * 缩放功能支持任意来源的 Drawable
-> * 分块显示超大图功能仅支持来自 Sketch 的 Drawable 
+> * 分块显示超大图功能仅支持来自 Sketch 的 Drawable
 
 ## 缩放
 
@@ -54,7 +54,7 @@ sketchZoomImageView.zoomAbility.rotateBy(90)
 ```
 
 > 注意：
-> * 只支持 90、180、270、360等能整除 90 的旋转角度 
+> * 只支持 90、180、270、360等能整除 90 的旋转角度
 > * 旋转角度是会一直存在的
 
 ## 定位
@@ -184,33 +184,31 @@ class ImageDetailActivity : AppCompatActivity() {
 2. Bitmap 尺寸比原始图片小
 3. 图片是通过 Sketch 加载的
 
-#### Lifecycle
+### Lifecycle
 
 [SketchZoomImageView] 能够监听 Lifecycle 的状态，在 pause 状态时暂停分块显示超大图并释放所有碎片的 Bitmap，在 resume
 状态时恢复分块显示超大图并重新加载碎片，这样能够在 Fragment 或 Activity 切换到后台或不显示时主动释放内存
 
-[SketchZoomImageView] 默认会从 [SketchZoomImageView].context 上获取 Lifecycle，这样通常获取到的是 Activity 的
-Lifecycle
+[SketchZoomImageView] 会从 [DisplayRequest] 获取 Lifecycle，[DisplayRequest] 优先从 [SketchZoomImageView]
+.context 上获取 Lifecycle，这样通常获取到的是 Activity 的 Lifecycle，一般情况下是够用的
 
-如果 [SketchZoomImageView] 是在 Fragment 中使用那么建议主动将 Fragment 的 viewLifecycleOwner.lifecycle 绑定给
-[SketchZoomImageView]，如下：
+如果 [SketchZoomImageView] 是在 ViewPager + Fragment 的组合中使用那么需要主动将 Fragment 的
+viewLifecycleOwner.lifecycle 设置给
+[DisplayRequest]，如下：
 
 ```kotlin
 class MyFragment : Fragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup,
-        savedInstanceState: Bundle
-    ): View {
+    override fun onViewCreated(view: View) {
         // ...
-        sketchZoomImageView.zoomAbility.lifecycle = viewLifecycleOwner.lifecycle
-        return view
+        sketchZoomImageView.displayImage("https://www.sample.com/image.jpg") {
+            lifecycle(viewLifecycleOwner.lifecycle)
+        }
     }
 }
 ```
 
-#### 分块显示监听
+### 分块显示监听
 
 ```kotlin
 // 监听碎片变化

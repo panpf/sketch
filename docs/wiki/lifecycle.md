@@ -32,7 +32,7 @@ imageView.displayImage("https://www.example.com/image.gif") {
 
 ### ViewPager+Fragment
 
-从 Context 取 Lifecycle 一般取到的是 Activity 的 Lifecycle，大多数情况下已经够用了，但是当在 ViewPager+Fragment 的结构中时，需要
+从 Context 取 Lifecycle 一般取到的是 Activity 的 Lifecycle，大多数情况下已经够用了，但是当在 ViewPager + Fragment 的组合中时，需要
 Fragment 的 View Lifecycle，这时候需要你手动指定，如下：
 
 ```kotlin
