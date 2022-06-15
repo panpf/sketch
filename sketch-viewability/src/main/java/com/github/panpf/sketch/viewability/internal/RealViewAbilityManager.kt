@@ -3,6 +3,7 @@ package com.github.panpf.sketch.viewability.internal
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -21,6 +22,7 @@ import com.github.panpf.sketch.viewability.DrawObserver
 import com.github.panpf.sketch.viewability.DrawableObserver
 import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ImageMatrixObserver
+import com.github.panpf.sketch.viewability.InstanceStateObserver
 import com.github.panpf.sketch.viewability.LayoutObserver
 import com.github.panpf.sketch.viewability.LongClickObserver
 import com.github.panpf.sketch.viewability.RequestListenerObserver
@@ -64,29 +66,49 @@ class RealViewAbilityManager(
     private var imageMatrixAbilityList: List<ImageMatrixObserver>? = null
     private var requestListenerAbilityList: List<RequestListenerObserver>? = null
     private var requestProgressListenerAbilityList: List<RequestProgressListenerObserver>? = null
+    private var instanceStateObserverAbilityList: List<InstanceStateObserver>? = null
 
     override val viewAbilityList: List<ViewAbility>
         get() = _viewAbilityImmutableList
 
     private fun onAbilityListChanged() {
-        attachObserverList = _viewAbilityList.filterIsInstance(AttachObserver::class.java)
-        layoutAbilityList = _viewAbilityList.filterIsInstance(LayoutObserver::class.java)
-        sizeChangeAbilityList = _viewAbilityList.filterIsInstance(SizeChangeObserver::class.java)
-        drawObserverList = _viewAbilityList.filterIsInstance(DrawObserver::class.java)
+        attachObserverList =
+            _viewAbilityList.filterIsInstance(AttachObserver::class.java).takeIf { it.isNotEmpty() }
+        layoutAbilityList =
+            _viewAbilityList.filterIsInstance(LayoutObserver::class.java).takeIf { it.isNotEmpty() }
+        sizeChangeAbilityList =
+            _viewAbilityList.filterIsInstance(SizeChangeObserver::class.java)
+                .takeIf { it.isNotEmpty() }
+        drawObserverList =
+            _viewAbilityList.filterIsInstance(DrawObserver::class.java).takeIf { it.isNotEmpty() }
         drawForegroundObserverList =
             _viewAbilityList.filterIsInstance(DrawForegroundObserver::class.java)
-        touchEventObserverList = _viewAbilityList.filterIsInstance(TouchEventObserver::class.java)
-        clickObserverList = _viewAbilityList.filterIsInstance(ClickObserver::class.java)
-        longClickAbilityList = _viewAbilityList.filterIsInstance(LongClickObserver::class.java)
+                .takeIf { it.isNotEmpty() }
+        touchEventObserverList =
+            _viewAbilityList.filterIsInstance(TouchEventObserver::class.java)
+                .takeIf { it.isNotEmpty() }
+        clickObserverList =
+            _viewAbilityList.filterIsInstance(ClickObserver::class.java).takeIf { it.isNotEmpty() }
+        longClickAbilityList =
+            _viewAbilityList.filterIsInstance(LongClickObserver::class.java)
+                .takeIf { it.isNotEmpty() }
         visibilityChangedObserverList = _viewAbilityList
-            .filterIsInstance(VisibilityChangedObserver::class.java)
+            .filterIsInstance(VisibilityChangedObserver::class.java).takeIf { it.isNotEmpty() }
         drawableObserverList = _viewAbilityList.filterIsInstance(DrawableObserver::class.java)
+            .takeIf { it.isNotEmpty() }
         scaleTypeAbilityList = _viewAbilityList.filterIsInstance(ScaleTypeObserver::class.java)
+            .takeIf { it.isNotEmpty() }
         imageMatrixAbilityList = _viewAbilityList.filterIsInstance(ImageMatrixObserver::class.java)
+            .takeIf { it.isNotEmpty() }
         requestListenerAbilityList =
             _viewAbilityList.filterIsInstance(RequestListenerObserver::class.java)
+                .takeIf { it.isNotEmpty() }
         requestProgressListenerAbilityList =
             _viewAbilityList.filterIsInstance(RequestProgressListenerObserver::class.java)
+                .takeIf { it.isNotEmpty() }
+        instanceStateObserverAbilityList =
+            _viewAbilityList.filterIsInstance(InstanceStateObserver::class.java)
+                .takeIf { it.isNotEmpty() }
         _viewAbilityImmutableList = _viewAbilityList.toList()
         refreshOnClickListener()
         refreshOnLongClickListener()
@@ -275,6 +297,31 @@ class RealViewAbilityManager(
             displayRequestListener
         } else {
             null
+        }
+    }
+
+    override fun onSaveInstanceState(): Bundle? {
+        val instanceStateObserverAbilityList =
+            instanceStateObserverAbilityList?.takeIf { it.isNotEmpty() } ?: return null
+        val bundle = Bundle()
+        instanceStateObserverAbilityList.forEach {
+            val childBundle = it.onSaveInstanceState()
+            if (childBundle != null) {
+                val key = it::class.java.name + "_onSaveInstanceState"
+                bundle.putBundle(key, childBundle)
+            }
+        }
+        return bundle.takeIf { !it.isEmpty }
+    }
+
+    override fun onRestoreInstanceState(state: Bundle?) {
+        val instanceStateObserverAbilityList =
+            instanceStateObserverAbilityList?.takeIf { it.isNotEmpty() } ?: return
+        val state1 = state?.takeIf { !it.isEmpty } ?: return
+        instanceStateObserverAbilityList.forEach {
+            val key = it::class.java.name + "_onSaveInstanceState"
+            val childBundle = state1.getBundle(key)
+            it.onRestoreInstanceState(childBundle)
         }
     }
 

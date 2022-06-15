@@ -3,6 +3,8 @@ package com.github.panpf.sketch.viewability
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.os.Parcelable
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -127,4 +129,8 @@ interface ViewAbilityManager {
      * Get request progress Listener
      */
     fun getRequestProgressListener(): ProgressListener<DisplayRequest>?
+
+    fun onSaveInstanceState(): Bundle?
+
+    fun onRestoreInstanceState(state: Bundle?)
 }

@@ -3,6 +3,8 @@ package com.github.panpf.sketch.viewability
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.os.Parcelable
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView.ScaleType
@@ -128,4 +130,14 @@ interface RequestProgressListenerObserver : ViewObserver {
         totalLength: Long,
         completedLength: Long
     )
+}
+
+/**
+ * Observe save and restore instance state
+ */
+interface InstanceStateObserver : ViewObserver {
+
+    fun onSaveInstanceState(): Bundle?
+
+    fun onRestoreInstanceState(state: Bundle?)
 }

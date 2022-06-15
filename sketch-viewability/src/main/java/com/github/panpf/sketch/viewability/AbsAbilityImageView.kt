@@ -5,9 +5,14 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
+import android.os.Parcelable.Creator
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatImageView
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
@@ -162,5 +167,55 @@ abstract class AbsAbilityImageView @JvmOverloads constructor(
 
     override fun getProgressListener(): ProgressListener<DisplayRequest>? {
         return viewAbilityManager?.getRequestProgressListener()
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val superParcelable = super.onSaveInstanceState()
+        val abilityListStateBundle1 =
+            viewAbilityManager?.onSaveInstanceState() ?: return superParcelable
+        return SavedState(superParcelable).apply {
+            abilityListStateBundle = abilityListStateBundle1
+        }
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state !is SavedState) {
+            super.onRestoreInstanceState(state)
+            return
+        }
+
+        super.onRestoreInstanceState(state.superState)
+        viewAbilityManager?.onRestoreInstanceState(state.abilityListStateBundle)
+    }
+
+    class SavedState : BaseSavedState {
+        var abilityListStateBundle: Bundle? = null
+
+        internal constructor(superState: Parcelable?) : super(superState) {}
+
+        override fun writeToParcel(out: Parcel, flags: Int) {
+            super.writeToParcel(out, flags)
+            out.writeBundle(abilityListStateBundle)
+        }
+
+        override fun toString(): String = "AbsAbilityImageViewSavedState"
+
+        private constructor(`in`: Parcel) : super(`in`) {
+            abilityListStateBundle = `in`.readBundle(SavedState::class.java.classLoader)
+        }
+
+        companion object {
+            @Keep
+            @JvmField
+            val CREATOR: Creator<SavedState> = object : Creator<SavedState> {
+                override fun createFromParcel(`in`: Parcel): SavedState {
+                    return SavedState(`in`)
+                }
+
+                override fun newArray(size: Int): Array<SavedState?> {
+                    return arrayOfNulls(size)
+                }
+            }
+        }
     }
 }
