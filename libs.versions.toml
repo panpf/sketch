@@ -56,7 +56,7 @@ okhttp3 = "3.12.0"   # 3.12.9 是最后一个支持 Android 5.0 以下的版本
 androidsvg = "1.4"
 accompanist_drawablepainter = "0.20.3"
 ffmpegMediaMetadataRetriever = "1.0.16"
-leakcanary = "2.7"
+leakcanary = "2.9.1"
 mmkv = "1.2.13"
 
 [libraries]

@@ -2,12 +2,12 @@ package com.github.panpf.sketch.sample.ui.viewer
 
 import android.Manifest
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
@@ -56,13 +56,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
                 binding.imageViewerSwipeBack.back()
             }
             setOnLongClickListener {
-                val arguments1 =
-                    ImageInfoDialogFragment.createDirectionsFromImageView(this, null).arguments
-                childFragmentManager.beginTransaction()
-                    .add(ImageInfoDialogFragment().apply {
-                        arguments = arguments1
-                    }, null)
-                    .commit()
+                startImageInfoDialog(this)
                 true
             }
             displayImage(args.imageUri) {
@@ -105,15 +99,20 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             }
             infoEvent.listen(viewLifecycleOwner) {
                 if (isResumed) {
-                    findNavController().navigate(
-                        ImageInfoDialogFragment.createDirectionsFromImageView(
-                            binding.imageViewerZoomImage,
-                            args.imageUri,
-                        )
-                    )
+                    startImageInfoDialog(binding.imageViewerZoomImage)
                 }
             }
         }
+    }
+
+    private fun startImageInfoDialog(imageView: ImageView){
+        val arguments1 =
+            ImageInfoDialogFragment.createDirectionsFromImageView(imageView, null).arguments
+        childFragmentManager.beginTransaction()
+            .add(ImageInfoDialogFragment().apply {
+                arguments = arguments1
+            }, null)
+            .commit()
     }
 
     class ItemFactory : FragmentItemFactory<ImageDetail>(ImageDetail::class) {
