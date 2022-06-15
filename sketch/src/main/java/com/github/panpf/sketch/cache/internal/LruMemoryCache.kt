@@ -90,10 +90,10 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
             logger?.d(MODULE) {
                 if (this != null) {
                     val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
-                    "get. Hit(${hitRatio}). ${this.info}/${this.bitmap!!.toHexString()}. $key"
+                    "get. hit. hitRate ${hitRatio}. ${this.info}/${this.bitmap!!.toHexString()}. $key"
                 } else {
                     val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
-                    "get. NoHit(${hitRatio}). $key"
+                    "get. miss. hitRate ${hitRatio}. $key"
                 }
             }
         }

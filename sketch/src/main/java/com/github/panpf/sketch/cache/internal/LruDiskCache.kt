@@ -146,11 +146,8 @@ class LruDiskCache constructor(
             }
             logger?.d(MODULE) {
                 val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
-                if (this != null) {
-                    "get. Hit(${hitRatio}). $key"
-                } else {
-                    "get. NoHit(${hitRatio}). $key"
-                }
+                val state = if (this != null) "hit" else "miss"
+                "get. $state. hitRate ${hitRatio}. $key"
             }
         }
     }
