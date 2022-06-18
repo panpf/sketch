@@ -16,9 +16,13 @@ import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.internal.newResultCacheHelper
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -150,22 +154,20 @@ class ResultCacheHelperTest {
     }
 
     @Test
-    fun testMeatDataJSON() {
-        val serializer = MetaData.Serializer()
+    fun testSerializer() {
         val metaData = MetaData(
             imageInfo = ImageInfo(width = 570, height = 340, mimeType = "image/png"),
             exifOrientation = ExifInterface.ORIENTATION_ROTATE_180,
             transformedList = listOf(InSampledTransformed(4), ResizeTransformed(Resize(40, 30)))
         )
-        serializer.fromJson(serializer.toJson(metaData)).apply {
-            Assert.assertEquals(570, imageInfo.width)
-            Assert.assertEquals(340, imageInfo.height)
-            Assert.assertEquals("image/png", imageInfo.mimeType)
-            Assert.assertEquals(ExifInterface.ORIENTATION_ROTATE_180, exifOrientation)
-            Assert.assertEquals(
-                transformedList?.joinToString(),
-                listOf(InSampledTransformed(4), ResizeTransformed(Resize(40, 30))).joinToString()
-            )
-        }
+
+        val serializer =
+            metaData.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
+                .newInstance()
+
+        val transformed1 = serializer.fromJson(serializer.toJson(metaData))
+
+        Assert.assertNotSame(metaData, transformed1)
+        Assert.assertEquals(metaData, transformed1)
     }
 }

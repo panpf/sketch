@@ -108,7 +108,7 @@ class RotateTransformedTest {
     }
 
     @Test
-    fun testJsonSerializable() {
+    fun testSerializer() {
         val transformed = RotateTransformed(45)
 
         val serializer =

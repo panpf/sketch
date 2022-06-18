@@ -109,7 +109,7 @@ class CircleCropTransformedTest {
     }
 
     @Test
-    fun testJsonSerializable() {
+    fun testSerializer() {
         val transformed = CircleCropTransformed(Scale.START_CROP)
 
         val serializer =

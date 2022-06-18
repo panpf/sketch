@@ -54,6 +54,7 @@ class AppIconUriFetcherTest {
     fun testFetch() {
         val (context, sketch) = getTestContextAndNewSketch()
         val fetcherFactory = Factory()
+        @Suppress("DEPRECATION")
         val appIconUri = newAppIconUri(
             context.packageName,
             context.packageManager.getPackageInfo(context.packageName, 0).versionCode

@@ -44,6 +44,7 @@ class SketchImageViewTest {
                 downloadCachePolicy(WRITE_ONLY)
                 ignoreExifOrientation()
                 memoryCachePolicy(DISABLED)
+                @Suppress("DEPRECATION")
                 preferQualityOverSpeed()
                 resizeApplyToDrawable()
                 resize(354, 2789, SAME_ASPECT_RATIO, FILL)

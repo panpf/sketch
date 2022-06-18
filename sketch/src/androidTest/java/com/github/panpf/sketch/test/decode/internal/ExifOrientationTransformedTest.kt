@@ -109,7 +109,7 @@ class ExifOrientationTransformedTest {
     }
 
     @Test
-    fun testJsonSerializable() {
+    fun testSerializer() {
         val transformed = ExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_90)
 
         val serializer =

@@ -128,7 +128,7 @@ class RoundedCornersTransformedTest {
     }
 
     @Test
-    fun testJsonSerializable() {
+    fun testSerializer() {
         val transformed = RoundedCornersTransformed(floatArrayOf(8f, 8f, 8f, 8f, 8f, 8f, 8f, 8f))
 
         val serializer =

@@ -111,7 +111,7 @@ class InSampledTransformedTest {
     }
 
     @Test
-    fun testJsonSerializable() {
+    fun testSerializer() {
         val transformed = InSampledTransformed(2)
 
         val serializer =
