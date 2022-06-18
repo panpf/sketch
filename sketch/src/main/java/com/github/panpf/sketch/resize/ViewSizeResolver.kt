@@ -21,24 +21,10 @@ import kotlin.coroutines.resume
 fun <T : View> ViewSizeResolver(view: T, subtractPadding: Boolean = true): ViewSizeResolver<T> =
     RealViewSizeResolver(view, subtractPadding)
 
-internal class RealViewSizeResolver<T : View>(
+internal data class RealViewSizeResolver<T : View>(
     override val view: T,
     override val subtractPadding: Boolean
-) : ViewSizeResolver<T> {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        return other is RealViewSizeResolver<*> &&
-                view == other.view &&
-                subtractPadding == other.subtractPadding
-    }
-
-    override fun hashCode(): Int {
-        var result = view.hashCode()
-        result = 31 * result + subtractPadding.hashCode()
-        return result
-    }
-}
+) : ViewSizeResolver<T>
 
 /**
  * A [SizeResolver] that measures the size of a [View].

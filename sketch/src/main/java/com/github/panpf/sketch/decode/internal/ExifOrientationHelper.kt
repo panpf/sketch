@@ -24,6 +24,7 @@ import android.graphics.RectF
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
@@ -61,7 +62,7 @@ fun exifOrientationName(exifOrientation: Int): String =
 /**
  * Rotate and flip the image according to the 'orientation' attribute of Exif so that the image is presented to the user at a normal angle
  */
-class ExifOrientationHelper constructor(val exifOrientation: Int) {
+class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: Int) {
 
     /**
      * Returns if the current image orientation is flipped.

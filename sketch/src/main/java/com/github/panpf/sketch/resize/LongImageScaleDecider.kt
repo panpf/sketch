@@ -22,7 +22,7 @@ data class LongImageScaleDecider constructor(
     override fun addExifOrientation(
         exifOrientationHelper: ExifOrientationHelper,
         imageSize: Size
-    ): ScaleDecider = LongImageScaleDecider(
+    ): LongImageScaleDecider = LongImageScaleDecider(
         longImage = exifOrientationHelper.addToScale(longImage, imageSize),
         other = exifOrientationHelper.addToScale(other, imageSize),
     )

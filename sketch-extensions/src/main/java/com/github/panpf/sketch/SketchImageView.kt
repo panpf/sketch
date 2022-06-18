@@ -68,6 +68,7 @@ open class SketchImageView @JvmOverloads constructor(
                     }
                 typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_preferQualityOverSpeed)
                     ?.apply {
+                        @Suppress("DEPRECATION")
                         preferQualityOverSpeed(this)
                     }
                 typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_bitmapConfig)
@@ -168,6 +169,7 @@ open class SketchImageView @JvmOverloads constructor(
             else -> throw IllegalArgumentException("Value not supported by the '$name' attribute: $this")
         }
 
+    @Suppress("DEPRECATION")
     private fun parseBitmapConfigAttribute(value: Int): BitmapConfig =
         when (value) {
             1 -> BitmapConfig.LowQuality

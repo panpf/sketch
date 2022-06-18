@@ -67,12 +67,12 @@ data class Resize constructor(
         scale: ScaleDecider
     ) : this(width, height, fixedPrecision(precision), scale)
 
-    constructor(
-        width: Int,
-        height: Int,
-        scale: ScaleDecider
-    ) : this(width, height, fixedPrecision(Precision.EXACTLY), scale)
 
+    constructor(
+        size: Size,
+        precision: PrecisionDecider,
+        scale: ScaleDecider
+    ) : this(size.width, size.height, precision, scale)
 
     constructor(
         size: Size,
@@ -101,17 +101,6 @@ data class Resize constructor(
         precision: Precision = Precision.EXACTLY,
         scale: ScaleDecider
     ) : this(size.width, size.height, fixedPrecision(precision), scale)
-
-    constructor(
-        size: Size,
-        scale: ScaleDecider
-    ) : this(size.width, size.height, fixedPrecision(Precision.EXACTLY), scale)
-
-    constructor(
-        size: Size,
-        precision: PrecisionDecider,
-        scale: ScaleDecider
-    ) : this(size.width, size.height, precision, scale)
 
     val key: String by lazy {
         val precisionDeciderString = precision.key.replace("PrecisionDecider", "")

@@ -26,7 +26,7 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
     override fun addExifOrientation(
         exifOrientationHelper: ExifOrientationHelper,
         imageSize: Size
-    ): ScaleDecider {
+    ): FixedScaleDecider {
         return FixedScaleDecider(exifOrientationHelper.addToScale(scale, imageSize))
     }
 
