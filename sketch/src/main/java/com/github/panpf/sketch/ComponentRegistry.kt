@@ -31,7 +31,7 @@ import com.github.panpf.sketch.util.requiredWorkThread
  * Register components that are required to perform [ImageRequest] and can be extended,
  * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [BitmapDecodeInterceptor], [DrawableDecodeInterceptor]
  */
-class ComponentRegistry private constructor(
+open class ComponentRegistry private constructor(
     /**
      * Registered [Fetcher.Factory]
      */

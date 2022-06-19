@@ -27,7 +27,9 @@ interface Transformation {
     suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult?
 }
 
-
+/**
+ * Merge two transformation lists, the transformation of the same key only retains the one in the left list
+ */
 fun List<Transformation>?.merge(other: List<Transformation>?): List<Transformation>? =
     if (this != null) {
         if (other != null) {

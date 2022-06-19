@@ -46,7 +46,7 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         require(radiusArray.size == 8) {
             "radiusArray size must be 8"
         }
-        require(radiusArray.all { it >= 0 }) {
+        require(radiusArray.all { it >= 0f }) {
             "All radius must be >= 0"
         }
     }

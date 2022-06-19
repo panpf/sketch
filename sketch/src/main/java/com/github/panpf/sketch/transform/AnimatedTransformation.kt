@@ -18,7 +18,6 @@ fun interface AnimatedTransformation {
     fun transform(canvas: Canvas): PixelOpacity
 }
 
-
 @RequiresApi(28)
 internal fun AnimatedTransformation.asPostProcessor() =
     PostProcessor { canvas -> transform(canvas).flag }

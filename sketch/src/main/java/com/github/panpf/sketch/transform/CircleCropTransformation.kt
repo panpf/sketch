@@ -30,8 +30,9 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
         val resizeMapping = calculateResizeMapping(
             input.width, input.height, newSize, newSize, SAME_ASPECT_RATIO, scale
         )
+        val config = input.config ?: Bitmap.Config.ARGB_8888
         val outBitmap = sketch.bitmapPool.getOrCreate(
-            resizeMapping.newWidth, resizeMapping.newHeight, input.config ?: Bitmap.Config.ARGB_8888
+            resizeMapping.newWidth, resizeMapping.newHeight, config
         )
         val paint = Paint().apply {
             isAntiAlias = true

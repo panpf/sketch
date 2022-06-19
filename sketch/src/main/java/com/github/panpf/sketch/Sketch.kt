@@ -399,9 +399,8 @@ class Sketch private constructor(
         /**
          * Build and set the [ComponentRegistry]
          */
-        fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
-            this.componentRegistry = ComponentRegistry.Builder().apply(configBlock).build()
-        }
+        fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            components(ComponentRegistry.Builder().apply(configBlock).build())
 
         /**
          * Set the [HttpStack] used for network requests.

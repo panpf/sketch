@@ -108,13 +108,12 @@ fun ImageView.displayResourceImage(
 /**
  * Dispose the request that's attached to this view (if there is one).
  */
-@Suppress("NOTHING_TO_INLINE")
-inline fun ImageView.dispose() {
+fun ImageView.dispose() {
     SketchUtils.dispose(this)
 }
 
 /**
  * Get the [DisplayResult] of the most recently executed image request that's attached to this view.
  */
-inline val ImageView.result: DisplayResult?
+val ImageView.result: DisplayResult?
     get() = SketchUtils.getResult(this)

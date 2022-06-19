@@ -59,7 +59,7 @@ fun calculateResizeMapping(
     } else {
         val newImageWidth: Int
         val newImageHeight: Int
-        if (precision == EXACTLY || (resizeWidth <= imageWidth && resizeHeight <= imageHeight)) {
+        if (precision == EXACTLY) {
             newImageWidth = resizeWidth
             newImageHeight = resizeHeight
         } else {
@@ -70,11 +70,7 @@ fun calculateResizeMapping(
                     widthRatio.coerceAtLeast(heightRatio)
                 resizeWidth >= imageWidth -> widthRatio
                 resizeHeight >= imageHeight -> heightRatio
-                else -> throw IllegalArgumentException(
-                    "Unsupported size, " +
-                            "imageSize=${imageWidth}x${imageHeight}, " +
-                            "resizeSize=${resizeWidth}x${resizeHeight}"
-                )
+                else -> 1f
             }
             newImageWidth = (resizeWidth / scale).roundToInt()
             newImageHeight = (resizeHeight / scale).roundToInt()
