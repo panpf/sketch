@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.transform
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -115,6 +116,24 @@ class RotateTransformationTest {
                 transformed
             )
         }
+
+        val rgb565InBitmap = context.assets.open("sample.jpeg").use {
+            BitmapFactory.decodeStream(it, null, BitmapFactory.Options().apply {
+                inPreferredConfig = Bitmap.Config.RGB_565
+            })
+        }!!.apply {
+            Assert.assertEquals(Bitmap.Config.RGB_565, this.config)
+        }
+        runBlocking {
+            RotateTransformation(90).transform(sketch, request, rgb565InBitmap)
+        }.apply {
+            Assert.assertEquals(Bitmap.Config.RGB_565, this.bitmap.config)
+        }
+        runBlocking {
+            RotateTransformation(45).transform(sketch, request, rgb565InBitmap)
+        }.apply {
+            Assert.assertEquals(Bitmap.Config.ARGB_8888, this.bitmap.config)
+        }
     }
 
     @Test
@@ -132,6 +151,7 @@ class RotateTransformationTest {
         Assert.assertNotSame(transformation2, transformation21)
         Assert.assertNotSame(transformation3, transformation31)
 
+        Assert.assertEquals(transformation1, transformation1)
         Assert.assertEquals(transformation1, transformation11)
         Assert.assertEquals(transformation2, transformation21)
         Assert.assertEquals(transformation3, transformation31)
@@ -139,6 +159,9 @@ class RotateTransformationTest {
         Assert.assertNotEquals(transformation1, transformation2)
         Assert.assertNotEquals(transformation1, transformation3)
         Assert.assertNotEquals(transformation2, transformation3)
+
+        Assert.assertNotEquals(transformation2, null)
+        Assert.assertNotEquals(transformation2, Any())
     }
 
     @Test

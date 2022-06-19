@@ -395,6 +395,9 @@ class ComponentRegistryTest {
         val componentRegistry1 = ComponentRegistry.Builder().apply {
             addFetcher(HttpUriFetcher.Factory())
         }.build()
+        val componentRegistry11 = ComponentRegistry.Builder().apply {
+            addFetcher(HttpUriFetcher.Factory())
+        }.build()
         val componentRegistry2 = ComponentRegistry.Builder().apply {
             addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
         }.build()
@@ -411,6 +414,10 @@ class ComponentRegistryTest {
             addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
         }.build()
 
+        Assert.assertEquals(componentRegistry0, componentRegistry0)
+        Assert.assertEquals(componentRegistry1, componentRegistry11)
+        Assert.assertNotEquals(componentRegistry1, Any())
+        Assert.assertNotEquals(componentRegistry1, null)
         Assert.assertNotEquals(componentRegistry0, componentRegistry1)
         Assert.assertNotEquals(componentRegistry0, componentRegistry2)
         Assert.assertNotEquals(componentRegistry0, componentRegistry3)

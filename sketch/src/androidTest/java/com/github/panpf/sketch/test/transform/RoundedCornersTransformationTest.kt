@@ -29,6 +29,9 @@ class RoundedCornersTransformationTest {
         assertThrow(IllegalArgumentException::class) {
             RoundedCornersTransformation(floatArrayOf(1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f))
         }
+        assertThrow(IllegalArgumentException::class) {
+            RoundedCornersTransformation(floatArrayOf(1f, 2f, 3f, -4f, 5f, 6f, 7f, 8f))
+        }
 
         RoundedCornersTransformation(floatArrayOf(1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f)).apply {
             Assert.assertEquals(
@@ -133,6 +136,7 @@ class RoundedCornersTransformationTest {
         Assert.assertNotSame(transformation2, transformation21)
         Assert.assertNotSame(transformation3, transformation31)
 
+        Assert.assertEquals(transformation1, transformation1)
         Assert.assertEquals(transformation1, transformation11)
         Assert.assertEquals(transformation2, transformation21)
         Assert.assertEquals(transformation3, transformation31)
@@ -140,6 +144,9 @@ class RoundedCornersTransformationTest {
         Assert.assertNotEquals(transformation1, transformation2)
         Assert.assertNotEquals(transformation1, transformation3)
         Assert.assertNotEquals(transformation2, transformation3)
+
+        Assert.assertNotEquals(transformation2, null)
+        Assert.assertNotEquals(transformation2, Any())
     }
 
     @Test

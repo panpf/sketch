@@ -24,6 +24,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class ImageViewExtensionsTest {
@@ -49,6 +50,14 @@ class ImageViewExtensionsTest {
             imageView.displayImage(Uri.parse(TestAssets.SAMPLE_PNG_URI)).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
+        runBlocking(Dispatchers.Main) {
+            imageView.setImageDrawable(null)
+        }
+        Assert.assertNull(imageView.drawable)
+        runBlocking {
+            imageView.displayImage(null as Uri?).job.join()
+        }
+        Assert.assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
@@ -58,6 +67,14 @@ class ImageViewExtensionsTest {
             imageView.displayImage(R.drawable.ic_launcher).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
+        runBlocking(Dispatchers.Main) {
+            imageView.setImageDrawable(null)
+        }
+        Assert.assertNull(imageView.drawable)
+        runBlocking {
+            imageView.displayImage(null as Int?).job.join()
+        }
+        Assert.assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
@@ -67,6 +84,14 @@ class ImageViewExtensionsTest {
             imageView.displayResourceImage(R.drawable.test).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
+        runBlocking(Dispatchers.Main) {
+            imageView.setImageDrawable(null)
+        }
+        Assert.assertNull(imageView.drawable)
+        runBlocking {
+            imageView.displayResourceImage(null).job.join()
+        }
+        Assert.assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
@@ -85,6 +110,14 @@ class ImageViewExtensionsTest {
             imageView.displayAssetImage("sample_anim.gif").job.join()
         }
         Assert.assertNotNull(imageView.drawable)
+        runBlocking(Dispatchers.Main) {
+            imageView.setImageDrawable(null)
+        }
+        Assert.assertNull(imageView.drawable)
+        runBlocking {
+            imageView.displayAssetImage(null).job.join()
+        }
+        Assert.assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
@@ -96,6 +129,14 @@ class ImageViewExtensionsTest {
             imageView.displayImage(file).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
+        runBlocking(Dispatchers.Main) {
+            imageView.setImageDrawable(null)
+        }
+        Assert.assertNull(imageView.drawable)
+        runBlocking {
+            imageView.displayImage(null as File?).job.join()
+        }
+        Assert.assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)

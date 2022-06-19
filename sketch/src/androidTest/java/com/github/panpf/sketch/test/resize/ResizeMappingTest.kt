@@ -19,6 +19,14 @@ import org.junit.runner.RunWith
 class ResizeMappingTest {
 
     @Test
+    fun testCalculatorResizeMappingSame() {
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 200), Rect(0, 0, 200, 200)),
+            calculateResizeMapping(200, 200, 200, 200, LESS_PIXELS, START_CROP)
+        )
+    }
+
+    @Test
     fun testCalculatorResizeMappingLessPixels() {
         /* resize < imageSize */
         Assert.assertEquals(

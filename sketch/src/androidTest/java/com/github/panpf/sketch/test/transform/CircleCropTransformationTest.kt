@@ -97,6 +97,8 @@ class CircleCropTransformationTest {
         Assert.assertNotEquals(transformation1, transformation2)
         Assert.assertNotEquals(transformation1, transformation3)
         Assert.assertNotEquals(transformation2, transformation3)
+
+        Assert.assertNotEquals(transformation2, null)
     }
 
     @Test

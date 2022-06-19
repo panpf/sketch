@@ -159,8 +159,6 @@ class ResizeTransformedTest {
         val transformed3 = ResizeTransformed(Resize(300, 300, CENTER_CROP))
         val transformed31 = ResizeTransformed(Resize(300, 300, CENTER_CROP))
 
-        val other = Any()
-
         Assert.assertNotSame(transformed1, transformed11)
         Assert.assertNotSame(transformed2, transformed21)
         Assert.assertNotSame(transformed3, transformed31)
@@ -174,7 +172,8 @@ class ResizeTransformedTest {
         Assert.assertNotEquals(transformed1, transformed3)
         Assert.assertNotEquals(transformed2, transformed3)
 
-        Assert.assertNotEquals(transformed2, other)
+        Assert.assertNotEquals(transformed2, null)
+        Assert.assertNotEquals(transformed2, Any())
     }
 
     @Test

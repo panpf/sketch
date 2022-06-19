@@ -81,6 +81,7 @@ class InSampledTransformedTest {
         Assert.assertNotSame(transformed2, transformed21)
         Assert.assertNotSame(transformed3, transformed31)
 
+        Assert.assertEquals(transformed1, transformed1)
         Assert.assertEquals(transformed1, transformed11)
         Assert.assertEquals(transformed2, transformed21)
         Assert.assertEquals(transformed3, transformed31)
@@ -88,6 +89,8 @@ class InSampledTransformedTest {
         Assert.assertNotEquals(transformed1, transformed2)
         Assert.assertNotEquals(transformed1, transformed3)
         Assert.assertNotEquals(transformed2, transformed3)
+
+        Assert.assertNotEquals(transformed2, null)
     }
 
     @Test

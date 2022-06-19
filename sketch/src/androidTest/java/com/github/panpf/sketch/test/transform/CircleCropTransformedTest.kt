@@ -79,6 +79,7 @@ class CircleCropTransformedTest {
         Assert.assertNotSame(transformed2, transformed21)
         Assert.assertNotSame(transformed3, transformed31)
 
+        Assert.assertEquals(transformed1, transformed1)
         Assert.assertEquals(transformed1, transformed11)
         Assert.assertEquals(transformed2, transformed21)
         Assert.assertEquals(transformed3, transformed31)
@@ -86,6 +87,8 @@ class CircleCropTransformedTest {
         Assert.assertNotEquals(transformed1, transformed2)
         Assert.assertNotEquals(transformed1, transformed3)
         Assert.assertNotEquals(transformed2, transformed3)
+
+        Assert.assertNotEquals(transformed2, null)
     }
 
     @Test
@@ -99,6 +102,7 @@ class CircleCropTransformedTest {
         val transformed3 = CircleCropTransformed(Scale.END_CROP)
         val transformed31 = CircleCropTransformed(Scale.END_CROP)
 
+        Assert.assertEquals(transformed1.hashCode(), transformed1.hashCode())
         Assert.assertEquals(transformed1.hashCode(), transformed11.hashCode())
         Assert.assertEquals(transformed2.hashCode(), transformed21.hashCode())
         Assert.assertEquals(transformed3.hashCode(), transformed31.hashCode())

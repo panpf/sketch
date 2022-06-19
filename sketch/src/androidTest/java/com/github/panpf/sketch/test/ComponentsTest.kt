@@ -243,6 +243,9 @@ class ComponentsTest {
         val components1 = Components(sketch, ComponentRegistry.Builder().apply {
             addFetcher(HttpUriFetcher.Factory())
         }.build())
+        val components11 = Components(sketch, ComponentRegistry.Builder().apply {
+            addFetcher(HttpUriFetcher.Factory())
+        }.build())
         val components2 = Components(sketch, ComponentRegistry.Builder().apply {
             addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
         }.build())
@@ -259,6 +262,10 @@ class ComponentsTest {
             addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
         }.build())
 
+        Assert.assertEquals(components0, components0)
+        Assert.assertEquals(components1, components11)
+        Assert.assertNotEquals(components1, Any())
+        Assert.assertNotEquals(components1, null)
         Assert.assertNotEquals(components0, components1)
         Assert.assertNotEquals(components0, components2)
         Assert.assertNotEquals(components0, components3)

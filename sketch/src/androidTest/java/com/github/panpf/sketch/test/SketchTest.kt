@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test
 
+import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
@@ -52,6 +53,7 @@ import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInte
 import com.github.panpf.sketch.util.DefaultLongImageDecider
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
+import com.github.panpf.sketch.util.OtherException
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Deferred
@@ -389,6 +391,22 @@ class SketchTest {
             deferred3?.join()
         }
         Assert.assertEquals(listOf("onStart", "onCancel"), listenerSupervisor3.callbackActionList)
+
+        /* ViewTarget */
+        val imageView = ImageView(context)
+        val listenerSupervisor4 = DisplayListenerSupervisor()
+        val request4 = DisplayRequest(imageView, TestAssets.SAMPLE_JPEG_URI) {
+            listener(listenerSupervisor4)
+        }
+        val result4 = runBlocking {
+            try {
+                sketch.execute(request4)
+            } catch (e: Exception) {
+                DisplayResult.Error(request4, null, OtherException(request4, null, e))
+            }
+        }
+        Assert.assertTrue(result4 is DisplayResult.Error)
+        Assert.assertEquals(listOf<String>(), listenerSupervisor4.callbackActionList)
     }
 
     @Test
@@ -593,5 +611,12 @@ class SketchTest {
     fun testShutdown() {
         val sketch = newSketch()
         sketch.shutdown()
+        sketch.shutdown()
+    }
+
+    @Test
+    fun testSystemCallbacks() {
+        val sketch = newSketch()
+        Assert.assertNotNull(sketch.systemCallbacks)
     }
 }
