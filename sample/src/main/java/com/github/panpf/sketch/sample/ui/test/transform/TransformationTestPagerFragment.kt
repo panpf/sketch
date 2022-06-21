@@ -22,10 +22,11 @@ class TransformationTestPagerFragment : ToolbarBindingFragment<TabPagerFragmentB
                 RoundedCornersTransformationTestFragment(),
                 CircleCropTransformationTestFragment(),
                 RotateTransformationTestFragment(),
+                MultiTransformationTestFragment(),
             ),
         )
 
-        val titles = arrayOf("ROUNDED_CORNERS", "CIRCLE", "ROTATE")
+        val titles = arrayOf("ROUNDED_CORNERS", "CIRCLE", "ROTATE", "MULTI")
         TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->
             tab.text = titles[position]
         }.attach()
