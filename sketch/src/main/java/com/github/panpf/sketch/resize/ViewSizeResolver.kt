@@ -16,6 +16,7 @@ import kotlin.coroutines.resume
  * @param view The view to measure.
  * @param subtractPadding If true, the view's padding will be subtracted from its size.
  */
+@Suppress("FunctionName")
 @JvmOverloads
 @JvmName("create")
 fun <T : View> ViewSizeResolver(view: T, subtractPadding: Boolean = true): ViewSizeResolver<T> =
@@ -35,9 +36,9 @@ interface ViewSizeResolver<T : View> : SizeResolver {
     val view: T
 
     /** If true, the [view]'s padding will be subtracted from its size. */
-    val subtractPadding: Boolean get() = true
+    val subtractPadding: Boolean
 
-    override suspend fun size(): Size? {
+    override suspend fun size(): Size {
         // Fast path: the view is already measured.
         getSize()?.let { return it }
 
@@ -77,33 +78,28 @@ interface ViewSizeResolver<T : View> : SizeResolver {
     }
 
     private fun getWidth(): Int? = getDimension(
-        paramSize = view.layoutParams?.width ?: -1,
+        paramSize = view.layoutParams?.width ?: ViewGroup.LayoutParams.WRAP_CONTENT,
         viewSize = view.width,
-        paddingSize = if (subtractPadding) view.paddingLeft + view.paddingRight else 0
-    )?.let {
-        if (it != -1) {
-            it
-        } else {
-            view.resources.displayMetrics.widthPixels
-        }
-    }
+        paddingSize = if (subtractPadding) view.paddingLeft + view.paddingRight else 0,
+        wrapMaxSize = view.resources.displayMetrics.widthPixels
+    )
 
     private fun getHeight(): Int? = getDimension(
-        paramSize = view.layoutParams?.height ?: -1,
+        paramSize = view.layoutParams?.height ?: ViewGroup.LayoutParams.WRAP_CONTENT,
         viewSize = view.height,
-        paddingSize = if (subtractPadding) view.paddingTop + view.paddingBottom else 0
-    )?.let {
-        if (it != -1) {
-            it
-        } else {
-            view.resources.displayMetrics.heightPixels
-        }
-    }
+        paddingSize = if (subtractPadding) view.paddingTop + view.paddingBottom else 0,
+        wrapMaxSize = view.resources.displayMetrics.heightPixels
+    )
 
-    private fun getDimension(paramSize: Int, viewSize: Int, paddingSize: Int): Int? {
-        // If the dimension is set to WRAP_CONTENT, use the original dimension of the image.
+    private fun getDimension(
+        paramSize: Int,
+        viewSize: Int,
+        paddingSize: Int,
+        wrapMaxSize: Int
+    ): Int? {
+        // If the dimension is set to WRAP_CONTENT, use the display dimension.
         if (paramSize == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            return -1
+            return wrapMaxSize
         }
 
         // Assume the dimension will match the value in the view's layout params.

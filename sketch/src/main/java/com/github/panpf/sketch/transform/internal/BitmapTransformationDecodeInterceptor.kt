@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.transform.internal
 
-import android.graphics.Bitmap
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -15,25 +14,23 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
     ): BitmapDecodeResult {
         val request = chain.request
         val result = chain.proceed()
-        val transformations = request.transformations
-        if (transformations?.isNotEmpty() != true) return result
+        val transformations = request.transformations?.takeIf { it.isNotEmpty() } ?: return result
 
         val oldBitmap = result.bitmap
-        var transformedBitmap: Bitmap? = null
         val transformedList = LinkedList<Transformed>()
-        transformations.forEach {
-            val inputBitmap = transformedBitmap ?: oldBitmap
-            val transformResult = it.transform(chain.sketch, request, inputBitmap)
+        val newBitmap = transformations.fold(oldBitmap) { inputBitmap, next ->
+            val transformResult = next.transform(chain.sketch, request, inputBitmap)
             if (transformResult != null) {
                 if (transformResult.bitmap !== inputBitmap) {
                     chain.sketch.bitmapPool.free(inputBitmap, "transform")
                 }
-                transformedBitmap = transformResult.bitmap
                 transformedList.add(transformResult.transformed)
+                transformResult.bitmap
+            } else {
+                inputBitmap
             }
         }
-        val newBitmap = transformedBitmap
-        return if (newBitmap != null) {
+        return if (transformedList.isNotEmpty()) {
             require(!newBitmap.isRecycled)
             result.newResult(newBitmap) {
                 transformedList.forEach {
