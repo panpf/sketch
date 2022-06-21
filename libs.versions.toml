@@ -151,6 +151,7 @@ test = [
     "tools4a-run",
     "tools4a-dimen",
     "tools4a-test",
+    "tools4a-display",
 ]
 androidx-navigation = [
     "androidx-navigation-fragment",
