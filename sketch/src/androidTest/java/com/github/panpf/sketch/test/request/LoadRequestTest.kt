@@ -26,6 +26,7 @@ import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.Parameters
@@ -119,18 +120,39 @@ class LoadRequestTest {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
+        LoadRequest(context1, uriString1).newBuilder().build().apply {
+            Assert.assertEquals(NETWORK, depth)
+        }
         LoadRequest(context1, uriString1).newBuilder {
             depth(LOCAL)
         }.build().apply {
             Assert.assertEquals(LOCAL, depth)
         }
+        (LoadRequest(context1, uriString1) as ImageRequest).newBuilder {
+            depth(LOCAL)
+        }.build().apply {
+            Assert.assertEquals(LOCAL, depth)
+        }
 
+        LoadRequest(context1, uriString1).newRequest().apply {
+            Assert.assertEquals(NETWORK, depth)
+        }
         LoadRequest(context1, uriString1).newRequest {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
         }
+        (LoadRequest(context1, uriString1) as ImageRequest).newRequest {
+            depth(LOCAL)
+        }.apply {
+            Assert.assertEquals(LOCAL, depth)
+        }
 
+        LoadRequest(context1, uriString1).newLoadBuilder().build().apply {
+            Assert.assertEquals(NETWORK, depth)
+            Assert.assertNull(listener)
+            Assert.assertNull(progressListener)
+        }
         LoadRequest(context1, uriString1).newLoadBuilder {
             depth(LOCAL)
             listener(
@@ -156,6 +178,11 @@ class LoadRequestTest {
             Assert.assertNotNull(progressListener)
         }
 
+        LoadRequest(context1, uriString1).newLoadRequest().apply {
+            Assert.assertEquals(NETWORK, depth)
+            Assert.assertNull(listener)
+            Assert.assertNull(progressListener)
+        }
         LoadRequest(context1, uriString1).newLoadRequest {
             depth(LOCAL)
             listener(
@@ -214,6 +241,27 @@ class LoadRequestTest {
         }.apply {
             Assert.assertNull(target)
         }
+
+        LoadRequest(context1, uriString1) {
+            target(onStart = {}, onSuccess = {}, onError = {})
+        }.apply {
+            Assert.assertNotNull(target)
+        }
+        LoadRequest(context1, uriString1) {
+            target(onStart = {})
+        }.apply {
+            Assert.assertNotNull(target)
+        }
+        LoadRequest(context1, uriString1) {
+            target(onSuccess = {})
+        }.apply {
+            Assert.assertNotNull(target)
+        }
+        LoadRequest(context1, uriString1) {
+            target(onError = {})
+        }.apply {
+            Assert.assertNotNull(target)
+        }
     }
 
     @Test
@@ -242,24 +290,27 @@ class LoadRequestTest {
     }
 
     @Test
-    fun testKey() {
+    fun testKeyAndToString() {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         LoadRequest(context1, uriString1).apply {
             Assert.assertEquals(newKey(), key)
+            Assert.assertEquals("LoadRequest($key)", toString())
         }
 
         LoadRequest(context1, uriString1) {
             resize(100, 100)
         }.apply {
             Assert.assertEquals(newKey(), key)
+            Assert.assertEquals("LoadRequest($key)", toString())
         }
 
         LoadRequest(context1, uriString1) {
             memoryCachePolicy(WRITE_ONLY)
         }.apply {
             Assert.assertEquals(newKey(), key)
+            Assert.assertEquals("LoadRequest($key)", toString())
         }
     }
 
@@ -415,7 +466,7 @@ class LoadRequestTest {
 
             /* setParameter(), removeParameter() */
             setParameter("key1", "value1")
-            setParameter("key2", "value2")
+            setParameter("key2", "value2", "value2")
             build().apply {
                 Assert.assertEquals(2, parameters?.size)
                 Assert.assertEquals("value1", parameters?.get("key1"))
@@ -612,7 +663,7 @@ class LoadRequestTest {
                 Assert.assertFalse(preferQualityOverSpeed)
             }
 
-            preferQualityOverSpeed(true)
+            preferQualityOverSpeed()
             build().apply {
                 Assert.assertEquals(true, preferQualityOverSpeed)
             }
@@ -1070,7 +1121,7 @@ class LoadRequestTest {
                 Assert.assertFalse(disallowReuseBitmap)
             }
 
-            disallowReuseBitmap(true)
+            disallowReuseBitmap()
             build().apply {
                 Assert.assertEquals(true, disallowReuseBitmap)
             }
@@ -1278,7 +1329,7 @@ class LoadRequestTest {
                 Assert.assertFalse(resizeApplyToDrawable)
             }
 
-            resizeApplyToDrawable(true)
+            resizeApplyToDrawable()
             build().apply {
                 Assert.assertEquals(true, resizeApplyToDrawable)
             }
@@ -1317,6 +1368,42 @@ class LoadRequestTest {
             memoryCachePolicy(null)
             build().apply {
                 Assert.assertEquals(ENABLED, memoryCachePolicy)
+            }
+        }
+    }
+
+    @Test
+    fun testListener() {
+        val context1 = getTestContext()
+        val uriString1 = newAssetUri("sample.jpeg")
+        LoadRequest.Builder(context1, uriString1).apply {
+            build().apply {
+                Assert.assertNull(listener)
+            }
+
+            listener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
+            build().apply {
+                Assert.assertNotNull(listener)
+            }
+
+            listener(onStart = {})
+            build().apply {
+                Assert.assertNotNull(listener)
+            }
+
+            listener(onCancel = {})
+            build().apply {
+                Assert.assertNotNull(listener)
+            }
+
+            listener(onError = { _, _ -> })
+            build().apply {
+                Assert.assertNotNull(listener)
+            }
+
+            listener(onSuccess = { _, _ -> })
+            build().apply {
+                Assert.assertNotNull(listener)
             }
         }
     }

@@ -3,6 +3,7 @@ package com.github.panpf.sketch.test.request
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.Parameters.Entry
+import com.github.panpf.sketch.request.count
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.request.merged
@@ -60,12 +61,13 @@ class ParametersTest {
     }
 
     @Test
-    fun testValueAndGet() {
+    fun testValueAndGetAndCount() {
         Parameters.Builder().build().apply {
             Assert.assertNull(value("key1"))
             Assert.assertNull(this["key1"])
             Assert.assertNull(value("key2"))
             Assert.assertNull(this["key2"])
+            Assert.assertEquals(0, count())
         }
 
         Parameters.Builder().apply {
@@ -75,6 +77,7 @@ class ParametersTest {
             Assert.assertEquals("value1", this["key1"])
             Assert.assertNull(value("key2"))
             Assert.assertNull(this["key2"])
+            Assert.assertEquals(1, count())
         }
 
         Parameters.Builder().apply {
@@ -85,12 +88,19 @@ class ParametersTest {
             Assert.assertEquals("value1", this["key1"])
             Assert.assertEquals("value2", value("key2"))
             Assert.assertEquals("value2", this["key2"])
+            Assert.assertEquals(2, count())
         }
     }
 
     @Test
     fun testKey() {
         Parameters.Builder().build().apply {
+            Assert.assertNull(key)
+        }
+
+        Parameters.Builder().apply {
+            set("key1", null)
+        }.build().apply {
             Assert.assertNull(key)
         }
 
@@ -135,6 +145,15 @@ class ParametersTest {
                 ),
                 cacheKeys()
             )
+        }
+
+        Parameters.Builder().build().apply {
+            Assert.assertNull(cacheKey("key1"))
+            Assert.assertNull(cacheKey("key2"))
+            Assert.assertNull(cacheKey("key3"))
+
+            Assert.assertNull(cacheKey)
+            Assert.assertEquals(mapOf<String, String>(), cacheKeys())
         }
     }
 
@@ -230,6 +249,7 @@ class ParametersTest {
         Assert.assertNotSame(parameters2, parameters21)
         Assert.assertNotSame(parameters3, parameters31)
 
+        Assert.assertEquals(parameters1, parameters1)
         Assert.assertEquals(parameters1, parameters11)
         Assert.assertEquals(parameters2, parameters21)
         Assert.assertEquals(parameters3, parameters31)
@@ -237,6 +257,9 @@ class ParametersTest {
         Assert.assertNotEquals(parameters1, parameters2)
         Assert.assertNotEquals(parameters1, parameters3)
         Assert.assertNotEquals(parameters2, parameters3)
+
+        Assert.assertNotEquals(parameters2, Any())
+        Assert.assertNotEquals(parameters2, null)
     }
 
     @Test
@@ -332,7 +355,7 @@ class ParametersTest {
                 toString()
             )
         }.newParameters {
-            set("key2", "value2")
+            set("key2", "value2", "value2")
         }.apply {
             Assert.assertEquals(
                 "Parameters(map={key1=Entry(value=value1, cacheKey=value1), key2=Entry(value=value2, cacheKey=value2)})",

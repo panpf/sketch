@@ -26,9 +26,7 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as TestHttpStack
+        if (other !is TestHttpStack) return false
 
         if (readDelayMillis != other.readDelayMillis) return false
 
@@ -57,6 +55,7 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
         override fun getHeaderField(name: String): String? {
             return null
         }
+
         override val content: InputStream
             get() = context.assets.open(assetFileName).run {
                 if (readDelayMillis != null) {

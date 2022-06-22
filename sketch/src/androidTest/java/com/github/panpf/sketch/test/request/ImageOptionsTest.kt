@@ -23,6 +23,7 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.get
+import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
@@ -72,6 +73,7 @@ class ImageOptionsTest {
     fun testIsEmpty() {
         ImageOptions().apply {
             Assert.assertTrue(this.isEmpty())
+            Assert.assertFalse(this.isNotEmpty())
             Assert.assertNull(this.depth)
             Assert.assertNull(this.parameters)
             Assert.assertNull(this.httpHeaders)
@@ -83,7 +85,6 @@ class ImageOptionsTest {
             @Suppress("DEPRECATION")
             Assert.assertNull(this.preferQualityOverSpeed)
             Assert.assertNull(this.resizeSize)
-//            Assert.assertNull(this.resizeSizeResolver)
             Assert.assertNull(this.resizePrecisionDecider)
             Assert.assertNull(this.resizeScaleDecider)
             Assert.assertNull(this.transformations)
@@ -102,6 +103,7 @@ class ImageOptionsTest {
             depth(LOCAL)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertEquals(LOCAL, this.depth)
         }
 
@@ -109,6 +111,7 @@ class ImageOptionsTest {
             setParameter("key", "value")
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.parameters)
         }
 
@@ -116,6 +119,7 @@ class ImageOptionsTest {
             addHttpHeader("headerKey", "headerValue")
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.httpHeaders)
         }
 
@@ -123,6 +127,7 @@ class ImageOptionsTest {
             downloadCachePolicy(READ_ONLY)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.downloadCachePolicy)
         }
 
@@ -130,6 +135,7 @@ class ImageOptionsTest {
             bitmapConfig(ALPHA_8)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.bitmapConfig)
         }
 
@@ -138,6 +144,7 @@ class ImageOptionsTest {
                 colorSpace(ColorSpace.get(BT709))
             }.apply {
                 Assert.assertFalse(this.isEmpty())
+                Assert.assertTrue(this.isNotEmpty())
                 Assert.assertNotNull(this.colorSpace)
             }
         }
@@ -147,6 +154,7 @@ class ImageOptionsTest {
             preferQualityOverSpeed(true)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             @Suppress("DEPRECATION")
             Assert.assertNotNull(this.preferQualityOverSpeed)
         }
@@ -155,20 +163,15 @@ class ImageOptionsTest {
             resizeSize(100, 100)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.resizeSize)
         }
-
-//        ImageOptions {
-//            resizeSizeResolver(DisplaySizeResolver(context))
-//        }.apply {
-//            Assert.assertFalse(this.isEmpty())
-//            Assert.assertNotNull(this.resizeSizeResolver)
-//        }
 
         ImageOptions {
             resizePrecision(EXACTLY)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.resizePrecisionDecider)
         }
 
@@ -176,6 +179,7 @@ class ImageOptionsTest {
             resizeScale(CENTER_CROP)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.resizeScaleDecider)
         }
 
@@ -183,6 +187,7 @@ class ImageOptionsTest {
             transformations(RoundedCornersTransformation())
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.transformations)
         }
 
@@ -190,6 +195,7 @@ class ImageOptionsTest {
             disallowReuseBitmap(true)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.disallowReuseBitmap)
         }
 
@@ -197,6 +203,7 @@ class ImageOptionsTest {
             ignoreExifOrientation(true)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.ignoreExifOrientation)
         }
 
@@ -204,6 +211,7 @@ class ImageOptionsTest {
             resultCachePolicy(ENABLED)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.resultCachePolicy)
         }
 
@@ -211,6 +219,7 @@ class ImageOptionsTest {
             disallowAnimatedImage(false)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.disallowAnimatedImage)
         }
 
@@ -218,6 +227,7 @@ class ImageOptionsTest {
             placeholder(ColorDrawable(Color.BLUE))
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.placeholder)
         }
 
@@ -225,6 +235,7 @@ class ImageOptionsTest {
             error(ColorDrawable(Color.BLUE))
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.error)
         }
 
@@ -232,6 +243,7 @@ class ImageOptionsTest {
             transition(CrossfadeTransition.Factory())
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.transition)
         }
 
@@ -239,6 +251,7 @@ class ImageOptionsTest {
             resizeApplyToDrawable(true)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.resizeApplyToDrawable)
         }
 
@@ -246,6 +259,7 @@ class ImageOptionsTest {
             memoryCachePolicy(ENABLED)
         }.apply {
             Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.memoryCachePolicy)
         }
     }
@@ -671,6 +685,10 @@ class ImageOptionsTest {
             Assert.assertEquals(imageOptions.hashCode(), optionsList2[index].hashCode())
             Assert.assertEquals(imageOptions.toString(), optionsList2[index].toString())
         }
+
+        Assert.assertEquals(optionsList[0], optionsList[0])
+        Assert.assertNotEquals(optionsList[0], Any())
+        Assert.assertNotEquals(optionsList[0], null)
     }
 
     @Test
@@ -725,7 +743,7 @@ class ImageOptionsTest {
                 Assert.assertEquals("value2", parameters?.get("key2"))
             }
 
-            setParameter("key2", "value2.1")
+            setParameter("key2", "value2.1", "value2.1")
             build().apply {
                 Assert.assertEquals(2, parameters?.size)
                 Assert.assertEquals("value1", parameters?.get("key1"))
@@ -905,7 +923,7 @@ class ImageOptionsTest {
                 Assert.assertNull(preferQualityOverSpeed)
             }
 
-            preferQualityOverSpeed(true)
+            preferQualityOverSpeed()
             build().apply {
                 Assert.assertEquals(true, preferQualityOverSpeed)
             }
@@ -1264,7 +1282,7 @@ class ImageOptionsTest {
                 Assert.assertNull(disallowReuseBitmap)
             }
 
-            disallowReuseBitmap(true)
+            disallowReuseBitmap()
             build().apply {
                 Assert.assertEquals(true, disallowReuseBitmap)
             }
@@ -1288,7 +1306,7 @@ class ImageOptionsTest {
                 Assert.assertNull(ignoreExifOrientation)
             }
 
-            ignoreExifOrientation(true)
+            ignoreExifOrientation()
             build().apply {
                 Assert.assertEquals(true, ignoreExifOrientation)
             }
@@ -1336,7 +1354,7 @@ class ImageOptionsTest {
                 Assert.assertNull(disallowAnimatedImage)
             }
 
-            disallowAnimatedImage(true)
+            disallowAnimatedImage()
             build().apply {
                 Assert.assertEquals(true, disallowAnimatedImage)
             }
@@ -1458,7 +1476,7 @@ class ImageOptionsTest {
                 Assert.assertNull(resizeApplyToDrawable)
             }
 
-            resizeApplyToDrawable(true)
+            resizeApplyToDrawable()
             build().apply {
                 Assert.assertEquals(true, resizeApplyToDrawable)
             }

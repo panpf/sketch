@@ -28,6 +28,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.newCacheKey
@@ -160,18 +161,39 @@ class DisplayRequestTest {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
+        DisplayRequest(context1, uriString1).newBuilder().build().apply {
+            Assert.assertEquals(NETWORK, depth)
+        }
         DisplayRequest(context1, uriString1).newBuilder {
             depth(LOCAL)
         }.build().apply {
             Assert.assertEquals(LOCAL, depth)
         }
+        (DisplayRequest(context1, uriString1) as ImageRequest).newBuilder {
+            depth(LOCAL)
+        }.build().apply {
+            Assert.assertEquals(LOCAL, depth)
+        }
 
+        DisplayRequest(context1, uriString1).newRequest().apply {
+            Assert.assertEquals(NETWORK, depth)
+        }
         DisplayRequest(context1, uriString1).newRequest {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
         }
+        (DisplayRequest(context1, uriString1) as ImageRequest).newRequest {
+            depth(LOCAL)
+        }.apply {
+            Assert.assertEquals(LOCAL, depth)
+        }
 
+        DisplayRequest(context1, uriString1).newDisplayBuilder().build().apply {
+            Assert.assertEquals(NETWORK, depth)
+            Assert.assertNull(listener)
+            Assert.assertNull(progressListener)
+        }
         DisplayRequest(context1, uriString1).newDisplayBuilder {
             depth(LOCAL)
             listener(
@@ -197,6 +219,11 @@ class DisplayRequestTest {
             Assert.assertNotNull(progressListener)
         }
 
+        DisplayRequest(context1, uriString1).newDisplayRequest().apply {
+            Assert.assertEquals(NETWORK, depth)
+            Assert.assertNull(listener)
+            Assert.assertNull(progressListener)
+        }
         DisplayRequest(context1, uriString1).newDisplayRequest {
             depth(LOCAL)
             listener(
@@ -262,6 +289,31 @@ class DisplayRequestTest {
             Assert.assertNull(target)
             Assert.assertEquals(ENABLED, memoryCachePolicy)
         }
+
+        DisplayRequest(imageView, uriString1) {
+            target(onStart = {}, onSuccess = {}, onError = {})
+        }.apply {
+            Assert.assertNotNull(target)
+            Assert.assertEquals(ENABLED, memoryCachePolicy)
+        }
+        DisplayRequest(imageView, uriString1) {
+            target(onStart = {})
+        }.apply {
+            Assert.assertNotNull(target)
+            Assert.assertEquals(ENABLED, memoryCachePolicy)
+        }
+        DisplayRequest(imageView, uriString1) {
+            target(onSuccess = {})
+        }.apply {
+            Assert.assertNotNull(target)
+            Assert.assertEquals(ENABLED, memoryCachePolicy)
+        }
+        DisplayRequest(imageView, uriString1) {
+            target(onError = {})
+        }.apply {
+            Assert.assertNotNull(target)
+            Assert.assertEquals(ENABLED, memoryCachePolicy)
+        }
     }
 
     @Test
@@ -295,24 +347,27 @@ class DisplayRequestTest {
     }
 
     @Test
-    fun testKey() {
+    fun testKeyAndToString() {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
         DisplayRequest(context1, uriString1).apply {
             Assert.assertEquals(newKey(), key)
+            Assert.assertEquals("DisplayRequest($key)", toString())
         }
 
         DisplayRequest(context1, uriString1) {
             resize(100, 100)
         }.apply {
             Assert.assertEquals(newKey(), key)
+            Assert.assertEquals("DisplayRequest($key)", toString())
         }
 
         DisplayRequest(context1, uriString1) {
             memoryCachePolicy(WRITE_ONLY)
         }.apply {
             Assert.assertEquals(newKey(), key)
+            Assert.assertEquals("DisplayRequest($key)", toString())
         }
     }
 
@@ -468,7 +523,7 @@ class DisplayRequestTest {
 
             /* setParameter(), removeParameter() */
             setParameter("key1", "value1")
-            setParameter("key2", "value2")
+            setParameter("key2", "value2", "value2")
             build().apply {
                 Assert.assertEquals(2, parameters?.size)
                 Assert.assertEquals("value1", parameters?.get("key1"))
@@ -665,7 +720,7 @@ class DisplayRequestTest {
                 Assert.assertFalse(preferQualityOverSpeed)
             }
 
-            preferQualityOverSpeed(true)
+            preferQualityOverSpeed()
             build().apply {
                 Assert.assertEquals(true, preferQualityOverSpeed)
             }
@@ -1141,7 +1196,7 @@ class DisplayRequestTest {
                 Assert.assertFalse(disallowReuseBitmap)
             }
 
-            disallowReuseBitmap(true)
+            disallowReuseBitmap()
             build().apply {
                 Assert.assertEquals(true, disallowReuseBitmap)
             }
@@ -1349,7 +1404,7 @@ class DisplayRequestTest {
                 Assert.assertFalse(resizeApplyToDrawable)
             }
 
-            resizeApplyToDrawable(true)
+            resizeApplyToDrawable()
             build().apply {
                 Assert.assertEquals(true, resizeApplyToDrawable)
             }
@@ -1388,6 +1443,42 @@ class DisplayRequestTest {
             memoryCachePolicy(null)
             build().apply {
                 Assert.assertEquals(ENABLED, memoryCachePolicy)
+            }
+        }
+    }
+
+    @Test
+    fun testListener() {
+        val context1 = getTestContext()
+        val uriString1 = newAssetUri("sample.jpeg")
+        DisplayRequest.Builder(context1, uriString1).apply {
+            build().apply {
+                Assert.assertNull(listener)
+            }
+
+            listener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
+            build().apply {
+                Assert.assertNotNull(listener)
+            }
+
+            listener(onStart = {})
+            build().apply {
+                Assert.assertNotNull(listener)
+            }
+
+            listener(onCancel = {})
+            build().apply {
+                Assert.assertNotNull(listener)
+            }
+
+            listener(onError = { _, _ -> })
+            build().apply {
+                Assert.assertNotNull(listener)
+            }
+
+            listener(onSuccess = { _, _ -> })
+            build().apply {
+                Assert.assertNotNull(listener)
             }
         }
     }

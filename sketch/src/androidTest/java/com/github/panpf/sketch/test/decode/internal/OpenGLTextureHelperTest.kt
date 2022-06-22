@@ -15,7 +15,8 @@ class OpenGLTextureHelperTest {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Assert.assertNull(OpenGLTextureHelper.maxSize)
         } else {
-            Assert.assertEquals(16384, OpenGLTextureHelper.maxSize)
+            val maxSize = OpenGLTextureHelper.maxSize
+            Assert.assertTrue(arrayOf(4096, 16384).any { it == maxSize })
         }
     }
 }

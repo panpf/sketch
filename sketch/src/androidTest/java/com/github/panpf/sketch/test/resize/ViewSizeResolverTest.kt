@@ -59,15 +59,8 @@ class ViewSizeResolverTest {
                 runBlocking(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView).size()
                 }.apply {
-                    Assert.assertEquals(
-                        displaySize.let {
-                            Size(
-                                it.width,
-                                it.height - context.getNavigationBarHeight() - context.getStatusBarHeight()
-                            )
-                        },
-                        this
-                    )
+                    Assert.assertEquals(displaySize.width, this.width)
+                    Assert.assertTrue(displaySize.height > this.height)
                 }
             }
 
@@ -136,15 +129,8 @@ class ViewSizeResolverTest {
                     )
                     deferred.await()
                 }.apply {
-                    Assert.assertEquals(
-                        displaySize.let {
-                            Size(
-                                it.width,
-                                it.height - context.getNavigationBarHeight() - context.getStatusBarHeight()
-                            )
-                        },
-                        this
-                    )
+                    Assert.assertEquals(displaySize.width, this.width)
+                    Assert.assertTrue(displaySize.height > this.height)
                 }
             }
     }
