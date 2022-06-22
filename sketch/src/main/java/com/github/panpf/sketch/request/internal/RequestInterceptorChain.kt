@@ -19,6 +19,7 @@ internal class RequestInterceptorChain(
     @MainThread
     override suspend fun proceed(request: ImageRequest): ImageData {
         requiredMainThread()
+        requestContext.addRequest(request)
         val interceptor = interceptors[index]
         val next = copy(index = index + 1, request = request)
         return interceptor.intercept(next)

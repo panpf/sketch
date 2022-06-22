@@ -41,7 +41,7 @@ class WebpAnimatedDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.webp")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.webp"), "image/webp")
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -49,7 +49,7 @@ class WebpAnimatedDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.webp")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.webp"), null)
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -60,7 +60,7 @@ class WebpAnimatedDrawableDecoderTest {
         }.let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.webp"), null)
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -68,7 +68,7 @@ class WebpAnimatedDrawableDecoderTest {
         // data error
         DisplayRequest(context, newAssetUri("sample.png")).let {
             val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), null)
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -76,7 +76,7 @@ class WebpAnimatedDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), "image/webp")
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -87,7 +87,7 @@ class WebpAnimatedDrawableDecoderTest {
                 AssetDataSource(sketch, it, "sample_anim.webp"),
                 "image/jpeg",
             )
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -103,7 +103,7 @@ class WebpAnimatedDrawableDecoderTest {
 
         val request = DisplayRequest(context, newAssetUri("sample_anim.webp"))
         val fetchResult = sketch.components.newFetcher(request).let { runBlocking { it.fetch() } }
-        factory.create(sketch, request, RequestContext(), fetchResult)!!
+        factory.create(sketch, request, RequestContext(request), fetchResult)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
                 Assert.assertEquals(Size(480, 270), this.drawable.intrinsicSize)
@@ -120,7 +120,7 @@ class WebpAnimatedDrawableDecoderTest {
             resize(300, 300)
         }
         val fetchResult1 = sketch.components.newFetcher(request1).let { runBlocking { it.fetch() } }
-        factory.create(sketch, request1, RequestContext(), fetchResult1)!!
+        factory.create(sketch, request1, RequestContext(request1), fetchResult1)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
                 Assert.assertEquals(Size(240, 135), this.drawable.intrinsicSize)

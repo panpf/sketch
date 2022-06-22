@@ -23,8 +23,8 @@ import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transition.TransitionTarget
-import com.github.panpf.sketch.util.OtherException
 import com.github.panpf.sketch.util.SketchException
+import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.requiredMainThread
@@ -39,24 +39,26 @@ class RequestExecutor {
     }
 
     @MainThread
-    suspend fun execute(
-        sketch: Sketch,
-        originRequest: ImageRequest,
-        enqueue: Boolean
-    ): ImageResult {
+    suspend fun execute(sketch: Sketch, request: ImageRequest, enqueue: Boolean): ImageResult {
         requiredMainThread()
-        var request: ImageRequest = sketch.globalImageOptions
-            ?.let { originRequest.newBuilder().global(it).build() }
-            ?: originRequest
+
+        val requestContext = RequestContext(request)
+
+        // globalImageOptions
+        sketch.globalImageOptions?.let {
+            requestContext.addRequest(requestContext.lastRequest.newBuilder().global(it).build())
+        }
+
         // Wrap the request to manage its lifecycle.
-        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
+        val requestDelegate =
+            requestDelegate(sketch, requestContext.lastRequest, coroutineContext.job)
         requestDelegate.assertActive()
 
-        val target = request.target
-        val requestContext = RequestContext()
+        val target = requestContext.lastRequest.target
         try {
-            if (request.uriString.isEmpty() || request.uriString.isBlank()) {
-                throw UriInvalidException(request, "Request uri is empty or blank")
+            val uriString = requestContext.lastRequest.uriString
+            if (uriString.isEmpty() || uriString.isBlank()) {
+                throw UriInvalidException(uriString, "Request uri is empty or blank: $uriString")
             }
 
             // Set up the request's lifecycle observers. Cancel the request when destroy
@@ -64,75 +66,87 @@ class RequestExecutor {
 
             // Enqueued requests suspend until the lifecycle is started.
             if (enqueue) {
-                request.lifecycle.awaitStarted()
+                requestContext.lastRequest.lifecycle.awaitStarted()
             }
 
-            if (request.resizeSize == null) {
-                val size = request.resizeSizeResolver?.size()
-                if (size != null) {
-                    request = request.newRequest {
-                        resizeSize(size)
-                    }
+            // resolve resize size
+            if (requestContext.lastRequest.resizeSize == null) {
+                val resizeSize = requestContext.lastRequest.resizeSizeResolver?.size()
+                if (resizeSize != null) {
+                    requestContext.addRequest(requestContext.lastRequest.newRequest {
+                        resizeSize(resizeSize)
+                    })
                 }
             }
 
-            onStart(sketch, request)
+            onStart(sketch, requestContext.lastRequest)
 
             val data = RequestInterceptorChain(
                 sketch = sketch,
-                initialRequest = request,
-                request = request,
+                initialRequest = requestContext.lastRequest,
+                request = requestContext.lastRequest,
                 requestContext = requestContext,
                 interceptors = sketch.components.requestInterceptorList,
                 index = 0,
-            ).proceed(request)
+            ).proceed(requestContext.lastRequest)
 
             val successResult = when (data) {
                 is DisplayData -> DisplayResult.Success(
-                    request = request,
-                    drawable = data.drawable.tryToResizeDrawable(sketch, request),
+                    request = requestContext.lastRequest,
+                    drawable = data.drawable.tryToResizeDrawable(
+                        sketch,
+                        requestContext.lastRequest
+                    ),
                     imageInfo = data.imageInfo,
                     imageExifOrientation = data.imageExifOrientation,
                     dataFrom = data.dataFrom,
                     transformedList = data.transformedList
                 )
                 is LoadData -> LoadResult.Success(
-                    request = request,
+                    request = requestContext.lastRequest,
                     bitmap = data.bitmap,
                     imageInfo = data.imageInfo,
                     imageExifOrientation = data.imageExifOrientation,
                     dataFrom = data.dataFrom,
                     transformedList = data.transformedList
                 )
-                is DownloadData -> DownloadResult.Success(request, data, data.dataFrom)
+                is DownloadData -> DownloadResult.Success(
+                    requestContext.lastRequest,
+                    data,
+                    data.dataFrom
+                )
                 else -> throw UnsupportedOperationException("Unsupported ImageData: ${data::class.java}")
             }
-            onSuccess(sketch, request, target, successResult)
+            // todo 返回最后的 request
+            onSuccess(sketch, requestContext.lastRequest, target, successResult)
             return successResult
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
-                onCancel(sketch, request)
+                onCancel(sketch, requestContext.lastRequest)
                 throw throwable
             } else {
                 throwable.printStackTrace()
                 val exception = throwable.asOrNull<SketchException>()
-                    ?: OtherException(request, throwable.toString(), throwable)
-                val errorResult = when (request) {
+                    ?: UnknownException(throwable.toString(), throwable)
+                val errorResult = when (requestContext.lastRequest) {
                     is DisplayRequest -> {
-                        val errorDrawable = request.error
-                            ?.getDrawable(sketch, request, exception)
-                            ?.tryToResizeDrawable(sketch, request)
-                            ?: request.placeholder
-                                ?.getDrawable(sketch, request, exception)
-                                ?.tryToResizeDrawable(sketch, request)
-                        DisplayResult.Error(request, errorDrawable, exception)
+                        val errorDrawable = requestContext.lastRequest.error
+                            ?.getDrawable(sketch, requestContext.lastRequest, exception)
+                            ?.tryToResizeDrawable(sketch, requestContext.lastRequest)
+                            ?: requestContext.lastRequest.placeholder
+                                ?.getDrawable(sketch, requestContext.lastRequest, exception)
+                                ?.tryToResizeDrawable(sketch, requestContext.lastRequest)
+                        DisplayResult.Error(requestContext.lastRequest, errorDrawable, exception)
                     }
-                    is LoadRequest -> LoadResult.Error(request, exception)
-                    is DownloadRequest -> DownloadResult.Error(request, exception)
-                    else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${request::class.java}")
+                    is LoadRequest -> LoadResult.Error(requestContext.lastRequest, exception)
+                    is DownloadRequest -> DownloadResult.Error(
+                        requestContext.lastRequest,
+                        exception
+                    )
+                    else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${requestContext.lastRequest::class.java}")
                 }
 
-                onError(sketch, request, target, errorResult)
+                onError(sketch, requestContext.lastRequest, target, errorResult)
                 return errorResult
             }
         } finally {

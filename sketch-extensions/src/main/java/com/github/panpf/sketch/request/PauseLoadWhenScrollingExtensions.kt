@@ -156,7 +156,5 @@ val ImageOptions.isDepthFromPauseLoadWhenScrolling: Boolean
 /**
  * Returns true if the request is abnormal due to the pause load when scrolling feature
  */
-val SketchException.isCausedByPauseLoadWhenScrolling: Boolean
-    get() = this is DepthException
-            && depth == Depth.MEMORY
-            && thenRequest.depthFrom == KEY
+fun isCausedByPauseLoadWhenScrolling(request: ImageRequest, exception: SketchException?): Boolean =
+    exception is DepthException && exception.depth == Depth.MEMORY && request.depthFrom == KEY

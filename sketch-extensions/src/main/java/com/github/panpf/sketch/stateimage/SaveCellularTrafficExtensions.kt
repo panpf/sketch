@@ -47,7 +47,7 @@ class SaveCellularTrafficMatcher(val stateImage: StateImage?) :
     ErrorStateImage.Matcher {
 
     override fun match(request: ImageRequest, exception: SketchException?): Boolean =
-        exception?.isCausedBySaveCellularTraffic == true
+        isCausedBySaveCellularTraffic(request, exception)
 
     override fun getDrawable(
         sketch: Sketch, request: ImageRequest, throwable: SketchException?

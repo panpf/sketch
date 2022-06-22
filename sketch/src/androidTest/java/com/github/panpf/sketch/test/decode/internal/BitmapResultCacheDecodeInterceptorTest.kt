@@ -27,7 +27,7 @@ class BitmapResultCacheDecodeInterceptorTest {
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg")) {
             resize(500, 500, LESS_PIXELS)
         }
-        val requestContext = RequestContext()
+        val requestContext = RequestContext(loadRequest)
         val chain =
             BitmapDecodeInterceptorChain(sketch, loadRequest, requestContext, null, interceptors, 0)
 

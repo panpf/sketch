@@ -84,25 +84,23 @@ open class DefaultBitmapDecoder(
                         dataSource.decodeRegionBitmap(srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
                         val message2 = "Bitmap region decode error"
-                        throw BitmapDecodeException(request, message2, throwable2)
+                        throw BitmapDecodeException(message2, throwable2)
                     }
                 }
                 isSrcRectError(throwable) -> {
                     val message =
                         "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, resize=${request.resize}, srcRect=${srcRect}"
-                    throw BitmapDecodeException(request, message, throwable)
+                    throw BitmapDecodeException(message, throwable)
                 }
                 else -> {
-                    throw BitmapDecodeException(request, "Bitmap region decode error", throwable)
+                    throw BitmapDecodeException("Bitmap region decode error", throwable)
                 }
             }
-        } ?: throw BitmapDecodeException(
-            request, "Bitmap region decode return null"
-        )
+        } ?: throw BitmapDecodeException("Bitmap region decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             bitmap.recycle()
             val message = "Invalid image, size=${bitmap.width}x${bitmap.height}"
-            throw BitmapDecodeException(request, message)
+            throw BitmapDecodeException(message)
         }
         return bitmap
     }
@@ -131,16 +129,16 @@ open class DefaultBitmapDecoder(
                 try {
                     dataSource.decodeBitmap(decodeOptions)
                 } catch (throwable2: Throwable) {
-                    throw BitmapDecodeException(request, "Bitmap decode error", throwable2)
+                    throw BitmapDecodeException("Bitmap decode error", throwable2)
                 }
             } else {
-                throw BitmapDecodeException(request, "Bitmap decode error", throwable)
+                throw BitmapDecodeException("Bitmap decode error", throwable)
             }
-        } ?: throw BitmapDecodeException(request, "Bitmap decode return null")
+        } ?: throw BitmapDecodeException("Bitmap decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             bitmap.recycle()
             val message = "Invalid image, size=${bitmap.width}x${bitmap.height}"
-            throw BitmapDecodeException(request, message)
+            throw BitmapDecodeException(message)
         }
         return bitmap
     }

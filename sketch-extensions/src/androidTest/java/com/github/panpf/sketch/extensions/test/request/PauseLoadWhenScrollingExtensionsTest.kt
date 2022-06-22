@@ -16,7 +16,7 @@ import com.github.panpf.sketch.request.isIgnoredPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.setDepthFromPauseLoadWhenScrolling
-import com.github.panpf.sketch.util.OtherException
+import com.github.panpf.sketch.util.UnknownException
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -205,36 +205,28 @@ class PauseLoadWhenScrollingExtensionsTest {
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(MEMORY)
             setDepthFromPauseLoadWhenScrolling()
-        }.let {
-            DepthException(it, it.depth)
         }.apply {
-            Assert.assertTrue(isCausedByPauseLoadWhenScrolling)
+            Assert.assertTrue(isCausedByPauseLoadWhenScrolling(this, DepthException(depth)))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(MEMORY)
             setDepthFromPauseLoadWhenScrolling()
-        }.let {
-            OtherException(it, null)
         }.apply {
-            Assert.assertFalse(isCausedByPauseLoadWhenScrolling)
+            Assert.assertFalse(isCausedByPauseLoadWhenScrolling(this, UnknownException(null)))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(LOCAL)
             setDepthFromPauseLoadWhenScrolling()
-        }.let {
-            DepthException(it, it.depth)
         }.apply {
-            Assert.assertFalse(isCausedByPauseLoadWhenScrolling)
+            Assert.assertFalse(isCausedByPauseLoadWhenScrolling(this, DepthException(depth)))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(MEMORY)
-        }.let {
-            DepthException(it, it.depth)
         }.apply {
-            Assert.assertFalse(isCausedByPauseLoadWhenScrolling)
+            Assert.assertFalse(isCausedByPauseLoadWhenScrolling(this, DepthException(depth)))
         }
     }
 }

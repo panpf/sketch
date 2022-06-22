@@ -45,7 +45,7 @@ class DefaultDrawableDecoderTest {
             runBlocking {
                 val fetchResult = sketch.components.newFetcher(it).fetch()
                 DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(), fetchResult)
+                    .create(sketch, it, RequestContext(it), fetchResult)
                     .decode()
             }
         }.apply {
@@ -60,7 +60,7 @@ class DefaultDrawableDecoderTest {
             runBlocking {
                 val fetchResult = sketch.components.newFetcher(it).fetch()
                 DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(), fetchResult)
+                    .create(sketch, it, RequestContext(it), fetchResult)
                     .decode()
             }
         }.apply {
@@ -77,7 +77,7 @@ class DefaultDrawableDecoderTest {
             runBlocking {
                 val fetchResult = sketch.components.newFetcher(it).fetch()
                 DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(), fetchResult)
+                    .create(sketch, it, RequestContext(it), fetchResult)
                     .decode()
             }
         }.apply {
@@ -95,7 +95,7 @@ class DefaultDrawableDecoderTest {
             runBlocking {
                 val fetchResult = sketch.components.newFetcher(it).fetch()
                 DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(), fetchResult)
+                    .create(sketch, it, RequestContext(it), fetchResult)
                     .decode()
             }
         }.apply {
@@ -112,7 +112,7 @@ class DefaultDrawableDecoderTest {
             runBlocking {
                 val fetchResult = sketch.components.newFetcher(it).fetch()
                 DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(), fetchResult)
+                    .create(sketch, it, RequestContext(it), fetchResult)
                     .decode()
             }
         }.apply {
@@ -129,7 +129,7 @@ class DefaultDrawableDecoderTest {
             runBlocking {
                 val fetchResult = sketch.components.newFetcher(it).fetch()
                 DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(), fetchResult)
+                    .create(sketch, it, RequestContext(it), fetchResult)
                     .decode()
             }
         }.apply {

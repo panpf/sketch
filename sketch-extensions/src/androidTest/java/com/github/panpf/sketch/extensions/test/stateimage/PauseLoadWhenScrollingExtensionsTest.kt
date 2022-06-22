@@ -63,8 +63,8 @@ class PauseLoadWhenScrollingExtensionsTest {
             val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
                 setDepthFromPauseLoadWhenScrolling()
             }
-            Assert.assertTrue(match(request, DepthException(request, MEMORY)))
-            Assert.assertFalse(match(request, DepthException(request, LOCAL)))
+            Assert.assertTrue(match(request, DepthException(MEMORY)))
+            Assert.assertFalse(match(request, DepthException(LOCAL)))
             Assert.assertFalse(match(request, null))
 
             Assert.assertNull(getDrawable(sketch, request, null))

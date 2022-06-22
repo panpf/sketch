@@ -59,7 +59,8 @@ class ClickIgnoreSaveCellularTrafficAbility
     }
 
     override fun onRequestError(request: DisplayRequest, result: Error) {
-        errorFromSaveCellularTraffic = result.exception.isCausedBySaveCellularTraffic
+        errorFromSaveCellularTraffic =
+            isCausedBySaveCellularTraffic(result.request, result.exception)
         if (errorFromSaveCellularTraffic) {
             this.request = request
         } else {

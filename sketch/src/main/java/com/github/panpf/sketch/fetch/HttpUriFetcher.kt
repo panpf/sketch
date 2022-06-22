@@ -51,7 +51,7 @@ class HttpUriFetcher(
 
             val depth = request.depth
             if (depth >= Depth.LOCAL) {
-                throw DepthException(request, depth)
+                throw DepthException(depth)
             }
 
             return execute(diskCacheHelper)

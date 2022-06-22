@@ -270,8 +270,8 @@ class ComponentRegistryTest {
     fun testBitmapDecoder() {
         val context = getTestContext()
         val sketch = newSketch()
-        val requestContext = RequestContext()
         val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val requestContext = RequestContext(request)
 
         ComponentRegistry.Builder().apply {
             addFetcher(AssetUriFetcher.Factory())
@@ -311,8 +311,8 @@ class ComponentRegistryTest {
     fun testDrawableDecoder() {
         val context = getTestContext()
         val sketch = newSketch()
-        val requestContext = RequestContext()
         val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val requestContext = RequestContext(request)
 
         ComponentRegistry.Builder().apply {
             addFetcher(AssetUriFetcher.Factory())

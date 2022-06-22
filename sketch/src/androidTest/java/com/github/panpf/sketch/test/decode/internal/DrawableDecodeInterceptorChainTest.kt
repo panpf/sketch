@@ -32,7 +32,7 @@ class DrawableDecodeInterceptorChainTest {
                 TestDrawableDecoderInterceptor3(this)
             )
             val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
-            val requestContext = RequestContext()
+            val requestContext = RequestContext(loadRequest)
             val chain = DrawableDecodeInterceptorChain(
                 sketch, loadRequest, requestContext, null, interceptors, 0
             )
@@ -56,7 +56,7 @@ class DrawableDecodeInterceptorChainTest {
                 TestDrawableDecoderInterceptor3(this),
             )
             val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
-            val requestContext = RequestContext()
+            val requestContext = RequestContext(loadRequest)
             val chain = DrawableDecodeInterceptorChain(
                 sketch, loadRequest, requestContext, null, interceptors, 0
             )

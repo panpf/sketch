@@ -22,7 +22,7 @@ class BitmapEngineDecodeInterceptorTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors = listOf(BitmapEngineDecodeInterceptor())
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
-        val requestContext = RequestContext()
+        val requestContext = RequestContext(loadRequest)
         val chain =
             BitmapDecodeInterceptorChain(sketch, loadRequest, requestContext, null, interceptors, 0)
         val result = runBlocking {

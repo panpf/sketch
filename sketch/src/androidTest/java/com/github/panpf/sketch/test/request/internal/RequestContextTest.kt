@@ -9,7 +9,9 @@ import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -55,8 +57,9 @@ class RequestContextTest {
                 bitmapPool = bitmapPool
             ), NETWORK
         )
+        val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
 
-        RequestContext().apply {
+        RequestContext(request).apply {
             assertThrow(IllegalStateException::class) {
                 pendingCountDrawable(countDrawable, "test")
             }

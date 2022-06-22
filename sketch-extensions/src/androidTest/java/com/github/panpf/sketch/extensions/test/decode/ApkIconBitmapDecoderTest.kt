@@ -42,7 +42,7 @@ class ApkIconBitmapDecoderTest {
                 AssetDataSource(sketch, it, "sample.svg"),
                 "application/vnd.android.package-archive"
             )
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -50,7 +50,7 @@ class ApkIconBitmapDecoderTest {
         // mimeType null
         LoadRequest(context, newAssetUri("sample.png")).let {
             val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), null)
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -59,7 +59,7 @@ class ApkIconBitmapDecoderTest {
         LoadRequest(context, newAssetUri("sample.png")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample.png"), "image/svg+xml")
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -77,7 +77,7 @@ class ApkIconBitmapDecoderTest {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking { fetcher.fetch() }
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -99,7 +99,7 @@ class ApkIconBitmapDecoderTest {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking { fetcher.fetch() }
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -121,7 +121,7 @@ class ApkIconBitmapDecoderTest {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking { fetcher.fetch() }
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
             }
         }.apply {
             val bitmapSize = Size(
@@ -149,7 +149,7 @@ class ApkIconBitmapDecoderTest {
             val fetchResult = runBlocking { fetcher.fetch() }
             assertThrow(NullPointerException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
                 }
             }
         }

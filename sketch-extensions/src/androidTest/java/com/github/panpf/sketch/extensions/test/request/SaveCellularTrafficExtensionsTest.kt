@@ -16,7 +16,7 @@ import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.request.setDepthFromSaveCellularTraffic
-import com.github.panpf.sketch.util.OtherException
+import com.github.panpf.sketch.util.UnknownException
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -205,36 +205,28 @@ class SaveCellularTrafficExtensionsTest {
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(LOCAL)
             setDepthFromSaveCellularTraffic()
-        }.let {
-            DepthException(it, it.depth)
         }.apply {
-            Assert.assertTrue(isCausedBySaveCellularTraffic)
+            Assert.assertTrue(isCausedBySaveCellularTraffic(this, DepthException(depth)))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(LOCAL)
             setDepthFromSaveCellularTraffic()
-        }.let {
-            OtherException(it, null)
         }.apply {
-            Assert.assertFalse(isCausedBySaveCellularTraffic)
+            Assert.assertFalse(isCausedBySaveCellularTraffic(this, UnknownException(null)))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(NETWORK)
             setDepthFromSaveCellularTraffic()
-        }.let {
-            DepthException(it, it.depth)
         }.apply {
-            Assert.assertFalse(isCausedBySaveCellularTraffic)
+            Assert.assertFalse(isCausedBySaveCellularTraffic(this, DepthException(depth)))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(LOCAL)
-        }.let {
-            DepthException(it, it.depth)
         }.apply {
-            Assert.assertFalse(isCausedBySaveCellularTraffic)
+            Assert.assertFalse(isCausedBySaveCellularTraffic(this, DepthException(depth)))
         }
     }
 }

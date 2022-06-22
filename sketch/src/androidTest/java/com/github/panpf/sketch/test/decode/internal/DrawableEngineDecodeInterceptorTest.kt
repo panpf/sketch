@@ -22,7 +22,7 @@ class DrawableEngineDecodeInterceptorTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors = listOf(DrawableEngineDecodeInterceptor())
         val loadRequest = DisplayRequest(context, newAssetUri("sample.jpeg"))
-        val requestContext = RequestContext()
+        val requestContext = RequestContext(loadRequest)
         val chain = DrawableDecodeInterceptorChain(
             sketch = sketch,
             request = loadRequest,

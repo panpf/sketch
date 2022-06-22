@@ -83,7 +83,7 @@ class FFmpegVideoFrameBitmapDecoder(
                 ?.toIntOrNull() ?: 0
         if (srcWidth <= 1 || srcHeight <= 1) {
             val message = "Invalid video size. size=${srcWidth}x${srcHeight}"
-            throw BitmapDecodeException(request, message)
+            throw BitmapDecodeException(message)
         }
         return ImageInfo(srcWidth, srcHeight, mimeType)
     }
@@ -132,7 +132,7 @@ class FFmpegVideoFrameBitmapDecoder(
         }
         return mediaMetadataRetriever.getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
             ?: throw BitmapDecodeException(
-                request, "Failed to decode frame at $frameMicros microseconds."
+                "Failed to decode frame at $frameMicros microseconds."
             )
     }
 

@@ -156,7 +156,5 @@ val ImageOptions.isDepthFromSaveCellularTraffic: Boolean
 /**
  * Returns true if the request is abnormal due to the cellular data saving feature
  */
-val SketchException.isCausedBySaveCellularTraffic: Boolean
-    get() = this is DepthException
-            && depth == Depth.LOCAL
-            && thenRequest.depthFrom == KEY
+fun isCausedBySaveCellularTraffic(request: ImageRequest, exception: SketchException?): Boolean =
+    exception is DepthException && exception.depth == Depth.LOCAL && request.depthFrom == KEY

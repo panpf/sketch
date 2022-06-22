@@ -31,7 +31,7 @@ class XmlDrawableBitmapDecoderTest {
         LoadRequest(context, context.newResourceUri(R.drawable.test)).let {
             val fetcher = sketch.components.newFetcher(it)
             val fetchResult = runBlocking { fetcher.fetch() }
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -39,7 +39,7 @@ class XmlDrawableBitmapDecoderTest {
         LoadRequest(context, context.newResourceUri(R.drawable.test_error)).let {
             val fetcher = sketch.components.newFetcher(it)
             val fetchResult = runBlocking { fetcher.fetch() }
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -47,7 +47,7 @@ class XmlDrawableBitmapDecoderTest {
         LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)).let {
             val fetcher = sketch.components.newFetcher(it)
             val fetchResult = runBlocking { fetcher.fetch() }
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -64,7 +64,7 @@ class XmlDrawableBitmapDecoderTest {
                 fetcher.fetch()
             }
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -87,7 +87,7 @@ class XmlDrawableBitmapDecoderTest {
             }
             assertThrow(BitmapDecodeException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
                 }
             }
         }

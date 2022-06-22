@@ -35,7 +35,9 @@ class PauseLoadWhenScrollingMixedScrollListener(
     private fun restartAllChildViewRequest(view: ViewGroup) {
         view.descendants.forEach {
             val result = SketchUtils.getResult(it)
-            if (result is DisplayResult.Error && result.exception.isCausedByPauseLoadWhenScrolling) {
+            if (result is DisplayResult.Error
+                && isCausedByPauseLoadWhenScrolling(result.request, result.exception)
+            ) {
                 SketchUtils.restart(it)
             }
         }

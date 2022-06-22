@@ -62,8 +62,8 @@ class SaveCellularTrafficExtensionsTest {
             val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
                 setDepthFromSaveCellularTraffic()
             }
-            Assert.assertTrue(match(request, DepthException(request, LOCAL)))
-            Assert.assertFalse(match(request, DepthException(request, NETWORK)))
+            Assert.assertTrue(match(request, DepthException(LOCAL)))
+            Assert.assertFalse(match(request, DepthException(NETWORK)))
             Assert.assertFalse(match(request, null))
 
             Assert.assertNull(getDrawable(sketch, request, null))

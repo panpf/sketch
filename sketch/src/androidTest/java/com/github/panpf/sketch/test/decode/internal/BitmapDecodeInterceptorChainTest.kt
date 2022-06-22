@@ -32,7 +32,7 @@ class BitmapDecodeInterceptorChainTest {
                 TestBitmapDecoderInterceptor3(this)
             )
             val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
-            val requestContext = RequestContext()
+            val requestContext = RequestContext(loadRequest)
             val chain = BitmapDecodeInterceptorChain(
                 sketch, loadRequest, requestContext, null, interceptors, 0
             )
@@ -56,7 +56,7 @@ class BitmapDecodeInterceptorChainTest {
                 TestBitmapDecoderInterceptor3(this),
             )
             val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
-            val requestContext = RequestContext()
+            val requestContext = RequestContext(loadRequest)
             val chain = BitmapDecodeInterceptorChain(
                 sketch, loadRequest, requestContext, null, interceptors, 0
             )

@@ -46,7 +46,7 @@ class AppIconBitmapDecoderTest {
                 AppIconDataSource(sketch, it, LOCAL, packageName, versionCode),
                 "application/vnd.android.app-icon"
             )
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -57,7 +57,7 @@ class AppIconBitmapDecoderTest {
                 AppIconDataSource(sketch, it, LOCAL, packageName, versionCode),
                 null
             )
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -66,7 +66,7 @@ class AppIconBitmapDecoderTest {
                 AppIconDataSource(sketch, it, LOCAL, packageName, versionCode),
                 "application/vnd.android.package-archive"
             )
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -77,7 +77,7 @@ class AppIconBitmapDecoderTest {
                 AssetDataSource(sketch, it, "sample.jpeg"),
                 "application/vnd.android.app-icon"
             )
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -100,7 +100,7 @@ class AppIconBitmapDecoderTest {
                 "application/vnd.android.app-icon"
             )
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -124,7 +124,7 @@ class AppIconBitmapDecoderTest {
                 "application/vnd.android.app-icon"
             )
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -148,7 +148,7 @@ class AppIconBitmapDecoderTest {
                 "application/vnd.android.app-icon"
             )
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(), fetchResult)!!.decode()
+                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
             }
         }.apply {
             val bitmapSize = Size(

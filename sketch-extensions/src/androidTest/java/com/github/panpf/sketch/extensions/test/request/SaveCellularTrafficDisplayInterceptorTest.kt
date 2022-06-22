@@ -47,7 +47,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
         // default
         DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
             val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
             Assert.assertTrue(interceptor.enabled)
             Assert.assertFalse(request.isSaveCellularTraffic)
@@ -68,7 +68,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
             saveCellularTraffic()
         }.let { request ->
             val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
             Assert.assertTrue(interceptor.enabled)
             Assert.assertTrue(request.isSaveCellularTraffic)
@@ -89,7 +89,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
             saveCellularTraffic()
         }.let { request ->
             val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
             Assert.assertTrue(interceptor.enabled)
             Assert.assertTrue(request.isSaveCellularTraffic)
@@ -110,7 +110,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
             saveCellularTraffic()
         }.let { request ->
             val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
             Assert.assertFalse(interceptor.enabled)
             Assert.assertTrue(request.isSaveCellularTraffic)
@@ -129,7 +129,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
         interceptor.enabled = true
         DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
             val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
             Assert.assertTrue(interceptor.enabled)
             Assert.assertFalse(request.isSaveCellularTraffic)
@@ -151,7 +151,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
             ignoreSaveCellularTraffic()
         }.let { request ->
             val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
             Assert.assertTrue(interceptor.enabled)
             Assert.assertTrue(request.isSaveCellularTraffic)
@@ -172,7 +172,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
             saveCellularTraffic()
         }.let { request ->
             val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
             Assert.assertTrue(errorInterceptor.enabled)
             Assert.assertTrue(request.isSaveCellularTraffic)
@@ -194,7 +194,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
             depth(MEMORY)
         }.let { request ->
             val chain =
-                TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
             Assert.assertTrue(interceptor.enabled)
             Assert.assertTrue(request.isSaveCellularTraffic)

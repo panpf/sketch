@@ -29,10 +29,9 @@ class XmlDrawableBitmapDecoder(
     override suspend fun decode(): BitmapDecodeResult {
         // Be sure to use this.resources
         val drawable = ResourcesCompat.getDrawable(this.resources, drawableResId, null)
-            ?: throw BitmapDecodeException(request, "Invalid drawable resource id '$drawableResId'")
+            ?: throw BitmapDecodeException("Invalid drawable resource id '$drawableResId'")
         if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
             throw BitmapDecodeException(
-                request,
                 "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
             )
         }

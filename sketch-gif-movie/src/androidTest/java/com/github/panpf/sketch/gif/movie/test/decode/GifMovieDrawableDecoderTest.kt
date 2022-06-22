@@ -40,7 +40,7 @@ class GifMovieDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), "image/gif")
-            Assert.assertNotNull(factory.create(sketch, it, RequestContext(), fetchResult))
+            Assert.assertNotNull(factory.create(sketch, it, RequestContext(it), fetchResult))
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -48,7 +48,7 @@ class GifMovieDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), null)
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -59,7 +59,7 @@ class GifMovieDrawableDecoderTest {
         }.let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), null)
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -67,7 +67,7 @@ class GifMovieDrawableDecoderTest {
         // data error
         DisplayRequest(context, newAssetUri("sample.png")).let {
             val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), null)
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -78,7 +78,7 @@ class GifMovieDrawableDecoderTest {
                 AssetDataSource(sketch, it, "sample_anim.gif"),
                 "image/jpeg",
             )
-            factory.create(sketch, it, RequestContext(), fetchResult)
+            factory.create(sketch, it, RequestContext(it), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -94,7 +94,7 @@ class GifMovieDrawableDecoderTest {
 
         val request = DisplayRequest(context, newAssetUri("sample_anim.gif"))
         val fetchResult = sketch.components.newFetcher(request).let { runBlocking { it.fetch() } }
-        factory.create(sketch, request, RequestContext(), fetchResult)!!
+        factory.create(sketch, request, RequestContext(request), fetchResult)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
@@ -114,7 +114,7 @@ class GifMovieDrawableDecoderTest {
             resize(300, 300)
         }
         val fetchResult1 = sketch.components.newFetcher(request1).let { runBlocking { it.fetch() } }
-        factory.create(sketch, request1, RequestContext(), fetchResult1)!!
+        factory.create(sketch, request1, RequestContext(request1), fetchResult1)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)

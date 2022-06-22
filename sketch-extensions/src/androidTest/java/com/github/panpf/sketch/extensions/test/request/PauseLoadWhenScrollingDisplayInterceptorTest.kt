@@ -41,7 +41,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
         try {// default
             DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertFalse(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -64,7 +64,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 pauseLoadWhenScrolling()
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -87,7 +87,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 pauseLoadWhenScrolling()
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -110,7 +110,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 pauseLoadWhenScrolling()
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
                 Assert.assertFalse(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -133,7 +133,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 pauseLoadWhenScrolling()
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertFalse(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -154,7 +154,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
             PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
             DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -178,7 +178,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 ignorePauseLoadWhenScrolling()
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -202,7 +202,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 depth(MEMORY)
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext())
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
