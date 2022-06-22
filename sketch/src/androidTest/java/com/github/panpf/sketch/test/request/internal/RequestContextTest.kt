@@ -25,7 +25,40 @@ import org.junit.runner.RunWith
 class RequestContextTest {
 
     @Test
-    fun test() {
+    fun testRequests() {
+        val context = getTestContext()
+        val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val request2 = LoadRequest(context, TestAssets.SAMPLE_BMP_URI)
+        val request3 = LoadRequest(context, TestAssets.SAMPLE_PNG_URI)
+
+        Assert.assertNotEquals(request1, request2)
+        Assert.assertNotEquals(request1, request3)
+        Assert.assertNotEquals(request2, request3)
+
+        RequestContext(request1).apply {
+            Assert.assertEquals(request1, firstRequest)
+            Assert.assertEquals(request1, lastRequest)
+            Assert.assertEquals(listOf(request1), requests)
+
+            addRequest(request1)
+            Assert.assertEquals(request1, firstRequest)
+            Assert.assertEquals(request1, lastRequest)
+            Assert.assertEquals(listOf(request1), requests)
+
+            addRequest(request2)
+            Assert.assertEquals(request1, firstRequest)
+            Assert.assertEquals(request2, lastRequest)
+            Assert.assertEquals(listOf(request1, request2), requests)
+
+            addRequest(request3)
+            Assert.assertEquals(request1, firstRequest)
+            Assert.assertEquals(request3, lastRequest)
+            Assert.assertEquals(listOf(request1, request2, request3), requests)
+        }
+    }
+
+    @Test
+    fun testPendingCountDrawable() {
         val context = getTestContext()
         val logger = Logger()
         val bitmapPool = LruBitmapPool(context.defaultMemoryCacheBytes())
