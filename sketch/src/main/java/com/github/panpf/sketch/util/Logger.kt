@@ -141,9 +141,7 @@ class Logger(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Logger
+        if (other !is Logger) return false
 
         if (_level != other._level) return false
         if (proxy != other.proxy) return false

@@ -55,9 +55,7 @@ class SaveCellularTrafficMatcher(val stateImage: StateImage?) :
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as SaveCellularTrafficMatcher
+        if (other !is SaveCellularTrafficMatcher) return false
 
         if (stateImage != other.stateImage) return false
 

@@ -137,9 +137,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as LruMemoryCache
+        if (other !is LruMemoryCache) return false
 
         if (maxSize != other.maxSize) return false
 

@@ -156,9 +156,7 @@ open class ComponentRegistry private constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ComponentRegistry
+        if (other !is ComponentRegistry) return false
 
         if (fetcherFactoryList != other.fetcherFactoryList) return false
         if (bitmapDecoderFactoryList != other.bitmapDecoderFactoryList) return false
@@ -317,12 +315,8 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Components
-
+        if (other !is Components) return false
         if (registry != other.registry) return false
-
         return true
     }
 

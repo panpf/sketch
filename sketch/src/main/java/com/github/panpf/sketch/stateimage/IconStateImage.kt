@@ -53,9 +53,7 @@ class IconStateImage private constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as IconStateImage
+        if (other !is IconStateImage) return false
 
         if (icon != other.icon) return false
         if (bg != other.bg) return false

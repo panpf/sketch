@@ -50,9 +50,7 @@ open class DefaultLongImageDecider(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as DefaultLongImageDecider
+        if (other !is DefaultLongImageDecider) return false
 
         if (smallRatioMultiple != other.smallRatioMultiple) return false
         if (bigRatioMultiple != other.bigRatioMultiple) return false

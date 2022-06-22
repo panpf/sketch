@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package com.github.panpf.sketch.http
 
 import java.util.LinkedList
@@ -64,9 +62,7 @@ class HttpHeaders(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as HttpHeaders
+        if (other !is HttpHeaders) return false
 
         if (addList != other.addList) return false
         if (setList != other.setList) return false
@@ -119,7 +115,7 @@ class HttpHeaders(
 }
 
 /** Return true when the set contains elements. */
-inline fun HttpHeaders.isNotEmpty(): Boolean = !isEmpty()
+fun HttpHeaders.isNotEmpty(): Boolean = !isEmpty()
 
 fun HttpHeaders?.merged(other: HttpHeaders?): HttpHeaders? =
     if (this != null) {

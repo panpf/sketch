@@ -225,8 +225,6 @@ interface ImageRequest {
                 )
             }
         }
-
-        override fun toString(): String = key
     }
 
     /**
@@ -291,25 +289,6 @@ interface ImageRequest {
             apply {
                 this.listener = listener
             }
-
-        /**
-         * Convenience function to create and set the [Listener].
-         */
-        protected inline fun listener(
-            crossinline onStart: (request: ImageRequest) -> Unit = {},
-            crossinline onCancel: (request: ImageRequest) -> Unit = {},
-            crossinline onError: (request: ImageRequest, result: ImageResult.Error) -> Unit = { _, _ -> },
-            crossinline onSuccess: (request: ImageRequest, result: ImageResult.Success) -> Unit = { _, _ -> }
-        ): Builder =
-            listener(object : Listener<ImageRequest, ImageResult.Success, ImageResult.Error> {
-                override fun onStart(request: ImageRequest) = onStart(request)
-                override fun onCancel(request: ImageRequest) = onCancel(request)
-                override fun onError(request: ImageRequest, result: ImageResult.Error) =
-                    onError(request, result)
-
-                override fun onSuccess(request: ImageRequest, result: ImageResult.Success) =
-                    onSuccess(request, result)
-            })
 
         /**
          * Set the [ProgressListener]

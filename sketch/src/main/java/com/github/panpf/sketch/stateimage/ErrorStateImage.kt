@@ -43,9 +43,7 @@ class ErrorStateImage private constructor(val matcherList: List<Matcher>) : Stat
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ErrorStateImage
+        if (other !is ErrorStateImage) return false
 
         if (matcherList != other.matcherList) return false
 
@@ -107,9 +105,7 @@ class ErrorStateImage private constructor(val matcherList: List<Matcher>) : Stat
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as DefaultMatcher
+            if (other !is DefaultMatcher) return false
 
             if (stateImage != other.stateImage) return false
 
@@ -137,9 +133,7 @@ class ErrorStateImage private constructor(val matcherList: List<Matcher>) : Stat
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as UriEmptyMatcher
+            if (other !is UriEmptyMatcher) return false
 
             if (stateImage != other.stateImage) return false
 

@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package com.github.panpf.sketch.request
 
 import android.annotation.SuppressLint
@@ -820,9 +818,7 @@ interface ImageOptions {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as ImageOptionsImpl
+            if (other !is ImageOptionsImpl) return false
 
             if (depth != other.depth) return false
             if (parameters != other.parameters) return false
@@ -910,4 +906,4 @@ interface ImageOptions {
 /**
  * Returns true as long as any property is not empty
  */
-inline fun ImageOptions.isNotEmpty(): Boolean = !isEmpty()
+fun ImageOptions.isNotEmpty(): Boolean = !isEmpty()

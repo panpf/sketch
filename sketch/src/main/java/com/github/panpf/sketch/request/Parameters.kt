@@ -1,6 +1,3 @@
-@file:JvmName("-Parameters")
-@file:Suppress("NOTHING_TO_INLINE", "unused")
-
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.decode.BitmapDecoder
@@ -157,18 +154,19 @@ class Parameters private constructor(
 
     companion object {
         @JvmField
+        @Suppress("unused")
         val EMPTY = Parameters()
     }
 }
 
 /** Returns the number of parameters in this object. */
-inline fun Parameters.count(): Int = size
+fun Parameters.count(): Int = size
 
 /** Return true when the set contains elements. */
-inline fun Parameters.isNotEmpty(): Boolean = !isEmpty()
+fun Parameters.isNotEmpty(): Boolean = !isEmpty()
 
 /** Returns the value associated with [key] or null if [key] has no mapping. */
-inline operator fun Parameters.get(key: String): Any? = value(key)
+operator fun Parameters.get(key: String): Any? = value(key)
 
 fun Parameters?.merged(other: Parameters?): Parameters? =
     if (this != null) {

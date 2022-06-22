@@ -19,9 +19,7 @@ class Tile constructor(val srcRect: Rect, val inSampleSize: Int) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Tile
+        if (other !is Tile) return false
 
         if (srcRect != other.srcRect) return false
         if (inSampleSize != other.inSampleSize) return false

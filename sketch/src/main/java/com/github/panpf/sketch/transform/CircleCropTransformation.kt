@@ -56,9 +56,7 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as CircleCropTransformation
+        if (other !is CircleCropTransformation) return false
 
         if (scale != other.scale) return false
 
@@ -79,9 +77,7 @@ class CircleCropTransformed(val scale: Scale) : Transformed {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as CircleCropTransformed
+        if (other !is CircleCropTransformed) return false
 
         if (scale != other.scale) return false
 

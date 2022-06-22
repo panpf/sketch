@@ -85,9 +85,7 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as RoundedCornersTransformation
+        if (other !is RoundedCornersTransformation) return false
 
         if (!radiusArray.contentEquals(other.radiusArray)) return false
 
@@ -110,9 +108,7 @@ class RoundedCornersTransformed(val radiusArray: FloatArray) : Transformed {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as RoundedCornersTransformed
+        if (other !is RoundedCornersTransformed) return false
 
         if (!radiusArray.contentEquals(other.radiusArray)) return false
 

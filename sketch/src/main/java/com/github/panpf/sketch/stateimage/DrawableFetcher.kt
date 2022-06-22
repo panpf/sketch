@@ -45,9 +45,7 @@ class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ResDrawable
+        if (other !is ResDrawable) return false
 
         if (drawableRes != other.drawableRes) return false
 
@@ -71,9 +69,7 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as RealDrawable
+        if (other !is RealDrawable) return false
 
         if (drawable != other.drawable) return false
 

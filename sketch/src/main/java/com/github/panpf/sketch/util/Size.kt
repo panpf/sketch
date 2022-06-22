@@ -30,9 +30,7 @@ open class Size(val width: Int, val height: Int) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Size
+        if (other !is Size) return false
 
         if (width != other.width) return false
         if (height != other.height) return false
