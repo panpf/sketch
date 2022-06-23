@@ -40,19 +40,19 @@ class Base64UriFetcher(
         override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? =
             if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 val base64ImageString = request.uriString
-                val mimeTypeStartSymbolIndex = base64ImageString.indexOf(":")
                 val mimeTypeEndSymbolIndex = base64ImageString.indexOf(";")
                 val base64IdentifierIndex = base64ImageString.indexOf(BASE64_IDENTIFIER)
-                if (mimeTypeStartSymbolIndex != -1 && mimeTypeEndSymbolIndex != -1 && base64IdentifierIndex != -1) {
-                    val mimeType = base64ImageString.substring(
-                        mimeTypeStartSymbolIndex + 1,
-                        mimeTypeEndSymbolIndex
-                    )
+                if (mimeTypeEndSymbolIndex != -1 && base64IdentifierIndex != -1) {
+                    val mimeType =
+                        base64ImageString.substring(SCHEME.length + 1, mimeTypeEndSymbolIndex)
                     Base64UriFetcher(sketch, request, mimeType, lazy {
                         base64ImageString.substring(base64IdentifierIndex + BASE64_IDENTIFIER.length)
                     })
                 } else {
-                    throw UriInvalidException(request.uriString, "Invalid base64 image: ${request.uriString}")
+                    throw UriInvalidException(
+                        request.uriString,
+                        "Invalid base64 image: ${request.uriString}"
+                    )
                 }
             } else {
                 null

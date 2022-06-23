@@ -51,8 +51,7 @@ class ResourceUriFetcher(
     override suspend fun fetch(): FetchResult {
         val (resources, id) = getResourceId(contentUri)
         val path = TypedValue().apply { resources.getValue(id, this, true) }.string ?: ""
-        val entryName = path.lastIndexOf('/')
-            .takeIf { it != -1 }
+        val entryName = path.lastIndexOf('/').takeIf { it != -1 }
             ?.let { path.substring(it + 1) }
             ?: path.toString()
         val mimeType = getMimeTypeFromUrl(entryName)
