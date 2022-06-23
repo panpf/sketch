@@ -8,6 +8,7 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
@@ -71,15 +72,21 @@ class HttpUriFetcherTest {
                 DownloadRequest(context, contentUri)
             )
         )
+    }
 
-        val httpUriFetcherFactory2 = HttpUriFetcher.Factory()
-        Assert.assertEquals(httpUriFetcherFactory, httpUriFetcherFactory)
-        Assert.assertEquals(httpUriFetcherFactory, httpUriFetcherFactory2)
-        Assert.assertNotEquals(httpUriFetcherFactory, Any())
-        Assert.assertNotEquals(httpUriFetcherFactory, null)
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = HttpUriFetcher.Factory()
+        val element11 = HttpUriFetcher.Factory()
 
-        Assert.assertEquals(httpUriFetcherFactory.hashCode(), httpUriFetcherFactory.hashCode())
-        Assert.assertEquals(httpUriFetcherFactory.hashCode(), httpUriFetcherFactory2.hashCode())
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+
+        Assert.assertNotEquals(element1, Any())
+        Assert.assertNotEquals(element1, null)
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test

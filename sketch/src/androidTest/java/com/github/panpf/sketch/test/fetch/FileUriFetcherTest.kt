@@ -32,31 +32,81 @@ class FileUriFetcherTest {
     fun testFactory() {
         val (context, sketch) = getTestContextAndNewSketch()
         val fileUri = "file:///sdcard/sample.jpg"
-        val filePath = "/sdcard/sample.jpg"
+        val fileUri2 = "file:///sdcard/sample.png?from=bing"
+        val fileUri3 = "file:///sdcard/sample.gif#/main/"
+        val filePath = "/sdcard/sample.webp"
         val ftpUri = "ftp:///sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
         val httpUriFetcherFactory = FileUriFetcher.Factory()
         httpUriFetcherFactory.create(sketch, LoadRequest(context, fileUri))!!.apply {
+            Assert.assertEquals(fileUri, this.request.uriString)
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
+        }
+        httpUriFetcherFactory.create(sketch, LoadRequest(context, fileUri2))!!.apply {
+            Assert.assertEquals(fileUri2, this.request.uriString)
+            Assert.assertEquals("/sdcard/sample.png", this.file.path)
+        }
+        httpUriFetcherFactory.create(sketch, LoadRequest(context, fileUri3))!!.apply {
+            Assert.assertEquals(fileUri3, this.request.uriString)
+            Assert.assertEquals("/sdcard/sample.gif", this.file.path)
         }
         httpUriFetcherFactory.create(sketch, LoadRequest(context, filePath))!!.apply {
+            Assert.assertEquals(filePath, this.request.uriString)
+            Assert.assertEquals("/sdcard/sample.webp", this.file.path)
+        }
+
+        httpUriFetcherFactory.create(sketch, DisplayRequest(context, fileUri))!!.apply {
+            Assert.assertEquals(fileUri, this.request.uriString)
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DisplayRequest(context, fileUri))!!.apply {
-            Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
+        httpUriFetcherFactory.create(sketch, DisplayRequest(context, fileUri2))!!.apply {
+            Assert.assertEquals(fileUri2, this.request.uriString)
+            Assert.assertEquals("/sdcard/sample.png", this.file.path)
+        }
+        httpUriFetcherFactory.create(sketch, DisplayRequest(context, fileUri3))!!.apply {
+            Assert.assertEquals(fileUri3, this.request.uriString)
+            Assert.assertEquals("/sdcard/sample.gif", this.file.path)
         }
         httpUriFetcherFactory.create(sketch, DisplayRequest(context, filePath))!!.apply {
+            Assert.assertEquals(filePath, this.request.uriString)
+            Assert.assertEquals("/sdcard/sample.webp", this.file.path)
+        }
+
+        httpUriFetcherFactory.create(sketch, DownloadRequest(context, fileUri))!!.apply {
+            Assert.assertEquals(fileUri, this.request.uriString)
             Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DownloadRequest(context, fileUri))!!.apply {
-            Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
+        httpUriFetcherFactory.create(sketch, DownloadRequest(context, fileUri2))!!.apply {
+            Assert.assertEquals(fileUri2, this.request.uriString)
+            Assert.assertEquals("/sdcard/sample.png", this.file.path)
+        }
+        httpUriFetcherFactory.create(sketch, DownloadRequest(context, fileUri3))!!.apply {
+            Assert.assertEquals(fileUri3, this.request.uriString)
+            Assert.assertEquals("/sdcard/sample.gif", this.file.path)
         }
         httpUriFetcherFactory.create(sketch, DownloadRequest(context, filePath))!!.apply {
-            Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
+            Assert.assertEquals(filePath, this.request.uriString)
+            Assert.assertEquals("/sdcard/sample.webp", this.file.path)
         }
+
         Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, ftpUri)))
         Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest(context, contentUri)))
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = FileUriFetcher.Factory()
+        val element11 = FileUriFetcher.Factory()
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+
+        Assert.assertNotEquals(element1, Any())
+        Assert.assertNotEquals(element1, null)
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test

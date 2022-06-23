@@ -33,20 +33,67 @@ class AssetUriFetcherTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val fetcherFactory = AssetUriFetcher.Factory()
         val assetUri = newAssetUri("sample.jpeg")
+        val assetUri2 = newAssetUri("sample.png?from=bing")
+        val assetUri3 = newAssetUri("sample.gif#/main/")
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
         fetcherFactory.create(sketch, LoadRequest(context, assetUri))!!.apply {
+            Assert.assertEquals(assetUri, request.uriString)
             Assert.assertEquals("sample.jpeg", assetFileName)
         }
+        fetcherFactory.create(sketch, LoadRequest(context, assetUri2))!!.apply {
+            Assert.assertEquals(assetUri2, request.uriString)
+            Assert.assertEquals("sample.png", assetFileName)
+        }
+        fetcherFactory.create(sketch, LoadRequest(context, assetUri3))!!.apply {
+            Assert.assertEquals(assetUri3, request.uriString)
+            Assert.assertEquals("sample.gif", assetFileName)
+        }
+
         fetcherFactory.create(sketch, DisplayRequest(context, assetUri))!!.apply {
+            Assert.assertEquals(assetUri, request.uriString)
             Assert.assertEquals("sample.jpeg", assetFileName)
         }
+        fetcherFactory.create(sketch, DisplayRequest(context, assetUri2))!!.apply {
+            Assert.assertEquals(assetUri2, request.uriString)
+            Assert.assertEquals("sample.png", assetFileName)
+        }
+        fetcherFactory.create(sketch, DisplayRequest(context, assetUri3))!!.apply {
+            Assert.assertEquals(assetUri3, request.uriString)
+            Assert.assertEquals("sample.gif", assetFileName)
+        }
+
         fetcherFactory.create(sketch, DownloadRequest(context, assetUri))!!.apply {
+            Assert.assertEquals(assetUri, request.uriString)
             Assert.assertEquals("sample.jpeg", assetFileName)
         }
+        fetcherFactory.create(sketch, DownloadRequest(context, assetUri2))!!.apply {
+            Assert.assertEquals(assetUri2, request.uriString)
+            Assert.assertEquals("sample.png", assetFileName)
+        }
+        fetcherFactory.create(sketch, DownloadRequest(context, assetUri3))!!.apply {
+            Assert.assertEquals(assetUri3, request.uriString)
+            Assert.assertEquals("sample.gif", assetFileName)
+        }
+
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, httpUri)))
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = AssetUriFetcher.Factory()
+        val element11 = AssetUriFetcher.Factory()
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+
+        Assert.assertNotEquals(element1, Any())
+        Assert.assertNotEquals(element1, null)
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test

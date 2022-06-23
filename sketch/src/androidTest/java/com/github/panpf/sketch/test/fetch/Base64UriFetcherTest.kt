@@ -8,7 +8,9 @@ import com.github.panpf.sketch.fetch.newBase64Uri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.UriInvalidException
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -49,6 +51,28 @@ class Base64UriFetcherTest {
             Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64StringLazy.value)
         }
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
+
+        assertThrow(UriInvalidException::class) {
+            fetcherFactory.create(sketch, DownloadRequest(context, "data:image/pngbase64,4y2u1412421089084901240129"))
+        }
+        assertThrow(UriInvalidException::class) {
+            fetcherFactory.create(sketch, DownloadRequest(context, "data:image/png;base54,4y2u1412421089084901240129"))
+        }
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = Base64UriFetcher.Factory()
+        val element11 = Base64UriFetcher.Factory()
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+
+        Assert.assertNotEquals(element1, Any())
+        Assert.assertNotEquals(element1, null)
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test

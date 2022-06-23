@@ -35,6 +35,21 @@ class ContentUriFetcherTest {
     }
 
     @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = ContentUriFetcher.Factory()
+        val element11 = ContentUriFetcher.Factory()
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+
+        Assert.assertNotEquals(element1, Any())
+        Assert.assertNotEquals(element1, null)
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+    }
+
+    @Test
     fun testFetch() {
         val (context, sketch) = getTestContextAndNewSketch()
         val fetcherFactory = ContentUriFetcher.Factory()
