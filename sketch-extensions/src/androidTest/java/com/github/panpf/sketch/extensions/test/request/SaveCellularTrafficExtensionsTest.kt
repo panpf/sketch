@@ -213,7 +213,7 @@ class SaveCellularTrafficExtensionsTest {
             depth(LOCAL)
             setDepthFromSaveCellularTraffic()
         }.apply {
-            Assert.assertFalse(isCausedBySaveCellularTraffic(this, UnknownException(null)))
+            Assert.assertFalse(isCausedBySaveCellularTraffic(this, UnknownException("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {

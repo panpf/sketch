@@ -402,7 +402,7 @@ class SketchTest {
             try {
                 sketch.execute(request4)
             } catch (e: Exception) {
-                DisplayResult.Error(request4, null, UnknownException(null, e))
+                DisplayResult.Error(request4, null, UnknownException("", e))
             }
         }
         Assert.assertTrue(result4 is DisplayResult.Error)

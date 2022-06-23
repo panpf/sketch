@@ -99,7 +99,7 @@ class CrossfadeTransitionTest {
         val errorResult = DisplayResult.Error(
             request = request,
             drawable = resultDrawable,
-            exception = UnknownException(null, null)
+            exception = UnknownException("", null)
         )
         Assert.assertNull(factory.create(imageViewTarget, errorResult, true))
 
