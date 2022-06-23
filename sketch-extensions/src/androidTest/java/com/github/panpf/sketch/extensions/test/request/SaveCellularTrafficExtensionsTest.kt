@@ -206,7 +206,7 @@ class SaveCellularTrafficExtensionsTest {
             depth(LOCAL)
             setDepthFromSaveCellularTraffic()
         }.apply {
-            Assert.assertTrue(isCausedBySaveCellularTraffic(this, DepthException(depth)))
+            Assert.assertTrue(isCausedBySaveCellularTraffic(this, DepthException("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
@@ -220,13 +220,13 @@ class SaveCellularTrafficExtensionsTest {
             depth(NETWORK)
             setDepthFromSaveCellularTraffic()
         }.apply {
-            Assert.assertFalse(isCausedBySaveCellularTraffic(this, DepthException(depth)))
+            Assert.assertFalse(isCausedBySaveCellularTraffic(this, DepthException("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(LOCAL)
         }.apply {
-            Assert.assertFalse(isCausedBySaveCellularTraffic(this, DepthException(depth)))
+            Assert.assertFalse(isCausedBySaveCellularTraffic(this, DepthException("")))
         }
     }
 }

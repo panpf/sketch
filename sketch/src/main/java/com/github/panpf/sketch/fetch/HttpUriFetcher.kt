@@ -54,7 +54,7 @@ class HttpUriFetcher(
             /* verify depth */
             val depth = request.depth
             if (depth >= Depth.LOCAL) {
-                throw DepthException(depth)
+                throw DepthException("Request depth limited to $depth. ${request.uriString}")
             }
 
             /* execute download */

@@ -12,9 +12,9 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.setDepthFromPauseLoadWhenScrolling
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ColorStateImage
+import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.PauseLoadWhenScrollingMatcher
-import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
 import org.junit.Assert
 import org.junit.Test
@@ -63,8 +63,18 @@ class PauseLoadWhenScrollingExtensionsTest {
             val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
                 setDepthFromPauseLoadWhenScrolling()
             }
-            Assert.assertTrue(match(request, DepthException(MEMORY)))
-            Assert.assertFalse(match(request, DepthException(LOCAL)))
+            Assert.assertTrue(
+                match(
+                    request.newDisplayRequest { depth(MEMORY) },
+                    DepthException("")
+                )
+            )
+            Assert.assertFalse(
+                match(
+                    request.newDisplayRequest { depth(LOCAL) },
+                    DepthException("")
+                )
+            )
             Assert.assertFalse(match(request, null))
 
             Assert.assertNull(getDrawable(sketch, request, null))

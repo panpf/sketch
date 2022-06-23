@@ -7,6 +7,7 @@ import com.github.panpf.sketch.datasource.UnavailableDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.UriInvalidException
+import com.github.panpf.sketch.util.ifOrNull
 import java.io.FileDescriptor
 import java.io.InputStream
 
@@ -42,14 +43,12 @@ class AppIconUriFetcher(
 
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
             val uri = request.uri
-            return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
+            return ifOrNull(SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val packageName = uri.authority
-                    ?: throw UriInvalidException(request.uriString, "App icon uri 'packageName' part invalid: ${request.uriString}")
+                    ?: throw UriInvalidException("App icon uri 'packageName' part invalid: ${request.uriString}")
                 val versionCode = uri.lastPathSegment?.toIntOrNull()
-                    ?: throw UriInvalidException(request.uriString, "App icon uri 'versionCode' part invalid: ${request.uriString}")
+                    ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: ${request.uriString}")
                 AppIconUriFetcher(sketch, request, packageName, versionCode)
-            } else {
-                null
             }
         }
 

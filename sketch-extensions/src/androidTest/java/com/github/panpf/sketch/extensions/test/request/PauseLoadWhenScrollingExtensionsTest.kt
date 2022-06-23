@@ -206,7 +206,7 @@ class PauseLoadWhenScrollingExtensionsTest {
             depth(MEMORY)
             setDepthFromPauseLoadWhenScrolling()
         }.apply {
-            Assert.assertTrue(isCausedByPauseLoadWhenScrolling(this, DepthException(depth)))
+            Assert.assertTrue(isCausedByPauseLoadWhenScrolling(this, DepthException("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
@@ -220,13 +220,13 @@ class PauseLoadWhenScrollingExtensionsTest {
             depth(LOCAL)
             setDepthFromPauseLoadWhenScrolling()
         }.apply {
-            Assert.assertFalse(isCausedByPauseLoadWhenScrolling(this, DepthException(depth)))
+            Assert.assertFalse(isCausedByPauseLoadWhenScrolling(this, DepthException("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(MEMORY)
         }.apply {
-            Assert.assertFalse(isCausedByPauseLoadWhenScrolling(this, DepthException(depth)))
+            Assert.assertFalse(isCausedByPauseLoadWhenScrolling(this, DepthException("")))
         }
     }
 }

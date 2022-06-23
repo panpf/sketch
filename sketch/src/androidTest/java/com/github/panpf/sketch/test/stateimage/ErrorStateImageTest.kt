@@ -29,7 +29,7 @@ class ErrorStateImageTest {
             Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable,
-                getDrawable(sketch, request, UriInvalidException(request.uriString, ""))
+                getDrawable(sketch, request, UriInvalidException(""))
             )
         }
 
@@ -39,7 +39,7 @@ class ErrorStateImageTest {
             Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable2,
-                getDrawable(sketch, request, UriInvalidException(request.uriString, ""))
+                getDrawable(sketch, request, UriInvalidException(""))
             )
         }
     }

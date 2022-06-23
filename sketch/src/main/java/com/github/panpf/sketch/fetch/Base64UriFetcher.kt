@@ -8,6 +8,7 @@ import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.BASE64_IDENTIFIE
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.UriInvalidException
+import com.github.panpf.sketch.util.ifOrNull
 
 /**
  * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
@@ -38,7 +39,7 @@ class Base64UriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? =
-            if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
+            ifOrNull(SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 val base64ImageString = request.uriString
                 val mimeTypeEndSymbolIndex = base64ImageString.indexOf(";")
                 val base64IdentifierIndex = base64ImageString.indexOf(BASE64_IDENTIFIER)
@@ -49,13 +50,8 @@ class Base64UriFetcher(
                         base64ImageString.substring(base64IdentifierIndex + BASE64_IDENTIFIER.length)
                     })
                 } else {
-                    throw UriInvalidException(
-                        request.uriString,
-                        "Invalid base64 image: ${request.uriString}"
-                    )
+                    throw UriInvalidException("Invalid base64 image: ${request.uriString}")
                 }
-            } else {
-                null
             }
 
         override fun toString(): String = "Base64UriFetcher"

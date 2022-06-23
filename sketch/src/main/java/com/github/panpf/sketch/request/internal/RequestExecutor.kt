@@ -58,7 +58,7 @@ class RequestExecutor {
         try {
             val uriString = requestContext.lastRequest.uriString
             if (uriString.isEmpty() || uriString.isBlank()) {
-                throw UriInvalidException(uriString, "Request uri is empty or blank: $uriString")
+                throw UriInvalidException("Request uri is empty or blank: $uriString")
             }
 
             // Set up the request's lifecycle observers. Cancel the request when destroy
