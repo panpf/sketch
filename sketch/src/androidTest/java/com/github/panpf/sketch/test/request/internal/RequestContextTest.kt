@@ -101,6 +101,8 @@ class RequestContextTest {
             }
 
             runBlocking(Dispatchers.Main) {
+                completeCountDrawable("test")
+
                 Assert.assertEquals(0, countDrawable.countBitmap.getPendingCount())
                 Assert.assertEquals(0, countDrawable1.countBitmap.getPendingCount())
 
