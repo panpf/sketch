@@ -736,14 +736,14 @@ class ImageOptionsTest {
 
             /* setParameter(), removeParameter() */
             setParameter("key1", "value1")
-            setParameter("key2", "value2")
+            setParameter("key2", "value2", "value2")
             build().apply {
                 Assert.assertEquals(2, parameters?.size)
                 Assert.assertEquals("value1", parameters?.get("key1"))
                 Assert.assertEquals("value2", parameters?.get("key2"))
             }
 
-            setParameter("key2", "value2.1", "value2.1")
+            setParameter("key2", "value2.1", null)
             build().apply {
                 Assert.assertEquals(2, parameters?.size)
                 Assert.assertEquals("value1", parameters?.get("key1"))

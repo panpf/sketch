@@ -6,7 +6,7 @@ import android.widget.ImageView
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
 
-class TestImageView @JvmOverloads constructor(
+class TestOptionsImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : ImageView(context, attrs), ImageOptionsProvider {
 

@@ -29,7 +29,9 @@ import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
@@ -473,7 +475,7 @@ class DownloadRequestTest {
                 Assert.assertEquals("value2", parameters?.get("key2"))
             }
 
-            setParameter("key2", "value2.1")
+            setParameter("key2", "value2.1", null)
             build().apply {
                 Assert.assertEquals(2, parameters?.size)
                 Assert.assertEquals("value1", parameters?.get("key1"))
@@ -1384,26 +1386,58 @@ class DownloadRequestTest {
             listener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
             }
 
             listener(onStart = {})
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
             }
 
             listener(onCancel = {})
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
             }
 
             listener(onError = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
             }
 
             listener(onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
+            }
+
+            listener(null)
+            build().apply {
+                Assert.assertNull(listener)
+            }
+        }
+    }
+
+    @Test
+    fun testProgressListener() {
+        val context1 = getTestContext()
+        val uriString1 = newAssetUri("sample.jpeg")
+        DownloadRequest.Builder(context1, uriString1).apply {
+            build().apply {
+                Assert.assertNull(progressListener)
+            }
+
+            progressListener { _, _, _ -> }
+            build().apply {
+                Assert.assertNotNull(progressListener)
+                Assert.assertTrue(progressListener is ProgressListener<*>)
+            }
+
+            progressListener(null)
+            build().apply {
+                Assert.assertNull(progressListener)
             }
         }
     }

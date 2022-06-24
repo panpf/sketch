@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.request
 
+import android.content.Context
 import android.graphics.Bitmap.Config.ALPHA_8
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
@@ -11,6 +12,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -29,8 +31,12 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.get
+import com.github.panpf.sketch.request.internal.CombinedListener
+import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.request.updateDisplayImageOptions
@@ -57,7 +63,9 @@ import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.test.utils.TestImageView
+import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.TestListenerImageView
+import com.github.panpf.sketch.test.utils.TestOptionsImageView
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -67,6 +75,7 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
+import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -264,7 +273,7 @@ class DisplayRequestTest {
     fun testTarget() {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
-        val imageView = TestImageView(context1)
+        val imageView = TestOptionsImageView(context1)
 
         DisplayRequest(context1, uriString1).apply {
             Assert.assertNull(target)
@@ -336,7 +345,7 @@ class DisplayRequestTest {
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
 
-        val imageView = TestImageView(activity)
+        val imageView = TestOptionsImageView(activity)
         DisplayRequest(imageView, uriString1).apply {
             Assert.assertEquals(imageView.context.getLifecycle(), this.lifecycle)
         }
@@ -530,7 +539,7 @@ class DisplayRequestTest {
                 Assert.assertEquals("value2", parameters?.get("key2"))
             }
 
-            setParameter("key2", "value2.1")
+            setParameter("key2", "value2.1", null)
             build().apply {
                 Assert.assertEquals(2, parameters?.size)
                 Assert.assertEquals("value1", parameters?.get("key1"))
@@ -1097,6 +1106,67 @@ class DisplayRequestTest {
             build().apply {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
             }
+
+            target(ImageView(context1))
+            build().apply {
+                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
+            }
+
+            target(ImageView(context1).apply {
+                scaleType = ScaleType.CENTER_CROP
+            })
+            build().apply {
+                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
+            }
+
+            target(ImageView(context1).apply {
+                scaleType = ScaleType.CENTER
+            })
+            build().apply {
+                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
+            }
+
+            target(ImageView(context1).apply {
+                scaleType = ScaleType.CENTER_INSIDE
+            })
+            build().apply {
+                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
+            }
+
+            target(ImageView(context1).apply {
+                scaleType = ScaleType.FIT_END
+            })
+            build().apply {
+                Assert.assertEquals(FixedScaleDecider(END_CROP), resizeScaleDecider)
+            }
+
+            target(ImageView(context1).apply {
+                scaleType = ScaleType.FIT_CENTER
+            })
+            build().apply {
+                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
+            }
+
+            target(ImageView(context1).apply {
+                scaleType = ScaleType.FIT_START
+            })
+            build().apply {
+                Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
+            }
+
+            target(ImageView(context1).apply {
+                scaleType = ScaleType.FIT_XY
+            })
+            build().apply {
+                Assert.assertEquals(FixedScaleDecider(FILL), resizeScaleDecider)
+            }
+
+            target(ImageView(context1).apply {
+                scaleType = ScaleType.MATRIX
+            })
+            build().apply {
+                Assert.assertEquals(FixedScaleDecider(FILL), resizeScaleDecider)
+            }
         }
     }
 
@@ -1459,27 +1529,130 @@ class DisplayRequestTest {
             listener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
             }
 
             listener(onStart = {})
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
             }
 
             listener(onCancel = {})
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
             }
 
             listener(onError = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
             }
 
             listener(onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
+            }
+
+            listener(null)
+            target(null)
+            build().apply {
+                Assert.assertNull(listener)
+            }
+
+            target(ImageView(context1))
+            build().apply {
+                Assert.assertNull(listener)
+            }
+
+            listener(onSuccess = { _, _ -> })
+            build().apply {
+                Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
+            }
+
+            listener(null)
+            target(null)
+            build().apply {
+                Assert.assertNull(listener)
+            }
+
+            target(TestListenerImageView(context1))
+            build().apply {
+                Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is Listener<*, *, *>)
+            }
+
+            listener(onSuccess = { _, _ -> })
+            build().apply {
+                Assert.assertNotNull(listener)
+                Assert.assertTrue(listener is CombinedListener<*, *, *>)
             }
         }
     }
+
+    @Test
+    fun testProgressListener() {
+        val context1 = getTestContext()
+        val uriString1 = newAssetUri("sample.jpeg")
+        DisplayRequest.Builder(context1, uriString1).apply {
+            build().apply {
+                Assert.assertNull(progressListener)
+            }
+
+            progressListener { _, _, _ -> }
+            build().apply {
+                Assert.assertNotNull(progressListener)
+                Assert.assertTrue(progressListener is ProgressListener<*>)
+            }
+
+            progressListener(null)
+            target(null)
+            build().apply {
+                Assert.assertNull(progressListener)
+            }
+
+            target(ImageView(context1))
+            build().apply {
+                Assert.assertNull(progressListener)
+            }
+
+            progressListener { _, _, _ -> }
+            build().apply {
+                Assert.assertNotNull(progressListener)
+                Assert.assertTrue(progressListener is ProgressListener<*>)
+            }
+
+            progressListener(null)
+            target(null)
+            build().apply {
+                Assert.assertNull(progressListener)
+            }
+
+            target(TestListenerImageView(context1))
+            build().apply {
+                Assert.assertNotNull(progressListener)
+                Assert.assertTrue(progressListener is ProgressListener<*>)
+            }
+
+            progressListener { _, _, _ -> }
+            build().apply {
+                Assert.assertNotNull(progressListener)
+                Assert.assertTrue(progressListener is CombinedProgressListener<*>)
+            }
+        }
+    }
+
+    @Test
+    fun testUnknownImpl() {
+        val context = getTestContext()
+        assertThrow(UnsupportedOperationException::class) {
+            MyImageRequestBuilder(context, TestAssets.SAMPLE_JPEG_URI).build()
+        }
+    }
+
+    class MyImageRequestBuilder(context: Context, uriString: String) :
+        ImageRequest.Builder(context, uriString)
 }

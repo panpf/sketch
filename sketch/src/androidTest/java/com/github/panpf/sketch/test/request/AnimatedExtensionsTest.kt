@@ -7,6 +7,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
@@ -33,6 +34,11 @@ class AnimatedExtensionsTest {
         assertThrow(IllegalArgumentException::class) {
             DisplayRequest(context, newAssetUri("sample_anim.gif")) {
                 (this as ImageRequest.Builder).repeatCount(-2)
+            }
+        }
+        assertThrow(IllegalArgumentException::class) {
+            DisplayRequest(context, newAssetUri("sample_anim.gif")) {
+                repeatCount(-2)
             }
         }
         (DisplayRequest(context, newAssetUri("sample_anim.gif")) {
@@ -215,5 +221,18 @@ class AnimatedExtensionsTest {
             animatedTransformation(myAnimatedTransformation)
         }.cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
+    }
+
+    @Test
+    fun testAnimatable2CompatCallbackOf() {
+        animatable2CompatCallbackOf(onStart = null, onEnd = null).apply {
+            onAnimationStart(null)
+            onAnimationEnd(null)
+        }
+
+        animatable2CompatCallbackOf(onStart = {}, onEnd = { }).apply {
+            onAnimationStart(null)
+            onAnimationEnd(null)
+        }
     }
 }
