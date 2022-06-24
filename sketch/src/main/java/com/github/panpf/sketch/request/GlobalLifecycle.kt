@@ -30,7 +30,7 @@ internal object GlobalLifecycle : Lifecycle() {
 
     override fun getCurrentState() = State.RESUMED
 
-    override fun toString() = "coil.request.GlobalLifecycle"
+    override fun toString() = "GlobalLifecycle"
 }
 
 fun Lifecycle.isSketchGlobalLifecycle() = this is GlobalLifecycle

@@ -92,7 +92,7 @@ class RequestExecutor {
 
             val successResult = when (data) {
                 is DisplayData -> DisplayResult.Success(
-                    request = requestContext.lastRequest,
+                    request = requestContext.lastRequest as DisplayRequest,
                     drawable = data.drawable.tryToResizeDrawable(
                         sketch,
                         requestContext.lastRequest
@@ -103,7 +103,7 @@ class RequestExecutor {
                     transformedList = data.transformedList
                 )
                 is LoadData -> LoadResult.Success(
-                    request = requestContext.lastRequest,
+                    request = requestContext.lastRequest as LoadRequest,
                     bitmap = data.bitmap,
                     imageInfo = data.imageInfo,
                     imageExifOrientation = data.imageExifOrientation,
@@ -111,7 +111,7 @@ class RequestExecutor {
                     transformedList = data.transformedList
                 )
                 is DownloadData -> DownloadResult.Success(
-                    requestContext.lastRequest,
+                    requestContext.lastRequest as DownloadRequest,
                     data,
                     data.dataFrom
                 )
@@ -136,11 +136,18 @@ class RequestExecutor {
                             ?: requestContext.lastRequest.placeholder
                                 ?.getDrawable(sketch, requestContext.lastRequest, exception)
                                 ?.tryToResizeDrawable(sketch, requestContext.lastRequest)
-                        DisplayResult.Error(requestContext.lastRequest, errorDrawable, exception)
+                        DisplayResult.Error(
+                            requestContext.lastRequest as DisplayRequest,
+                            errorDrawable,
+                            exception
+                        )
                     }
-                    is LoadRequest -> LoadResult.Error(requestContext.lastRequest, exception)
+                    is LoadRequest -> LoadResult.Error(
+                        requestContext.lastRequest as LoadRequest,
+                        exception
+                    )
                     is DownloadRequest -> DownloadResult.Error(
-                        requestContext.lastRequest,
+                        requestContext.lastRequest as DownloadRequest,
                         exception
                     )
                     else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${requestContext.lastRequest::class.java}")

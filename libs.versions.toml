@@ -1,14 +1,19 @@
 [versions]
+
+# android platform
 minSdk = "16"
 composeMinSdk = "21"
 targetSdk = "28"
 compileSdk = "31"
 
+# app version
 versionCode = "3006"
 versionName = "3.0.0-beta02"
 
-# plugin
+# android
 android-buildtools = "7.2.0"
+
+# maven
 maven-publishpluginx = "0.18.0"
 
 # kotlin
@@ -61,13 +66,15 @@ mmkv = "1.2.13"
 
 [libraries]
 
-# plugin
+# android
 android-buildtools = { module = "com.android.tools.build:gradle", version.ref = "android-buildtools" }
+
+# maven
 maven-publishpluginx = { module = "io.github.panpf.maven-publish:maven-publish-gradle-plugin", version.ref = "maven-publishpluginx" }
-kotlin-gradlepluginx = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-serializationpluginx = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 
 # kotlin
+kotlin-gradlepluginx = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serializationpluginx = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }

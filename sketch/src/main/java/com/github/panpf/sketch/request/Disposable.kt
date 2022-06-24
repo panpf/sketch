@@ -39,8 +39,9 @@ class OneShotDisposable<T>(
         get() = !job.isActive
 
     override fun dispose() {
-        if (isDisposed) return
-        job.cancel()
+        if (!isDisposed) {
+            job.cancel()
+        }
     }
 }
 

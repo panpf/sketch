@@ -20,6 +20,7 @@ internal fun LayerDrawable.getLastChildDrawable(): Drawable? {
  */
 internal fun Drawable.toBitmap(lowQuality: Boolean = false, bitmapPool: BitmapPool? = null): Bitmap {
     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+    @Suppress("DEPRECATION")
     val config = if (lowQuality) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
     val bitmap: Bitmap = bitmapPool?.getOrCreate(intrinsicWidth, intrinsicHeight, config)
         ?: Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, config)

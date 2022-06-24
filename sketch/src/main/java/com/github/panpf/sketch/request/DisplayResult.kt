@@ -12,7 +12,7 @@ sealed interface DisplayResult : ImageResult {
     val drawable: Drawable?
 
     data class Success constructor(
-        override val request: ImageRequest,
+        override val request: DisplayRequest,
         override val drawable: Drawable,
         val imageInfo: ImageInfo,
         @ExifOrientation val imageExifOrientation: Int,
@@ -21,7 +21,7 @@ sealed interface DisplayResult : ImageResult {
     ) : DisplayResult, ImageResult.Success
 
     data class Error constructor(
-        override val request: ImageRequest,
+        override val request: DisplayRequest,
         override val drawable: Drawable?,
         override val exception: SketchException,
     ) : DisplayResult, ImageResult.Error

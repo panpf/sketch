@@ -6,13 +6,13 @@ import com.github.panpf.sketch.util.SketchException
 sealed interface DownloadResult : ImageResult {
 
     data class Success constructor(
-        override val request: ImageRequest,
+        override val request: DownloadRequest,
         val data: DownloadData,
         val dataFrom: DataFrom
     ) : DownloadResult, ImageResult.Success
 
     data class Error constructor(
-        override val request: ImageRequest,
+        override val request: DownloadRequest,
         override val exception: SketchException,
     ) : DownloadResult, ImageResult.Error
 }

@@ -10,7 +10,7 @@ import com.github.panpf.sketch.util.SketchException
 sealed interface LoadResult : ImageResult {
 
     data class Success constructor(
-        override val request: ImageRequest,
+        override val request: LoadRequest,
         val bitmap: Bitmap,
         val imageInfo: ImageInfo,
         @ExifOrientation val imageExifOrientation: Int,
@@ -19,7 +19,7 @@ sealed interface LoadResult : ImageResult {
     ) : LoadResult, ImageResult.Success
 
     data class Error constructor(
-        override val request: ImageRequest,
+        override val request: LoadRequest,
         override val exception: SketchException,
     ) : LoadResult, ImageResult.Error
 }

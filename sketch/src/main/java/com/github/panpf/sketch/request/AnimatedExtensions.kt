@@ -180,7 +180,7 @@ val ImageOptions.animatedTransformation: AnimatedTransformation?
 fun animatable2CompatCallbackOf(
     onStart: (() -> Unit)?,
     onEnd: (() -> Unit)?
-) = object : Animatable2Compat.AnimationCallback() {
+): Animatable2Compat.AnimationCallback = object : Animatable2Compat.AnimationCallback() {
     override fun onAnimationStart(drawable: Drawable?) {
         onStart?.invoke()
     }
