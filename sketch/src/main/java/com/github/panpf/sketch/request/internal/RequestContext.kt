@@ -37,6 +37,8 @@ class RequestContext constructor(val firstRequest: ImageRequest) {
     @MainThread
     fun completeCountDrawable(caller: String) {
         requiredMainThread()
-        pendingCountDrawable?.countBitmap?.setIsPending(false, caller)
+        pendingCountDrawable?.apply {
+            countBitmap.setIsPending(false, caller)
+        }
     }
 }

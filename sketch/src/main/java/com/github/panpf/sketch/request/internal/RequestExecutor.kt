@@ -130,12 +130,13 @@ class RequestExecutor {
                     ?: UnknownException(throwable.toString(), throwable)
                 val errorResult = when (requestContext.lastRequest) {
                     is DisplayRequest -> {
-                        val errorDrawable = requestContext.lastRequest.error
-                            ?.getDrawable(sketch, requestContext.lastRequest, exception)
-                            ?.tryToResizeDrawable(sketch, requestContext.lastRequest)
-                            ?: requestContext.lastRequest.placeholder
-                                ?.getDrawable(sketch, requestContext.lastRequest, exception)
+                        val errorDrawable = requestContext.lastRequest.error?.let {
+                            it.getDrawable(sketch, requestContext.lastRequest, exception)
                                 ?.tryToResizeDrawable(sketch, requestContext.lastRequest)
+                        } ?: requestContext.lastRequest.placeholder?.let {
+                            it.getDrawable(sketch, requestContext.lastRequest, exception)
+                                ?.tryToResizeDrawable(sketch, requestContext.lastRequest)
+                        }
                         DisplayResult.Error(
                             requestContext.lastRequest as DisplayRequest,
                             errorDrawable,
