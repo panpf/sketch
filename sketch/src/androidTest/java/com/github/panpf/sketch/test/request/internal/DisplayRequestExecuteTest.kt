@@ -1269,6 +1269,13 @@ class DisplayRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
         Assert.assertNotNull(onErrorDrawable)
         Assert.assertNotNull(onErrorDrawable === colorDrawable)
+
+        onErrorDrawable = null
+        errorRequest.newDisplayRequest {
+            placeholder(colorDrawable)
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertNotNull(onErrorDrawable)
+        Assert.assertNotNull(onErrorDrawable === colorDrawable)
     }
 
     @Test
