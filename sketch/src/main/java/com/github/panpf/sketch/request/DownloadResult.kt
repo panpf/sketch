@@ -8,7 +8,7 @@ sealed interface DownloadResult : ImageResult {
     data class Success constructor(
         override val request: DownloadRequest,
         val data: DownloadData,
-        val dataFrom: DataFrom
+        val dataFrom: DataFrom = data.dataFrom
     ) : DownloadResult, ImageResult.Success
 
     data class Error constructor(

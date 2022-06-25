@@ -2,7 +2,6 @@ package com.github.panpf.sketch.request.internal
 
 import android.view.View
 import android.widget.ImageView
-import android.widget.ImageView.ScaleType
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
@@ -27,6 +26,7 @@ import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.awaitStarted
+import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
@@ -113,11 +113,9 @@ class RequestExecutor {
                 is DownloadData -> DownloadResult.Success(
                     requestContext.lastRequest as DownloadRequest,
                     data,
-                    data.dataFrom
                 )
                 else -> throw UnsupportedOperationException("Unsupported ImageData: ${data::class.java}")
             }
-            // todo 返回最后的 request
             onSuccess(sketch, requestContext.lastRequest, target, successResult)
             return successResult
         } catch (throwable: Throwable) {
@@ -256,10 +254,4 @@ class RequestExecutor {
 
         transition.transition()
     }
-
-    private val ImageView.fitScale: Boolean
-        get() = when (scaleType) {
-            ScaleType.FIT_START, ScaleType.FIT_CENTER, ScaleType.FIT_END, ScaleType.CENTER_INSIDE -> true
-            else -> false
-        }
 }

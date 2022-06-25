@@ -7,6 +7,8 @@ import android.content.ContextWrapper
 import android.os.Looper
 import android.os.Process
 import android.webkit.MimeTypeMap
+import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.annotation.MainThread
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -221,3 +223,9 @@ internal fun MimeTypeMap.getMimeTypeFromUrl(url: String?): String? {
 
     return getMimeTypeFromExtension(extension)
 }
+
+internal val ImageView.fitScale: Boolean
+    get() = when (scaleType) {
+        ScaleType.FIT_START, ScaleType.FIT_CENTER, ScaleType.FIT_END, ScaleType.CENTER_INSIDE -> true
+        else -> false
+    }
