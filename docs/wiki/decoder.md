@@ -32,7 +32,7 @@ Decoder 列表，直到找到一个能解码当前类型图片的 Decoder，然�
 
 ## 扩展新的 Decoder
 
-1.首先需要实现 [BitmapDecoder] 或 [BitmapDecoder] 接口定义你的 Decoder 和它的 Factory，下面以 [BitmapDecoder] 为例，如下：
+1.首先需要实现 [BitmapDecoder] 或 [DrawableDecoder] 接口定义你的 Decoder 和它的 Factory，下面以 [BitmapDecoder] 为例，如下：
 
 ```kotlin
 class MyBitmapDecoder : BitmapDecoder {
