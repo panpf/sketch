@@ -57,6 +57,13 @@
             app:exitAnim="@anim/nav_exit"
             app:popEnterAnim="@anim/nav_pop_enter"
             app:popExitAnim="@anim/nav_pop_exit" />
+        <action
+            android:id="@+id/action_remoteViewsTestFragment"
+            app:destination="@id/remoteViewsTestFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
 
         <action
             android:id="@+id/action_decoderTestFragment"
@@ -193,6 +200,11 @@
             app:nullable="false" />
     </fragment>
 
+    <fragment
+        android:id="@+id/remoteViewsTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.notify.RemoteViewsTestFragment"
+        android:label="NotificationFragment" />
+
     <activity
         android:id="@+id/imageViewerActivity"
         android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerActivity"
@@ -288,44 +300,44 @@
         android:label="ImageInfoDialogFragment">
         <argument
             android:name="uri"
+            android:defaultValue="null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="null"/>
+            app:nullable="true" />
         <argument
             android:name="imageInfo"
+            android:defaultValue="null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="null"/>
+            app:nullable="true" />
         <argument
             android:name="optionsInfo"
+            android:defaultValue="null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="null"/>
+            app:nullable="true" />
         <argument
             android:name="drawableInfo"
+            android:defaultValue="null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="null"/>
+            app:nullable="true" />
         <argument
             android:name="dataFromInfo"
+            android:defaultValue="null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="null"/>
+            app:nullable="true" />
         <argument
             android:name="transformedInfo"
+            android:defaultValue="null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="null"/>
+            app:nullable="true" />
         <argument
             android:name="zoomInfo"
+            android:defaultValue="null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="null"/>
+            app:nullable="true" />
         <argument
             android:name="tilesInfo"
+            android:defaultValue="null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="null"/>
+            app:nullable="true" />
     </dialog>
 
     <!--<action

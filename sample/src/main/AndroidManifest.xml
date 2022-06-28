@@ -54,7 +54,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.viewer.ImageViewerActivity" android:theme="@style/AppTheme.Translucent"/>
+        <activity
+            android:name=".ui.viewer.ImageViewerActivity"
+            android:theme="@style/AppTheme.Translucent" />
 
         <service
             android:name="com.github.panpf.sketch.sample.service.NotificationService"
@@ -69,6 +71,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <receiver android:name=".receiver.RemoteViewsTestAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget" />
+        </receiver>
 
         <meta-data
             android:name="android.max_aspect"

@@ -51,6 +51,7 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                         MainFragmentDirections.actionLocalVideoListFragment()
                     ),
                     Link("Huge Image", MainFragmentDirections.actionHugeImageHomeFragment()),
+                    Link("RemoteViews", MainFragmentDirections.actionRemoteViewsTestFragment()),
 
                     ListSeparator("Jetpack Compose"),
                     Link(

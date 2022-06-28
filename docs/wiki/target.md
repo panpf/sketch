@@ -41,6 +41,41 @@ val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
 sketch.enqueue(request)
 ```
 
+### RemoteViews
+
+Sketch 提供了 [RemoteViewsDisplayTarget] 用来将图片显示到 [RemoteViews]，如下：
+
+```kotlin
+val remoteViews =
+    RemoteViews(context.packageName, R.layout.remote_views_notification)
+
+val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).apply {
+    setSmallIcon(R.mipmap.ic_launcher)
+    setContent(remoteViews)
+}.build()
+
+val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
+    resize(100.dp2px, 100.dp2px, scale = START_CROP)
+    target(
+        RemoteViewsDisplayTarget(
+            remoteViews = remoteViews,
+            imageViewId = R.id.remoteViewsNotificationImage,
+            ignoreNullDrawable = true,
+            onUpdated = {
+                val notificationManager =
+                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.notify(1101, notification)
+            }
+        )
+    )
+}
+context.sketch.enqueue(request)
+```
+
+1. 如上所示 [RemoteViewsDisplayTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的 setImageViewBitmap 方法设置
+Bitmap
+2. 所以还需要你在 onUpdated 函数中刷新通知或 AppWidget 才能将 Bitmap 显示到屏幕上
+
 [getting_started]: getting_started.md
 
 [Target]: ../../sketch/src/main/java/com/github/panpf/sketch/target/Target.kt
@@ -66,3 +101,11 @@ sketch.enqueue(request)
 [DownloadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
 
 [DownloadData]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadData.kt
+
+[RemoteViews]: https://developer.android.google.cn/reference/android/widget/RemoteViews
+
+[RemoteViewsDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/RemoteViewsDisplayTarget.kt
+
+[RemoteViewsAppWidgetDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/RemoteViewsAppWidgetDisplayTarget.kt
+
+[RemoteViewsNotificationDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/RemoteViewsNotificationDisplayTarget.kt
