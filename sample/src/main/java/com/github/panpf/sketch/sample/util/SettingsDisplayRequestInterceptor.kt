@@ -15,7 +15,7 @@ import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.widget.MyListImageView
-import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.target.ViewDisplayTarget
 
 class SettingsDisplayRequestInterceptor : RequestInterceptor {
 
@@ -77,7 +77,7 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                 }
             }
             val target = chain.request.target
-            if (target is ViewTarget<*>) {
+            if (target is ViewDisplayTarget<*>) {
                 val view = target.view
                 if (view is MyListImageView) {
                     if (request.definedOptions.disallowAnimatedImage == null) {

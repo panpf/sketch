@@ -61,7 +61,7 @@ import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
-import com.github.panpf.sketch.target.ImageViewTarget
+import com.github.panpf.sketch.target.ImageViewDisplayTarget
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestListenerImageView
@@ -131,7 +131,7 @@ class DisplayRequestTest {
             Assert.assertEquals("asset://sample.jpeg", uriString)
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
-            Assert.assertEquals(ImageViewTarget(imageView1), this.target)
+            Assert.assertEquals(ImageViewDisplayTarget(imageView1), this.target)
             Assert.assertSame(GlobalLifecycle, this.lifecycle)
 
             Assert.assertEquals(NETWORK, this.depth)
@@ -280,7 +280,7 @@ class DisplayRequestTest {
         }
 
         DisplayRequest(imageView, uriString1).apply {
-            Assert.assertEquals(ImageViewTarget(imageView), target)
+            Assert.assertEquals(ImageViewDisplayTarget(imageView), target)
         }
 
         imageView.updateDisplayImageOptions {
@@ -288,7 +288,7 @@ class DisplayRequestTest {
         }
 
         DisplayRequest(imageView, uriString1).apply {
-            Assert.assertEquals(ImageViewTarget(imageView), target)
+            Assert.assertEquals(ImageViewDisplayTarget(imageView), target)
             Assert.assertEquals(WRITE_ONLY, memoryCachePolicy)
         }
 

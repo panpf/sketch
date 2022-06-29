@@ -60,7 +60,7 @@ import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.DefaultLongImageDecider
 import com.github.panpf.sketch.util.Logger
@@ -231,7 +231,7 @@ class Sketch private constructor(
      * Execute the DisplayRequest asynchronously.
      *
      * Note: The request will not start executing until [ImageRequest.lifecycle]
-     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
+     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
@@ -241,7 +241,7 @@ class Sketch private constructor(
             requestExecutor.execute(this@Sketch, request, enqueue = true) as DisplayResult
         }
         val target = request.target
-        return if (target is ViewTarget<*>) {
+        return if (target is ViewDisplayTarget<*>) {
             target.view.requestManager.getDisposable(job)
         } else {
             OneShotDisposable(job)
@@ -252,7 +252,7 @@ class Sketch private constructor(
      * Execute the DisplayRequest synchronously in the current coroutine scope.
      *
      * Note: The request will not start executing until [ImageRequest.lifecycle]
-     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
+     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [DisplayResult.Success] if the request completes successfully. Else, returns an [DisplayResult.Error].
      */
@@ -263,7 +263,7 @@ class Sketch private constructor(
             }
             // Update the current request attached to the view and await the result.
             val target = request.target
-            if (target is ViewTarget<*>) {
+            if (target is ViewDisplayTarget<*>) {
                 target.view.requestManager.getDisposable(job)
             }
             job.await()
@@ -274,7 +274,7 @@ class Sketch private constructor(
      * Execute the LoadRequest asynchronously.
      *
      * Note: The request will not start executing until [ImageRequest.lifecycle]
-     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
+     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
@@ -290,7 +290,7 @@ class Sketch private constructor(
      * Execute the LoadRequest synchronously in the current coroutine scope.
      *
      * Note: The request will not start executing until [ImageRequest.lifecycle]
-     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
+     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [LoadResult.Success] if the request completes successfully. Else, returns an [LoadResult.Error].
      */
@@ -306,7 +306,7 @@ class Sketch private constructor(
      * Execute the DownloadRequest asynchronously.
      *
      * Note: The request will not start executing until [ImageRequest.lifecycle]
-     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
+     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
@@ -322,7 +322,7 @@ class Sketch private constructor(
      * Execute the DownloadRequest synchronously in the current coroutine scope.
      *
      * Note: The request will not start executing until [ImageRequest.lifecycle]
-     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
+     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [DownloadResult.Success] if the request completes successfully. Else, returns an [DownloadResult.Error].
      */

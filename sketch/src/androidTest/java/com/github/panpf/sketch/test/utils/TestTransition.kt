@@ -2,7 +2,7 @@ package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.transition.TransitionTarget
+import com.github.panpf.sketch.transition.TransitionDisplayTarget
 
 class TestTransition : Transition {
 
@@ -12,7 +12,7 @@ class TestTransition : Transition {
 
     class Factory : Transition.Factory {
 
-        override fun create(target: TransitionTarget, result: DisplayResult, fitScale: Boolean): Transition {
+        override fun create(target: TransitionDisplayTarget, result: DisplayResult, fitScale: Boolean): Transition {
             return TestTransition()
         }
 

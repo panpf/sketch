@@ -48,7 +48,7 @@ class OneShotDisposable<T>(
 /**
  * A disposable for requests that are attached to a [View].
  *
- * [com.github.panpf.sketch.target.ViewTarget] requests are automatically cancelled in when the view is detached
+ * [com.github.panpf.sketch.target.ViewDisplayTarget] requests are automatically cancelled in when the view is detached
  * and are restarted when the view is attached.
  *
  * [isDisposed] only returns 'true' when this disposable's request is cleared (due to

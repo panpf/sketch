@@ -12,7 +12,7 @@ import com.github.panpf.sketch.request.DisplayResult
  * @param preferExactIntrinsicSize See [CrossfadeDrawable.preferExactIntrinsicSize].
  */
 class CrossfadeTransition @JvmOverloads constructor(
-    private val target: TransitionTarget,
+    private val target: TransitionDisplayTarget,
     private val result: DisplayResult,
     val durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
     val preferExactIntrinsicSize: Boolean = false,
@@ -48,7 +48,7 @@ class CrossfadeTransition @JvmOverloads constructor(
         }
 
         override fun create(
-            target: TransitionTarget,
+            target: TransitionDisplayTarget,
             result: DisplayResult,
             fitScale: Boolean
         ): Transition? {

@@ -6,16 +6,17 @@ import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.github.panpf.sketch.transition.TransitionTarget
+import com.github.panpf.sketch.transition.TransitionDisplayTarget
+import com.github.panpf.sketch.util.asOrNull
 
 /**
- * An opinionated [ViewTarget] that simplifies updating the [Drawable] attached to a [View]
+ * An opinionated [ViewDisplayTarget] that simplifies updating the [Drawable] attached to a [View]
  * and supports automatically starting and stopping animated [Drawable]s.
  *
  * If you need custom behaviour that this class doesn't support it's recommended
- * to implement [ViewTarget] directly.
+ * to implement [ViewDisplayTarget] directly.
  */
-abstract class GenericViewTarget<T : View> : ViewTarget<T>, TransitionTarget,
+abstract class GenericViewDisplayTarget<T : View> : ViewDisplayTarget<T>, TransitionDisplayTarget,
     DefaultLifecycleObserver {
 
     private var isStarted = false
@@ -43,14 +44,14 @@ abstract class GenericViewTarget<T : View> : ViewTarget<T>, TransitionTarget,
 
     /** Replace the [ImageView]'s current drawable with [drawable]. */
     private fun updateDrawable(drawable: Drawable?) {
-        (this.drawable as? Animatable)?.stop()
+        this.drawable.asOrNull<Animatable>()?.stop()
         this.drawable = drawable
         updateAnimation()
     }
 
     /** Start/stop the current [Drawable]'s animation based on the current lifecycle state. */
     private fun updateAnimation() {
-        val animatable = drawable as? Animatable ?: return
+        val animatable = this.drawable.asOrNull<Animatable>() ?: return
         if (isStarted) animatable.start() else animatable.stop()
     }
 }

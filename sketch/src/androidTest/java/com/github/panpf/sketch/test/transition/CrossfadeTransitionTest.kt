@@ -15,7 +15,7 @@ import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.target.ImageViewTarget
+import com.github.panpf.sketch.target.ImageViewDisplayTarget
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.tools4j.reflect.ktx.setFieldValue
@@ -37,7 +37,7 @@ class CrossfadeTransitionTest {
         val imageView = ImageView(context)
         Assert.assertNull(imageView.drawable)
 
-        val imageViewTarget = ImageViewTarget(imageView)
+        val imageViewTarget = ImageViewDisplayTarget(imageView)
         Assert.assertNull(imageViewTarget.drawable)
 
         runBlocking(Dispatchers.Main) {
@@ -81,7 +81,7 @@ class CrossfadeTransitionTest {
         val factory = CrossfadeTransition.Factory()
 
         val imageView = ImageView(context)
-        val imageViewTarget = ImageViewTarget(imageView)
+        val imageViewTarget = ImageViewDisplayTarget(imageView)
 
         val resultDrawable =
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))

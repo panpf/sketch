@@ -20,8 +20,8 @@ import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.transition.TransitionTarget
+import com.github.panpf.sketch.target.ViewDisplayTarget
+import com.github.panpf.sketch.transition.TransitionDisplayTarget
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.sketch.util.asOrNull
@@ -234,7 +234,7 @@ class RequestExecutor {
         result: DisplayResult,
         setDrawable: () -> Unit
     ) {
-        if (target !is TransitionTarget) {
+        if (target !is TransitionDisplayTarget) {
             setDrawable()
             return
         }
@@ -245,7 +245,7 @@ class RequestExecutor {
         }
 
         val fitScale =
-            target.asOrNull<ViewTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
+            target.asOrNull<ViewDisplayTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
         val transition = result.request.transition?.create(target, result, fitScale)
         if (transition == null) {
             setDrawable()

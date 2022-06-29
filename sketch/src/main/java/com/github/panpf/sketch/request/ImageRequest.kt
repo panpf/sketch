@@ -49,7 +49,7 @@ import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ListenerProvider
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
@@ -317,7 +317,7 @@ interface ImageRequest {
          */
         protected fun target(target: Target?): Builder = apply {
             this.target = target
-            this.viewTargetOptions = target.asOrNull<ViewTarget<*>>()
+            this.viewTargetOptions = target.asOrNull<ViewDisplayTarget<*>>()
                 ?.view.asOrNull<ImageOptionsProvider>()
                 ?.displayImageOptions
         }
@@ -893,7 +893,7 @@ interface ImageRequest {
 
         private fun resolveResizeSizeResolver(): SizeResolver {
             val target = target
-            return if (target is ViewTarget<*>) {
+            return if (target is ViewDisplayTarget<*>) {
                 ViewSizeResolver(target.view)
             } else {
                 DisplaySizeResolver(context)
@@ -902,10 +902,10 @@ interface ImageRequest {
 
 
         private fun resolveLifecycle(): Lifecycle? =
-            (target.asOrNull<ViewTarget<*>>()?.view?.context ?: context).getLifecycle()
+            (target.asOrNull<ViewDisplayTarget<*>>()?.view?.context ?: context).getLifecycle()
 
         private fun resolveResizeScale(): Scale =
-            target.asOrNull<ViewTarget<*>>()
+            target.asOrNull<ViewDisplayTarget<*>>()
                 ?.view?.asOrNull<ImageView>()
                 ?.scaleType?.let {
                     when (it) {
@@ -923,7 +923,7 @@ interface ImageRequest {
             val target = target
             val listener = listener
             val viewListenerProvider =
-                target.asOrNull<ViewTarget<*>>()?.view?.asOrNull<ListenerProvider>()
+                target.asOrNull<ViewDisplayTarget<*>>()?.view?.asOrNull<ListenerProvider>()
             @Suppress("UNCHECKED_CAST") val viewListener =
                 viewListenerProvider?.getListener() as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
             return if (listener != null && viewListener != null && listener !== viewListener) {
@@ -937,7 +937,7 @@ interface ImageRequest {
             val target = target
             val progressListener = progressListener
             val viewListenerProvider =
-                target.asOrNull<ViewTarget<*>>()?.view?.asOrNull<ListenerProvider>()
+                target.asOrNull<ViewDisplayTarget<*>>()?.view?.asOrNull<ListenerProvider>()
             @Suppress("UNCHECKED_CAST") val viewProgressListener =
                 viewListenerProvider?.getProgressListener() as ProgressListener<ImageRequest>?
             return if (progressListener != null && viewProgressListener != null && progressListener != viewProgressListener) {

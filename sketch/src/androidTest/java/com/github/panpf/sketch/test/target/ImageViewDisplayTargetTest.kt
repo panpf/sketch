@@ -12,7 +12,8 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.target.ImageViewTarget
+import com.github.panpf.sketch.target.ImageViewDisplayTarget
+import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -20,7 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ImageViewTargetTest {
+class ImageViewDisplayTargetTest {
 
     @Test
     fun testDrawable() {
@@ -31,7 +32,7 @@ class ImageViewTargetTest {
         val imageView = ImageView(context)
         Assert.assertNull(imageView.drawable)
 
-        val imageViewTarget = ImageViewTarget(imageView)
+        val imageViewTarget = ImageViewDisplayTarget(imageView)
         Assert.assertNull(imageViewTarget.drawable)
 
         val countBitmap = CountBitmap(
@@ -93,5 +94,31 @@ class ImageViewTargetTest {
         }
         Assert.assertNull(imageView.drawable)
         Assert.assertNull(imageViewTarget.drawable)
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val context = getTestContext()
+        val imageView1 = ImageView(context)
+        val imageView2 = ImageView(context)
+        val element1 = ImageViewDisplayTarget(imageView1)
+        val element11 = ImageViewDisplayTarget(imageView1)
+        val element2 = ImageViewDisplayTarget(imageView2)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 }

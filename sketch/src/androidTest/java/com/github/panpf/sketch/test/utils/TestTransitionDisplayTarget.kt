@@ -2,9 +2,9 @@ package com.github.panpf.sketch.test.utils
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.target.DisplayTarget
-import com.github.panpf.sketch.transition.TransitionTarget
+import com.github.panpf.sketch.transition.TransitionDisplayTarget
 
-class TestTransitionDisplayTarget : DisplayTarget, TransitionTarget {
+class TestTransitionDisplayTarget : DisplayTarget, TransitionDisplayTarget {
 
     override var drawable: Drawable? = null
 

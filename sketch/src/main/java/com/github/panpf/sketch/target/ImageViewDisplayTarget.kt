@@ -8,7 +8,7 @@ import com.github.panpf.sketch.util.foreachSketchCountDrawable
 /**
  * A [Target] that handles setting images on an [ImageView].
  */
-open class ImageViewTarget(override val view: ImageView) : GenericViewTarget<ImageView>() {
+open class ImageViewDisplayTarget(override val view: ImageView) : GenericViewDisplayTarget<ImageView>() {
 
     /**
      * @see [ViewTargetRequestDelegate.onViewDetachedFromWindow]
@@ -28,7 +28,7 @@ open class ImageViewTarget(override val view: ImageView) : GenericViewTarget<Ima
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is ImageViewTarget && view == other.view
+        return other is ImageViewDisplayTarget && view == other.view
     }
 
     override fun hashCode() = view.hashCode()

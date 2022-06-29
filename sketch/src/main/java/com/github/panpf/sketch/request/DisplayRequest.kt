@@ -22,7 +22,7 @@ import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.DisplayTarget
-import com.github.panpf.sketch.target.ImageViewTarget
+import com.github.panpf.sketch.target.ImageViewDisplayTarget
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition.Factory
@@ -164,7 +164,7 @@ interface DisplayRequest : ImageRequest {
          * Set the target to the ImageView
          */
         fun target(imageView: ImageView): Builder = apply {
-            super.target(ImageViewTarget(imageView))
+            super.target(ImageViewDisplayTarget(imageView))
         }
 
         override fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
