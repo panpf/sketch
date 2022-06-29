@@ -14,7 +14,7 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
     ): BitmapDecodeResult {
         val request = chain.request
         val result = chain.proceed()
-        val transformations = request.transformations?.takeIf { it.isNotEmpty() } ?: return result
+        val transformations = request.transformations ?: return result
 
         val oldBitmap = result.bitmap
         val transformedList = LinkedList<Transformed>()

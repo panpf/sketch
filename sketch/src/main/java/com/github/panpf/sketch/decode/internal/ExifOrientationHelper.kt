@@ -28,6 +28,7 @@ import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.safeConfig
 import kotlin.math.abs
 
 fun DataSource.readExifOrientation(): Int =
@@ -240,7 +241,7 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
         matrix.mapRect(newRect)
         matrix.postTranslate(-newRect.left, -newRect.top)
 
-        val config = inBitmap.config ?: Bitmap.Config.ARGB_8888
+        val config = inBitmap.safeConfig
         val newWidth = newRect.width().toInt()
         val newHeight = newRect.height().toInt()
         val outBitmap = bitmapPool?.getOrCreate(newWidth, newHeight, config)

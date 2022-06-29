@@ -10,13 +10,14 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.samplingSize
 
 internal val Bitmap.allocationByteCountCompat: Int
-    get() {
-        return when {
-            this.isRecycled -> 0
-            VERSION.SDK_INT >= VERSION_CODES.KITKAT -> this.allocationByteCount
-            else -> this.byteCount
-        }
+    get() = when {
+        this.isRecycled -> 0
+        VERSION.SDK_INT >= VERSION_CODES.KITKAT -> this.allocationByteCount
+        else -> this.byteCount
     }
+
+internal val Bitmap.safeConfig: Bitmap.Config
+    get() = config ?: Bitmap.Config.ARGB_8888
 
 internal fun Bitmap.toInfoString(): String =
     "Bitmap(width=${width}, height=${height}, config=$config)"
@@ -57,7 +58,7 @@ internal fun Bitmap.Config.isAndSupportHardware(): Boolean =
     VERSION.SDK_INT >= VERSION_CODES.O && this == Bitmap.Config.HARDWARE
 
 internal fun Bitmap.scaled(scale: Double, bitmapPool: BitmapPool): Bitmap {
-    val config = this.config ?: Bitmap.Config.ARGB_8888
+    val config = this.safeConfig
     val scaledWidth = samplingSize(width, scale)
     val scaledHeight = samplingSize(height, scale)
     val newBitmap = bitmapPool.getOrCreate(scaledWidth, scaledHeight, config)

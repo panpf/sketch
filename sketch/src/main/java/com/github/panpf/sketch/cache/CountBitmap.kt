@@ -122,13 +122,12 @@ class CountBitmap constructor(
         return displayedCount
     }
 
-    @MainThread
+    @Synchronized
     fun getCachedCount(): Int {
-        requiredMainThread()
         return cachedCount
     }
 
-    private fun countChanged(caller: String? = null) {
+    private fun countChanged(caller: String) {
         val bitmapHolder = this.bitmapHolder
         if (bitmapHolder == null) {
             logger.w(

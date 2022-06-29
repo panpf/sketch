@@ -9,7 +9,7 @@ import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.toBitmap
+import com.github.panpf.sketch.util.toNewBitmap
 import java.io.IOException
 
 /**
@@ -35,7 +35,7 @@ class ApkIconBitmapDecoder(
         packageInfo.applicationInfo.sourceDir = file.path
         packageInfo.applicationInfo.publicSourceDir = file.path
         val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
-        val bitmap = drawable.toBitmap(
+        val bitmap = drawable.toNewBitmap(
             request.bitmapConfig?.getConfig(MIME_TYPE),
             bitmapPool = sketch.bitmapPool
         )

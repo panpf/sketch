@@ -14,6 +14,7 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.calculateResizeMapping
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 import java.lang.Integer.min
 
@@ -30,7 +31,7 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
         val resizeMapping = calculateResizeMapping(
             input.width, input.height, newSize, newSize, SAME_ASPECT_RATIO, scale
         )
-        val config = input.config ?: Bitmap.Config.ARGB_8888
+        val config = input.safeConfig
         val outBitmap = sketch.bitmapPool.getOrCreate(
             resizeMapping.newWidth, resizeMapping.newHeight, config
         )

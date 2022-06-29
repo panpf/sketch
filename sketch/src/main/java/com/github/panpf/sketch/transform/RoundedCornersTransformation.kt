@@ -15,6 +15,7 @@ import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 
 class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
@@ -59,7 +60,7 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         request: ImageRequest,
         input: Bitmap
     ): TransformResult {
-        val config = input.config ?: Bitmap.Config.ARGB_8888
+        val config = input.safeConfig
         val bitmapPool = sketch.bitmapPool
         val newBitmap = bitmapPool.getOrCreate(input.width, input.height, config)
         val paint = Paint().apply {

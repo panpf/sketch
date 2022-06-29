@@ -11,6 +11,7 @@ import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 
 class RotateTransformation(val degrees: Int) : Transformation {
@@ -32,7 +33,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
         val newHeight = newRect.height().toInt()
 
         // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
-        var config = input.config ?: Bitmap.Config.ARGB_8888
+        var config = input.safeConfig
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888
         }

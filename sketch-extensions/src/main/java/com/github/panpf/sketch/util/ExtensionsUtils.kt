@@ -5,6 +5,10 @@ import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import androidx.core.graphics.component1
+import androidx.core.graphics.component2
+import androidx.core.graphics.component3
+import androidx.core.graphics.component4
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.cache.BitmapPool
@@ -17,13 +21,20 @@ internal fun Float.format(newScale: Int): Float =
 /**
  * Drawable into Bitmap. Each time a new bitmap is drawn
  */
-internal fun Drawable.toBitmap(preferredConfig: Bitmap.Config? = null, bitmapPool: BitmapPool? = null): Bitmap {
+internal fun Drawable.toNewBitmap(
+    preferredConfig: Bitmap.Config? = null,
+    bitmapPool: BitmapPool? = null
+): Bitmap {
+    val (oldLeft, oldTop, oldRight, oldBottom) = bounds
     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+
     val config = preferredConfig ?: Bitmap.Config.ARGB_8888
     val bitmap: Bitmap = bitmapPool?.getOrCreate(intrinsicWidth, intrinsicHeight, config)
         ?: Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, config)
     val canvas = Canvas(bitmap)
     draw(canvas)
+
+    setBounds(oldLeft, oldTop, oldRight, oldBottom) // restore bounds
     return bitmap
 }
 

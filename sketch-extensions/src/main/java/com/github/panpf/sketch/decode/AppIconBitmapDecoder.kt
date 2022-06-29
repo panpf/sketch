@@ -12,7 +12,7 @@ import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.toBitmap
+import com.github.panpf.sketch.util.toNewBitmap
 
 /**
  * Extract the icon of the installed app and convert it to Bitmap
@@ -38,7 +38,7 @@ class AppIconBitmapDecoder(
         }
         val iconDrawable = packageInfo.applicationInfo.loadIcon(packageManager)
             ?: throw Exception("loadIcon return null '$packageName'")
-        val bitmap = iconDrawable.toBitmap(
+        val bitmap = iconDrawable.toNewBitmap(
             request.bitmapConfig?.getConfig(AppIconUriFetcher.MIME_TYPE),
             bitmapPool = sketch.bitmapPool
         )
