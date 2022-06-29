@@ -11,6 +11,7 @@ import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.RotateTransformed
 import com.github.panpf.sketch.util.toHexString
+import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -122,17 +123,15 @@ class CountBitmapTest {
         val sketch = newSketch()
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
-            Assert.assertFalse(isRecycled)
-
             runBlocking(Dispatchers.Main) {
+                Assert.assertFalse(isRecycled)
+
                 setIsDisplayed(true)
-            }
-            Assert.assertFalse(isRecycled)
+                Assert.assertFalse(isRecycled)
 
-            runBlocking(Dispatchers.Main) {
                 setIsDisplayed(false)
+                Assert.assertTrue(isRecycled)
             }
-            Assert.assertTrue(isRecycled)
         }
     }
 
@@ -141,17 +140,15 @@ class CountBitmapTest {
         val sketch = newSketch()
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
-            Assert.assertEquals(100 * 100 * 4, byteCount)
-
             runBlocking(Dispatchers.Main) {
+                Assert.assertEquals(100 * 100 * 4, byteCount)
+
                 setIsDisplayed(true)
-            }
-            Assert.assertEquals(100 * 100 * 4, byteCount)
+                Assert.assertEquals(100 * 100 * 4, byteCount)
 
-            runBlocking(Dispatchers.Main) {
                 setIsDisplayed(false)
+                Assert.assertEquals(0, byteCount)
             }
-            Assert.assertEquals(0, byteCount)
         }
     }
 
@@ -179,27 +176,37 @@ class CountBitmapTest {
         val sketch = newSketch()
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
-            Assert.assertFalse(isRecycled)
-
-            runBlocking(Dispatchers.Main) {
+            assertThrow(IllegalStateException::class) {
                 setIsDisplayed(true)
             }
-            Assert.assertFalse(isRecycled)
+            assertThrow(IllegalStateException::class) {
+                getDisplayedCount()
+            }
 
             runBlocking(Dispatchers.Main) {
+                Assert.assertFalse(isRecycled)
+                Assert.assertEquals(0, getDisplayedCount())
+
                 setIsDisplayed(true)
-            }
-            Assert.assertFalse(isRecycled)
+                Assert.assertFalse(isRecycled)
+                Assert.assertEquals(1, getDisplayedCount())
 
-            runBlocking(Dispatchers.Main) {
-                setIsDisplayed(false)
-            }
-            Assert.assertFalse(isRecycled)
+                setIsDisplayed(true)
+                Assert.assertFalse(isRecycled)
+                Assert.assertEquals(2, getDisplayedCount())
 
-            runBlocking(Dispatchers.Main) {
                 setIsDisplayed(false)
+                Assert.assertFalse(isRecycled)
+                Assert.assertEquals(1, getDisplayedCount())
+
+                setIsDisplayed(false)
+                Assert.assertTrue(isRecycled)
+                Assert.assertEquals(0, getDisplayedCount())
+
+                setIsDisplayed(false)
+                Assert.assertTrue(isRecycled)
+                Assert.assertEquals(0, getDisplayedCount())
             }
-            Assert.assertTrue(isRecycled)
         }
     }
 
@@ -209,18 +216,27 @@ class CountBitmapTest {
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertFalse(isRecycled)
+            Assert.assertEquals(0, getCachedCount())
 
             setIsCached(true)
             Assert.assertFalse(isRecycled)
+            Assert.assertEquals(1, getCachedCount())
 
             setIsCached(true)
             Assert.assertFalse(isRecycled)
+            Assert.assertEquals(2, getCachedCount())
 
             setIsCached(false)
             Assert.assertFalse(isRecycled)
+            Assert.assertEquals(1, getCachedCount())
 
             setIsCached(false)
             Assert.assertTrue(isRecycled)
+            Assert.assertEquals(0, getCachedCount())
+
+            setIsCached(false)
+            Assert.assertTrue(isRecycled)
+            Assert.assertEquals(0, getCachedCount())
         }
     }
 
@@ -229,27 +245,50 @@ class CountBitmapTest {
         val sketch = newSketch()
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
-            Assert.assertFalse(isRecycled)
-
-            runBlocking(Dispatchers.Main) {
+            assertThrow(IllegalStateException::class) {
                 setIsPending(true)
             }
-            Assert.assertFalse(isRecycled)
+            assertThrow(IllegalStateException::class) {
+                getPendingCount()
+            }
 
             runBlocking(Dispatchers.Main) {
+                Assert.assertFalse(isRecycled)
+                Assert.assertEquals(0, getPendingCount())
+
                 setIsPending(true)
-            }
-            Assert.assertFalse(isRecycled)
+                Assert.assertFalse(isRecycled)
+                Assert.assertEquals(1, getPendingCount())
 
-            runBlocking(Dispatchers.Main) {
-                setIsPending(false)
-            }
-            Assert.assertFalse(isRecycled)
+                setIsPending(true)
+                Assert.assertFalse(isRecycled)
+                Assert.assertEquals(2, getPendingCount())
 
-            runBlocking(Dispatchers.Main) {
                 setIsPending(false)
+                Assert.assertFalse(isRecycled)
+                Assert.assertEquals(1, getPendingCount())
+
+                setIsPending(false)
+                Assert.assertTrue(isRecycled)
+                Assert.assertEquals(0, getPendingCount())
+
+                setIsPending(false)
+                Assert.assertTrue(isRecycled)
+                Assert.assertEquals(0, getPendingCount())
             }
-            Assert.assertTrue(isRecycled)
+        }
+    }
+
+    @Test
+    fun testRecycled() {
+        val sketch = newSketch()
+
+        createCountBitmap(sketch, "image1", 100, 100).apply {
+            Assert.assertFalse(isRecycled)
+            bitmap!!.recycle()
+            assertThrow(IllegalStateException::class) {
+                setIsCached(true)
+            }
         }
     }
 
