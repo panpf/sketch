@@ -263,7 +263,7 @@ fun BitmapDecodeResult.applyResize(
             inBitmap.width, inBitmap.height, resize.width, resize.height
         )
         if (sampleSize != 1) {
-            inBitmap.scaled(sampleSize.toDouble(), sketch.bitmapPool)
+            inBitmap.scaled(1 / sampleSize.toDouble(), sketch.bitmapPool)
         } else {
             null
         }
