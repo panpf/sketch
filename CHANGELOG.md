@@ -1,3 +1,40 @@
+# v3.0.0-beta03
+
+Target:
+
+* rename: ViewTarget rename to ViewDisplayTarget
+* new: Added RemoteViewsDisplayTarget to display image to RemoteViews
+
+DiskCache:
+
+* fix: Fix the bug that the contentType disk cache does not take effect
+
+MemoryCache:
+
+* log: Improved log for LruMemoryCache and LruDiskCache
+
+ViewAbility:
+
+* new: ViewAbility support onSaveInstanceState() and onRestoreInstanceState()
+
+Other:
+
+* fix: Fix the bug that the ResizeAnimatableDrawable stop() method does not take effect
+* remove: DepthException removes the depth property, UriInvalidException removes the uri property
+* remove: SketchException no longer contains ImageRequest
+* remove: SketchException no longer contains ImageRequest
+* change: The message of UnknownException cannot be null
+* improve: Improve the code
+
+Docs:
+
+* docs: Improve docs
+
+Build:
+
+* build: Improve build
+* build: Add project icon for IntelliJ project list
+
 # v3.0.0-beta02
 
 * fix: Fixed the bug that the length() method of AssetDataSource and ResourceDataSource crashed in

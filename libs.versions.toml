@@ -7,8 +7,8 @@ targetSdk = "28"
 compileSdk = "31"
 
 # app version
-versionCode = "3006"
-versionName = "3.0.0-beta02"
+versionCode = "3007"
+versionName = "3.0.0-beta03"
 
 # android
 android-buildtools = "7.2.0"
