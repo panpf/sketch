@@ -148,7 +148,7 @@ disposable.dispose()
 
 ## ImageView 扩展
 
-Sketch 给 ImageView 提供了一个扩展函数，用于便捷的将 URL 指向的图片显示到 ImageView 上，如下:
+Sketch 给 ImageView 提供了一系列的名为 displayImage 扩展函数，用于便捷的将 URL 指向的图片显示到 ImageView 上，如下:
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.jpg")

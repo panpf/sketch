@@ -84,6 +84,8 @@ sketch 自己不需要配置任何混淆规则，但你可能需要为间接依�
 
 #### ImageView
 
+Sketch 为 ImageView 提供了一系列的名为 displayImage 的扩展函数，可以方便的显示图片
+
 ```kotlin
 // http
 imageView.displayImage("https://www.sample.com/image.jpg")
