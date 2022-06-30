@@ -1,3 +1,10 @@
+# v3.0.0-beta04
+
+Resize:
+
+* fix: Fix the bug that the final image content is wrong when precision is LESS_PIXELS and the image
+  size is smaller than the resize size
+
 # v3.0.0-beta03
 
 Target:
