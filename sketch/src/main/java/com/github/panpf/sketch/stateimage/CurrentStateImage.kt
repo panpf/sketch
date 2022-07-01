@@ -22,22 +22,27 @@ import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
 
-class CurrentStateImage : StateImage {
+class CurrentStateImage(
+    private val defaultImage: StateImage? = null
+) : StateImage {
 
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
         exception: SketchException?
-    ): Drawable? = request.target.asOrNull<ViewDisplayTarget<*>>()?.drawable
+    ): Drawable? =
+        request.target.asOrNull<ViewDisplayTarget<*>>()?.drawable
+            ?: defaultImage?.getDrawable(sketch, request, exception)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is CurrentStateImage) return false
+        if (defaultImage != other.defaultImage) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return javaClass.hashCode()
+        return defaultImage?.hashCode() ?: javaClass.hashCode()
     }
 
     override fun toString(): String {
