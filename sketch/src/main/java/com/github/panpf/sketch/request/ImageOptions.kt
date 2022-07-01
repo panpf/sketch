@@ -664,9 +664,16 @@ interface ImageOptions {
          */
         fun crossfade(
             durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
-            preferExactIntrinsicSize: Boolean = false
+            preferExactIntrinsicSize: Boolean = false,
+            alwaysUse: Boolean = false,
         ): Builder = apply {
-            transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
+            transition(
+                CrossfadeTransition.Factory(
+                    durationMillis,
+                    preferExactIntrinsicSize,
+                    alwaysUse
+                )
+            )
         }
 
         /**

@@ -345,9 +345,9 @@ interface DownloadRequest : ImageRequest {
         }
 
         override fun crossfade(
-            durationMillis: Int, preferExactIntrinsicSize: Boolean
+            durationMillis: Int, preferExactIntrinsicSize: Boolean, alwaysUse: Boolean
         ): Builder = apply {
-            super.crossfade(durationMillis, preferExactIntrinsicSize)
+            super.crossfade(durationMillis, preferExactIntrinsicSize, alwaysUse)
         }
 
         override fun disallowAnimatedImage(disabled: Boolean?): Builder = apply {
