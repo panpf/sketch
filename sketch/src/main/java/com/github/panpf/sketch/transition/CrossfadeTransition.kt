@@ -40,7 +40,8 @@ class CrossfadeTransition @JvmOverloads constructor(
 
     class Factory @JvmOverloads constructor(
         val durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
-        val preferExactIntrinsicSize: Boolean = false
+        val preferExactIntrinsicSize: Boolean = false,
+        val alwaysUse: Boolean = false,
     ) : Transition.Factory {
 
         init {
@@ -52,13 +53,8 @@ class CrossfadeTransition @JvmOverloads constructor(
             result: DisplayResult,
             fitScale: Boolean
         ): Transition? {
-            // Only animate successful requests.
-            if (result !is DisplayResult.Success) {
-                return null
-            }
-
             // Don't animate if the request was fulfilled by the memory cache.
-            if (result.dataFrom == MEMORY_CACHE) {
+            if (result is DisplayResult.Success && !alwaysUse && result.dataFrom == MEMORY_CACHE) {
                 return null
             }
 
