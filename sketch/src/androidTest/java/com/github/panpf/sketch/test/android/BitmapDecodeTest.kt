@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.github.panpf.sketch.test.decode
+package com.github.panpf.sketch.test.android
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

@@ -3,7 +3,7 @@ package com.github.panpf.sketch.target
 import android.graphics.drawable.Drawable
 import android.widget.RemoteViews
 import androidx.annotation.IdRes
-import com.github.panpf.sketch.util.toBitmap
+import androidx.core.graphics.drawable.toBitmap
 
 class RemoteViewsDisplayTarget(
     private val remoteViews: RemoteViews,

@@ -38,10 +38,7 @@ class AppIconBitmapDecoder(
         }
         val iconDrawable = packageInfo.applicationInfo.loadIcon(packageManager)
             ?: throw Exception("loadIcon return null '$packageName'")
-        val bitmap = iconDrawable.toNewBitmap(
-            request.bitmapConfig?.getConfig(AppIconUriFetcher.MIME_TYPE),
-            bitmapPool = sketch.bitmapPool
-        )
+        val bitmap = iconDrawable.toNewBitmap(sketch.bitmapPool)
         val imageInfo = ImageInfo(
             bitmap.width,
             bitmap.height,

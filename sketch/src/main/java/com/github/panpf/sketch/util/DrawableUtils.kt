@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.util
 
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import androidx.core.graphics.component1
@@ -21,23 +21,13 @@ internal fun LayerDrawable.getLastChildDrawable(): Drawable? {
 }
 
 /**
- * Drawable into Bitmap
+ * Drawable into new Bitmap. Each time a new bitmap is drawn
  */
-internal fun Drawable.toBitmap(
-    lowQuality: Boolean = false,
-    bitmapPool: BitmapPool? = null
-): Bitmap {
-    if (this is BitmapDrawable) {
-        return bitmap ?: throw IllegalArgumentException("bitmap is null")
-    }
-
+internal fun Drawable.toNewBitmap(bitmapPool: BitmapPool): Bitmap {
     val (oldLeft, oldTop, oldRight, oldBottom) = bounds
     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
 
-    @Suppress("DEPRECATION")
-    val config = if (lowQuality) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
-    val bitmap: Bitmap = bitmapPool?.getOrCreate(intrinsicWidth, intrinsicHeight, config)
-        ?: Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, config)
+    val bitmap: Bitmap = bitmapPool.getOrCreate(intrinsicWidth, intrinsicHeight, ARGB_8888)
     val canvas = Canvas(bitmap)
     draw(canvas)
 
