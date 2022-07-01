@@ -76,39 +76,6 @@ class ContentDataSourceTest {
     }
 
     @Test
-    fun testNewFileDescriptor() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        val contentUri = runBlocking {
-            val file = AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample.jpeg")),
-                assetFileName = "sample.jpeg"
-            ).file()
-            Uri.fromFile(file)
-        }
-        ContentDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, contentUri.toString()),
-            contentUri = contentUri,
-        ).apply {
-            Assert.assertNotNull(newFileDescriptor())
-        }
-
-        assertThrow(FileNotFoundException::class) {
-            val errorContentUri = runBlocking {
-                Uri.fromFile(File("/sdcard/error.jpeg"))
-            }
-            ContentDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, errorContentUri.toString()),
-                contentUri = errorContentUri,
-            ).apply {
-                newFileDescriptor()
-            }
-        }
-    }
-
-    @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = runBlocking {

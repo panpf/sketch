@@ -18,7 +18,6 @@ package com.github.panpf.sketch.datasource
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.ByteArrayInputStream
-import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
@@ -34,8 +33,6 @@ class ByteArrayDataSource constructor(
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = ByteArrayInputStream(data)
-
-    override fun newFileDescriptor(): FileDescriptor? = null
 
     override fun toString(): String =
         "ByteArrayDataSource(from=$dataFrom,length=${data.size.toLong()})"

@@ -69,33 +69,6 @@ class FileDataSourceTest {
     }
 
     @Test
-    fun testNewFileDescriptor() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        val file = runBlocking {
-            AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample.jpeg")),
-                assetFileName = "sample.jpeg"
-            ).file()
-        }
-        FileDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, newFileUri(file.path)),
-            file = file
-        ).apply {
-            Assert.assertNull(newFileDescriptor())
-        }
-
-        FileDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, newFileUri("/sdcard/not_found.jpeg")),
-            file = File("/sdcard/not_found.jpeg")
-        ).apply {
-            Assert.assertNull(newFileDescriptor())
-        }
-    }
-
-    @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
         val file = runBlocking {

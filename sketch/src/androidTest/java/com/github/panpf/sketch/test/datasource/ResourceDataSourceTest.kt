@@ -57,30 +57,6 @@ class ResourceDataSourceTest {
     }
 
     @Test
-    fun testNewFileDescriptor() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        ResourceDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
-            resources = context.resources,
-            drawableId = R.drawable.ic_launcher
-        ).apply {
-            Assert.assertNotNull(newFileDescriptor())
-        }
-
-        assertThrow(Resources.NotFoundException::class) {
-            ResourceDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, context.newResourceUri(42)),
-                resources = context.resources,
-                drawableId = 42
-            ).apply {
-                newFileDescriptor()
-            }
-        }
-    }
-
-    @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(

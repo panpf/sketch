@@ -29,19 +29,6 @@ class ByteArrayDataSourceTest {
     }
 
     @Test
-    fun testNewFileDescriptor() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        ByteArrayDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, "http://sample.jpeg"),
-            dataFrom = DataFrom.MEMORY,
-            data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
-        ).apply {
-            Assert.assertNull(newFileDescriptor())
-        }
-    }
-
-    @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
         ByteArrayDataSource(

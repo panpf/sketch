@@ -20,7 +20,6 @@ import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
-import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
@@ -47,10 +46,6 @@ class ContentDataSource constructor(
                 } ?: throw IOException("Invalid content uri: $contentUri")).apply {
                 this@ContentDataSource._length = this
             }
-
-    override fun newFileDescriptor(): FileDescriptor =
-        request.context.contentResolver.openFileDescriptor(contentUri, "r")?.fileDescriptor
-            ?: throw IOException("Invalid content uri: $contentUri")
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream =

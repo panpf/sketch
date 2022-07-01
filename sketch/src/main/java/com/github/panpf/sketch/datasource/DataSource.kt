@@ -21,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
@@ -35,9 +34,6 @@ interface DataSource {
 
     @Throws(IOException::class)
     fun length(): Long
-
-    @Throws(IOException::class)
-    fun newFileDescriptor(): FileDescriptor?
 
     @Throws(IOException::class)
     fun newInputStream(): InputStream

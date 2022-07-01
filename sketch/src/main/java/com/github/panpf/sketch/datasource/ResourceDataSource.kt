@@ -21,7 +21,6 @@ import androidx.annotation.RawRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.useCompat
-import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
@@ -45,10 +44,6 @@ class ResourceDataSource constructor(
             } ?: throw IOException("Invalid res id: $drawableId")).apply {
                 this@ResourceDataSource._length = this
             }
-
-    override fun newFileDescriptor(): FileDescriptor =
-        resources.openRawResourceFd(drawableId)?.fileDescriptor
-            ?: throw IOException("Invalid res id: $drawableId")
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream =

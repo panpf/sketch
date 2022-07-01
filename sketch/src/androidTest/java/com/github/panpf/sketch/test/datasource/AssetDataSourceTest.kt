@@ -55,29 +55,6 @@ class AssetDataSourceTest {
     }
 
     @Test
-    fun testNewFileDescriptor() {
-        val (context, sketch) = getTestContextAndNewSketch()
-
-        AssetDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
-        ).apply {
-            Assert.assertNotNull(newFileDescriptor())
-        }
-
-        assertThrow(FileNotFoundException::class) {
-            AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("not_found.jpeg")),
-                assetFileName = "not_found.jpeg"
-            ).apply {
-                newFileDescriptor()
-            }
-        }
-    }
-
-    @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
 

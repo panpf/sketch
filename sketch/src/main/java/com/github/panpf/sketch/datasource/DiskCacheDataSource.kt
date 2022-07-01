@@ -19,7 +19,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
-import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
@@ -41,8 +40,6 @@ class DiskCacheDataSource constructor(
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = diskCacheSnapshot.newInputStream()
-
-    override fun newFileDescriptor(): FileDescriptor? = null
 
     override suspend fun file(): File = diskCacheSnapshot.file
 

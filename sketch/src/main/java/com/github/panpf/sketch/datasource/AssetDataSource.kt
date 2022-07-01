@@ -18,7 +18,6 @@ package com.github.panpf.sketch.datasource
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.useCompat
-import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
@@ -41,10 +40,6 @@ class AssetDataSource constructor(
             }.apply {
                 this@AssetDataSource._length = this
             }
-
-    @Throws(IOException::class)
-    override fun newFileDescriptor(): FileDescriptor =
-        request.context.assets.openFd(assetFileName).fileDescriptor
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = request.context.assets.open(assetFileName)
