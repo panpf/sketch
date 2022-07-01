@@ -45,6 +45,8 @@
         <enum name="rotate" value="1" />
         <enum name="roundedCorners" value="2" />
         <enum name="circleCrop" value="3" />
+        <enum name="blur" value="4" />
+        <enum name="mask" value="5" />
     </attr>
     <attr name="sketch_transformation_rotate_degrees" format="integer|reference" />
     <attr name="sketch_transformation_roundedCorners_radius" format="dimension|reference" />
@@ -58,6 +60,9 @@
         <enum name="endCrop" value="3" />
         <enum name="fill" value="4" />
     </attr>
+    <attr name="sketch_transformation_blur_radius" format="integer|reference" />
+    <attr name="sketch_transformation_blur_maskColor" format="color|reference" />
+    <attr name="sketch_transformation_mask_maskColor" format="color|reference" />
     <attr name="sketch_resultCachePolicy" format="enum">
         <enum name="enabled" value="1" />
         <enum name="readOnly" value="2" />
@@ -99,6 +104,9 @@
         <attr name="sketch_transformation_roundedCorners_radiusBottomLeft" />
         <attr name="sketch_transformation_roundedCorners_radiusBottomRight" />
         <attr name="sketch_transformation_circleCrop_scale" />
+        <attr name="sketch_transformation_blur_radius" />
+        <attr name="sketch_transformation_blur_maskColor" />
+        <attr name="sketch_transformation_mask_maskColor" />
         <attr name="sketch_resultCachePolicy" />
         <attr name="sketch_memoryCachePolicy" />
         <attr name="sketch_crossfade" />

@@ -3,6 +3,7 @@ package com.github.panpf.sketch
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.AttributeSet
@@ -11,13 +12,15 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.extensions.R
 import com.github.panpf.sketch.fetch.newResourceUri
+import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
-import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
+import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.Transformation
@@ -266,6 +269,18 @@ open class SketchImageView @JvmOverloads constructor(
                             }
                         }
                 CircleCropTransformation(scale ?: Scale.CENTER_CROP)
+            }
+            4 -> {
+                val radius =
+                    typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation_blur_radius)
+                val maskColor =
+                    typedArray.getColorOrNull(R.styleable.SketchImageView_sketch_transformation_blur_maskColor)
+                BlurTransformation(radius = radius ?: 15, maskColor = maskColor)
+            }
+            5 -> {
+                val maskColor =
+                    typedArray.getColorOrNull(R.styleable.SketchImageView_sketch_transformation_mask_maskColor)
+                MaskTransformation(maskColor = maskColor ?: Color.TRANSPARENT)
             }
             else -> throw IllegalArgumentException("Value not supported by the 'sketch_transformation' attribute: $this")
         }

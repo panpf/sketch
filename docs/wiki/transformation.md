@@ -5,6 +5,8 @@
 * [CircleCropTransformation]：圆形裁剪转换
 * [RotateTransformation]：旋转转换
 * [RoundedCornersTransformation]：圆角转换
+* [MaskTransformation]：遮罩转换
+* [BlurTransformation]：模糊转换
 
 > 注意：[Transformation] 不支持动图，动图请使用 animatedTransformation() 函数
 
@@ -34,6 +36,10 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 [RotateTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/RotateTransformation.kt
 
 [RoundedCornersTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/RoundedCornersTransformation.kt
+
+[MaskTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/MaskTransformation.kt
+
+[BlurTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/BlurTransformation.kt
 
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 

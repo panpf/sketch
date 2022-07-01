@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.extensions.test
 
 import android.graphics.Bitmap.Config.RGB_565
+import android.graphics.Color
 import android.view.LayoutInflater
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,7 +16,9 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyMatcher
+import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
+import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import org.junit.Assert
@@ -61,6 +64,13 @@ class SketchImageViewTest {
         }
 
         (LayoutInflater.from(context)
+            .inflate(R.layout.attrs_test_blur, null, false) as SketchImageView).apply {
+            Assert.assertEquals(ImageOptions {
+                transformations(BlurTransformation(23, Color.parseColor("#00FF00")))
+            }, displayImageOptions)
+        }
+
+        (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_rotate, null, false) as SketchImageView).apply {
             Assert.assertEquals(ImageOptions {
                 transformations(RotateTransformation(444))
@@ -71,6 +81,13 @@ class SketchImageViewTest {
             .inflate(R.layout.attrs_test_circle, null, false) as SketchImageView).apply {
             Assert.assertEquals(ImageOptions {
                 transformations(CircleCropTransformation(END_CROP))
+            }, displayImageOptions)
+        }
+
+        (LayoutInflater.from(context)
+            .inflate(R.layout.attrs_test_mask, null, false) as SketchImageView).apply {
+            Assert.assertEquals(ImageOptions {
+                transformations(MaskTransformation(Color.parseColor("#00FF00")))
             }, displayImageOptions)
         }
     }

@@ -57,5 +57,6 @@
     <string name="text_rounded_radius">Rounded Corners Radius</string>
     <string name="text_mask_opacity">Mask Opacity</string>
     <string name="button_rotate_45">Rotate 45°</string>
+    <string name="text_blur_radius">Blur Radius</string>
     <string name="text_stroke_width">Stroke Width</string>
 </resources>

@@ -2,7 +2,7 @@ package com.github.panpf.sketch.test.transform
 
 import android.graphics.Canvas
 import android.graphics.PaintFlagsDrawFilter
-import android.graphics.Rect
+import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.TRANSLUCENT
@@ -16,6 +16,10 @@ class AnimatedTransformationTest {
 
     @Test
     fun testAsPostProcessor() {
+        if (Build.VERSION.SDK_INT < 28) {
+            return
+        }
+
         val drawFilter1 = PaintFlagsDrawFilter(10, 8)
         val transformation = AnimatedTransformation {
             it.drawFilter = drawFilter1
