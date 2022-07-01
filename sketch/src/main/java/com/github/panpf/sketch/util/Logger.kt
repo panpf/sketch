@@ -17,8 +17,8 @@ package com.github.panpf.sketch.util
 
 import android.util.Log
 
-class Logger(
-    private var _level: Level = Level.INFO,
+class Logger constructor(
+    level: Level = Level.INFO,
     private val proxy: Proxy = LogProxy()
 ) {
 
@@ -26,14 +26,12 @@ class Logger(
         const val TAG = "Sketch"
     }
 
-
-    var level: Level
-        get() = _level
+    var level: Level = level
         set(value) {
-            val oldLevelName = _level.name
-            _level = value
-            val newLevelName = value.name
-            Log.w(TAG, "Logger. setLevel. $oldLevelName -> $newLevelName")
+            val oldLevel = field
+            field = value
+            val newLevel = value.name
+            Log.w(TAG, "Logger. setLevel. $oldLevel -> $newLevel")
         }
 
     fun isLoggable(level: Level): Boolean {
@@ -143,14 +141,14 @@ class Logger(
         if (this === other) return true
         if (other !is Logger) return false
 
-        if (_level != other._level) return false
+        if (level != other.level) return false
         if (proxy != other.proxy) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = _level.hashCode()
+        var result = level.hashCode()
         result = 31 * result + proxy.hashCode()
         return result
     }
