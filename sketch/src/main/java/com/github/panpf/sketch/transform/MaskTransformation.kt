@@ -14,6 +14,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.UnknownException
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 
@@ -32,10 +33,6 @@ class MaskTransformation(
         request: ImageRequest,
         input: Bitmap
     ): TransformResult {
-        if (input.isRecycled) {
-            throw UnknownException("input Bitmap recycled. ${request.uriString}")
-        }
-
         val bitmapPool: BitmapPool = sketch.bitmapPool
 
         val maskBitmap: Bitmap
@@ -129,4 +126,4 @@ class MaskTransformed(@ColorInt val maskColor: Int) : Transformed {
 }
 
 fun List<Transformed>.getMaskTransformed(): MaskTransformed? =
-    find { it is MaskTransformed } as MaskTransformed?
+    find { it is MaskTransformed }.asOrNull()

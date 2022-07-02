@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.asOrNull
 import org.json.JSONObject
 
 class InSampledTransformed(val inSampleSize: Int) : Transformed {
@@ -46,4 +47,4 @@ class InSampledTransformed(val inSampleSize: Int) : Transformed {
 }
 
 fun List<Transformed>.getInSampledTransformed(): InSampledTransformed? =
-    find { it is InSampledTransformed } as InSampledTransformed?
+    find { it is InSampledTransformed }.asOrNull()

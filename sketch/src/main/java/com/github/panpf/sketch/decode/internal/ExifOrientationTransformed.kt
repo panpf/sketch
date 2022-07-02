@@ -5,6 +5,7 @@ import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.asOrNull
 import org.json.JSONObject
 
 class ExifOrientationTransformed(
@@ -51,4 +52,4 @@ class ExifOrientationTransformed(
 }
 
 fun List<Transformed>.getExifOrientationTransformed(): ExifOrientationTransformed? =
-    find { it is ExifOrientationTransformed } as ExifOrientationTransformed?
+    find { it is ExifOrientationTransformed }.asOrNull()

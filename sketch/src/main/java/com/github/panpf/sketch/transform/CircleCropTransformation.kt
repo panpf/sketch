@@ -14,6 +14,7 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.calculateResizeMapping
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 import java.lang.Integer.min
@@ -109,4 +110,4 @@ class CircleCropTransformed(val scale: Scale) : Transformed {
 }
 
 fun List<Transformed>.getCircleCropTransformed(): CircleCropTransformed? =
-    find { it is CircleCropTransformed } as CircleCropTransformed?
+    find { it is CircleCropTransformed }.asOrNull()

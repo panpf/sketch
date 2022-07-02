@@ -11,6 +11,7 @@ import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 
@@ -101,4 +102,4 @@ class RotateTransformed(val degrees: Int) : Transformed {
 }
 
 fun List<Transformed>.getRotateTransformed(): RotateTransformed? =
-    find { it is RotateTransformed } as RotateTransformed?
+    find { it is RotateTransformed }.asOrNull()

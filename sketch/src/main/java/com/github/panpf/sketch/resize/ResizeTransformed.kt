@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import org.json.JSONObject
 
@@ -57,4 +58,4 @@ class ResizeTransformed constructor(val resize: Resize) : Transformed {
 }
 
 fun List<Transformed>.getResizeTransformed(): ResizeTransformed? =
-    find { it is ResizeTransformed } as ResizeTransformed?
+    find { it is ResizeTransformed }.asOrNull()

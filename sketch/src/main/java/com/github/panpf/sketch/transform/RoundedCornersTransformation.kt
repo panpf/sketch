@@ -15,6 +15,7 @@ import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.safeConfig
 import org.json.JSONObject
 
@@ -140,4 +141,4 @@ class RoundedCornersTransformed(val radiusArray: FloatArray) : Transformed {
 }
 
 fun List<Transformed>.getRoundedCornersTransformed(): RoundedCornersTransformed? =
-    find { it is RoundedCornersTransformed } as RoundedCornersTransformed?
+    find { it is RoundedCornersTransformed }.asOrNull()
