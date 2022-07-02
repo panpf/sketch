@@ -273,9 +273,15 @@ open class SketchImageView @JvmOverloads constructor(
             4 -> {
                 val radius =
                     typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation_blur_radius)
+                val hasAlphaBitmapBgColor =
+                    typedArray.getColorOrNull(R.styleable.SketchImageView_sketch_transformation_blur_hasAlphaBitmapBgColor)
                 val maskColor =
                     typedArray.getColorOrNull(R.styleable.SketchImageView_sketch_transformation_blur_maskColor)
-                BlurTransformation(radius = radius ?: 15, maskColor = maskColor)
+                BlurTransformation(
+                    radius = radius ?: 15,
+                    hasAlphaBitmapBgColor = hasAlphaBitmapBgColor ?: Color.BLACK,
+                    maskColor = maskColor
+                )
             }
             5 -> {
                 val maskColor =

@@ -4,4 +4,5 @@
     android:layout_height="match_parent"
     app:sketch_transformation="blur"
     app:sketch_transformation_blur_maskColor="#00FF00"
+    app:sketch_transformation_blur_hasAlphaBitmapBgColor="#0000FF"
     app:sketch_transformation_blur_radius="23" />

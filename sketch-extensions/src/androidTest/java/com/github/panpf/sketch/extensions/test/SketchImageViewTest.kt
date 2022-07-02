@@ -66,7 +66,13 @@ class SketchImageViewTest {
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_blur, null, false) as SketchImageView).apply {
             Assert.assertEquals(ImageOptions {
-                transformations(BlurTransformation(23, Color.parseColor("#00FF00")))
+                transformations(
+                    BlurTransformation(
+                        23,
+                        hasAlphaBitmapBgColor = Color.parseColor("#0000FF"),
+                        maskColor = Color.parseColor("#00FF00")
+                    )
+                )
             }, displayImageOptions)
         }
 

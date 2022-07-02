@@ -61,6 +61,7 @@
         <enum name="fill" value="4" />
     </attr>
     <attr name="sketch_transformation_blur_radius" format="integer|reference" />
+    <attr name="sketch_transformation_blur_hasAlphaBitmapBgColor" format="color|reference" />
     <attr name="sketch_transformation_blur_maskColor" format="color|reference" />
     <attr name="sketch_transformation_mask_maskColor" format="color|reference" />
     <attr name="sketch_resultCachePolicy" format="enum">
@@ -105,6 +106,7 @@
         <attr name="sketch_transformation_roundedCorners_radiusBottomRight" />
         <attr name="sketch_transformation_circleCrop_scale" />
         <attr name="sketch_transformation_blur_radius" />
+        <attr name="sketch_transformation_blur_hasAlphaBitmapBgColor" />
         <attr name="sketch_transformation_blur_maskColor" />
         <attr name="sketch_transformation_mask_maskColor" />
         <attr name="sketch_resultCachePolicy" />

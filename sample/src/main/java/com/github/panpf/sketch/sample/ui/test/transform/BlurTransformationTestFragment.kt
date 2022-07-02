@@ -75,7 +75,7 @@ class BlurTransformationTestFragment : BindingFragment<BlurTransformationTestFra
         binding.blurTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            addTransformations(BlurTransformation(radius, maskColor))
+            addTransformations(BlurTransformation(radius, maskColor = maskColor))
         }
     }
 }
