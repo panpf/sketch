@@ -5,6 +5,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.ExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
+import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.transform.CircleCropTransformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
@@ -106,6 +108,9 @@ class ExifOrientationTransformedTest {
     fun testGetResizeTransformed() {
         listOf(ExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_90)).apply {
             Assert.assertNotNull(getExifOrientationTransformed())
+        }
+        listOf<Transformed>(CircleCropTransformed(END_CROP)).apply {
+            Assert.assertNull(getExifOrientationTransformed())
         }
         listOf<Transformed>().apply {
             Assert.assertNull(getExifOrientationTransformed())

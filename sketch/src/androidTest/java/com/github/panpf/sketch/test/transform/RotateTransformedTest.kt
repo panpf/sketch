@@ -2,6 +2,8 @@ package com.github.panpf.sketch.test.transform
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.Transformed
+import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.transform.CircleCropTransformed
 import com.github.panpf.sketch.transform.RotateTransformed
 import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.util.JsonSerializable
@@ -57,6 +59,9 @@ class RotateTransformedTest {
     fun testGetInSampledTransformed() {
         listOf(RotateTransformed(45)).apply {
             Assert.assertNotNull(getRotateTransformed())
+        }
+        listOf<Transformed>(CircleCropTransformed(END_CROP)).apply {
+            Assert.assertNull(getRotateTransformed())
         }
         listOf<Transformed>().apply {
             Assert.assertNull(getRotateTransformed())

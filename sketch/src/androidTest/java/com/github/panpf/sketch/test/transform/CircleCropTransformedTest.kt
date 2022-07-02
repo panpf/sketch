@@ -3,6 +3,7 @@ package com.github.panpf.sketch.test.transform
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.transform.BlurTransformed
 import com.github.panpf.sketch.transform.CircleCropTransformed
 import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.util.JsonSerializable
@@ -58,6 +59,9 @@ class CircleCropTransformedTest {
     fun testGetInSampledTransformed() {
         listOf(CircleCropTransformed(Scale.START_CROP)).apply {
             Assert.assertNotNull(getCircleCropTransformed())
+        }
+        listOf<Transformed>(BlurTransformed(10, null, null)).apply {
+            Assert.assertNull(getCircleCropTransformed())
         }
         listOf<Transformed>().apply {
             Assert.assertNull(getCircleCropTransformed())

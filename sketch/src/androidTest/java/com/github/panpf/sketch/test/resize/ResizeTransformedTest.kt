@@ -13,6 +13,7 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.getResizeTransformed
 import com.github.panpf.sketch.resize.longImageClipPrecision
+import com.github.panpf.sketch.transform.CircleCropTransformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
@@ -200,6 +201,9 @@ class ResizeTransformedTest {
     fun testGetResizeTransformed() {
         listOf(ResizeTransformed(Resize(100, 50))).apply {
             Assert.assertNotNull(getResizeTransformed())
+        }
+        listOf<Transformed>(CircleCropTransformed(END_CROP)).apply {
+            Assert.assertNull(getResizeTransformed())
         }
         listOf<Transformed>().apply {
             Assert.assertNull(getResizeTransformed())

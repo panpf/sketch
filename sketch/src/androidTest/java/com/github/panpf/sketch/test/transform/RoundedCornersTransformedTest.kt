@@ -2,6 +2,8 @@ package com.github.panpf.sketch.test.transform
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.Transformed
+import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.transform.CircleCropTransformed
 import com.github.panpf.sketch.transform.RoundedCornersTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
 import com.github.panpf.sketch.util.JsonSerializable
@@ -70,6 +72,9 @@ class RoundedCornersTransformedTest {
     fun testGetInSampledTransformed() {
         listOf(RoundedCornersTransformed(floatArrayOf(8f, 8f, 8f, 8f, 8f, 8f, 8f, 8f))).apply {
             Assert.assertNotNull(getRoundedCornersTransformed())
+        }
+        listOf<Transformed>(CircleCropTransformed(END_CROP)).apply {
+            Assert.assertNull(getRoundedCornersTransformed())
         }
         listOf<Transformed>().apply {
             Assert.assertNull(getRoundedCornersTransformed())

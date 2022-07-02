@@ -3,6 +3,8 @@ package com.github.panpf.sketch.test.transform
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.Transformed
+import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.transform.CircleCropTransformed
 import com.github.panpf.sketch.transform.MaskTransformed
 import com.github.panpf.sketch.transform.getMaskTransformed
 import com.github.panpf.sketch.util.JsonSerializable
@@ -58,6 +60,9 @@ class MaskTransformedTest {
     fun testGetInSampledTransformed() {
         listOf(MaskTransformed(Color.RED)).apply {
             Assert.assertNotNull(getMaskTransformed())
+        }
+        listOf<Transformed>(CircleCropTransformed(END_CROP)).apply {
+            Assert.assertNull(getMaskTransformed())
         }
         listOf<Transformed>().apply {
             Assert.assertNull(getMaskTransformed())

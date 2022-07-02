@@ -7,6 +7,7 @@ import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.transform.CircleCropTransformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
@@ -60,6 +61,9 @@ class InSampledTransformedTest {
     fun testGetInSampledTransformed() {
         listOf(InSampledTransformed(2)).apply {
             Assert.assertNotNull(getInSampledTransformed())
+        }
+        listOf<Transformed>(CircleCropTransformed(END_CROP)).apply {
+            Assert.assertNull(getInSampledTransformed())
         }
         listOf<Transformed>().apply {
             Assert.assertNull(getInSampledTransformed())

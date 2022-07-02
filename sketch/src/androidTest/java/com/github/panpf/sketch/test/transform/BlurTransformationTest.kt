@@ -81,12 +81,21 @@ class BlurTransformationTest {
         }
         val inBitmapCorners = inBitmap.corners()
         runBlocking {
-            BlurTransformation(30).transform(sketch, request, inBitmap)
+            BlurTransformation(
+                30,
+                maskColor = ColorUtils.setAlphaComponent(Color.BLUE, 80)
+            ).transform(sketch, request, inBitmap)
         }.apply {
             Assert.assertNotSame(inBitmap, this)
             Assert.assertNotEquals(inBitmapCorners, bitmap.corners())
             Assert.assertEquals(Size(1291, 1936), bitmap.size)
-            Assert.assertEquals(BlurTransformed(30, Color.BLACK, null), transformed)
+            Assert.assertEquals(
+                BlurTransformed(
+                    30,
+                    Color.BLACK,
+                    ColorUtils.setAlphaComponent(Color.BLUE, 80)
+                ), transformed
+            )
         }
 
         // isMutable true
@@ -131,24 +140,32 @@ class BlurTransformationTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = BlurTransformation(radius = 20)
-        val element11 = BlurTransformation(radius = 20)
-        val element2 = BlurTransformation(hasAlphaBitmapBgColor = Color.GREEN)
-        val element3 = BlurTransformation(maskColor = Color.BLUE)
+        val element1 = BlurTransformation(20, null, null)
+        val element11 = BlurTransformation(20, null, null)
+        val element2 = BlurTransformation(10, Color.GREEN, null)
+        val element3 = BlurTransformation(20, Color.BLACK, Color.BLUE)
+        val element4 = BlurTransformation(20, Color.BLACK, Color.WHITE)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
         Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element1, element4)
         Assert.assertNotSame(element11, element2)
         Assert.assertNotSame(element11, element3)
+        Assert.assertNotSame(element11, element4)
         Assert.assertNotSame(element2, element3)
+        Assert.assertNotSame(element2, element4)
+        Assert.assertNotSame(element3, element4)
 
         Assert.assertEquals(element1, element1)
         Assert.assertEquals(element1, element11)
         Assert.assertNotEquals(element1, element2)
         Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element1, element4)
         Assert.assertNotEquals(element2, element11)
         Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element2, element4)
+        Assert.assertNotEquals(element3, element4)
         Assert.assertNotEquals(element1, null)
         Assert.assertNotEquals(element1, Any())
 
