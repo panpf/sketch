@@ -118,9 +118,10 @@ class MaskTransformed(@ColorInt val maskColor: Int) : Transformed {
 
     @Keep
     class Serializer : JsonSerializer<MaskTransformed> {
-        override fun toJson(t: MaskTransformed): JSONObject = JSONObject().apply {
-            put("maskColor", t.maskColor)
-        }
+        override fun toJson(t: MaskTransformed): JSONObject =
+            JSONObject().apply {
+                put("maskColor", t.maskColor)
+            }
 
         override fun fromJson(jsonObject: JSONObject): MaskTransformed =
             MaskTransformed(jsonObject.getInt("maskColor"))

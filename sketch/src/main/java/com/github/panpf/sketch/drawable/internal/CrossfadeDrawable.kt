@@ -18,6 +18,7 @@ import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
+import com.github.panpf.sketch.util.asOrNull
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -292,3 +293,5 @@ open class CrossfadeDrawable @JvmOverloads constructor(
         callbacks.forEach { it.onAnimationEnd(this) }
     }
 }
+
+fun Drawable.getCrossfadeEndDrawable(): Drawable = this.asOrNull<CrossfadeDrawable>()?.end ?: this

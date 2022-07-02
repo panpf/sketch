@@ -26,6 +26,10 @@ class CurrentStateImage(
     private val defaultImage: StateImage? = null
 ) : StateImage {
 
+    constructor(defaultDrawable: Drawable) : this(DrawableStateImage(defaultDrawable))
+
+    constructor(defaultDrawableRes: Int) : this(DrawableStateImage(defaultDrawableRes))
+
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
@@ -46,6 +50,6 @@ class CurrentStateImage(
     }
 
     override fun toString(): String {
-        return "DrawableStateImage"
+        return "CurrentStateImage(defaultImage=$defaultImage)"
     }
 }

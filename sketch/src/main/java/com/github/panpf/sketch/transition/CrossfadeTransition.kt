@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.transition
 
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.internal.getCrossfadeEndDrawable
 import com.github.panpf.sketch.request.DisplayResult
 
 /**
@@ -24,12 +24,14 @@ class CrossfadeTransition @JvmOverloads constructor(
     }
 
     override fun transition() {
+        val startDrawable = target.drawable?.getCrossfadeEndDrawable()
+        val endDrawable = result.drawable
         val drawable = CrossfadeDrawable(
-            start = target.drawable,
-            end = result.drawable,
+            start = startDrawable,
+            end = endDrawable,
             fitScale = fitScale,
             durationMillis = durationMillis,
-            fadeStart = target.drawable !is SketchCountBitmapDrawable,    // If the start drawable is a placeholder drawn from the memory cache, the fade in effect is not used
+            fadeStart = true,
             preferExactIntrinsicSize = preferExactIntrinsicSize
         )
         when (result) {
@@ -69,19 +71,21 @@ class CrossfadeTransition @JvmOverloads constructor(
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            return other is Factory &&
-                    durationMillis == other.durationMillis &&
-                    preferExactIntrinsicSize == other.preferExactIntrinsicSize
+            return other is Factory
+                    && durationMillis == other.durationMillis
+                    && preferExactIntrinsicSize == other.preferExactIntrinsicSize
+                    && alwaysUse == other.alwaysUse
         }
 
         override fun hashCode(): Int {
             var result = durationMillis
             result = 31 * result + preferExactIntrinsicSize.hashCode()
+            result = 31 * result + alwaysUse.hashCode()
             return result
         }
 
         override fun toString(): String {
-            return "CrossfadeTransition.Factory(durationMillis=$durationMillis, preferExactIntrinsicSize=$preferExactIntrinsicSize)"
+            return "CrossfadeTransition.Factory(durationMillis=$durationMillis, preferExactIntrinsicSize=$preferExactIntrinsicSize, alwaysUse=$alwaysUse)"
         }
     }
 }
