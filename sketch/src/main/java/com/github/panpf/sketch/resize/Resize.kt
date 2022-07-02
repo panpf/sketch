@@ -20,6 +20,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.format
 import org.json.JSONObject
 
@@ -136,34 +137,36 @@ data class Resize constructor(
     class Serializer : JsonSerializer<Resize> {
         override fun toJson(t: Resize): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("width", width)
-                    put("height", height)
+                put("width", t.width)
+                put("height", t.height)
 
-                    val precisionSerializerClass =
-                        precision.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                    val precisionSerializer = precisionSerializerClass.newInstance()
-                    put("precisionDeciderSerializerClassName", precisionSerializerClass.name)
-                    put("precisionDeciderContent", precisionSerializer.toJson(precision))
+                val precisionSerializerClass =
+                    t.precision.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
+                val precisionSerializer = precisionSerializerClass.newInstance()
+                put("precisionDeciderSerializerClassName", precisionSerializerClass.name)
+                put("precisionDeciderContent", precisionSerializer.toJson(t.precision))
 
-                    val scaleDeciderSerializerClass =
-                        scale.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                    val scaleDeciderSerializer = scaleDeciderSerializerClass.newInstance()
-                    put("scaleDeciderSerializerClassName", scaleDeciderSerializerClass.name)
-                    put("scaleDeciderContent", scaleDeciderSerializer.toJson(scale))
-                }
+                val scaleDeciderSerializerClass =
+                    t.scale.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
+                val scaleDeciderSerializer = scaleDeciderSerializerClass.newInstance()
+                put("scaleDeciderSerializerClassName", scaleDeciderSerializerClass.name)
+                put("scaleDeciderContent", scaleDeciderSerializer.toJson(t.scale))
             }
 
         override fun fromJson(jsonObject: JSONObject): Resize =
             Resize(
                 width = jsonObject.getInt("width"),
                 height = jsonObject.getInt("height"),
-                precision = (Class.forName(jsonObject.getString("precisionDeciderSerializerClassName"))
-                    .newInstance() as JsonSerializer<*>)
-                    .fromJson(jsonObject.getJSONObject("precisionDeciderContent")) as PrecisionDecider,
-                scale = (Class.forName(jsonObject.getString("scaleDeciderSerializerClassName"))
-                    .newInstance() as JsonSerializer<*>)
-                    .fromJson(jsonObject.getJSONObject("scaleDeciderContent")) as ScaleDecider,
+                precision = jsonObject.getString("precisionDeciderSerializerClassName")
+                    .let { Class.forName(it) }
+                    .newInstance().asOrThrow<JsonSerializer<*>>()
+                    .fromJson(jsonObject.getJSONObject("precisionDeciderContent"))!!
+                    .asOrThrow<PrecisionDecider>(),
+                scale = jsonObject.getString("scaleDeciderSerializerClassName")
+                    .let { Class.forName(it) }
+                    .newInstance().asOrThrow<JsonSerializer<*>>()
+                    .fromJson(jsonObject.getJSONObject("scaleDeciderContent"))!!
+                    .asOrThrow<ScaleDecider>(),
             )
     }
 }

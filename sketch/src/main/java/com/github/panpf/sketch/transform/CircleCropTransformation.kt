@@ -98,9 +98,7 @@ class CircleCropTransformed(val scale: Scale) : Transformed {
     class Serializer : JsonSerializer<CircleCropTransformed> {
         override fun toJson(t: CircleCropTransformed): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("scale", scale.name)
-                }
+                put("scale", t.scale.name)
             }
 
         override fun fromJson(jsonObject: JSONObject): CircleCropTransformed =

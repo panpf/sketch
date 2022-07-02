@@ -129,9 +129,7 @@ class RoundedCornersTransformed(val radiusArray: FloatArray) : Transformed {
     class Serializer : JsonSerializer<RoundedCornersTransformed> {
         override fun toJson(t: RoundedCornersTransformed): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("radiusArray", radiusArray.joinToString(separator = ","))
-                }
+                put("radiusArray", t.radiusArray.joinToString(separator = ","))
             }
 
         override fun fromJson(jsonObject: JSONObject): RoundedCornersTransformed =

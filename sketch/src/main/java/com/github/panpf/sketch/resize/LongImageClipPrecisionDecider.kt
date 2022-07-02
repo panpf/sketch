@@ -51,9 +51,7 @@ data class LongImageClipPrecisionDecider constructor(
     class Serializer : JsonSerializer<LongImageClipPrecisionDecider> {
         override fun toJson(t: LongImageClipPrecisionDecider): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("precision", precision.name)
-                }
+                put("precision", t.precision.name)
             }
 
         override fun fromJson(jsonObject: JSONObject): LongImageClipPrecisionDecider =

@@ -31,6 +31,15 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
 }
 
+/**
+ * Convert to the type specified by the generic
+ */
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun <R> Any.asOrThrow(): R {
+    @Suppress("UNCHECKED_CAST")
+    return this as R
+}
+
 internal fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()
 
 internal fun requiredMainThread() {

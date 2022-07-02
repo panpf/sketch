@@ -40,9 +40,7 @@ class ExifOrientationTransformed(
     class Serializer : JsonSerializer<ExifOrientationTransformed> {
         override fun toJson(t: ExifOrientationTransformed): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("exifOrientation", exifOrientation)
-                }
+                put("exifOrientation", t.exifOrientation)
             }
 
         override fun fromJson(jsonObject: JSONObject): ExifOrientationTransformed =

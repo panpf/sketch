@@ -48,10 +48,8 @@ data class LongImageScaleDecider constructor(
     class Serializer : JsonSerializer<LongImageScaleDecider> {
         override fun toJson(t: LongImageScaleDecider): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("longImage", longImage.name)
-                    put("other", other.name)
-                }
+                put("longImage", t.longImage.name)
+                put("other", t.other.name)
             }
 
         override fun fromJson(jsonObject: JSONObject): LongImageScaleDecider =

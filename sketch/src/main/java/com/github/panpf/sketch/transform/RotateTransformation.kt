@@ -90,9 +90,7 @@ class RotateTransformed(val degrees: Int) : Transformed {
     class Serializer : JsonSerializer<RotateTransformed> {
         override fun toJson(t: RotateTransformed): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("degrees", degrees)
-                }
+                put("degrees", t.degrees)
             }
 
         override fun fromJson(jsonObject: JSONObject): RotateTransformed =

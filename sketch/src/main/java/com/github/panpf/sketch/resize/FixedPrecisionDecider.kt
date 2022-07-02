@@ -32,9 +32,7 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
     class Serializer : JsonSerializer<FixedPrecisionDecider> {
         override fun toJson(t: FixedPrecisionDecider): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("precision", precision.name)
-                }
+                put("precision", t.precision.name)
             }
 
         override fun fromJson(jsonObject: JSONObject): FixedPrecisionDecider =

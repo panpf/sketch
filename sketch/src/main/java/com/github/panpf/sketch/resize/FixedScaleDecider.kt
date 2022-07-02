@@ -41,9 +41,7 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
     class Serializer : JsonSerializer<FixedScaleDecider> {
         override fun toJson(t: FixedScaleDecider): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("scale", scale.name)
-                }
+                put("scale", t.scale.name)
             }
 
         override fun fromJson(jsonObject: JSONObject): FixedScaleDecider =

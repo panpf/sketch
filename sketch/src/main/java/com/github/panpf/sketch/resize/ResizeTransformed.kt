@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.asOrThrow
 import org.json.JSONObject
 
 class ResizeTransformed constructor(val resize: Resize) : Transformed {
@@ -37,20 +38,20 @@ class ResizeTransformed constructor(val resize: Resize) : Transformed {
     class Serializer : JsonSerializer<ResizeTransformed> {
         override fun toJson(t: ResizeTransformed): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    val resizeSerializerClass =
-                        resize.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                    val resizeSerializer = resizeSerializerClass.newInstance()
-                    put("resizeSerializerClassName", resizeSerializerClass.name)
-                    put("resizeContent", resizeSerializer.toJson(resize))
-                }
+                val resizeSerializerClass =
+                    t.resize.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
+                val resizeSerializer = resizeSerializerClass.newInstance()
+                put("resizeSerializerClassName", resizeSerializerClass.name)
+                put("resizeContent", resizeSerializer.toJson(t.resize))
             }
 
         override fun fromJson(jsonObject: JSONObject): ResizeTransformed =
             ResizeTransformed(
-                (Class.forName(jsonObject.getString("resizeSerializerClassName"))
-                    .newInstance() as JsonSerializer<*>)
-                    .fromJson(jsonObject.getJSONObject("resizeContent")) as Resize,
+                jsonObject.getString("resizeSerializerClassName")
+                    .let { Class.forName(it) }
+                    .newInstance().asOrThrow<JsonSerializer<*>>()
+                    .fromJson(jsonObject.getJSONObject("resizeContent"))!!
+                    .asOrThrow(),
             )
     }
 }

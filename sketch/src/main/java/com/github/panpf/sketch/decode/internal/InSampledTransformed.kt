@@ -35,9 +35,7 @@ class InSampledTransformed(val inSampleSize: Int) : Transformed {
     class Serializer : JsonSerializer<InSampledTransformed> {
         override fun toJson(t: InSampledTransformed): JSONObject =
             JSONObject().apply {
-                t.apply {
-                    put("inSampleSize", inSampleSize)
-                }
+                put("inSampleSize", t.inSampleSize)
             }
 
         override fun fromJson(jsonObject: JSONObject): InSampledTransformed =

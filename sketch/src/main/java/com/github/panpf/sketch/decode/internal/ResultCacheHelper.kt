@@ -15,6 +15,7 @@ import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONArray
@@ -63,6 +64,7 @@ fun newResultCacheHelper(
     )
 }
 
+/* todo 使用单独的 DiskCache，这样各种 transformation 出问题修复后，可以通过更新版本的方式，使旧的缓存失效 */
 class ResultCacheHelper internal constructor(
     private val request: ImageRequest,
     private val diskCache: DiskCache,
@@ -137,7 +139,11 @@ class ResultCacheHelper internal constructor(
                     bitmapDataEditor.commit()
 
                     val metaData =
-                        MetaData(result.imageInfo, result.imageExifOrientation, result.transformedList)
+                        MetaData(
+                            result.imageInfo,
+                            result.imageExifOrientation,
+                            result.transformedList
+                        )
                     metaDataEditor.newOutputStream().bufferedWriter().use {
                         val metaDataSerializer = MetaData.Serializer()
                         val metaDataJsonString = metaDataSerializer.toJson(metaData).toString()
@@ -177,36 +183,35 @@ class ResultCacheHelper internal constructor(
         class Serializer : JsonSerializer<MetaData> {
             override fun toJson(t: MetaData): JSONObject =
                 JSONObject().apply {
-                    t.apply {
-                        put("width", imageInfo.width)
-                        put("height", imageInfo.height)
-                        put("mimeType", imageInfo.mimeType)
-                        put("exifOrientation", exifOrientation)
-                        put(
-                            "transformedList",
-                            transformedList?.takeIf { it.isNotEmpty() }?.let { list ->
-                                JSONArray().also { array ->
-                                    list.forEach { transformed ->
-                                        array.put(
-                                            JSONObject().let {
-                                                val transformedSerializerClass =
-                                                    transformed.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                                                val transformedSerializer =
-                                                    transformedSerializerClass.newInstance()
-                                                it.put(
-                                                    "transformedSerializerClassName",
-                                                    transformedSerializerClass.name
-                                                )
-                                                it.put(
-                                                    "transformedContent",
-                                                    transformedSerializer.toJson(transformed)
-                                                )
-                                            }
-                                        )
-                                    }
+                    put("width", t.imageInfo.width)
+                    put("height", t.imageInfo.height)
+                    put("mimeType", t.imageInfo.mimeType)
+                    put("exifOrientation", t.exifOrientation)
+                    put(
+                        "transformedList",
+                        t.transformedList?.takeIf { it.isNotEmpty() }?.let { list ->
+                            JSONArray().also { array ->
+                                list.forEach { transformed ->
+                                    array.put(
+                                        JSONObject().let {
+                                            val transformedSerializerClass =
+                                                transformed.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
+                                            val transformedSerializer =
+                                                transformedSerializerClass.newInstance()
+                                            it.put(
+                                                "transformedSerializerClassName",
+                                                transformedSerializerClass.name
+                                            )
+                                            it.put(
+                                                "transformedContent",
+                                                transformedSerializer.toJson(transformed)
+                                            )
+                                        }
+                                    )
                                 }
-                            })
-                    }
+                            }
+                        }
+                    )
                 }
 
             override fun fromJson(jsonObject: JSONObject): MetaData =
@@ -221,9 +226,11 @@ class ResultCacheHelper internal constructor(
                         ?.takeIf { it.length() > 0 }?.run {
                             0.until(length()).map { index ->
                                 val item = getJSONObject(index)
-                                (Class.forName(item.getString("transformedSerializerClassName"))
-                                    .newInstance() as JsonSerializer<*>)
-                                    .fromJson(item.getJSONObject("transformedContent")) as Transformed
+                                item.getString("transformedSerializerClassName")
+                                    .let { Class.forName(it) }
+                                    .newInstance().asOrThrow<JsonSerializer<*>>()
+                                    .fromJson(item.getJSONObject("transformedContent"))!!
+                                    .asOrThrow()
                             }
                         },
                 )
