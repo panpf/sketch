@@ -83,7 +83,11 @@ class ResizeTest {
         }
 
 
-        Resize(Size(100, 30), LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), LongImageScaleDecider(CENTER_CROP, END_CROP)).apply {
+        Resize(
+            Size(100, 30),
+            LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
+            LongImageScaleDecider(CENTER_CROP, END_CROP)
+        ).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
             Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precision)
@@ -131,7 +135,11 @@ class ResizeTest {
             Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scale)
         }
 
-        Resize(Size(100, 30), SAME_ASPECT_RATIO, LongImageScaleDecider(CENTER_CROP, END_CROP)).apply {
+        Resize(
+            Size(100, 30),
+            SAME_ASPECT_RATIO,
+            LongImageScaleDecider(CENTER_CROP, END_CROP)
+        ).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
             Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precision)
@@ -201,7 +209,10 @@ class ResizeTest {
         }
 
         Resize(100, 100, SAME_ASPECT_RATIO).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(SAME_ASPECT_RATIO),Fixed(CENTER_CROP))", toString())
+            Assert.assertEquals(
+                "Resize(100x100,Fixed(SAME_ASPECT_RATIO),Fixed(CENTER_CROP))",
+                toString()
+            )
         }
         Resize(100, 100, EXACTLY).apply {
             Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", toString())
@@ -350,7 +361,6 @@ class ResizeTest {
                 .newInstance()
 
         val transformed1 = serializer.fromJson(serializer.toJson(resize))
-
         Assert.assertNotSame(resize, transformed1)
         Assert.assertEquals(resize, transformed1)
     }

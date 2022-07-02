@@ -141,6 +141,25 @@ class BitmapDecodeTest {
         }
     }
 
+    @Test
+    fun testHasAlpha() {
+        val context = getTestContext()
+
+        context.assets.open("sample.jpeg").use {
+            BitmapFactory.decodeStream(it, null, null)
+        }!!.apply {
+            Assert.assertEquals(Bitmap.Config.ARGB_8888, config)
+            Assert.assertFalse(hasAlpha())
+        }
+
+        context.assets.open("sample.png").use {
+            BitmapFactory.decodeStream(it, null, null)
+        }!!.apply {
+            Assert.assertEquals(Bitmap.Config.ARGB_8888, config)
+            Assert.assertTrue(hasAlpha())
+        }
+    }
+
     private fun <R> BitmapRegionDecoder.use(block: BitmapRegionDecoder.() -> R): R {
         try {
             return block(this)
