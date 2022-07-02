@@ -16,17 +16,25 @@
 
 package com.github.panpf.sketch.sample.ui.viewer
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
+import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.databinding.ImageViewerPagerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.stateimage.CurrentStateImage
+import com.github.panpf.sketch.transform.BlurTransformation
+import com.github.panpf.tools4a.display.ktx.getScreenHeight
+import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -53,7 +61,33 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
                 listOf(ImageViewerFragment.ItemFactory()),
                 imageList
             )
-            val currentItem = imageList.indexOfFirst { it.position == args.defaultPosition }.takeIf { it != -1 } ?: 0
+
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    val imageUrl = imageList[position].let { it.middenUrl ?: it.url }
+                    binding.imageViewerBgImage.displayImage(imageUrl) {
+                        resize(
+                            requireContext().getScreenWidth() / 4,
+                            requireContext().getScreenHeight() / 4,
+                            precision = LESS_PIXELS
+                        )
+                        addTransformations(
+                            BlurTransformation(
+                                radius = 20,
+                                maskColor = ColorUtils.setAlphaComponent(Color.BLACK, 100)
+                            )
+                        )
+                        placeholder(CurrentStateImage())
+                        disallowAnimatedImage()
+                        crossfade(alwaysUse = true, durationMillis = 400)
+                    }
+                }
+            })
+
+            val currentItem =
+                imageList.indexOfFirst { it.position == args.defaultPosition }.takeIf { it != -1 }
+                    ?: 0
             post {
                 setCurrentItem(currentItem, false)
             }
@@ -103,6 +137,7 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
             binding.root.background = binding.root.background?.mutate()?.apply {
                 alpha = ((1 - progress) * 255).toInt()
             }
+            binding.imageViewerBgImage.alpha = 1 - progress
             binding.imageViewerPagerTools.alpha = 1 - progress
         }
 
