@@ -96,10 +96,10 @@ fun HeaderBytes.isHeif(): Boolean = rangeEquals(4, HEIF_HEADER_FTYP)
 /**
  * Return 'true' if the [HeaderBytes] contains an animated HEIF image sequence.
  */
-fun HeaderBytes.isAnimatedHeif(): Boolean =
-    isHeif() && (rangeEquals(8, HEIF_HEADER_MSF1)
-            || rangeEquals(8, HEIF_HEADER_HEVC)
-            || rangeEquals(8, HEIF_HEADER_HEVX))
+fun HeaderBytes.isAnimatedHeif(): Boolean = isHeif()
+        && (rangeEquals(8, HEIF_HEADER_MSF1)
+        || rangeEquals(8, HEIF_HEADER_HEVC)
+        || rangeEquals(8, HEIF_HEADER_HEVX))
 
 /**
  * Return 'true' if the [HeaderBytes] contains a GIF image.

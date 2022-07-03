@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_DISK_CACHE
@@ -23,15 +22,14 @@ import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.FileInputStream
 
-suspend fun <R> tryLockResultCache(
+suspend fun <R> safeAccessResultCache(
     sketch: Sketch,
     request: ImageRequest,
     block: suspend (helper: ResultCacheHelper?) -> R
-): R {
-    val helper = newResultCacheHelper(sketch, request)
-    return if (helper != null) {
-        val lockKey = "${request.cacheKey}_result"
-        val lock: Mutex = sketch.diskCache.editLock(lockKey)
+): R =
+    if (request.resultCachePolicy.isReadOrWrite) {
+        val helper = ResultCacheHelper(sketch, request)
+        val lock: Mutex = sketch.diskCache.editLock(helper.keys.lockKey)
         lock.lock()
         try {
             block(helper)
@@ -39,88 +37,68 @@ suspend fun <R> tryLockResultCache(
             lock.unlock()
         }
     } else {
-        block(helper)
+        block(null)
+    }
+
+class ResultCacheKeys(request: ImageRequest) {
+    val bitmapDataDiskCacheKey: String by lazy {
+        "${request.cacheKey}_result_data"
+    }
+    val bitmapMetaDiskCacheKey: String by lazy {
+        "${request.cacheKey}_result_meta"
+    }
+    val lockKey: String by lazy {
+        "${request.cacheKey}_result"
     }
 }
 
-fun ImageRequest.newResultCacheDataKey(): String = "${cacheKey}_result_data"
-
-fun ImageRequest.newResultCacheMetaKey(): String = "${cacheKey}_result_meta"
-
-fun newResultCacheHelper(
-    sketch: Sketch,
-    request: ImageRequest
-): ResultCacheHelper? {
-    val cachePolicy = request.resultCachePolicy
-    if (!cachePolicy.isReadOrWrite) return null
-    val bitmapDataDiskCacheKey = request.newResultCacheDataKey()
-    val bitmapMetaDiskCacheKey = request.newResultCacheMetaKey()
-    return ResultCacheHelper(
-        request,
-        sketch.diskCache,
-        cachePolicy,
-        bitmapDataDiskCacheKey,
-        bitmapMetaDiskCacheKey
-    )
-}
-
 /* todo 使用单独的 DiskCache，这样各种 transformation 出问题修复后，可以通过更新版本的方式，使旧的缓存失效 */
-class ResultCacheHelper internal constructor(
-    private val request: ImageRequest,
-    private val diskCache: DiskCache,
-    private val cachePolicy: CachePolicy,
-    private val bitmapDataDiskCacheKey: String,
-    private val bitmapMetaDiskCacheKey: String,
-) {
+class ResultCacheHelper(sketch: Sketch, val request: ImageRequest) {
 
     companion object {
         const val MODULE = "BitmapResultDiskCacheHelper"
     }
 
+    private val diskCache: DiskCache = sketch.diskCache
+    val keys = ResultCacheKeys(request)
+
     @WorkerThread
     fun read(): BitmapDecodeResult? {
         requiredWorkThread()
-        return if (cachePolicy.readEnabled) {
-            val bitmapDataDiskCacheSnapshot = diskCache[bitmapDataDiskCacheKey]
-            val bitmapMetaDiskCacheSnapshot = diskCache[bitmapMetaDiskCacheKey]
-            try {
-                if (bitmapDataDiskCacheSnapshot != null && bitmapMetaDiskCacheSnapshot != null) {
-                    val jsonString = bitmapMetaDiskCacheSnapshot.newInputStream().use {
-                        it.bufferedReader().readText()
-                    }
-                    val metaDataSerializer = MetaData.Serializer()
-                    val metaData = metaDataSerializer.fromJson(JSONObject(jsonString))
-                    val imageInfo = metaData.imageInfo
-                    val bitmap = FileInputStream(bitmapDataDiskCacheSnapshot.file.path).use {
-                        BufferedInputStream(it).use { bufferedInput ->
-                            val options = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-                                .toBitmapOptions()
-                            BitmapFactory.decodeStream(bufferedInput, null, options)
-                        }
-                    }
-                    if (bitmap != null) {
-                        BitmapDecodeResult(
-                            bitmap,
-                            metaData.imageInfo,
-                            metaData.exifOrientation,
-                            RESULT_DISK_CACHE,
-                            metaData.transformedList
-                        )
-                    } else {
-                        null
-                    }
-                } else {
-                    bitmapDataDiskCacheSnapshot?.remove()
-                    bitmapMetaDiskCacheSnapshot?.remove()
-                    null
+        if (!request.resultCachePolicy.readEnabled) return null
+
+        val bitmapDataDiskCacheSnapshot = diskCache[keys.bitmapDataDiskCacheKey]
+        val bitmapMetaDiskCacheSnapshot = diskCache[keys.bitmapMetaDiskCacheKey]
+        if (bitmapDataDiskCacheSnapshot == null || bitmapMetaDiskCacheSnapshot == null) {
+            kotlin.runCatching { bitmapDataDiskCacheSnapshot?.remove() }
+            kotlin.runCatching { bitmapMetaDiskCacheSnapshot?.remove() }
+            return null
+        }
+
+        return try {
+            val metaData = bitmapMetaDiskCacheSnapshot.newInputStream()
+                .use { inputStream -> inputStream.bufferedReader().readText() }
+                .let { jsonString -> MetaData.Serializer().fromJson(JSONObject(jsonString)) }
+            val imageInfo = metaData.imageInfo
+            FileInputStream(bitmapDataDiskCacheSnapshot.file.path).use {
+                BufferedInputStream(it).use { bufferedInput ->
+                    val options = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+                        .toBitmapOptions()
+                    BitmapFactory.decodeStream(bufferedInput, null, options)
                 }
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                bitmapDataDiskCacheSnapshot?.remove()
-                bitmapMetaDiskCacheSnapshot?.remove()
-                null
+            }?.let { bitmap ->
+                BitmapDecodeResult(
+                    bitmap = bitmap,
+                    imageInfo = metaData.imageInfo,
+                    imageExifOrientation = metaData.exifOrientation,
+                    dataFrom = RESULT_DISK_CACHE,
+                    transformedList = metaData.transformedList
+                )
             }
-        } else {
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            bitmapDataDiskCacheSnapshot.remove()
+            bitmapMetaDiskCacheSnapshot.remove()
             null
         }
     }
@@ -128,42 +106,44 @@ class ResultCacheHelper internal constructor(
     @WorkerThread
     fun write(result: BitmapDecodeResult): Boolean {
         requiredWorkThread()
-        return if (cachePolicy.writeEnabled && result.transformedList?.any { it.cacheResultToDisk } == true) {
-            val bitmapDataEditor = diskCache.edit(bitmapDataDiskCacheKey)
-            val metaDataEditor = diskCache.edit(bitmapMetaDiskCacheKey)
-            try {
-                if (bitmapDataEditor != null && metaDataEditor != null) {
-                    bitmapDataEditor.newOutputStream().use {
-                        result.bitmap.compress(PNG, 100, it)
-                    }
-                    bitmapDataEditor.commit()
+        if (!request.resultCachePolicy.writeEnabled
+            || result.transformedList?.any { it.cacheResultToDisk } != true
+        ) {
+            return false
+        }
 
-                    val metaData =
-                        MetaData(
-                            result.imageInfo,
-                            result.imageExifOrientation,
-                            result.transformedList
-                        )
-                    metaDataEditor.newOutputStream().bufferedWriter().use {
-                        val metaDataSerializer = MetaData.Serializer()
-                        val metaDataJsonString = metaDataSerializer.toJson(metaData).toString()
-                        it.write(metaDataJsonString)
-                    }
-                    metaDataEditor.commit()
-                } else {
-                    bitmapDataEditor?.abort()
-                    metaDataEditor?.abort()
-                }
-                true
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                bitmapDataEditor?.abort()
-                metaDataEditor?.abort()
-                diskCache.remove(bitmapDataDiskCacheKey)
-                diskCache.remove(bitmapMetaDiskCacheKey)
-                false
+        val bitmapDataEditor = diskCache.edit(keys.bitmapDataDiskCacheKey)
+        val metaDataEditor = diskCache.edit(keys.bitmapMetaDiskCacheKey)
+        if (bitmapDataEditor == null || metaDataEditor == null) {
+            kotlin.runCatching { bitmapDataEditor?.abort() }
+            kotlin.runCatching { metaDataEditor?.abort() }
+            return false
+        }
+        return try {
+            bitmapDataEditor.newOutputStream().use {
+                result.bitmap.compress(PNG, 100, it)
             }
-        } else {
+            bitmapDataEditor.commit()
+
+            val metaData =
+                MetaData(
+                    result.imageInfo,
+                    result.imageExifOrientation,
+                    result.transformedList
+                )
+            metaDataEditor.newOutputStream().bufferedWriter().use {
+                val metaDataSerializer = MetaData.Serializer()
+                val metaDataJsonString = metaDataSerializer.toJson(metaData).toString()
+                it.write(metaDataJsonString)
+            }
+            metaDataEditor.commit()
+            true
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            bitmapDataEditor.abort()
+            metaDataEditor.abort()
+            diskCache.remove(keys.bitmapDataDiskCacheKey)
+            diskCache.remove(keys.bitmapMetaDiskCacheKey)
             false
         }
     }

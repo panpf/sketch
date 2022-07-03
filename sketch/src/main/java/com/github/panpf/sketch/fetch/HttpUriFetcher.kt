@@ -1,21 +1,20 @@
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.fetch.internal.DownloadCacheHelper
+import com.github.panpf.sketch.fetch.internal.copyToWithActive
 import com.github.panpf.sketch.fetch.internal.getMimeType
-import com.github.panpf.sketch.fetch.internal.writeToByteArray
+import com.github.panpf.sketch.fetch.internal.safeAccessDownloadCache
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 /**
@@ -35,20 +34,11 @@ class HttpUriFetcher(
 
     override suspend fun fetch(): FetchResult {
         requiredWorkThread()
-
-        val downloadCachePolicy = request.downloadCachePolicy
-        val diskCacheHelper = ifOrNull(downloadCachePolicy.isReadOrWrite) {
-            DownloadCacheHelper(sketch = sketch, request = request)
-        }
-
-        diskCacheHelper?.lock?.lock()
-        try {
+        return safeAccessDownloadCache(sketch, request) { diskCacheHelper ->
             /* read cache */
-            val resultFromCache = ifOrNull(downloadCachePolicy.readEnabled) {
-                diskCacheHelper?.read()
-            }
+            val resultFromCache = diskCacheHelper?.read()
             if (resultFromCache != null) {
-                return resultFromCache
+                return@safeAccessDownloadCache resultFromCache
             }
 
             /* verify depth */
@@ -58,7 +48,7 @@ class HttpUriFetcher(
             }
 
             /* execute download */
-            return withContext(sketch.networkTaskDispatcher) {
+            withContext(sketch.networkTaskDispatcher) {
                 // open connection
                 val response = sketch.httpStack.getResponse(request, url)
 
@@ -81,12 +71,9 @@ class HttpUriFetcher(
                 }
 
                 // write to disk or byte array
-                val diskCacheEditor = ifOrNull(downloadCachePolicy.writeEnabled) {
-                    diskCacheHelper?.newEditor()
-                }
-                val dataSource = if (diskCacheHelper != null && diskCacheEditor != null) {
-                    val diskCacheSnapshot = diskCacheHelper.write(response, diskCacheEditor, this)
-                    if (downloadCachePolicy.readEnabled) {
+                val diskCacheSnapshot = diskCacheHelper?.write(response, this)
+                val dataSource = if (diskCacheSnapshot != null) {
+                    if (request.downloadCachePolicy.readEnabled) {
                         DiskCacheDataSource(sketch, request, NETWORK, diskCacheSnapshot)
                     } else {
                         diskCacheSnapshot.newInputStream()
@@ -94,14 +81,24 @@ class HttpUriFetcher(
                             .run { ByteArrayDataSource(sketch, request, NETWORK, this) }
                     }
                 } else {
-                    val byteArray = writeToByteArray(request, response, this)
+                    val byteArrayOutputStream = ByteArrayOutputStream()
+                    byteArrayOutputStream.use { out ->
+                        response.content.use { input ->
+                            copyToWithActive(
+                                request = request,
+                                inputStream = input,
+                                outputStream = out,
+                                coroutineScope = this@withContext,
+                                contentLength = response.contentLength
+                            )
+                        }
+                    }
+                    val byteArray = byteArrayOutputStream.toByteArray()
                     ByteArrayDataSource(sketch, request, NETWORK, byteArray)
                 }
                 val mimeType = getMimeType(request.uriString, response.contentType)
                 FetchResult(dataSource, mimeType)
             }
-        } finally {
-            diskCacheHelper?.lock?.unlock()
         }
     }
 

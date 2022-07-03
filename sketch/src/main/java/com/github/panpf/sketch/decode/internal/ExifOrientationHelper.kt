@@ -226,7 +226,7 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
         inBitmap: Bitmap,
         isFlipped: Boolean,
         rotationDegrees: Int,
-        bitmapPool: BitmapPool? = null,
+        bitmapPool: BitmapPool?,
         apply: Boolean,
     ): Bitmap? {
         val isRotated = abs(rotationDegrees % 360) != 0

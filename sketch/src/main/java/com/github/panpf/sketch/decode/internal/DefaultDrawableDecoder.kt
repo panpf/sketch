@@ -21,7 +21,7 @@ class DefaultDrawableDecoder(
 
     @WorkerThread
     override suspend fun decode(): DrawableDecodeResult =
-        tryLockMemoryCache(sketch, request) { helper ->
+        safeAccessMemoryCache(sketch, request) { helper ->
             val cachedResult = helper?.read()
             if (cachedResult != null) {
                 cachedResult

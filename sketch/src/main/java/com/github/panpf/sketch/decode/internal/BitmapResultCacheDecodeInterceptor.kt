@@ -10,7 +10,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
     override suspend fun intercept(
         chain: BitmapDecodeInterceptor.Chain,
     ): BitmapDecodeResult =
-        tryLockResultCache(chain.sketch, chain.request) { helper ->
+        safeAccessResultCache(chain.sketch, chain.request) { helper ->
             helper?.read() ?: chain.proceed().apply {
                 helper?.write(this@apply)
             }

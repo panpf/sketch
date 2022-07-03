@@ -6,10 +6,12 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.newMemoryCacheHelper
+import com.github.panpf.sketch.decode.internal.safeAccessMemoryCache
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.fetch.HttpUriFetcher
+import com.github.panpf.sketch.request.Depth.MEMORY
+import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadData
@@ -17,8 +19,6 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.Depth.MEMORY
-import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.toDisplayData
 import com.github.panpf.sketch.request.toLoadData
@@ -45,13 +45,13 @@ class EngineRequestInterceptor : RequestInterceptor {
         requestContext: RequestContext,
     ): DisplayData {
         /* check memory cache */
-        val result = newMemoryCacheHelper(sketch, request)?.read()
-        if (result != null) {
-            val drawable = result.drawable
+        val resultFromCache = safeAccessMemoryCache(sketch, request) { it?.read() }
+        if (resultFromCache != null) {
+            val drawable = resultFromCache.drawable
             if (drawable is SketchCountBitmapDrawable) {
                 requestContext.pendingCountDrawable(drawable, "displayBefore")
             }
-            return result.toDisplayData()
+            return resultFromCache.toDisplayData()
         }
         val depth = request.depth
         if (depth >= MEMORY) {

@@ -40,6 +40,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.calculateResizeMapping
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toHexString
 import java.io.BufferedInputStream
@@ -277,7 +278,7 @@ fun BitmapDecodeResult.applyResize(
             precision = precision,
             resizeScale = scale,
         )
-        val config = inBitmap.config ?: ARGB_8888
+        val config = inBitmap.safeConfig
         sketch.bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config).apply {
             Canvas(this).drawBitmap(inBitmap, mapping.srcRect, mapping.destRect, null)
         }

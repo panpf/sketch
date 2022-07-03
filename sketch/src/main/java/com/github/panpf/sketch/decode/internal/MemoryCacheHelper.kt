@@ -2,7 +2,6 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.isReadOrWrite
@@ -16,15 +15,14 @@ import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
 
-suspend fun <R> tryLockMemoryCache(
+suspend fun <R> safeAccessMemoryCache(
     sketch: Sketch,
     request: ImageRequest,
     block: suspend (helper: MemoryCacheHelper?) -> R
-): R {
-    val helper = newMemoryCacheHelper(sketch, request)
-    return if (helper != null) {
-        val lockKey = request.cacheKey
-        val lock: Mutex = sketch.diskCache.editLock(lockKey)
+): R =
+    if (request.memoryCachePolicy.isReadOrWrite) {
+        val helper = MemoryCacheHelper(sketch, request)
+        val lock: Mutex = sketch.memoryCache.editLock(helper.keys.lockKey)
         lock.lock()
         try {
             block(helper)
@@ -32,91 +30,71 @@ suspend fun <R> tryLockMemoryCache(
             lock.unlock()
         }
     } else {
-        block(helper)
+        block(null)
+    }
+
+class MemoryCacheKeys constructor(request: ImageRequest) {
+    val cacheKey: String by lazy {
+        request.cacheKey
+    }
+    val lockKey: String by lazy {
+        request.cacheKey
     }
 }
 
-fun ImageRequest.newMemoryCacheKey(): String = cacheKey
-
-fun newMemoryCacheHelper(sketch: Sketch, request: ImageRequest): MemoryCacheHelper? {
-    val cachePolicy = request.memoryCachePolicy
-    if (!cachePolicy.isReadOrWrite) return null
-    return MemoryCacheHelper(
-        sketch.memoryCache,
-        request.memoryCachePolicy,
-        request.newMemoryCacheKey(),
-        sketch.logger,
-        request,
-        sketch.bitmapPool,
-    )
-}
-
-class MemoryCacheHelper internal constructor(
-    private val memoryCache: MemoryCache,
-    private val cachePolicy: CachePolicy,
-    private val cacheKey: String,
-    private val logger: Logger,
-    private val request: ImageRequest,
-    private val bitmapPool: BitmapPool,
-) {
+class MemoryCacheHelper(sketch: Sketch, val request: ImageRequest) {
 
     companion object {
         const val MODULE = "BitmapMemoryCacheHelper"
     }
 
-    fun read(): DrawableDecodeResult? =
-        if (cachePolicy.readEnabled) {
-            val cachedCountBitmap = memoryCache[cacheKey]
-            when {
-                cachedCountBitmap != null -> {
-                    logger.d(MODULE) {
-                        "From memory get bitmap. bitmap=${cachedCountBitmap.info}. ${request.key}"
-                    }
-                    DrawableDecodeResult(
-                        drawable = SketchCountBitmapDrawable(
-                            request.context.resources,
-                            cachedCountBitmap,
-                            MEMORY_CACHE
-                        ),
-                        imageInfo = cachedCountBitmap.imageInfo,
-                        imageExifOrientation = cachedCountBitmap.imageExifOrientation,
-                        dataFrom = MEMORY_CACHE,
-                        transformedList = null,
-                    )
-                }
-                else -> {
-                    null
-                }
+    private val memoryCache: MemoryCache = sketch.memoryCache
+    private val logger: Logger = sketch.logger
+    private val bitmapPool: BitmapPool = sketch.bitmapPool
+    val keys = MemoryCacheKeys(request)
+
+    fun read(): DrawableDecodeResult? {
+        if (!request.memoryCachePolicy.readEnabled) return null
+        val countBitmap = memoryCache[keys.cacheKey] ?: return null
+
+        logger.d(MODULE) {
+            "From memory get bitmap. bitmap=${countBitmap.info}. ${request.key}"
+        }
+        val resources = request.context.resources
+        return DrawableDecodeResult(
+            drawable = SketchCountBitmapDrawable(resources, countBitmap, MEMORY_CACHE),
+            imageInfo = countBitmap.imageInfo,
+            imageExifOrientation = countBitmap.imageExifOrientation,
+            dataFrom = MEMORY_CACHE,
+            transformedList = null,
+        )
+    }
+
+    fun write(result: BitmapDecodeResult): SketchCountBitmapDrawable? {
+        if (!request.memoryCachePolicy.writeEnabled) {
+            return null
+        }
+        if (result.bitmap.allocationByteCountCompat >= memoryCache.maxSize * 0.7f) {
+            logger.w(MODULE) {
+                "write. Reject. Too big ${
+                    result.bitmap.allocationByteCountCompat.formatFileSize()
+                }, maxSize ${memoryCache.maxSize.formatFileSize()}, ${result.bitmap.logString}"
             }
-        } else {
-            null
+            return null
         }
 
-    fun write(result: BitmapDecodeResult): SketchCountBitmapDrawable? =
-        if (cachePolicy.writeEnabled) {
-            if (result.bitmap.allocationByteCountCompat < memoryCache.maxSize * 0.7f) {
-                val countBitmap = CountBitmap(
-                    initBitmap = result.bitmap,
-                    imageUri = request.uriString,
-                    requestKey = request.key,
-                    requestCacheKey = request.cacheKey,
-                    imageInfo = result.imageInfo,
-                    imageExifOrientation = result.imageExifOrientation,
-                    transformedList = result.transformedList,
-                    logger = logger,
-                    bitmapPool = bitmapPool
-                )
-                memoryCache.put(cacheKey, countBitmap)
-                SketchCountBitmapDrawable(request.context.resources, countBitmap, result.dataFrom)
-            } else {
-                logger.w(MODULE) {
-                    "write. Reject. Too big ${
-                        result.bitmap.allocationByteCountCompat.formatFileSize()
-                    }, maxSize ${memoryCache.maxSize.formatFileSize()}, ${result.bitmap.logString}"
-                }
-                null
-            }
-        } else {
-            null
-        }
+        val countBitmap = CountBitmap(
+            initBitmap = result.bitmap,
+            imageUri = request.uriString,
+            requestKey = request.key,
+            requestCacheKey = request.cacheKey,
+            imageInfo = result.imageInfo,
+            imageExifOrientation = result.imageExifOrientation,
+            transformedList = result.transformedList,
+            logger = logger,
+            bitmapPool = bitmapPool
+        )
+        memoryCache.put(keys.cacheKey, countBitmap)
+        return SketchCountBitmapDrawable(request.context.resources, countBitmap, result.dataFrom)
+    }
 }
