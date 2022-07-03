@@ -6,7 +6,7 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.newMemoryCacheKey
+import com.github.panpf.sketch.decode.internal.MemoryCacheKeys
 import com.github.panpf.sketch.decode.internal.samplingByTarget
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -36,7 +36,7 @@ class DefaultDrawableDecoderTest {
             resultCachePolicy(DISABLED)
             resize(displaySize, LESS_PIXELS)
         }
-        val memoryCacheKey = request.newMemoryCacheKey()
+        val memoryCacheKey = MemoryCacheKeys(request).cacheKey
         val memoryCache = sketch.memoryCache
 
         memoryCache.clear()

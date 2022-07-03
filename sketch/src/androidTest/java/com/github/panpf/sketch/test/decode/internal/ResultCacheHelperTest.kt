@@ -4,22 +4,21 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.ResultCacheHelper.MetaData
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
-import com.github.panpf.sketch.decode.internal.newResultCacheHelper
+import com.github.panpf.sketch.decode.internal.ResultCacheHelper
+import com.github.panpf.sketch.decode.internal.ResultCacheHelper.MetaData
+import com.github.panpf.sketch.decode.internal.ResultCacheKeys
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
-import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeTransformed
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
@@ -31,33 +30,14 @@ import org.junit.runner.RunWith
 class ResultCacheHelperTest {
 
     @Test
-    fun testNewBitmapResultCacheHelper() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
-
-        Assert.assertNotNull(
-            newResultCacheHelper(sketch, request)
-        )
-        Assert.assertNotNull(
-            newResultCacheHelper(sketch, request.newLoadRequest {
-                resultCachePolicy(ENABLED)
-            })
-        )
-        Assert.assertNull(
-            newResultCacheHelper(sketch, request.newLoadRequest {
-                resultCachePolicy(DISABLED)
-            })
-        )
-        Assert.assertNotNull(
-            newResultCacheHelper(sketch, request.newLoadRequest {
-                resultCachePolicy(READ_ONLY)
-            })
-        )
-        Assert.assertNotNull(
-            newResultCacheHelper(sketch, request.newLoadRequest {
-                resultCachePolicy(WRITE_ONLY)
-            })
-        )
+    fun testResultCacheKeys() {
+        val context = getTestContext()
+        val request = LoadRequest(context, "http://sample.com/sample.jpeg")
+        ResultCacheKeys(request).apply {
+            Assert.assertEquals("${request.cacheKey}_result_data", bitmapDataDiskCacheKey)
+            Assert.assertEquals("${request.cacheKey}_result_meta", bitmapMetaDiskCacheKey)
+            Assert.assertEquals("${request.cacheKey}_result", lockKey)
+        }
     }
 
     @Test
@@ -68,7 +48,7 @@ class ResultCacheHelperTest {
         sketch.diskCache.clear()
 
         // Is there really no
-        val helper = newResultCacheHelper(sketch, request)!!
+        val helper = ResultCacheHelper(sketch, request)
         Assert.assertNull(helper.read())
 
         // There are the
@@ -84,19 +64,19 @@ class ResultCacheHelperTest {
         Assert.assertNotNull(helper.read())
 
         Assert.assertNotNull(
-            newResultCacheHelper(sketch, request.newLoadRequest {
+            ResultCacheHelper(sketch, request.newLoadRequest {
                 resultCachePolicy(ENABLED)
-            })!!.read()
+            }).read()
         )
         Assert.assertNotNull(
-            newResultCacheHelper(sketch, request.newLoadRequest {
+            ResultCacheHelper(sketch, request.newLoadRequest {
                 resultCachePolicy(READ_ONLY)
-            })!!.read()
+            }).read()
         )
         Assert.assertNull(
-            newResultCacheHelper(sketch, request.newLoadRequest {
+            ResultCacheHelper(sketch, request.newLoadRequest {
                 resultCachePolicy(WRITE_ONLY)
-            })!!.read()
+            }).read()
         )
     }
 
@@ -107,7 +87,7 @@ class ResultCacheHelperTest {
 
         sketch.diskCache.clear()
 
-        Assert.assertNull(newResultCacheHelper(sketch, request)!!.read())
+        Assert.assertNull(ResultCacheHelper(sketch, request).read())
 
         // transformedList empty
         val bitmapDecodeResult = BitmapDecodeResult(
@@ -118,9 +98,9 @@ class ResultCacheHelperTest {
             null
         )
         Assert.assertFalse(
-            newResultCacheHelper(sketch, request)!!.write(bitmapDecodeResult)
+            ResultCacheHelper(sketch, request).write(bitmapDecodeResult)
         )
-        Assert.assertNull(newResultCacheHelper(sketch, request)!!.read())
+        Assert.assertNull(ResultCacheHelper(sketch, request).read())
 
         val bitmapDecodeResult1 = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
@@ -130,27 +110,27 @@ class ResultCacheHelperTest {
             listOf(InSampledTransformed(4))
         )
         Assert.assertTrue(
-            newResultCacheHelper(sketch, request)!!.write(bitmapDecodeResult1)
+            ResultCacheHelper(sketch, request).write(bitmapDecodeResult1)
         )
-        Assert.assertNotNull(newResultCacheHelper(sketch, request)!!.read())
+        Assert.assertNotNull(ResultCacheHelper(sketch, request).read())
 
         Assert.assertTrue(
-            newResultCacheHelper(sketch, request.newLoadRequest {
+            ResultCacheHelper(sketch, request.newLoadRequest {
                 resultCachePolicy(ENABLED)
-            })!!.write(bitmapDecodeResult1)
+            }).write(bitmapDecodeResult1)
         )
         Assert.assertFalse(
-            newResultCacheHelper(sketch, request.newLoadRequest {
+            ResultCacheHelper(sketch, request.newLoadRequest {
                 resultCachePolicy(READ_ONLY)
-            })!!.write(bitmapDecodeResult1)
+            }).write(bitmapDecodeResult1)
         )
         Assert.assertTrue(
-            newResultCacheHelper(sketch, request.newLoadRequest {
+            ResultCacheHelper(sketch, request.newLoadRequest {
                 resultCachePolicy(WRITE_ONLY)
-            })!!.write(bitmapDecodeResult1)
+            }).write(bitmapDecodeResult1)
         )
 
-        Assert.assertNotNull(newResultCacheHelper(sketch, request)!!.read())
+        Assert.assertNotNull(ResultCacheHelper(sketch, request).read())
     }
 
     @Test

@@ -1,18 +1,13 @@
 package com.github.panpf.sketch.test.fetch.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
 import com.github.panpf.sketch.fetch.internal.isAnimatedHeif
 import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
 import com.github.panpf.sketch.fetch.internal.isGif
 import com.github.panpf.sketch.fetch.internal.isHeif
 import com.github.panpf.sketch.fetch.internal.isWebP
-import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -26,6 +21,9 @@ class HeaderBytesTest {
     @Test
     fun testRangeEquals() {
         HeaderBytes(bytes).apply {
+            assertThrow(IllegalArgumentException::class) {
+                rangeEquals(0, byteArrayOf())
+            }
             Assert.assertTrue(rangeEquals(0, "abc".toByteArray()))
             Assert.assertTrue(rangeEquals(1, "bcd".toByteArray()))
             Assert.assertTrue(rangeEquals(20, "uvw".toByteArray()))
@@ -33,6 +31,7 @@ class HeaderBytesTest {
             Assert.assertFalse(rangeEquals(0, "abd".toByteArray()))
             Assert.assertFalse(rangeEquals(1, "bdc".toByteArray()))
             Assert.assertFalse(rangeEquals(20, "uwf".toByteArray()))
+            Assert.assertFalse(rangeEquals(26, "xyz".toByteArray()))
         }
     }
 
@@ -46,8 +45,13 @@ class HeaderBytesTest {
             Assert.assertEquals(-1, indexOf('a'.code.toByte(), 0, 0))
             Assert.assertEquals(-1, indexOf('a'.code.toByte(), 1, 26))
             Assert.assertEquals(-1, indexOf('m'.code.toByte(), 13, 26))
+            Assert.assertEquals(-1, indexOf('z'.code.toByte(), 23, 23))
+            Assert.assertEquals(-1, indexOf('z'.code.toByte(), 26, 27))
             assertThrow(IllegalArgumentException::class) {
-                indexOf('z'.code.toByte(), 28, 26)
+                indexOf('z'.code.toByte(), -1, 26)
+            }
+            assertThrow(IllegalArgumentException::class) {
+                indexOf('z'.code.toByte(), 27, 26)
             }
 
             Assert.assertEquals(0, indexOf("abc".toByteArray(), 0, 26))
@@ -55,7 +59,18 @@ class HeaderBytesTest {
             Assert.assertEquals(23, indexOf("xyz".toByteArray(), 0, 26))
             Assert.assertEquals(-1, indexOf("abc".toByteArray(), 10, 26))
             Assert.assertEquals(-1, indexOf("mno".toByteArray(), 15, 26))
-            Assert.assertEquals(-1, indexOf("xyz".toByteArray(), 25, 26))
+            Assert.assertEquals(-1, indexOf("mno".toByteArray(), 15, 26))
+            Assert.assertEquals(-1, indexOf("xyz".toByteArray(), 26, 26))
+            Assert.assertEquals(-1, indexOf("acc".toByteArray(), 0, 26))
+            assertThrow(IllegalArgumentException::class) {
+                indexOf("abc".toByteArray(), 27, 26)
+            }
+            assertThrow(IllegalArgumentException::class) {
+                indexOf("abc".toByteArray(), -1, 26)
+            }
+            assertThrow(IllegalArgumentException::class) {
+                indexOf(byteArrayOf(), 0, 26)
+            }
         }
     }
 
@@ -85,6 +100,14 @@ class HeaderBytesTest {
         }).apply {
             Assert.assertTrue(isWebP())
         }
+
+        HeaderBytes(context.assets.open("sample.webp").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(8, 'V'.code.toByte())
+            }
+        }).apply {
+            Assert.assertFalse(isWebP())
+        }
         HeaderBytes(context.assets.open("sample.jpeg").use {
             ByteArray(1024).apply { it.read(this) }
         }).apply {
@@ -100,6 +123,21 @@ class HeaderBytesTest {
             ByteArray(1024).apply { it.read(this) }
         }).apply {
             Assert.assertTrue(isAnimatedWebP())
+        }
+
+        HeaderBytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(12, 'X'.code.toByte())
+            }
+        }).apply {
+            Assert.assertFalse(isAnimatedWebP())
+        }
+        HeaderBytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(16, 0)
+            }
+        }).apply {
+            Assert.assertFalse(isAnimatedWebP())
         }
         HeaderBytes(context.assets.open("sample.webp").use {
             ByteArray(1024).apply { it.read(this) }
@@ -122,6 +160,7 @@ class HeaderBytesTest {
         }).apply {
             Assert.assertTrue(isHeif())
         }
+
         HeaderBytes(context.assets.open("sample_anim.webp").use {
             ByteArray(1024).apply { it.read(this) }
         }).apply {
@@ -137,6 +176,32 @@ class HeaderBytesTest {
     @Test
     fun testIsAnimatedHeif() {
         val context = getTestContext()
+
+        HeaderBytes(context.assets.open("sample_anim.heif").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertTrue(isAnimatedHeif())
+        }
+        HeaderBytes(context.assets.open("sample_anim.heif").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(8, 'h'.code.toByte())
+                set(9, 'e'.code.toByte())
+                set(10, 'v'.code.toByte())
+                set(11, 'c'.code.toByte())
+            }
+        }).apply {
+            Assert.assertTrue(isAnimatedHeif())
+        }
+        HeaderBytes(context.assets.open("sample_anim.heif").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(8, 'h'.code.toByte())
+                set(9, 'e'.code.toByte())
+                set(10, 'v'.code.toByte())
+                set(11, 'x'.code.toByte())
+            }
+        }).apply {
+            Assert.assertTrue(isAnimatedHeif())
+        }
 
         HeaderBytes(context.assets.open("sample.heic").use {
             ByteArray(1024).apply { it.read(this) }
@@ -157,16 +222,25 @@ class HeaderBytesTest {
 
     @Test
     fun testIsGif() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val context = getTestContext()
 
-        // normal
-        val request = LoadRequest(context, newAssetUri("sample_anim.gif"))
-        val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample_anim.gif"), null)
-        Assert.assertTrue(fetchResult.headerBytes.isGif())
+        HeaderBytes(context.assets.open("sample_anim.gif").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertTrue(isGif())
+        }
+        HeaderBytes(context.assets.open("sample_anim.gif").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(4, '7'.code.toByte())
+            }
+        }).apply {
+            Assert.assertTrue(isGif())
+        }
 
-        // error
-        val request1 = LoadRequest(context, newAssetUri("sample.png"))
-        val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
-        Assert.assertFalse(fetchResult1.headerBytes.isGif())
+        HeaderBytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isGif())
+        }
     }
 }

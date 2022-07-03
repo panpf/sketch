@@ -445,7 +445,7 @@ class DecodeUtilsTest {
             val newResult = applyExifOrientation(ignoreExifOrientation = true)
             Assert.assertSame(this, newResult)
 
-            val newResult2 = applyExifOrientation(ignoreExifOrientation = false)
+            val newResult2 = applyExifOrientation()
             Assert.assertSame(this, newResult2)
         }
 
@@ -465,7 +465,7 @@ class DecodeUtilsTest {
             val newResult = applyExifOrientation(ignoreExifOrientation = true)
             Assert.assertSame(this, newResult)
 
-            val newResult2 = applyExifOrientation(ignoreExifOrientation = false)
+            val newResult2 = applyExifOrientation()
             Assert.assertNotSame(this, newResult2)
             Assert.assertNotSame(this.bitmap, newResult2.bitmap)
             Assert.assertEquals(Size(this.bitmap.height, this.bitmap.width), newResult2.bitmap.size)
@@ -599,12 +599,11 @@ class DecodeUtilsTest {
             LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
             context.resources,
             R.xml.network_security_config
-        )
-            .readImageInfoWithBitmapFactory().apply {
-                Assert.assertEquals(-1, width)
-                Assert.assertEquals(-1, height)
-                Assert.assertEquals("", mimeType)
-            }
+        ).readImageInfoWithBitmapFactory().apply {
+            Assert.assertEquals(-1, width)
+            Assert.assertEquals(-1, height)
+            Assert.assertEquals("", mimeType)
+        }
     }
 
     @Test

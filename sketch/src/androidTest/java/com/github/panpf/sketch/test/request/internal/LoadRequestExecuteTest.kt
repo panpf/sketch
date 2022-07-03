@@ -26,9 +26,9 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.decode.internal.MemoryCacheKeys
+import com.github.panpf.sketch.decode.internal.ResultCacheKeys
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.decode.internal.newMemoryCacheKey
-import com.github.panpf.sketch.decode.internal.newResultCacheDataKey
 import com.github.panpf.sketch.decode.internal.samplingByTarget
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
@@ -1028,7 +1028,7 @@ class LoadRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             resize(500, 500)
         }
-        val resultCacheDataKey = request.newResultCacheDataKey()
+        val resultCacheDataKey = ResultCacheKeys(request).bitmapDataDiskCacheKey
 
         /* ENABLED */
         diskCache.clear()
@@ -1136,7 +1136,7 @@ class LoadRequestExecuteTest {
             resultCachePolicy(DISABLED)
             resize(500, 500)
         }
-        val memoryCacheKey = request.newMemoryCacheKey()
+        val memoryCacheKey = MemoryCacheKeys(request).cacheKey
 
         /* ENABLED */
         memoryCache.clear()
