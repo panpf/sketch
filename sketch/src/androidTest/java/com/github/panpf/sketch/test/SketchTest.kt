@@ -5,16 +5,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -124,17 +123,49 @@ class SketchTest {
             }
 
             build().apply {
-                Assert.assertEquals(LruDiskCache(context1), diskCache)
+                Assert.assertEquals(
+                    LruDiskCache.ForDownloadBuilder(context1).build(),
+                    downloadDiskCache
+                )
             }
-            diskCache(LruDiskCache(context1, maxSize = DiskCache.DEFAULT_MAX_SIZE / 2))
+            downloadDiskCache(
+                LruDiskCache.ForDownloadBuilder(context1).maxSize(maxSize = 250 * 1024 * 1024)
+                    .build()
+            )
             build().apply {
                 Assert.assertEquals(
-                    LruDiskCache(
-                        context1,
-                        maxSize = DiskCache.DEFAULT_MAX_SIZE / 2
-                    ), diskCache
+                    LruDiskCache.ForDownloadBuilder(context1)
+                        .maxSize(maxSize = 250 * 1024 * 1024)
+                        .build(),
+                    downloadDiskCache
                 )
-                Assert.assertNotEquals(LruDiskCache(context1), diskCache)
+                Assert.assertNotEquals(
+                    LruDiskCache.ForDownloadBuilder(context1).build(),
+                    downloadDiskCache
+                )
+            }
+
+            build().apply {
+                Assert.assertEquals(
+                    LruDiskCache.ForResultBuilder(context1).build(),
+                    resultDiskCache
+                )
+            }
+            resultDiskCache(
+                LruDiskCache.ForResultBuilder(context1).maxSize(maxSize = 250 * 1024 * 1024)
+                    .build()
+            )
+            build().apply {
+                Assert.assertEquals(
+                    LruDiskCache.ForResultBuilder(context1)
+                        .maxSize(maxSize = 250 * 1024 * 1024)
+                        .build(),
+                    resultDiskCache
+                )
+                Assert.assertNotEquals(
+                    LruDiskCache.ForResultBuilder(context1).build(),
+                    resultDiskCache
+                )
             }
 
             build().apply {
@@ -217,7 +248,10 @@ class SketchTest {
             }
 
             build().apply {
-                Assert.assertEquals(listOf(EngineRequestInterceptor()), components.requestInterceptorList)
+                Assert.assertEquals(
+                    listOf(EngineRequestInterceptor()),
+                    components.requestInterceptorList
+                )
             }
             components {
                 addRequestInterceptor(TestRequestInterceptor())
@@ -227,7 +261,10 @@ class SketchTest {
                     listOf(TestRequestInterceptor(), EngineRequestInterceptor()),
                     components.requestInterceptorList
                 )
-                Assert.assertNotEquals(listOf(EngineRequestInterceptor()), components.requestInterceptorList)
+                Assert.assertNotEquals(
+                    listOf(EngineRequestInterceptor()),
+                    components.requestInterceptorList
+                )
             }
 
             build().apply {
@@ -336,7 +373,7 @@ class SketchTest {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             // Make the execution slower, cancellation can take effect
-            addTransformations(DelayTransformation{
+            addTransformations(DelayTransformation {
                 disposable3?.job?.cancel()
             })
             listener(listenerSupervisor3)

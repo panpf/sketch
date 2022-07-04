@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.test.cache.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newTestDiskCacheDirectory
@@ -20,91 +21,32 @@ class LruDiskCacheTest {
     fun testMaxSize() {
         val context = getTestContext()
 
-        val defaultCacheDir = context.newTestDiskCacheDirectory()
-        LruDiskCache(context, directory = defaultCacheDir).use {
-            Assert.assertEquals("512MB", it.maxSize.formatFileSize())
+        LruDiskCache.ForDownloadBuilder(context).build().use {
+            Assert.assertEquals("300MB", it.maxSize.formatFileSize())
         }
-
-        LruDiskCache(context, maxSize = 100L * 1024 * 1024, directory = defaultCacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            maxSize(100L * 1024 * 1024)
+        }.build().use {
             Assert.assertEquals("100MB", it.maxSize.formatFileSize())
         }
-    }
-
-    @Test
-    fun testVersion() {
-        val context = getTestContext()
-
         assertThrow(IllegalArgumentException::class) {
-            LruDiskCache(context, appVersion = 0)
+            LruDiskCache.ForDownloadBuilder(context).apply {
+                maxSize(0)
+            }.build()
+        }
+
+        LruDiskCache.ForResultBuilder(context).build().use {
+            Assert.assertEquals("200MB", it.maxSize.formatFileSize())
+        }
+        LruDiskCache.ForResultBuilder(context).apply {
+            maxSize(100L * 1024 * 1024)
+        }.build().use {
+            Assert.assertEquals("100MB", it.maxSize.formatFileSize())
         }
         assertThrow(IllegalArgumentException::class) {
-            LruDiskCache(context, appVersion = Short.MAX_VALUE + 1)
-        }
-        assertThrow(IllegalArgumentException::class) {
-            LruDiskCache(context, internalVersion = 0)
-        }
-        assertThrow(IllegalArgumentException::class) {
-            LruDiskCache(context, internalVersion = Short.MAX_VALUE + 1)
-        }
-
-        val directory = context.newTestDiskCacheDirectory()
-        LruDiskCache(context, directory = directory).use {
-            it.clear()
-            Assert.assertEquals(0L, it.size)
-        }
-
-        LruDiskCache(context, directory = directory).use {
-            Assert.assertEquals(1, it.appVersion)
-            Assert.assertEquals(1, it.internalVersion)
-            Assert.assertNull(it["file1"])
-            Assert.assertNull(it["file2"])
-            it.putFile("file1", 1)
-            it.putFile("file2", 1)
-            Assert.assertNotNull(it["file1"])
-            Assert.assertNotNull(it["file2"])
-        }
-
-        LruDiskCache(context, directory = directory).use {
-            Assert.assertEquals(1, it.appVersion)
-            Assert.assertEquals(1, it.internalVersion)
-            Assert.assertNotNull(it["file1"])
-            Assert.assertNotNull(it["file2"])
-        }
-
-        LruDiskCache(context, appVersion = 2, directory = directory).use {
-            Assert.assertEquals(2, it.appVersion)
-            Assert.assertEquals(1, it.internalVersion)
-            Assert.assertNull(it["file1"])
-            Assert.assertNull(it["file2"])
-        }
-
-        LruDiskCache(context, appVersion = 2, directory = directory).use {
-            Assert.assertEquals(2, it.appVersion)
-            Assert.assertEquals(1, it.internalVersion)
-            Assert.assertNull(it["file1"])
-            Assert.assertNull(it["file2"])
-            it.putFile("file1", 1)
-            it.putFile("file2", 1)
-            Assert.assertNotNull(it["file1"])
-            Assert.assertNotNull(it["file2"])
-        }
-
-        LruDiskCache(context, appVersion = 2, internalVersion = 2, directory = directory).use {
-            Assert.assertEquals(2, it.appVersion)
-            Assert.assertEquals(2, it.internalVersion)
-            Assert.assertNull(it["file1"])
-            Assert.assertNull(it["file2"])
-            it.putFile("file1", 1)
-            it.putFile("file2", 1)
-            Assert.assertNotNull(it["file1"])
-            Assert.assertNotNull(it["file2"])
-        }
-
-        LruDiskCache(context, appVersion = 2, internalVersion = 2, directory = directory).use {
-            Assert.assertEquals(2, it.appVersion)
-            Assert.assertEquals(2, it.internalVersion)
-            Assert.assertNotNull(it["file1"])
-            Assert.assertNotNull(it["file2"])
+            LruDiskCache.ForResultBuilder(context).apply {
+                maxSize(0)
+            }.build()
         }
     }
 
@@ -112,17 +54,124 @@ class LruDiskCacheTest {
     fun testDirectory() {
         val context = getTestContext()
 
-        val defaultCacheDir = context.newTestDiskCacheDirectory()
-        LruDiskCache(context, directory = defaultCacheDir).use {
-            Assert.assertEquals(defaultCacheDir.path, it.directory.path)
+        LruDiskCache.ForDownloadBuilder(context).build().use {
+            Assert.assertEquals(
+                File(
+                    context.externalCacheDir ?: context.cacheDir,
+                    DiskCache.DEFAULT_DIR_NAME + File.separator + "download_cache"
+                ).path,
+                it.directory.path
+            )
         }
 
         val cacheDir = File("/sdcard/testDir")
-        LruDiskCache(context, directory = cacheDir).use {
-            Assert.assertEquals(
-                cacheDir.path,
-                it.directory.path
-            )
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(cacheDir)
+        }.build().use {
+            Assert.assertEquals(cacheDir.path, it.directory.path)
+        }
+    }
+
+    @Test
+    fun testVersion() {
+        val context = getTestContext()
+
+        LruDiskCache.ForDownloadBuilder(context).build().apply {
+            Assert.assertEquals(1, appVersion)
+            Assert.assertEquals(1, internalVersion)
+        }
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            appVersion(2)
+        }.build().apply {
+            Assert.assertEquals(2, appVersion)
+            Assert.assertEquals(1, internalVersion)
+        }
+
+        assertThrow(IllegalArgumentException::class) {
+            LruDiskCache.ForDownloadBuilder(context).apply {
+                appVersion(0)
+            }.build()
+        }
+        assertThrow(IllegalArgumentException::class) {
+            LruDiskCache.ForDownloadBuilder(context).apply {
+                appVersion(Short.MAX_VALUE + 1)
+            }.build()
+        }
+
+        LruDiskCache.ForResultBuilder(context).build().apply {
+            Assert.assertEquals(1, appVersion)
+            Assert.assertEquals(1, internalVersion)
+        }
+        LruDiskCache.ForResultBuilder(context).apply {
+            appVersion(2)
+        }.build().apply {
+            Assert.assertEquals(2, appVersion)
+            Assert.assertEquals(1, internalVersion)
+        }
+
+        assertThrow(IllegalArgumentException::class) {
+            LruDiskCache.ForResultBuilder(context).apply {
+                appVersion(0)
+            }.build()
+        }
+        assertThrow(IllegalArgumentException::class) {
+            LruDiskCache.ForResultBuilder(context).apply {
+                appVersion(Short.MAX_VALUE + 1)
+            }.build()
+        }
+
+        val directory = File(context.newTestDiskCacheDirectory(), "download_cache")
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(directory)
+        }.build().use {
+            it.clear()
+            Assert.assertEquals(0L, it.size)
+        }
+
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(directory)
+        }.build().use {
+            Assert.assertEquals(1, it.appVersion)
+            Assert.assertEquals(1, it.internalVersion)
+            Assert.assertNull(it["file1"])
+            Assert.assertNull(it["file2"])
+            it.putFile("file1", 1)
+            it.putFile("file2", 1)
+            Assert.assertNotNull(it["file1"])
+            Assert.assertNotNull(it["file2"])
+        }
+
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(directory)
+        }.build().use {
+            Assert.assertEquals(1, it.appVersion)
+            Assert.assertEquals(1, it.internalVersion)
+            Assert.assertNotNull(it["file1"])
+            Assert.assertNotNull(it["file2"])
+        }
+
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(directory)
+            appVersion(2)
+        }.build().use {
+            Assert.assertEquals(2, it.appVersion)
+            Assert.assertEquals(1, it.internalVersion)
+            Assert.assertNull(it["file1"])
+            Assert.assertNull(it["file2"])
+        }
+
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(directory)
+            appVersion(2)
+        }.build().use {
+            Assert.assertEquals(2, it.appVersion)
+            Assert.assertEquals(1, it.internalVersion)
+            Assert.assertNull(it["file1"])
+            Assert.assertNull(it["file2"])
+            it.putFile("file1", 1)
+            it.putFile("file2", 1)
+            Assert.assertNotNull(it["file1"])
+            Assert.assertNotNull(it["file2"])
         }
     }
 
@@ -131,12 +180,16 @@ class LruDiskCacheTest {
         val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
-        LruDiskCache(context, directory = defaultCacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(defaultCacheDir)
+        }.build().use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, directory = defaultCacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(defaultCacheDir)
+        }.build().use {
             Assert.assertEquals("0B", it.size.formatFileSize())
 
             it.putFile("file1", 1)
@@ -152,16 +205,16 @@ class LruDiskCacheTest {
         val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
-        LruDiskCache(context, directory = defaultCacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(defaultCacheDir)
+        }.build().use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
-
-        LruDiskCache(
-            context,
-            10L * 1024 * 1024,
-            directory = defaultCacheDir
-        ).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(defaultCacheDir)
+            maxSize(10L * 1024 * 1024)
+        }.build().use {
             Assert.assertNull(it["file1"])
             Assert.assertFalse(it.exist("file1"))
             it.putFile("file1", 1)
@@ -195,12 +248,17 @@ class LruDiskCacheTest {
         val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
-        LruDiskCache(context, directory = defaultCacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(defaultCacheDir)
+        }.build().use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, 10L * 1024 * 1024, directory = defaultCacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(defaultCacheDir)
+            maxSize(10L * 1024 * 1024)
+        }.build().use {
             Assert.assertEquals("0B", it.size.formatFileSize())
 
             it.putFile("file1", 1)
@@ -259,12 +317,16 @@ class LruDiskCacheTest {
         val context = getTestContext()
 
         val directory = context.newTestDiskCacheDirectory()
-        LruDiskCache(context, directory = directory).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(directory)
+        }.build().use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, directory = directory).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(directory)
+        }.build().use {
             Assert.assertEquals("0B", it.size.formatFileSize())
             it.putFile("file1", 1)
             it.putFile("file2", 2)
@@ -288,11 +350,10 @@ class LruDiskCacheTest {
     @Test
     fun testEditLock() {
         val context = getTestContext()
-        LruDiskCache(
-            context,
-            10L * 1024 * 1024,
-            directory = context.newTestDiskCacheDirectory()
-        ).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(context.newTestDiskCacheDirectory())
+            maxSize(10L * 1024 * 1024)
+        }.build().use {
             Assert.assertNotNull(it.editLock("file1"))
             Assert.assertNotNull(it.editLock("file2"))
             Assert.assertNotNull(it.editLock("file3"))
@@ -305,17 +366,23 @@ class LruDiskCacheTest {
         val context = getTestContext()
 
         val defaultCacheDir = context.newTestDiskCacheDirectory()
-        LruDiskCache(context, directory = defaultCacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(defaultCacheDir)
+        }.build().use {
             Assert.assertEquals(
-                "LruDiskCache(maxSize=512MB,version=1,directory='${defaultCacheDir.path}')",
+                "LruDiskCache(maxSize=300MB,appVersion=1,internalVersion=1,directory='${defaultCacheDir.path}')",
                 it.toString()
             )
         }
 
         val cacheDir = File("/sdcard/testDir")
-        LruDiskCache(context, 100L * 1024 * 1024, appVersion = 2, directory = cacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(cacheDir)
+            maxSize(100L * 1024 * 1024)
+            appVersion(2)
+        }.build().use {
             Assert.assertEquals(
-                "LruDiskCache(maxSize=100MB,version=2,directory='${cacheDir.path}')",
+                "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=1,directory='${cacheDir.path}')",
                 it.toString()
             )
         }
@@ -326,12 +393,16 @@ class LruDiskCacheTest {
         val context = getTestContext()
         val defaultCacheDir = context.newTestDiskCacheDirectory()
 
-        LruDiskCache(context, directory = defaultCacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(defaultCacheDir)
+        }.build().use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, directory = defaultCacheDir).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(defaultCacheDir)
+        }.build().use {
             it.putFile("file1", 1)
             val file1Snapshot = it["file1"]!!
 
@@ -361,12 +432,16 @@ class LruDiskCacheTest {
         val context = getTestContext()
 
         val directory = context.newTestDiskCacheDirectory()
-        LruDiskCache(context, directory = directory).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(directory)
+        }.build().use {
             it.clear()
             Assert.assertEquals(0L, it.size)
         }
 
-        LruDiskCache(context, directory = directory).use {
+        LruDiskCache.ForDownloadBuilder(context).apply {
+            directory(directory)
+        }.build().use {
             val file1Editor = it.edit("file1")!!
             file1Editor.newOutputStream().use { outputStream ->
                 outputStream.write(1)
@@ -381,6 +456,34 @@ class LruDiskCacheTest {
             file2Editor.abort()
             Assert.assertFalse(it.exist("file2"))
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val context = getTestContext()
+        val element1 = LruDiskCache.ForDownloadBuilder(context).build()
+        val element11 = LruDiskCache.ForDownloadBuilder(context).build()
+        val element2 = LruDiskCache.ForDownloadBuilder(context).maxSize(100).build()
+        val element3 = LruDiskCache.ForDownloadBuilder(context).directory(File("/sdcard/test")).build()
+        val element4 = LruDiskCache.ForDownloadBuilder(context).appVersion(3).build()
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element1, element4)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 
     private fun LruDiskCache.putFile(fileName: String, sizeMB: Int) {

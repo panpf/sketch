@@ -29,7 +29,7 @@ suspend fun <R> safeAccessResultCache(
 ): R =
     if (request.resultCachePolicy.isReadOrWrite) {
         val helper = ResultCacheHelper(sketch, request)
-        val lock: Mutex = sketch.diskCache.editLock(helper.keys.lockKey)
+        val lock: Mutex = sketch.resultDiskCache.editLock(helper.keys.lockKey)
         lock.lock()
         try {
             block(helper)
@@ -59,7 +59,7 @@ class ResultCacheHelper(sketch: Sketch, val request: ImageRequest) {
         const val MODULE = "BitmapResultDiskCacheHelper"
     }
 
-    private val diskCache: DiskCache = sketch.diskCache
+    private val diskCache: DiskCache = sketch.resultDiskCache
     val keys = ResultCacheKeys(request)
 
     @WorkerThread

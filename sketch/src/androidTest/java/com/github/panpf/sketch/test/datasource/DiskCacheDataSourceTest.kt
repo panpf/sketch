@@ -26,7 +26,7 @@ class DiskCacheDataSourceTest {
                 assetFileName = "sample.jpeg"
             ).file()
         }
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.resultDiskCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
             sketch = sketch,
@@ -52,7 +52,7 @@ class DiskCacheDataSourceTest {
                 assetFileName = "sample.jpeg"
             ).file()
         }
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.resultDiskCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
             sketch = sketch,
@@ -75,7 +75,7 @@ class DiskCacheDataSourceTest {
                 assetFileName = "sample.jpeg"
             ).file()
         }
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.resultDiskCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
             sketch = sketch,
@@ -104,7 +104,7 @@ class DiskCacheDataSourceTest {
                 assetFileName = "sample.jpeg"
             ).file()
         }
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.resultDiskCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
             sketch = sketch,

@@ -28,7 +28,17 @@ fun newSketch(block: Sketch.Builder.(context: Context) -> Unit): Sketch {
     val context = InstrumentationRegistry.getInstrumentation().context
     return Sketch.Builder(context).apply {
         logger(Logger(DEBUG))
-        diskCache(LruDiskCache(context, directory = context.newTestDiskCacheDirectory()))
+        val directory = context.newTestDiskCacheDirectory()
+        downloadDiskCache(
+            LruDiskCache.ForDownloadBuilder(context)
+                .directory(File(directory, "download_cache"))
+                .build()
+        )
+        resultDiskCache(
+            LruDiskCache.ForResultBuilder(context)
+                .directory(File(directory, "result_cache"))
+                .build()
+        )
         block.invoke(this, context)
     }.build()
 }

@@ -40,7 +40,7 @@ interface DataSource {
 
     @Throws(IOException::class)
     suspend fun file(): File = withContext(Dispatchers.IO) {
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.resultDiskCache
         val diskCacheKey = request.uriString + "_data_source"
         diskCache.editLock(diskCacheKey).withLock {
             val snapshot = diskCache[diskCacheKey]

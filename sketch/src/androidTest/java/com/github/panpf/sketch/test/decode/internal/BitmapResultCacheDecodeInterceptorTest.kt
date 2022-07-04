@@ -31,7 +31,7 @@ class BitmapResultCacheDecodeInterceptorTest {
         val chain =
             BitmapDecodeInterceptorChain(sketch, loadRequest, requestContext, null, interceptors, 0)
 
-        sketch.diskCache.clear()
+        sketch.resultDiskCache.clear()
 
         val result = runBlocking {
             chain.proceed()

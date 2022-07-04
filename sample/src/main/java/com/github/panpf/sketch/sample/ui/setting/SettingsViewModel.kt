@@ -253,14 +253,27 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         ))
 
         add(InfoMenu(
-            "Disk Cache Statistics",
+            "Download Disk Cache Statistics",
             "Click clear",
             info = "%s/%s".format(
-                sketch.diskCache.size.formatFileSize(0, false, true),
-                sketch.diskCache.maxSize.formatFileSize(0, false, true)
+                sketch.downloadDiskCache.size.formatFileSize(0, false, true),
+                sketch.downloadDiskCache.maxSize.formatFileSize(0, false, true)
             ),
             onClick = {
-                sketch.diskCache.clear()
+                sketch.downloadDiskCache.clear()
+                updateList()
+            }
+        ))
+
+        add(InfoMenu(
+            "Result Disk Cache Statistics",
+            "Click clear",
+            info = "%s/%s".format(
+                sketch.resultDiskCache.size.formatFileSize(0, false, true),
+                sketch.resultDiskCache.maxSize.formatFileSize(0, false, true)
+            ),
+            onClick = {
+                sketch.resultDiskCache.clear()
                 updateList()
             }
         ))

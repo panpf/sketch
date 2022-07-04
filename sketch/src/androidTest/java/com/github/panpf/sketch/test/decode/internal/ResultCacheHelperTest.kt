@@ -45,7 +45,7 @@ class ResultCacheHelperTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
-        sketch.diskCache.clear()
+        sketch.resultDiskCache.clear()
 
         // Is there really no
         val helper = ResultCacheHelper(sketch, request)
@@ -85,7 +85,7 @@ class ResultCacheHelperTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
 
-        sketch.diskCache.clear()
+        sketch.resultDiskCache.clear()
 
         Assert.assertNull(ResultCacheHelper(sketch, request).read())
 

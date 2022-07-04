@@ -101,7 +101,7 @@ class DisplayRequestExecuteTest {
         val imageUri = TestHttpStack.testImages.first().uriString
 
         // default
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -112,7 +112,7 @@ class DisplayRequestExecuteTest {
         }
 
         // NETWORK
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -124,7 +124,7 @@ class DisplayRequestExecuteTest {
         }
 
         // LOCAL
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         runBlocking {
             sketch.execute(DisplayRequest(context, imageUri) {
@@ -132,7 +132,7 @@ class DisplayRequestExecuteTest {
             })
         }
         sketch.memoryCache.clear()
-        Assert.assertTrue(sketch.diskCache.exist(imageUri))
+        Assert.assertTrue(sketch.downloadDiskCache.exist(imageUri))
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(LOCAL)
@@ -142,7 +142,7 @@ class DisplayRequestExecuteTest {
             Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
         }
 
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -186,7 +186,7 @@ class DisplayRequestExecuteTest {
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.downloadDiskCache
         val imageUri = TestHttpStack.testImages.first().uriString
 
         /* ENABLED */
@@ -1077,7 +1077,7 @@ class DisplayRequestExecuteTest {
     fun testResultCachePolicy() {
         val context = getTestContext()
         val sketch = newSketch()
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.resultDiskCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = DisplayRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)

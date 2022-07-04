@@ -160,7 +160,7 @@ class ContentDataSourceTest {
             contentUri = contentUri,
         ).apply {
             Assert.assertEquals(
-                "ContentDataSource(contentUri='file://${sketch.diskCache.directory.path}/01d95711e2e30d06b88b93f82e3e1bde.0')",
+                "ContentDataSource(contentUri='$contentUri')",
                 toString()
             )
         }

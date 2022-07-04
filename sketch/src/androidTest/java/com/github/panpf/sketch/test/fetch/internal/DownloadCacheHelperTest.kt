@@ -43,7 +43,7 @@ class DownloadCacheHelperTest {
             downloadCachePolicy(DISABLED)
         })
 
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         Assert.assertNull(helper.read())
 
         runBlocking {
@@ -71,13 +71,13 @@ class DownloadCacheHelperTest {
 
         Assert.assertNull(disabledHelper.read())
 
-        sketch.diskCache.remove(DownloadCacheKeys(helper.request).contentTypeDiskCacheKey)
+        sketch.downloadDiskCache.remove(DownloadCacheKeys(helper.request).contentTypeDiskCacheKey)
         helper.read().apply {
             Assert.assertNotNull(this)
             Assert.assertNotNull(this?.mimeType)
         }
 
-        sketch.diskCache.edit(DownloadCacheKeys(helper.request).contentTypeDiskCacheKey)!!.apply {
+        sketch.downloadDiskCache.edit(DownloadCacheKeys(helper.request).contentTypeDiskCacheKey)!!.apply {
             newOutputStream().bufferedWriter().use {
                 it.write("  ")
             }

@@ -10,7 +10,17 @@ import java.io.File
 fun getTestContextAndNewSketch(): Pair<Context, Sketch> {
     val context = InstrumentationRegistry.getInstrumentation().context
     return context to Sketch.Builder(context).apply {
-        diskCache(LruDiskCache(context, directory = context.newTestDiskCacheDirectory()))
+        val directory = context.newTestDiskCacheDirectory()
+        downloadDiskCache(
+            LruDiskCache.ForDownloadBuilder(context)
+                .directory(File(directory, "download_cache"))
+                .build()
+        )
+        resultDiskCache(
+            LruDiskCache.ForResultBuilder(context)
+                .directory(File(directory, "result_cache"))
+                .build()
+        )
     }.build()
 }
 

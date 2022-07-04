@@ -50,7 +50,7 @@ class DownloadRequestExecuteTest {
         val imageUri = testImage.uriString
 
         // default
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         DownloadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -61,7 +61,7 @@ class DownloadRequestExecuteTest {
         }
 
         // NETWORK
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         DownloadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -73,7 +73,7 @@ class DownloadRequestExecuteTest {
         }
 
         // LOCAL
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         runBlocking {
             sketch.execute(DownloadRequest(context, imageUri) {
@@ -81,7 +81,7 @@ class DownloadRequestExecuteTest {
             })
         }
         sketch.memoryCache.clear()
-        Assert.assertTrue(sketch.diskCache.exist(imageUri))
+        Assert.assertTrue(sketch.downloadDiskCache.exist(imageUri))
         DownloadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(LOCAL)
@@ -91,7 +91,7 @@ class DownloadRequestExecuteTest {
             Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
         }
 
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         DownloadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -137,7 +137,7 @@ class DownloadRequestExecuteTest {
         }
         val testImage = TestHttpStack.testImages.first()
         val imageUri = testImage.uriString
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.downloadDiskCache
 
         /* ENABLED */
         diskCache.clear()

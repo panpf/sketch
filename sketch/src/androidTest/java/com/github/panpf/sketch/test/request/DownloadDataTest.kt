@@ -18,13 +18,13 @@ class DownloadDataTest {
     fun test() {
         val (_, sketch) = getTestContextAndNewSketch()
         val diskCacheKey = "testDiskCacheKey"
-        sketch.diskCache.edit(diskCacheKey)!!.apply {
+        sketch.downloadDiskCache.edit(diskCacheKey)!!.apply {
             newOutputStream().use {
                 it.write(diskCacheKey.toByteArray())
             }
             commit()
         }
-        val snapshot = sketch.diskCache[diskCacheKey]!!
+        val snapshot = sketch.downloadDiskCache[diskCacheKey]!!
 
         val bytes = snapshot.newInputStream().use { it.readBytes() }
         DownloadData.Bytes(bytes, MEMORY).apply {

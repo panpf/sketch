@@ -93,7 +93,8 @@ class Sketch private constructor(
     _context: Context,
     _logger: Logger?,
     _memoryCache: MemoryCache?,
-    _diskCache: DiskCache?,
+    _downloadDiskCache: DiskCache?,
+    _resultDiskCache: DiskCache?,
     _bitmapPool: BitmapPool?,
     _componentRegistry: ComponentRegistry?,
     _httpStack: HttpStack?,
@@ -108,55 +109,38 @@ class Sketch private constructor(
     private val requestExecutor = RequestExecutor()
     private val isShutdown = AtomicBoolean(false)
 
-    /**
-     * Application Context
-     */
+    /** Application Context */
     val context: Context = _context.applicationContext
 
-    /**
-     * Output log
-     */
+    /** Output log */
     val logger: Logger = _logger ?: Logger()
 
-    /**
-     * Memory cache of previously loaded images
-     */
+    /** Memory cache of previously loaded images */
     val memoryCache: MemoryCache
 
-    /**
-     * Reuse Bitmap
-     */
+    /** Reuse Bitmap */
     val bitmapPool: BitmapPool
 
-    /**
-     * Disk caching of http downloads and transformed images
-     */
-    val diskCache: DiskCache = _diskCache ?: LruDiskCache(context)
+    /** Disk caching of http downloads images */
+    val downloadDiskCache: DiskCache = _downloadDiskCache ?: LruDiskCache.ForDownloadBuilder(context).build()
 
-    /**
-     * Execute HTTP request
-     */
+    /** Disk caching of transformed images */
+    val resultDiskCache: DiskCache = _resultDiskCache ?: LruDiskCache.ForResultBuilder(context).build()
+
+    /** Execute HTTP request */
     val httpStack: HttpStack = _httpStack ?: HurlStack.Builder().build()
 
-    /**
-     * Fill unset [ImageRequest] value
-     */
+    /** Fill unset [ImageRequest] value */
     val globalImageOptions: ImageOptions? = _globalImageOptions
 
-    /**
-     * Determine whether it is a long image given the image size and target size
-     */
+    /** Determine whether it is a long image given the image size and target size */
     val longImageDecider: LongImageDecider = _longImageDecider ?: DefaultLongImageDecider()
 
-    /**
-     * Register components that are required to perform [ImageRequest] and can be extended,
-     * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [BitmapDecodeInterceptor], [DrawableDecodeInterceptor]
-     */
+    /** Register components that are required to perform [ImageRequest] and can be extended,
+     * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [BitmapDecodeInterceptor], [DrawableDecodeInterceptor] */
     val components: Components
 
-    /**
-     * Proxies [ComponentCallbacks2] and [NetworkCallback]. Clear memory cache when system memory is low, and monitor network connection status
-     */
+    /** Proxies [ComponentCallbacks2] and [NetworkCallback]. Clear memory cache when system memory is low, and monitor network connection status */
     val systemCallbacks = SystemCallbacks(context, WeakReference(this))
 
     /* Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
@@ -173,7 +157,8 @@ class Sketch private constructor(
             ?: LruBitmapPool((defaultMemoryCacheBytes * 0.33f).roundToLong())
         memoryCache.logger = logger
         bitmapPool.logger = logger
-        diskCache.logger = logger
+        downloadDiskCache.logger = logger
+        resultDiskCache.logger = logger
 
         val componentRegistry =
             (_componentRegistry?.newBuilder() ?: ComponentRegistry.Builder()).apply {
@@ -214,7 +199,8 @@ class Sketch private constructor(
                 append("\n").append("httpStack: $httpStack")
                 append("\n").append("memoryCache: $memoryCache")
                 append("\n").append("bitmapPool: $bitmapPool")
-                append("\n").append("diskCache: $diskCache")
+                append("\n").append("downloadDiskCache: $downloadDiskCache")
+                append("\n").append("resultDiskCache: $resultDiskCache")
                 append("\n").append("fetchers: $fetchers")
                 append("\n").append("bitmapDecoders: $bitmapDecoders")
                 append("\n").append("drawableDecoders: $drawableDecoders")
@@ -345,7 +331,8 @@ class Sketch private constructor(
         scope.cancel()
         systemCallbacks.shutdown()
         memoryCache.clear()
-        diskCache.close()
+        downloadDiskCache.close()
+        resultDiskCache.close()
         bitmapPool.clear()
     }
 
@@ -354,7 +341,8 @@ class Sketch private constructor(
         private val appContext: Context = context.applicationContext
         private var logger: Logger? = null
         private var memoryCache: MemoryCache? = null
-        private var diskCache: DiskCache? = null
+        private var downloadDiskCache: DiskCache? = null
+        private var resultDiskCache: DiskCache? = null
         private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
@@ -376,10 +364,17 @@ class Sketch private constructor(
         }
 
         /**
-         * Set the [DiskCache]
+         * Set the [DiskCache] for download cache
          */
-        fun diskCache(diskCache: DiskCache?): Builder = apply {
-            this.diskCache = diskCache
+        fun downloadDiskCache(diskCache: DiskCache?): Builder = apply {
+            this.downloadDiskCache = diskCache
+        }
+
+        /**
+         * Set the [DiskCache] for result cache
+         */
+        fun resultDiskCache(diskCache: DiskCache?): Builder = apply {
+            this.resultDiskCache = diskCache
         }
 
         /**
@@ -427,7 +422,8 @@ class Sketch private constructor(
             _context = appContext,
             _logger = logger,
             _memoryCache = memoryCache,
-            _diskCache = diskCache,
+            _downloadDiskCache = downloadDiskCache,
+            _resultDiskCache = resultDiskCache,
             _bitmapPool = bitmapPool,
             _componentRegistry = componentRegistry,
             _httpStack = httpStack,

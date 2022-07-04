@@ -22,7 +22,7 @@ suspend fun <R> safeAccessDownloadCache(
 ): R =
     if (request.downloadCachePolicy.isReadOrWrite) {
         val helper = DownloadCacheHelper(sketch, request)
-        val lock: Mutex = sketch.diskCache.editLock(helper.keys.lockKey)
+        val lock: Mutex = sketch.downloadDiskCache.editLock(helper.keys.lockKey)
         lock.lock()
         try {
             block(helper)
@@ -43,7 +43,7 @@ class DownloadCacheKeys constructor(request: ImageRequest) {
 
 class DownloadCacheHelper(val sketch: Sketch, val request: ImageRequest) {
 
-    private val diskCache = sketch.diskCache
+    private val diskCache = sketch.downloadDiskCache
     val keys = DownloadCacheKeys(request)
 
     @WorkerThread

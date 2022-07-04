@@ -87,7 +87,7 @@ class LoadRequestExecuteTest {
         val imageUri = TestHttpStack.testImages.first().uriString
 
         // default
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         LoadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -98,7 +98,7 @@ class LoadRequestExecuteTest {
         }
 
         // NETWORK
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         LoadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -110,7 +110,7 @@ class LoadRequestExecuteTest {
         }
 
         // LOCAL
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         runBlocking {
             sketch.execute(LoadRequest(context, imageUri) {
@@ -118,7 +118,7 @@ class LoadRequestExecuteTest {
             })
         }
         sketch.memoryCache.clear()
-        Assert.assertTrue(sketch.diskCache.exist(imageUri))
+        Assert.assertTrue(sketch.downloadDiskCache.exist(imageUri))
         LoadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(LOCAL)
@@ -128,7 +128,7 @@ class LoadRequestExecuteTest {
             Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
         }
 
-        sketch.diskCache.clear()
+        sketch.downloadDiskCache.clear()
         sketch.memoryCache.clear()
         LoadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -172,7 +172,7 @@ class LoadRequestExecuteTest {
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.downloadDiskCache
         val imageUri = TestHttpStack.testImages.first().uriString
 
         /* ENABLED */
@@ -1022,7 +1022,7 @@ class LoadRequestExecuteTest {
     fun testResultCachePolicy() {
         val context = getTestContext()
         val sketch = newSketch()
-        val diskCache = sketch.diskCache
+        val diskCache = sketch.resultDiskCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = LoadRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
