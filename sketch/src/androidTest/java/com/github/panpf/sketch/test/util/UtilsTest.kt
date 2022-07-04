@@ -17,6 +17,8 @@ import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.getTrimLevelName
+import com.github.panpf.sketch.util.intMerged
+import com.github.panpf.sketch.util.intSplit
 import com.github.panpf.sketch.util.isMainThread
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.requiredWorkThread
@@ -160,5 +162,30 @@ class UtilsTest {
         Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.CENTER }.fitScale)
         Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.CENTER_INSIDE }.fitScale)
         Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.MATRIX }.fitScale)
+    }
+
+    @Test
+    fun testIntMergedAndIntSplit() {
+        intSplit(intMerged(39, 25)).apply {
+            Assert.assertEquals(39, first)
+            Assert.assertEquals(25, second)
+        }
+        intSplit(intMerged(7, 43)).apply {
+            Assert.assertEquals(7, first)
+            Assert.assertEquals(43, second)
+        }
+
+        assertThrow(IllegalArgumentException::class) {
+            intMerged(-1, 25)
+        }
+        assertThrow(IllegalArgumentException::class) {
+            intMerged(Short.MAX_VALUE + 1, 25)
+        }
+        assertThrow(IllegalArgumentException::class) {
+            intMerged(25, -1)
+        }
+        assertThrow(IllegalArgumentException::class) {
+            intMerged(25, Short.MAX_VALUE + 1)
+        }
     }
 }

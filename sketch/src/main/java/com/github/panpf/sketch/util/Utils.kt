@@ -238,3 +238,19 @@ internal val ImageView.fitScale: Boolean
         ScaleType.FIT_START, ScaleType.FIT_CENTER, ScaleType.FIT_END, ScaleType.CENTER_INSIDE -> true
         else -> false
     }
+
+internal fun intMerged(highInt: Int, lowInt: Int): Int {
+    require(highInt in 0.rangeTo(Short.MAX_VALUE)) {
+        "The value range for 'highInt' is 0 to ${Short.MAX_VALUE}"
+    }
+    require(lowInt in 0.rangeTo(Short.MAX_VALUE)) {
+        "The value range for 'lowInt' is 0 to ${Short.MAX_VALUE}"
+    }
+    val high2 = highInt shl 16
+    val low2 = (lowInt shl 16) shr 16
+    return high2 or low2
+}
+
+internal fun intSplit(value: Int): Pair<Int, Int> {
+    return (value shr 16) to ((value shl 16) shr 16)
+}

@@ -6,6 +6,7 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newTestDiskCacheDirectory
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.md5
+import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,6 +34,19 @@ class LruDiskCacheTest {
     fun testVersion() {
         val context = getTestContext()
 
+        assertThrow(IllegalArgumentException::class) {
+            LruDiskCache(context, appVersion = 0)
+        }
+        assertThrow(IllegalArgumentException::class) {
+            LruDiskCache(context, appVersion = Short.MAX_VALUE + 1)
+        }
+        assertThrow(IllegalArgumentException::class) {
+            LruDiskCache(context, internalVersion = 0)
+        }
+        assertThrow(IllegalArgumentException::class) {
+            LruDiskCache(context, internalVersion = Short.MAX_VALUE + 1)
+        }
+
         val directory = context.newTestDiskCacheDirectory()
         LruDiskCache(context, directory = directory).use {
             it.clear()
@@ -40,7 +54,8 @@ class LruDiskCacheTest {
         }
 
         LruDiskCache(context, directory = directory).use {
-            Assert.assertEquals(1, it.version)
+            Assert.assertEquals(1, it.appVersion)
+            Assert.assertEquals(1, it.internalVersion)
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
             it.putFile("file1", 1)
@@ -50,15 +65,46 @@ class LruDiskCacheTest {
         }
 
         LruDiskCache(context, directory = directory).use {
-            Assert.assertEquals(1, it.version)
+            Assert.assertEquals(1, it.appVersion)
+            Assert.assertEquals(1, it.internalVersion)
             Assert.assertNotNull(it["file1"])
             Assert.assertNotNull(it["file2"])
         }
 
-        LruDiskCache(context, version = 2, directory = directory).use {
-            Assert.assertEquals(2, it.version)
+        LruDiskCache(context, appVersion = 2, directory = directory).use {
+            Assert.assertEquals(2, it.appVersion)
+            Assert.assertEquals(1, it.internalVersion)
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
+        }
+
+        LruDiskCache(context, appVersion = 2, directory = directory).use {
+            Assert.assertEquals(2, it.appVersion)
+            Assert.assertEquals(1, it.internalVersion)
+            Assert.assertNull(it["file1"])
+            Assert.assertNull(it["file2"])
+            it.putFile("file1", 1)
+            it.putFile("file2", 1)
+            Assert.assertNotNull(it["file1"])
+            Assert.assertNotNull(it["file2"])
+        }
+
+        LruDiskCache(context, appVersion = 2, internalVersion = 2, directory = directory).use {
+            Assert.assertEquals(2, it.appVersion)
+            Assert.assertEquals(2, it.internalVersion)
+            Assert.assertNull(it["file1"])
+            Assert.assertNull(it["file2"])
+            it.putFile("file1", 1)
+            it.putFile("file2", 1)
+            Assert.assertNotNull(it["file1"])
+            Assert.assertNotNull(it["file2"])
+        }
+
+        LruDiskCache(context, appVersion = 2, internalVersion = 2, directory = directory).use {
+            Assert.assertEquals(2, it.appVersion)
+            Assert.assertEquals(2, it.internalVersion)
+            Assert.assertNotNull(it["file1"])
+            Assert.assertNotNull(it["file2"])
         }
     }
 
@@ -267,7 +313,7 @@ class LruDiskCacheTest {
         }
 
         val cacheDir = File("/sdcard/testDir")
-        LruDiskCache(context, 100L * 1024 * 1024, version = 2, directory = cacheDir).use {
+        LruDiskCache(context, 100L * 1024 * 1024, appVersion = 2, directory = cacheDir).use {
             Assert.assertEquals(
                 "LruDiskCache(maxSize=100MB,version=2,directory='${cacheDir.path}')",
                 it.toString()
