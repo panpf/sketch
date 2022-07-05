@@ -3,7 +3,7 @@
 使用 [DownloadRequest] 可以将图片下载到磁盘，如下：
 
 ```kotlin
-val request = DownloadRequest(context, "https://www.sample.com/image.jpg") {
+DownloadRequest(context, "https://www.sample.com/image.jpg") {
     listener(
         onSuccess = { request: DownloadRequest, result: DownloadResult.Success ->
             val input = result.data.newInputStream()
@@ -13,17 +13,14 @@ val request = DownloadRequest(context, "https://www.sample.com/image.jpg") {
             // ...
         }
     )
-}
-sketch.enqueue(request)
+}.enqueue()
 ```
 
 当你需要同步获取下载结果时你可以使用 execute 方法，如下：
 
 ```kotlin
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DownloadResult = withContext(Dispatchers.IO) {
-        sketch.execute(DownloadRequest(context, "https://www.sample.com/image.jpg"))
-    }
+    val result: DownloadResult = DownloadRequest(context, "https://www.sample.com/image.jpg").execute()
     if (result is DownloadResult.Success) {
         val input = result.data.newInputStream()
         // ...

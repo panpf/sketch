@@ -2,7 +2,7 @@
 
 ## 支持的 URI
 
-|Scheme|Describe|Creator|
+|协议|描述|创建函数|
 |:---|:---|:---|
 |http://, https:// |File in network|_|
 |/, file:// |File in SDCard|newFileUri()|
@@ -18,7 +18,7 @@
 
 ## 支持的图片类型
 
-|Type|API Limit|Additional Module|
+|类型|API 限制|依赖模块|
 |:---|:---|:---|
 |jpeg|None|_|
 |png|None|_|
@@ -63,8 +63,8 @@ class MyApplication : Application(), SketchFactory {
 
 [ImageRequest] 分为以下三种：
 
-* [DisplayRequest]：请求结果是 Drawable，用于显示图片到 ImageView 或 Compose Painter 上
-* [LoadRequest]：请求结果是 Bitmap，用于需要 Bitmap 的场景，例如 Notification、桌面壁纸
+* [DisplayRequest]：请求结果是 Drawable，用于显示图片到 ImageView、RemoteViews 或 Compose Painter 上
+* [LoadRequest]：请求结果是 Bitmap，用于需要 Bitmap 的场景
 * [DownloadRequest]：请求结果是 [DiskCache].Snapshot 或 Byte[]，用于提前下载图片或保存图片到相册
 
 ### 创建请求
@@ -104,7 +104,7 @@ val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
 
 ### 执行请求
 
-[ImageRequest] 创建好后交给 [Sketch] 执行，有两种执行方式：
+[ImageRequest] 创建好后调用其 enqueue() 或 execute() 方法将 [ImageRequest] 交给 [Sketch] 执行：
 
 * enqueue：将 [ImageRequest] 放入任务队列在后台线程上异步执行并返回一个 [Disposable]
 * execute：在当前协程中执行 [ImageRequest] 并返回一个 [ImageResult]
@@ -112,19 +112,15 @@ val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
 enqueue 示例：
 
 ```kotlin
-val request = DisplayRequest(imageView, "https://www.example.com/image.jpg")
-sketch.enqueue(request)
+DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 ```
 
 execute 示例：
 
 ```kotlin
-val request = DisplayRequest(context, "https://www.example.com/image.jpg")
-
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = withContext(Dispatchers.IO) {
-        sketch.execute(request)
-    }
+    val result: DisplayResult = DisplayRequest(context, "https://www.example.com/image.jpg")
+        .execute()
     imageView.setImageDrawable(result.drawable)
 }
 ```
@@ -136,11 +132,10 @@ coroutineScope.launch(Dispatchers.Main) {
 * request.lifecycle 变为 DESTROYED 状态
 * request.target 是一个 [ViewTarget] 并且注册到 view 的 onViewDetachedFromWindow() 方法被执行
 
-另外, [Sketch] 的 enqueue() 方法会返回一个 [Disposable], 它可以用来取消请求，如下:
+另外, enqueue() 方法会返回一个 [Disposable], 它可以用来取消请求，如下:
 
 ```kotlin
-val request = DisplayRequest(imageView, "https://www.example.com/image.jpg")
-val disposable = sketch.enqueue(request)
+val disposable = DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 
 // 在你需要的时候取消请求
 disposable.dispose()
@@ -157,8 +152,7 @@ imageView.displayImage("https://www.example.com/image.jpg")
 上述调用等价于：
 
 ```kotlin
-val request = DisplayRequest(imageView, "https://www.example.com/image.jpg")
-sketch.enqueue(request)
+DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 ```
 
 还可以通过 displayImage 函数尾随的 lambda 配置参数：

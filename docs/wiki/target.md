@@ -12,7 +12,7 @@
 下面演示创建自定义 [DisplayTarget]:
 
 ```kotlin
-val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
+DisplayRequest(context, "https://www.example.com/image.jpg") {
     target(
         onStart = { placeholder: Drawable? ->
             // Handle the placeholder drawable. 
@@ -24,8 +24,7 @@ val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
             // Handle the error drawable. 
         }
     )
-}
-sketch.enqueue(request)
+}.enqueue(request)
 ```
 
 > LoadTarget 和 DownloadTarget 同 DisplayTarget 使用方式大同小异
@@ -35,10 +34,9 @@ sketch.enqueue(request)
 [DisplayRequest] 还提供了 target(ImageView) 方法来简化绑定到 ImageView，如下：
 
 ```kotlin
-val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
+DisplayRequest(context, "https://www.example.com/image.jpg") {
     target(imageView)
-}
-sketch.enqueue(request)
+}.enqueue()
 ```
 
 ### RemoteViews
@@ -54,7 +52,7 @@ val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).
     setContent(remoteViews)
 }.build()
 
-val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
+DisplayRequest(context, "https://www.example.com/image.jpg") {
     resize(100.dp2px, 100.dp2px, scale = START_CROP)
     target(
         RemoteViewsDisplayTarget(
@@ -68,8 +66,7 @@ val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
             }
         )
     )
-}
-context.sketch.enqueue(request)
+}.enqueue()
 ```
 
 1. 如上所示 [RemoteViewsDisplayTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的 setImageViewBitmap 方法设置
