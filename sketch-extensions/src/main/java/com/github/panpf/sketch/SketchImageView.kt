@@ -39,7 +39,7 @@ open class SketchImageView @JvmOverloads constructor(
                 setImageResource(displaySrcResId)
             } else {
                 post {
-                    displayImage(context.newResourceUri(displaySrcResId))
+                    displayImage(newResourceUri(displaySrcResId))
                 }
             }
         }

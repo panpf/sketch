@@ -69,7 +69,7 @@ class ExifOrientationHelperTest {
             ExifInterface.ORIENTATION_UNDEFINED,
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).readExifOrientation()
@@ -121,7 +121,7 @@ class ExifOrientationHelperTest {
             ExifInterface.ORIENTATION_UNDEFINED,
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).readExifOrientationWithMimeType("image/jpeg")

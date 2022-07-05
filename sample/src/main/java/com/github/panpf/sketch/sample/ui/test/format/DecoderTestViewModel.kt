@@ -31,8 +31,8 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
 
             val imageDetails = AssetImages.STATICS.plus(AssetImages.ANIMATEDS).plus(
                 arrayOf(
-                    application1.newResourceUri(drawable.im_placeholder),
-                    application1.newResourceUri(drawable.ic_play),
+                    newResourceUri(drawable.im_placeholder),
+                    newResourceUri(drawable.ic_play),
                     footerUserPackageInfo.applicationInfo.publicSourceDir,
                     newAppIconUri(
                         headerUserPackageInfo.packageName,

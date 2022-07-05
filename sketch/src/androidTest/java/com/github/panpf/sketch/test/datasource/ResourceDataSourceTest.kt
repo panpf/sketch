@@ -19,7 +19,7 @@ class ResourceDataSourceTest {
     @Test
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher))
+        val request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher))
         ResourceDataSource(
             sketch = sketch,
             request = request,
@@ -37,7 +37,7 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
+            request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
@@ -47,7 +47,7 @@ class ResourceDataSourceTest {
         assertThrow(Resources.NotFoundException::class) {
             ResourceDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, context.newResourceUri(42)),
+                request = LoadRequest(context, newResourceUri(42)),
                 resources = context.resources,
                 drawableId = 42
             ).apply {
@@ -61,7 +61,7 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
+            request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
@@ -71,7 +71,7 @@ class ResourceDataSourceTest {
         assertThrow(Resources.NotFoundException::class) {
             ResourceDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, context.newResourceUri(42)),
+                request = LoadRequest(context, newResourceUri(42)),
                 resources = context.resources,
                 drawableId = 42
             ).apply {
@@ -85,7 +85,7 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)),
+            request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
@@ -97,7 +97,7 @@ class ResourceDataSourceTest {
 
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, context.newResourceUri(42)),
+            request = LoadRequest(context, newResourceUri(42)),
             resources = context.resources,
             drawableId = 42
         ).apply {

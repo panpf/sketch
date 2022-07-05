@@ -85,8 +85,7 @@ class ResourceUriFetcherTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
-        val androidResUriByName =
-            newResourceUri(testAppPackage, "drawable", "ic_launcher")
+        val androidResUriByName = newResourceUri(testAppPackage, "drawable", "ic_launcher")
         val androidResUriById = newResourceUri(testAppPackage, drawable.ic_launcher)
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"

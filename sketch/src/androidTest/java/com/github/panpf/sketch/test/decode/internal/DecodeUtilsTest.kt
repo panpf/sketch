@@ -596,7 +596,7 @@ class DecodeUtilsTest {
 
         ResourceDataSource(
             sketch,
-            LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
+            LoadRequest(context, newResourceUri(R.xml.network_security_config)),
             context.resources,
             R.xml.network_security_config
         ).readImageInfoWithBitmapFactory().apply {
@@ -630,7 +630,7 @@ class DecodeUtilsTest {
         assertThrow(Exception::class) {
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrThrow()
@@ -662,7 +662,7 @@ class DecodeUtilsTest {
         Assert.assertNull(
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrNull()
@@ -695,7 +695,7 @@ class DecodeUtilsTest {
         Assert.assertNull(
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).decodeBitmap()
@@ -730,7 +730,7 @@ class DecodeUtilsTest {
         assertThrow(IOException::class) {
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, context.newResourceUri(R.xml.network_security_config)),
+                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
                 context.resources,
                 R.xml.network_security_config
             ).decodeRegionBitmap(Rect(500, 500, 600, 600))

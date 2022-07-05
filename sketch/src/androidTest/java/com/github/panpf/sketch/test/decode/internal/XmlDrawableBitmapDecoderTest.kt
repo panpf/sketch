@@ -28,7 +28,7 @@ class XmlDrawableBitmapDecoderTest {
 
         Assert.assertEquals("XmlDrawableBitmapDecoder", factory.toString())
 
-        LoadRequest(context, context.newResourceUri(R.drawable.test)).let {
+        LoadRequest(context, newResourceUri(R.drawable.test)).let {
             val fetcher = sketch.components.newFetcher(it)
             val fetchResult = runBlocking { fetcher.fetch() }
             factory.create(sketch, it, RequestContext(it), fetchResult)
@@ -36,7 +36,7 @@ class XmlDrawableBitmapDecoderTest {
             Assert.assertNotNull(this)
         }
 
-        LoadRequest(context, context.newResourceUri(R.drawable.test_error)).let {
+        LoadRequest(context, newResourceUri(R.drawable.test_error)).let {
             val fetcher = sketch.components.newFetcher(it)
             val fetchResult = runBlocking { fetcher.fetch() }
             factory.create(sketch, it, RequestContext(it), fetchResult)
@@ -44,7 +44,7 @@ class XmlDrawableBitmapDecoderTest {
             Assert.assertNotNull(this)
         }
 
-        LoadRequest(context, context.newResourceUri(R.drawable.ic_launcher)).let {
+        LoadRequest(context, newResourceUri(R.drawable.ic_launcher)).let {
             val fetcher = sketch.components.newFetcher(it)
             val fetchResult = runBlocking { fetcher.fetch() }
             factory.create(sketch, it, RequestContext(it), fetchResult)
@@ -58,7 +58,7 @@ class XmlDrawableBitmapDecoderTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val factory = XmlDrawableBitmapDecoder.Factory()
 
-        LoadRequest(context, context.newResourceUri(R.drawable.test)).run {
+        LoadRequest(context, newResourceUri(R.drawable.test)).run {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking {
                 fetcher.fetch()
@@ -80,7 +80,7 @@ class XmlDrawableBitmapDecoderTest {
             Assert.assertNull(transformedList)
         }
 
-        LoadRequest(context, context.newResourceUri(R.drawable.test_error)).run {
+        LoadRequest(context, newResourceUri(R.drawable.test_error)).run {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking {
                 fetcher.fetch()

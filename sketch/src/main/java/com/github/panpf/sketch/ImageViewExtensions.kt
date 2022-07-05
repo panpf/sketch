@@ -58,7 +58,7 @@ fun ImageView.displayImage(
     @DrawableRes drawableResId: Int?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
-    displayImage(drawableResId?.let { context.newResourceUri(it) }, configBlock)
+    displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
  * Load the image from local file and display it on this [ImageView]
@@ -91,7 +91,7 @@ fun ImageView.displayResourceImage(
     @DrawableRes drawableResId: Int?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
-    displayImage(drawableResId?.let { newResourceUri(context.packageName, it) }, configBlock)
+    displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
