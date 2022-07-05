@@ -161,11 +161,11 @@ abstract class AbsAbilityImageView @JvmOverloads constructor(
         return viewAbilityManager?.getImageMatrix() ?: super.getImageMatrix()
     }
 
-    override fun getListener(): Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>? {
+    override fun getDisplayListener(): Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>? {
         return viewAbilityManager?.getRequestListener()
     }
 
-    override fun getProgressListener(): ProgressListener<DisplayRequest>? {
+    override fun getDisplayProgressListener(): ProgressListener<DisplayRequest>? {
         return viewAbilityManager?.getRequestProgressListener()
     }
 
@@ -191,7 +191,7 @@ abstract class AbsAbilityImageView @JvmOverloads constructor(
     class SavedState : BaseSavedState {
         var abilityListStateBundle: Bundle? = null
 
-        internal constructor(superState: Parcelable?) : super(superState) {}
+        internal constructor(superState: Parcelable?) : super(superState)
 
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)

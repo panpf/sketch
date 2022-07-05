@@ -47,7 +47,7 @@ import com.github.panpf.sketch.resize.fixedPrecision
 import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.sketch.target.ListenerProvider
+import com.github.panpf.sketch.target.DisplayListenerProvider
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transform.Transformation
@@ -924,10 +924,10 @@ interface ImageRequest {
         private fun combinationListener(): Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? {
             val target = target
             val listener = listener
-            val viewListenerProvider =
-                target.asOrNull<ViewDisplayTarget<*>>()?.view?.asOrNull<ListenerProvider>()
+            val viewDisplayListenerProvider =
+                target.asOrNull<ViewDisplayTarget<*>>()?.view?.asOrNull<DisplayListenerProvider>()
             @Suppress("UNCHECKED_CAST") val viewListener =
-                viewListenerProvider?.getListener() as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
+                viewDisplayListenerProvider?.getDisplayListener() as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
             return if (listener != null && viewListener != null && listener !== viewListener) {
                 CombinedListener(viewListener, listener)
             } else {
@@ -938,10 +938,10 @@ interface ImageRequest {
         private fun combinationProgressListener(): ProgressListener<ImageRequest>? {
             val target = target
             val progressListener = progressListener
-            val viewListenerProvider =
-                target.asOrNull<ViewDisplayTarget<*>>()?.view?.asOrNull<ListenerProvider>()
+            val viewDisplayListenerProvider =
+                target.asOrNull<ViewDisplayTarget<*>>()?.view?.asOrNull<DisplayListenerProvider>()
             @Suppress("UNCHECKED_CAST") val viewProgressListener =
-                viewListenerProvider?.getProgressListener() as ProgressListener<ImageRequest>?
+                viewDisplayListenerProvider?.getDisplayProgressListener() as ProgressListener<ImageRequest>?
             return if (progressListener != null && viewProgressListener != null && progressListener != viewProgressListener) {
                 CombinedProgressListener(viewProgressListener, progressListener)
             } else {

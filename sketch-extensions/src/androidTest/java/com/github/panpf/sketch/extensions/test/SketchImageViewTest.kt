@@ -97,4 +97,14 @@ class SketchImageViewTest {
             }, displayImageOptions)
         }
     }
+
+    @Test
+    fun testListener() {
+        // todo implement
+    }
+
+    @Test
+    fun testProgressListener() {
+        // todo implement
+    }
 }
