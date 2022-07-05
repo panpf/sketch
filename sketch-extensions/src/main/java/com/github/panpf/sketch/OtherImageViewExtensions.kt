@@ -16,5 +16,4 @@ fun ImageView.displayAppIconImage(
     versionCode: Int,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
-    context.sketch
-        .enqueue(DisplayRequest(this, newAppIconUri(packageName, versionCode), configBlock))
+    DisplayRequest(this, newAppIconUri(packageName, versionCode), configBlock).enqueue()

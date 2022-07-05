@@ -115,23 +115,21 @@ class RemoteViewsTestFragment : ToolbarBindingFragment<RemoteViewsTestFragmentBi
                 setContent(remoteViews)
             }.build()
             val nextImageUri = imageUris[imageUriIndex++ % imageUris.size]
-            context.sketch.enqueue(
-                DisplayRequest(context, nextImageUri) {
-                    resize(100.dp2px, 100.dp2px, scale = START_CROP)
-                    target(
-                        RemoteViewsDisplayTarget(
-                            remoteViews = remoteViews,
-                            imageViewId = R.id.remoteViewsNotificationImage,
-                            ignoreNullDrawable = true,
-                            onUpdated = {
-                                val notificationManager =
-                                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                                notificationManager.notify(NOTIFICATION_ID, notification)
-                            }
-                        )
+            DisplayRequest(context, nextImageUri) {
+                resize(100.dp2px, 100.dp2px, scale = START_CROP)
+                target(
+                    RemoteViewsDisplayTarget(
+                        remoteViews = remoteViews,
+                        imageViewId = R.id.remoteViewsNotificationImage,
+                        ignoreNullDrawable = true,
+                        onUpdated = {
+                            val notificationManager =
+                                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                            notificationManager.notify(NOTIFICATION_ID, notification)
+                        }
                     )
-                }
-            )
+                )
+            }.enqueue()
         }
 
         fun cancel() {

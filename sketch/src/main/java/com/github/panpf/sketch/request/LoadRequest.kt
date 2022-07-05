@@ -7,6 +7,7 @@ import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.annotation.AnyThread
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
@@ -18,10 +19,12 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition.Factory
 import com.github.panpf.sketch.util.Size
@@ -79,6 +82,31 @@ interface LoadRequest : ImageRequest {
     ): LoadRequest = Builder(this).apply {
         configBlock?.invoke(this)
     }.build()
+
+    /**
+     * Execute current LoadRequest asynchronously.
+     *
+     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+     *
+     * @return A [Disposable] which can be used to cancel or check the status of the request.
+     */
+    @AnyThread
+    fun enqueue(): Disposable<LoadResult> {
+        return context.sketch.enqueue(this)
+    }
+
+    /**
+     * Execute current LoadRequest synchronously in the current coroutine scope.
+     *
+     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+     *
+     * @return A [LoadResult.Success] if the request completes successfully. Else, returns an [LoadResult.Error].
+     */
+    suspend fun execute(): LoadResult {
+        return context.sketch.execute(this)
+    }
 
     class Builder : ImageRequest.Builder {
 

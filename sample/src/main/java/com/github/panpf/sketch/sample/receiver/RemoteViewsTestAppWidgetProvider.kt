@@ -77,22 +77,20 @@ class RemoteViewsTestAppWidgetProvider : AppWidgetProvider() {
                 )
             )
         }
-        context.sketch.enqueue(
-            DisplayRequest(context, nextImageUri) {
-                resize(200.dp2px, 200.dp2px, scale = CENTER_CROP)
-                transformations(RoundedCornersTransformation(20.dp2pxF))
-                target(
-                    RemoteViewsDisplayTarget(
-                        remoteViews = remoteViews,
-                        imageViewId = id.remoteViewsAppWidgetImage1,
-                        ignoreNullDrawable = true,
-                        onUpdated = {
-                            AppWidgetManager.getInstance(context)!!
-                                .updateAppWidget(appWidgetId, remoteViews)
-                        }
-                    )
+        DisplayRequest(context, nextImageUri) {
+            resize(200.dp2px, 200.dp2px, scale = CENTER_CROP)
+            transformations(RoundedCornersTransformation(20.dp2pxF))
+            target(
+                RemoteViewsDisplayTarget(
+                    remoteViews = remoteViews,
+                    imageViewId = id.remoteViewsAppWidgetImage1,
+                    ignoreNullDrawable = true,
+                    onUpdated = {
+                        AppWidgetManager.getInstance(context)!!
+                            .updateAppWidget(appWidgetId, remoteViews)
+                    }
                 )
-            }
-        )
+            )
+        }.enqueue()
     }
 }

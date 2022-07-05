@@ -36,7 +36,7 @@ fun ImageView.displayImage(
     uri: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
-    context.sketch.enqueue(DisplayRequest(this, uri, configBlock))
+    DisplayRequest(this, uri, configBlock).enqueue()
 
 /**
  * Load the image from [uri] and display it on this [ImageView]
