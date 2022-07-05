@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.test.fetch
 
+import android.content.res.Resources
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.DisplayRequest
@@ -11,12 +11,12 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.R.drawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.tools4j.test.ktx.assertNoThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.FileNotFoundException
 
 @RunWith(AndroidJUnit4::class)
 class ResourceUriFetcherTest {
@@ -26,38 +26,56 @@ class ResourceUriFetcherTest {
         val context = getTestContext()
 
         Assert.assertEquals(
-            "android.resource://testPackage/drawable/ic_launcher",
+            "android.resource://resource?resType=drawable&resName=ic_launcher",
+            newResourceUri("drawable", "ic_launcher")
+        )
+        Assert.assertEquals(
+            "android.resource://resource?resType=drawable1&resName=ic_launcher1",
+            newResourceUri("drawable1", "ic_launcher1")
+        )
+
+        Assert.assertEquals(
+            "android.resource://resource?resId=55345",
+            newResourceUri(55345)
+        )
+        Assert.assertEquals(
+            "android.resource://resource?resId=55346",
+            newResourceUri(55346)
+        )
+
+        Assert.assertEquals(
+            "android.resource://resource?packageName=testPackage&resType=drawable&resName=ic_launcher",
             newResourceUri("testPackage", "drawable", "ic_launcher")
         )
         Assert.assertEquals(
-            "android.resource://testPackage1/drawable1/ic_launcher1",
+            "android.resource://resource?packageName=testPackage1&resType=drawable1&resName=ic_launcher1",
             newResourceUri("testPackage1", "drawable1", "ic_launcher1")
         )
 
         Assert.assertEquals(
-            "android.resource://testPackage/55345",
+            "android.resource://resource?packageName=testPackage&resId=55345",
             newResourceUri("testPackage", 55345)
         )
         Assert.assertEquals(
-            "android.resource://testPackage1/55346",
+            "android.resource://resource?packageName=testPackage1&resId=55346",
             newResourceUri("testPackage1", 55346)
         )
 
         Assert.assertEquals(
-            "android.resource://${context.packageName}/drawable/ic_launcher",
+            "android.resource://resource?packageName=${context.packageName}&resType=drawable&resName=ic_launcher",
             context.newResourceUri("drawable", "ic_launcher")
         )
         Assert.assertEquals(
-            "android.resource://${context.packageName}/drawable1/ic_launcher1",
+            "android.resource://resource?packageName=${context.packageName}&resType=drawable1&resName=ic_launcher1",
             context.newResourceUri("drawable1", "ic_launcher1")
         )
 
         Assert.assertEquals(
-            "android.resource://${context.packageName}/55345",
+            "android.resource://resource?packageName=${context.packageName}&resId=55345",
             context.newResourceUri(55345)
         )
         Assert.assertEquals(
-            "android.resource://${context.packageName}/55346",
+            "android.resource://resource?packageName=${context.packageName}&resId=55346",
             context.newResourceUri(55346)
         )
     }
@@ -113,72 +131,89 @@ class ResourceUriFetcherTest {
     @Test
     fun testFetch() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val testAppPackage = context.packageName
-        val fetcherFactory = ResourceUriFetcher.Factory()
 
-        val androidResUriByName =
-            newResourceUri(testAppPackage, "drawable", "ic_launcher")
-        val fetcherByName =
-            fetcherFactory.create(sketch, LoadRequest(context, androidResUriByName))!!
-        val sourceByName = runBlocking {
-            fetcherByName.fetch().dataSource
-        }
-        Assert.assertTrue(sourceByName is ResourceDataSource)
-
-        val androidResUriById = newResourceUri(testAppPackage, drawable.ic_launcher)
-        val fetcherById = fetcherFactory.create(sketch, LoadRequest(context, androidResUriById))!!
-        val sourceById = runBlocking {
-            fetcherById.fetch().dataSource
-        }
-        Assert.assertTrue(sourceById is ResourceDataSource)
-
-        assertThrow(FileNotFoundException::class) {
+        assertNoThrow {
             runBlocking {
-                ResourceUriFetcher(
-                    sketch,
-                    LoadRequest(context, androidResUriByName),
-                    Uri.parse("${ResourceUriFetcher.SCHEME}://")
-                ).fetch()
+                newResourceUri("drawable", "ic_launcher").let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
+            }
+        }
+        assertNoThrow {
+            runBlocking {
+                newResourceUri(drawable.ic_launcher).let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
             }
         }
 
-        assertThrow(FileNotFoundException::class) {
+        assertNoThrow {
             runBlocking {
-                ResourceUriFetcher(
-                    sketch,
-                    LoadRequest(context, androidResUriByName),
-                    Uri.parse("${ResourceUriFetcher.SCHEME}://fakePackageName")
-                ).fetch()
+                newResourceUri(context.packageName, "drawable", "ic_launcher").let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
+            }
+        }
+        assertNoThrow {
+            runBlocking {
+                newResourceUri(context.packageName, drawable.ic_launcher).let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
             }
         }
 
-        assertThrow(FileNotFoundException::class) {
+        assertNoThrow {
             runBlocking {
-                ResourceUriFetcher(
-                    sketch,
-                    LoadRequest(context, androidResUriByName),
-                    Uri.parse("${ResourceUriFetcher.SCHEME}://${context.packageName}/errorResId")
-                ).fetch()
+                context.newResourceUri("drawable", "ic_launcher").let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
+            }
+        }
+        assertNoThrow {
+            runBlocking {
+                context.newResourceUri(drawable.ic_launcher).let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
             }
         }
 
-        assertThrow(FileNotFoundException::class) {
+        assertThrow(Resources.NotFoundException::class) {
             runBlocking {
-                ResourceUriFetcher(
-                    sketch,
-                    LoadRequest(context, androidResUriByName),
-                    Uri.parse("${ResourceUriFetcher.SCHEME}://${context.packageName}/drawable/34/error")
-                ).fetch()
+                "${ResourceUriFetcher.SCHEME}://".let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
             }
         }
 
-        assertThrow(FileNotFoundException::class) {
+        assertThrow(Resources.NotFoundException::class) {
             runBlocking {
-                ResourceUriFetcher(
-                    sketch,
-                    LoadRequest(context, androidResUriByName),
-                    Uri.parse("${ResourceUriFetcher.SCHEME}://${context.packageName}/drawable/0")
-                ).fetch()
+                "${ResourceUriFetcher.SCHEME}://resource?packageName=fakePackageName".let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
+            }
+        }
+
+        assertThrow(Resources.NotFoundException::class) {
+            runBlocking {
+                "${ResourceUriFetcher.SCHEME}://resource?packageName=${context.packageName}&resId=errorResId".let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
+            }
+        }
+
+        assertThrow(Resources.NotFoundException::class) {
+            runBlocking {
+                "${ResourceUriFetcher.SCHEME}://resource?packageName=${context.packageName}&resType=drawable&resName=34&error".let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
+            }
+        }
+
+        assertThrow(Resources.NotFoundException::class) {
+            runBlocking {
+                "${ResourceUriFetcher.SCHEME}://resource?packageName=${context.packageName}&resType=drawable&resName=0".let {
+                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                }.fetch()
             }
         }
     }
