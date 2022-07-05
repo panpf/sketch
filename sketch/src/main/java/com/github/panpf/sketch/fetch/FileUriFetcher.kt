@@ -13,6 +13,11 @@ import java.io.File
 fun newFileUri(filePath: String): String = "$SCHEME://$filePath"
 
 /**
+ * Sample: 'file:///sdcard/sample.jpg'
+ */
+fun newFileUri(file: File): String = "$SCHEME://${file.path}"
+
+/**
  * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg' uri
  */
 class FileUriFetcher(

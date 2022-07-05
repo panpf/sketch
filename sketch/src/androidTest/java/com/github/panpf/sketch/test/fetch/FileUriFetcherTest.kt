@@ -12,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class FileUriFetcherTest {
@@ -25,6 +26,15 @@ class FileUriFetcherTest {
         Assert.assertEquals(
             "file:///sdcard1/sample1.jpg",
             newFileUri("/sdcard1/sample1.jpg")
+        )
+
+        Assert.assertEquals(
+            "file:///sdcard/sample.jpg",
+            newFileUri(File("/sdcard/sample.jpg"))
+        )
+        Assert.assertEquals(
+            "file:///sdcard1/sample1.jpg",
+            newFileUri(File("/sdcard1/sample1.jpg"))
         )
     }
 
