@@ -27,6 +27,7 @@ class XmlDrawableBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
+        // todo Test AppCompatResources and ResourcesCompat for vector support on lower versions
         // Be sure to use this.resources
         val drawable = ResourcesCompat.getDrawable(this.resources, drawableResId, null)
             ?: throw BitmapDecodeException("Invalid drawable resource id '$drawableResId'")

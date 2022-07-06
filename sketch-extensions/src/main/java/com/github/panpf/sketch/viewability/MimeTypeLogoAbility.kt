@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
-import androidx.core.content.res.ResourcesCompat
+import androidx.appcompat.content.res.AppCompatResources
 import com.github.panpf.sketch.util.findLastSketchDrawable
 
 /**
@@ -127,14 +127,13 @@ class MimeTypeLogo {
     }
 
     fun getDrawable(context: Context): Drawable {
-        return _drawable ?: if (data is Drawable) {
-            _drawable = data
-            data
-        } else {
-            val drawableResId = data as Int
-            val newDrawable = ResourcesCompat.getDrawable(context.resources, drawableResId, null)!!
-            _drawable = newDrawable
-            newDrawable
-        }
+        return _drawable
+            ?: if (data is Drawable) {
+                data
+            } else {
+                AppCompatResources.getDrawable(context, data as Int)!!
+            }.apply {
+                _drawable = this
+            }
     }
 }
