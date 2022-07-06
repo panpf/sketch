@@ -185,19 +185,19 @@ class IconStateImageTest {
     fun testToString() {
         IconStateImage(android.R.drawable.ic_delete, android.R.drawable.bottom_bar).apply {
             Assert.assertEquals(
-                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), bg=ResDrawable(${android.R.drawable.bottom_bar}))",
+                "IconStateImage(icon=ResDrawableFetcher(${android.R.drawable.ic_delete}), bg=ResDrawableFetcher(${android.R.drawable.bottom_bar}))",
                 toString()
             )
         }
         IconStateImage(android.R.drawable.ic_delete, android.R.drawable.btn_default).apply {
             Assert.assertEquals(
-                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), bg=ResDrawable(${android.R.drawable.btn_default}))",
+                "IconStateImage(icon=ResDrawableFetcher(${android.R.drawable.ic_delete}), bg=ResDrawableFetcher(${android.R.drawable.btn_default}))",
                 toString()
             )
         }
         IconStateImage(android.R.drawable.ic_delete).apply {
             Assert.assertEquals(
-                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), bg=null)",
+                "IconStateImage(icon=ResDrawableFetcher(${android.R.drawable.ic_delete}), bg=null)",
                 toString()
             )
         }

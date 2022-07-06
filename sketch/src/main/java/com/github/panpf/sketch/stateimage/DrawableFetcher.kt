@@ -17,35 +17,22 @@ package com.github.panpf.sketch.stateimage
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.VectorDrawable
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 
 interface DrawableFetcher {
 
     fun getDrawable(context: Context): Drawable
 }
 
-class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
+class ResDrawableFetcher(@DrawableRes val drawableRes: Int) : DrawableFetcher {
 
-    override fun getDrawable(context: Context): Drawable {
-        return AppCompatResources.getDrawable(context, drawableRes)!!.let {
-            // VectorDrawable and VectorDrawableCompat share VectorDrawableState,
-            // VectorDrawableState holds alpha and other properties, which are shared, causing exceptions later
-            if ((VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && it is VectorDrawable) || it is VectorDrawableCompat) {
-                it.mutate()
-            } else {
-                it
-            }
-        }
-    }
+    override fun getDrawable(context: Context): Drawable =
+        AppCompatResources.getDrawable(context, drawableRes)!!.mutate()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ResDrawable) return false
+        if (other !is ResDrawableFetcher) return false
 
         if (drawableRes != other.drawableRes) return false
 
@@ -57,11 +44,11 @@ class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
     }
 
     override fun toString(): String {
-        return "ResDrawable($drawableRes)"
+        return "ResDrawableFetcher($drawableRes)"
     }
 }
 
-class RealDrawable(val drawable: Drawable) : DrawableFetcher {
+class RealDrawableFetcher(val drawable: Drawable) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable {
         return drawable.mutate()
@@ -69,7 +56,7 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RealDrawable) return false
+        if (other !is RealDrawableFetcher) return false
 
         if (drawable != other.drawable) return false
 
@@ -81,6 +68,6 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
     }
 
     override fun toString(): String {
-        return "RealDrawable($drawable)"
+        return "RealDrawableFetcher($drawable)"
     }
 }

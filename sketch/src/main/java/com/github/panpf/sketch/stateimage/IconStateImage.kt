@@ -14,28 +14,28 @@ class IconStateImage private constructor(
 ) : StateImage {
 
     constructor(icon: Drawable, bg: Drawable? = null)
-            : this(RealDrawable(icon), bg?.let { RealDrawable(it) })
+            : this(RealDrawableFetcher(icon), bg?.let { RealDrawableFetcher(it) })
 
     constructor(icon: Drawable, @DrawableRes bg: Int? = null)
-            : this(RealDrawable(icon), bg?.let { ResDrawable(it) })
+            : this(RealDrawableFetcher(icon), bg?.let { ResDrawableFetcher(it) })
 
     constructor(icon: Drawable, bg: ColorFetcher? = null)
-            : this(RealDrawable(icon), bg)
+            : this(RealDrawableFetcher(icon), bg)
 
     constructor(icon: Drawable)
-            : this(RealDrawable(icon), null)
+            : this(RealDrawableFetcher(icon), null)
 
     constructor(@DrawableRes icon: Int, bg: Drawable? = null)
-            : this(ResDrawable(icon), bg?.let { RealDrawable(it) })
+            : this(ResDrawableFetcher(icon), bg?.let { RealDrawableFetcher(it) })
 
     constructor(@DrawableRes icon: Int, @DrawableRes bg: Int? = null)
-            : this(ResDrawable(icon), bg?.let { ResDrawable(it) })
+            : this(ResDrawableFetcher(icon), bg?.let { ResDrawableFetcher(it) })
 
     constructor(@DrawableRes icon: Int, bg: ColorFetcher? = null)
-            : this(ResDrawable(icon), bg)
+            : this(ResDrawableFetcher(icon), bg)
 
     constructor(@DrawableRes icon: Int)
-            : this(ResDrawable(icon), null)
+            : this(ResDrawableFetcher(icon), null)
 
     override fun getDrawable(
         sketch: Sketch,

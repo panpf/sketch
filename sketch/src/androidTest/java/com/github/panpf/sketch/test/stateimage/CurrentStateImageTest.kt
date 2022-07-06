@@ -93,7 +93,7 @@ class CurrentStateImageTest {
         }
         CurrentStateImage(android.R.drawable.btn_default).apply {
             Assert.assertEquals(
-                "CurrentStateImage(defaultImage=DrawableStateImage(drawable=ResDrawable(${android.R.drawable.btn_default})))",
+                "CurrentStateImage(defaultImage=DrawableStateImage(drawable=ResDrawableFetcher(${android.R.drawable.btn_default})))",
                 toString()
             )
         }

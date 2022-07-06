@@ -26,20 +26,16 @@ class DrawableStateImage : StateImage {
     private val drawableFetcher: DrawableFetcher
 
     constructor(@DrawableRes drawableRes: Int) {
-        this.drawableFetcher = ResDrawable(drawableRes)
+        this.drawableFetcher = ResDrawableFetcher(drawableRes)
     }
 
     constructor(drawable: Drawable) {
-        this.drawableFetcher = RealDrawable(drawable)
+        this.drawableFetcher = RealDrawableFetcher(drawable)
     }
 
     override fun getDrawable(
-        sketch: Sketch,
-        request: ImageRequest,
-        exception: SketchException?
-    ): Drawable {
-        return drawableFetcher.getDrawable(request.context)
-    }
+        sketch: Sketch, request: ImageRequest, exception: SketchException?
+    ): Drawable = drawableFetcher.getDrawable(request.context)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
