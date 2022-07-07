@@ -39,6 +39,15 @@ open class ResizeDrawable(val sketch: Sketch, drawable: Drawable, val resize: Re
         return resize.height
     }
 
+    override fun mutate(): ResizeDrawable {
+        val mutateDrawable = wrappedDrawable.mutate()
+        return if (mutateDrawable !== wrappedDrawable) {
+            ResizeDrawable(sketch, mutateDrawable, resize)
+        } else {
+            this
+        }
+    }
+
     override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
         super.setBounds(left, top, right, bottom)
         val resizeWidth = resize.width

@@ -28,7 +28,7 @@ interface DrawableFetcher {
 class ResDrawableFetcher(@DrawableRes val drawableRes: Int) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable =
-        AppCompatResources.getDrawable(context, drawableRes)!!.mutate()
+        AppCompatResources.getDrawable(context, drawableRes)!!
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -51,7 +51,7 @@ class ResDrawableFetcher(@DrawableRes val drawableRes: Int) : DrawableFetcher {
 class RealDrawableFetcher(val drawable: Drawable) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable {
-        return drawable.mutate()
+        return drawable
     }
 
     override fun equals(other: Any?): Boolean {

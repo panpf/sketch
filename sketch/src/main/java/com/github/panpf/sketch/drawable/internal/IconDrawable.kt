@@ -23,7 +23,13 @@ class IconDrawable constructor(
     }
 
     override fun mutate(): IconDrawable {
-        return IconDrawable(icon.mutate(), bg?.mutate())
+        val newIcon = icon.mutate()
+        val newBg = bg?.mutate()
+        return if (newIcon !== icon || newBg !== bg) {
+            IconDrawable(newIcon, newBg)
+        } else {
+            this
+        }
     }
 
     override fun draw(canvas: Canvas) {

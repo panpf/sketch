@@ -292,6 +292,23 @@ open class CrossfadeDrawable @JvmOverloads constructor(
         start = null
         callbacks.forEach { it.onAnimationEnd(this) }
     }
+
+    override fun mutate(): CrossfadeDrawable {
+        val newStart = start?.mutate()
+        val newEnd = end?.mutate()
+        return if (newStart !== start || newEnd !== end) {
+            CrossfadeDrawable(
+                start = newStart,
+                end = newEnd,
+                fitScale = fitScale,
+                durationMillis = durationMillis,
+                fadeStart = fadeStart,
+                preferExactIntrinsicSize = preferExactIntrinsicSize
+            )
+        } else {
+            this
+        }
+    }
 }
 
 fun Drawable.getCrossfadeEndDrawable(): Drawable = this.asOrNull<CrossfadeDrawable>()?.end ?: this

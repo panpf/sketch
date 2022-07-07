@@ -133,4 +133,13 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     override fun stop() {
         child.stop()
     }
+
+    override fun mutate(): ScaledAnimatedImageDrawable {
+        val mutateDrawable = child.mutate()
+        return if (mutateDrawable !== child) {
+            ScaledAnimatedImageDrawable(child, fitScale)
+        } else {
+            this
+        }
+    }
 }

@@ -173,4 +173,24 @@ class SketchAnimatableDrawable constructor(
                 "," + transformedList +
                 "," + requestKey +
                 ")"
+
+    @SuppressLint("RestrictedApi")
+    override fun mutate(): SketchAnimatableDrawable {
+        val mutateDrawable = wrappedDrawable.mutate()
+        return if (mutateDrawable !== wrappedDrawable) {
+            SketchAnimatableDrawable(
+                imageUri = imageUri,
+                requestKey = requestKey,
+                requestCacheKey = requestCacheKey,
+                imageInfo = imageInfo,
+                imageExifOrientation = imageExifOrientation,
+                dataFrom = dataFrom,
+                transformedList = transformedList,
+                animatableDrawable = mutateDrawable,
+                animatableDrawableName = animatableDrawableName
+            )
+        } else {
+            this
+        }
+    }
 }
