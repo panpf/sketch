@@ -368,26 +368,26 @@ internal class ScaleDragHelper constructor(
     /**
      * Whether you can scroll horizontally in the specified direction
      *
-     * @param direction A negative value represents the left and a positive value represents the right
+     * @param direction Negative to check scrolling left, positive to check scrolling right.
      */
     fun canScrollHorizontally(direction: Int): Boolean {
         return if (direction < 0) {
-            horScrollEdge != Edge.START && horScrollEdge != Edge.NONE
+            horScrollEdge != Edge.START && horScrollEdge != Edge.BOTH
         } else {
-            horScrollEdge != Edge.END && horScrollEdge != Edge.NONE
+            horScrollEdge != Edge.END && horScrollEdge != Edge.BOTH
         }
     }
 
     /**
      * Whether you can scroll vertically in the specified direction
      *
-     * @param direction A negative value means up, and a positive value means down
+     * @param direction Negative to check scrolling up, positive to check scrolling down.
      */
     fun canScrollVertically(direction: Int): Boolean {
         return if (direction < 0) {
-            verScrollEdge != Edge.START && horScrollEdge != Edge.NONE
+            verScrollEdge != Edge.START && horScrollEdge != Edge.BOTH
         } else {
-            verScrollEdge != Edge.END && horScrollEdge != Edge.NONE
+            verScrollEdge != Edge.END && horScrollEdge != Edge.BOTH
         }
     }
 
