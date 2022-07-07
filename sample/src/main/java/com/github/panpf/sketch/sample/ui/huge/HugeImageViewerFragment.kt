@@ -24,10 +24,10 @@ class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>(
         binding.hugeImageViewerZoomImage.apply {
             showRingProgressIndicator()
             prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
-                zoomAbility.readModeEnabled = it
+                readModeEnabled = it
             }
             prefsService.showTileBoundsInHugeImagePage.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
-                zoomAbility.showTileBounds = it
+                showTileBounds = it
             }
             displayImage(args.imageUri) {
                 lifecycle(viewLifecycleOwner.lifecycle)

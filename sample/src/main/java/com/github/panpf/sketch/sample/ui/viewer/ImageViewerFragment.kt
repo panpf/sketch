@@ -50,7 +50,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
         binding.imageViewerZoomImage.apply {
             showSectorProgressIndicator()
             prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
-                zoomAbility.readModeEnabled = it
+                readModeEnabled = it
             }
             setOnClickListener {
                 binding.imageViewerSwipeBack.back()
@@ -94,7 +94,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             }
             rotateEvent.listen(viewLifecycleOwner) {
                 if (isResumed) {
-                    binding.imageViewerZoomImage.zoomAbility.rotateBy(90)
+                    binding.imageViewerZoomImage.rotateBy(90)
                 }
             }
             infoEvent.listen(viewLifecycleOwner) {

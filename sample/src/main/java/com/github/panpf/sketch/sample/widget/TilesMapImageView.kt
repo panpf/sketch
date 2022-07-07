@@ -68,15 +68,15 @@ class TilesMapImageView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val viewWidth = width.takeIf { it > 0 } ?: return
-        val zoomAbility = zoomView?.zoomAbility ?: return
-        val imageSize = zoomAbility.imageSize?.takeIf { !it.isEmpty } ?: return
-        val previewSize = zoomAbility.previewSize?.takeIf { !it.isEmpty } ?: return
+        val zoomView = zoomView ?: return
+        val imageSize = zoomView.imageSize?.takeIf { !it.isEmpty } ?: return
+        val previewSize = zoomView.previewSize?.takeIf { !it.isEmpty } ?: return
         val previewVisibleRect = previewVisibleRect
-            .apply { zoomAbility.getVisibleRect(this) }
+            .apply { zoomView.getVisibleRect(this) }
             .takeIf { !it.isEmpty } ?: return
         val targetScale = imageSize.width.toFloat() / viewWidth
 
-        zoomAbility.eachTileList { tile, load ->
+        zoomView.eachTileList { tile, load ->
             val tileBitmap = tile.bitmap
             val tileSrcRect = tile.srcRect
             val tileDrawRect = tileDrawRect.apply {
@@ -123,10 +123,10 @@ class TilesMapImageView @JvmOverloads constructor(
 
     fun setZoomImageView(zoomView: MyZoomImageView) {
         this.zoomView = zoomView
-        zoomView.zoomAbility.addOnMatrixChangeListener {
+        zoomView.addOnMatrixChangeListener {
             invalidate()
         }
-        zoomView.zoomAbility.addOnTileChangedListener {
+        zoomView.addOnTileChangedListener {
             invalidate()
         }
     }
@@ -180,13 +180,6 @@ class TilesMapImageView @JvmOverloads constructor(
         val realX = x * widthScale
         val realY = y * heightScale
 
-        zoomView.zoomAbility.location(realX, realY, animate = true)
-    }
-
-    private fun Rect.crossWith(other: Rect): Boolean {
-        return this.left < other.right
-                && this.right > other.left
-                && this.top < other.bottom
-                && this.bottom > other.top
+        zoomView.location(realX, realY, animate = true)
     }
 }

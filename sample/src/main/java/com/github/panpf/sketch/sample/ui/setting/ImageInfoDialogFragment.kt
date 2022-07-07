@@ -76,22 +76,33 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             }
 
             if (imageView is SketchZoomImageView) {
-                val zoomAbility = imageView.zoomAbility
                 zoomInfo = buildList {
-                    add("visible=${Rect().apply { zoomAbility.getVisibleRect(this) }}")
-                    add("nowScale=${zoomAbility.scale.format(1)}(${zoomAbility.baseScale.format(1)},${zoomAbility.supportScale.format(1)})")
-                    add("minScale=${zoomAbility.minScale.format(1)}")
-                    add("maxScale=${zoomAbility.maxScale.format(1)}")
-                    val stepScales = zoomAbility.stepScales
+                    add("visible=${Rect().apply { imageView.getVisibleRect(this) }}")
+                    add(
+                        "nowScale=${imageView.scale.format(1)}(${imageView.baseScale.format(1)},${
+                            imageView.supportScale.format(1)
+                        })"
+                    )
+                    add("minScale=${imageView.minScale.format(1)}")
+                    add("maxScale=${imageView.maxScale.format(1)}")
+                    val stepScales = imageView.stepScales
                         ?.joinToString(prefix = "[", postfix = "]") { it.format(1).toString() }
                     add("stepScales=${stepScales}")
-                    add("rotateDegrees=${zoomAbility.rotateDegrees}")
-                    add("horScroll(left/right)=${zoomAbility.canScrollHorizontally(-1)},${zoomAbility.canScrollHorizontally(1)}")
-                    add("verScroll(up/down)=${zoomAbility.canScrollVertically(-1)},${zoomAbility.canScrollVertically(1)}")
-                    add("ScrollEdge(hor/ver)=${zoomAbility.horScrollEdge},${zoomAbility.verScrollEdge}")
+                    add("rotateDegrees=${imageView.rotateDegrees}")
+                    add(
+                        "horScroll(left/right)=${imageView.canScrollHorizontally(-1)},${
+                            imageView.canScrollHorizontally(1)
+                        }"
+                    )
+                    add(
+                        "verScroll(up/down)=${imageView.canScrollVertically(-1)},${
+                            imageView.canScrollVertically(1)
+                        }"
+                    )
+                    add("ScrollEdge(hor/ver)=${imageView.horScrollEdge},${imageView.verScrollEdge}")
                 }.joinToString(separator = "\n")
 
-                tilesInfo = zoomAbility.tileList?.takeIf { it.isNotEmpty() }?.let {
+                tilesInfo = imageView.tileList?.takeIf { it.isNotEmpty() }?.let {
                     buildList {
                         add("tileCount=${it.size}")
                         add("validTileCount=${it.count { it.bitmap != null }}")
