@@ -8,7 +8,7 @@ class BlurTransformationTestViewModel(application1: Application) :
     LifecycleAndroidViewModel(application1) {
 
     val radiusData = MutableLiveData(30)
-    val maskColorData = MutableLiveData<Int>()
+    val maskColorData = MutableLiveData<Int?>()
 
     fun changeRadius(radius: Int) {
         radiusData.postValue(radius)

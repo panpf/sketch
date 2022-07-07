@@ -20,9 +20,9 @@ import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.resize.longImageClipPrecision
 import com.github.panpf.sketch.resize.longImageScale
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
 import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
