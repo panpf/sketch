@@ -52,7 +52,6 @@ class ResultCacheKeys(request: ImageRequest) {
     }
 }
 
-/* todo 使用单独的 DiskCache，这样各种 transformation 出问题修复后，可以通过更新版本的方式，使旧的缓存失效 */
 class ResultCacheHelper(sketch: Sketch, val request: ImageRequest) {
 
     companion object {

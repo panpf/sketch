@@ -54,17 +54,6 @@ internal fun requiredWorkThread() {
     }
 }
 
-internal fun Context?.getLifecycle(): Lifecycle? {
-    var context: Context? = this
-    while (true) {
-        when (context) {
-            is LifecycleOwner -> return context.lifecycle
-            is ContextWrapper -> context = context.baseContext
-            else -> return null
-        }
-    }
-}
-
 internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
     return try {
         getCompleted()

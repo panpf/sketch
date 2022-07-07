@@ -27,6 +27,7 @@ import java.io.InputStream
 class ResourceDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
+    val packageName: String,
     val resources: Resources,
     @RawRes @DrawableRes val drawableId: Int
 ) : DataSource {

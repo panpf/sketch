@@ -597,6 +597,7 @@ class DecodeUtilsTest {
         ResourceDataSource(
             sketch,
             LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+            packageName = context.packageName,
             context.resources,
             R.xml.network_security_config
         ).readImageInfoWithBitmapFactory().apply {
@@ -631,6 +632,7 @@ class DecodeUtilsTest {
             ResourceDataSource(
                 sketch,
                 LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                packageName = context.packageName,
                 context.resources,
                 R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrThrow()
@@ -663,6 +665,7 @@ class DecodeUtilsTest {
             ResourceDataSource(
                 sketch,
                 LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                packageName = context.packageName,
                 context.resources,
                 R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrNull()
@@ -696,6 +699,7 @@ class DecodeUtilsTest {
             ResourceDataSource(
                 sketch,
                 LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                packageName = context.packageName,
                 context.resources,
                 R.xml.network_security_config
             ).decodeBitmap()
@@ -731,6 +735,7 @@ class DecodeUtilsTest {
             ResourceDataSource(
                 sketch,
                 LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                packageName = context.packageName,
                 context.resources,
                 R.xml.network_security_config
             ).decodeRegionBitmap(Rect(500, 500, 600, 600))

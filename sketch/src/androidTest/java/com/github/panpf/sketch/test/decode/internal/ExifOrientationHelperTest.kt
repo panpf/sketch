@@ -70,6 +70,7 @@ class ExifOrientationHelperTest {
             ResourceDataSource(
                 sketch,
                 LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                packageName = context.packageName,
                 context.resources,
                 R.xml.network_security_config
             ).readExifOrientation()
@@ -122,6 +123,7 @@ class ExifOrientationHelperTest {
             ResourceDataSource(
                 sketch,
                 LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                packageName = context.packageName,
                 context.resources,
                 R.xml.network_security_config
             ).readExifOrientationWithMimeType("image/jpeg")

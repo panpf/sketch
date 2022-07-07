@@ -18,7 +18,7 @@ package com.github.panpf.sketch.stateimage
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
-import androidx.appcompat.content.res.AppCompatResources
+import com.github.panpf.sketch.util.getDrawableCompat
 
 interface DrawableFetcher {
 
@@ -27,15 +27,12 @@ interface DrawableFetcher {
 
 class ResDrawableFetcher(@DrawableRes val drawableRes: Int) : DrawableFetcher {
 
-    override fun getDrawable(context: Context): Drawable =
-        AppCompatResources.getDrawable(context, drawableRes)!!
+    override fun getDrawable(context: Context): Drawable = context.getDrawableCompat(drawableRes)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ResDrawableFetcher) return false
-
         if (drawableRes != other.drawableRes) return false
-
         return true
     }
 
@@ -57,9 +54,7 @@ class RealDrawableFetcher(val drawable: Drawable) : DrawableFetcher {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is RealDrawableFetcher) return false
-
         if (drawable != other.drawable) return false
-
         return true
     }
 

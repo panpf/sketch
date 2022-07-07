@@ -108,7 +108,10 @@ class ResourceUriFetcher(
             ?.let { path.substring(it + 1) }
             ?: path.toString()
         val mimeType = getMimeTypeFromUrl(entryName)
-        return FetchResult(ResourceDataSource(sketch, request, resources, finalResId), mimeType)
+        return FetchResult(
+            ResourceDataSource(sketch, request, packageName, resources, finalResId),
+            mimeType
+        )
     }
 
     class Factory : Fetcher.Factory {

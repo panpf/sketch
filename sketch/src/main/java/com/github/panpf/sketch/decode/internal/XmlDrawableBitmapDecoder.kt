@@ -2,7 +2,6 @@ package com.github.panpf.sketch.decode.internal
 
 import android.content.res.Resources
 import androidx.annotation.WorkerThread
-import androidx.core.content.res.ResourcesCompat
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
@@ -13,6 +12,8 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.util.getDrawableCompat
+import com.github.panpf.sketch.util.getXmlDrawableCompat
 import com.github.panpf.sketch.util.toNewBitmap
 
 /**
@@ -21,16 +22,21 @@ import com.github.panpf.sketch.util.toNewBitmap
 class XmlDrawableBitmapDecoder(
     private val sketch: Sketch,
     private val request: ImageRequest,
+    private val packageName: String,
     private val resources: Resources,
     private val drawableResId: Int
 ) : BitmapDecoder {
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
-        // todo Test AppCompatResources and ResourcesCompat for vector support on lower versions
-        // Be sure to use this.resources
-        val drawable = ResourcesCompat.getDrawable(this.resources, drawableResId, null)
-            ?: throw BitmapDecodeException("Invalid drawable resource id '$drawableResId'")
+        val context = request.context
+        val drawable = if (packageName == context.packageName) {
+            // getDrawableCompat can only load vector resources that are in the current package.
+            context.getDrawableCompat(drawableResId)
+        } else {
+            // getXmlDrawableCompat can load vector resources that are in the other package.
+            context.getXmlDrawableCompat(resources, drawableResId)
+        }
         if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
             throw BitmapDecodeException(
                 "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
@@ -56,9 +62,13 @@ class XmlDrawableBitmapDecoder(
         ): BitmapDecoder? {
             val dataSource = fetchResult.dataSource
             return if (fetchResult.mimeType == "text/xml" && dataSource is ResourceDataSource) {
+                // Be sure to use dataSource.resources
                 XmlDrawableBitmapDecoder(
-                    // Be sure to use dataSource.resources
-                    sketch, request, dataSource.resources, dataSource.drawableId
+                    sketch = sketch,
+                    request = request,
+                    packageName = dataSource.packageName,
+                    resources = dataSource.resources,
+                    drawableResId = dataSource.drawableId
                 )
             } else {
                 null

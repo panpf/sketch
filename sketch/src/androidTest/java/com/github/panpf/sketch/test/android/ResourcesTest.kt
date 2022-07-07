@@ -1,9 +1,9 @@
 package com.github.panpf.sketch.test.android
 
 import android.graphics.drawable.BitmapDrawable
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,21 +15,15 @@ class ResourcesTest {
     fun testBitmapDrawableBitmap() {
         val context = getTestContext()
 
-        val drawable1 = AppCompatResources.getDrawable(
-            context, android.R.drawable.ic_delete,
-        ) as BitmapDrawable
-        val drawable2 = AppCompatResources.getDrawable(
-            context, android.R.drawable.ic_delete,
-        ) as BitmapDrawable
+        val drawable1 = context.getDrawableCompat(android.R.drawable.ic_delete) as BitmapDrawable
+        val drawable2 = context.getDrawableCompat(android.R.drawable.ic_delete) as BitmapDrawable
 
         Assert.assertNotSame(drawable1, drawable2)
         Assert.assertSame(drawable1.bitmap, drawable2.bitmap)
 
         drawable2.bitmap.recycle()
         Assert.assertTrue(drawable1.bitmap.isRecycled)
-        val drawable3 = AppCompatResources.getDrawable(
-            context, android.R.drawable.ic_delete,
-        ) as BitmapDrawable
+        val drawable3 = context.getDrawableCompat(android.R.drawable.ic_delete) as BitmapDrawable
         Assert.assertTrue(drawable3.bitmap.isRecycled)
     }
 
@@ -37,12 +31,8 @@ class ResourcesTest {
     fun testBitmapDrawableMutate() {
         val context = getTestContext()
 
-        val drawable1 = AppCompatResources.getDrawable(
-            context, android.R.drawable.ic_delete,
-        ) as BitmapDrawable
-        val drawable2 = AppCompatResources.getDrawable(
-            context, android.R.drawable.ic_delete
-        ) as BitmapDrawable
+        val drawable1 = context.getDrawableCompat(android.R.drawable.ic_delete) as BitmapDrawable
+        val drawable2 = context.getDrawableCompat(android.R.drawable.ic_delete) as BitmapDrawable
 
         Assert.assertNotSame(drawable1, drawable2)
         Assert.assertNotSame(drawable1.paint, drawable2.paint)
@@ -59,9 +49,7 @@ class ResourcesTest {
         Assert.assertEquals(255, drawable2.alpha)
         Assert.assertEquals(100, drawable3.alpha)
 
-        val drawable4 = AppCompatResources.getDrawable(
-            context, android.R.drawable.ic_delete
-        ) as BitmapDrawable
+        val drawable4 = context.getDrawableCompat(android.R.drawable.ic_delete) as BitmapDrawable
         Assert.assertEquals(255, drawable4.alpha)
     }
 }

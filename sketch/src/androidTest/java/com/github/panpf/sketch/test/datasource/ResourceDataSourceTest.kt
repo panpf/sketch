@@ -23,6 +23,7 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             sketch = sketch,
             request = request,
+            packageName = context.packageName,
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
@@ -38,6 +39,7 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             sketch = sketch,
             request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
+            packageName = context.packageName,
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
@@ -48,6 +50,7 @@ class ResourceDataSourceTest {
             ResourceDataSource(
                 sketch = sketch,
                 request = LoadRequest(context, newResourceUri(42)),
+                packageName = context.packageName,
                 resources = context.resources,
                 drawableId = 42
             ).apply {
@@ -62,6 +65,7 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             sketch = sketch,
             request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
+            packageName = context.packageName,
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
@@ -72,6 +76,7 @@ class ResourceDataSourceTest {
             ResourceDataSource(
                 sketch = sketch,
                 request = LoadRequest(context, newResourceUri(42)),
+                packageName = context.packageName,
                 resources = context.resources,
                 drawableId = 42
             ).apply {
@@ -86,6 +91,7 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             sketch = sketch,
             request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
+            packageName = context.packageName,
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
@@ -98,6 +104,7 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             sketch = sketch,
             request = LoadRequest(context, newResourceUri(42)),
+            packageName = context.packageName,
             resources = context.resources,
             drawableId = 42
         ).apply {
