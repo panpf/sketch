@@ -7,8 +7,8 @@ targetSdk = "28"
 compileSdk = "31"
 
 # app version
-versionCode = "3008"
-versionName = "3.0.0-beta04"
+versionCode = "3009"
+versionName = "3.0.0-beta05"
 
 # android
 android-buildtools = "7.2.0"
@@ -114,6 +114,7 @@ junit = { module = "junit:junit", version.ref = "junit" }
 assemblyadapter4-recycler = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler", version.ref = "assemblyadapter4" }
 assemblyadapter4-recycler-paging = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler-paging", version.ref = "assemblyadapter4" }
 assemblyadapter4-pager2 = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager2", version.ref = "assemblyadapter4" }
+assemblyadapter4-pager = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager", version.ref = "assemblyadapter4" }
 tools4a-activity = { module = "io.github.panpf.tools4a:tools4a-activity-ktx", version.ref = "tools4a" }
 tools4a-device = { module = "io.github.panpf.tools4a:tools4a-device-ktx", version.ref = "tools4a" }
 tools4a-display = { module = "io.github.panpf.tools4a:tools4a-display-ktx", version.ref = "tools4a" }
@@ -172,6 +173,7 @@ assemblyadapter4 = [
     "assemblyadapter4-recycler",
     "assemblyadapter4-recycler-paging",
     "assemblyadapter4-pager2",
+    "assemblyadapter4-pager",
 ]
 tools4a = [
     "tools4a-activity",

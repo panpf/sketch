@@ -1,3 +1,61 @@
+# v3.0.0-beta05
+
+### sketch
+
+Decoder:
+
+* fix: Fix the bug that XmlDrawableBitmapDecoder does not support loading vector resources from
+  other packages in versions below 7.0
+* improve: Replace ResourcesCompat with AppCompatResources
+
+Logger:
+
+* rename: Logger's construction parameter _level is rename to level
+
+* fix: Fix the bug of abnormal transparency of placeholder drawable
+
+DataSource:
+
+* remove: DataSource remove newFileDescriptor method
+
+DiskCache:
+
+* change: Sketch.diskCache split into downloadDiskCache and resultDiskCache
+* change: Change the version attribute of LruDiskCache to appVersion and add the internalVersion
+  attribute
+
+ImageRequest:
+
+* new: Add enqueue() and execute() methods for DisplayRequest, DownloadRequest, LoadRequest
+
+Fetcher:
+
+* new: Added newResourceUri(String, String) and newResourceUri(Int) function
+* new: Added newResourceUri(String, String) and newResourceUri(Int) function
+* new: Added newFileUri(File) function
+
+SketchImageView:
+
+* new: SketchImageView added registerListener(), unregisterListener(), registerProgressListener(),
+  unregisterProgressListener() method
+
+Transformation:
+
+* new: Added BlurTransformation and MaskTransformation
+
+Transition:
+
+* new: CrossfadeTransition.Factory added alwaysUse property
+
+StateImage:
+
+* new: Added CurrentStateImage
+
+### zoom
+
+* fix: Fixed a bug where SketchZoomImageView would cause ViewPager to fail to slide
+* change: Now move ZoomAbility's functional methods into SketchZoomImageView
+
 # v3.0.0-beta04
 
 Resize:

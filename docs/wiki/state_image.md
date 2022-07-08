@@ -2,6 +2,7 @@
 
 StateImage 是一种状态图片，用来设置加载状态占位图和错误状态图，有以下几种实现：
 
+* [CurrentStateImage]：使用 ImageView 当前的 drawable 作为 placeholder
 * [ColorStateImage]：给定一个颜色值或颜色资源 Id 作为状态图片
 * [DrawableStateImage]：给定一个 Drawable 或 Drawable 资源 Id 作为状态图片
 * [ErrorStateImage]：专门用于错误状态，会根据错误类型选择不同的状态图
