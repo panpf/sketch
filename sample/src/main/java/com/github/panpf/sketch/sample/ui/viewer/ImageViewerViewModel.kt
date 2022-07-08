@@ -35,7 +35,7 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
         try {
             withContext(Dispatchers.IO) {
                 fetchResult.dataSource.newInputStream().use { input ->
-                    imageFile.outputStream().use { output ->
+                    imageFile.outputStream().buffered().use { output ->
                         input.copyTo(output)
                     }
                 }
@@ -82,7 +82,7 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
             try {
                 withContext(Dispatchers.IO) {
                     fetchResult.dataSource.newInputStream().use { input ->
-                        imageFile.outputStream().use { output ->
+                        imageFile.outputStream().buffered().use { output ->
                             input.copyTo(output)
                         }
                     }

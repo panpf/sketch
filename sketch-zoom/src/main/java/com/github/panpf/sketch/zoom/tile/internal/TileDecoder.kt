@@ -210,7 +210,7 @@ class TileDecoder internal constructor(
 
         val bitmapRegionDecoder = synchronized(decoderPool) {
             decoderPool.poll()
-        } ?: dataSource.newInputStream().use {
+        } ?: dataSource.newInputStream().buffered().use {
             if (VERSION.SDK_INT >= VERSION_CODES.S) {
                 BitmapRegionDecoder.newInstance(it)
             } else {

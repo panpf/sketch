@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Canvas
@@ -43,7 +42,6 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toHexString
-import java.io.BufferedInputStream
 import java.io.IOException
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -332,10 +330,8 @@ fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
 
 @Throws(IOException::class)
 fun DataSource.decodeBitmap(options: BitmapFactory.Options? = null): Bitmap? =
-    newInputStream().use {
-        BufferedInputStream(it).use { bufferedInput ->
-            BitmapFactory.decodeStream(bufferedInput, null, options)
-        }
+    newInputStream().buffered().use {
+        BitmapFactory.decodeStream(it, null, options)
     }
 
 fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
@@ -346,7 +342,7 @@ fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
 
 @Throws(IOException::class)
 fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options? = null): Bitmap? =
-    newInputStream().use {
+    newInputStream().buffered().use {
         @Suppress("DEPRECATION")
         val regionDecoder = if (VERSION.SDK_INT >= VERSION_CODES.S) {
             BitmapRegionDecoder.newInstance(it)

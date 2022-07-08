@@ -19,7 +19,6 @@ import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.BufferedInputStream
 import java.io.FileInputStream
 
 suspend fun <R> safeAccessResultCache(
@@ -79,12 +78,10 @@ class ResultCacheHelper(sketch: Sketch, val request: ImageRequest) {
                 .use { inputStream -> inputStream.bufferedReader().readText() }
                 .let { jsonString -> MetaData.Serializer().fromJson(JSONObject(jsonString)) }
             val imageInfo = metaData.imageInfo
-            FileInputStream(bitmapDataDiskCacheSnapshot.file.path).use {
-                BufferedInputStream(it).use { bufferedInput ->
-                    val options = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-                        .toBitmapOptions()
-                    BitmapFactory.decodeStream(bufferedInput, null, options)
-                }
+            FileInputStream(bitmapDataDiskCacheSnapshot.file.path).buffered().use { bufferedInput ->
+                val options = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+                    .toBitmapOptions()
+                BitmapFactory.decodeStream(bufferedInput, null, options)
             }?.let { bitmap ->
                 BitmapDecodeResult(
                     bitmap = bitmap,
@@ -119,7 +116,7 @@ class ResultCacheHelper(sketch: Sketch, val request: ImageRequest) {
             return false
         }
         return try {
-            bitmapDataEditor.newOutputStream().use {
+            bitmapDataEditor.newOutputStream().buffered().use {
                 result.bitmap.compress(PNG, 100, it)
             }
             bitmapDataEditor.commit()

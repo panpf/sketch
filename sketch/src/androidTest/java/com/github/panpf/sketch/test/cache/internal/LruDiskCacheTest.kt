@@ -443,14 +443,14 @@ class LruDiskCacheTest {
             directory(directory)
         }.build().use {
             val file1Editor = it.edit("file1")!!
-            file1Editor.newOutputStream().use { outputStream ->
+            file1Editor.newOutputStream().buffered().use { outputStream ->
                 outputStream.write(1)
             }
             file1Editor.commit()
             Assert.assertTrue(it.exist("file1"))
 
             val file2Editor = it.edit("file2")!!
-            file2Editor.newOutputStream().use { outputStream ->
+            file2Editor.newOutputStream().buffered().use { outputStream ->
                 outputStream.write(2)
             }
             file2Editor.abort()
@@ -490,7 +490,7 @@ class LruDiskCacheTest {
         val sizeBytes = sizeMB * 1024 * 1024
         edit(fileName)?.apply {
             try {
-                newOutputStream().use {
+                newOutputStream().buffered().use {
                     val bytes = ByteArray(8192)
                     var writeLength = 0
                     while (writeLength < sizeBytes) {

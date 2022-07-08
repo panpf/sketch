@@ -36,7 +36,7 @@ class SvgBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
-        val svg = dataSource.newInputStream().use { SVG.getFromInputStream(it) }
+        val svg = dataSource.newInputStream().buffered().use { SVG.getFromInputStream(it) }
         val imageInfo = readImageInfo(svg)
         return realDecode(
             sketch = sketch,

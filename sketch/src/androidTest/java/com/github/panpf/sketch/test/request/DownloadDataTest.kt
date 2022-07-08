@@ -19,7 +19,7 @@ class DownloadDataTest {
         val (_, sketch) = getTestContextAndNewSketch()
         val diskCacheKey = "testDiskCacheKey"
         sketch.downloadDiskCache.edit(diskCacheKey)!!.apply {
-            newOutputStream().use {
+            newOutputStream().buffered().use {
                 it.write(diskCacheKey.toByteArray())
             }
             commit()

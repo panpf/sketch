@@ -32,7 +32,7 @@ import com.github.panpf.sketch.util.safeConfig
 import kotlin.math.abs
 
 fun DataSource.readExifOrientation(): Int =
-    newInputStream().use {
+    newInputStream().buffered().use {
         ExifInterface(it).getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
             ExifInterface.ORIENTATION_UNDEFINED

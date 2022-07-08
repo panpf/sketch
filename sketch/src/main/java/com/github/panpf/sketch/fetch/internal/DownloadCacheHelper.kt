@@ -83,7 +83,7 @@ class DownloadCacheHelper(val sketch: Sketch, val request: ImageRequest) {
         try {
             val contentLength = response.contentLength
             val readLength = response.content.use { inputStream ->
-                diskCacheEditor.newOutputStream().use { outputStream ->
+                diskCacheEditor.newOutputStream().buffered().use { outputStream ->
                     copyToWithActive(
                         request = request,
                         inputStream = inputStream,

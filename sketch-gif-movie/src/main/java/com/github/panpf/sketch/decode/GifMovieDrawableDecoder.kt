@@ -52,7 +52,7 @@ class GifMovieDrawableDecoder constructor(
 
     @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
-        val movie: Movie? = dataSource.newInputStream().use { Movie.decodeStream(it) }
+        val movie: Movie? = dataSource.newInputStream().buffered().use { Movie.decodeStream(it) }
 
         val width = movie?.width() ?: 0
         val height = movie?.height() ?: 0

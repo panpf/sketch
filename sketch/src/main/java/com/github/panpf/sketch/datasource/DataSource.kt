@@ -51,7 +51,7 @@ interface DataSource {
                     ?: throw IllegalArgumentException("Disk cache cannot be used")
                 try {
                     newInputStream().use { inputStream ->
-                        editor.newOutputStream().use { outputStream ->
+                        editor.newOutputStream().buffered().use { outputStream ->
                             inputStream.copyTo(outputStream)
                         }
                     }
