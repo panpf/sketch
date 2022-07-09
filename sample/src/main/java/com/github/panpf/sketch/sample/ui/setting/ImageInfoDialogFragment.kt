@@ -1,8 +1,10 @@
 package com.github.panpf.sketch.sample.ui.setting
 
 import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Bundle
 import android.widget.ImageView
+import androidx.core.graphics.toRect
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
@@ -77,16 +79,18 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
 
             if (imageView is SketchZoomImageView) {
                 zoomInfo = buildList {
+                    add("view=${imageView.width}x${imageView.height}")
+                    add("draw=${RectF().apply { imageView.getDrawRect(this) }.toRect()}")
                     add("visible=${Rect().apply { imageView.getVisibleRect(this) }}")
                     add(
-                        "nowScale=${imageView.scale.format(1)}(${imageView.baseScale.format(1)},${
-                            imageView.supportScale.format(1)
+                        "nowScale=${imageView.scale.format(2)}(${imageView.baseScale.format(2)},${
+                            imageView.supportScale.format(2)
                         })"
                     )
-                    add("minScale=${imageView.minScale.format(1)}")
-                    add("maxScale=${imageView.maxScale.format(1)}")
+                    add("minScale=${imageView.minScale.format(2)}")
+                    add("maxScale=${imageView.maxScale.format(2)}")
                     val stepScales = imageView.stepScales
-                        ?.joinToString(prefix = "[", postfix = "]") { it.format(1).toString() }
+                        ?.joinToString(prefix = "[", postfix = "]") { it.format(2).toString() }
                     add("stepScales=${stepScales}")
                     add("rotateDegrees=${imageView.rotateDegrees}")
                     add(

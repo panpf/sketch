@@ -3,6 +3,8 @@ package com.github.panpf.sketch.zoom
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Matrix
+import android.graphics.Point
+import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
 import android.view.MotionEvent
@@ -292,6 +294,10 @@ class Zoomer constructor(
 
     /** Gets the area that the user can see on the preview (not affected by rotation) */
     fun getVisibleRect(rect: Rect) = scaleDragHelper.getVisibleRect(rect)
+
+    fun touchPointToDrawablePoint(touchPoint: PointF): Point? {
+        return scaleDragHelper.touchPointToDrawablePoint(touchPoint)
+    }
 
     fun addOnMatrixChangeListener(listener: OnMatrixChangeListener) {
         this.onMatrixChangeListenerList = (onMatrixChangeListenerList ?: LinkedHashSet()).apply {

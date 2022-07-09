@@ -2,6 +2,8 @@ package com.github.panpf.sketch.zoom
 
 import android.graphics.Canvas
 import android.graphics.Matrix
+import android.graphics.Point
+import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Animatable
@@ -308,6 +310,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     /** Gets the area that the user can see on the preview (not affected by rotation) */
     fun getVisibleRect(rect: Rect) = zoomer?.getVisibleRect(rect)
+
+    fun touchPointToDrawablePoint(touchPoint: PointF): Point? {
+        return zoomer?.touchPointToDrawablePoint(touchPoint)
+    }
 
     fun eachTileList(action: (tile: Tile, load: Boolean) -> Unit) {
         tiles?.eachTileList(action)

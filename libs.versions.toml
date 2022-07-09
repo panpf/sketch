@@ -11,7 +11,7 @@ versionCode = "3009"
 versionName = "3.0.0-beta05"
 
 # android
-android-buildtools = "7.2.0"
+android-buildtools = "7.2.1"
 
 # maven
 maven-publishpluginx = "0.18.0"

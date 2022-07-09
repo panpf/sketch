@@ -17,9 +17,11 @@ package com.github.panpf.sketch.zoom.internal
 
 import android.content.Context
 import android.graphics.Matrix
+import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
+import android.util.Log
 import android.view.MotionEvent
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.Sketch
@@ -363,6 +365,23 @@ internal class ScaleDragHelper constructor(
         bottom /= heightScale
         rect.set(left.roundToInt(), top.roundToInt(), right.roundToInt(), bottom.roundToInt())
         reverseRotateRect(rect, zoomer.rotateDegrees, drawableSize)
+    }
+
+    fun touchPointToDrawablePoint(touchPoint: PointF): Point? {
+        val drawableSize = zoomer.drawableSize.takeIf { !it.isEmpty } ?: return null
+        val drawRect = RectF().apply { getDrawRect(this) }
+        if (!drawRect.contains(touchPoint.x, touchPoint.y)) {
+            return null
+        }
+
+        val zoomScale: Float = scale
+        val drawableX =
+            ((touchPoint.x - drawRect.left) / zoomScale).roundToInt().coerceAtLeast(0)
+                .coerceAtMost(drawableSize.width)
+        val drawableY =
+            ((touchPoint.y - drawRect.top) / zoomScale).roundToInt().coerceAtLeast(0)
+                .coerceAtMost(drawableSize.height)
+        return Point(drawableX, drawableY)
     }
 
     /**
