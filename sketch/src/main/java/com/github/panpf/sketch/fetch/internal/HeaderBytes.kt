@@ -2,15 +2,15 @@ package com.github.panpf.sketch.fetch.internal
 
 import kotlin.experimental.and
 
-class HeaderBytes constructor(private val headerBytes: ByteArray) {
+class HeaderBytes constructor(val bytes: ByteArray) {
 
     fun rangeEquals(offset: Int, bytes: ByteArray): Boolean {
         require(bytes.isNotEmpty()) { "bytes is empty" }
 
         var index = 0
         var result = false
-        while (index < bytes.size && (index + offset) < headerBytes.size) {
-            result = bytes[index] == headerBytes[offset + index]
+        while (index < bytes.size && (index + offset) < this.bytes.size) {
+            result = bytes[index] == this.bytes[offset + index]
             if (!result) {
                 return false
             } else {
@@ -27,8 +27,8 @@ class HeaderBytes constructor(private val headerBytes: ByteArray) {
     fun indexOf(byte: Byte, fromIndex: Int, toIndex: Int): Int {
         require(fromIndex in 0L..toIndex) { "fromIndex=$fromIndex toIndex=$toIndex" }
         var index = fromIndex
-        while (index < toIndex && index < headerBytes.size) {
-            if (headerBytes[index] == byte) {
+        while (index < toIndex && index < bytes.size) {
+            if (bytes[index] == byte) {
                 return index
             } else {
                 index++
@@ -58,7 +58,7 @@ class HeaderBytes constructor(private val headerBytes: ByteArray) {
         return -1
     }
 
-    fun get(position: Int): Byte = headerBytes[position]
+    fun get(position: Int): Byte = bytes[position]
 }
 
 // https://developers.google.com/speed/webp/docs/riff_container

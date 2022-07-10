@@ -35,7 +35,7 @@ class ResourcesTest {
         val drawable2 = context.getDrawableCompat(android.R.drawable.ic_delete) as BitmapDrawable
 
         Assert.assertNotSame(drawable1, drawable2)
-        Assert.assertNotSame(drawable1.paint, drawable2.paint)
+        Assert.assertSame(drawable1.paint, drawable2.paint)
         Assert.assertEquals(255, drawable1.alpha)
         Assert.assertEquals(255, drawable2.alpha)
 

@@ -121,6 +121,23 @@ class CrossfadeTransitionTest {
             Assert.assertEquals(Color.GREEN, (start as ColorDrawable).color)
             Assert.assertTrue(end is BitmapDrawable)
         }
+
+        // start end same
+        runBlocking(Dispatchers.Main) {
+            imageViewTarget.drawable = ColorDrawable(Color.GREEN)
+        }
+        Assert.assertTrue(imageViewTarget.drawable!! is ColorDrawable)
+        CrossfadeTransition(
+            imageViewTarget, DisplayResult.Success(
+                request = request,
+                drawable = imageViewTarget.drawable!!,
+                imageInfo = ImageInfo(100, 200, "image/jpeg"),
+                imageExifOrientation = 0,
+                dataFrom = LOCAL,
+                transformedList = null
+            )
+        ).transition()
+        Assert.assertTrue(imageViewTarget.drawable!! is ColorDrawable)
     }
 
     @Test

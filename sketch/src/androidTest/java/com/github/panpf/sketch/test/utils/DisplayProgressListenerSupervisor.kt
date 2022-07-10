@@ -3,8 +3,10 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ProgressListener
 
-class DisplayProgressListenerSupervisor(private val onUpdateProgress: (() -> Unit)? = null) :
-    ProgressListener<DisplayRequest> {
+class DisplayProgressListenerSupervisor(
+    private val name: String? = null,
+    private val onUpdateProgress: (() -> Unit)? = null
+) : ProgressListener<DisplayRequest> {
 
     val callbackActionList = mutableListOf<String>()
 
@@ -13,7 +15,7 @@ class DisplayProgressListenerSupervisor(private val onUpdateProgress: (() -> Uni
         totalLength: Long,
         completedLength: Long
     ) {
-        callbackActionList.add(completedLength.toString())
+        callbackActionList.add(completedLength.toString() + (name?.let { ":$it" } ?: ""))
         onUpdateProgress?.invoke()
     }
 }

@@ -3,8 +3,10 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.ProgressListener
 
-class DownloadProgressListenerSupervisor(private val onUpdateProgress: (() -> Unit)? = null) :
-    ProgressListener<DownloadRequest> {
+class DownloadProgressListenerSupervisor(
+    private val name: String? = null,
+    private val onUpdateProgress: (() -> Unit)? = null
+) : ProgressListener<DownloadRequest> {
 
     val callbackActionList = mutableListOf<String>()
 
@@ -13,7 +15,7 @@ class DownloadProgressListenerSupervisor(private val onUpdateProgress: (() -> Un
         totalLength: Long,
         completedLength: Long
     ) {
-        callbackActionList.add(completedLength.toString())
+        callbackActionList.add(completedLength.toString() + (name?.let { ":$it" } ?: ""))
         onUpdateProgress?.invoke()
     }
 }
