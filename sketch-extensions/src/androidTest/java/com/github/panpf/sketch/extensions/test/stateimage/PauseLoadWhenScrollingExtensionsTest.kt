@@ -7,9 +7,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
+import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.setDepthFromPauseLoadWhenScrolling
+import com.github.panpf.sketch.request.PAUSE_LOAD_WHEN_SCROLLING_KEY
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -61,17 +62,17 @@ class PauseLoadWhenScrollingExtensionsTest {
 
         PauseLoadWhenScrollingMatcher(null).apply {
             val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
-                setDepthFromPauseLoadWhenScrolling()
+                depth(NETWORK, PAUSE_LOAD_WHEN_SCROLLING_KEY)
             }
             Assert.assertTrue(
                 match(
-                    request.newDisplayRequest { depth(MEMORY) },
+                    request.newDisplayRequest { depth(MEMORY, PAUSE_LOAD_WHEN_SCROLLING_KEY) },
                     DepthException("")
                 )
             )
             Assert.assertFalse(
                 match(
-                    request.newDisplayRequest { depth(LOCAL) },
+                    request.newDisplayRequest { depth(LOCAL, PAUSE_LOAD_WHEN_SCROLLING_KEY) },
                     DepthException("")
                 )
             )
@@ -82,7 +83,7 @@ class PauseLoadWhenScrollingExtensionsTest {
 
         PauseLoadWhenScrollingMatcher(ColorStateImage(IntColor(Color.BLUE))).apply {
             val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
-                setDepthFromPauseLoadWhenScrolling()
+                depth(NETWORK, PAUSE_LOAD_WHEN_SCROLLING_KEY)
             }
 
             Assert.assertTrue(getDrawable(sketch, request, null) is ColorDrawable)

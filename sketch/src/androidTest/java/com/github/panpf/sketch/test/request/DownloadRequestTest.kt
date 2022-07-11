@@ -422,21 +422,42 @@ class DownloadRequestTest {
         val uriString1 = newAssetUri("sample.jpeg")
         DownloadRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(parameters)
+            Assert.assertNull(depthFrom)
         }
 
         DownloadRequest(context1, uriString1) {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
-            Assert.assertNull(parameters)
+            Assert.assertNull(depthFrom)
         }
 
         DownloadRequest(context1, uriString1) {
             depth(null)
         }.apply {
             Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(parameters)
+            Assert.assertNull(depthFrom)
+        }
+
+        DownloadRequest(context1, uriString1) {
+            depth(LOCAL, null)
+        }.apply {
+            Assert.assertEquals(LOCAL, depth)
+            Assert.assertNull(depthFrom)
+        }
+
+        DownloadRequest(context1, uriString1) {
+            depth(null, "TestDepthFrom")
+        }.apply {
+            Assert.assertEquals(NETWORK, depth)
+            Assert.assertNull(depthFrom)
+        }
+
+        DownloadRequest(context1, uriString1) {
+            depth(LOCAL, "TestDepthFrom")
+        }.apply {
+            Assert.assertEquals(LOCAL, depth)
+            Assert.assertEquals("TestDepthFrom", depthFrom)
         }
     }
 
@@ -1287,7 +1308,7 @@ class DownloadRequestTest {
             }
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)){
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
                         uriEmptyError(android.R.drawable.alert_dark_frame)
                     },
                     error

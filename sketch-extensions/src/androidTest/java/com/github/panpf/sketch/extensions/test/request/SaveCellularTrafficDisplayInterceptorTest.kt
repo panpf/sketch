@@ -167,7 +167,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
         }
 
         // isCellularNetworkConnected false
-        interceptor.enabled = true
+        errorInterceptor.enabled = true
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             saveCellularTraffic()
         }.let { request ->
@@ -205,8 +205,8 @@ class SaveCellularTrafficDisplayInterceptorTest {
             runBlocking {
                 interceptor.intercept(chain)
             }
-            Assert.assertEquals(MEMORY, chain.finalRequest.depth)
-            Assert.assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
+            Assert.assertEquals(Depth.LOCAL, chain.finalRequest.depth)
+            Assert.assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
     }
 

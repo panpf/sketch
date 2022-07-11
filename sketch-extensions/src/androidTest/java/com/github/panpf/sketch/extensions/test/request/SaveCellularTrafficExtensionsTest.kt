@@ -9,13 +9,13 @@ import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_KEY
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 import com.github.panpf.sketch.request.isDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic
 import com.github.panpf.sketch.request.saveCellularTraffic
-import com.github.panpf.sketch.request.setDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.util.UnknownException
 import org.junit.Assert
 import org.junit.Test
@@ -149,23 +149,23 @@ class SaveCellularTrafficExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).setDepthFromSaveCellularTraffic(true)
+            (this as ImageRequest.Builder).depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertTrue(isDepthFromSaveCellularTraffic)
         }
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).setDepthFromSaveCellularTraffic(false)
+            (this as ImageRequest.Builder).depth(NETWORK, "$SAVE_CELLULAR_TRAFFIC_KEY:error")
         }.apply {
             Assert.assertFalse(isDepthFromSaveCellularTraffic)
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            setDepthFromSaveCellularTraffic(true)
+            depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertTrue(isDepthFromSaveCellularTraffic)
         }
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            setDepthFromSaveCellularTraffic(false)
+            depth(NETWORK, "$SAVE_CELLULAR_TRAFFIC_KEY:error")
         }.apply {
             Assert.assertFalse(isDepthFromSaveCellularTraffic)
         }
@@ -175,25 +175,25 @@ class SaveCellularTrafficExtensionsTest {
         }
 
         ImageOptions {
-            setDepthFromSaveCellularTraffic(true)
+            depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertTrue(isDepthFromSaveCellularTraffic)
         }
         ImageOptions {
-            setDepthFromSaveCellularTraffic(false)
+            depth(NETWORK, "$SAVE_CELLULAR_TRAFFIC_KEY:error")
         }.apply {
             Assert.assertFalse(isDepthFromSaveCellularTraffic)
         }
 
         val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
         val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
-            setDepthFromSaveCellularTraffic()
+            depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).cacheKey
         val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
-            setDepthFromSaveCellularTraffic()
+            depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
@@ -203,22 +203,19 @@ class SaveCellularTrafficExtensionsTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            depth(LOCAL)
-            setDepthFromSaveCellularTraffic()
+            depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertTrue(isCausedBySaveCellularTraffic(this, DepthException("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            depth(LOCAL)
-            setDepthFromSaveCellularTraffic()
+            depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertFalse(isCausedBySaveCellularTraffic(this, UnknownException("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            depth(NETWORK)
-            setDepthFromSaveCellularTraffic()
+            depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertFalse(isCausedBySaveCellularTraffic(this, DepthException("")))
         }

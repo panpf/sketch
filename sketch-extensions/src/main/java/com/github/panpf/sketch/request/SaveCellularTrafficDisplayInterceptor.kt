@@ -17,6 +17,10 @@ class SaveCellularTrafficDisplayInterceptor constructor(
     isCellularNetworkConnected: ((Sketch) -> Boolean)? = null
 ) : RequestInterceptor {
 
+    companion object {
+        private const val OLD_DEPTH_KEY = "SAVE_CELLULAR_TRAFFIC_OLD_DEPTH"
+    }
+
     var enabled = true
 
     private val isCellularNetworkConnected: (Sketch) -> Boolean =
@@ -27,20 +31,41 @@ class SaveCellularTrafficDisplayInterceptor constructor(
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
-        val finalRequest = if (
-            request is DisplayRequest
-            && enabled
-            && request.isSaveCellularTraffic
-            && !request.isIgnoredSaveCellularTraffic
-            && isCellularNetworkConnected(chain.sketch)
-            && request.depth < Depth.LOCAL
-        ) {
-            request.newDisplayRequest {
-                depth(Depth.LOCAL)
-                setDepthFromSaveCellularTraffic()
+        val finalRequest = when {
+            request !is DisplayRequest -> {
+                request
             }
-        } else {
-            request
+            enabled && request.isSaveCellularTraffic
+                    && !request.isIgnoredSaveCellularTraffic
+                    && isCellularNetworkConnected(chain.sketch) -> {
+                if (request.depth != Depth.LOCAL) {
+                    val oldDepth = request.depth
+                    request.newDisplayRequest {
+                        depth(Depth.LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
+                        setParameter(OLD_DEPTH_KEY, oldDepth.name, null)
+                    }
+                } else {
+                    request
+                }
+            }
+            else -> {
+                val oldDepth = request.parameters?.value<String>(OLD_DEPTH_KEY)?.let {
+                    try {
+                        Depth.valueOf(it)
+                    } catch (e: Exception) {
+                        e.toString()
+                        null
+                    }
+                }
+                if (oldDepth != null && request.depth != oldDepth) {
+                    request.newDisplayRequest {
+                        depth(oldDepth)
+                        removeParameter(OLD_DEPTH_KEY)
+                    }
+                } else {
+                    request
+                }
+            }
         }
         return chain.proceed(finalRequest)
     }

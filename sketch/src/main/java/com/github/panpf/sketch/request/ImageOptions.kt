@@ -38,6 +38,8 @@ import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import java.util.LinkedList
 
+const val DEPTH_FROM_KEY = "sketch#depthFrom"
+
 /**
  * Build and set the [ImageOptions]
  */
@@ -56,6 +58,12 @@ interface ImageOptions {
      * The processing depth of the request.
      */
     val depth: Depth?
+
+    /**
+     * where does this depth come from
+     */
+    val depthFrom: String?
+        get() = parameters?.value(DEPTH_FROM_KEY)
 
     /**
      * A map of generic values that can be used to pass custom data to [Fetcher] and [BitmapDecoder] and [DrawableDecoder].
@@ -295,8 +303,13 @@ interface ImageOptions {
         /**
          * Set the requested depth
          */
-        fun depth(depth: Depth?): Builder = apply {
+        fun depth(depth: Depth?, depthFrom: String? = null): Builder = apply {
             this.depth = depth
+            if (depth != null && depthFrom != null) {
+                setParameter(DEPTH_FROM_KEY, depthFrom, null)
+            } else {
+                removeParameter(DEPTH_FROM_KEY)
+            }
         }
 
 

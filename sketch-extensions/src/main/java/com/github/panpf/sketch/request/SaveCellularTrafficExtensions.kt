@@ -2,7 +2,7 @@ package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.util.SketchException
 
-private const val KEY = "sketch#SaveCellularTraffic"
+const val SAVE_CELLULAR_TRAFFIC_KEY = "sketch#SaveCellularTraffic"
 private const val ENABLED_KEY = "sketch#enabledSaveCellularTraffic"
 private const val IGNORE_KEY = "sketch#ignoreSaveCellularTraffic"
 
@@ -103,58 +103,21 @@ fun ImageOptions.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): Imag
 val ImageOptions.isIgnoredSaveCellularTraffic: Boolean
     get() = parameters?.value<Boolean>(IGNORE_KEY) == true
 
-
-/**
- * Set Depth from cellular data saving feature
- */
-internal fun ImageRequest.Builder.setDepthFromSaveCellularTraffic(enabled: Boolean = true): ImageRequest.Builder =
-    apply {
-        if (enabled) {
-            depthFrom(KEY)
-        } else {
-            depthFrom(null)
-        }
-    }
-
-/**
- * Set Depth from cellular data saving feature
- */
-internal fun DisplayRequest.Builder.setDepthFromSaveCellularTraffic(enabled: Boolean = true): DisplayRequest.Builder =
-    apply {
-        if (enabled) {
-            depthFrom(KEY)
-        } else {
-            depthFrom(null)
-        }
-    }
-
 /**
  * Returns true if Depth is from the cellular saving feature
  */
 val ImageRequest.isDepthFromSaveCellularTraffic: Boolean
-    get() = depthFrom == KEY
-
-/**
- * Set Depth from cellular data saving feature
- */
-internal fun ImageOptions.Builder.setDepthFromSaveCellularTraffic(enabled: Boolean = true): ImageOptions.Builder =
-    apply {
-        if (enabled) {
-            depthFrom(KEY)
-        } else {
-            depthFrom(null)
-        }
-    }
+    get() = depthFrom == SAVE_CELLULAR_TRAFFIC_KEY
 
 /**
  * Returns true if Depth is from the cellular saving feature
  */
 val ImageOptions.isDepthFromSaveCellularTraffic: Boolean
-    get() = depthFrom == KEY
+    get() = depthFrom == SAVE_CELLULAR_TRAFFIC_KEY
 
 
 /**
  * Returns true if the request is abnormal due to the cellular data saving feature
  */
 fun isCausedBySaveCellularTraffic(request: ImageRequest, exception: SketchException?): Boolean =
-    exception is DepthException && request.depth == Depth.LOCAL && request.depthFrom == KEY
+    exception is DepthException && request.depth == Depth.LOCAL && request.isDepthFromSaveCellularTraffic

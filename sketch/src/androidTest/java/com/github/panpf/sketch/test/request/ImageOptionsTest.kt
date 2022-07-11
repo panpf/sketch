@@ -695,18 +695,42 @@ class ImageOptionsTest {
     fun testDepth() {
         ImageOptions().apply {
             Assert.assertNull(depth)
+            Assert.assertNull(depthFrom)
         }
 
         ImageOptions {
             depth(null)
         }.apply {
             Assert.assertNull(depth)
+            Assert.assertNull(depthFrom)
         }
 
         ImageOptions {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
+            Assert.assertNull(depthFrom)
+        }
+
+        ImageOptions {
+            depth(LOCAL, null)
+        }.apply {
+            Assert.assertEquals(LOCAL, depth)
+            Assert.assertNull(depthFrom)
+        }
+
+        ImageOptions {
+            depth(null, "TestDepthFrom")
+        }.apply {
+            Assert.assertNull(depth)
+            Assert.assertNull(depthFrom)
+        }
+
+        ImageOptions {
+            depth(LOCAL, "TestDepthFrom")
+        }.apply {
+            Assert.assertEquals(LOCAL, depth)
+            Assert.assertEquals("TestDepthFrom", depthFrom)
         }
     }
 
@@ -1436,7 +1460,7 @@ class ImageOptionsTest {
             }
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)){
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
                         uriEmptyError(android.R.drawable.alert_dark_frame)
                     },
                     error

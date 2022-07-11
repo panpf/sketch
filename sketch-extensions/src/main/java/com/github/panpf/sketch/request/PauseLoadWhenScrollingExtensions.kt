@@ -2,7 +2,7 @@ package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.util.SketchException
 
-private const val KEY = "sketch#PauseLoadWhenScrolling"
+const val PAUSE_LOAD_WHEN_SCROLLING_KEY = "sketch#PauseLoadWhenScrolling"
 private const val ENABLED_KEY = "sketch#enabledPauseLoadWhenScrolling"
 private const val IGNORE_KEY = "sketch#ignorePauseLoadWhenScrolling"
 
@@ -105,56 +105,21 @@ val ImageOptions.isIgnoredPauseLoadWhenScrolling: Boolean
 
 
 /**
- * Set Depth from pause load when scrolling feature
- */
-internal fun ImageRequest.Builder.setDepthFromPauseLoadWhenScrolling(enabled: Boolean = true): ImageRequest.Builder =
-    apply {
-        if (enabled) {
-            depthFrom(KEY)
-        } else {
-            depthFrom(null)
-        }
-    }
-
-/**
- * Set Depth from pause load when scrolling feature
- */
-internal fun DisplayRequest.Builder.setDepthFromPauseLoadWhenScrolling(enabled: Boolean = true): DisplayRequest.Builder =
-    apply {
-        if (enabled) {
-            depthFrom(KEY)
-        } else {
-            depthFrom(null)
-        }
-    }
-
-/**
  * Returns true if Depth is from the pause load when scrolling feature
  */
 val ImageRequest.isDepthFromPauseLoadWhenScrolling: Boolean
-    get() = depthFrom == KEY
+    get() = depthFrom == PAUSE_LOAD_WHEN_SCROLLING_KEY
 
-/**
- * Set Depth from pause load when scrolling feature
- */
-internal fun ImageOptions.Builder.setDepthFromPauseLoadWhenScrolling(enabled: Boolean = true): ImageOptions.Builder =
-    apply {
-        if (enabled) {
-            depthFrom(KEY)
-        } else {
-            depthFrom(null)
-        }
-    }
 
 /**
  * Returns true if Depth is from the pause load when scrolling feature
  */
 val ImageOptions.isDepthFromPauseLoadWhenScrolling: Boolean
-    get() = depthFrom == KEY
+    get() = depthFrom == PAUSE_LOAD_WHEN_SCROLLING_KEY
 
 
 /**
  * Returns true if the request is abnormal due to the pause load when scrolling feature
  */
 fun isCausedByPauseLoadWhenScrolling(request: ImageRequest, exception: SketchException?): Boolean =
-    exception is DepthException && request.depth == Depth.MEMORY && request.depthFrom == KEY
+    exception is DepthException && request.depth == Depth.MEMORY && request.isDepthFromPauseLoadWhenScrolling

@@ -486,21 +486,42 @@ class DisplayRequestTest {
         val uriString1 = newAssetUri("sample.jpeg")
         DisplayRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(parameters)
+            Assert.assertNull(depthFrom)
         }
 
         DisplayRequest(context1, uriString1) {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
-            Assert.assertNull(parameters)
+            Assert.assertNull(depthFrom)
         }
 
         DisplayRequest(context1, uriString1) {
             depth(null)
         }.apply {
             Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(parameters)
+            Assert.assertNull(depthFrom)
+        }
+
+        DisplayRequest(context1, uriString1) {
+            depth(LOCAL, null)
+        }.apply {
+            Assert.assertEquals(LOCAL, depth)
+            Assert.assertNull(depthFrom)
+        }
+
+        DisplayRequest(context1, uriString1) {
+            depth(null, "TestDepthFrom")
+        }.apply {
+            Assert.assertEquals(NETWORK, depth)
+            Assert.assertNull(depthFrom)
+        }
+
+        DisplayRequest(context1, uriString1) {
+            depth(LOCAL, "TestDepthFrom")
+        }.apply {
+            Assert.assertEquals(LOCAL, depth)
+            Assert.assertEquals("TestDepthFrom", depthFrom)
         }
     }
 

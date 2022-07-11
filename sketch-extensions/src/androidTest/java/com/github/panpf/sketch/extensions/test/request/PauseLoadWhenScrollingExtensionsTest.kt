@@ -5,17 +5,18 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
+import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest.Builder
+import com.github.panpf.sketch.request.PAUSE_LOAD_WHEN_SCROLLING_KEY
 import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isDepthFromPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isIgnoredPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
-import com.github.panpf.sketch.request.setDepthFromPauseLoadWhenScrolling
 import com.github.panpf.sketch.util.UnknownException
 import org.junit.Assert
 import org.junit.Test
@@ -149,23 +150,23 @@ class PauseLoadWhenScrollingExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as Builder).setDepthFromPauseLoadWhenScrolling(true)
+            (this as Builder).depth(NETWORK, PAUSE_LOAD_WHEN_SCROLLING_KEY)
         }.apply {
             Assert.assertTrue(isDepthFromPauseLoadWhenScrolling)
         }
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as Builder).setDepthFromPauseLoadWhenScrolling(false)
+            (this as Builder).depth(NETWORK, "$PAUSE_LOAD_WHEN_SCROLLING_KEY:error")
         }.apply {
             Assert.assertFalse(isDepthFromPauseLoadWhenScrolling)
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            setDepthFromPauseLoadWhenScrolling(true)
+            depth(NETWORK, PAUSE_LOAD_WHEN_SCROLLING_KEY)
         }.apply {
             Assert.assertTrue(isDepthFromPauseLoadWhenScrolling)
         }
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            setDepthFromPauseLoadWhenScrolling(false)
+            depth(NETWORK, "$PAUSE_LOAD_WHEN_SCROLLING_KEY:error")
         }.apply {
             Assert.assertFalse(isDepthFromPauseLoadWhenScrolling)
         }
@@ -175,25 +176,25 @@ class PauseLoadWhenScrollingExtensionsTest {
         }
 
         ImageOptions {
-            setDepthFromPauseLoadWhenScrolling(true)
+            depth(NETWORK, PAUSE_LOAD_WHEN_SCROLLING_KEY)
         }.apply {
             Assert.assertTrue(isDepthFromPauseLoadWhenScrolling)
         }
         ImageOptions {
-            setDepthFromPauseLoadWhenScrolling(false)
+            depth(NETWORK, "$PAUSE_LOAD_WHEN_SCROLLING_KEY:error")
         }.apply {
             Assert.assertFalse(isDepthFromPauseLoadWhenScrolling)
         }
 
         val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
         val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
-            setDepthFromPauseLoadWhenScrolling()
+            depth(NETWORK, PAUSE_LOAD_WHEN_SCROLLING_KEY)
         }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).cacheKey
         val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
-            setDepthFromPauseLoadWhenScrolling()
+            depth(NETWORK, PAUSE_LOAD_WHEN_SCROLLING_KEY)
         }.cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
@@ -203,22 +204,19 @@ class PauseLoadWhenScrollingExtensionsTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            depth(MEMORY)
-            setDepthFromPauseLoadWhenScrolling()
+            depth(MEMORY, PAUSE_LOAD_WHEN_SCROLLING_KEY)
         }.apply {
             Assert.assertTrue(isCausedByPauseLoadWhenScrolling(this, DepthException("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            depth(MEMORY)
-            setDepthFromPauseLoadWhenScrolling()
+            depth(MEMORY, PAUSE_LOAD_WHEN_SCROLLING_KEY)
         }.apply {
             Assert.assertFalse(isCausedByPauseLoadWhenScrolling(this, UnknownException("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            depth(LOCAL)
-            setDepthFromPauseLoadWhenScrolling()
+            depth(LOCAL, PAUSE_LOAD_WHEN_SCROLLING_KEY)
         }.apply {
             Assert.assertFalse(isCausedByPauseLoadWhenScrolling(this, DepthException("")))
         }

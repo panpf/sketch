@@ -204,8 +204,8 @@ interface DisplayRequest : ImageRequest {
         }
 
 
-        override fun depth(depth: Depth?): Builder = apply {
-            super.depth(depth)
+        override fun depth(depth: Depth?, depthFrom: String?): Builder = apply {
+            super.depth(depth, depthFrom)
         }
 
         override fun parameters(parameters: Parameters?): Builder = apply {

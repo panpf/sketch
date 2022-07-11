@@ -3,8 +3,8 @@ package com.github.panpf.sketch.request
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
+import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
 
 /**
  * Pause loading new images while the list is scrolling
@@ -17,6 +17,7 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
 
     companion object {
         var scrolling = false
+        private const val OLD_DEPTH_KEY = "PAUSE_LOAD_WHEN_SCROLLING_OLD_DEPTH"
     }
 
     var enabled = true
@@ -24,20 +25,42 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
-        val finalRequest = if (
-            request is DisplayRequest
-            && enabled
-            && scrolling
-            && request.isPauseLoadWhenScrolling
-            && !request.isIgnoredPauseLoadWhenScrolling
-            && request.depth < Depth.MEMORY
-        ) {
-            request.newDisplayRequest {
-                depth(Depth.MEMORY)
-                setDepthFromPauseLoadWhenScrolling()
+        val finalRequest = when {
+            request !is DisplayRequest -> {
+                request
             }
-        } else {
-            request
+            enabled
+                    && scrolling
+                    && request.isPauseLoadWhenScrolling
+                    && !request.isIgnoredPauseLoadWhenScrolling -> {
+                if (request.depth != Depth.MEMORY) {
+                    val oldDepth = request.depth
+                    request.newDisplayRequest {
+                        depth(Depth.MEMORY, PAUSE_LOAD_WHEN_SCROLLING_KEY)
+                        setParameter(OLD_DEPTH_KEY, oldDepth.name, null)
+                    }
+                } else {
+                    request
+                }
+            }
+            else -> {
+                val oldDepth = request.parameters?.value<String>(OLD_DEPTH_KEY)?.let {
+                    try {
+                        Depth.valueOf(it)
+                    } catch (e: Exception) {
+                        e.toString()
+                        null
+                    }
+                }
+                if (oldDepth != null && request.depth != oldDepth) {
+                    request.newDisplayRequest {
+                        depth(oldDepth)
+                        removeParameter(OLD_DEPTH_KEY)
+                    }
+                } else {
+                    request
+                }
+            }
         }
         return chain.proceed(finalRequest)
     }

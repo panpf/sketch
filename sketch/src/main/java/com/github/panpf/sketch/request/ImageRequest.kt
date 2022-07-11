@@ -82,6 +82,12 @@ interface ImageRequest {
     val depth: Depth
 
     /**
+     * where does this depth come from
+     */
+    val depthFrom: String?
+        get() = parameters?.value(DEPTH_FROM_KEY)
+
+    /**
      * A map of generic values that can be used to pass custom data to [Fetcher] and [BitmapDecoder] and [DrawableDecoder].
      */
     val parameters: Parameters?
@@ -326,8 +332,8 @@ interface ImageRequest {
         /**
          * Set the requested depth
          */
-        open fun depth(depth: Depth?): Builder = apply {
-            definedOptionsBuilder.depth(depth)
+        open fun depth(depth: Depth?, depthFrom: String? = null): Builder = apply {
+            definedOptionsBuilder.depth(depth, depthFrom)
         }
 
         /**
