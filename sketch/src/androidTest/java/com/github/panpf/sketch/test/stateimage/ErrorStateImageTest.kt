@@ -26,6 +26,7 @@ class ErrorStateImageTest {
         val colorDrawable2 = ColorDrawable(Color.RED)
 
         ErrorStateImage(DrawableStateImage(colorDrawable)).apply {
+            Assert.assertFalse(matcherList.isEmpty())
             Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable,
@@ -36,9 +37,19 @@ class ErrorStateImageTest {
         ErrorStateImage(DrawableStateImage(colorDrawable)) {
             uriEmptyError(colorDrawable2)
         }.apply {
+            Assert.assertFalse(matcherList.isEmpty())
             Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable2,
+                getDrawable(sketch, request, UriInvalidException(""))
+            )
+        }
+
+        ErrorStateImage {
+        }.apply {
+            Assert.assertTrue(matcherList.isEmpty())
+            Assert.assertNull(getDrawable(sketch, request, null))
+            Assert.assertNull(
                 getDrawable(sketch, request, UriInvalidException(""))
             )
         }

@@ -376,21 +376,27 @@ interface DisplayRequest : ImageRequest {
         }
 
         override fun error(
-            stateImage: StateImage?, configBlock: (ErrorStateImage.Builder.() -> Unit)?
+            defaultStateImage: StateImage?, configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
-            super.error(stateImage, configBlock)
+            super.error(defaultStateImage, configBlock)
         }
 
         override fun error(
-            drawable: Drawable, configBlock: (ErrorStateImage.Builder.() -> Unit)?
+            defaultDrawable: Drawable, configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
-            super.error(drawable, configBlock)
+            super.error(defaultDrawable, configBlock)
         }
 
         override fun error(
-            drawableResId: Int, configBlock: (ErrorStateImage.Builder.() -> Unit)?
+            defaultDrawableResId: Int, configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
-            super.error(drawableResId, configBlock)
+            super.error(defaultDrawableResId, configBlock)
+        }
+
+        override fun error(
+            configBlock: (ErrorStateImage.Builder.() -> Unit)?
+        ): Builder = apply {
+            super.error(configBlock)
         }
 
         override fun transition(transition: Factory?): Builder = apply {

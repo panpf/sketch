@@ -24,42 +24,25 @@ import com.github.panpf.sketch.util.SketchException
 import java.util.LinkedList
 
 fun ErrorStateImage(
-    defaultImage: StateImage,
+    defaultImage: StateImage? = null,
     configBlock: (Builder.() -> Unit)? = null
 ): ErrorStateImage = Builder(defaultImage).apply {
     configBlock?.invoke(this)
 }.build()
 
-class ErrorStateImage private constructor(val matcherList: List<Matcher>) : StateImage {
+interface ErrorStateImage : StateImage {
+
+    val matcherList: List<Matcher>
 
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
         exception: SketchException?
-    ): Drawable? =
-        matcherList
-            .find { it.match(request, exception) }
-            ?.getDrawable(sketch, request, exception)
+    ): Drawable? = matcherList
+        .find { it.match(request, exception) }
+        ?.getDrawable(sketch, request, exception)
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ErrorStateImage) return false
-
-        if (matcherList != other.matcherList) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return matcherList.hashCode()
-    }
-
-    override fun toString(): String {
-        val matchersString = matcherList.joinToString(prefix = "[", postfix = "]")
-        return "ErrorStateImage(${matchersString})"
-    }
-
-    class Builder(private val defaultImage: StateImage) {
+    class Builder constructor(private val defaultImage: StateImage?) {
 
         private val matcherList = LinkedList<Matcher>()
 
@@ -79,8 +62,33 @@ class ErrorStateImage private constructor(val matcherList: List<Matcher>) : Stat
             addMatcher(UriEmptyMatcher(DrawableStateImage(emptyImageResId)))
         }
 
-        fun build(): ErrorStateImage =
-            ErrorStateImage(matcherList.plus(DefaultMatcher(defaultImage)))
+        fun build(): ErrorStateImage {
+            val list = if (defaultImage != null) {
+                matcherList.plus(DefaultMatcher(defaultImage))
+            } else {
+                matcherList
+            }
+            return ErrorStateImageImpl(list)
+        }
+    }
+
+    class ErrorStateImageImpl(override val matcherList: List<Matcher>) : ErrorStateImage {
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ErrorStateImageImpl) return false
+            if (matcherList != other.matcherList) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return matcherList.hashCode()
+        }
+
+        override fun toString(): String {
+            val matchersString = matcherList.joinToString(prefix = "[", postfix = "]")
+            return "ErrorStateImage(${matchersString})"
+        }
     }
 
     interface Matcher {

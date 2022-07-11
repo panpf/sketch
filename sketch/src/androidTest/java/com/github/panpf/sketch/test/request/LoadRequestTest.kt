@@ -1264,7 +1264,7 @@ class LoadRequestTest {
             error(ColorStateImage(IntColor(Color.BLUE)))
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage.Builder(ColorStateImage(IntColor(Color.BLUE))).build(),
+                    ErrorStateImage(ColorStateImage(IntColor(Color.BLUE))),
                     error
                 )
             }
@@ -1277,8 +1277,7 @@ class LoadRequestTest {
             error(android.R.drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage.Builder(DrawableStateImage(android.R.drawable.bottom_bar))
-                        .build(),
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
                     error
                 )
             }
@@ -1288,15 +1287,23 @@ class LoadRequestTest {
             }
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage.Builder(DrawableStateImage(android.R.drawable.bottom_bar))
-                        .uriEmptyError(android.R.drawable.alert_dark_frame).build(),
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)){
+                        uriEmptyError(android.R.drawable.alert_dark_frame)
+                    },
                     error
                 )
             }
 
-            error(null)
+            error()
             build().apply {
                 Assert.assertNull(error)
+            }
+
+            error {
+                uriEmptyError(android.R.drawable.btn_dialog)
+            }
+            build().apply {
+                Assert.assertNotNull(error)
             }
         }
     }

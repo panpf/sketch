@@ -665,9 +665,9 @@ interface ImageRequest {
          * You can also set image of different error types via the trailing lambda function
          */
         open fun error(
-            stateImage: StateImage?, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+            defaultStateImage: StateImage?, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            definedOptionsBuilder.error(stateImage, configBlock)
+            definedOptionsBuilder.error(defaultStateImage, configBlock)
         }
 
         /**
@@ -676,9 +676,9 @@ interface ImageRequest {
          * You can also set image of different error types via the trailing lambda function
          */
         open fun error(
-            drawable: Drawable, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+            defaultDrawable: Drawable, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            definedOptionsBuilder.error(drawable, configBlock)
+            definedOptionsBuilder.error(defaultDrawable, configBlock)
         }
 
         /**
@@ -687,9 +687,20 @@ interface ImageRequest {
          * You can also set image of different error types via the trailing lambda function
          */
         open fun error(
-            drawableResId: Int, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+            defaultDrawableResId: Int, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            definedOptionsBuilder.error(drawableResId, configBlock)
+            definedOptionsBuilder.error(defaultDrawableResId, configBlock)
+        }
+
+        /**
+         * Set Drawable res image to display when loading fails.
+         *
+         * You can also set image of different error types via the trailing lambda function
+         */
+        open fun error(
+            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+        ): Builder = apply {
+            definedOptionsBuilder.error(configBlock)
         }
 
         /**

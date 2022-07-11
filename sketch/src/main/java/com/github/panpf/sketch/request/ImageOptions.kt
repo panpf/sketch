@@ -624,12 +624,11 @@ interface ImageOptions {
          * You can also set image of different error types via the trailing lambda function
          */
         fun error(
-            stateImage: StateImage?,
+            defaultStateImage: StateImage?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            this.error = stateImage?.let {
-                ErrorStateImage(it, configBlock)
-            }
+            this.error = ErrorStateImage(defaultStateImage, configBlock)
+                .takeIf { it.matcherList.isNotEmpty() }
         }
 
         /**
@@ -638,9 +637,9 @@ interface ImageOptions {
          * You can also set image of different error types via the trailing lambda function
          */
         fun error(
-            drawable: Drawable,
+            defaultDrawable: Drawable,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = error(DrawableStateImage(drawable), configBlock)
+        ): Builder = error(DrawableStateImage(defaultDrawable), configBlock)
 
         /**
          * Set Drawable res image to display when loading fails.
@@ -648,9 +647,18 @@ interface ImageOptions {
          * You can also set image of different error types via the trailing lambda function
          */
         fun error(
-            drawableResId: Int,
+            defaultDrawableResId: Int,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = error(DrawableStateImage(drawableResId), configBlock)
+        ): Builder = error(DrawableStateImage(defaultDrawableResId), configBlock)
+
+        /**
+         * Set image to display when loading fails.
+         *
+         * You can also set image of different error types via the trailing lambda function
+         */
+        fun error(
+            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+        ): Builder = error(null, configBlock)
 
         /**
          * Set the transition between the current image and the new image
