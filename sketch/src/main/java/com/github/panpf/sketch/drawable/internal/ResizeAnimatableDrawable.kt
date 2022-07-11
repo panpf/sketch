@@ -3,16 +3,13 @@ package com.github.panpf.sketch.drawable.internal
 import android.annotation.SuppressLint
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.resize.Resize
 
 open class ResizeAnimatableDrawable(
-    sketch: Sketch,
     val drawable: SketchAnimatableDrawable,
     resize: Resize
-) :
-    ResizeDrawable(sketch, drawable, resize), Animatable2Compat {
+) : ResizeDrawable(drawable, resize), Animatable2Compat {
 
     override fun start() {
         drawable.start()
@@ -46,7 +43,7 @@ open class ResizeAnimatableDrawable(
     override fun mutate(): ResizeAnimatableDrawable {
         val mutateDrawable = wrappedDrawable.mutate()
         return if (mutateDrawable !== wrappedDrawable) {
-            ResizeAnimatableDrawable(sketch, mutateDrawable as SketchAnimatableDrawable, resize)
+            ResizeAnimatableDrawable(mutateDrawable as SketchAnimatableDrawable, resize)
         } else {
             this
         }

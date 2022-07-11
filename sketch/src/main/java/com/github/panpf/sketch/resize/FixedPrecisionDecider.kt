@@ -16,7 +16,7 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
     override val key: String by lazy { "FixedPrecisionDecider($precision)" }
 
     override fun get(
-        sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Precision {
         return precision
     }

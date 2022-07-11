@@ -93,7 +93,7 @@ sketchZoomImageView.zoomAbility.readModeEnabled = true
 
 [SketchZoomImageView] 通过 [ReadModeDecider] 来判定是否需要使用阅读模式，默认实现是 [LongImageReadModeDecider]，仅对长图使用阅读模式
 
-> 长图规则：[LongImageReadModeDecider] 默认使用 [Sketch].longImageDecider 来判定长图，默认实现为 [DefaultLongImageDecider]
+> 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageReadModeDecider] 时使用自定义的规则
 
 如果你想修改阅读模式判定规则可以实现 [ReadModeDecider] 接口，然后通过 [ZoomAbility] 的 readModeDecider 属性应用，如下：
 

@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.asOrThrow
 import org.json.JSONObject
 
 /**
@@ -11,8 +12,11 @@ import org.json.JSONObject
  *
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO].
  */
-fun longImageClipPrecision(precision: Precision): LongImageClipPrecisionDecider =
-    LongImageClipPrecisionDecider(precision)
+fun longImageClipPrecision(
+    precision: Precision,
+    longImageDecider: LongImageDecider = DefaultLongImageDecider()
+): LongImageClipPrecisionDecider =
+    LongImageClipPrecisionDecider(precision, longImageDecider)
 
 /**
  * The long image uses the specified precision, use the '[Precision.LESS_PIXELS]' for others.
@@ -20,8 +24,9 @@ fun longImageClipPrecision(precision: Precision): LongImageClipPrecisionDecider 
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO].
  */
 @Keep
-data class LongImageClipPrecisionDecider constructor(
-    private val precision: Precision = Precision.SAME_ASPECT_RATIO,
+class LongImageClipPrecisionDecider constructor(
+    val precision: Precision = Precision.SAME_ASPECT_RATIO,
+    val longImageDecider: LongImageDecider = DefaultLongImageDecider(),
 ) : PrecisionDecider {
 
     init {
@@ -30,14 +35,14 @@ data class LongImageClipPrecisionDecider constructor(
         }
     }
 
-    override val key: String by lazy { "LongImageClipPrecisionDecider($precision)" }
+    override val key: String by lazy { "LongImageClipPrecisionDecider(precision=$precision,longImageDecider=$longImageDecider)" }
 
     override fun get(
-        sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Precision {
-        val longImageDecider = sketch.longImageDecider
-        return if (longImageDecider.isLongImage(imageWidth, imageHeight, resizeWidth, resizeHeight))
-            precision else Precision.LESS_PIXELS
+        val isLongImage = longImageDecider
+            .isLongImage(imageWidth, imageHeight, resizeWidth, resizeHeight)
+        return if (isLongImage) precision else Precision.LESS_PIXELS
     }
 
     override fun toString(): String = key
@@ -47,16 +52,43 @@ data class LongImageClipPrecisionDecider constructor(
         return Serializer::class.java as Class<T1>
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is LongImageClipPrecisionDecider) return false
+        if (precision != other.precision) return false
+        if (longImageDecider != other.longImageDecider) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = precision.hashCode()
+        result = 31 * result + longImageDecider.hashCode()
+        return result
+    }
+
     @Keep
     class Serializer : JsonSerializer<LongImageClipPrecisionDecider> {
         override fun toJson(t: LongImageClipPrecisionDecider): JSONObject =
             JSONObject().apply {
                 put("precision", t.precision.name)
+
+                t.longImageDecider.also {
+                    val serializerClass =
+                        it.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
+                    val serializer = serializerClass.newInstance()
+                    put("longImageDeciderSerializerClassName", serializerClass.name)
+                    put("longImageDeciderContent", serializer.toJson(it))
+                }
             }
 
         override fun fromJson(jsonObject: JSONObject): LongImageClipPrecisionDecider =
             LongImageClipPrecisionDecider(
                 Precision.valueOf(jsonObject.getString("precision")),
+                longImageDecider = jsonObject.getString("longImageDeciderSerializerClassName")
+                    .let { Class.forName(it) }
+                    .newInstance().asOrThrow<JsonSerializer<*>>()
+                    .fromJson(jsonObject.getJSONObject("longImageDeciderContent"))!!
+                    .asOrThrow(),
             )
     }
 }

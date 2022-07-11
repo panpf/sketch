@@ -1,9 +1,15 @@
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.resize
+
+import androidx.annotation.Keep
+import com.github.panpf.sketch.util.JsonSerializable
+import com.github.panpf.sketch.util.JsonSerializer
+import com.github.panpf.sketch.util.format
+import org.json.JSONObject
 
 /**
  * Determine whether it is a long image given the image size and target size
  */
-interface LongImageDecider {
+interface LongImageDecider : JsonSerializable {
 
     /**
      * Determine whether it is a long image given the image size and target size
@@ -66,5 +72,25 @@ open class DefaultLongImageDecider(
 
     override fun toString(): String {
         return "DefaultLongImageDecider(smallRatioMultiple=$smallRatioMultiple,bigRatioMultiple=$bigRatioMultiple)"
+    }
+
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
+    }
+
+    @Keep
+    class Serializer : JsonSerializer<DefaultLongImageDecider> {
+        override fun toJson(t: DefaultLongImageDecider): JSONObject =
+            JSONObject().apply {
+                put("smallRatioMultiple", t.smallRatioMultiple)
+                put("bigRatioMultiple", t.bigRatioMultiple)
+            }
+
+        override fun fromJson(jsonObject: JSONObject): DefaultLongImageDecider =
+            DefaultLongImageDecider(
+                smallRatioMultiple = jsonObject.getDouble("smallRatioMultiple").toFloat(),
+                bigRatioMultiple = jsonObject.getDouble("bigRatioMultiple").toFloat(),
+            )
     }
 }

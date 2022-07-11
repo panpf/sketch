@@ -18,7 +18,7 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
     override val key: String by lazy { "FixedScaleDecider($scale)" }
 
     override fun get(
-        sketch: Sketch, imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Scale {
         return scale
     }

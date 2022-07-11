@@ -25,7 +25,6 @@ class Zoomer constructor(
     val sketch: Sketch,
     val view: View,
     scaleType: ScaleType,
-    readModeDecider: ReadModeDecider?,
 ) {
 
     companion object {
@@ -95,7 +94,7 @@ class Zoomer constructor(
                 reset()
             }
         }
-    var readModeDecider: ReadModeDecider? = readModeDecider
+    var readModeDecider: ReadModeDecider? = null
         internal set(value) {
             if (field != value) {
                 field = value

@@ -8,7 +8,6 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.longImageScale
-import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.Size
@@ -33,14 +32,13 @@ class LongImageScaleDeciderTest {
 
     @Test
     fun testGet() {
-        val sketch = newSketch()
         LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
-            Assert.assertEquals(CENTER_CROP, get(sketch, 100, 50, 50, 50))
-            Assert.assertEquals(START_CROP, get(sketch, 100, 40, 50, 50))
+            Assert.assertEquals(CENTER_CROP, get(100, 50, 50, 50))
+            Assert.assertEquals(START_CROP, get(100, 40, 50, 50))
         }
         LongImageScaleDecider(END_CROP, CENTER_CROP).apply {
-            Assert.assertEquals(CENTER_CROP, get(sketch, 100, 50, 50, 50))
-            Assert.assertEquals(END_CROP, get(sketch, 100, 40, 50, 50))
+            Assert.assertEquals(CENTER_CROP, get(100, 50, 50, 50))
+            Assert.assertEquals(END_CROP, get(100, 40, 50, 50))
         }
     }
 
@@ -76,20 +74,32 @@ class LongImageScaleDeciderTest {
     @Test
     fun testKey() {
         LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
-            Assert.assertEquals("LongImageScaleDecider(START_CROP,CENTER_CROP)", key)
+            Assert.assertEquals(
+                "LongImageScaleDecider(longImage=START_CROP,otherImage=CENTER_CROP),longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0))",
+                key
+            )
         }
         LongImageScaleDecider(END_CROP, CENTER_CROP).apply {
-            Assert.assertEquals("LongImageScaleDecider(END_CROP,CENTER_CROP)", key)
+            Assert.assertEquals(
+                "LongImageScaleDecider(longImage=END_CROP,otherImage=CENTER_CROP),longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0))",
+                key
+            )
         }
     }
 
     @Test
     fun testToString() {
         LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
-            Assert.assertEquals("LongImageScaleDecider(START_CROP,CENTER_CROP)", toString())
+            Assert.assertEquals(
+                "LongImageScaleDecider(longImage=START_CROP,otherImage=CENTER_CROP),longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0))",
+                toString()
+            )
         }
         LongImageScaleDecider(END_CROP, CENTER_CROP).apply {
-            Assert.assertEquals("LongImageScaleDecider(END_CROP,CENTER_CROP)", toString())
+            Assert.assertEquals(
+                "LongImageScaleDecider(longImage=END_CROP,otherImage=CENTER_CROP),longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0))",
+                toString()
+            )
         }
     }
 

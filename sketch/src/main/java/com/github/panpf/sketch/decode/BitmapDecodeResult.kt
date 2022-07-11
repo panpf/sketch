@@ -14,6 +14,7 @@ data class BitmapDecodeResult constructor(
     val imageInfo: ImageInfo,
     @ExifOrientation val imageExifOrientation: Int,
     val dataFrom: DataFrom,
+    // todo 改为 List<String>
     val transformedList: List<Transformed>? = null
 ) {
 

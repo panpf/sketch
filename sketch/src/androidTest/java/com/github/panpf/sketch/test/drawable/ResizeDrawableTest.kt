@@ -41,21 +41,21 @@ class ResizeDrawableTest {
 
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(sketch, DisplayRequest(context, imageUri))
+            bitmapDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri))
         )
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(sketch, DisplayRequest(context, imageUri) {
+            bitmapDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
                 resizeApplyToDrawable(true)
             })
         )
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(sketch, DisplayRequest(context, imageUri) {
+            bitmapDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
                 resize(500, 300)
             })
         )
-        bitmapDrawable.tryToResizeDrawable(sketch, DisplayRequest(context, imageUri) {
+        bitmapDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
             resizeApplyToDrawable(true)
             resize(500, 300)
         }).let { it as ResizeDrawable }.apply {
@@ -75,7 +75,7 @@ class ResizeDrawableTest {
             animatableDrawable = bitmapDrawable,
             animatableDrawableName = "TestDrawable",
         )
-        animDrawable.tryToResizeDrawable(sketch, DisplayRequest(context, imageUri) {
+        animDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
             resizeApplyToDrawable(true)
             resize(500, 300)
         }).let { it as ResizeAnimatableDrawable }.apply {
@@ -89,14 +89,13 @@ class ResizeDrawableTest {
     fun testIntrinsicSize() {
         val context = getTestContext()
         val resources = context.resources
-        val sketch = context.sketch
 
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
             .apply {
                 Assert.assertEquals(Size(100, 200), intrinsicSize)
             }
 
-        ResizeDrawable(sketch, bitmapDrawable, Resize(500, 300)).apply {
+        ResizeDrawable(bitmapDrawable, Resize(500, 300)).apply {
             Assert.assertEquals(Size(500, 300), intrinsicSize)
             Assert.assertEquals(Resize(500, 300), resize)
             Assert.assertSame(bitmapDrawable, wrappedDrawable)
@@ -107,7 +106,6 @@ class ResizeDrawableTest {
     fun testSetBounds() {
         val context = getTestContext()
         val resources = context.resources
-        val sketch = context.sketch
 
         val imageUri = newAssetUri("sample.jpeg")
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
@@ -115,34 +113,33 @@ class ResizeDrawableTest {
                 Assert.assertEquals(Size(100, 200), intrinsicSize)
             }
 
-        ResizeDrawable(sketch, bitmapDrawable, Resize(500, 300)).apply {
+        ResizeDrawable(bitmapDrawable, Resize(500, 300)).apply {
             Assert.assertEquals(Rect(0, 0, 0, 0), bounds)
             Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
         }
-        ResizeDrawable(sketch, bitmapDrawable, Resize(500, 300, START_CROP)).apply {
+        ResizeDrawable(bitmapDrawable, Resize(500, 300, START_CROP)).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, 0, 500, 1000), bitmapDrawable.bounds)
         }
-        ResizeDrawable(sketch, bitmapDrawable, Resize(500, 300, CENTER_CROP)).apply {
+        ResizeDrawable(bitmapDrawable, Resize(500, 300, CENTER_CROP)).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, -350, 500, 650), bitmapDrawable.bounds)
         }
-        ResizeDrawable(sketch, bitmapDrawable, Resize(500, 300, END_CROP)).apply {
+        ResizeDrawable(bitmapDrawable, Resize(500, 300, END_CROP)).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, -700, 500, 300), bitmapDrawable.bounds)
         }
-        ResizeDrawable(sketch, bitmapDrawable, Resize(500, 300, FILL)).apply {
+        ResizeDrawable(bitmapDrawable, Resize(500, 300, FILL)).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, 0, 500, 300), bitmapDrawable.bounds)
         }
 
         ResizeDrawable(
-            sketch,
-            ResizeDrawable(sketch, bitmapDrawable, Resize(0, 300)),
+            ResizeDrawable(bitmapDrawable, Resize(0, 300)),
             Resize(500, 300, CENTER_CROP)
         ).apply {
             setBounds(0, 0, 500, 300)
@@ -150,8 +147,7 @@ class ResizeDrawableTest {
             Assert.assertEquals(Rect(-75, 0, 75, 300), bitmapDrawable.bounds)
         }
         ResizeDrawable(
-            sketch,
-            ResizeDrawable(sketch, bitmapDrawable, Resize(300, 0)),
+            ResizeDrawable(bitmapDrawable, Resize(300, 0)),
             Resize(500, 300, CENTER_CROP)
         ).apply {
             setBounds(0, 0, 500, 300)
@@ -159,8 +155,7 @@ class ResizeDrawableTest {
             Assert.assertEquals(Rect(0, -300, 300, 300), bitmapDrawable.bounds)
         }
         ResizeDrawable(
-            sketch,
-            ResizeDrawable(sketch, bitmapDrawable, Resize(0, 0)),
+            ResizeDrawable(bitmapDrawable, Resize(0, 0)),
             Resize(500, 300, CENTER_CROP)
         ).apply {
             setBounds(0, 0, 500, 300)
@@ -179,7 +174,7 @@ class ResizeDrawableTest {
             resources = resources,
             bitmap = Bitmap.createBitmap(100, 200, RGB_565)
         )
-        ResizeDrawable(sketch, sketchDrawable, Resize(500, 300, CENTER_CROP)).apply {
+        ResizeDrawable(sketchDrawable, Resize(500, 300, CENTER_CROP)).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
@@ -190,14 +185,13 @@ class ResizeDrawableTest {
     fun testToString() {
         val context = getTestContext()
         val resources = context.resources
-        val sketch = context.sketch
 
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
             .apply {
                 Assert.assertEquals(Size(100, 200), intrinsicSize)
             }
 
-        ResizeDrawable(sketch, bitmapDrawable, Resize(500, 300)).apply {
+        ResizeDrawable(bitmapDrawable, Resize(500, 300)).apply {
             Assert.assertEquals("ResizeDrawable($bitmapDrawable)", toString())
         }
     }

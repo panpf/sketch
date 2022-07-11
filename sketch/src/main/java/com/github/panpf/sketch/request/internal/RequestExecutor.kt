@@ -94,7 +94,6 @@ class RequestExecutor {
                 is DisplayData -> DisplayResult.Success(
                     request = requestContext.lastRequest as DisplayRequest,
                     drawable = data.drawable.tryToResizeDrawable(
-                        sketch,
                         requestContext.lastRequest
                     ),
                     imageInfo = data.imageInfo,
@@ -130,10 +129,10 @@ class RequestExecutor {
                     is DisplayRequest -> {
                         val errorDrawable = requestContext.lastRequest.error?.let {
                             it.getDrawable(sketch, requestContext.lastRequest, exception)
-                                ?.tryToResizeDrawable(sketch, requestContext.lastRequest)
+                                ?.tryToResizeDrawable(requestContext.lastRequest)
                         } ?: requestContext.lastRequest.placeholder?.let {
                             it.getDrawable(sketch, requestContext.lastRequest, exception)
-                                ?.tryToResizeDrawable(sketch, requestContext.lastRequest)
+                                ?.tryToResizeDrawable(requestContext.lastRequest)
                         }
                         DisplayResult.Error(
                             requestContext.lastRequest as DisplayRequest,

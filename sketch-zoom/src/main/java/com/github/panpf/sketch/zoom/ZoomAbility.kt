@@ -128,16 +128,14 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             if (field != value) {
                 field = value
                 zoomer?.readModeDecider =
-                    if (value) readModeDecider ?: LongImageReadModeDecider() else null
+                    if (value) readModeDecider ?: longImageReadMode() else null
             }
         }
     var readModeDecider: ReadModeDecider? = null
         set(value) {
             if (field != value) {
                 field = value
-                if (readModeEnabled) {
-                    zoomer?.readModeDecider = value
-                }
+                zoomer?.readModeDecider = value
             }
         }
     var scalesFactory: ScalesFactory? = null
@@ -480,8 +478,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             sketch = host.context.sketch,
             view = host.view,
             scaleType = scaleType,
-            readModeDecider = if (readModeEnabled) readModeDecider else null,
         ).apply {
+            readModeDecider = if (readModeEnabled) readModeDecider else null
             scrollBarEnabled = this@ZoomAbility.scrollBarEnabled
             zoomAnimationDuration = this@ZoomAbility.zoomAnimationDuration
             zoomInterpolator = this@ZoomAbility.zoomInterpolator

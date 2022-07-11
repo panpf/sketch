@@ -777,8 +777,8 @@ interface ImageRequest {
                 } else {
                     fixedPrecision(EXACTLY)
                 }
-            val resizeScaleDecider = finalOptions.resizeScaleDecider
-                ?: fixedScale(resolveResizeScale())
+            val resizeScaleDecider =
+                finalOptions.resizeScaleDecider ?: fixedScale(resolveResizeScale())
             val transformations = finalOptions.transformations
             val disallowReuseBitmap = finalOptions.disallowReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false

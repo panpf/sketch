@@ -9,7 +9,6 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.fixedScale
-import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.Size
@@ -30,12 +29,11 @@ class FixedScaleDeciderTest {
 
     @Test
     fun testGet() {
-        val sketch = newSketch()
         FixedScaleDecider(START_CROP).apply {
-            Assert.assertEquals(START_CROP, get(sketch, 100, 48, 50, 50))
+            Assert.assertEquals(START_CROP, get(100, 48, 50, 50))
         }
         FixedScaleDecider(END_CROP).apply {
-            Assert.assertEquals(END_CROP, get(sketch, 100, 48, 50, 50))
+            Assert.assertEquals(END_CROP, get(100, 48, 50, 50))
         }
     }
 

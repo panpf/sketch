@@ -184,9 +184,9 @@ fun realDecode(
     val addedResize = resize?.let { exifOrientationHelper.addToResize(it, applySize) }
     val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
     val resizeTransformed: ResizeTransformed?
-    val bitmap = if (addedResize?.shouldClip(sketch, imageInfo.width, imageInfo.height) == true) {
-        val precision = addedResize.getPrecision(sketch, imageInfo.width, imageInfo.height)
-        val scale = addedResize.getScale(sketch, imageInfo.width, imageInfo.height)
+    val bitmap = if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
+        val precision = addedResize.getPrecision(imageInfo.width, imageInfo.height)
+        val scale = addedResize.getScale(imageInfo.width, imageInfo.height)
         val resizeMapping = calculateResizeMapping(
             imageWidth = imageInfo.width,
             imageHeight = imageInfo.height,
@@ -256,7 +256,7 @@ fun BitmapDecodeResult.applyResize(
 ): BitmapDecodeResult {
     if (resize == null) return this
     val inBitmap = bitmap
-    val precision = resize.getPrecision(sketch, inBitmap.width, inBitmap.height)
+    val precision = resize.getPrecision(inBitmap.width, inBitmap.height)
     val newBitmap = if (precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
             inBitmap.width, inBitmap.height, resize.width, resize.height
@@ -266,8 +266,8 @@ fun BitmapDecodeResult.applyResize(
         } else {
             null
         }
-    } else if (resize.shouldClip(sketch, inBitmap.width, inBitmap.height)) {
-        val scale = resize.getScale(sketch, inBitmap.width, inBitmap.height)
+    } else if (resize.shouldClip(inBitmap.width, inBitmap.height)) {
+        val scale = resize.getScale(inBitmap.width, inBitmap.height)
         val mapping = calculateResizeMapping(
             imageWidth = inBitmap.width,
             imageHeight = inBitmap.height,

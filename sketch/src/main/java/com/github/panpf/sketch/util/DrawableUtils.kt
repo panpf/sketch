@@ -9,6 +9,7 @@ import androidx.core.graphics.component1
 import androidx.core.graphics.component2
 import androidx.core.graphics.component3
 import androidx.core.graphics.component4
+import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.cache.BitmapPool
 
 
@@ -34,3 +35,6 @@ internal fun Drawable.toNewBitmap(bitmapPool: BitmapPool): Bitmap {
     setBounds(oldLeft, oldTop, oldRight, oldBottom) // restore bounds
     return bitmap
 }
+
+internal val Drawable.alphaCompat: Int
+    get() = DrawableCompat.getAlpha(this)

@@ -6,7 +6,6 @@ import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.fixedPrecision
-import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
@@ -28,27 +27,26 @@ class FixedPrecisionDeciderTest {
 
     @Test
     fun testGet() {
-        val sketch = newSketch()
         FixedPrecisionDecider(SAME_ASPECT_RATIO).apply {
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(sketch, 100, 48, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(sketch, 100, 49, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(sketch, 100, 50, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(sketch, 100, 51, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(sketch, 100, 52, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 48, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 49, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 50, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 51, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 52, 50, 50))
         }
 
         FixedPrecisionDecider(EXACTLY).apply {
-            Assert.assertEquals(EXACTLY, get(sketch, 100, 48, 50, 50))
-            Assert.assertEquals(EXACTLY, get(sketch, 100, 49, 50, 50))
-            Assert.assertEquals(EXACTLY, get(sketch, 100, 50, 50, 50))
-            Assert.assertEquals(EXACTLY, get(sketch, 100, 51, 50, 50))
-            Assert.assertEquals(EXACTLY, get(sketch, 100, 52, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 48, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 49, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 50, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 51, 50, 50))
+            Assert.assertEquals(EXACTLY, get(100, 52, 50, 50))
         }
 
         FixedPrecisionDecider(LESS_PIXELS).apply {
-            Assert.assertEquals(LESS_PIXELS, get(sketch, 100, 32, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(sketch, 100, 33, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(sketch, 100, 34, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(100, 32, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(100, 33, 50, 50))
+            Assert.assertEquals(LESS_PIXELS, get(100, 34, 50, 50))
         }
     }
 

@@ -22,7 +22,7 @@
     * [FixedScaleDecider]：始终使用指定的 [Scale]
     * [LongImageScaleDecider]：指定两个 [Scale]，长图使用第一个，否则使用第二个
 
-> 1. 长图规则：[LongImageClipPrecisionDecider] 默认使用 [Sketch].longImageDecider 来判定长图，默认实现为 [DefaultLongImageDecider]
+> 1. 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageClipPrecisionDecider] 或 [LongImageScaleDecider] 时使用自定义的规则
 > 2. 使用 [LongImageClipPrecisionDecider] 有助于提高长图在网格列表中的清晰度，[查看具体介绍][long_image_grid_thumbnails]
 
 ### 配置

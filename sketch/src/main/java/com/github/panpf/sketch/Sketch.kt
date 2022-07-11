@@ -62,9 +62,7 @@ import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
-import com.github.panpf.sketch.util.DefaultLongImageDecider
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.LongImageDecider
 import com.github.panpf.sketch.util.SystemCallbacks
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -99,7 +97,6 @@ class Sketch private constructor(
     _componentRegistry: ComponentRegistry?,
     _httpStack: HttpStack?,
     _globalImageOptions: ImageOptions?,
-    _longImageDecider: LongImageDecider?,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
@@ -122,19 +119,18 @@ class Sketch private constructor(
     val bitmapPool: BitmapPool
 
     /** Disk caching of http downloads images */
-    val downloadDiskCache: DiskCache = _downloadDiskCache ?: LruDiskCache.ForDownloadBuilder(context).build()
+    val downloadDiskCache: DiskCache =
+        _downloadDiskCache ?: LruDiskCache.ForDownloadBuilder(context).build()
 
     /** Disk caching of transformed images */
-    val resultDiskCache: DiskCache = _resultDiskCache ?: LruDiskCache.ForResultBuilder(context).build()
+    val resultDiskCache: DiskCache =
+        _resultDiskCache ?: LruDiskCache.ForResultBuilder(context).build()
 
     /** Execute HTTP request */
     val httpStack: HttpStack = _httpStack ?: HurlStack.Builder().build()
 
     /** Fill unset [ImageRequest] value */
     val globalImageOptions: ImageOptions? = _globalImageOptions
-
-    /** Determine whether it is a long image given the image size and target size */
-    val longImageDecider: LongImageDecider = _longImageDecider ?: DefaultLongImageDecider()
 
     /** Register components that are required to perform [ImageRequest] and can be extended,
      * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [BitmapDecodeInterceptor], [DrawableDecodeInterceptor] */
@@ -207,7 +203,7 @@ class Sketch private constructor(
                 append("\n").append("requestInterceptors: $requestInterceptors")
                 append("\n").append("bitmapDecodeInterceptors: $bitmapDecodeInterceptors")
                 append("\n").append("drawableDecodeInterceptors: $drawableDecodeInterceptors")
-                append("\n").append("longImageDecider: $longImageDecider")
+                append("\n").append("globalImageOptions: $globalImageOptions")
             }
         }
     }
@@ -347,7 +343,6 @@ class Sketch private constructor(
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
         private var globalImageOptions: ImageOptions? = null
-        private var longImageDecider: LongImageDecider? = null
 
         /**
          * Set the [Logger] to write logs to.
@@ -411,13 +406,6 @@ class Sketch private constructor(
             this.globalImageOptions = globalImageOptions
         }
 
-        /**
-         * Set the [LongImageDecider]
-         */
-        fun longImageDecider(longImageDecider: LongImageDecider?): Builder = apply {
-            this.longImageDecider = longImageDecider
-        }
-
         fun build(): Sketch = Sketch(
             _context = appContext,
             _logger = logger,
@@ -428,7 +416,6 @@ class Sketch private constructor(
             _componentRegistry = componentRegistry,
             _httpStack = httpStack,
             _globalImageOptions = globalImageOptions,
-            _longImageDecider = longImageDecider,
         )
     }
 }

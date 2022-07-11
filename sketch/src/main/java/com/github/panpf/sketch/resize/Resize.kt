@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.resize
 
 import androidx.annotation.Keep
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.Size
@@ -109,14 +108,14 @@ data class Resize constructor(
         "Resize(${width}x$height,${precisionDeciderString},${scaleDeciderString})"
     }
 
-    fun getPrecision(sketch: Sketch, imageWidth: Int, imageHeight: Int): Precision =
-        precision.get(sketch, imageWidth, imageHeight, width, height)
+    fun getPrecision(imageWidth: Int, imageHeight: Int): Precision =
+        precision.get(imageWidth, imageHeight, width, height)
 
-    fun getScale(sketch: Sketch, imageWidth: Int, imageHeight: Int): Scale =
-        scale.get(sketch, imageWidth, imageHeight, width, height)
+    fun getScale(imageWidth: Int, imageHeight: Int): Scale =
+        scale.get(imageWidth, imageHeight, width, height)
 
-    fun shouldClip(sketch: Sketch, imageWidth: Int, imageHeight: Int): Boolean =
-        when (getPrecision(sketch, imageWidth, imageHeight)) {
+    fun shouldClip(imageWidth: Int, imageHeight: Int): Boolean =
+        when (getPrecision(imageWidth, imageHeight)) {
             Precision.EXACTLY -> imageWidth != width || imageHeight != height
             Precision.SAME_ASPECT_RATIO -> {
                 val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)

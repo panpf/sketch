@@ -13,13 +13,13 @@ import com.github.panpf.sketch.util.findLastSketchDrawable
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-fun Drawable.tryToResizeDrawable(sketch: Sketch, request: ImageRequest): Drawable {
+fun Drawable.tryToResizeDrawable(request: ImageRequest): Drawable {
     val resize = request.resize
     return if (request.resizeApplyToDrawable && resize != null) {
         if (this is SketchAnimatableDrawable) {
-            ResizeAnimatableDrawable(sketch, this, resize)
+            ResizeAnimatableDrawable(this, resize)
         } else {
-            ResizeDrawable(sketch, this, resize)
+            ResizeDrawable(this, resize)
         }
     } else {
         this
@@ -28,7 +28,7 @@ fun Drawable.tryToResizeDrawable(sketch: Sketch, request: ImageRequest): Drawabl
 
 
 @SuppressLint("RestrictedApi")
-open class ResizeDrawable(val sketch: Sketch, drawable: Drawable, val resize: Resize) :
+open class ResizeDrawable constructor(drawable: Drawable, val resize: Resize) :
     DrawableWrapper(drawable) {
 
     override fun getIntrinsicWidth(): Int {
@@ -42,7 +42,7 @@ open class ResizeDrawable(val sketch: Sketch, drawable: Drawable, val resize: Re
     override fun mutate(): ResizeDrawable {
         val mutateDrawable = wrappedDrawable.mutate()
         return if (mutateDrawable !== wrappedDrawable) {
-            ResizeDrawable(sketch, mutateDrawable, resize)
+            ResizeDrawable(mutateDrawable, resize)
         } else {
             this
         }
@@ -75,7 +75,6 @@ open class ResizeDrawable(val sketch: Sketch, drawable: Drawable, val resize: Re
                     Size(info.width, info.height)
                 }
             val resizeScale = resize.getScale(
-                sketch,
                 imageSize?.width ?: wrappedWidth,
                 imageSize?.height ?: wrappedHeight
             )

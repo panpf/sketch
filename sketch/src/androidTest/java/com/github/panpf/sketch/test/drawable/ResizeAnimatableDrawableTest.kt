@@ -37,7 +37,7 @@ class ResizeAnimatableDrawableTest {
             animatableDrawable = ColorDrawable(Color.GREEN),
             animatableDrawableName = "TestDrawable",
         )
-        ResizeAnimatableDrawable(sketch, animDrawable, Resize(100, 500)).apply {
+        ResizeAnimatableDrawable(animDrawable, Resize(100, 500)).apply {
             assertThrow(IllegalArgumentException::class) {
                 start()
             }
@@ -75,7 +75,7 @@ class ResizeAnimatableDrawableTest {
             animatableDrawable = ColorDrawable(Color.GREEN),
             animatableDrawableName = "TestDrawable",
         )
-        ResizeAnimatableDrawable(sketch, animDrawable, Resize(100, 500)).apply {
+        ResizeAnimatableDrawable(animDrawable, Resize(100, 500)).apply {
             Assert.assertEquals("ResizeAnimatableDrawable($animDrawable)", toString())
         }
     }

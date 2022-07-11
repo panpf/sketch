@@ -43,13 +43,11 @@ import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpStack
-import com.github.panpf.sketch.test.utils.TestLongImageDecider
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
-import com.github.panpf.sketch.util.DefaultLongImageDecider
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 import com.github.panpf.sketch.util.UnknownException
@@ -327,15 +325,6 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(ImageOptions(), globalImageOptions)
                 Assert.assertNotNull(globalImageOptions)
-            }
-
-            build().apply {
-                Assert.assertEquals(DefaultLongImageDecider(), longImageDecider)
-            }
-            longImageDecider(TestLongImageDecider())
-            build().apply {
-                Assert.assertEquals(TestLongImageDecider(), longImageDecider)
-                Assert.assertNotEquals(DefaultLongImageDecider(), longImageDecider)
             }
         }
     }
