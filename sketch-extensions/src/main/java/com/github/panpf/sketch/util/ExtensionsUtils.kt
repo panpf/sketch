@@ -22,11 +22,15 @@ internal fun Float.format(newScale: Int): Float =
 /**
  * Drawable into new Bitmap. Each time a new bitmap is drawn
  */
-internal fun Drawable.toNewBitmap(bitmapPool: BitmapPool): Bitmap {
+internal fun Drawable.toNewBitmap(
+    bitmapPool: BitmapPool,
+    preferredConfig: Bitmap.Config? = null
+): Bitmap {
     val (oldLeft, oldTop, oldRight, oldBottom) = bounds
     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
 
-    val bitmap: Bitmap = bitmapPool.getOrCreate(intrinsicWidth, intrinsicHeight, ARGB_8888)
+    val config = preferredConfig ?: ARGB_8888
+    val bitmap: Bitmap = bitmapPool.getOrCreate(intrinsicWidth, intrinsicHeight, config)
     val canvas = Canvas(bitmap)
     draw(canvas)
 

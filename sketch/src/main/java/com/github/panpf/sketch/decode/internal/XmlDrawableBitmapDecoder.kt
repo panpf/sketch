@@ -27,6 +27,10 @@ class XmlDrawableBitmapDecoder(
     private val drawableResId: Int
 ) : BitmapDecoder {
 
+    companion object {
+        const val MIME_TYPE = "image/android-xml"
+    }
+
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val context = request.context
@@ -42,12 +46,9 @@ class XmlDrawableBitmapDecoder(
                 "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
             )
         }
-        val bitmap = drawable.toNewBitmap(sketch.bitmapPool)
-        val imageInfo = ImageInfo(
-            bitmap.width,
-            bitmap.height,
-            "image/android-xml",
-        )
+        val bitmap =
+            drawable.toNewBitmap(sketch.bitmapPool, request.bitmapConfig?.getConfig(MIME_TYPE))
+        val imageInfo = ImageInfo(bitmap.width, bitmap.height, MIME_TYPE)
         return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
             .applyResize(sketch, request.resize)
     }
