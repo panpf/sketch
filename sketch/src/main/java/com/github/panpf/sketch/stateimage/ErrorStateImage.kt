@@ -136,8 +136,7 @@ interface ErrorStateImage : StateImage {
 
         override fun getDrawable(
             sketch: Sketch, request: ImageRequest, throwable: SketchException?
-        ): Drawable? =
-            stateImage.getDrawable(sketch, request, throwable)
+        ): Drawable? = stateImage.getDrawable(sketch, request, throwable)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

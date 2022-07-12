@@ -433,7 +433,7 @@ interface DownloadRequest : ImageRequest {
         override val ignoreExifOrientation: Boolean,
         override val resultCachePolicy: CachePolicy,
         override val placeholder: StateImage?,
-        override val error: StateImage?,
+        override val error: ErrorStateImage?,
         override val transition: Factory?,
         override val disallowAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,

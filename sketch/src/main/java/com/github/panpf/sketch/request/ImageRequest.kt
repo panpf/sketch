@@ -192,7 +192,7 @@ interface ImageRequest {
     /**
      * Image to display when loading fails
      */
-    val error: StateImage?
+    val error: ErrorStateImage?
 
     /**
      * How the current image and the new image transition

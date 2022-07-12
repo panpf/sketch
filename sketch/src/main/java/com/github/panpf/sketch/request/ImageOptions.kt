@@ -163,7 +163,7 @@ interface ImageOptions {
     /**
      * Image to display when loading fails
      */
-    val error: StateImage?
+    val error: ErrorStateImage?
 
     /**
      * How the current image and the new image transition
@@ -262,7 +262,7 @@ interface ImageOptions {
         private var resultCachePolicy: CachePolicy? = null
 
         private var placeholder: StateImage? = null
-        private var error: StateImage? = null
+        private var error: ErrorStateImage? = null
         private var transition: Transition.Factory? = null
         private var disallowAnimatedImage: Boolean? = null
         private var resizeApplyToDrawable: Boolean? = null
@@ -837,7 +837,7 @@ interface ImageOptions {
         override val ignoreExifOrientation: Boolean?,
         override val resultCachePolicy: CachePolicy?,
         override val placeholder: StateImage?,
-        override val error: StateImage?,
+        override val error: ErrorStateImage?,
         override val transition: Transition.Factory?,
         override val disallowAnimatedImage: Boolean?,
         override val resizeApplyToDrawable: Boolean?,
