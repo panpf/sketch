@@ -45,7 +45,7 @@ class Logger constructor(
         }
     }
 
-    fun v(module: String, throwable: Throwable, lazyMessage: () -> String) {
+    fun v(module: String, throwable: Throwable?, lazyMessage: () -> String) {
         if (isLoggable(Level.VERBOSE)) {
             proxy.v(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }
@@ -58,7 +58,7 @@ class Logger constructor(
         }
     }
 
-    fun d(module: String, throwable: Throwable, lazyMessage: () -> String) {
+    fun d(module: String, throwable: Throwable?, lazyMessage: () -> String) {
         if (isLoggable(Level.DEBUG)) {
             proxy.d(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }
@@ -71,7 +71,7 @@ class Logger constructor(
         }
     }
 
-    fun i(module: String, throwable: Throwable, lazyMessage: () -> String) {
+    fun i(module: String, throwable: Throwable?, lazyMessage: () -> String) {
         if (isLoggable(Level.INFO)) {
             proxy.i(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }
@@ -84,9 +84,9 @@ class Logger constructor(
         }
     }
 
-    fun w(module: String, tr: Throwable, msg: String) {
+    fun w(module: String, throwable: Throwable?, msg: String) {
         if (isLoggable(Level.WARNING)) {
-            proxy.w(TAG, joinModuleAndMsg(module, msg), tr)
+            proxy.w(TAG, joinModuleAndMsg(module, msg), throwable)
         }
     }
 
@@ -96,7 +96,7 @@ class Logger constructor(
         }
     }
 
-    fun w(module: String, throwable: Throwable, lazyMessage: () -> String) {
+    fun w(module: String, throwable: Throwable?, lazyMessage: () -> String) {
         if (isLoggable(Level.WARNING)) {
             proxy.w(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }
@@ -109,9 +109,9 @@ class Logger constructor(
         }
     }
 
-    fun e(module: String, tr: Throwable, msg: String) {
+    fun e(module: String, throwable: Throwable?, msg: String) {
         if (isLoggable(Level.ERROR)) {
-            proxy.e(TAG, joinModuleAndMsg(module, msg), tr)
+            proxy.e(TAG, joinModuleAndMsg(module, msg), throwable)
         }
     }
 
@@ -121,7 +121,7 @@ class Logger constructor(
         }
     }
 
-    fun e(module: String, throwable: Throwable, lazyMessage: () -> String) {
+    fun e(module: String, throwable: Throwable?, lazyMessage: () -> String) {
         if (isLoggable(Level.ERROR)) {
             proxy.e(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }

@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
+import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
@@ -122,7 +123,9 @@ class RequestExecutor {
                 onCancel(sketch, requestContext.lastRequest)
                 throw throwable
             } else {
-                throwable.printStackTrace()
+                if (throwable !is DepthException) {
+                    throwable.printStackTrace()
+                }
                 val exception = throwable.asOrNull<SketchException>()
                     ?: UnknownException(throwable.toString(), throwable)
                 val errorResult = when (requestContext.lastRequest) {
@@ -202,7 +205,7 @@ class RequestExecutor {
         target: Target?,
         result: ImageResult.Error
     ) {
-        sketch.logger.e(MODULE, result.exception) {
+        sketch.logger.e(MODULE, result.exception.takeIf { it !is DepthException }) {
             "Request failed. ${result.exception.message}. ${request.key}"
         }
         when {
