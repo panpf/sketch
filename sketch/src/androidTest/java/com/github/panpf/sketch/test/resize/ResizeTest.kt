@@ -154,7 +154,7 @@ class ResizeTest {
     }
 
     @Test
-    fun testCacheKey() {
+    fun testKey() {
         Resize(100, 100).apply {
             Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", key)
         }
@@ -176,7 +176,7 @@ class ResizeTest {
         }
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(
-                "Resize(100x100,LongImageClip(precision=EXACTLY,longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0)),Fixed(CENTER_CROP))",
+                "Resize(100x100,LongImageClip(EXACTLY,Default(2.5,5.0)),Fixed(CENTER_CROP))",
                 key
             )
         }
@@ -198,45 +198,45 @@ class ResizeTest {
     @Test
     fun testToString() {
         Resize(100, 100).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", toString())
+            Assert.assertEquals("Resize(width=100, height=100, precision=FixedPrecisionDecider(precision=EXACTLY), scale=FixedScaleDecider(scale=CENTER_CROP))", toString())
         }
         Resize(100, 50).apply {
-            Assert.assertEquals("Resize(100x50,Fixed(EXACTLY),Fixed(CENTER_CROP))", toString())
+            Assert.assertEquals("Resize(width=100, height=50, precision=FixedPrecisionDecider(precision=EXACTLY), scale=FixedScaleDecider(scale=CENTER_CROP))", toString())
         }
         Resize(50, 100).apply {
-            Assert.assertEquals("Resize(50x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", toString())
+            Assert.assertEquals("Resize(width=50, height=100, precision=FixedPrecisionDecider(precision=EXACTLY), scale=FixedScaleDecider(scale=CENTER_CROP))", toString())
         }
 
         Resize(100, 100, SAME_ASPECT_RATIO).apply {
             Assert.assertEquals(
-                "Resize(100x100,Fixed(SAME_ASPECT_RATIO),Fixed(CENTER_CROP))",
+                "Resize(width=100, height=100, precision=FixedPrecisionDecider(precision=SAME_ASPECT_RATIO), scale=FixedScaleDecider(scale=CENTER_CROP))",
                 toString()
             )
         }
         Resize(100, 100, EXACTLY).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", toString())
+            Assert.assertEquals("Resize(width=100, height=100, precision=FixedPrecisionDecider(precision=EXACTLY), scale=FixedScaleDecider(scale=CENTER_CROP))", toString())
         }
         Resize(100, 100, LESS_PIXELS).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))", toString())
+            Assert.assertEquals("Resize(width=100, height=100, precision=FixedPrecisionDecider(precision=LESS_PIXELS), scale=FixedScaleDecider(scale=CENTER_CROP))", toString())
         }
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(
-                "Resize(100x100,LongImageClip(precision=EXACTLY,longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0)),Fixed(CENTER_CROP))",
+                "Resize(width=100, height=100, precision=LongImageClipPrecisionDecider(precision=EXACTLY, longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0)), scale=FixedScaleDecider(scale=CENTER_CROP))",
                 toString()
             )
         }
 
         Resize(100, 100, scale = START_CROP).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(START_CROP))", toString())
+            Assert.assertEquals("Resize(width=100, height=100, precision=FixedPrecisionDecider(precision=EXACTLY), scale=FixedScaleDecider(scale=START_CROP))", toString())
         }
         Resize(100, 100, scale = CENTER_CROP).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(CENTER_CROP))", toString())
+            Assert.assertEquals("Resize(width=100, height=100, precision=FixedPrecisionDecider(precision=EXACTLY), scale=FixedScaleDecider(scale=CENTER_CROP))", toString())
         }
         Resize(100, 100, scale = END_CROP).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(END_CROP))", toString())
+            Assert.assertEquals("Resize(width=100, height=100, precision=FixedPrecisionDecider(precision=EXACTLY), scale=FixedScaleDecider(scale=END_CROP))", toString())
         }
         Resize(100, 100, scale = FILL).apply {
-            Assert.assertEquals("Resize(100x100,Fixed(EXACTLY),Fixed(FILL))", toString())
+            Assert.assertEquals("Resize(width=100, height=100, precision=FixedPrecisionDecider(precision=EXACTLY), scale=FixedScaleDecider(scale=FILL))", toString())
         }
     }
 

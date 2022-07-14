@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.resize
 
 import androidx.annotation.Keep
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.asOrThrow
@@ -35,7 +34,7 @@ class LongImageClipPrecisionDecider constructor(
         }
     }
 
-    override val key: String by lazy { "LongImageClipPrecisionDecider(precision=$precision,longImageDecider=$longImageDecider)" }
+    override val key: String by lazy { "LongImageClip($precision,${longImageDecider.key})" }
 
     override fun get(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
@@ -45,7 +44,9 @@ class LongImageClipPrecisionDecider constructor(
         return if (isLongImage) precision else Precision.LESS_PIXELS
     }
 
-    override fun toString(): String = key
+    override fun toString(): String {
+        return "LongImageClipPrecisionDecider(precision=$precision, longImageDecider=$longImageDecider)"
+    }
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

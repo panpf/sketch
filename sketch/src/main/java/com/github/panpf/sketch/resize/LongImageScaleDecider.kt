@@ -29,7 +29,7 @@ class LongImageScaleDecider constructor(
         longImageDecider = longImageDecider,
     )
 
-    override val key: String by lazy { "LongImageScaleDecider(longImage=$longImage,otherImage=$otherImage),longImageDecider=$longImageDecider)" }
+    override val key: String by lazy { "LongImage($longImage,$otherImage),${longImageDecider.key})" }
 
     override fun get(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
@@ -37,13 +37,6 @@ class LongImageScaleDecider constructor(
         val isLongImage = longImageDecider
             .isLongImage(imageWidth, imageHeight, resizeWidth, resizeHeight)
         return if (isLongImage) longImage else otherImage
-    }
-
-    override fun toString(): String = key
-
-    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
-        @Suppress("UNCHECKED_CAST")
-        return Serializer::class.java as Class<T1>
     }
 
     override fun equals(other: Any?): Boolean {
@@ -60,6 +53,15 @@ class LongImageScaleDecider constructor(
         result = 31 * result + otherImage.hashCode()
         result = 31 * result + longImageDecider.hashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return "LongImageScaleDecider(longImage=$longImage, otherImage=$otherImage, longImageDecider=$longImageDecider)"
+    }
+
+    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
+        @Suppress("UNCHECKED_CAST")
+        return Serializer::class.java as Class<T1>
     }
 
     @Keep

@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.resize
 
 import androidx.annotation.Keep
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.util.JsonSerializable
 import com.github.panpf.sketch.util.JsonSerializer
@@ -15,7 +14,7 @@ fun fixedScale(precision: Scale): FixedScaleDecider = FixedScaleDecider(precisio
  */
 data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
 
-    override val key: String by lazy { "FixedScaleDecider($scale)" }
+    override val key: String by lazy { "Fixed($scale)" }
 
     override fun get(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
@@ -30,7 +29,9 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
         return FixedScaleDecider(exifOrientationHelper.addToScale(scale, imageSize))
     }
 
-    override fun toString(): String = key
+    override fun toString(): String {
+        return "FixedScaleDecider(scale=$scale)"
+    }
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
         @Suppress("UNCHECKED_CAST")

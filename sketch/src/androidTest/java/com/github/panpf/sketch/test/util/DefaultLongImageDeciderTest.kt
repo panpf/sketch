@@ -2,6 +2,9 @@ package com.github.panpf.sketch.test.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
+import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.resize.Scale.START_CROP
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,5 +67,25 @@ class DefaultLongImageDeciderTest {
         Assert.assertTrue(longImageDecider.isLongImage(65, 200, 80, 50))
         Assert.assertFalse(longImageDecider.isLongImage(66, 200, 80, 50))
         Assert.assertFalse(longImageDecider.isLongImage(67, 200, 80, 50))
+    }
+
+    @Test
+    fun testKey() {
+        DefaultLongImageDecider().apply {
+            Assert.assertEquals("Default(2.5,5.0)", key)
+        }
+        DefaultLongImageDecider(4f, 10f).apply {
+            Assert.assertEquals("Default(4.0,10.0)", key)
+        }
+    }
+
+    @Test
+    fun testToString() {
+        DefaultLongImageDecider().apply {
+            Assert.assertEquals("DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0)", toString())
+        }
+        DefaultLongImageDecider(4f, 10f).apply {
+            Assert.assertEquals("DefaultLongImageDecider(smallRatioMultiple=4.0, bigRatioMultiple=10.0)", toString())
+        }
     }
 }

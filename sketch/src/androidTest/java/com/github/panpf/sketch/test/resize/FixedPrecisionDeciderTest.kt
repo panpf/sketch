@@ -53,15 +53,15 @@ class FixedPrecisionDeciderTest {
     @Test
     fun testKey() {
         Assert.assertEquals(
-            "FixedPrecisionDecider(SAME_ASPECT_RATIO)",
+            "Fixed(SAME_ASPECT_RATIO)",
             FixedPrecisionDecider(SAME_ASPECT_RATIO).key
         )
         Assert.assertEquals(
-            "FixedPrecisionDecider(EXACTLY)",
+            "Fixed(EXACTLY)",
             FixedPrecisionDecider(EXACTLY).key
         )
         Assert.assertEquals(
-            "FixedPrecisionDecider(LESS_PIXELS)",
+            "Fixed(LESS_PIXELS)",
             FixedPrecisionDecider(LESS_PIXELS).key
         )
     }
@@ -69,15 +69,15 @@ class FixedPrecisionDeciderTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "FixedPrecisionDecider(SAME_ASPECT_RATIO)",
+            "FixedPrecisionDecider(precision=SAME_ASPECT_RATIO)",
             FixedPrecisionDecider(SAME_ASPECT_RATIO).toString()
         )
         Assert.assertEquals(
-            "FixedPrecisionDecider(EXACTLY)",
+            "FixedPrecisionDecider(precision=EXACTLY)",
             FixedPrecisionDecider(EXACTLY).toString()
         )
         Assert.assertEquals(
-            "FixedPrecisionDecider(LESS_PIXELS)",
+            "FixedPrecisionDecider(precision=LESS_PIXELS)",
             FixedPrecisionDecider(LESS_PIXELS).toString()
         )
     }

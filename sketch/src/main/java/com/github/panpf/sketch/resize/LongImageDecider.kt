@@ -11,6 +11,8 @@ import org.json.JSONObject
  */
 interface LongImageDecider : JsonSerializable {
 
+    val key: String
+
     /**
      * Determine whether it is a long image given the image size and target size
      */
@@ -26,6 +28,8 @@ open class DefaultLongImageDecider(
     val smallRatioMultiple: Float = 2.5f,
     val bigRatioMultiple: Float = 5.0f,
 ) : LongImageDecider {
+
+    override val key: String by lazy { "Default($smallRatioMultiple,$bigRatioMultiple)" }
 
     /**
      * Determine whether it is a long image given the image size and target size
@@ -71,7 +75,7 @@ open class DefaultLongImageDecider(
     }
 
     override fun toString(): String {
-        return "DefaultLongImageDecider(smallRatioMultiple=$smallRatioMultiple,bigRatioMultiple=$bigRatioMultiple)"
+        return "DefaultLongImageDecider(smallRatioMultiple=$smallRatioMultiple, bigRatioMultiple=$bigRatioMultiple)"
     }
 
     override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {

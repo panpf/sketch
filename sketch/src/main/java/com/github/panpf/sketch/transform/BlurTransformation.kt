@@ -93,8 +93,7 @@ class BlurTransformed constructor(
     val radius: Int,
     val hasAlphaBitmapBgColor: Int?,
     val maskColor: Int?
-) :
-    Transformed {
+) : Transformed {
 
     override val key: String by lazy { "BlurTransformed($radius,$hasAlphaBitmapBgColor,$maskColor)" }
     override val cacheResultToDisk: Boolean = true
@@ -136,7 +135,8 @@ class BlurTransformed constructor(
         override fun fromJson(jsonObject: JSONObject): BlurTransformed =
             BlurTransformed(
                 jsonObject.getInt("radius"),
-                jsonObject.optInt("hasAlphaBitmapBgColor", Int.MIN_VALUE).takeIf { it != Int.MIN_VALUE },
+                jsonObject.optInt("hasAlphaBitmapBgColor", Int.MIN_VALUE)
+                    .takeIf { it != Int.MIN_VALUE },
                 jsonObject.optInt("maskColor", Int.MIN_VALUE).takeIf { it != Int.MIN_VALUE }
             )
     }

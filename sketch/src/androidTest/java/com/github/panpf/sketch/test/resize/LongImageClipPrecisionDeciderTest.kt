@@ -63,11 +63,11 @@ class LongImageClipPrecisionDeciderTest {
     @Test
     fun testKey() {
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(precision=EXACTLY,longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0))",
+            "LongImageClip(EXACTLY,Default(2.5,5.0))",
             LongImageClipPrecisionDecider(EXACTLY).key
         )
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO,longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0))",
+            "LongImageClip(SAME_ASPECT_RATIO,Default(2.5,5.0))",
             LongImageClipPrecisionDecider(SAME_ASPECT_RATIO).key
         )
     }
@@ -75,11 +75,11 @@ class LongImageClipPrecisionDeciderTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(precision=EXACTLY,longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0))",
+            "LongImageClipPrecisionDecider(precision=EXACTLY, longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0))",
             LongImageClipPrecisionDecider(EXACTLY).toString()
         )
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO,longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5,bigRatioMultiple=5.0))",
+            "LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO, longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0))",
             LongImageClipPrecisionDecider(SAME_ASPECT_RATIO).toString()
         )
     }
