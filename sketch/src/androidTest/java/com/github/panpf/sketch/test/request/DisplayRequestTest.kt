@@ -425,7 +425,7 @@ class DisplayRequestTest {
     }
 
     @Test
-    fun testGlobalOptions() {
+    fun testDefault() {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
 
@@ -439,7 +439,7 @@ class DisplayRequestTest {
             crossfade()
         }
         DisplayRequest(context1, uriString1) {
-            global(options)
+            default(options)
         }.apply {
             Assert.assertSame(options, globalOptions)
         }

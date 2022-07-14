@@ -7,9 +7,9 @@
 * View
     * [SketchImageView].displayImageOptions
     * [SketchZoomImageView].displayImageOptions
-* [ImageRequest].Builder.merge()/global()
+* [ImageRequest].Builder.merge()/default()
 
-最终在构建 [ImageRequest] 时将以 [ImageRequest] 优先、来自 View 的 [ImageOptions] 次之、global 最后的顺序构建属性配置
+最终在构建 [ImageRequest] 时将以 [ImageRequest] 优先、来自 View 的 [ImageOptions] 次之、default 最后的顺序构建属性配置
 
 ### 示例
 
@@ -34,7 +34,7 @@ DisplayRequest(context, "http://sample.com/sample.jpeg") {
     merge(ImageOptions {
         // ...
     })
-    global(ImageOptions {
+    default(ImageOptions {
         // ...
     })
 }

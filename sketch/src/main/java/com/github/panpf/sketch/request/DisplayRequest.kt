@@ -426,8 +426,8 @@ interface DisplayRequest : ImageRequest {
             super.merge(options)
         }
 
-        override fun global(options: ImageOptions?): Builder = apply {
-            super.global(options)
+        override fun default(options: ImageOptions?): Builder = apply {
+            super.default(options)
         }
     }
 

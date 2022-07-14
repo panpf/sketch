@@ -259,7 +259,7 @@ interface ImageRequest {
         private var progressListener: ProgressListener<ImageRequest>? = null
         private var target: Target? = null
         private var lifecycle: Lifecycle? = null
-        private var globalOptions: ImageOptions? = null
+        private var defaultOptions: ImageOptions? = null
         private var viewTargetOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
         private var resizeSizeResolver: SizeResolver? = null
@@ -283,7 +283,7 @@ interface ImageRequest {
                 ?: request.progressListener
             this.target = request.target
             this.lifecycle = request.lifecycle
-            this.globalOptions = request.globalOptions
+            this.defaultOptions = request.globalOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
             this.resizeSizeResolver = request.resizeSizeResolver
         }
@@ -759,8 +759,8 @@ interface ImageRequest {
         /**
          * Set a final [ImageOptions] to complement properties not set
          */
-        open fun global(options: ImageOptions?): Builder = apply {
-            this.globalOptions = options
+        open fun default(options: ImageOptions?): Builder = apply {
+            this.defaultOptions = options
         }
 
 
@@ -771,7 +771,7 @@ interface ImageRequest {
             val lifecycle = lifecycle ?: resolveLifecycle() ?: GlobalLifecycle
             definedOptionsBuilder.merge(viewTargetOptions)
             val definedOptions = definedOptionsBuilder.build()
-            val finalOptions = definedOptionsBuilder.merge(globalOptions).build()
+            val finalOptions = definedOptionsBuilder.merge(defaultOptions).build()
             val depth = finalOptions.depth ?: NETWORK
             val parameters = finalOptions.parameters
             val httpHeaders = finalOptions.httpHeaders
@@ -815,7 +815,7 @@ interface ImageRequest {
                         progressListener = progressListener,
                         target = target,
                         lifecycle = lifecycle,
-                        globalOptions = globalOptions,
+                        globalOptions = defaultOptions,
                         definedOptions = definedOptions,
                         depth = depth,
                         parameters = parameters,
@@ -848,7 +848,7 @@ interface ImageRequest {
                         progressListener = progressListener,
                         target = target,
                         lifecycle = lifecycle,
-                        globalOptions = globalOptions,
+                        globalOptions = defaultOptions,
                         definedOptions = definedOptions,
                         depth = depth,
                         parameters = parameters,
@@ -881,7 +881,7 @@ interface ImageRequest {
                         progressListener = progressListener,
                         target = target,
                         lifecycle = lifecycle,
-                        globalOptions = globalOptions,
+                        globalOptions = defaultOptions,
                         definedOptions = definedOptions,
                         depth = depth,
                         parameters = parameters,
