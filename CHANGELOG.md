@@ -1,3 +1,38 @@
+# v3.0.0-beta06
+
+### sketch
+
+Decoder:
+
+* fix: Fix the bug that XmlDrawableBitmapDecoder do not support bitmapConfig
+
+Sketch:
+
+* remove: Remove Sketch.globalImageOptions
+* remove: Removed Sketch.longImageDecider and can now specify LongImageDecider when creating
+  LongImageScaleDecider, LongImageClipPrecisionDecider, LongImageReadModeDecider
+
+ImageRequest:
+
+* change: ImageRequest.Builder.global() rename to default()
+* change: The type of the error property of ImageOptions and ImageRequest is changed to
+  ErrorStateImage
+
+Other:
+
+* fix: Fix ImageOptions bug that error is still null when stateImage is null and configBlock is not
+  null
+* improve: DepthException no longer prints stack information
+
+### sketch-extensions
+
+* fix: Fixed a bug where the click to ignore cellular data saving feature did not work
+* fix: Fix the bug that ApkIconBitmapDecoder, AppIconBitmapDecoder do not support bitmapConfig
+
+### sketch-zoom
+
+* new: SketchZoomImageView added touchPointToDrawablePoint method
+
 # v3.0.0-beta05
 
 ### sketch
@@ -51,7 +86,7 @@ StateImage:
 
 * new: Added CurrentStateImage
 
-### zoom
+### sketch-zoom
 
 * fix: Fixed a bug where SketchZoomImageView would cause ViewPager to fail to slide
 * change: Now move ZoomAbility's functional methods into SketchZoomImageView
