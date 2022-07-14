@@ -219,7 +219,7 @@ class Sketch private constructor(
      */
     @AnyThread
     fun enqueue(request: DisplayRequest): Disposable<DisplayResult> {
-        val job = scope.async(Dispatchers.Main.immediate) {
+        val job = scope.async {
             requestExecutor.execute(this@Sketch, request, enqueue = true) as DisplayResult
         }
         val target = request.target
@@ -262,7 +262,7 @@ class Sketch private constructor(
      */
     @AnyThread
     fun enqueue(request: LoadRequest): Disposable<LoadResult> {
-        val job = scope.async(Dispatchers.Main.immediate) {
+        val job = scope.async {
             requestExecutor.execute(this@Sketch, request, enqueue = true) as LoadResult
         }
         return OneShotDisposable(job)
@@ -294,7 +294,7 @@ class Sketch private constructor(
      */
     @AnyThread
     fun enqueue(request: DownloadRequest): Disposable<DownloadResult> {
-        val job = scope.async(Dispatchers.Main.immediate) {
+        val job = scope.async {
             requestExecutor.execute(this@Sketch, request, enqueue = true) as DownloadResult
         }
         return OneShotDisposable(job)

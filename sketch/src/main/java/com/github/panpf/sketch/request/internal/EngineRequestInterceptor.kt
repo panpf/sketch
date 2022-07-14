@@ -25,6 +25,7 @@ import com.github.panpf.sketch.request.toLoadData
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
+import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.withContext
 
 class EngineRequestInterceptor : RequestInterceptor {
@@ -59,12 +60,11 @@ class EngineRequestInterceptor : RequestInterceptor {
         }
 
         /* callback target start */
-        val target = request.target
-        if (target is DisplayTarget) {
+        request.target?.asOrNull<DisplayTarget>()?.let {
             val placeholderDrawable = request.placeholder
                 ?.getDrawable(sketch, request, null)
                 ?.tryToResizeDrawable(request)
-            target.onStart(placeholderDrawable)
+            it.onStart(placeholderDrawable)
         }
 
         /* load */

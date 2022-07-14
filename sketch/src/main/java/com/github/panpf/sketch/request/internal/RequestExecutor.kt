@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.MainThread
@@ -12,6 +13,7 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LoadData
@@ -45,7 +47,7 @@ class RequestExecutor {
 
         val requestContext = RequestContext(request)
 
-        // globalImageOptions
+        // globalImageOptions   todo remove
         sketch.globalImageOptions?.let {
             requestContext.addRequest(requestContext.lastRequest.newBuilder().global(it).build())
         }
@@ -55,7 +57,6 @@ class RequestExecutor {
             requestDelegate(sketch, requestContext.lastRequest, coroutineContext.job)
         requestDelegate.assertActive()
 
-        val target = requestContext.lastRequest.target
         try {
             val uriString = requestContext.lastRequest.uriString
             if (uriString.isEmpty() || uriString.isBlank()) {
@@ -82,7 +83,7 @@ class RequestExecutor {
 
             onStart(sketch, requestContext.lastRequest)
 
-            val data = RequestInterceptorChain(
+            val imageData: ImageData = RequestInterceptorChain(
                 sketch = sketch,
                 initialRequest = requestContext.lastRequest,
                 request = requestContext.lastRequest,
@@ -91,70 +92,52 @@ class RequestExecutor {
                 index = 0,
             ).proceed(requestContext.lastRequest)
 
-            val successResult = when (data) {
-                is DisplayData -> DisplayResult.Success(
-                    request = requestContext.lastRequest as DisplayRequest,
-                    drawable = data.drawable.tryToResizeDrawable(
-                        requestContext.lastRequest
-                    ),
-                    imageInfo = data.imageInfo,
-                    imageExifOrientation = data.imageExifOrientation,
-                    dataFrom = data.dataFrom,
-                    transformedList = data.transformedList
+            val lastRequest: ImageRequest = requestContext.lastRequest
+            val successResult: ImageResult.Success = when {
+                lastRequest is DisplayRequest && imageData is DisplayData -> DisplayResult.Success(
+                    request = lastRequest,
+                    drawable = imageData.drawable.tryToResizeDrawable(lastRequest),
+                    imageInfo = imageData.imageInfo,
+                    imageExifOrientation = imageData.imageExifOrientation,
+                    dataFrom = imageData.dataFrom,
+                    transformedList = imageData.transformedList
                 )
-                is LoadData -> LoadResult.Success(
-                    request = requestContext.lastRequest as LoadRequest,
-                    bitmap = data.bitmap,
-                    imageInfo = data.imageInfo,
-                    imageExifOrientation = data.imageExifOrientation,
-                    dataFrom = data.dataFrom,
-                    transformedList = data.transformedList
+                lastRequest is LoadRequest && imageData is LoadData -> LoadResult.Success(
+                    request = lastRequest,
+                    bitmap = imageData.bitmap,
+                    imageInfo = imageData.imageInfo,
+                    imageExifOrientation = imageData.imageExifOrientation,
+                    dataFrom = imageData.dataFrom,
+                    transformedList = imageData.transformedList
                 )
-                is DownloadData -> DownloadResult.Success(
-                    requestContext.lastRequest as DownloadRequest,
-                    data,
+                lastRequest is DownloadRequest && imageData is DownloadData -> DownloadResult.Success(
+                    lastRequest, imageData
                 )
-                else -> throw UnsupportedOperationException("Unsupported ImageData: ${data::class.java}")
+                else -> throw UnsupportedOperationException("Unsupported ImageData: ${imageData::class.java}")
             }
-            onSuccess(sketch, requestContext.lastRequest, target, successResult)
+            onSuccess(sketch, lastRequest, successResult)
             return successResult
         } catch (throwable: Throwable) {
+            val lastRequest = requestContext.lastRequest
             if (throwable is CancellationException) {
-                onCancel(sketch, requestContext.lastRequest)
+                onCancel(sketch, lastRequest)
                 throw throwable
             } else {
                 if (throwable !is DepthException) {
                     throwable.printStackTrace()
                 }
-                val exception = throwable.asOrNull<SketchException>()
+                val exception: SketchException = throwable.asOrNull<SketchException>()
                     ?: UnknownException(throwable.toString(), throwable)
-                val errorResult = when (requestContext.lastRequest) {
-                    is DisplayRequest -> {
-                        val errorDrawable = requestContext.lastRequest.error?.let {
-                            it.getDrawable(sketch, requestContext.lastRequest, exception)
-                                ?.tryToResizeDrawable(requestContext.lastRequest)
-                        } ?: requestContext.lastRequest.placeholder?.let {
-                            it.getDrawable(sketch, requestContext.lastRequest, exception)
-                                ?.tryToResizeDrawable(requestContext.lastRequest)
-                        }
-                        DisplayResult.Error(
-                            requestContext.lastRequest as DisplayRequest,
-                            errorDrawable,
-                            exception
-                        )
-                    }
-                    is LoadRequest -> LoadResult.Error(
-                        requestContext.lastRequest as LoadRequest,
-                        exception
+                val errorResult: ImageResult.Error = when (lastRequest) {
+                    is DisplayRequest -> DisplayResult.Error(
+                        lastRequest, getErrorDrawable(sketch, lastRequest, exception), exception
                     )
-                    is DownloadRequest -> DownloadResult.Error(
-                        requestContext.lastRequest as DownloadRequest,
-                        exception
-                    )
-                    else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${requestContext.lastRequest::class.java}")
+                    is LoadRequest -> LoadResult.Error(lastRequest, exception)
+                    is DownloadRequest -> DownloadResult.Error(lastRequest, exception)
+                    else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${lastRequest::class.java}")
                 }
 
-                onError(sketch, requestContext.lastRequest, target, errorResult)
+                onError(sketch, lastRequest, errorResult)
                 return errorResult
             }
         } finally {
@@ -163,6 +146,7 @@ class RequestExecutor {
         }
     }
 
+    @MainThread
     private fun onStart(sketch: Sketch, request: ImageRequest) {
         sketch.logger.d(MODULE) {
             "Request started. ${request.key}"
@@ -170,12 +154,8 @@ class RequestExecutor {
         request.listener?.onStart(request)
     }
 
-    private fun onSuccess(
-        sketch: Sketch,
-        request: ImageRequest,
-        target: Target?,
-        result: ImageResult.Success
-    ) {
+    @MainThread
+    private fun onSuccess(sketch: Sketch, request: ImageRequest, result: ImageResult.Success) {
         sketch.logger.d(MODULE) {
             if (result is DisplayResult.Success) {
                 "Request Successful. ${result.drawable}. ${request.key}"
@@ -183,6 +163,7 @@ class RequestExecutor {
                 "Request Successful. ${request.uriString}"
             }
         }
+        val target = request.target
         when {
             target is DisplayTarget && result is DisplayResult.Success -> {
                 transition(target, result) {
@@ -199,15 +180,12 @@ class RequestExecutor {
         request.listener?.onSuccess(request, result)
     }
 
-    private fun onError(
-        sketch: Sketch,
-        request: ImageRequest,
-        target: Target?,
-        result: ImageResult.Error
-    ) {
+    @MainThread
+    private fun onError(sketch: Sketch, request: ImageRequest, result: ImageResult.Error) {
         sketch.logger.e(MODULE, result.exception.takeIf { it !is DepthException }) {
             "Request failed. ${result.exception.message}. ${request.key}"
         }
+        val target = request.target
         when {
             target is DisplayTarget && result is DisplayResult.Error -> {
                 transition(target, result) {
@@ -224,6 +202,7 @@ class RequestExecutor {
         request.listener?.onError(request, result)
     }
 
+    @MainThread
     private fun onCancel(sketch: Sketch, request: ImageRequest) {
         sketch.logger.d(MODULE) {
             "Request canceled. ${request.key}"
@@ -231,6 +210,7 @@ class RequestExecutor {
         request.listener?.onCancel(request)
     }
 
+    @MainThread
     private fun transition(
         target: Target?,
         result: DisplayResult,
@@ -255,5 +235,15 @@ class RequestExecutor {
         }
 
         transition.transition()
+    }
+
+    private fun getErrorDrawable(
+        sketch: Sketch,
+        request: ImageRequest,
+        exception: SketchException
+    ): Drawable? = request.error?.let {
+        it.getDrawable(sketch, request, exception)?.tryToResizeDrawable(request)
+    } ?: request.placeholder?.let {
+        it.getDrawable(sketch, request, exception)?.tryToResizeDrawable(request)
     }
 }
