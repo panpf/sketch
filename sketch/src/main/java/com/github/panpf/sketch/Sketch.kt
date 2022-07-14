@@ -51,7 +51,6 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
-import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
@@ -96,7 +95,6 @@ class Sketch private constructor(
     _bitmapPool: BitmapPool?,
     _componentRegistry: ComponentRegistry?,
     _httpStack: HttpStack?,
-    _globalImageOptions: ImageOptions?,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
@@ -128,9 +126,6 @@ class Sketch private constructor(
 
     /** Execute HTTP request */
     val httpStack: HttpStack = _httpStack ?: HurlStack.Builder().build()
-
-    /** Fill unset [ImageRequest] value */
-    val globalImageOptions: ImageOptions? = _globalImageOptions
 
     /** Register components that are required to perform [ImageRequest] and can be extended,
      * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [BitmapDecodeInterceptor], [DrawableDecodeInterceptor] */
@@ -203,7 +198,6 @@ class Sketch private constructor(
                 append("\n").append("requestInterceptors: $requestInterceptors")
                 append("\n").append("bitmapDecodeInterceptors: $bitmapDecodeInterceptors")
                 append("\n").append("drawableDecodeInterceptors: $drawableDecodeInterceptors")
-                append("\n").append("globalImageOptions: $globalImageOptions")
             }
         }
     }
@@ -342,7 +336,6 @@ class Sketch private constructor(
         private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
-        private var globalImageOptions: ImageOptions? = null
 
         /**
          * Set the [Logger] to write logs to.
@@ -399,13 +392,6 @@ class Sketch private constructor(
             this.httpStack = httpStack
         }
 
-        /**
-         * Set an [ImageOptions], fill unset [ImageRequest] value
-         */
-        fun globalImageOptions(globalImageOptions: ImageOptions?): Builder = apply {
-            this.globalImageOptions = globalImageOptions
-        }
-
         fun build(): Sketch = Sketch(
             _context = appContext,
             _logger = logger,
@@ -415,7 +401,6 @@ class Sketch private constructor(
             _bitmapPool = bitmapPool,
             _componentRegistry = componentRegistry,
             _httpStack = httpStack,
-            _globalImageOptions = globalImageOptions,
         )
     }
 }

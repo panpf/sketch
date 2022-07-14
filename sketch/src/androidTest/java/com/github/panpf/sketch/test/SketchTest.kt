@@ -317,15 +317,6 @@ class SketchTest {
                     components.drawableDecodeInterceptorList
                 )
             }
-
-            build().apply {
-                Assert.assertNull(globalImageOptions)
-            }
-            globalImageOptions(ImageOptions())
-            build().apply {
-                Assert.assertEquals(ImageOptions(), globalImageOptions)
-                Assert.assertNotNull(globalImageOptions)
-            }
         }
     }
 

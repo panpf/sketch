@@ -47,11 +47,6 @@ class RequestExecutor {
 
         val requestContext = RequestContext(request)
 
-        // globalImageOptions   todo remove
-        sketch.globalImageOptions?.let {
-            requestContext.addRequest(requestContext.lastRequest.newBuilder().global(it).build())
-        }
-
         // Wrap the request to manage its lifecycle.
         val requestDelegate =
             requestDelegate(sketch, requestContext.lastRequest, coroutineContext.job)

@@ -7,10 +7,9 @@
 * View
     * [SketchImageView].displayImageOptions
     * [SketchZoomImageView].displayImageOptions
-* [Sketch].globalImageOptions
+* [ImageRequest].Builder.merge()/global()
 
-最终在构建 [ImageRequest] 时将以 [ImageRequest] 优先、来自 View 的 [ImageOptions] 次之、globalImageOptions
-最后的顺序构建属性配置
+最终在构建 [ImageRequest] 时将以 [ImageRequest] 优先、来自 View 的 [ImageOptions] 次之、global 最后的顺序构建属性配置
 
 ### 示例
 
@@ -28,18 +27,16 @@ sketchImageView.updateDisplayImageOptions {
 }
 ```
 
-Global：
+ImageRequest：
 
 ```kotlin
-class MyApplication : Application(), SketchFactory {
-
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        globalImageOptions(ImageOptions {
-            placeholer(R.drawable.placeholder)
-            error(R.drawable.error)
-            // more ...
-        })
-    }.build()
+DisplayRequest(context, "http://sample.com/sample.jpeg") {
+    merge(ImageOptions {
+        // ...
+    })
+    global(ImageOptions {
+        // ...
+    })
 }
 ```
 
