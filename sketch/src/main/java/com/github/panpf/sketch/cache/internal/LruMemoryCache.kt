@@ -18,8 +18,10 @@ package com.github.panpf.sketch.cache.internal
 import android.content.ComponentCallbacks2
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LruCache
+import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.getTrimLevelName
@@ -51,6 +53,14 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         get() = cache.size().toLong()
 
     override fun put(key: String, countBitmap: CountBitmap): Boolean {
+        val bitmap = countBitmap.bitmap ?: return false
+        if (bitmap.allocationByteCountCompat >= maxSize * 0.7f) {
+            logger?.w(MODULE) {
+                val bitmapSize = bitmap.allocationByteCountCompat.formatFileSize()
+                "write. Reject. Bitmap too big ${bitmapSize}, maxSize ${maxSize.formatFileSize()}, ${bitmap.logString}"
+            }
+            return false
+        }
         return if (cache[key] == null) {
             cache.put(key, countBitmap)
             logger?.d(MODULE) {

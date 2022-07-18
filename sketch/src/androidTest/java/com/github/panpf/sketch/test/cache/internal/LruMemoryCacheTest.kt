@@ -72,10 +72,9 @@ class LruMemoryCacheTest {
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
-//            val bigBitmapSize =
-//                sqrt(sketch.memoryCache.maxSize.toFloat() * 0.8f / 1024 / 1024).toInt()
-//            Assert.assertFalse(putBitmap(sketch, "image0", bigBitmapSize))
-//            Assert.assertEquals("0B", size.formatFileSize())
+            val bigBitmapSize = (sketch.memoryCache.maxSize.toFloat() / 1024 / 1024 * 0.8f).toInt()
+            Assert.assertFalse(putBitmap(sketch, "image0", bigBitmapSize))
+            Assert.assertEquals("0B", size.formatFileSize())
 
             Assert.assertTrue(putBitmap(sketch, "image1", 1))
             Assert.assertEquals("1MB", size.formatFileSize())

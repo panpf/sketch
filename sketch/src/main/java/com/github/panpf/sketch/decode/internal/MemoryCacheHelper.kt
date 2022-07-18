@@ -6,8 +6,6 @@ import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.allocationByteCountCompat
-import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
 
 suspend fun <R> safeAccessMemoryCache(
@@ -56,17 +54,6 @@ class MemoryCacheHelper(sketch: Sketch, val request: ImageRequest) {
     }
 
     fun write(countBitmap: CountBitmap): Boolean {
-        if (!request.memoryCachePolicy.writeEnabled) {
-            return false
-        }
-        val bitmap = countBitmap.bitmap ?: return false
-        if (bitmap.allocationByteCountCompat >= memoryCache.maxSize * 0.7f) {
-            logger.w(MODULE) {
-                val bitmapSize = bitmap.allocationByteCountCompat.formatFileSize()
-                "write. Reject. Bitmap too big ${bitmapSize}, maxSize ${memoryCache.maxSize.formatFileSize()}, ${bitmap.logString}"
-            }
-            return false
-        }
-        return memoryCache.put(keys.cacheKey, countBitmap)
+        return request.memoryCachePolicy.writeEnabled && memoryCache.put(keys.cacheKey, countBitmap)
     }
 }

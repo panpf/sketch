@@ -145,23 +145,5 @@ class MemoryCacheHelperTest {
             }).write(countBitmap())
         )
         Assert.assertNotNull(MemoryCacheHelper(sketch, request).read())
-
-        val width = sqrt(sketch.memoryCache.maxSize.toFloat() * 0.8f / 4f).toInt()
-        val bigCountBitmap = CountBitmap(
-            bitmap = Bitmap.createBitmap(width, width, ARGB_8888),
-            imageUri = request.uriString,
-            requestKey = request.key,
-            requestCacheKey = request.cacheKey,
-            imageInfo = ImageInfo(1291, 1936, "image/jpeg"),
-            imageExifOrientation = 0,
-            transformedList = null,
-            logger = sketch.logger,
-            bitmapPool = sketch.bitmapPool,
-        )
-        Assert.assertFalse(
-            MemoryCacheHelper(sketch, request.newDisplayRequest {
-                memoryCachePolicy(WRITE_ONLY)
-            }).write(bigCountBitmap)
-        )
     }
 }
