@@ -46,14 +46,13 @@ class MemoryCacheStateImageTest {
             memoryCacheKey,
             CountBitmap(
                 bitmap = Bitmap.createBitmap(100, 100, RGB_565),
+                sketch = sketch,
                 imageUri = request.uriString,
                 requestKey = request.key,
                 requestCacheKey = request.cacheKey,
                 imageInfo = ImageInfo(100, 100, "image/jpeg"),
                 imageExifOrientation = 0,
                 transformedList = null,
-                logger = sketch.logger,
-                bitmapPool = sketch.bitmapPool
             )
         )
 

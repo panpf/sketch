@@ -4,8 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.cache.internal.LruBitmapPool
-import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -13,7 +11,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -59,35 +57,31 @@ class RequestContextTest {
 
     @Test
     fun testPendingCountDrawable() {
-        val context = getTestContext()
-        val logger = Logger()
-        val bitmapPool = LruBitmapPool(context.defaultMemoryCacheBytes())
+        val (context, sketch) = getTestContextAndNewSketch()
         val countDrawable = SketchCountBitmapDrawable(
             context.resources,
             CountBitmap(
                 bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+                sketch = sketch,
                 imageUri = "imageUri",
                 requestKey = "requestKey",
                 requestCacheKey = "requestCacheKey",
                 imageInfo = ImageInfo(100, 100, "image/jpeg"),
                 imageExifOrientation = 0,
                 transformedList = null,
-                logger = logger,
-                bitmapPool = bitmapPool
             ), NETWORK
         )
         val countDrawable1 = SketchCountBitmapDrawable(
             context.resources,
             CountBitmap(
                 bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+                sketch = sketch,
                 imageUri = "imageUri1",
                 requestKey = "requestKey1",
                 requestCacheKey = "requestCacheKey1",
                 imageInfo = ImageInfo(100, 100, "image/jpeg"),
                 imageExifOrientation = 0,
                 transformedList = null,
-                logger = logger,
-                bitmapPool = bitmapPool
             ), NETWORK
         )
         val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)

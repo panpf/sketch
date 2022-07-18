@@ -20,7 +20,6 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
@@ -36,7 +35,6 @@ class ResizeDrawableTest {
     fun testTryToResizeDrawable() {
         val context = getTestContext()
         val resources = context.resources
-        val sketch = context.sketch
 
         val imageUri = newAssetUri("sample.jpeg")
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
@@ -169,14 +167,13 @@ class ResizeDrawableTest {
             resources = resources,
             countBitmap = CountBitmap(
                 bitmap = Bitmap.createBitmap(100, 200, RGB_565),
+                sketch = sketch,
                 imageUri = imageUri,
                 requestKey = imageUri,
                 requestCacheKey = imageUri,
                 imageInfo = ImageInfo(100, 200, "image/jpeg"),
                 imageExifOrientation = 0,
                 transformedList = null,
-                logger = sketch.logger,
-                bitmapPool = sketch.bitmapPool,
             ),
             dataFrom = LOCAL,
         )

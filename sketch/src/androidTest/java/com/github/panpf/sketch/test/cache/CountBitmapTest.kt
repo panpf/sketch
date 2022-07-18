@@ -300,18 +300,14 @@ class CountBitmapTest {
         requestKey: String = imageUri,
         imageInfo: ImageInfo = ImageInfo(width, height, "image/jpeg"),
         transformedList: List<Transformed>? = null
-    ): CountBitmap {
-        val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
-        return CountBitmap(
-            bitmap = bitmap,
-            imageUri = imageUri,
-            requestKey = requestKey,
-            requestCacheKey = requestKey,
-            imageInfo = imageInfo,
-            imageExifOrientation = 0,
-            transformedList = transformedList,
-            logger = sketch.logger,
-            bitmapPool = sketch.bitmapPool
-        )
-    }
+    ): CountBitmap = CountBitmap(
+        bitmap = Bitmap.createBitmap(width, height, ARGB_8888),
+        sketch = sketch,
+        imageUri = imageUri,
+        requestKey = requestKey,
+        requestCacheKey = requestKey,
+        imageInfo = imageInfo,
+        imageExifOrientation = 0,
+        transformedList = transformedList,
+    )
 }

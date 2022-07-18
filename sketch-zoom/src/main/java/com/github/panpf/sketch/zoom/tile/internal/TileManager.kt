@@ -46,7 +46,7 @@ import kotlin.math.ceil
 import kotlin.math.floor
 
 class TileManager constructor(
-    sketch: Sketch,
+    private val sketch: Sketch,
     private val imageUri: String,
     viewSize: Size,
     private val decoder: TileDecoder,
@@ -254,14 +254,13 @@ class TileManager constructor(
                     withContext(Dispatchers.Main) {
                         val newCountBitmap = CountBitmap(
                             bitmap = bitmap,
+                            sketch = sketch,
                             imageUri = imageUri,
                             requestKey = memoryCacheKey,
                             requestCacheKey = memoryCacheKey,
                             imageInfo = decoder.imageInfo,
                             imageExifOrientation = decoder.exifOrientationHelper.exifOrientation,
                             transformedList = null,
-                            logger = logger,
-                            bitmapPool = bitmapPool
                         )
                         memoryCache.put(memoryCacheKey, newCountBitmap)
                         tile.countBitmap = newCountBitmap

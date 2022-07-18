@@ -19,7 +19,6 @@ import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.math.sqrt
 
 @RunWith(AndroidJUnit4::class)
 class MemoryCacheHelperTest {
@@ -55,14 +54,13 @@ class MemoryCacheHelperTest {
         // There are the
         val countBitmap = CountBitmap(
             bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            sketch = sketch,
             imageUri = request.uriString,
             requestKey = request.key,
             requestCacheKey = request.cacheKey,
             imageInfo = ImageInfo(1291, 1936, "image/jpeg"),
             imageExifOrientation = 0,
             transformedList = null,
-            logger = sketch.logger,
-            bitmapPool = sketch.bitmapPool,
         )
         helper.write(countBitmap)
         Assert.assertNotNull(helper.read())
@@ -94,14 +92,13 @@ class MemoryCacheHelperTest {
         val countBitmap: () -> CountBitmap = {
             CountBitmap(
                 bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+                sketch = sketch,
                 imageUri = request.uriString,
                 requestKey = request.key,
                 requestCacheKey = request.cacheKey,
                 imageInfo = ImageInfo(1291, 1936, "image/jpeg"),
                 imageExifOrientation = 0,
                 transformedList = null,
-                logger = sketch.logger,
-                bitmapPool = sketch.bitmapPool,
             )
         }
 

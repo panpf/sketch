@@ -17,12 +17,12 @@ package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.logString
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.requiredMainThread
@@ -33,14 +33,13 @@ import com.github.panpf.sketch.util.toHexString
  */
 class CountBitmap constructor(
     bitmap: Bitmap,
+    val sketch: Sketch,
     val imageUri: String,
     val requestKey: String,
     val requestCacheKey: String,
     val imageInfo: ImageInfo,
     @ExifOrientation val imageExifOrientation: Int,
     val transformedList: List<Transformed>?,
-    private val logger: Logger,
-    private val bitmapPool: BitmapPool
 ) {
 
     companion object {
@@ -80,10 +79,10 @@ class CountBitmap constructor(
         requiredMainThread()
         if (displayed) {
             displayedCount++
-            tryFree("$caller:displayed:true")
+            tryFree(caller = "$caller:displayed:true", pending = false)
         } else if (displayedCount > 0) {
             (displayedCount--).coerceAtLeast(0)
-            tryFree("$caller:displayed:false")
+            tryFree(caller = "$caller:displayed:false", pending = false)
         }
     }
 
@@ -91,21 +90,23 @@ class CountBitmap constructor(
     fun setIsCached(cached: Boolean, caller: String? = null) {
         if (cached) {
             cachedCount++
-            tryFree("$caller:cached:true")
+            tryFree(caller = "$caller:cached:true", pending = false)
         } else if (cachedCount > 0) {
             (cachedCount--).coerceAtLeast(0)
-            tryFree("$caller:cached:false")
+            tryFree(caller = "$caller:cached:false", pending = false)
         }
     }
 
     @MainThread
-    fun setIsPending(waitingUse: Boolean, caller: String? = null) {
+    fun setIsPending(pending: Boolean, caller: String? = null) {
         // Pending is to prevent the Drawable from being recycled before it is not used by the target, so it does not need to trigger tryFree
         requiredMainThread()
-        if (waitingUse) {
+        if (pending) {
             pendingCount++
+            tryFree(caller = "$caller:pending:true", pending = true)
         } else if (pendingCount > 0) {
             (pendingCount--).coerceAtLeast(0)
+            tryFree(caller = "$caller:pending:false", pending = true)
         }
     }
 
@@ -126,22 +127,21 @@ class CountBitmap constructor(
         return cachedCount
     }
 
-    private fun tryFree(caller: String) {
-        // todo 传入 logger 和 bitmap pool
+    private fun tryFree(caller: String, pending: Boolean) {
         val bitmap = this._bitmap
         if (bitmap == null) {
-            logger.w(
+            sketch.logger.w(
                 MODULE,
                 "Known Recycled. $caller. $cachedCount/$displayedCount/$pendingCount. $requestKey"
             )
         } else if (isRecycled) {
             throw IllegalStateException("Unexpected Recycled. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmap.logString}. $requestKey")
-        } else if (cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
-            bitmapPool.free(bitmap, caller)
+        } else if (!pending && cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
+            sketch.bitmapPool.free(bitmap, caller)
             this._bitmap = null
-            logger.w(MODULE, "Free. $caller. ${bitmap.logString}. $requestKey")
+            sketch.logger.w(MODULE, "Free. $caller. ${bitmap.logString}. $requestKey")
         } else {
-            logger.d(MODULE) {
+            sketch.logger.d(MODULE) {
                 "Keep. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmap.logString}. $requestKey"
             }
         }

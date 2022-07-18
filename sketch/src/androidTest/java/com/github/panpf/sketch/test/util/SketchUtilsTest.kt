@@ -48,14 +48,13 @@ class SketchUtilsTest {
             resources = resources,
             countBitmap = CountBitmap(
                 bitmap = bitmap,
+                sketch = sketch,
                 imageUri = "uri",
                 requestKey = "key",
                 requestCacheKey = "cacheKey",
                 imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg"),
                 imageExifOrientation = 0,
                 transformedList = null,
-                logger = sketch.logger,
-                bitmapPool = sketch.bitmapPool,
             ),
             dataFrom = LOCAL,
         )
@@ -127,14 +126,13 @@ class SketchUtilsTest {
         val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
         val countBitmap = CountBitmap(
             bitmap,
+            sketch = sketch,
             imageUri = "uri",
             requestKey = "key",
             requestCacheKey = "cacheKey",
             imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg"),
             imageExifOrientation = 0,
             transformedList = null,
-            logger = sketch.logger,
-            bitmapPool = sketch.bitmapPool,
         )
         val resources = context.resources
         val countDrawable = SketchCountBitmapDrawable(

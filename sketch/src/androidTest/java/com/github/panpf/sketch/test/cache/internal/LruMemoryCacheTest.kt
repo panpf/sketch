@@ -225,14 +225,13 @@ class LruMemoryCacheTest {
         return put(
             imageUri, CountBitmap(
                 bitmap = bitmap,
+                sketch = sketch,
                 imageUri = imageUri,
                 requestKey = imageUri,
                 requestCacheKey = imageUri,
                 imageInfo = ImageInfo(width, height, "image/jpeg"),
                 imageExifOrientation = 0,
                 transformedList = null,
-                logger = sketch.logger,
-                bitmapPool = sketch.bitmapPool
             )
         )
     }
