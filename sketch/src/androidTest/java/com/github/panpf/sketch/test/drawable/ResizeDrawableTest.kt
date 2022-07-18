@@ -5,10 +5,11 @@ import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
-import com.github.panpf.sketch.drawable.SketchBitmapDrawable
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
@@ -21,6 +22,7 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
@@ -104,7 +106,7 @@ class ResizeDrawableTest {
 
     @Test
     fun testSetBounds() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndNewSketch()
         val resources = context.resources
 
         val imageUri = newAssetUri("sample.jpeg")
@@ -163,16 +165,20 @@ class ResizeDrawableTest {
             Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
         }
 
-        val sketchDrawable = SketchBitmapDrawable(
-            imageUri = imageUri,
-            requestKey = imageUri,
-            requestCacheKey = imageUri,
-            imageInfo = ImageInfo(100, 200, "image/jpeg"),
-            imageExifOrientation = 0,
-            dataFrom = LOCAL,
-            transformedList = null,
+        val sketchDrawable = SketchCountBitmapDrawable(
             resources = resources,
-            bitmap = Bitmap.createBitmap(100, 200, RGB_565)
+            countBitmap = CountBitmap(
+                bitmap = Bitmap.createBitmap(100, 200, RGB_565),
+                imageUri = imageUri,
+                requestKey = imageUri,
+                requestCacheKey = imageUri,
+                imageInfo = ImageInfo(100, 200, "image/jpeg"),
+                imageExifOrientation = 0,
+                transformedList = null,
+                logger = sketch.logger,
+                bitmapPool = sketch.bitmapPool,
+            ),
+            dataFrom = LOCAL,
         )
         ResizeDrawable(sketchDrawable, Resize(500, 300, CENTER_CROP)).apply {
             setBounds(0, 0, 500, 300)

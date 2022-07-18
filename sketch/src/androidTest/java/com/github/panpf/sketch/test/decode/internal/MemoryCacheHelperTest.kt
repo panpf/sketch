@@ -7,8 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.MemoryCacheHelper
 import com.github.panpf.sketch.decode.internal.MemoryCacheKeys
@@ -54,14 +53,18 @@ class MemoryCacheHelperTest {
         )
 
         // There are the
-        val bitmapDecodeResult = BitmapDecodeResult(
-            Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg"),
-            0,
-            LOCAL,
-            null
+        val countBitmap = CountBitmap(
+            bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            imageUri = request.uriString,
+            requestKey = request.key,
+            requestCacheKey = request.cacheKey,
+            imageInfo = ImageInfo(1291, 1936, "image/jpeg"),
+            imageExifOrientation = 0,
+            transformedList = null,
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
         )
-        helper.write(bitmapDecodeResult)
+        helper.write(countBitmap)
         Assert.assertNotNull(helper.read())
         Assert.assertNotNull(helper.read())
 
@@ -88,53 +91,77 @@ class MemoryCacheHelperTest {
         val imageView = ImageView(context)
         val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
 
+        val countBitmap: () -> CountBitmap = {
+            CountBitmap(
+                bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+                imageUri = request.uriString,
+                requestKey = request.key,
+                requestCacheKey = request.cacheKey,
+                imageInfo = ImageInfo(1291, 1936, "image/jpeg"),
+                imageExifOrientation = 0,
+                transformedList = null,
+                logger = sketch.logger,
+                bitmapPool = sketch.bitmapPool,
+            )
+        }
+
         sketch.memoryCache.clear()
-
         Assert.assertNull(MemoryCacheHelper(sketch, request).read())
-
-        val bitmapDecodeResult = BitmapDecodeResult(
-            Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg"),
-            0,
-            LOCAL,
-            null
+        Assert.assertTrue(
+            MemoryCacheHelper(sketch, request).write(countBitmap())
         )
-        Assert.assertNotNull(
-            MemoryCacheHelper(sketch, request).write(bitmapDecodeResult)
-        )
-
         Assert.assertNotNull(MemoryCacheHelper(sketch, request).read())
 
-        Assert.assertNotNull(
+        Assert.assertFalse(
             MemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(ENABLED)
-            }).write(bitmapDecodeResult)
+            }).write(countBitmap())
         )
-        Assert.assertNull(
+        Assert.assertNotNull(MemoryCacheHelper(sketch, request).read())
+
+        sketch.memoryCache.clear()
+        Assert.assertNull(MemoryCacheHelper(sketch, request).read())
+        Assert.assertTrue(
+            MemoryCacheHelper(sketch, request.newDisplayRequest {
+                memoryCachePolicy(ENABLED)
+            }).write(countBitmap())
+        )
+        Assert.assertNotNull(MemoryCacheHelper(sketch, request).read())
+
+        sketch.memoryCache.clear()
+        Assert.assertNull(MemoryCacheHelper(sketch, request).read())
+        Assert.assertFalse(
             MemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(READ_ONLY)
-            }).write(bitmapDecodeResult)
+            }).write(countBitmap())
         )
-        Assert.assertNotNull(
+        Assert.assertNull(MemoryCacheHelper(sketch, request).read())
+
+        sketch.memoryCache.clear()
+        Assert.assertNull(MemoryCacheHelper(sketch, request).read())
+        Assert.assertTrue(
             MemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(WRITE_ONLY)
-            }).write(bitmapDecodeResult)
+            }).write(countBitmap())
         )
-
         Assert.assertNotNull(MemoryCacheHelper(sketch, request).read())
 
         val width = sqrt(sketch.memoryCache.maxSize.toFloat() * 0.8f / 4f).toInt()
-        val bigBitmapDecodeResult = BitmapDecodeResult(
-            Bitmap.createBitmap(width, width, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg"),
-            0,
-            LOCAL,
-            null
+        val bigCountBitmap = CountBitmap(
+            bitmap = Bitmap.createBitmap(width, width, ARGB_8888),
+            imageUri = request.uriString,
+            requestKey = request.key,
+            requestCacheKey = request.cacheKey,
+            imageInfo = ImageInfo(1291, 1936, "image/jpeg"),
+            imageExifOrientation = 0,
+            transformedList = null,
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
         )
-        Assert.assertNull(
+        Assert.assertFalse(
             MemoryCacheHelper(sketch, request.newDisplayRequest {
                 memoryCachePolicy(WRITE_ONLY)
-            }).write(bigBitmapDecodeResult)
+            }).write(bigCountBitmap)
         )
     }
 }

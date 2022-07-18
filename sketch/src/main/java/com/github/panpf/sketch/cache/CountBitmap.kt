@@ -80,10 +80,10 @@ class CountBitmap constructor(
         requiredMainThread()
         if (displayed) {
             displayedCount++
-            countChanged("$caller:displayed:true")
+            tryFree("$caller:displayed:true")
         } else if (displayedCount > 0) {
-            displayedCount--
-            countChanged("$caller:displayed:false")
+            (displayedCount--).coerceAtLeast(0)
+            tryFree("$caller:displayed:false")
         }
     }
 
@@ -91,22 +91,21 @@ class CountBitmap constructor(
     fun setIsCached(cached: Boolean, caller: String? = null) {
         if (cached) {
             cachedCount++
-            countChanged("$caller:cached:true")
+            tryFree("$caller:cached:true")
         } else if (cachedCount > 0) {
-            cachedCount--
-            countChanged("$caller:cached:false")
+            (cachedCount--).coerceAtLeast(0)
+            tryFree("$caller:cached:false")
         }
     }
 
     @MainThread
     fun setIsPending(waitingUse: Boolean, caller: String? = null) {
+        // Pending is to prevent the Drawable from being recycled before it is not used by the target, so it does not need to trigger tryFree
         requiredMainThread()
         if (waitingUse) {
             pendingCount++
-            countChanged("$caller:pending:true")
         } else if (pendingCount > 0) {
-            pendingCount--
-            countChanged("$caller:pending:false")
+            (pendingCount--).coerceAtLeast(0)
         }
     }
 
@@ -127,7 +126,7 @@ class CountBitmap constructor(
         return cachedCount
     }
 
-    private fun countChanged(caller: String) {
+    private fun tryFree(caller: String) {
         // todo 传入 logger 和 bitmap pool
         val bitmap = this._bitmap
         if (bitmap == null) {

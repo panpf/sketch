@@ -114,7 +114,7 @@ class CountBitmapTest {
                 setIsPending(true)
                 setIsPending(false)
             }
-            Assert.assertNull(bitmap)
+            Assert.assertNotNull(bitmap)
         }
     }
 
@@ -269,11 +269,11 @@ class CountBitmapTest {
                 Assert.assertEquals(1, getPendingCount())
 
                 setIsPending(false)
-                Assert.assertTrue(isRecycled)
+                Assert.assertFalse(isRecycled)
                 Assert.assertEquals(0, getPendingCount())
 
                 setIsPending(false)
-                Assert.assertTrue(isRecycled)
+                Assert.assertFalse(isRecycled)
                 Assert.assertEquals(0, getPendingCount())
             }
         }

@@ -72,29 +72,34 @@ class LruMemoryCacheTest {
         LruMemoryCache(10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
-            putBitmap(sketch, "image1", 1)
+//            val bigBitmapSize =
+//                sqrt(sketch.memoryCache.maxSize.toFloat() * 0.8f / 1024 / 1024).toInt()
+//            Assert.assertFalse(putBitmap(sketch, "image0", bigBitmapSize))
+//            Assert.assertEquals("0B", size.formatFileSize())
+
+            Assert.assertTrue(putBitmap(sketch, "image1", 1))
             Assert.assertEquals("1MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
 
-            putBitmap(sketch, "image2", 2)
+            Assert.assertTrue(putBitmap(sketch, "image2", 2))
             Assert.assertEquals("3MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
 
-            putBitmap(sketch, "image3", 3)
+            Assert.assertTrue(putBitmap(sketch, "image3", 3))
             Assert.assertEquals("6MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
 
-            putBitmap(sketch, "image4", 4)
+            Assert.assertTrue(putBitmap(sketch, "image4", 4))
             Assert.assertEquals("10MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
             Assert.assertNotNull(get("image4"))
 
-            putBitmap(sketch, "image5", 5)
+            Assert.assertTrue(putBitmap(sketch, "image5", 5))
             Assert.assertEquals("9MB", size.formatFileSize())
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
@@ -102,7 +107,7 @@ class LruMemoryCacheTest {
             Assert.assertNotNull(get("image4"))
             Assert.assertNotNull(get("image5"))
 
-            putBitmap(sketch, "image6", 6)
+            Assert.assertTrue(putBitmap(sketch, "image6", 6))
             Assert.assertEquals("6MB", size.formatFileSize())
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
@@ -111,7 +116,7 @@ class LruMemoryCacheTest {
             Assert.assertNull(get("image5"))
             Assert.assertNotNull(get("image6"))
 
-            putBitmap(sketch, "image7", 7)
+            Assert.assertTrue(putBitmap(sketch, "image7", 7))
             Assert.assertEquals("7MB", size.formatFileSize())
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))

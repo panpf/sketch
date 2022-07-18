@@ -13,11 +13,11 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.displayAssetImage
-import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.InternalDrawableWrapperImpl
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.util.findLastSketchDrawable
 import com.github.panpf.sketch.util.foreachSketchCountDrawable
@@ -41,18 +41,23 @@ class SketchUtilsTest {
 
     @Test
     fun testFindLastSketchDrawable() {
+        val sketch = getTestContext().sketch
         val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
         val resources = InstrumentationRegistry.getInstrumentation().context.resources
-        val sketchDrawable = SketchBitmapDrawable(
-            imageUri = "uri",
-            requestKey = "key",
-            requestCacheKey = "cacheKey",
-            imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg"),
-            imageExifOrientation = 0,
-            dataFrom = LOCAL,
-            transformedList = null,
+        val sketchDrawable = SketchCountBitmapDrawable(
             resources = resources,
-            bitmap = bitmap
+            countBitmap = CountBitmap(
+                bitmap = bitmap,
+                imageUri = "uri",
+                requestKey = "key",
+                requestCacheKey = "cacheKey",
+                imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg"),
+                imageExifOrientation = 0,
+                transformedList = null,
+                logger = sketch.logger,
+                bitmapPool = sketch.bitmapPool,
+            ),
+            dataFrom = LOCAL,
         )
         val colorDrawable = ColorDrawable(Color.BLUE)
         val colorDrawable2 = ColorDrawable(Color.GREEN)

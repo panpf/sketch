@@ -8,6 +8,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.decode.ImageInfo
@@ -81,3 +82,14 @@ fun InputStream.newBitmapRegionDecoderInstanceCompat(): BitmapRegionDecoder? =
         @Suppress("DEPRECATION")
         BitmapRegionDecoder.newInstance(this, false)
     }
+
+/**
+ * Get a reusable [Bitmap] if none is available, create a new one. Note that all colors are erased before returning.
+ */
+fun BitmapPool.exist(width: Int, height: Int, config: Bitmap.Config): Boolean {
+    val bitmap = getDirty(width, height, config)
+    if (bitmap != null) {
+        put(bitmap, "exist")
+    }
+    return bitmap != null
+}

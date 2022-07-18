@@ -2,10 +2,11 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.toSketchBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -20,13 +21,13 @@ class DefaultDrawableDecoder(
 ) : DrawableDecoder {
 
     @WorkerThread
-    override suspend fun decode(): DrawableDecodeResult =
-        safeAccessMemoryCache(sketch, request) { helper ->
-            val cachedResult = helper?.read()
-            if (cachedResult != null) {
-                cachedResult
+    override suspend fun decode(): DrawableDecodeResult {
+        val (countBitmap, dataFrom) = safeAccessMemoryCache(sketch, request) { helper ->
+            val cachedCountBitmap = helper?.read()
+            if (cachedCountBitmap != null) {
+                cachedCountBitmap to MEMORY_CACHE
             } else {
-                val bitmapResult = BitmapDecodeInterceptorChain(
+                val decodeResult = BitmapDecodeInterceptorChain(
                     sketch = sketch,
                     request = request,
                     requestContext = requestContext,
@@ -34,23 +35,36 @@ class DefaultDrawableDecoder(
                     interceptors = sketch.components.bitmapDecodeInterceptorList,
                     index = 0,
                 ).proceed()
-                val drawable = helper?.write(bitmapResult)
-                    ?: bitmapResult.toSketchBitmapDrawable(request)
-                DrawableDecodeResult(
-                    drawable = drawable,
-                    imageInfo = bitmapResult.imageInfo,
-                    imageExifOrientation = bitmapResult.imageExifOrientation,
-                    dataFrom = bitmapResult.dataFrom,
-                    transformedList = bitmapResult.transformedList
+                val newCountBitmap = CountBitmap(
+                    bitmap = decodeResult.bitmap,
+                    imageUri = request.uriString,
+                    requestKey = request.key,
+                    requestCacheKey = request.cacheKey,
+                    imageInfo = decodeResult.imageInfo,
+                    imageExifOrientation = decodeResult.imageExifOrientation,
+                    transformedList = decodeResult.transformedList,
+                    logger = sketch.logger,
+                    bitmapPool = sketch.bitmapPool
                 )
-            }
-        }.apply {
-            if (drawable is SketchCountBitmapDrawable) {
-                withContext(Dispatchers.Main) {
-                    requestContext.pendingCountDrawable(drawable, "DefaultDrawableDecoder")
-                }
+                helper?.write(newCountBitmap)
+                newCountBitmap to decodeResult.dataFrom
             }
         }
+
+        val resources = request.context.resources
+        val countDrawable = SketchCountBitmapDrawable(resources, countBitmap, dataFrom).apply {
+            withContext(Dispatchers.Main) {
+                requestContext.pendingCountDrawable(this@apply, "DefaultDrawableDecoder")
+            }
+        }
+        return DrawableDecodeResult(
+            drawable = countDrawable,
+            imageInfo = countBitmap.imageInfo,
+            imageExifOrientation = countBitmap.imageExifOrientation,
+            dataFrom = dataFrom,
+            transformedList = null,
+        )
+    }
 
     class Factory : DrawableDecoder.Factory {
 

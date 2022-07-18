@@ -3,7 +3,9 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
+import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.safeAccessMemoryCache
@@ -46,13 +48,21 @@ class EngineRequestInterceptor : RequestInterceptor {
         requestContext: RequestContext,
     ): DisplayData {
         /* check memory cache */
-        val resultFromCache = safeAccessMemoryCache(sketch, request) { it?.read() }
-        if (resultFromCache != null) {
-            val drawable = resultFromCache.drawable
-            if (drawable is SketchCountBitmapDrawable) {
-                requestContext.pendingCountDrawable(drawable, "displayBefore")
+        val cachedCountBitmap = safeAccessMemoryCache(sketch, request) { it?.read() }
+        if (cachedCountBitmap != null) {
+            val countDrawable = SketchCountBitmapDrawable(
+                request.context.resources, cachedCountBitmap, MEMORY_CACHE
+            ).apply {
+                requestContext.pendingCountDrawable(this@apply, "displayBefore")
             }
-            return resultFromCache.toDisplayData()
+            val result = DrawableDecodeResult(
+                drawable = countDrawable,
+                imageInfo = cachedCountBitmap.imageInfo,
+                imageExifOrientation = cachedCountBitmap.imageExifOrientation,
+                dataFrom = MEMORY_CACHE,
+                transformedList = null,
+            )
+            return result.toDisplayData()
         }
         val depth = request.depth
         if (depth >= MEMORY) {

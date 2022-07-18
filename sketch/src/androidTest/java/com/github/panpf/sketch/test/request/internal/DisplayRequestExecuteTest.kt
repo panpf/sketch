@@ -64,6 +64,7 @@ import com.github.panpf.sketch.test.utils.TestDisplayTarget
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestTransitionDisplayTarget
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
@@ -967,56 +968,55 @@ class DisplayRequestExecuteTest {
         }
 
         bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
-        Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
-        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
 
-        bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
         request.newDisplayRequest {
             disallowReuseBitmap(true)
         }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
-        Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+        Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
 
-        bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
         request.newDisplayRequest {
             disallowReuseBitmap(false)
         }.let { runBlocking { sketch.execute(it) } }
         if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-            Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+            Assert.assertFalse(bitmapPool.exist(323, 484, ARGB_8888))
         } else {
-            Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
+            Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
         }
 
+        bitmapPool.clear()
         bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
         request.newDisplayRequest {
             disallowReuseBitmap(null)
         }.let { runBlocking { sketch.execute(it) } }
         if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-            Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
+            Assert.assertFalse(bitmapPool.exist(323, 484, ARGB_8888))
         } else {
-            Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
+            Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
         }
 
+        bitmapPool.clear()
         bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
         request.newDisplayRequest {
             resize(null)
             disallowReuseBitmap(false)
         }.let { runBlocking { sketch.execute(it) } }
         if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-            Assert.assertNull(bitmapPool.get(1291, 1936, ARGB_8888))
+            Assert.assertFalse(bitmapPool.exist(1291, 1936, ARGB_8888))
         } else {
-            Assert.assertNotNull(bitmapPool.get(1291, 1936, ARGB_8888))
+            Assert.assertTrue(bitmapPool.exist(1291, 1936, ARGB_8888))
         }
 
+        bitmapPool.clear()
         bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
         request.newDisplayRequest {
             resize(null)
             disallowReuseBitmap(null)
         }.let { runBlocking { sketch.execute(it) } }
         if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-            Assert.assertNull(bitmapPool.get(1291, 1936, ARGB_8888))
+            Assert.assertFalse(bitmapPool.exist(1291, 1936, ARGB_8888))
         } else {
-            Assert.assertNotNull(bitmapPool.get(1291, 1936, ARGB_8888))
+            Assert.assertTrue(bitmapPool.exist(1291, 1936, ARGB_8888))
         }
     }
 
