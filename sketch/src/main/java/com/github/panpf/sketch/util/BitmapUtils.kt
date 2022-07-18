@@ -71,13 +71,11 @@ internal fun Bitmap.scaled(scale: Double, bitmapPool: BitmapPool): Bitmap {
 }
 
 internal fun fastGaussianBlur(inBitmap: Bitmap, radius: Int): Bitmap {
-    // todo x86 模拟器 API 18,19 上崩溃 ArrayIndexOutOfBoundsException
+    // todo Throw ArrayIndexOutOfBoundsException on x86 Emulator API 18,19
     val outBitmap: Bitmap? = if (inBitmap.config != null && inBitmap.isMutable) {
         inBitmap
     } else {
-        val config =
-            if (inBitmap.config != null) inBitmap.config else Bitmap.Config.ARGB_8888
-        inBitmap.copy(config, true)
+        inBitmap.copy(inBitmap.safeConfig, true)
     }
     return try {
         val w = outBitmap!!.width

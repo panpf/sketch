@@ -21,8 +21,8 @@ open class SketchImageView @JvmOverloads constructor(
 ) : AbsAbilityImageView(context, attrs, defStyle), ImageOptionsProvider {
 
     override var displayImageOptions: ImageOptions? = null
-    private var listenerList: MutableList<Listener<DisplayRequest, Success, Error>>? = null
-    private var progressListenerList: MutableList<ProgressListener<DisplayRequest>>? = null
+    private var displayListenerList: MutableList<Listener<DisplayRequest, Success, Error>>? = null
+    private var displayProgressListenerList: MutableList<ProgressListener<DisplayRequest>>? = null
 
     private val imageXmlAttributes: ImageXmlAttributes
 
@@ -50,7 +50,7 @@ open class SketchImageView @JvmOverloads constructor(
     }
 
     override fun getDisplayListener(): Listener<DisplayRequest, Success, Error>? {
-        val myListeners = listenerList?.takeIf { it.isNotEmpty() }
+        val myListeners = displayListenerList?.takeIf { it.isNotEmpty() }
         val superListener = super.getDisplayListener()
         if (myListeners == null && superListener == null) return superListener
 
@@ -61,7 +61,7 @@ open class SketchImageView @JvmOverloads constructor(
     }
 
     override fun getDisplayProgressListener(): ProgressListener<DisplayRequest>? {
-        val myProgressListeners = progressListenerList?.takeIf { it.isNotEmpty() }
+        val myProgressListeners = displayProgressListenerList?.takeIf { it.isNotEmpty() }
         val superProgressListener = super.getDisplayProgressListener()
         if (myProgressListeners == null && superProgressListener == null) return superProgressListener
 
@@ -71,23 +71,24 @@ open class SketchImageView @JvmOverloads constructor(
         return ProgressListeners(progressListenerList)
     }
 
-    fun registerListener(listener: Listener<DisplayRequest, Success, Error>) {
-        this.listenerList = (this.listenerList ?: mutableListOf()).apply {
+    fun registerDisplayListener(listener: Listener<DisplayRequest, Success, Error>) {
+        this.displayListenerList = (this.displayListenerList ?: mutableListOf()).apply {
             add(listener)
         }
     }
 
-    fun unregisterListener(listener: Listener<DisplayRequest, Success, Error>) {
-        this.listenerList?.remove(listener)
+    fun unregisterDisplayListener(listener: Listener<DisplayRequest, Success, Error>) {
+        this.displayListenerList?.remove(listener)
     }
 
-    fun registerProgressListener(listener: ProgressListener<DisplayRequest>) {
-        this.progressListenerList = (this.progressListenerList ?: mutableListOf()).apply {
-            add(listener)
-        }
+    fun registerDisplayProgressListener(listener: ProgressListener<DisplayRequest>) {
+        this.displayProgressListenerList =
+            (this.displayProgressListenerList ?: mutableListOf()).apply {
+                add(listener)
+            }
     }
 
-    fun unregisterProgressListener(listener: ProgressListener<DisplayRequest>) {
-        this.progressListenerList?.remove(listener)
+    fun unregisterDisplayProgressListener(listener: ProgressListener<DisplayRequest>) {
+        this.displayProgressListenerList?.remove(listener)
     }
 }
