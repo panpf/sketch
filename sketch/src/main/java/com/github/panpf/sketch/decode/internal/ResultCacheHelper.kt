@@ -79,6 +79,7 @@ class ResultCacheHelper(sketch: Sketch, val request: ImageRequest) {
                 .let { jsonString -> MetaData.Serializer().fromJson(JSONObject(jsonString)) }
             val imageInfo = metaData.imageInfo
             FileInputStream(bitmapDataDiskCacheSnapshot.file.path).buffered().use { bufferedInput ->
+                // todo 使用 bitmap pool 并且 bitmap mutable
                 val options = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
                     .toBitmapOptions()
                 BitmapFactory.decodeStream(bufferedInput, null, options)

@@ -32,7 +32,7 @@ import com.github.panpf.sketch.util.toHexString
  * Reference counts [Bitmap] and, when the count is 0, puts it into the BitmapPool
  */
 class CountBitmap constructor(
-    initBitmap: Bitmap,
+    bitmap: Bitmap,
     val imageUri: String,
     val requestKey: String,
     val requestCacheKey: String,
@@ -47,16 +47,16 @@ class CountBitmap constructor(
         private const val MODULE = "CountBitmap"
     }
 
-    private var bitmapHolder: Bitmap? = initBitmap
+    private var _bitmap: Bitmap? = bitmap
     private var cachedCount = 0
     private var displayedCount = 0
     private var pendingCount = 0
 
     val bitmap: Bitmap?
-        get() = bitmapHolder
+        get() = _bitmap
 
     val isRecycled: Boolean
-        get() = bitmapHolder?.isRecycled ?: true
+        get() = _bitmap?.isRecycled ?: true
 
     val byteCount: Int
         get() = bitmap?.allocationByteCountCompat ?: 0
@@ -67,11 +67,11 @@ class CountBitmap constructor(
             imageInfo.height,
             imageInfo.mimeType,
             exifOrientationName(imageExifOrientation),
-            initBitmap.width,
-            initBitmap.height,
-            initBitmap.config,
-            initBitmap.allocationByteCountCompat.formatFileSize(),
-            initBitmap.toHexString(),
+            bitmap.width,
+            bitmap.height,
+            bitmap.config,
+            bitmap.allocationByteCountCompat.formatFileSize(),
+            bitmap.toHexString(),
         )
     }
 
@@ -128,21 +128,22 @@ class CountBitmap constructor(
     }
 
     private fun countChanged(caller: String) {
-        val bitmapHolder = this.bitmapHolder
-        if (bitmapHolder == null) {
+        // todo 传入 logger 和 bitmap pool
+        val bitmap = this._bitmap
+        if (bitmap == null) {
             logger.w(
                 MODULE,
                 "Known Recycled. $caller. $cachedCount/$displayedCount/$pendingCount. $requestKey"
             )
         } else if (isRecycled) {
-            throw IllegalStateException("Unexpected Recycled. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmapHolder.logString}. $requestKey")
+            throw IllegalStateException("Unexpected Recycled. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmap.logString}. $requestKey")
         } else if (cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
-            bitmapPool.free(bitmapHolder, caller)
-            this.bitmapHolder = null
-            logger.w(MODULE, "Free. $caller. ${bitmapHolder.logString}. $requestKey")
+            bitmapPool.free(bitmap, caller)
+            this._bitmap = null
+            logger.w(MODULE, "Free. $caller. ${bitmap.logString}. $requestKey")
         } else {
             logger.d(MODULE) {
-                "Keep. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmapHolder.logString}. $requestKey"
+                "Keep. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmap.logString}. $requestKey"
             }
         }
     }

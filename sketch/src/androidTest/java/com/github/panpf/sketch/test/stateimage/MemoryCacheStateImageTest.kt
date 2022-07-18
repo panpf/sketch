@@ -45,7 +45,7 @@ class MemoryCacheStateImageTest {
         memoryCache.put(
             memoryCacheKey,
             CountBitmap(
-                initBitmap = Bitmap.createBitmap(100, 100, RGB_565),
+                bitmap = Bitmap.createBitmap(100, 100, RGB_565),
                 imageUri = request.uriString,
                 requestKey = request.key,
                 requestCacheKey = request.cacheKey,

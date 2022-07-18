@@ -21,6 +21,7 @@ import com.github.panpf.sketch.util.recycle.LruPoolStrategy
 import com.github.panpf.sketch.util.recycle.SizeConfigStrategy
 import com.github.panpf.sketch.util.toHexString
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.roundToInt
 
 /**
  * Release the cached [Bitmap] reuse pool according to the least-used rule
@@ -118,12 +119,12 @@ class LruBitmapPool constructor(
                 }
 
                 logger?.d(MODULE) {
-                    val hitRatio = (hitCount.toFloat() / getCount).format(2)
+                    val hitRatio = ((hitCount.toFloat() / getCount).format(2) * 100).roundToInt()
                     val key = strategy.logBitmap(width, height, config)
                     if (this != null) {
-                        "get. Hit(${hitRatio}). ${this.logString}. ${size.formatFileSize()}. $key"
+                        "get. hit. hit rate $hitRatio%. ${this.logString}. ${size.formatFileSize()}. $key"
                     } else {
-                        "get. NoHit(${hitRatio}). ${size.formatFileSize()}. $key"
+                        "get. miss. hit rate $hitRatio%. ${size.formatFileSize()}. $key"
                     }
                 }
             }

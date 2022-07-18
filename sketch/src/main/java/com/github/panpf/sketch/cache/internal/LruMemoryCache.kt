@@ -27,6 +27,7 @@ import com.github.panpf.sketch.util.toHexString
 import kotlinx.coroutines.sync.Mutex
 import java.util.WeakHashMap
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.roundToInt
 
 /**
  * A bitmap memory cache that manages the cache according to a least-used rule
@@ -88,12 +89,11 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
                 hitCount.set(0)
             }
             logger?.d(MODULE) {
+                val hitRatio = ((hitCount1.toFloat() / getCount1).format(2) * 100).roundToInt()
                 if (this != null) {
-                    val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
-                    "get. hit. hitRate ${hitRatio}. ${this.info}/${this.bitmap!!.toHexString()}. $key"
+                    "get. hit. hit rate $hitRatio%. ${this.info}/${this.bitmap!!.toHexString()}. $key"
                 } else {
-                    val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
-                    "get. miss. hitRate ${hitRatio}. $key"
+                    "get. miss. hit rate $hitRatio%. $key"
                 }
             }
         }

@@ -84,7 +84,7 @@ class MemoryCacheHelper(sketch: Sketch, val request: ImageRequest) {
         }
 
         val countBitmap = CountBitmap(
-            initBitmap = result.bitmap,
+            bitmap = result.bitmap,
             imageUri = request.uriString,
             requestKey = request.key,
             requestCacheKey = request.cacheKey,
