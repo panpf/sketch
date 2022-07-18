@@ -57,18 +57,18 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         if (bitmap.allocationByteCountCompat >= maxSize * 0.7f) {
             logger?.w(MODULE) {
                 val bitmapSize = bitmap.allocationByteCountCompat.formatFileSize()
-                "write. Reject. Bitmap too big ${bitmapSize}, maxSize ${maxSize.formatFileSize()}, ${bitmap.logString}"
+                "write. reject. Bitmap too big ${bitmapSize}, maxSize ${maxSize.formatFileSize()}, ${bitmap.logString}"
             }
             return false
         }
         return if (cache[key] == null) {
             cache.put(key, countBitmap)
             logger?.d(MODULE) {
-                "put. ${countBitmap.info}. ${size.formatFileSize()}. $key"
+                "put. successful. ${countBitmap.info}. ${size.formatFileSize()}. $key"
             }
             true
         } else {
-            logger?.w(MODULE, "Exist. key=$key")
+            logger?.w(MODULE, "put. exist. key=$key")
             false
         }
     }

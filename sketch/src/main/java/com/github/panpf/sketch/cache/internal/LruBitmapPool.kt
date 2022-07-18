@@ -62,23 +62,23 @@ class LruBitmapPool constructor(
 
     override fun put(bitmap: Bitmap, caller: String?): Boolean {
         if (bitmap.isRecycled) {
-            logger?.w(MODULE, "put reject. Recycled. $caller. ${bitmap.logString}")
+            logger?.w(MODULE, "put. reject. Recycled. $caller. ${bitmap.logString}")
             return false
         }
         if (!bitmap.isMutable) {
-            logger?.w(MODULE, "put reject. Immutable. $caller. ${bitmap.logString}")
+            logger?.w(MODULE, "put. reject. Immutable. $caller. ${bitmap.logString}")
             return false
         }
         val bitmapSize = strategy.getSize(bitmap).toLong()
         if (bitmapSize > maxSize * 0.7f) {
             logger?.w(MODULE) {
-                "put reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}. $caller. ${bitmap.logString}"
+                "put. reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}. $caller. ${bitmap.logString}"
             }
             return false
         }
         if (!allowedConfigs.contains(bitmap.config)) {
             logger?.w(MODULE) {
-                "put reject. Disallowed config ${bitmap.config}. $caller. ${bitmap.logString}"
+                "put. reject. Disallowed config ${bitmap.config}. $caller. ${bitmap.logString}"
             }
             return false
         }
@@ -89,7 +89,7 @@ class LruBitmapPool constructor(
             puts++
             this._size += bitmapSize
             logger?.d(MODULE) {
-                "put successful. bitmap size ${bitmapSize.formatFileSize()}, pool size ${size.formatFileSize()}. $caller. ${bitmap.logString}"
+                "put. successful. bitmap size ${bitmapSize.formatFileSize()}, pool size ${size.formatFileSize()}. $caller. ${bitmap.logString}"
             }
         }
         return true
@@ -193,11 +193,14 @@ class LruBitmapPool constructor(
         imageMimeType: String?,
     ): Boolean {
         if (imageWidth == 0 || imageHeight == 0) {
-            logger?.e(MODULE, "outWidth or ourHeight is 0")
+            logger?.e(MODULE, "setInBitmap. outWidth or ourHeight is 0")
             return false
         }
         if (options.inPreferredConfig?.isAndSupportHardware() == true) {
-            logger?.w(MODULE, "inPreferredConfig is HARDWARE does not support inBitmap")
+            logger?.w(
+                MODULE,
+                "setInBitmap. inPreferredConfig is HARDWARE does not support inBitmap"
+            )
             return false
         }
 
@@ -222,7 +225,7 @@ class LruBitmapPool constructor(
         }
         if (inBitmap != null) {
             logger?.d(MODULE) {
-                "setInBitmapForBitmapFactory. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
+                "setInBitmap. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
                     finalWidth,
                     finalHeight,
                     options.inPreferredConfig,
@@ -242,11 +245,14 @@ class LruBitmapPool constructor(
         options: BitmapFactory.Options, imageWidth: Int, imageHeight: Int,
     ): Boolean {
         if (imageWidth == 0 || imageHeight == 0) {
-            logger?.e(MODULE, "outWidth or ourHeight is 0")
+            logger?.e(MODULE, "setInBitmapForRegion. outWidth or ourHeight is 0")
             return false
         }
         if (options.inPreferredConfig?.isAndSupportHardware() == true) {
-            logger?.w(MODULE, "inPreferredConfig is HARDWARE does not support inBitmap")
+            logger?.w(
+                MODULE,
+                "setInBitmapForRegion. inPreferredConfig is HARDWARE does not support inBitmap"
+            )
             return false
         }
 
@@ -258,7 +264,7 @@ class LruBitmapPool constructor(
         val inBitmap = this.get(finalWidth, finalHeight, options.inPreferredConfig)
             ?: Bitmap.createBitmap(finalWidth, finalHeight, options.inPreferredConfig)
         logger?.d(MODULE) {
-            "setInBitmapForRegionDecoder. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
+            "setInBitmapForRegion. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
                 finalWidth,
                 finalHeight,
                 options.inPreferredConfig,
@@ -278,12 +284,12 @@ class LruBitmapPool constructor(
         val success = put(bitmap, caller)
         if (success) {
             logger?.d(MODULE) {
-                "free success. $caller. ${bitmap.logString}"
+                "free. successful. $caller. ${bitmap.logString}"
             }
         } else {
             bitmap.recycle()
             logger?.w(MODULE) {
-                "free failed recycle. $caller. ${bitmap.logString}"
+                "free. failed. execute recycle. $caller. ${bitmap.logString}"
             }
         }
         return success

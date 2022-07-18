@@ -1,13 +1,13 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap.CompressFormat.PNG
-import android.graphics.BitmapFactory
 import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_DISK_CACHE
+import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
@@ -19,7 +19,6 @@ import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.FileInputStream
 
 suspend fun <R> safeAccessResultCache(
     sketch: Sketch,
@@ -51,7 +50,7 @@ class ResultCacheKeys(request: ImageRequest) {
     }
 }
 
-class ResultCacheHelper(sketch: Sketch, val request: ImageRequest) {
+class ResultCacheHelper(val sketch: Sketch, val request: ImageRequest) {
 
     companion object {
         const val MODULE = "BitmapResultDiskCacheHelper"
@@ -77,13 +76,19 @@ class ResultCacheHelper(sketch: Sketch, val request: ImageRequest) {
             val metaData = bitmapMetaDiskCacheSnapshot.newInputStream()
                 .use { inputStream -> inputStream.bufferedReader().readText() }
                 .let { jsonString -> MetaData.Serializer().fromJson(JSONObject(jsonString)) }
-            val imageInfo = metaData.imageInfo
-            FileInputStream(bitmapDataDiskCacheSnapshot.file.path).buffered().use { bufferedInput ->
-                // todo 使用 bitmap pool 并且 bitmap mutable
-                val options = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-                    .toBitmapOptions()
-                BitmapFactory.decodeStream(bufferedInput, null, options)
-            }?.let { bitmap ->
+            val dataSource =
+                DiskCacheDataSource(sketch, request, RESULT_DISK_CACHE, bitmapDataDiskCacheSnapshot)
+
+            val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory()
+            val options = request.newDecodeConfigByQualityParams(metaData.imageInfo.mimeType)
+                .toBitmapOptions()
+            // Set inBitmap from bitmap pool
+            if (!request.disallowReuseBitmap) {
+                sketch.bitmapPool.setInBitmap(
+                    options, cacheImageInfo.width, cacheImageInfo.height, cacheImageInfo.mimeType
+                )
+            }
+            dataSource.decodeBitmap(options)?.let { bitmap ->
                 BitmapDecodeResult(
                     bitmap = bitmap,
                     imageInfo = metaData.imageInfo,

@@ -61,7 +61,9 @@ class ResultCacheHelperTest {
         )
         helper.write(bitmapDecodeResult)
         Assert.assertNotNull(helper.read())
-        Assert.assertNotNull(helper.read())
+        helper.read()!!.apply {
+            Assert.assertTrue(bitmap.isMutable)
+        }
 
         Assert.assertNotNull(
             ResultCacheHelper(sketch, request.newLoadRequest {
