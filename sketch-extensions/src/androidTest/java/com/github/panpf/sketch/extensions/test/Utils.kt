@@ -11,14 +11,14 @@ fun getTestContextAndNewSketch(): Pair<Context, Sketch> {
     val context = InstrumentationRegistry.getInstrumentation().context
     return context to Sketch.Builder(context).apply {
         val directory = context.newTestDiskCacheDirectory()
-        downloadDiskCache(
+        downloadCache(
             LruDiskCache.ForDownloadBuilder(context)
-                .directory(File(directory, "download_cache"))
+                .directory(File(directory, "download"))
                 .build()
         )
-        resultDiskCache(
+        resultCache(
             LruDiskCache.ForResultBuilder(context)
-                .directory(File(directory, "result_cache"))
+                .directory(File(directory, "result"))
                 .build()
         )
     }.build()

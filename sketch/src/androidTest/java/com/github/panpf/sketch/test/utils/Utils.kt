@@ -30,14 +30,14 @@ fun newSketch(block: Sketch.Builder.(context: Context) -> Unit): Sketch {
     return Sketch.Builder(context).apply {
         logger(Logger(DEBUG))
         val directory = context.newTestDiskCacheDirectory()
-        downloadDiskCache(
+        downloadCache(
             LruDiskCache.ForDownloadBuilder(context)
-                .directory(File(directory, "download_cache"))
+                .directory(File(directory, "download"))
                 .build()
         )
-        resultDiskCache(
+        resultCache(
             LruDiskCache.ForResultBuilder(context)
-                .directory(File(directory, "result_cache"))
+                .directory(File(directory, "result"))
                 .build()
         )
         block.invoke(this, context)

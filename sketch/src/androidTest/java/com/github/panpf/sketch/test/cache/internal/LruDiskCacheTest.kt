@@ -58,7 +58,7 @@ class LruDiskCacheTest {
             Assert.assertEquals(
                 File(
                     context.externalCacheDir ?: context.cacheDir,
-                    DiskCache.DEFAULT_DIR_NAME + File.separator + "download_cache"
+                    DiskCache.DEFAULT_DIR_NAME + File.separator + "download"
                 ).path,
                 it.directory.path
             )
@@ -120,7 +120,7 @@ class LruDiskCacheTest {
             }.build()
         }
 
-        val directory = File(context.newTestDiskCacheDirectory(), "download_cache")
+        val directory = File(context.newTestDiskCacheDirectory(), "download")
         LruDiskCache.ForDownloadBuilder(context).apply {
             directory(directory)
         }.build().use {

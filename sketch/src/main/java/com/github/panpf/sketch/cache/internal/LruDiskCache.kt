@@ -297,7 +297,7 @@ class LruDiskCache private constructor(
         fun build(): LruDiskCache {
             val directory = directory ?: File(
                 context.externalCacheDir ?: context.cacheDir,
-                DiskCache.DEFAULT_DIR_NAME + File.separator + "download_cache"
+                DiskCache.DEFAULT_DIR_NAME + File.separator + "download"
             )
 
             val maxSize = maxSize
@@ -340,7 +340,7 @@ class LruDiskCache private constructor(
         fun build(): LruDiskCache {
             val directory = directory ?: File(
                 context.externalCacheDir ?: context.cacheDir,
-                DiskCache.DEFAULT_DIR_NAME + File.separator + "result_cache"
+                DiskCache.DEFAULT_DIR_NAME + File.separator + "result"
             )
 
             val maxSize = maxSize
