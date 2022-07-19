@@ -6,7 +6,9 @@ import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
 
-sealed interface DownloadData: ImageData {
+// todo DownloadData(val data: Data, val dataFrom: DataFrom)
+// todo BytesData : Data, DiskCacheData: Data
+sealed interface DownloadData : ImageData {
 
     @Throws(IOException::class)
     fun newInputStream(): InputStream

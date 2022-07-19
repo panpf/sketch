@@ -2,11 +2,8 @@ package com.github.panpf.sketch.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
-import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.MemoryCacheKeys
 import com.github.panpf.sketch.decode.internal.samplingByTarget
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -36,96 +33,8 @@ class DefaultDrawableDecoderTest {
             resultCachePolicy(DISABLED)
             resize(displaySize, LESS_PIXELS)
         }
-        val memoryCacheKey = MemoryCacheKeys(request).cacheKey
-        val memoryCache = sketch.memoryCache
 
-        memoryCache.clear()
-        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.let {
-            runBlocking {
-                val fetchResult = sketch.components.newFetcher(it).fetch()
-                DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(it), fetchResult)
-                    .decode()
-            }
-        }.apply {
-            Assert.assertEquals(imageSize, imageInfo.size)
-            Assert.assertEquals(imageSize.samplingByTarget(displaySize), drawable.intrinsicSize)
-            Assert.assertEquals(imageInfo.size.ratio, drawable.intrinsicSize.ratio)
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-        }
-
-        Assert.assertTrue(memoryCache.exist(memoryCacheKey))
-        request.let {
-            runBlocking {
-                val fetchResult = sketch.components.newFetcher(it).fetch()
-                DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(it), fetchResult)
-                    .decode()
-            }
-        }.apply {
-            Assert.assertEquals(imageSize, imageInfo.size)
-            Assert.assertEquals(imageSize.samplingByTarget(displaySize), drawable.intrinsicSize)
-            Assert.assertEquals(imageInfo.size.ratio, drawable.intrinsicSize.ratio)
-            Assert.assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
-        }
-
-        Assert.assertTrue(memoryCache.exist(memoryCacheKey))
-        request.newDisplayRequest {
-            memoryCachePolicy(DISABLED)
-        }.let {
-            runBlocking {
-                val fetchResult = sketch.components.newFetcher(it).fetch()
-                DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(it), fetchResult)
-                    .decode()
-            }
-        }.apply {
-            Assert.assertEquals(imageSize, imageInfo.size)
-            Assert.assertEquals(imageSize.samplingByTarget(displaySize), drawable.intrinsicSize)
-            Assert.assertEquals(imageInfo.size.ratio, drawable.intrinsicSize.ratio)
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-        }
-
-        memoryCache.clear()
-        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
-        request.newDisplayRequest {
-            memoryCachePolicy(READ_ONLY)
-        }.let {
-            runBlocking {
-                val fetchResult = sketch.components.newFetcher(it).fetch()
-                DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(it), fetchResult)
-                    .decode()
-            }
-        }.apply {
-            Assert.assertEquals(imageSize, imageInfo.size)
-            Assert.assertEquals(imageSize.samplingByTarget(displaySize), drawable.intrinsicSize)
-            Assert.assertEquals(imageInfo.size.ratio, drawable.intrinsicSize.ratio)
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-        }
-
-        Assert.assertFalse(memoryCache.exist(memoryCacheKey))
-        request.newDisplayRequest {
-            memoryCachePolicy(WRITE_ONLY)
-        }.let {
-            runBlocking {
-                val fetchResult = sketch.components.newFetcher(it).fetch()
-                DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(it), fetchResult)
-                    .decode()
-            }
-        }.apply {
-            Assert.assertEquals(imageSize, imageInfo.size)
-            Assert.assertEquals(imageSize.samplingByTarget(displaySize), drawable.intrinsicSize)
-            Assert.assertEquals(imageInfo.size.ratio, drawable.intrinsicSize.ratio)
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-        }
-
-        Assert.assertTrue(memoryCache.exist(memoryCacheKey))
-        request.newDisplayRequest {
-            memoryCachePolicy(WRITE_ONLY)
-        }.let {
             runBlocking {
                 val fetchResult = sketch.components.newFetcher(it).fetch()
                 DefaultDrawableDecoder.Factory()

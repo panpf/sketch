@@ -14,6 +14,7 @@ import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONObject
 
+// todo merge to BitmapResultCacheDecodeInterceptor
 suspend fun <R> safeAccessResultCache(
     sketch: Sketch,
     request: ImageRequest,

@@ -73,6 +73,9 @@ class CountBitmap constructor(
         )
     }
 
+    private val counts: String
+        get() = "$pendingCount/$cachedCount/$displayedCount"
+
     @MainThread
     fun setIsDisplayed(displayed: Boolean, caller: String? = null) {
         requiredMainThread()
@@ -129,19 +132,16 @@ class CountBitmap constructor(
     private fun tryFree(caller: String, pending: Boolean) {
         val bitmap = this._bitmap
         if (bitmap == null) {
-            sketch.logger.w(
-                MODULE,
-                "Known Recycled. $caller. $cachedCount/$displayedCount/$pendingCount. $requestKey"
-            )
+            sketch.logger.w(MODULE, "Bitmap freed. $caller. $counts. $requestKey")
         } else if (isRecycled) {
-            throw IllegalStateException("Unexpected Recycled. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmap.logString}. $requestKey")
+            throw IllegalStateException("Bitmap recycled. $caller. $counts. ${bitmap.logString}. $requestKey")
         } else if (!pending && cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
             sketch.bitmapPool.free(bitmap, caller)
             this._bitmap = null
-            sketch.logger.w(MODULE, "Free. $caller. ${bitmap.logString}. $requestKey")
+            sketch.logger.w(MODULE, "free. $caller. ${bitmap.logString}. $requestKey")
         } else {
             sketch.logger.d(MODULE) {
-                "Keep. $caller. $cachedCount/$displayedCount/$pendingCount. ${bitmap.logString}. $requestKey"
+                "keep. $caller. $counts. ${bitmap.logString}. $requestKey"
             }
         }
     }

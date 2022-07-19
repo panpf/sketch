@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.decode
 
+// todo merge imageExifOrientation
 data class ImageInfo constructor(
     val width: Int,
     val height: Int,
