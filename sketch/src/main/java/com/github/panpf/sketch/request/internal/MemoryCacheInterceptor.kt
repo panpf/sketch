@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -26,9 +26,11 @@ class MemoryCacheInterceptor : RequestInterceptor {
     @WorkerThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
+        val memoryCache = chain.sketch.memoryCache
+
         if (request is DisplayRequest) {
             val cachedCountBitmap = ifOrNull(request.memoryCachePolicy.readEnabled) {
-                safeAccessMemoryCache(chain.sketch, request) {
+                memoryCache.lockMemoryCache(request) {
                     chain.sketch.memoryCache[request.memoryCacheKey]
                 }
             }
@@ -56,7 +58,7 @@ class MemoryCacheInterceptor : RequestInterceptor {
             }
 
             return if (request.memoryCachePolicy.writeEnabled) {
-                safeAccessMemoryCache(chain.sketch, request) {
+                memoryCache.lockMemoryCache(request) {
                     chain.proceed(request).also { imageData ->
                         val countDrawable = imageData.asOrThrow<DisplayData>()
                             .drawable.asOrNull<SketchCountBitmapDrawable>()
@@ -74,12 +76,11 @@ class MemoryCacheInterceptor : RequestInterceptor {
         }
     }
 
-    private suspend fun <R> safeAccessMemoryCache(
-        sketch: Sketch,
+    private suspend fun <R> MemoryCache.lockMemoryCache(
         request: ImageRequest,
         block: suspend () -> R
     ): R {
-        val lock: Mutex = sketch.memoryCache.editLock(request.memoryLockKey)
+        val lock: Mutex = editLock(request.memoryCacheLockKey)
         lock.lock()
         try {
             return block()
@@ -104,5 +105,5 @@ class MemoryCacheInterceptor : RequestInterceptor {
 val ImageRequest.memoryCacheKey: String
     get() = cacheKey
 
-val ImageRequest.memoryLockKey: String
+val ImageRequest.memoryCacheLockKey: String
     get() = cacheKey
