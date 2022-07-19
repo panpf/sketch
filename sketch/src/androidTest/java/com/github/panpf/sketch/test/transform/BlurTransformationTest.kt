@@ -11,7 +11,8 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.transform.BlurTransformation
-import com.github.panpf.sketch.transform.BlurTransformed
+import com.github.panpf.sketch.transform.createBlurTransformed
+import com.github.panpf.sketch.transform.getBlurTransformed
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -90,7 +91,7 @@ class BlurTransformationTest {
             Assert.assertNotEquals(inBitmapCorners, bitmap.corners())
             Assert.assertEquals(Size(1291, 1936), bitmap.size)
             Assert.assertEquals(
-                BlurTransformed(
+                createBlurTransformed(
                     30,
                     Color.BLACK,
                     ColorUtils.setAlphaComponent(Color.BLUE, 80)
@@ -174,5 +175,27 @@ class BlurTransformationTest {
         Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+    }
+
+    @Test
+    fun testBlurTransformed() {
+        Assert.assertEquals("BlurTransformed(1,null,null)", createBlurTransformed(1, null, null))
+        Assert.assertEquals("BlurTransformed(2,null,null)", createBlurTransformed(2, null, null))
+        Assert.assertEquals("BlurTransformed(4,null,null)", createBlurTransformed(4, null, null))
+        Assert.assertEquals("BlurTransformed(8,null,null)", createBlurTransformed(8, null, null))
+
+        Assert.assertEquals(null, listOf<String>().getBlurTransformed())
+        Assert.assertEquals(
+            "BlurTransformed(2,null,null)",
+            listOf(createBlurTransformed(2, null, null)).getBlurTransformed()
+        )
+        Assert.assertEquals(
+            "BlurTransformed(16,null,null)",
+            listOf(
+                "disruptive1",
+                createBlurTransformed(16, null, null),
+                "disruptive2"
+            ).getBlurTransformed()
+        )
     }
 }

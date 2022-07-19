@@ -8,7 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
@@ -104,7 +104,7 @@ class SvgBitmapDecoderTest {
             }
         }.apply {
             Assert.assertEquals("Bitmap(421x298,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(listOf(InSampledTransformed(2)), transformedList)
+            Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
             Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -115,7 +115,8 @@ class SvgBitmapDecoderTest {
             val fetchResult = runBlocking { fetcher.fetch() }
             assertThrow(NullPointerException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!
+                        .decode()
                 }
             }
         }

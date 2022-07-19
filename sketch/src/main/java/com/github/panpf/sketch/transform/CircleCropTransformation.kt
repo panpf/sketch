@@ -5,18 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
-import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.calculateResizeMapping
-import com.github.panpf.sketch.util.JsonSerializable
-import com.github.panpf.sketch.util.JsonSerializer
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.safeConfig
-import org.json.JSONObject
 import java.lang.Integer.min
 
 class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transformation {
@@ -51,7 +45,7 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
         )
         paint.xfermode = PorterDuffXfermode(SRC_IN)
         canvas.drawBitmap(input, resizeMapping.srcRect, resizeMapping.destRect, paint)
-        return TransformResult(outBitmap, CircleCropTransformed(scale))
+        return TransformResult(outBitmap, createCircleCropTransformed(scale))
     }
 
     override fun toString(): String = key
@@ -70,44 +64,8 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
     }
 }
 
-class CircleCropTransformed(val scale: Scale) : Transformed {
+fun createCircleCropTransformed(scale: Scale) =
+    "CircleCropTransformed(${scale})"
 
-    override val key: String by lazy { "CircleCropTransformed($scale)" }
-    override val cacheResultToDisk: Boolean = true
-
-    override fun toString(): String = key
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CircleCropTransformed) return false
-
-        if (scale != other.scale) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return scale.hashCode()
-    }
-
-    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
-        @Suppress("UNCHECKED_CAST")
-        return Serializer::class.java as Class<T1>
-    }
-
-    @Keep
-    class Serializer : JsonSerializer<CircleCropTransformed> {
-        override fun toJson(t: CircleCropTransformed): JSONObject =
-            JSONObject().apply {
-                put("scale", t.scale.name)
-            }
-
-        override fun fromJson(jsonObject: JSONObject): CircleCropTransformed =
-            CircleCropTransformed(
-                Scale.valueOf(jsonObject.getString("scale"))
-            )
-    }
-}
-
-fun List<Transformed>.getCircleCropTransformed(): CircleCropTransformed? =
-    find { it is CircleCropTransformed }.asOrNull()
+fun List<String>.getCircleCropTransformed(): String? =
+    find { it.startsWith("CircleCropTransformed(") }

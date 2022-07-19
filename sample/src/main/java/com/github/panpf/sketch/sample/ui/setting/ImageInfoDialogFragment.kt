@@ -73,7 +73,7 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
 
                 transformedInfo = sketchDrawable.transformedList
                     ?.joinToString(separator = "\n") { transformed ->
-                        transformed.toString().replace("Transformed", "")
+                        transformed.replace("Transformed", "")
                     }
             }
 

@@ -6,8 +6,6 @@ import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.longImageClipPrecision
-import com.github.panpf.sketch.util.JsonSerializable
-import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -82,19 +80,5 @@ class LongImageClipPrecisionDeciderTest {
             "LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO, longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0))",
             LongImageClipPrecisionDecider(SAME_ASPECT_RATIO).toString()
         )
-    }
-
-    @Test
-    fun testSerializer() {
-        val transformed = LongImageClipPrecisionDecider(SAME_ASPECT_RATIO)
-
-        val serializer =
-            transformed.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                .newInstance()
-
-        val transformed1 = serializer.fromJson(serializer.toJson(transformed))
-
-        Assert.assertNotSame(transformed, transformed1)
-        Assert.assertEquals(transformed, transformed1)
     }
 }

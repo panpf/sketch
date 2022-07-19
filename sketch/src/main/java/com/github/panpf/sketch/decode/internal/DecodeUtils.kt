@@ -36,7 +36,6 @@ import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.calculateResizeMapping
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.safeConfig
@@ -163,7 +162,6 @@ fun computeSizeMultiplier(
 }
 
 fun realDecode(
-    sketch: Sketch,
     request: ImageRequest,
     dataFrom: DataFrom,
     imageInfo: ImageInfo,
@@ -183,7 +181,7 @@ fun realDecode(
     val applySize = exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
     val addedResize = resize?.let { exifOrientationHelper.addToResize(it, applySize) }
     val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-    val resizeTransformed: ResizeTransformed?
+    val resizeTransformed: String?
     val bitmap = if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
         val precision = addedResize.getPrecision(imageInfo.width, imageInfo.height)
         val scale = addedResize.getScale(imageInfo.width, imageInfo.height)
@@ -203,7 +201,7 @@ fun realDecode(
             resizeMapping.destRect.height(),
         )
         if (precision != LESS_PIXELS && decodeRegion != null) {
-            resizeTransformed = ResizeTransformed(resize)
+            resizeTransformed = createResizeTransformed(resize)
             decodeRegion(resizeMapping.srcRect, decodeConfig)
         } else {
             resizeTransformed = null
@@ -219,7 +217,7 @@ fun realDecode(
 
     return BitmapDecodeResult.Builder(bitmap, imageInfo, exifOrientation, dataFrom).apply {
         decodeConfig.inSampleSize?.takeIf { it > 1 && bitmap.width < imageInfo.width }?.let {
-            addTransformed(InSampledTransformed(it))
+            addTransformed(createInSampledTransformed(it))
         }
         resizeTransformed?.let {
             addTransformed(it)
@@ -242,7 +240,7 @@ fun BitmapDecodeResult.applyExifOrientation(
     val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, bitmapPool) ?: return this
     bitmapPool?.free(inBitmap, "applyExifOrientation")
     return newResult(newBitmap) {
-        addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
+        addTransformed(createExifOrientationTransformed(imageExifOrientation))
         val newSize = exifOrientationHelper.applyToSize(
             Size(imageInfo.width, imageInfo.height)
         )
@@ -286,7 +284,7 @@ fun BitmapDecodeResult.applyResize(
     return if (newBitmap != null) {
         sketch.bitmapPool.free(inBitmap, "applyResize")
         newResult(newBitmap) {
-            addTransformed(ResizeTransformed(resize))
+            addTransformed(createResizeTransformed(resize))
         }
     } else {
         this

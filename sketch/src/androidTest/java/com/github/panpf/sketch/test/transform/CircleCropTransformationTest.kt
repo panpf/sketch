@@ -11,7 +11,8 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.transform.CircleCropTransformation
-import com.github.panpf.sketch.transform.CircleCropTransformed
+import com.github.panpf.sketch.transform.createCircleCropTransformed
+import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -71,7 +72,7 @@ class CircleCropTransformationTest {
                 bitmap.corners()
             )
             Assert.assertEquals(Size(1291, 1291), bitmap.size)
-            Assert.assertEquals(CircleCropTransformed(Scale.START_CROP), transformed)
+            Assert.assertEquals(createCircleCropTransformed(Scale.START_CROP), transformed)
         }
     }
 
@@ -119,5 +120,36 @@ class CircleCropTransformationTest {
         Assert.assertNotEquals(transformation1.hashCode(), transformation2.hashCode())
         Assert.assertNotEquals(transformation1.hashCode(), transformation3.hashCode())
         Assert.assertNotEquals(transformation2.hashCode(), transformation3.hashCode())
+    }
+
+    @Test
+    fun testCircleCropTransformed() {
+        Assert.assertEquals(
+            "CircleCropTransformed(START_CROP)",
+            createCircleCropTransformed(Scale.START_CROP)
+        )
+        Assert.assertEquals(
+            "CircleCropTransformed(CENTER_CROP)",
+            createCircleCropTransformed(Scale.CENTER_CROP)
+        )
+        Assert.assertEquals(
+            "CircleCropTransformed(END_CROP)",
+            createCircleCropTransformed(Scale.END_CROP)
+        )
+        Assert.assertEquals("CircleCropTransformed(FILL)", createCircleCropTransformed(Scale.FILL))
+
+        Assert.assertEquals(null, listOf<String>().getCircleCropTransformed())
+        Assert.assertEquals(
+            "CircleCropTransformed(CENTER_CROP)",
+            listOf(createCircleCropTransformed(Scale.CENTER_CROP)).getCircleCropTransformed()
+        )
+        Assert.assertEquals(
+            "CircleCropTransformed(FILL)",
+            listOf(
+                "disruptive1",
+                createCircleCropTransformed(Scale.FILL),
+                "disruptive2"
+            ).getCircleCropTransformed()
+        )
     }
 }

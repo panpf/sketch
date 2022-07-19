@@ -2,7 +2,6 @@ package com.github.panpf.sketch.test.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
@@ -10,18 +9,13 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.internal.ResultCacheHelper
-import com.github.panpf.sketch.decode.internal.ResultCacheHelper.MetaData
 import com.github.panpf.sketch.decode.internal.ResultCacheKeys
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.util.JsonSerializable
-import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,7 +51,7 @@ class ResultCacheHelperTest {
             ImageInfo(1291, 1936, "image/jpeg"),
             0,
             DataFrom.LOCAL,
-            listOf(InSampledTransformed(4))
+            listOf(createInSampledTransformed(4))
         )
         helper.write(bitmapDecodeResult)
         Assert.assertNotNull(helper.read())
@@ -93,23 +87,23 @@ class ResultCacheHelperTest {
 
         // transformedList empty
         val bitmapDecodeResult = BitmapDecodeResult(
-            Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg"),
-            0,
-            DataFrom.LOCAL,
-            null
+            bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            imageInfo = ImageInfo(1291, 1936, "image/jpeg"),
+            imageExifOrientation = 0,
+            dataFrom = DataFrom.LOCAL,
+            transformedList = null
         )
-        Assert.assertFalse(
+        Assert.assertTrue(
             ResultCacheHelper(sketch, request).write(bitmapDecodeResult)
         )
-        Assert.assertNull(ResultCacheHelper(sketch, request).read())
+        Assert.assertNotNull(ResultCacheHelper(sketch, request).read())
 
         val bitmapDecodeResult1 = BitmapDecodeResult(
-            Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg"),
-            0,
-            DataFrom.LOCAL,
-            listOf(InSampledTransformed(4))
+            bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            imageInfo = ImageInfo(1291, 1936, "image/jpeg"),
+            imageExifOrientation = 0,
+            dataFrom = DataFrom.LOCAL,
+            transformedList = listOf(createInSampledTransformed(4))
         )
         Assert.assertTrue(
             ResultCacheHelper(sketch, request).write(bitmapDecodeResult1)
@@ -133,23 +127,5 @@ class ResultCacheHelperTest {
         )
 
         Assert.assertNotNull(ResultCacheHelper(sketch, request).read())
-    }
-
-    @Test
-    fun testSerializer() {
-        val metaData = MetaData(
-            imageInfo = ImageInfo(width = 570, height = 340, mimeType = "image/png"),
-            exifOrientation = ExifInterface.ORIENTATION_ROTATE_180,
-            transformedList = listOf(InSampledTransformed(4), ResizeTransformed(Resize(40, 30)))
-        )
-
-        val serializer =
-            metaData.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                .newInstance()
-
-        val transformed1 = serializer.fromJson(serializer.toJson(metaData))
-
-        Assert.assertNotSame(metaData, transformed1)
-        Assert.assertEquals(metaData, transformed1)
     }
 }

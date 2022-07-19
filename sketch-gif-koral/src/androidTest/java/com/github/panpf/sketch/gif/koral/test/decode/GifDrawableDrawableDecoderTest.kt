@@ -7,7 +7,7 @@ import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -117,7 +117,7 @@ class GifDrawableDrawableDecoderTest {
                 Assert.assertEquals(240, this.drawable.intrinsicHeight)
                 Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertEquals(listOf(InSampledTransformed(2)), this.transformedList)
+                Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
                 val gifDrawable =
                     (this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawable
                 Assert.assertEquals(3, gifDrawable.loopCount)

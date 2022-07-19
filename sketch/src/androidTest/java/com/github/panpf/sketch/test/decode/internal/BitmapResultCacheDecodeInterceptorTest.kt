@@ -60,10 +60,7 @@ class BitmapResultCacheDecodeInterceptorTest {
         )
         Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
         Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, result1.dataFrom)
-        Assert.assertEquals(
-            "InSampledTransformed(4)",
-            result.transformedList?.joinToString()
-        )
+        Assert.assertEquals("InSampledTransformed(4)", result.transformedList?.joinToString())
     }
 
     @Test

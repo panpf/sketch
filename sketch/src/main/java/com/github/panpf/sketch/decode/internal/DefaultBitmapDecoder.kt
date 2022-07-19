@@ -41,7 +41,6 @@ open class DefaultBitmapDecoder(
         val canDecodeRegion = mimeTypeToImageFormat(imageInfo.mimeType)
             ?.supportBitmapRegionDecoder() == true
         return realDecode(
-            sketch = sketch,
             request = request,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,

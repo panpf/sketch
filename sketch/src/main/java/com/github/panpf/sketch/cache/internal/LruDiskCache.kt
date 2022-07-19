@@ -357,7 +357,7 @@ class LruDiskCache private constructor(
                 maxSize = finalMaxSize,
                 directory = directory,
                 appVersion = appVersion,
-                internalVersion = 1 // Range from 1 to Short.MAX_VALUE
+                internalVersion = 2 // Range from 1 to Short.MAX_VALUE
             )
         }
     }

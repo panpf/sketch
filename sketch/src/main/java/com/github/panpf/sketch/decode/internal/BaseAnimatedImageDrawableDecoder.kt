@@ -100,7 +100,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
             ?: AnimatedImageDrawable.REPEAT_INFINITE
 
         val transformedList =
-            if (inSampleSize != 1) listOf(InSampledTransformed(inSampleSize)) else null
+            if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
         val animatableDrawable = SketchAnimatableDrawable(
             imageUri = request.uriString,
             requestKey = request.key,

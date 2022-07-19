@@ -2,6 +2,7 @@ package com.github.panpf.sketch.test.decode.internal
 
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
@@ -21,7 +22,9 @@ class DrawableEngineDecodeInterceptorTest {
     fun testIntercept() {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors = listOf(DrawableEngineDecodeInterceptor())
-        val loadRequest = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val loadRequest = DisplayRequest(context, newAssetUri("sample.jpeg")) {
+            resultCachePolicy(DISABLED)
+        }
         val requestContext = RequestContext(loadRequest)
         val chain = DrawableDecodeInterceptorChain(
             sketch = sketch,

@@ -6,8 +6,6 @@ import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.fixedPrecision
-import com.github.panpf.sketch.util.JsonSerializable
-import com.github.panpf.sketch.util.JsonSerializer
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -80,19 +78,5 @@ class FixedPrecisionDeciderTest {
             "FixedPrecisionDecider(precision=LESS_PIXELS)",
             FixedPrecisionDecider(LESS_PIXELS).toString()
         )
-    }
-
-    @Test
-    fun testSerializer() {
-        val precisionDecider = FixedPrecisionDecider(LESS_PIXELS)
-
-        val serializer =
-            precisionDecider.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                .newInstance()
-
-        val transformed1 = serializer.fromJson(serializer.toJson(precisionDecider))
-
-        Assert.assertNotSame(precisionDecider, transformed1)
-        Assert.assertEquals(precisionDecider, transformed1)
     }
 }

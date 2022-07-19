@@ -8,8 +8,6 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.longImageScale
-import com.github.panpf.sketch.util.JsonSerializable
-import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
@@ -123,19 +121,5 @@ class LongImageScaleDeciderTest {
         Assert.assertEquals(element1.hashCode(), element1.hashCode())
         Assert.assertEquals(element1.hashCode(), element11.hashCode())
         Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-    }
-
-    @Test
-    fun testSerializer() {
-        val scaleDecider = LongImageScaleDecider(START_CROP, CENTER_CROP)
-
-        val serializer =
-            scaleDecider.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                .newInstance()
-
-        val transformed1 = serializer.fromJson(serializer.toJson(scaleDecider))
-
-        Assert.assertNotSame(scaleDecider, transformed1)
-        Assert.assertEquals(scaleDecider, transformed1)
     }
 }

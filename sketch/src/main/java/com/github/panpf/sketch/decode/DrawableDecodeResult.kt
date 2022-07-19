@@ -11,5 +11,5 @@ data class DrawableDecodeResult constructor(
     val imageInfo: ImageInfo,
     @ExifOrientation val imageExifOrientation: Int,
     val dataFrom: DataFrom,
-    val transformedList: List<Transformed>?
+    val transformedList: List<String>?
 )

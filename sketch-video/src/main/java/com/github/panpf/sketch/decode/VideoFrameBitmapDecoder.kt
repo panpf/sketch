@@ -62,7 +62,6 @@ class VideoFrameBitmapDecoder(
                 ExifInterface.ORIENTATION_UNDEFINED
             }
             return realDecode(
-                sketch = sketch,
                 request = request,
                 dataFrom = dataSource.dataFrom,
                 imageInfo = imageInfo,

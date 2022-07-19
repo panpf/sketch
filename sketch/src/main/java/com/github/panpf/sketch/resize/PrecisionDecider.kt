@@ -1,11 +1,9 @@
 package com.github.panpf.sketch.resize
 
-import com.github.panpf.sketch.util.JsonSerializable
-
 /**
  * Decide which precision to use
  */
-interface PrecisionDecider : JsonSerializable {
+interface PrecisionDecider {
 
     val key: String
 

@@ -6,10 +6,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.Transformed
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.test.utils.newSketch
-import com.github.panpf.sketch.transform.RotateTransformed
+import com.github.panpf.sketch.transform.createRotateTransformed
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -85,10 +84,10 @@ class CountBitmapTest {
             "image2",
             100,
             150,
-            transformedList = listOf(InSampledTransformed(4), RotateTransformed(40))
+            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(40))
         ).apply {
             Assert.assertEquals(
-                listOf(InSampledTransformed(4), RotateTransformed(40)).toString(),
+                listOf(createInSampledTransformed(4), createRotateTransformed(40)).toString(),
                 transformedList.toString()
             )
         }
@@ -299,7 +298,7 @@ class CountBitmapTest {
         height: Int,
         requestKey: String = imageUri,
         imageInfo: ImageInfo = ImageInfo(width, height, "image/jpeg"),
-        transformedList: List<Transformed>? = null
+        transformedList: List<String>? = null
     ): CountBitmap = CountBitmap(
         bitmap = Bitmap.createBitmap(width, height, ARGB_8888),
         sketch = sketch,

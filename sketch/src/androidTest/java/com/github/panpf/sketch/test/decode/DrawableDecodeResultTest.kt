@@ -6,8 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
-import com.github.panpf.sketch.transform.RotateTransformed
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
+import com.github.panpf.sketch.transform.createRotateTransformed
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +19,7 @@ class DrawableDecodeResultTest {
     fun testConstructor() {
         val newDrawable = ColorDrawable(Color.RED)
         val imageInfo = ImageInfo(3000, 500, "image/png")
-        val transformedList = listOf(InSampledTransformed(4), RotateTransformed(45))
+        val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
         DrawableDecodeResult(newDrawable, imageInfo, 0, LOCAL, transformedList).apply {
             Assert.assertTrue(newDrawable === drawable)
             Assert.assertEquals(

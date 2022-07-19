@@ -8,7 +8,7 @@ import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -118,7 +118,7 @@ class GifAnimatedDrawableDecoderTest {
                 Assert.assertEquals(Size(240, 240), this.drawable.intrinsicSize)
                 Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertEquals(listOf(InSampledTransformed(2)), this.transformedList)
+                Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
                 val animatedImageDrawable =
                     ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as ScaledAnimatedImageDrawable).child
                 Assert.assertEquals(3, animatedImageDrawable.repeatCount)

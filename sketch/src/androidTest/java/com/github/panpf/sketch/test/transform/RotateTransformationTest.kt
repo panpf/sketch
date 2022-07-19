@@ -11,7 +11,8 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.transform.RotateTransformation
-import com.github.panpf.sketch.transform.RotateTransformed
+import com.github.panpf.sketch.transform.createRotateTransformed
+import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -77,7 +78,7 @@ class RotateTransformationTest {
             )
             Assert.assertEquals(Size(1936, 1291), bitmap.size)
             Assert.assertEquals(
-                RotateTransformed(RotateTransformation(90).degrees),
+                createRotateTransformed(RotateTransformation(90).degrees),
                 transformed
             )
         }
@@ -97,7 +98,7 @@ class RotateTransformationTest {
             )
             Assert.assertEquals(Size(1936, 1291), bitmap.size)
             Assert.assertEquals(
-                RotateTransformed(RotateTransformation(450).degrees),
+                createRotateTransformed(RotateTransformation(450).degrees),
                 transformed
             )
         }
@@ -112,7 +113,7 @@ class RotateTransformationTest {
             )
             Assert.assertEquals(Size(2281, 2281), bitmap.size)
             Assert.assertEquals(
-                RotateTransformed(RotateTransformation(45).degrees),
+                createRotateTransformed(RotateTransformation(45).degrees),
                 transformed
             )
         }
@@ -182,5 +183,27 @@ class RotateTransformationTest {
         Assert.assertNotEquals(transformation1.hashCode(), transformation2.hashCode())
         Assert.assertNotEquals(transformation1.hashCode(), transformation3.hashCode())
         Assert.assertNotEquals(transformation2.hashCode(), transformation3.hashCode())
+    }
+
+    @Test
+    fun testRotateTransformed() {
+        Assert.assertEquals("RotateTransformed(1)", createRotateTransformed(1))
+        Assert.assertEquals("RotateTransformed(2)", createRotateTransformed(2))
+        Assert.assertEquals("RotateTransformed(4)", createRotateTransformed(4))
+        Assert.assertEquals("RotateTransformed(8)", createRotateTransformed(8))
+
+        Assert.assertEquals(null, listOf<String>().getRotateTransformed())
+        Assert.assertEquals(
+            "RotateTransformed(2)",
+            listOf(createRotateTransformed(2)).getRotateTransformed()
+        )
+        Assert.assertEquals(
+            "RotateTransformed(16)",
+            listOf(
+                "disruptive1",
+                createRotateTransformed(16),
+                "disruptive2"
+            ).getRotateTransformed()
+        )
     }
 }

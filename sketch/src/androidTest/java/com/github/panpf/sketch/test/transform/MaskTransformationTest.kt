@@ -11,7 +11,8 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.transform.MaskTransformation
-import com.github.panpf.sketch.transform.MaskTransformed
+import com.github.panpf.sketch.transform.createMaskTransformed
+import com.github.panpf.sketch.transform.getMaskTransformed
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -70,7 +71,7 @@ class MaskTransformationTest {
             Assert.assertNotSame(inBitmap, this)
             Assert.assertNotEquals(inBitmapCorners, bitmap.corners())
             Assert.assertEquals(Size(1291, 1936), bitmap.size)
-            Assert.assertEquals(MaskTransformed(maskColor), transformed)
+            Assert.assertEquals(createMaskTransformed(maskColor), transformed)
         }
 
         val mutableInBitmap = context.assets.open("sample.jpeg").use {
@@ -109,5 +110,27 @@ class MaskTransformationTest {
         Assert.assertEquals(element1.hashCode(), element11.hashCode())
         Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testMaskTransformed() {
+        Assert.assertEquals("MaskTransformed(1)", createMaskTransformed(1))
+        Assert.assertEquals("MaskTransformed(2)", createMaskTransformed(2))
+        Assert.assertEquals("MaskTransformed(4)", createMaskTransformed(4))
+        Assert.assertEquals("MaskTransformed(8)", createMaskTransformed(8))
+
+        Assert.assertEquals(null, listOf<String>().getMaskTransformed())
+        Assert.assertEquals(
+            "MaskTransformed(2)",
+            listOf(createMaskTransformed(2)).getMaskTransformed()
+        )
+        Assert.assertEquals(
+            "MaskTransformed(16)",
+            listOf(
+                "disruptive1",
+                createMaskTransformed(16),
+                "disruptive2"
+            ).getMaskTransformed()
+        )
     }
 }

@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap.CompressFormat.PNG
-import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
@@ -10,14 +9,9 @@ import com.github.panpf.sketch.datasource.DataFrom.RESULT_DISK_CACHE
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.JsonSerializable
-import com.github.panpf.sketch.util.JsonSerializer
-import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.sync.Mutex
-import org.json.JSONArray
 import org.json.JSONObject
 
 suspend fun <R> safeAccessResultCache(
@@ -73,16 +67,27 @@ class ResultCacheHelper(val sketch: Sketch, val request: ImageRequest) {
         }
 
         return try {
-            val metaData = bitmapMetaDiskCacheSnapshot.newInputStream()
-                .use { inputStream -> inputStream.bufferedReader().readText() }
-                .let { jsonString -> MetaData.Serializer().fromJson(JSONObject(jsonString)) }
+            val metaDataJSONObject = bitmapMetaDiskCacheSnapshot.newInputStream()
+                .use { it.bufferedReader().readText() }
+                .let { JSONObject(it) }
+            val imageInfo = ImageInfo(
+                width = metaDataJSONObject.getInt("width"),
+                height = metaDataJSONObject.getInt("height"),
+                mimeType = metaDataJSONObject.getString("mimeType")
+            )
+            val exifOrientation = metaDataJSONObject.getInt("exifOrientation")
+            val transformedList =
+                metaDataJSONObject.optJSONArray("transformedList")?.let { jsonArray ->
+                    (0 until jsonArray.length()).map { index ->
+                        jsonArray[index].toString()
+                    }
+                }
+
             val dataSource =
                 DiskCacheDataSource(sketch, request, RESULT_DISK_CACHE, bitmapDataDiskCacheSnapshot)
-
             val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory()
-            val options = request.newDecodeConfigByQualityParams(metaData.imageInfo.mimeType)
+            val options = request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
                 .toBitmapOptions()
-            // Set inBitmap from bitmap pool
             if (!request.disallowReuseBitmap) {
                 sketch.bitmapPool.setInBitmap(
                     options, cacheImageInfo.width, cacheImageInfo.height, cacheImageInfo.mimeType
@@ -91,10 +96,10 @@ class ResultCacheHelper(val sketch: Sketch, val request: ImageRequest) {
             dataSource.decodeBitmap(options)?.let { bitmap ->
                 BitmapDecodeResult(
                     bitmap = bitmap,
-                    imageInfo = metaData.imageInfo,
-                    imageExifOrientation = metaData.exifOrientation,
+                    imageInfo = imageInfo,
+                    imageExifOrientation = exifOrientation,
                     dataFrom = RESULT_DISK_CACHE,
-                    transformedList = metaData.transformedList
+                    transformedList = transformedList
                 )
             }
         } catch (e: Throwable) {
@@ -108,9 +113,7 @@ class ResultCacheHelper(val sketch: Sketch, val request: ImageRequest) {
     @WorkerThread
     fun write(result: BitmapDecodeResult): Boolean {
         requiredWorkThread()
-        if (!request.resultCachePolicy.writeEnabled
-            || result.transformedList?.any { it.cacheResultToDisk } != true
-        ) {
+        if (!request.resultCachePolicy.writeEnabled) {
             return false
         }
 
@@ -127,16 +130,15 @@ class ResultCacheHelper(val sketch: Sketch, val request: ImageRequest) {
             }
             bitmapDataEditor.commit()
 
-            val metaData =
-                MetaData(
-                    result.imageInfo,
-                    result.imageExifOrientation,
-                    result.transformedList
-                )
             metaDataEditor.newOutputStream().bufferedWriter().use {
-                val metaDataSerializer = MetaData.Serializer()
-                val metaDataJsonString = metaDataSerializer.toJson(metaData).toString()
-                it.write(metaDataJsonString)
+                val metaJSONObject = JSONObject().apply {
+                    put("width", result.imageInfo.width)
+                    put("height", result.imageInfo.height)
+                    put("mimeType", result.imageInfo.mimeType)
+                    put("exifOrientation", result.imageExifOrientation)
+                    put("transformedList", result.transformedList)
+                }
+                it.write(metaJSONObject.toString())
             }
             metaDataEditor.commit()
             true
@@ -147,75 +149,6 @@ class ResultCacheHelper(val sketch: Sketch, val request: ImageRequest) {
             diskCache.remove(keys.bitmapDataDiskCacheKey)
             diskCache.remove(keys.bitmapMetaDiskCacheKey)
             false
-        }
-    }
-
-    data class MetaData constructor(
-        val imageInfo: ImageInfo,
-        val exifOrientation: Int,
-        val transformedList: List<Transformed>?,
-    ) : JsonSerializable {
-
-        override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
-            @Suppress("UNCHECKED_CAST")
-            return Serializer::class.java as Class<T1>
-        }
-
-        @Keep
-        class Serializer : JsonSerializer<MetaData> {
-            override fun toJson(t: MetaData): JSONObject =
-                JSONObject().apply {
-                    put("width", t.imageInfo.width)
-                    put("height", t.imageInfo.height)
-                    put("mimeType", t.imageInfo.mimeType)
-                    put("exifOrientation", t.exifOrientation)
-                    put(
-                        "transformedList",
-                        t.transformedList?.takeIf { it.isNotEmpty() }?.let { list ->
-                            JSONArray().also { array ->
-                                list.forEach { transformed ->
-                                    array.put(
-                                        JSONObject().let {
-                                            val transformedSerializerClass =
-                                                transformed.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                                            val transformedSerializer =
-                                                transformedSerializerClass.newInstance()
-                                            it.put(
-                                                "transformedSerializerClassName",
-                                                transformedSerializerClass.name
-                                            )
-                                            it.put(
-                                                "transformedContent",
-                                                transformedSerializer.toJson(transformed)
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    )
-                }
-
-            override fun fromJson(jsonObject: JSONObject): MetaData =
-                MetaData(
-                    imageInfo = ImageInfo(
-                        width = jsonObject.getInt("width"),
-                        height = jsonObject.getInt("height"),
-                        mimeType = jsonObject.getString("mimeType")
-                    ),
-                    exifOrientation = jsonObject.getInt("exifOrientation"),
-                    transformedList = jsonObject.optJSONArray("transformedList")
-                        ?.takeIf { it.length() > 0 }?.run {
-                            0.until(length()).map { index ->
-                                val item = getJSONObject(index)
-                                item.getString("transformedSerializerClassName")
-                                    .let { Class.forName(it) }
-                                    .newInstance().asOrThrow<JsonSerializer<*>>()
-                                    .fromJson(item.getJSONObject("transformedContent"))!!
-                                    .asOrThrow()
-                            }
-                        },
-                )
         }
     }
 }

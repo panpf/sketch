@@ -5,15 +5,9 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
-import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.JsonSerializable
-import com.github.panpf.sketch.util.JsonSerializer
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.safeConfig
-import org.json.JSONObject
 
 class RotateTransformation(val degrees: Int) : Transformation {
 
@@ -43,7 +37,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
         val canvas = Canvas(result)
         val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
         canvas.drawBitmap(input, matrix, paint)
-        return TransformResult(result, RotateTransformed(degrees))
+        return TransformResult(result, createRotateTransformed(degrees))
     }
 
     override fun toString(): String = key
@@ -62,44 +56,8 @@ class RotateTransformation(val degrees: Int) : Transformation {
     }
 }
 
-class RotateTransformed(val degrees: Int) : Transformed {
+fun createRotateTransformed(degrees: Int) =
+    "RotateTransformed($degrees)"
 
-    override val key: String by lazy { "RotateTransformed($degrees)" }
-    override val cacheResultToDisk: Boolean = true
-
-    override fun toString(): String = key
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RotateTransformed) return false
-
-        if (degrees != other.degrees) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return degrees
-    }
-
-    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
-        @Suppress("UNCHECKED_CAST")
-        return Serializer::class.java as Class<T1>
-    }
-
-    @Keep
-    class Serializer : JsonSerializer<RotateTransformed> {
-        override fun toJson(t: RotateTransformed): JSONObject =
-            JSONObject().apply {
-                put("degrees", t.degrees)
-            }
-
-        override fun fromJson(jsonObject: JSONObject): RotateTransformed =
-            RotateTransformed(
-                jsonObject.getInt("degrees")
-            )
-    }
-}
-
-fun List<Transformed>.getRotateTransformed(): RotateTransformed? =
-    find { it is RotateTransformed }.asOrNull()
+fun List<String>.getRotateTransformed(): String? =
+    find { it.startsWith("RotateTransformed(") }

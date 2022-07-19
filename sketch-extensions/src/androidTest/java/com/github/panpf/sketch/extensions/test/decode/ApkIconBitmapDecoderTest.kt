@@ -8,6 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
+import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.internal.samplingByTarget
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -15,7 +16,6 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
@@ -139,7 +139,7 @@ class ApkIconBitmapDecoderTest {
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
-                listOf(ResizeTransformed(Resize(100, 100, LESS_PIXELS, CENTER_CROP))),
+                listOf(createResizeTransformed(Resize(100, 100, LESS_PIXELS, CENTER_CROP))),
                 transformedList
             )
         }
@@ -149,7 +149,8 @@ class ApkIconBitmapDecoderTest {
             val fetchResult = runBlocking { fetcher.fetch() }
             assertThrow(NullPointerException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!
+                        .decode()
                 }
             }
         }

@@ -20,7 +20,6 @@ import android.graphics.drawable.BitmapDrawable
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.toBitmapInfo
@@ -46,7 +45,7 @@ class SketchCountBitmapDrawable constructor(
     override val imageExifOrientation: Int
         get() = countBitmap.imageExifOrientation
 
-    override val transformedList: List<Transformed>?
+    override val transformedList: List<String>?
         get() = countBitmap.transformedList
 
     override val bitmapInfo: BitmapInfo by lazy {

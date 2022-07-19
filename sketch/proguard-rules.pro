@@ -15,6 +15,3 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
--keep class * extends com.github.panpf.sketch.util.JsonSerializable
--keep class * extends com.github.panpf.sketch.util.JsonSerializer

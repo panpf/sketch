@@ -8,16 +8,10 @@ import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
-import androidx.annotation.Keep
 import androidx.annotation.Px
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.JsonSerializable
-import com.github.panpf.sketch.util.JsonSerializer
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.safeConfig
-import org.json.JSONObject
 
 class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
 
@@ -80,7 +74,7 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         paint.xfermode = PorterDuffXfermode(SRC_IN)
         val rect = Rect(0, 0, input.width, input.height)
         canvas.drawBitmap(input, rect, rect, paint)
-        return TransformResult(newBitmap, RoundedCornersTransformed(radiusArray))
+        return TransformResult(newBitmap, createRoundedCornersTransformed(radiusArray))
     }
 
     override fun toString(): String = key
@@ -99,46 +93,8 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
     }
 }
 
-class RoundedCornersTransformed(val radiusArray: FloatArray) : Transformed {
+fun createRoundedCornersTransformed(radiusArray: FloatArray) =
+    "RoundedCornersTransformed(${radiusArray.contentToString()})"
 
-    override val key: String by lazy {
-        "RoundedCornersTransformed(${radiusArray.contentToString()})"
-    }
-    override val cacheResultToDisk: Boolean = true
-
-    override fun toString(): String = key
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RoundedCornersTransformed) return false
-
-        if (!radiusArray.contentEquals(other.radiusArray)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return radiusArray.contentHashCode()
-    }
-
-    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
-        @Suppress("UNCHECKED_CAST")
-        return Serializer::class.java as Class<T1>
-    }
-
-    @Keep
-    class Serializer : JsonSerializer<RoundedCornersTransformed> {
-        override fun toJson(t: RoundedCornersTransformed): JSONObject =
-            JSONObject().apply {
-                put("radiusArray", t.radiusArray.joinToString(separator = ","))
-            }
-
-        override fun fromJson(jsonObject: JSONObject): RoundedCornersTransformed =
-            RoundedCornersTransformed(
-                jsonObject.getString("radiusArray").split(",").map { it.toFloat() }.toFloatArray()
-            )
-    }
-}
-
-fun List<Transformed>.getRoundedCornersTransformed(): RoundedCornersTransformed? =
-    find { it is RoundedCornersTransformed }.asOrNull()
+fun List<String>.getRoundedCornersTransformed(): String? =
+    find { it.startsWith("RoundedCornersTransformed(") }

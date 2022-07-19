@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.util.SketchException
 
 sealed interface DisplayResult : ImageResult {
@@ -17,7 +16,7 @@ sealed interface DisplayResult : ImageResult {
         val imageInfo: ImageInfo,
         @ExifOrientation val imageExifOrientation: Int,
         val dataFrom: DataFrom,
-        val transformedList: List<Transformed>?,
+        val transformedList: List<String>?,
     ) : DisplayResult, ImageResult.Success
 
     data class Error constructor(

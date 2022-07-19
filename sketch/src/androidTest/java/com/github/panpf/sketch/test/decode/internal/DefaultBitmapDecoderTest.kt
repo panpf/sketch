@@ -14,6 +14,7 @@ import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
+import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -23,7 +24,6 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.resize.getResizeTransformed
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch

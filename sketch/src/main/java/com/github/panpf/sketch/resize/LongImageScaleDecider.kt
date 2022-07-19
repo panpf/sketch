@@ -1,12 +1,7 @@
 package com.github.panpf.sketch.resize
 
-import androidx.annotation.Keep
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
-import com.github.panpf.sketch.util.JsonSerializable
-import com.github.panpf.sketch.util.JsonSerializer
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.asOrThrow
-import org.json.JSONObject
 
 fun longImageScale(
     longImage: Scale,
@@ -57,38 +52,5 @@ class LongImageScaleDecider constructor(
 
     override fun toString(): String {
         return "LongImageScaleDecider(longImage=$longImage, otherImage=$otherImage, longImageDecider=$longImageDecider)"
-    }
-
-    override fun <T : JsonSerializable, T1 : JsonSerializer<T>> getSerializerClass(): Class<T1> {
-        @Suppress("UNCHECKED_CAST")
-        return Serializer::class.java as Class<T1>
-    }
-
-    @Keep
-    class Serializer : JsonSerializer<LongImageScaleDecider> {
-        override fun toJson(t: LongImageScaleDecider): JSONObject =
-            JSONObject().apply {
-                put("longImage", t.longImage.name)
-                put("otherImage", t.otherImage.name)
-
-                t.longImageDecider.also {
-                    val serializerClass =
-                        it.getSerializerClass<JsonSerializable, JsonSerializer<JsonSerializable>>()
-                    val serializer = serializerClass.newInstance()
-                    put("longImageDeciderSerializerClassName", serializerClass.name)
-                    put("longImageDeciderContent", serializer.toJson(it))
-                }
-            }
-
-        override fun fromJson(jsonObject: JSONObject): LongImageScaleDecider =
-            LongImageScaleDecider(
-                longImage = Scale.valueOf(jsonObject.getString("longImage")),
-                otherImage = Scale.valueOf(jsonObject.getString("otherImage")),
-                longImageDecider = jsonObject.getString("longImageDeciderSerializerClassName")
-                    .let { Class.forName(it) }
-                    .newInstance().asOrThrow<JsonSerializer<*>>()
-                    .fromJson(jsonObject.getJSONObject("longImageDeciderContent"))!!
-                    .asOrThrow(),
-            )
     }
 }

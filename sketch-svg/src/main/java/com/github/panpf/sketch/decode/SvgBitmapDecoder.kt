@@ -39,7 +39,6 @@ class SvgBitmapDecoder(
         val svg = dataSource.newInputStream().buffered().use { SVG.getFromInputStream(it) }
         val imageInfo = readImageInfo(svg)
         return realDecode(
-            sketch = sketch,
             request = request,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,

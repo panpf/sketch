@@ -6,10 +6,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.transform.CircleCropTransformed
-import com.github.panpf.sketch.transform.RotateTransformed
+import com.github.panpf.sketch.transform.createCircleCropTransformed
+import com.github.panpf.sketch.transform.createRotateTransformed
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,7 +21,7 @@ class BitmapDecodeResultTest {
     fun testConstructor() {
         val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
         val imageInfo = ImageInfo(3000, 500, "image/png")
-        val transformedList = listOf(InSampledTransformed(4), RotateTransformed(45))
+        val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
         BitmapDecodeResult(newBitmap, imageInfo, 0, LOCAL, transformedList).apply {
             Assert.assertTrue(newBitmap === bitmap)
             Assert.assertEquals(
@@ -41,7 +41,7 @@ class BitmapDecodeResultTest {
     fun testNew() {
         val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
         val imageInfo = ImageInfo(3000, 500, "image/png")
-        val transformedList = listOf(InSampledTransformed(4), RotateTransformed(45))
+        val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
         val result = BitmapDecodeResult(newBitmap, imageInfo, 0, LOCAL, transformedList)
         Assert.assertEquals(
             "InSampledTransformed(4), RotateTransformed(45)",
@@ -49,7 +49,7 @@ class BitmapDecodeResultTest {
         )
 
         val result2 = result.newResult(newBitmap) {
-            addTransformed(CircleCropTransformed(CENTER_CROP))
+            addTransformed(createCircleCropTransformed(CENTER_CROP))
         }
         Assert.assertEquals(
             "InSampledTransformed(4), RotateTransformed(45)",

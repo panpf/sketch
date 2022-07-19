@@ -31,7 +31,6 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.internal.MemoryCacheKeys
 import com.github.panpf.sketch.decode.internal.ResultCacheKeys
 import com.github.panpf.sketch.decode.internal.exifOrientationName
@@ -51,7 +50,6 @@ import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
-import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
@@ -873,7 +871,7 @@ class DisplayRequestExecuteTest {
             .asOrNull<DisplayResult.Success>()!!
             .drawable.apply {
                 Assert.assertTrue(this.asOrNull<SketchDrawable>()!!.transformedList?.all {
-                    it is ResizeTransformed || it is InSampledTransformed
+                    it.startsWith("ResizeTransformed") || it.startsWith("InSampledTransformed")
                 } != false)
             }
 

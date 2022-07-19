@@ -14,8 +14,7 @@ data class BitmapDecodeResult constructor(
     val imageInfo: ImageInfo,
     @ExifOrientation val imageExifOrientation: Int,
     val dataFrom: DataFrom,
-    // todo Change to List<String>, no need for Transformed and JsonSerializable
-    val transformedList: List<Transformed>? = null
+    val transformedList: List<String>? = null,
 ) {
 
     fun newResult(bitmap: Bitmap, block: (Builder.() -> Unit)? = null): BitmapDecodeResult =
@@ -24,7 +23,7 @@ data class BitmapDecodeResult constructor(
             imageInfo = imageInfo,
             imageExifOrientation = imageExifOrientation,
             dataFrom = dataFrom,
-            transformedList = transformedList?.toMutableList()
+            transformedList = transformedList?.toMutableList(),
         ).apply {
             block?.invoke(this)
         }.build()
@@ -41,18 +40,16 @@ data class BitmapDecodeResult constructor(
         private var imageInfo: ImageInfo,
         @ExifOrientation private val imageExifOrientation: Int,
         private val dataFrom: DataFrom,
-        private var transformedList: MutableList<Transformed>? = null
+        private var transformedList: MutableList<String>? = null,
     ) {
 
         fun imageInfo(imageInfo: ImageInfo): Builder = apply {
             this.imageInfo = imageInfo
         }
 
-        fun addTransformed(transformed: Transformed): Builder = apply {
-            if (this.transformedList?.find { it.key == transformed.key } == null) {
-                this.transformedList = (this.transformedList ?: LinkedList()).apply {
-                    add(transformed)
-                }
+        fun addTransformed(transformed: String): Builder = apply {
+            this.transformedList = (this.transformedList ?: LinkedList()).apply {
+                add(transformed)
             }
         }
 
@@ -61,7 +58,7 @@ data class BitmapDecodeResult constructor(
             imageInfo = imageInfo,
             imageExifOrientation = imageExifOrientation,
             dataFrom = dataFrom,
-            transformedList = transformedList?.toList()
+            transformedList = transformedList?.toList(),
         )
     }
 }

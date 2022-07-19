@@ -15,10 +15,9 @@ import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.transform.CircleCropTransformation
-import com.github.panpf.sketch.transform.CircleCropTransformed
-import com.github.panpf.sketch.transform.RotateTransformed
 import com.github.panpf.sketch.transform.TransformResult
 import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -65,7 +64,7 @@ class BitmapTransformationDecodeInterceptorTest {
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
                 bitmap.corners()
             )
-            Assert.assertEquals(listOf(CircleCropTransformed(CENTER_CROP)), transformedList)
+            Assert.assertEquals(listOf(createCircleCropTransformed(CENTER_CROP)), transformedList)
         }
 
         runBlocking {
@@ -78,7 +77,7 @@ class BitmapTransformationDecodeInterceptorTest {
                         sketch: Sketch,
                         request: ImageRequest,
                         input: Bitmap
-                    ): TransformResult = TransformResult(input, RotateTransformed(0))
+                    ): TransformResult = TransformResult(input, "TestTransformation")
                 })
             }
             val chain = BitmapDecodeInterceptorChain(
@@ -133,7 +132,7 @@ class BitmapTransformationDecodeInterceptorTest {
                             input: Bitmap
                         ): TransformResult = TransformResult(
                             input.apply { input.recycle() },
-                            RotateTransformed(0)
+                            "TestTransformation"
                         )
                     })
                 }

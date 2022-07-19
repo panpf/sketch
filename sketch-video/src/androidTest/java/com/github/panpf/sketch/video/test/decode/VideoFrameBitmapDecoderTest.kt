@@ -11,7 +11,8 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.VideoFrameBitmapDecoder
-import com.github.panpf.sketch.decode.internal.InSampledTransformed
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
+import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
@@ -21,7 +22,6 @@ import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercentDuration
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.video.test.utils.corners
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -104,7 +104,8 @@ class VideoFrameBitmapDecoderTest {
                 val fetcher = sketch.components.newFetcher(this)
                 val fetchResult = runBlocking { fetcher.fetch() }
                 runBlocking {
-                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!
+                        .decode()
                 }
             }.apply {
                 Assert.assertEquals("Bitmap(500x250,RGB_565)", bitmap.toShortInfoString())
@@ -126,13 +127,16 @@ class VideoFrameBitmapDecoderTest {
         }.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 Assert.assertEquals("Bitmap(250x125,ARGB_8888)", bitmap.toShortInfoString())
-                Assert.assertEquals(listOf(InSampledTransformed(2)), transformedList)
+                Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 Assert.assertEquals("Bitmap(250x125,RGB_565)", bitmap.toShortInfoString())
-                Assert.assertEquals(listOf(InSampledTransformed(2)), transformedList)
+                Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
             } else {
                 Assert.assertEquals("Bitmap(250x125,RGB_565)", bitmap.toShortInfoString())
-                Assert.assertEquals(listOf(ResizeTransformed(Resize(300, 300, LESS_PIXELS))),transformedList)
+                Assert.assertEquals(
+                    listOf(createResizeTransformed(Resize(300, 300, LESS_PIXELS))),
+                    transformedList
+                )
             }
             Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
@@ -144,7 +148,8 @@ class VideoFrameBitmapDecoderTest {
             val fetchResult = runBlocking { fetcher.fetch() }
             assertThrow(NullPointerException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!
+                        .decode()
                 }
             }
         }

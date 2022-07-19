@@ -100,13 +100,13 @@ class LruDiskCacheTest {
 
         LruDiskCache.ForResultBuilder(context).build().apply {
             Assert.assertEquals(1, appVersion)
-            Assert.assertEquals(1, internalVersion)
+            Assert.assertEquals(2, internalVersion)
         }
         LruDiskCache.ForResultBuilder(context).apply {
             appVersion(2)
         }.build().apply {
             Assert.assertEquals(2, appVersion)
-            Assert.assertEquals(1, internalVersion)
+            Assert.assertEquals(2, internalVersion)
         }
 
         assertThrow(IllegalArgumentException::class) {
@@ -374,6 +374,14 @@ class LruDiskCacheTest {
                 it.toString()
             )
         }
+        LruDiskCache.ForResultBuilder(context).apply {
+            directory(defaultCacheDir)
+        }.build().use {
+            Assert.assertEquals(
+                "LruDiskCache(maxSize=200MB,appVersion=1,internalVersion=2,directory='${defaultCacheDir.path}')",
+                it.toString()
+            )
+        }
 
         val cacheDir = File("/sdcard/testDir")
         LruDiskCache.ForDownloadBuilder(context).apply {
@@ -383,6 +391,16 @@ class LruDiskCacheTest {
         }.build().use {
             Assert.assertEquals(
                 "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=1,directory='${cacheDir.path}')",
+                it.toString()
+            )
+        }
+        LruDiskCache.ForResultBuilder(context).apply {
+            directory(cacheDir)
+            maxSize(100L * 1024 * 1024)
+            appVersion(2)
+        }.build().use {
+            Assert.assertEquals(
+                "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=2,directory='${cacheDir.path}')",
                 it.toString()
             )
         }
@@ -464,7 +482,8 @@ class LruDiskCacheTest {
         val element1 = LruDiskCache.ForDownloadBuilder(context).build()
         val element11 = LruDiskCache.ForDownloadBuilder(context).build()
         val element2 = LruDiskCache.ForDownloadBuilder(context).maxSize(100).build()
-        val element3 = LruDiskCache.ForDownloadBuilder(context).directory(File("/sdcard/test")).build()
+        val element3 =
+            LruDiskCache.ForDownloadBuilder(context).directory(File("/sdcard/test")).build()
         val element4 = LruDiskCache.ForDownloadBuilder(context).appVersion(3).build()
 
         Assert.assertNotSame(element1, element11)

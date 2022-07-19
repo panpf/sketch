@@ -3,7 +3,6 @@ package com.github.panpf.sketch.transform.internal
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.decode.Transformed
 import java.util.LinkedList
 
 class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
@@ -17,7 +16,7 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
         val transformations = request.transformations ?: return result
 
         val oldBitmap = result.bitmap
-        val transformedList = LinkedList<Transformed>()
+        val transformedList = LinkedList<String>()
         val newBitmap = transformations.fold(oldBitmap) { inputBitmap, next ->
             val transformResult = next.transform(chain.sketch, request, inputBitmap)
             if (transformResult != null) {
