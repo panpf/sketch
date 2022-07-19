@@ -102,21 +102,19 @@ class EngineRequestInterceptor : RequestInterceptor {
     @WorkerThread
     private suspend fun download(sketch: Sketch, request: DownloadRequest): DownloadData {
         /* download */
-        return withContext(sketch.decodeTaskDispatcher) {
-            val fetcher = sketch.components.newFetcher(request)
-            if (fetcher !is HttpUriFetcher) {
-                throw IllegalArgumentException("Download only support HTTP and HTTPS uri: ${request.uriString}")
-            }
+        val fetcher = sketch.components.newFetcher(request)
+        if (fetcher !is HttpUriFetcher) {
+            throw IllegalArgumentException("Download only support HTTP and HTTPS uri: ${request.uriString}")
+        }
 
-            val fetchResult = fetcher.fetch()
-            when (val source = fetchResult.dataSource) {
-                is ByteArrayDataSource -> DownloadData.Bytes(source.data, fetchResult.dataFrom)
-                is DiskCacheDataSource -> DownloadData.Cache(
-                    source.diskCacheSnapshot,
-                    fetchResult.dataFrom
-                )
-                else -> throw IllegalArgumentException("The unknown source: ${source::class.qualifiedName}")
-            }
+        val fetchResult = fetcher.fetch()
+        return when (val source = fetchResult.dataSource) {
+            is ByteArrayDataSource -> DownloadData.Bytes(source.data, fetchResult.dataFrom)
+            is DiskCacheDataSource -> DownloadData.Cache(
+                source.diskCacheSnapshot,
+                fetchResult.dataFrom
+            )
+            else -> throw IllegalArgumentException("The unknown source: ${source::class.qualifiedName}")
         }
     }
 

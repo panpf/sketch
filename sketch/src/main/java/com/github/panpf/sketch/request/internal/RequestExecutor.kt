@@ -32,8 +32,6 @@ import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.job
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
@@ -43,9 +41,6 @@ class RequestExecutor {
     companion object {
         const val MODULE = "RequestExecutor"
     }
-
-    /* Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance */
-    private val requestDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
 
     @MainThread
     suspend fun execute(sketch: Sketch, request: ImageRequest, enqueue: Boolean): ImageResult {
@@ -84,7 +79,7 @@ class RequestExecutor {
 
             onStart(sketch, requestContext.lastRequest)
 
-            val imageData: ImageData = withContext(requestDispatcher) {
+            val imageData: ImageData = withContext(sketch.requestInterceptorDispatcher) {
                 RequestInterceptorChain(
                     sketch = sketch,
                     initialRequest = requestContext.lastRequest,

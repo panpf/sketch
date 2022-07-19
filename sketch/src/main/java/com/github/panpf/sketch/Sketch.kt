@@ -140,6 +140,9 @@ class Sketch private constructor(
     /* Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance */
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
 
+    /* Execute request interceptors on a single worker thread, helping to reduce pressure on the UI thread */
+    val requestInterceptorDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
+
     init {
         val defaultMemoryCacheBytes = context.defaultMemoryCacheBytes()
         memoryCache = _memoryCache
