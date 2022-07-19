@@ -18,8 +18,8 @@ package com.github.panpf.sketch.datasource
 enum class DataFrom {
     NETWORK,
     LOCAL,
-    DISK_CACHE,
-    RESULT_DISK_CACHE,
+    DISK_CACHE, // todo rename to DOWNLOAD_CACHE
+    RESULT_DISK_CACHE, // todo rename to RESULT_CACHE
     MEMORY_CACHE,
     MEMORY
 }

@@ -31,7 +31,7 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
-import com.github.panpf.sketch.decode.internal.ResultCacheKeys
+import com.github.panpf.sketch.decode.internal.resultCacheDataKey
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.samplingByTarget
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
@@ -1081,7 +1081,7 @@ class DisplayRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             resize(500, 500)
         }
-        val resultCacheDataKey = ResultCacheKeys(request).bitmapDataDiskCacheKey
+        val resultCacheDataKey = request.resultCacheDataKey
 
         /* ENABLED */
         diskCache.clear()
