@@ -32,7 +32,10 @@ import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.job
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
 
 class RequestExecutor {
@@ -40,6 +43,9 @@ class RequestExecutor {
     companion object {
         const val MODULE = "RequestExecutor"
     }
+
+    /* Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance */
+    private val requestDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
 
     @MainThread
     suspend fun execute(sketch: Sketch, request: ImageRequest, enqueue: Boolean): ImageResult {
@@ -78,14 +84,16 @@ class RequestExecutor {
 
             onStart(sketch, requestContext.lastRequest)
 
-            val imageData: ImageData = RequestInterceptorChain(
-                sketch = sketch,
-                initialRequest = requestContext.lastRequest,
-                request = requestContext.lastRequest,
-                requestContext = requestContext,
-                interceptors = sketch.components.requestInterceptorList,
-                index = 0,
-            ).proceed(requestContext.lastRequest)
+            val imageData: ImageData = withContext(requestDispatcher) {
+                RequestInterceptorChain(
+                    sketch = sketch,
+                    initialRequest = requestContext.lastRequest,
+                    request = requestContext.lastRequest,
+                    requestContext = requestContext,
+                    interceptors = sketch.components.requestInterceptorList,
+                    index = 0,
+                ).proceed(requestContext.lastRequest)
+            }
 
             val lastRequest: ImageRequest = requestContext.lastRequest
             val successResult: ImageResult.Success = when {
@@ -143,21 +151,28 @@ class RequestExecutor {
 
     @MainThread
     private fun onStart(sketch: Sketch, request: ImageRequest) {
+        when (val target = request.target) {
+            is DisplayTarget -> {
+                val placeholderDrawable = request.placeholder
+                    ?.getDrawable(sketch, request, null)
+                    ?.tryToResizeDrawable(request)
+                target.onStart(placeholderDrawable)
+            }
+            is LoadTarget -> {
+                target.onStart()
+            }
+            is DownloadTarget -> {
+                target.onStart()
+            }
+        }
+        request.listener?.onStart(request)
         sketch.logger.d(MODULE) {
             "Request started. ${request.key}"
         }
-        request.listener?.onStart(request)
     }
 
     @MainThread
     private fun onSuccess(sketch: Sketch, request: ImageRequest, result: ImageResult.Success) {
-        sketch.logger.d(MODULE) {
-            if (result is DisplayResult.Success) {
-                "Request Successful. ${result.drawable}. ${request.key}"
-            } else {
-                "Request Successful. ${request.uriString}"
-            }
-        }
         val target = request.target
         when {
             target is DisplayTarget && result is DisplayResult.Success -> {
@@ -173,13 +188,17 @@ class RequestExecutor {
             }
         }
         request.listener?.onSuccess(request, result)
+        sketch.logger.d(MODULE) {
+            if (result is DisplayResult.Success) {
+                "Request Successful. ${result.drawable}. ${request.key}"
+            } else {
+                "Request Successful. ${request.uriString}"
+            }
+        }
     }
 
     @MainThread
     private fun onError(sketch: Sketch, request: ImageRequest, result: ImageResult.Error) {
-        sketch.logger.e(MODULE, result.exception.takeIf { it !is DepthException }) {
-            "Request failed. ${result.exception.message}. ${request.key}"
-        }
         val target = request.target
         when {
             target is DisplayTarget && result is DisplayResult.Error -> {
@@ -195,6 +214,9 @@ class RequestExecutor {
             }
         }
         request.listener?.onError(request, result)
+        sketch.logger.e(MODULE, result.exception.takeIf { it !is DepthException }) {
+            "Request failed. ${result.exception.message}. ${request.key}"
+        }
     }
 
     @MainThread

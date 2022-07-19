@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
@@ -10,7 +10,6 @@ import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.safeAccessMemoryCache
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
@@ -24,15 +23,12 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.toDisplayData
 import com.github.panpf.sketch.request.toLoadData
-import com.github.panpf.sketch.target.DisplayTarget
-import com.github.panpf.sketch.target.DownloadTarget
-import com.github.panpf.sketch.target.LoadTarget
-import com.github.panpf.sketch.util.asOrNull
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class EngineRequestInterceptor : RequestInterceptor {
 
-    @MainThread
+    @WorkerThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): ImageData =
         when (val request = chain.request) {
             is DisplayRequest -> display(chain.sketch, request, chain.requestContext)
@@ -41,7 +37,7 @@ class EngineRequestInterceptor : RequestInterceptor {
             else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${request::class.java}")
         }
 
-    @MainThread
+    @WorkerThread
     private suspend fun display(
         sketch: Sketch,
         request: DisplayRequest,
@@ -53,7 +49,9 @@ class EngineRequestInterceptor : RequestInterceptor {
             val countDrawable = SketchCountBitmapDrawable(
                 request.context.resources, cachedCountBitmap, MEMORY_CACHE
             ).apply {
-                requestContext.pendingCountDrawable(this@apply, "displayBefore")
+                withContext(Dispatchers.Main) {
+                    requestContext.pendingCountDrawable(this@apply, "displayBefore")
+                }
             }
             val result = DrawableDecodeResult(
                 drawable = countDrawable,
@@ -69,14 +67,6 @@ class EngineRequestInterceptor : RequestInterceptor {
             throw DepthException("Request depth limited to $depth. ${request.uriString}")
         }
 
-        /* callback target start */
-        request.target?.asOrNull<DisplayTarget>()?.let {
-            val placeholderDrawable = request.placeholder
-                ?.getDrawable(sketch, request, null)
-                ?.tryToResizeDrawable(request)
-            it.onStart(placeholderDrawable)
-        }
-
         /* load */
         return withContext(sketch.decodeTaskDispatcher) {
             DrawableDecodeInterceptorChain(
@@ -90,18 +80,12 @@ class EngineRequestInterceptor : RequestInterceptor {
         }
     }
 
-    @MainThread
+    @WorkerThread
     private suspend fun load(
         sketch: Sketch,
         request: LoadRequest,
         chain: RequestInterceptor.Chain
     ): LoadData {
-        /* callback target start */
-        val target = request.target
-        if (target is LoadTarget) {
-            target.onStart()
-        }
-
         /* load */
         return withContext(sketch.decodeTaskDispatcher) {
             BitmapDecodeInterceptorChain(
@@ -115,14 +99,8 @@ class EngineRequestInterceptor : RequestInterceptor {
         }
     }
 
-    @MainThread
+    @WorkerThread
     private suspend fun download(sketch: Sketch, request: DownloadRequest): DownloadData {
-        /* callback target start */
-        val target = request.target
-        if (target is DownloadTarget) {
-            target.onStart()
-        }
-
         /* download */
         return withContext(sketch.decodeTaskDispatcher) {
             val fetcher = sketch.components.newFetcher(request)

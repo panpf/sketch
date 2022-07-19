@@ -1209,7 +1209,8 @@ class DisplayRequestExecuteTest {
         request.newDisplayRequest {
             placeholder(colorDrawable)
         }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertNull(onStartDrawable)
+        Assert.assertNotNull(onStartDrawable)
+        Assert.assertNotNull(onStartDrawable === colorDrawable)
 
         onStartDrawable = null
         Assert.assertTrue(memoryCache.exist(memoryCacheKey))
