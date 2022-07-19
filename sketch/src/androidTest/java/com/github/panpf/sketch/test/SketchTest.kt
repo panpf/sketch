@@ -123,10 +123,10 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     LruDiskCache.ForDownloadBuilder(context1).build(),
-                    downloadDiskCache
+                    downloadCache
                 )
             }
-            downloadDiskCache(
+            downloadCache(
                 LruDiskCache.ForDownloadBuilder(context1).maxSize(maxSize = 250 * 1024 * 1024)
                     .build()
             )
@@ -135,21 +135,21 @@ class SketchTest {
                     LruDiskCache.ForDownloadBuilder(context1)
                         .maxSize(maxSize = 250 * 1024 * 1024)
                         .build(),
-                    downloadDiskCache
+                    downloadCache
                 )
                 Assert.assertNotEquals(
                     LruDiskCache.ForDownloadBuilder(context1).build(),
-                    downloadDiskCache
+                    downloadCache
                 )
             }
 
             build().apply {
                 Assert.assertEquals(
                     LruDiskCache.ForResultBuilder(context1).build(),
-                    resultDiskCache
+                    resultCache
                 )
             }
-            resultDiskCache(
+            resultCache(
                 LruDiskCache.ForResultBuilder(context1).maxSize(maxSize = 250 * 1024 * 1024)
                     .build()
             )
@@ -158,11 +158,11 @@ class SketchTest {
                     LruDiskCache.ForResultBuilder(context1)
                         .maxSize(maxSize = 250 * 1024 * 1024)
                         .build(),
-                    resultDiskCache
+                    resultCache
                 )
                 Assert.assertNotEquals(
                     LruDiskCache.ForResultBuilder(context1).build(),
-                    resultDiskCache
+                    resultCache
                 )
             }
 

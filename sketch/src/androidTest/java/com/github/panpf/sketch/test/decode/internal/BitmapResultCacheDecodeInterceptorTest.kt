@@ -29,7 +29,7 @@ class BitmapResultCacheDecodeInterceptorTest {
     @Test
     fun testIntercept() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val resultDiskCache = sketch.resultDiskCache
+        val resultCache = sketch.resultCache
 
         val interceptors =
             listOf(BitmapResultCacheDecodeInterceptor(), BitmapEngineDecodeInterceptor())
@@ -52,8 +52,8 @@ class BitmapResultCacheDecodeInterceptorTest {
             resultCachePolicy(ENABLED)
         }
 
-        resultDiskCache.clear()
-        Assert.assertFalse(resultDiskCache.exist(loadRequest.resultCacheDataKey))
+        resultCache.clear()
+        Assert.assertFalse(resultCache.exist(loadRequest.resultCacheDataKey))
         executeRequest(loadRequest).also { result ->
             Assert.assertEquals(323, result.bitmap.width)
             Assert.assertEquals(484, result.bitmap.height)
@@ -69,7 +69,7 @@ class BitmapResultCacheDecodeInterceptorTest {
             )
         }
 
-        Assert.assertTrue(resultDiskCache.exist(loadRequest.resultCacheDataKey))
+        Assert.assertTrue(resultCache.exist(loadRequest.resultCacheDataKey))
         executeRequest(loadRequest).also { result ->
             Assert.assertEquals(323, result.bitmap.width)
             Assert.assertEquals(484, result.bitmap.height)
@@ -78,14 +78,14 @@ class BitmapResultCacheDecodeInterceptorTest {
                 result.imageInfo.toString()
             )
             Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
-            Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, result.dataFrom)
+            Assert.assertEquals(DataFrom.RESULT_CACHE, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
                 result.transformedList?.joinToString()
             )
         }
 
-        Assert.assertTrue(resultDiskCache.exist(loadRequest.resultCacheDataKey))
+        Assert.assertTrue(resultCache.exist(loadRequest.resultCacheDataKey))
         executeRequest(loadRequest.newLoadRequest {
             resultCachePolicy(DISABLED)
         }).also { result ->
@@ -103,7 +103,7 @@ class BitmapResultCacheDecodeInterceptorTest {
             )
         }
 
-        Assert.assertTrue(resultDiskCache.exist(loadRequest.resultCacheDataKey))
+        Assert.assertTrue(resultCache.exist(loadRequest.resultCacheDataKey))
         executeRequest(loadRequest.newLoadRequest {
             resultCachePolicy(WRITE_ONLY)
         }).also { result ->
@@ -121,8 +121,8 @@ class BitmapResultCacheDecodeInterceptorTest {
             )
         }
 
-        resultDiskCache.clear()
-        Assert.assertFalse(resultDiskCache.exist(loadRequest.resultCacheDataKey))
+        resultCache.clear()
+        Assert.assertFalse(resultCache.exist(loadRequest.resultCacheDataKey))
         executeRequest(loadRequest.newLoadRequest {
             resultCachePolicy(READ_ONLY)
         }).also { result ->
@@ -139,7 +139,7 @@ class BitmapResultCacheDecodeInterceptorTest {
                 result.transformedList?.joinToString()
             )
         }
-        Assert.assertFalse(resultDiskCache.exist(loadRequest.resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(loadRequest.resultCacheDataKey))
     }
 
     @Test

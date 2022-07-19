@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.datasource.DataFrom.DISK_CACHE
+import com.github.panpf.sketch.datasource.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
@@ -53,7 +53,7 @@ class DisposableTest {
                 DisplayResult.Success(
                     DisplayRequest(view, TestAssets.SAMPLE_JPEG_URI),
                     ColorDrawable(Color.BLACK),
-                    ImageInfo(100, 100, "image/jpeg"), 0, DISK_CACHE, null
+                    ImageInfo(100, 100, "image/jpeg"), 0, DOWNLOAD_CACHE, null
                 )
             }
 

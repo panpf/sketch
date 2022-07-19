@@ -50,7 +50,7 @@ class DownloadRequestExecuteTest {
         val imageUri = testImage.uriString
 
         // default
-        sketch.downloadDiskCache.clear()
+        sketch.downloadCache.clear()
         sketch.memoryCache.clear()
         DownloadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -61,7 +61,7 @@ class DownloadRequestExecuteTest {
         }
 
         // NETWORK
-        sketch.downloadDiskCache.clear()
+        sketch.downloadCache.clear()
         sketch.memoryCache.clear()
         DownloadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -73,7 +73,7 @@ class DownloadRequestExecuteTest {
         }
 
         // LOCAL
-        sketch.downloadDiskCache.clear()
+        sketch.downloadCache.clear()
         sketch.memoryCache.clear()
         runBlocking {
             sketch.execute(DownloadRequest(context, imageUri) {
@@ -81,17 +81,17 @@ class DownloadRequestExecuteTest {
             })
         }
         sketch.memoryCache.clear()
-        Assert.assertTrue(sketch.downloadDiskCache.exist(imageUri))
+        Assert.assertTrue(sketch.downloadCache.exist(imageUri))
         DownloadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(LOCAL)
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DownloadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
         }
 
-        sketch.downloadDiskCache.clear()
+        sketch.downloadCache.clear()
         sketch.memoryCache.clear()
         DownloadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -115,7 +115,7 @@ class DownloadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DownloadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
         }
 
         sketch.memoryCache.clear()
@@ -137,7 +137,7 @@ class DownloadRequestExecuteTest {
         }
         val testImage = TestHttpStack.testImages.first()
         val imageUri = testImage.uriString
-        val diskCache = sketch.downloadDiskCache
+        val diskCache = sketch.downloadCache
 
         /* ENABLED */
         diskCache.clear()
@@ -160,7 +160,7 @@ class DownloadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DownloadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
         }
 
         /* DISABLED */
@@ -227,7 +227,7 @@ class DownloadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DownloadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
         }
 
         /* WRITE_ONLY */

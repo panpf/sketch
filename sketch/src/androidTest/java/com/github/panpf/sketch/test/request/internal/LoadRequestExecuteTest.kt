@@ -85,7 +85,7 @@ class LoadRequestExecuteTest {
         val imageUri = TestHttpStack.testImages.first().uriString
 
         // default
-        sketch.downloadDiskCache.clear()
+        sketch.downloadCache.clear()
         sketch.memoryCache.clear()
         LoadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -96,7 +96,7 @@ class LoadRequestExecuteTest {
         }
 
         // NETWORK
-        sketch.downloadDiskCache.clear()
+        sketch.downloadCache.clear()
         sketch.memoryCache.clear()
         LoadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -108,7 +108,7 @@ class LoadRequestExecuteTest {
         }
 
         // LOCAL
-        sketch.downloadDiskCache.clear()
+        sketch.downloadCache.clear()
         sketch.memoryCache.clear()
         runBlocking {
             sketch.execute(LoadRequest(context, imageUri) {
@@ -116,17 +116,17 @@ class LoadRequestExecuteTest {
             })
         }
         sketch.memoryCache.clear()
-        Assert.assertTrue(sketch.downloadDiskCache.exist(imageUri))
+        Assert.assertTrue(sketch.downloadCache.exist(imageUri))
         LoadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(LOCAL)
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<LoadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
         }
 
-        sketch.downloadDiskCache.clear()
+        sketch.downloadCache.clear()
         sketch.memoryCache.clear()
         LoadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
@@ -150,7 +150,7 @@ class LoadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<LoadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
         }
 
         sketch.memoryCache.clear()
@@ -170,7 +170,7 @@ class LoadRequestExecuteTest {
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
-        val diskCache = sketch.downloadDiskCache
+        val diskCache = sketch.downloadCache
         val imageUri = TestHttpStack.testImages.first().uriString
 
         /* ENABLED */
@@ -194,7 +194,7 @@ class LoadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<LoadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
         }
 
         /* DISABLED */
@@ -261,7 +261,7 @@ class LoadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<LoadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
         }
 
         /* WRITE_ONLY */
@@ -1020,7 +1020,7 @@ class LoadRequestExecuteTest {
     fun testResultCachePolicy() {
         val context = getTestContext()
         val sketch = newSketch()
-        val diskCache = sketch.resultDiskCache
+        val diskCache = sketch.resultCache
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = LoadRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
@@ -1045,7 +1045,7 @@ class LoadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<LoadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.RESULT_CACHE, dataFrom)
         }
 
         /* DISABLED */
@@ -1100,7 +1100,7 @@ class LoadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<LoadResult.Success>()!!.apply {
-            Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, dataFrom)
+            Assert.assertEquals(DataFrom.RESULT_CACHE, dataFrom)
         }
 
         /* WRITE_ONLY */

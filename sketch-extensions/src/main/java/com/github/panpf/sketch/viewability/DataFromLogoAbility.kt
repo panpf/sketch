@@ -40,11 +40,11 @@ class DataFromLogoAbility(
 
     companion object {
         const val DEFAULT_SIZE_DP = 20f
-        private const val FROM_FLAG_COLOR_MEMORY_CACHE = 0x7700FF00   // green
         private const val FROM_FLAG_COLOR_MEMORY = 0x77008800   // dark green
-        private const val FROM_FLAG_COLOR_RESULT_DISK_CACHE = 0x77FFFF00 // yellow
-        private const val FROM_FLAG_COLOR_DISK_CACHE = 0x77FF8800 // dark yellow
+        private const val FROM_FLAG_COLOR_MEMORY_CACHE = 0x7700FF00   // green
+        private const val FROM_FLAG_COLOR_RESULT_CACHE = 0x77FFFF00 // yellow
         private const val FROM_FLAG_COLOR_LOCAL = 0x771E90FF   // dodger blue
+        private const val FROM_FLAG_COLOR_DOWNLOAD_CACHE = 0x77FF8800 // dark yellow
         private const val FROM_FLAG_COLOR_NETWORK = 0x77FF0000  // red
     }
 
@@ -91,8 +91,8 @@ class DataFromLogoAbility(
         when (lastDrawable.dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
             DataFrom.MEMORY -> paint.color = FROM_FLAG_COLOR_MEMORY
-            DataFrom.RESULT_DISK_CACHE -> paint.color = FROM_FLAG_COLOR_RESULT_DISK_CACHE
-            DataFrom.DISK_CACHE -> paint.color = FROM_FLAG_COLOR_DISK_CACHE
+            DataFrom.RESULT_CACHE -> paint.color = FROM_FLAG_COLOR_RESULT_CACHE
+            DataFrom.DOWNLOAD_CACHE -> paint.color = FROM_FLAG_COLOR_DOWNLOAD_CACHE
             DataFrom.LOCAL -> paint.color = FROM_FLAG_COLOR_LOCAL
             DataFrom.NETWORK -> paint.color = FROM_FLAG_COLOR_NETWORK
         }

@@ -36,14 +36,14 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                 }
             }
             if (request.definedOptions.downloadCachePolicy == null) {
-                if (prefsService.disabledDownloadDiskCache.value) {
+                if (prefsService.disabledDownloadCache.value) {
                     downloadCachePolicy(DISABLED)
                 } else {
                     downloadCachePolicy(ENABLED)
                 }
             }
             if (request.definedOptions.resultCachePolicy == null) {
-                if (prefsService.disabledBitmapResultDiskCache.value) {
+                if (prefsService.disabledBitmapResultCache.value) {
                     resultCachePolicy(DISABLED)
                 } else {
                     resultCachePolicy(ENABLED)

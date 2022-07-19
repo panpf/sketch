@@ -91,8 +91,8 @@ class Sketch private constructor(
     _context: Context,
     _logger: Logger?,
     _memoryCache: MemoryCache?,
-    _downloadDiskCache: DiskCache?,
-    _resultDiskCache: DiskCache?,
+    _downloadCache: DiskCache?,
+    _resultCache: DiskCache?,
     _bitmapPool: BitmapPool?,
     _componentRegistry: ComponentRegistry?,
     _httpStack: HttpStack?,
@@ -118,12 +118,12 @@ class Sketch private constructor(
     val bitmapPool: BitmapPool
 
     /** Disk caching of http downloads images */
-    val downloadDiskCache: DiskCache =
-        _downloadDiskCache ?: LruDiskCache.ForDownloadBuilder(context).build()
+    val downloadCache: DiskCache =
+        _downloadCache ?: LruDiskCache.ForDownloadBuilder(context).build()
 
     /** Disk caching of transformed images */
-    val resultDiskCache: DiskCache =
-        _resultDiskCache ?: LruDiskCache.ForResultBuilder(context).build()
+    val resultCache: DiskCache =
+        _resultCache ?: LruDiskCache.ForResultBuilder(context).build()
 
     /** Execute HTTP request */
     val httpStack: HttpStack = _httpStack ?: HurlStack.Builder().build()
@@ -152,8 +152,8 @@ class Sketch private constructor(
             ?: LruBitmapPool((defaultMemoryCacheBytes * 0.33f).roundToLong())
         memoryCache.logger = logger
         bitmapPool.logger = logger
-        downloadDiskCache.logger = logger
-        resultDiskCache.logger = logger
+        downloadCache.logger = logger
+        resultCache.logger = logger
 
         val componentRegistry =
             (_componentRegistry?.newBuilder() ?: ComponentRegistry.Builder()).apply {
@@ -195,8 +195,8 @@ class Sketch private constructor(
                 append("\n").append("httpStack: $httpStack")
                 append("\n").append("memoryCache: $memoryCache")
                 append("\n").append("bitmapPool: $bitmapPool")
-                append("\n").append("downloadDiskCache: $downloadDiskCache")
-                append("\n").append("resultDiskCache: $resultDiskCache")
+                append("\n").append("downloadCache: $downloadCache")
+                append("\n").append("resultCache: $resultCache")
                 append("\n").append("fetchers: $fetchers")
                 append("\n").append("bitmapDecoders: $bitmapDecoders")
                 append("\n").append("drawableDecoders: $drawableDecoders")
@@ -326,8 +326,8 @@ class Sketch private constructor(
         scope.cancel()
         systemCallbacks.shutdown()
         memoryCache.clear()
-        downloadDiskCache.close()
-        resultDiskCache.close()
+        downloadCache.close()
+        resultCache.close()
         bitmapPool.clear()
     }
 
@@ -336,8 +336,8 @@ class Sketch private constructor(
         private val appContext: Context = context.applicationContext
         private var logger: Logger? = null
         private var memoryCache: MemoryCache? = null
-        private var downloadDiskCache: DiskCache? = null
-        private var resultDiskCache: DiskCache? = null
+        private var downloadCache: DiskCache? = null
+        private var resultCache: DiskCache? = null
         private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
@@ -359,15 +359,15 @@ class Sketch private constructor(
         /**
          * Set the [DiskCache] for download cache
          */
-        fun downloadDiskCache(diskCache: DiskCache?): Builder = apply {
-            this.downloadDiskCache = diskCache
+        fun downloadCache(diskCache: DiskCache?): Builder = apply {
+            this.downloadCache = diskCache
         }
 
         /**
          * Set the [DiskCache] for result cache
          */
-        fun resultDiskCache(diskCache: DiskCache?): Builder = apply {
-            this.resultDiskCache = diskCache
+        fun resultCache(diskCache: DiskCache?): Builder = apply {
+            this.resultCache = diskCache
         }
 
         /**
@@ -401,8 +401,8 @@ class Sketch private constructor(
             _context = appContext,
             _logger = logger,
             _memoryCache = memoryCache,
-            _downloadDiskCache = downloadDiskCache,
-            _resultDiskCache = resultDiskCache,
+            _downloadCache = downloadCache,
+            _resultCache = resultCache,
             _bitmapPool = bitmapPool,
             _componentRegistry = componentRegistry,
             _httpStack = httpStack,

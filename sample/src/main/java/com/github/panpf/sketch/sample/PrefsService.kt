@@ -67,11 +67,11 @@ class PrefsService(val context: Context) {
     val disabledBitmapMemoryCache by lazy {
         BooleanMmkvData(mmkv, "disabledBitmapMemoryCache", false)
     }
-    val disabledBitmapResultDiskCache by lazy {
-        BooleanMmkvData(mmkv, "disabledBitmapResultDiskCache", false)
+    val disabledBitmapResultCache by lazy {
+        BooleanMmkvData(mmkv, "disabledBitmapResultCache", false)
     }
-    val disabledDownloadDiskCache by lazy {
-        BooleanMmkvData(mmkv, "disabledDownloadDiskCache", false)
+    val disabledDownloadCache by lazy {
+        BooleanMmkvData(mmkv, "disabledDownloadCache", false)
     }
     val disallowReuseBitmap by lazy {
         BooleanMmkvData(mmkv, "disallowReuseBitmap", false)

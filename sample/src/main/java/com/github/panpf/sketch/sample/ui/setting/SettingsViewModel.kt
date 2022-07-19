@@ -40,8 +40,8 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             if (VERSION.SDK_INT >= VERSION_CODES.O) prefsService.colorSpace.sharedFlow else null,
             prefsService.ignoreExifOrientation.sharedFlow,
             prefsService.disabledBitmapMemoryCache.sharedFlow,
-            prefsService.disabledBitmapResultDiskCache.sharedFlow,
-            prefsService.disabledDownloadDiskCache.sharedFlow,
+            prefsService.disabledBitmapResultCache.sharedFlow,
+            prefsService.disabledDownloadCache.sharedFlow,
             prefsService.disallowReuseBitmap.sharedFlow,
             prefsService.showDataFromLogo.sharedFlow,
             prefsService.showTileBoundsInHugeImagePage.sharedFlow,
@@ -211,7 +211,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             SwitchMenuFlow(
                 title = "Bitmap Result Disk Cache",
                 desc = null,
-                data = prefsService.disabledBitmapResultDiskCache,
+                data = prefsService.disabledBitmapResultCache,
                 reverse = true
             )
         )
@@ -220,7 +220,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             SwitchMenuFlow(
                 title = "Download Disk Cache",
                 desc = null,
-                data = prefsService.disabledDownloadDiskCache,
+                data = prefsService.disabledDownloadCache,
                 reverse = true
             )
         )
@@ -256,11 +256,11 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             "Download Disk Cache Statistics",
             "Click clear",
             info = "%s/%s".format(
-                sketch.downloadDiskCache.size.formatFileSize(0, false, true),
-                sketch.downloadDiskCache.maxSize.formatFileSize(0, false, true)
+                sketch.downloadCache.size.formatFileSize(0, false, true),
+                sketch.downloadCache.maxSize.formatFileSize(0, false, true)
             ),
             onClick = {
-                sketch.downloadDiskCache.clear()
+                sketch.downloadCache.clear()
                 updateList()
             }
         ))
@@ -269,11 +269,11 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             "Result Disk Cache Statistics",
             "Click clear",
             info = "%s/%s".format(
-                sketch.resultDiskCache.size.formatFileSize(0, false, true),
-                sketch.resultDiskCache.maxSize.formatFileSize(0, false, true)
+                sketch.resultCache.size.formatFileSize(0, false, true),
+                sketch.resultCache.maxSize.formatFileSize(0, false, true)
             ),
             onClick = {
-                sketch.resultDiskCache.clear()
+                sketch.resultCache.clear()
                 updateList()
             }
         ))

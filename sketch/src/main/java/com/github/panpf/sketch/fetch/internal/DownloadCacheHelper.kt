@@ -4,7 +4,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
-import com.github.panpf.sketch.datasource.DataFrom.DISK_CACHE
+import com.github.panpf.sketch.datasource.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.http.HttpStack.Response
@@ -22,7 +22,7 @@ suspend fun <R> safeAccessDownloadCache(
 ): R =
     if (request.downloadCachePolicy.isReadOrWrite) {
         val helper = DownloadCacheHelper(sketch, request)
-        val lock: Mutex = sketch.downloadDiskCache.editLock(helper.keys.lockKey)
+        val lock: Mutex = sketch.downloadCache.editLock(helper.keys.lockKey)
         lock.lock()
         try {
             block(helper)
@@ -43,16 +43,16 @@ class DownloadCacheKeys constructor(request: ImageRequest) {
 
 class DownloadCacheHelper(val sketch: Sketch, val request: ImageRequest) {
 
-    private val diskCache = sketch.downloadDiskCache
+    private val downloadCache = sketch.downloadCache
     val keys = DownloadCacheKeys(request)
 
     @WorkerThread
     fun read(): FetchResult? {
         requiredWorkThread()
         if (!request.downloadCachePolicy.readEnabled) return null
-        val dataDiskCacheSnapshot = diskCache[keys.dataDiskCacheKey] ?: return null
+        val dataDiskCacheSnapshot = downloadCache[keys.dataDiskCacheKey] ?: return null
 
-        val contentType = diskCache[keys.contentTypeDiskCacheKey]?.let { snapshot ->
+        val contentType = downloadCache[keys.contentTypeDiskCacheKey]?.let { snapshot ->
             try {
                 snapshot.newInputStream()
                     .use { it.bufferedReader().readText() }
@@ -66,7 +66,7 @@ class DownloadCacheHelper(val sketch: Sketch, val request: ImageRequest) {
         }
         val mimeType = getMimeType(request.uriString, contentType)
         return FetchResult(
-            DiskCacheDataSource(sketch, request, DISK_CACHE, dataDiskCacheSnapshot), mimeType
+            DiskCacheDataSource(sketch, request, DOWNLOAD_CACHE, dataDiskCacheSnapshot), mimeType
         )
     }
 
@@ -78,7 +78,7 @@ class DownloadCacheHelper(val sketch: Sketch, val request: ImageRequest) {
     ): DiskCache.Snapshot? {
         requiredWorkThread()
         val diskCacheEditor = ifOrNull(request.downloadCachePolicy.writeEnabled) {
-            diskCache.edit(keys.dataDiskCacheKey)
+            downloadCache.edit(keys.dataDiskCacheKey)
         } ?: return null
         try {
             val contentLength = response.contentLength
@@ -104,7 +104,7 @@ class DownloadCacheHelper(val sketch: Sketch, val request: ImageRequest) {
             // save contentType
             val contentType = response.contentType?.takeIf { it.isNotEmpty() && it.isNotBlank() }
             if (contentType != null) {
-                diskCache.edit(keys.contentTypeDiskCacheKey)?.apply {
+                downloadCache.edit(keys.contentTypeDiskCacheKey)?.apply {
                     try {
                         newOutputStream().bufferedWriter().use {
                             it.write(contentType)
@@ -117,7 +117,7 @@ class DownloadCacheHelper(val sketch: Sketch, val request: ImageRequest) {
                 }
             }
 
-            return diskCache[keys.dataDiskCacheKey]
+            return downloadCache[keys.dataDiskCacheKey]
                 ?: throw IOException("Disk cache loss after write. ${request.uriString}")
         } catch (e: IOException) {
             diskCacheEditor.abort()
