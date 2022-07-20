@@ -366,7 +366,7 @@ class DownloadRequestTest {
         val uriString1 = newAssetUri("sample.jpeg")
 
         DownloadRequest(context1, uriString1).apply {
-            Assert.assertNull(globalOptions)
+            Assert.assertNull(defaultOptions)
         }
 
         val options = ImageOptions {
@@ -377,7 +377,7 @@ class DownloadRequestTest {
         DownloadRequest(context1, uriString1) {
             default(options)
         }.apply {
-            Assert.assertSame(options, globalOptions)
+            Assert.assertSame(options, defaultOptions)
         }
     }
 

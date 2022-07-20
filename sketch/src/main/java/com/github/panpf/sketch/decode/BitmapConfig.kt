@@ -41,8 +41,9 @@ sealed interface BitmapConfig {
      */
     object LowQuality : BitmapConfig {
 
-        override val key: String
-            get() = "BitmapConfig(LowQuality)"
+        override val key: String by lazy {
+            "BitmapConfig(LowQuality)"
+        }
 
         override fun getConfig(mimeType: String?): Bitmap.Config =
             when {
@@ -66,8 +67,9 @@ sealed interface BitmapConfig {
      */
     object HighQuality : BitmapConfig {
 
-        override val key: String
-            get() = "BitmapConfig(HighQuality)"
+        override val key: String by lazy {
+            "BitmapConfig(HighQuality)"
+        }
 
         override fun getConfig(mimeType: String?): Bitmap.Config =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -76,7 +78,7 @@ sealed interface BitmapConfig {
                 Bitmap.Config.ARGB_8888
             }
 
-        override fun toString(): String = LowQuality.key
+        override fun toString(): String = key
     }
 
     /**
@@ -95,9 +97,7 @@ sealed interface BitmapConfig {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is FixedBitmapConfig) return false
-
             if (config != other.config) return false
-
             return true
         }
 

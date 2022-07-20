@@ -171,7 +171,14 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(imageInfo.size, bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
+            Assert.assertEquals(
+                ImageInfo(
+                    1936,
+                    1291,
+                    "image/jpeg",
+                    ExifInterface.ORIENTATION_ROTATE_90
+                ), imageInfo
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -195,7 +202,14 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(imageInfo.size, bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
+            Assert.assertEquals(
+                ImageInfo(
+                    1936,
+                    1291,
+                    "image/jpeg",
+                    ExifInterface.ORIENTATION_ROTATE_90
+                ), imageInfo
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
             Assert.assertEquals(result1.bitmap.corners(), bitmap.corners())
@@ -220,7 +234,14 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(Size(121, 60), bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
+            Assert.assertEquals(
+                ImageInfo(
+                    1936,
+                    1291,
+                    "image/jpeg",
+                    ExifInterface.ORIENTATION_ROTATE_90
+                ), imageInfo
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(16), createResizeTransformed(Resize(100, 200))),
@@ -278,7 +299,14 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(Size(121, 60), bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
+            Assert.assertEquals(
+                ImageInfo(
+                    1936,
+                    1291,
+                    "image/jpeg",
+                    ExifInterface.ORIENTATION_ROTATE_90
+                ), imageInfo
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(
@@ -339,7 +367,14 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(Size(121, 81), bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
+            Assert.assertEquals(
+                ImageInfo(
+                    1936,
+                    1291,
+                    "image/jpeg",
+                    ExifInterface.ORIENTATION_ROTATE_90
+                ), imageInfo
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createInSampledTransformed(16)), transformedList)
         }
@@ -418,53 +453,41 @@ class DecodeUtilsTest {
     fun testApplyExifOrientation() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        context.assets.open("sample.jpeg").use {
-            BitmapFactory.decodeStream(it)
-        }.let {
-            BitmapDecodeResult(
-                bitmap = it,
-                imageInfo = ImageInfo(it.width, it.height, "image/jpeg", 0),
-                dataFrom = LOCAL,
-                transformedList = null
-            )
-        }.apply {
-            val newResult = applyExifOrientation()
-            Assert.assertSame(this, newResult)
-
-            val newResult2 = applyExifOrientation()
-            Assert.assertSame(this, newResult2)
-        }
-
         val hasExifFile = ExifOrientationTestFileHelper(context, "sample.jpeg")
             .files().find { it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 }!!
-        BitmapFactory.decodeFile(hasExifFile.file.path).let {
-            BitmapDecodeResult(
-                bitmap = it,
-                imageInfo = ImageInfo(
-                    it.width,
-                    it.height,
-                    "image/jpeg",
-                    hasExifFile.exifOrientation
-                ),
-                dataFrom = LOCAL,
-                transformedList = null
-            )
-        }.apply {
-            Assert.assertNull(this.transformedList?.getExifOrientationTransformed())
+        val bitmap = BitmapFactory.decodeFile(hasExifFile.file.path)
 
-            val newResult = applyExifOrientation()
-            Assert.assertSame(this, newResult)
+        val result = BitmapDecodeResult(
+            bitmap = bitmap,
+            imageInfo = ImageInfo(
+                width = bitmap.width,
+                height = bitmap.height,
+                mimeType = "image/jpeg",
+                exifOrientation = hasExifFile.exifOrientation
+            ),
+            dataFrom = LOCAL,
+            transformedList = null
+        )
 
-            val newResult2 = applyExifOrientation()
-            Assert.assertNotSame(this, newResult2)
-            Assert.assertNotSame(this.bitmap, newResult2.bitmap)
-            Assert.assertEquals(Size(this.bitmap.height, this.bitmap.width), newResult2.bitmap.size)
+        Assert.assertNull(result.transformedList?.getExifOrientationTransformed())
+
+        result.applyExifOrientation().apply {
+            Assert.assertNotSame(result, this)
+            Assert.assertNotSame(result.bitmap, this.bitmap)
+            Assert.assertEquals(Size(result.bitmap.height, result.bitmap.width), this.bitmap.size)
             Assert.assertEquals(
-                Size(this.imageInfo.height, this.imageInfo.width),
-                newResult2.imageInfo.size
+                Size(result.imageInfo.height, result.imageInfo.width),
+                this.imageInfo.size
             )
-            Assert.assertNotEquals(this.bitmap.corners(), newResult2.bitmap.corners())
-            Assert.assertNotNull(newResult2.transformedList?.getExifOrientationTransformed())
+            Assert.assertNotEquals(result.bitmap.corners(), this.bitmap.corners())
+            Assert.assertNotNull(this.transformedList?.getExifOrientationTransformed())
+        }
+
+        val noExifOrientationResult = result.newResult(
+            imageInfo = result.imageInfo.newImageInfo(exifOrientation = 0)
+        )
+        noExifOrientationResult.applyExifOrientation().apply {
+            Assert.assertSame(noExifOrientationResult, this)
         }
     }
 

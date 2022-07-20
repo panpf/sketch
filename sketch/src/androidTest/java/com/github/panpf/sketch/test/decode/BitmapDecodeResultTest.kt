@@ -4,12 +4,14 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.createRotateTransformed
+import com.github.panpf.sketch.util.toInfoString
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,26 +39,108 @@ class BitmapDecodeResultTest {
     }
 
     @Test
-    fun testNew() {
-        val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
-        val imageInfo = ImageInfo(3000, 500, "image/png", 0)
-        val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
-        val result = BitmapDecodeResult(newBitmap, imageInfo, LOCAL, transformedList)
-        Assert.assertEquals(
-            "InSampledTransformed(4), RotateTransformed(45)",
-            result.transformedList?.joinToString()
-        )
-
-        val result2 = result.newResult(newBitmap) {
-            addTransformed(createCircleCropTransformed(CENTER_CROP))
+    fun testToString() {
+        BitmapDecodeResult(
+            bitmap = Bitmap.createBitmap(100, 100, RGB_565),
+            imageInfo = ImageInfo(3000, 500, "image/png", 0),
+            dataFrom = LOCAL,
+            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
+        ).apply {
+            Assert.assertEquals(
+                "BitmapDecodeResult(bitmap=${bitmap.toInfoString()}, " +
+                        "imageInfo=$imageInfo, " +
+                        "dataFrom=$dataFrom, " +
+                        "transformedList=$transformedList)",
+                toString()
+            )
         }
-        Assert.assertEquals(
-            "InSampledTransformed(4), RotateTransformed(45)",
-            result.transformedList?.joinToString()
-        )
-        Assert.assertEquals(
-            "InSampledTransformed(4), RotateTransformed(45), CircleCropTransformed(CENTER_CROP)",
-            result2.transformedList?.joinToString()
-        )
+    }
+
+    @Test
+    fun testNewResult() {
+        val bitmap1 = Bitmap.createBitmap(100, 100, RGB_565)
+        val bitmap2 = Bitmap.createBitmap(200, 200, RGB_565)
+
+        val result = BitmapDecodeResult(
+            bitmap = bitmap1,
+            imageInfo = ImageInfo(3000, 500, "image/png", 0),
+            dataFrom = LOCAL,
+            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
+        ).apply {
+            Assert.assertEquals(bitmap1, bitmap)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformedList
+            )
+        }
+
+        result.newResult().apply {
+            Assert.assertNotSame(result, this)
+            Assert.assertEquals(result, this)
+            Assert.assertEquals(bitmap1, bitmap)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformedList
+            )
+        }
+
+        result.newResult(bitmap = bitmap2).apply {
+            Assert.assertNotSame(result, this)
+            Assert.assertNotEquals(result, this)
+            Assert.assertEquals(bitmap2, bitmap)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformedList
+            )
+        }
+
+        result.newResult(imageInfo = result.imageInfo.newImageInfo(width = 200, height = 200))
+            .apply {
+                Assert.assertNotSame(result, this)
+                Assert.assertNotEquals(result, this)
+                Assert.assertEquals(bitmap1, bitmap)
+                Assert.assertEquals(ImageInfo(200, 200, "image/png", 0), imageInfo)
+                Assert.assertEquals(LOCAL, dataFrom)
+                Assert.assertEquals(
+                    listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                    transformedList
+                )
+            }
+
+        result.newResult(dataFrom = MEMORY).apply {
+            Assert.assertNotSame(result, this)
+            Assert.assertNotEquals(result, this)
+            Assert.assertEquals(bitmap1, bitmap)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(MEMORY, dataFrom)
+            Assert.assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformedList
+            )
+        }
+
+        result.newResult {
+            addTransformed(createCircleCropTransformed(FILL))
+        }.apply {
+            Assert.assertNotSame(result, this)
+            Assert.assertNotEquals(result, this)
+            Assert.assertEquals(bitmap1, bitmap)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(
+                listOf(
+                    createInSampledTransformed(4),
+                    createRotateTransformed(45),
+                    createCircleCropTransformed(FILL)
+                ),
+                transformedList
+            )
+        }
     }
 }

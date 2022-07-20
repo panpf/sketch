@@ -22,6 +22,7 @@ class BitmapConfigTest {
         Assert.assertFalse(BitmapConfig.HighQuality.isLowQuality)
         Assert.assertFalse(BitmapConfig(RGB_565).isLowQuality)
         Assert.assertFalse(BitmapConfig(ARGB_8888).isLowQuality)
+        Assert.assertEquals("BitmapConfig(LowQuality)", BitmapConfig.LowQuality.toString())
     }
 
     @Test
@@ -46,6 +47,37 @@ class BitmapConfigTest {
         Assert.assertTrue(BitmapConfig.HighQuality.isDynamic)
         Assert.assertFalse(BitmapConfig(RGB_565).isDynamic)
         Assert.assertFalse(BitmapConfig(ARGB_8888).isDynamic)
+    }
+
+    @Test
+    fun testToString() {
+        Assert.assertEquals("BitmapConfig(LowQuality)", BitmapConfig.LowQuality.toString())
+        Assert.assertEquals("BitmapConfig(HighQuality)", BitmapConfig.HighQuality.toString())
+        Assert.assertEquals("BitmapConfig(RGB_565)", BitmapConfig(RGB_565).toString())
+        Assert.assertEquals("BitmapConfig(ARGB_8888)", BitmapConfig(ARGB_8888).toString())
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = BitmapConfig(RGB_565)
+        val element11 = BitmapConfig(RGB_565)
+        val element2 = BitmapConfig(ARGB_8888)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 
     @Test

@@ -26,10 +26,12 @@ class CountBitmapTest {
 
         createCountBitmap(sketch, "image1", 100, 100, requestKey = "requestKey1").apply {
             Assert.assertEquals("requestKey1", requestKey)
+            Assert.assertEquals("requestKey1", requestCacheKey)
         }
 
         createCountBitmap(sketch, "image2", 100, 100, requestKey = "requestKey2").apply {
             Assert.assertEquals("requestKey2", requestKey)
+            Assert.assertEquals("requestKey2", requestCacheKey)
         }
     }
 

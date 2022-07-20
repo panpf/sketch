@@ -8,6 +8,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.AnyThread
 import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.http.HttpHeaders
@@ -91,8 +92,8 @@ interface DownloadRequest : ImageRequest {
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
     @AnyThread
-    fun enqueue(): Disposable<DownloadResult> {
-        return context.sketch.enqueue(this)
+    fun enqueue(sketch: Sketch = context.sketch): Disposable<DownloadResult> {
+        return sketch.enqueue(this)
     }
 
     /**
@@ -103,8 +104,8 @@ interface DownloadRequest : ImageRequest {
      *
      * @return A [DownloadResult.Success] if the request completes successfully. Else, returns an [DownloadResult.Error].
      */
-    suspend fun execute(): DownloadResult {
-        return context.sketch.execute(this)
+    suspend fun execute(sketch: Sketch = context.sketch): DownloadResult {
+        return sketch.execute(this)
     }
 
     class Builder : ImageRequest.Builder {
@@ -414,7 +415,7 @@ interface DownloadRequest : ImageRequest {
         override val target: Target?,
         override val lifecycle: Lifecycle,
         override val definedOptions: ImageOptions,
-        override val globalOptions: ImageOptions?,
+        override val defaultOptions: ImageOptions?,
         override val depth: Depth,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,

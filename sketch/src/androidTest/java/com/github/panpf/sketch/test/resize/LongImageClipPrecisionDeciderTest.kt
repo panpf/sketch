@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.request.internal.MemoryCacheInterceptor
+import com.github.panpf.sketch.resize.DefaultLongImageDecider
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -68,6 +70,36 @@ class LongImageClipPrecisionDeciderTest {
             "LongImageClip(SAME_ASPECT_RATIO,Default(2.5,5.0))",
             LongImageClipPrecisionDecider(SAME_ASPECT_RATIO).key
         )
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = LongImageClipPrecisionDecider()
+        val element11 = LongImageClipPrecisionDecider()
+        val element2 = LongImageClipPrecisionDecider(EXACTLY)
+        val element3 = LongImageClipPrecisionDecider(longImageDecider = DefaultLongImageDecider(3f, 6f))
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test

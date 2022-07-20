@@ -2,9 +2,6 @@ package com.github.panpf.sketch.test.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
-import com.github.panpf.sketch.resize.FixedScaleDecider
-import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.resize.Scale.START_CROP
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -80,12 +77,48 @@ class DefaultLongImageDeciderTest {
     }
 
     @Test
+    fun testEqualsAndHashCode() {
+        val element1 = DefaultLongImageDecider()
+        val element11 = DefaultLongImageDecider()
+        val element2 = DefaultLongImageDecider(smallRatioMultiple = 3f)
+        val element3 = DefaultLongImageDecider(bigRatioMultiple = 6f)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+    }
+
+    @Test
     fun testToString() {
         DefaultLongImageDecider().apply {
-            Assert.assertEquals("DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0)", toString())
+            Assert.assertEquals(
+                "DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0)",
+                toString()
+            )
         }
         DefaultLongImageDecider(4f, 10f).apply {
-            Assert.assertEquals("DefaultLongImageDecider(smallRatioMultiple=4.0, bigRatioMultiple=10.0)", toString())
+            Assert.assertEquals(
+                "DefaultLongImageDecider(smallRatioMultiple=4.0, bigRatioMultiple=10.0)",
+                toString()
+            )
         }
     }
 }

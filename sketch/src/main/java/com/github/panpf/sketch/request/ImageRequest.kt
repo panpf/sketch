@@ -74,7 +74,7 @@ interface ImageRequest {
     /** Used to cache bitmaps in memory and on disk */
     val cacheKey: String
     val definedOptions: ImageOptions
-    val globalOptions: ImageOptions?
+    val defaultOptions: ImageOptions?
 
     /**
      * The processing depth of the request.
@@ -283,7 +283,7 @@ interface ImageRequest {
                 ?: request.progressListener
             this.target = request.target
             this.lifecycle = request.lifecycle
-            this.defaultOptions = request.globalOptions
+            this.defaultOptions = request.defaultOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
             this.resizeSizeResolver = request.resizeSizeResolver
         }
@@ -815,7 +815,7 @@ interface ImageRequest {
                         progressListener = progressListener,
                         target = target,
                         lifecycle = lifecycle,
-                        globalOptions = defaultOptions,
+                        defaultOptions = defaultOptions,
                         definedOptions = definedOptions,
                         depth = depth,
                         parameters = parameters,
@@ -848,7 +848,7 @@ interface ImageRequest {
                         progressListener = progressListener,
                         target = target,
                         lifecycle = lifecycle,
-                        globalOptions = defaultOptions,
+                        defaultOptions = defaultOptions,
                         definedOptions = definedOptions,
                         depth = depth,
                         parameters = parameters,
@@ -881,7 +881,7 @@ interface ImageRequest {
                         progressListener = progressListener,
                         target = target,
                         lifecycle = lifecycle,
-                        globalOptions = defaultOptions,
+                        defaultOptions = defaultOptions,
                         definedOptions = definedOptions,
                         depth = depth,
                         parameters = parameters,

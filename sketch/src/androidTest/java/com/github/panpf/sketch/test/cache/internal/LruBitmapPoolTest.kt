@@ -13,6 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
 import org.junit.Test
@@ -84,6 +85,8 @@ class LruBitmapPoolTest {
     @Test
     fun testPut() {
         LruBitmapPool(10L * 1024 * 1024, allowedConfigs = setOf(ARGB_8888)).apply {
+            logger = Logger()
+
             Assert.assertEquals("0B", size.formatFileSize())
 
             putBitmap(1)
@@ -114,6 +117,8 @@ class LruBitmapPoolTest {
     @Test
     fun testGetDirty() {
         LruBitmapPool(10L * 1024 * 1024).apply {
+            logger = Logger()
+
             Assert.assertEquals("0B", size.formatFileSize())
             Assert.assertNull(getDirty(100, 100, ARGB_8888))
 
@@ -131,6 +136,8 @@ class LruBitmapPoolTest {
     @Test
     fun testGet() {
         LruBitmapPool(10L * 1024 * 1024).apply {
+            logger = Logger()
+
             Assert.assertEquals("0B", size.formatFileSize())
             Assert.assertNull(get(100, 100, ARGB_8888))
 
@@ -148,6 +155,8 @@ class LruBitmapPoolTest {
     @Test
     fun testGetOrCreate() {
         LruBitmapPool(10L * 1024 * 1024).apply {
+            logger = Logger()
+
             Assert.assertEquals("0B", size.formatFileSize())
             Assert.assertNotNull(getOrCreate(100, 100, ARGB_8888))
             Assert.assertEquals("0B", size.formatFileSize())
@@ -166,6 +175,8 @@ class LruBitmapPoolTest {
     @Test
     fun testTrim() {
         LruBitmapPool(10L * 1024 * 1024).apply {
+            logger = Logger()
+
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(1)
             putBitmap(2)
@@ -178,6 +189,8 @@ class LruBitmapPoolTest {
         }
 
         LruBitmapPool(10L * 1024 * 1024).apply {
+            logger = Logger()
+
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(1)
             putBitmap(2)
@@ -193,6 +206,8 @@ class LruBitmapPoolTest {
     @Test
     fun testClear() {
         LruBitmapPool(10L * 1024 * 1024).apply {
+            logger = Logger()
+
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(1)
             putBitmap(2)
@@ -203,6 +218,36 @@ class LruBitmapPoolTest {
             clear()
             Assert.assertEquals("0B", size.formatFileSize())
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = LruBitmapPool(100)
+        val element11 = LruBitmapPool(100)
+        val element2 = LruBitmapPool(200)
+        val element3 = LruBitmapPool(100, allowedConfigs = setOf(RGB_565, Bitmap.Config.ALPHA_8))
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test

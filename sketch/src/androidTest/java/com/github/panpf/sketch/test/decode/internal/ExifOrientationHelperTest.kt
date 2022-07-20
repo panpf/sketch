@@ -20,7 +20,6 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
 import com.github.panpf.sketch.test.utils.cornerB
@@ -28,6 +27,7 @@ import com.github.panpf.sketch.test.utils.cornerC
 import com.github.panpf.sketch.test.utils.cornerD
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
@@ -35,6 +35,17 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ExifOrientationHelperTest {
+
+    @Test
+    fun testConstructor() {
+        ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED).apply {
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+        }
+
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270).apply {
+            Assert.assertEquals(ExifInterface.ORIENTATION_ROTATE_270, exifOrientation)
+        }
+    }
 
     @Test
     fun testReadExifOrientation() {

@@ -2,7 +2,7 @@ package com.github.panpf.sketch.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
-import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.DefaultLongImageDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
@@ -106,11 +106,43 @@ class LongImageScaleDeciderTest {
         val element1 = LongImageScaleDecider(START_CROP, CENTER_CROP)
         val element11 = LongImageScaleDecider(START_CROP, CENTER_CROP)
         val element2 = LongImageScaleDecider(END_CROP, CENTER_CROP)
-        val other = FixedScaleDecider(END_CROP)
+        val element3 = LongImageScaleDecider(START_CROP, END_CROP)
+        val element4 = LongImageScaleDecider(
+            START_CROP,
+            CENTER_CROP,
+            longImageDecider = DefaultLongImageDecider(3f, 6f)
+        )
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element1, element4)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
+        Assert.assertNotSame(element2, element4)
+        Assert.assertNotSame(element3, element4)
+
         Assert.assertEquals(element1, element1)
         Assert.assertEquals(element1, element11)
         Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, other)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element1, element4)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element2, element4)
+        Assert.assertNotEquals(element3, element4)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element4.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element4.hashCode())
+        Assert.assertNotEquals(element3.hashCode(), element4.hashCode())
     }
 
     @Test

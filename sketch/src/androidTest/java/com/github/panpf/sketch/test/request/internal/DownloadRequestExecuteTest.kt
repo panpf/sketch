@@ -479,4 +479,28 @@ class DownloadRequestExecuteTest {
             Assert.assertTrue(this is DownloadResult.Success)
         }
     }
+
+    @Test
+    fun testExecuteAndEnqueue() {
+        val context = getTestContext()
+        val sketch = newSketch {
+            httpStack(TestHttpStack(context))
+        }
+
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+            resultCachePolicy(DISABLED)
+        }.let { request ->
+            runBlocking { request.execute(sketch) }
+        }.apply {
+            Assert.assertTrue(this is DownloadResult.Success)
+        }
+
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+            resultCachePolicy(DISABLED)
+        }.let { request ->
+            runBlocking { request.enqueue(sketch).job.await() }
+        }.apply {
+            Assert.assertTrue(this is DownloadResult.Success)
+        }
+    }
 }

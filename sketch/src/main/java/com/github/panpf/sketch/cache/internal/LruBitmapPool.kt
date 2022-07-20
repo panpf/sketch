@@ -168,7 +168,7 @@ class LruBitmapPool constructor(
         }
     }
 
-    private fun trimToSize(size: Long, caller: String? = null) {
+    private fun trimToSize(size: Long, caller: String) {
         synchronized(this) {
             while (this.size > size) {
                 val removed = strategy.removeLast()

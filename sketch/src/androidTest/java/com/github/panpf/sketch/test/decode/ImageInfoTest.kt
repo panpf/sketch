@@ -28,6 +28,61 @@ class ImageInfoTest {
     }
 
     @Test
+    fun testNewResult() {
+        val imageInfo = ImageInfo(300, 500, "image/jpeg", 0).apply {
+            Assert.assertEquals(300, width)
+            Assert.assertEquals(500, height)
+            Assert.assertEquals("image/jpeg", mimeType)
+            Assert.assertEquals(0, exifOrientation)
+        }
+
+        imageInfo.newImageInfo().apply {
+            Assert.assertNotSame(imageInfo, this)
+            Assert.assertEquals(imageInfo, this)
+            Assert.assertEquals(300, width)
+            Assert.assertEquals(500, height)
+            Assert.assertEquals("image/jpeg", mimeType)
+            Assert.assertEquals(0, exifOrientation)
+        }
+
+        imageInfo.newImageInfo(width = 200).apply {
+            Assert.assertNotSame(imageInfo, this)
+            Assert.assertNotEquals(imageInfo, this)
+            Assert.assertEquals(200, width)
+            Assert.assertEquals(500, height)
+            Assert.assertEquals("image/jpeg", mimeType)
+            Assert.assertEquals(0, exifOrientation)
+        }
+
+        imageInfo.newImageInfo(height = 400).apply {
+            Assert.assertNotSame(imageInfo, this)
+            Assert.assertNotEquals(imageInfo, this)
+            Assert.assertEquals(300, width)
+            Assert.assertEquals(400, height)
+            Assert.assertEquals("image/jpeg", mimeType)
+            Assert.assertEquals(0, exifOrientation)
+        }
+
+        imageInfo.newImageInfo(mimeType = "image/png").apply {
+            Assert.assertNotSame(imageInfo, this)
+            Assert.assertNotEquals(imageInfo, this)
+            Assert.assertEquals(300, width)
+            Assert.assertEquals(500, height)
+            Assert.assertEquals("image/png", mimeType)
+            Assert.assertEquals(0, exifOrientation)
+        }
+
+        imageInfo.newImageInfo(exifOrientation = 2).apply {
+            Assert.assertNotSame(imageInfo, this)
+            Assert.assertNotEquals(imageInfo, this)
+            Assert.assertEquals(300, width)
+            Assert.assertEquals(500, height)
+            Assert.assertEquals("image/jpeg", mimeType)
+            Assert.assertEquals(2, exifOrientation)
+        }
+    }
+
+    @Test
     fun testToString() {
         ImageInfo(57, 34, "image/jpeg", 0).apply {
             Assert.assertEquals(

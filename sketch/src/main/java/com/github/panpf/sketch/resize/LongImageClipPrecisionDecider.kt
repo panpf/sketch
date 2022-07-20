@@ -18,7 +18,6 @@ fun longImageClipPrecision(
  *
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO].
  */
-@Keep
 class LongImageClipPrecisionDecider constructor(
     val precision: Precision = Precision.SAME_ASPECT_RATIO,
     val longImageDecider: LongImageDecider = DefaultLongImageDecider(),

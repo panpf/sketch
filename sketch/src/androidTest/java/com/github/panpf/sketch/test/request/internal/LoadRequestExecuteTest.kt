@@ -25,8 +25,8 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.internal.resultCacheDataKey
 import com.github.panpf.sketch.decode.internal.exifOrientationName
+import com.github.panpf.sketch.decode.internal.resultCacheDataKey
 import com.github.panpf.sketch.decode.internal.samplingByTarget
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
@@ -986,7 +986,10 @@ class LoadRequestExecuteTest {
             }.let { runBlocking { sketch.execute(it) } }
                 .asOrNull<LoadResult.Success>()!!
                 .apply {
-                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageInfo.exifOrientation)
+                    Assert.assertEquals(
+                        ExifInterface.ORIENTATION_UNDEFINED,
+                        imageInfo.exifOrientation
+                    )
                     if (it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
                         || it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
                         || it.exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
@@ -1440,6 +1443,27 @@ class LoadRequestExecuteTest {
                 delay(2000)
                 deferred.await()
             }
+        }.apply {
+            Assert.assertTrue(this is LoadResult.Success)
+        }
+    }
+
+    @Test
+    fun testExecuteAndEnqueue() {
+        val context = getTestContext()
+
+        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            resultCachePolicy(DISABLED)
+        }.let { request ->
+            runBlocking { request.execute() }
+        }.apply {
+            Assert.assertTrue(this is LoadResult.Success)
+        }
+
+        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            resultCachePolicy(DISABLED)
+        }.let { request ->
+            runBlocking { request.enqueue().job.await() }
         }.apply {
             Assert.assertTrue(this is LoadResult.Success)
         }

@@ -31,7 +31,7 @@ import com.github.panpf.sketch.util.toHexString
  */
 class CountBitmap constructor(
     bitmap: Bitmap,
-    val sketch: Sketch,
+    private val sketch: Sketch,
     val imageUri: String,
     val requestKey: String,
     val requestCacheKey: String,
@@ -80,8 +80,10 @@ class CountBitmap constructor(
         if (displayed) {
             displayedCount++
             tryFree(caller = "$caller:displayed:true", pending = false)
-        } else if (displayedCount > 0) {
-            (displayedCount--).coerceAtLeast(0)
+        } else {
+            if (displayedCount > 0) {
+                displayedCount--
+            }
             tryFree(caller = "$caller:displayed:false", pending = false)
         }
     }
@@ -91,8 +93,10 @@ class CountBitmap constructor(
         if (cached) {
             cachedCount++
             tryFree(caller = "$caller:cached:true", pending = false)
-        } else if (cachedCount > 0) {
-            (cachedCount--).coerceAtLeast(0)
+        } else {
+            if (cachedCount > 0) {
+                cachedCount--
+            }
             tryFree(caller = "$caller:cached:false", pending = false)
         }
     }
@@ -104,8 +108,10 @@ class CountBitmap constructor(
         if (pending) {
             pendingCount++
             tryFree(caller = "$caller:pending:true", pending = true)
-        } else if (pendingCount > 0) {
-            (pendingCount--).coerceAtLeast(0)
+        } else {
+            if (pendingCount > 0) {
+                pendingCount--
+            }
             tryFree(caller = "$caller:pending:false", pending = true)
         }
     }

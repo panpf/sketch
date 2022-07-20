@@ -31,7 +31,7 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
         }
         return if (transformedList.isNotEmpty()) {
             require(!newBitmap.isRecycled)
-            result.newResult(newBitmap) {
+            result.newResult(bitmap = newBitmap) {
                 transformedList.forEach {
                     addTransformed(it)
                 }

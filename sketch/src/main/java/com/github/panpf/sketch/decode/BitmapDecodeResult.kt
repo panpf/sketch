@@ -15,15 +15,19 @@ data class BitmapDecodeResult constructor(
     val transformedList: List<String>? = null,
 ) {
 
-    fun newResult(bitmap: Bitmap, block: (Builder.() -> Unit)? = null): BitmapDecodeResult =
-        Builder(
-            bitmap = bitmap,
-            imageInfo = imageInfo,
-            dataFrom = dataFrom,
-            transformedList = transformedList?.toMutableList(),
-        ).apply {
-            block?.invoke(this)
-        }.build()
+    fun newResult(
+        bitmap: Bitmap = this.bitmap,
+        imageInfo: ImageInfo = this.imageInfo,
+        dataFrom: DataFrom = this.dataFrom,
+        block: (Builder.() -> Unit)? = null
+    ): BitmapDecodeResult = Builder(
+        bitmap = bitmap,
+        imageInfo = imageInfo,
+        dataFrom = dataFrom,
+        transformedList = transformedList?.toMutableList(),
+    ).apply {
+        block?.invoke(this)
+    }.build()
 
     override fun toString(): String =
         "BitmapDecodeResult(bitmap=${bitmap.toInfoString()}, " +
@@ -31,16 +35,12 @@ data class BitmapDecodeResult constructor(
                 "dataFrom=$dataFrom, " +
                 "transformedList=$transformedList)"
 
-    class Builder(
+    class Builder internal constructor(
         private val bitmap: Bitmap,
-        private var imageInfo: ImageInfo,
+        private val imageInfo: ImageInfo,
         private val dataFrom: DataFrom,
         private var transformedList: MutableList<String>? = null,
     ) {
-
-        fun imageInfo(imageInfo: ImageInfo): Builder = apply {
-            this.imageInfo = imageInfo
-        }
 
         fun addTransformed(transformed: String): Builder = apply {
             this.transformedList = (this.transformedList ?: LinkedList()).apply {

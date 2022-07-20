@@ -8,6 +8,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
@@ -32,6 +33,8 @@ class LruMemoryCacheTest {
     fun testSize() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
+            logger = sketch.logger
+
             Assert.assertEquals("0B", size.formatFileSize())
 
             putBitmap(sketch, "image1", 1)
@@ -46,6 +49,8 @@ class LruMemoryCacheTest {
     fun testPutRemoveGet() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
+            logger = sketch.logger
+
             Assert.assertNull(get("image1"))
             Assert.assertTrue(putBitmap(sketch, "image1", 1))
             Assert.assertNotNull(get("image1"))
@@ -70,6 +75,7 @@ class LruMemoryCacheTest {
     fun testLRU() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
+            logger = sketch.logger
             Assert.assertEquals("0B", size.formatFileSize())
 
             val bigBitmapSize = (sketch.memoryCache.maxSize.toFloat() / 1024 / 1024 * 0.8f).toInt()
@@ -131,6 +137,8 @@ class LruMemoryCacheTest {
     fun testTrim() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
+            logger = sketch.logger
+
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)
             putBitmap(sketch, "image2", 2)
@@ -151,6 +159,8 @@ class LruMemoryCacheTest {
         }
 
         LruMemoryCache(10L * 1024 * 1024).apply {
+            logger = sketch.logger
+
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)
             putBitmap(sketch, "image2", 2)
@@ -175,6 +185,8 @@ class LruMemoryCacheTest {
     fun testClear() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
+            logger = sketch.logger
+
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)
             putBitmap(sketch, "image2", 2)
@@ -203,6 +215,29 @@ class LruMemoryCacheTest {
             Assert.assertNotNull(editLock("image3"))
             Assert.assertNotNull(editLock("image4"))
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = LruMemoryCache(100)
+        val element11 = LruMemoryCache(100)
+        val element2 = LruMemoryCache(200)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 
     @Test

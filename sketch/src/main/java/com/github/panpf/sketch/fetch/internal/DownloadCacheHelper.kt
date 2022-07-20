@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.sync.Mutex
 import java.io.IOException
 
-suspend fun <R> safeAccessDownloadCache(
+suspend fun <R> lockDownloadCache(
     sketch: Sketch,
     request: ImageRequest,
     block: suspend (helper: DownloadCacheHelper?) -> R

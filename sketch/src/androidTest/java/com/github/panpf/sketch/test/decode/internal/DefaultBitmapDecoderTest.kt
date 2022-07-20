@@ -1,5 +1,7 @@
 package com.github.panpf.sketch.test.decode.internal
 
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.ADOBE_RGB
@@ -10,7 +12,9 @@ import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.FileDataSource
+import com.github.panpf.sketch.decode.internal.BitmapDecodeException
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
@@ -26,14 +30,18 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.toShortInfoString
+import com.github.panpf.tools4j.test.ktx.assertNoThrow
+import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.InputStream
 
 @RunWith(AndroidJUnit4::class)
 class DefaultBitmapDecoderTest {
@@ -47,7 +55,10 @@ class DefaultBitmapDecoderTest {
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',NORMAL)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -58,7 +69,10 @@ class DefaultBitmapDecoderTest {
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                Assert.assertEquals("ImageInfo(1080x1344,'image/webp',UNDEFINED)", imageInfo.toShortString())
+                Assert.assertEquals(
+                    "ImageInfo(1080x1344,'image/webp',UNDEFINED)",
+                    imageInfo.toShortString()
+                )
             } else {
                 Assert.assertEquals("ImageInfo(1080x1344,'',UNDEFINED)", imageInfo.toShortString())
             }
@@ -217,7 +231,10 @@ class DefaultBitmapDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             Assert.assertEquals("Bitmap(646x968,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',NORMAL)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
         }
@@ -236,7 +253,10 @@ class DefaultBitmapDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             Assert.assertEquals("Bitmap(323x484,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',NORMAL)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
         }
@@ -261,7 +281,10 @@ class DefaultBitmapDecoderTest {
             } else {
                 Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
             }
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',NORMAL)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -285,7 +308,10 @@ class DefaultBitmapDecoderTest {
             } else {
                 Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
             }
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',NORMAL)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -303,7 +329,10 @@ class DefaultBitmapDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f
             )
             Assert.assertEquals("Bitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',NORMAL)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -319,7 +348,10 @@ class DefaultBitmapDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f
             )
             Assert.assertEquals("Bitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',NORMAL)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -397,7 +429,10 @@ class DefaultBitmapDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             Assert.assertEquals("Bitmap(350x506,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(700x1012,'image/bmp',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(700x1012,'image/bmp',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNull(transformedList?.getResizeTransformed())
@@ -417,7 +452,10 @@ class DefaultBitmapDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             Assert.assertEquals("Bitmap(87x126,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(700x1012,'image/bmp',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(700x1012,'image/bmp',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNull(transformedList?.getResizeTransformed())
@@ -439,7 +477,10 @@ class DefaultBitmapDecoderTest {
                 500f.div(300).format(1)
             )
             Assert.assertEquals("Bitmap(350x210,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(700x1012,'image/bmp',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(700x1012,'image/bmp',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -459,7 +500,10 @@ class DefaultBitmapDecoderTest {
                 300f.div(500).format(1)
             )
             Assert.assertEquals("Bitmap(152x253,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(700x1012,'image/bmp',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(700x1012,'image/bmp',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
         }
@@ -476,7 +520,10 @@ class DefaultBitmapDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f
             )
             Assert.assertEquals("Bitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(700x1012,'image/bmp',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(700x1012,'image/bmp',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -492,7 +539,10 @@ class DefaultBitmapDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f
             )
             Assert.assertEquals("Bitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(700x1012,'image/bmp',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(700x1012,'image/bmp',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -573,7 +623,10 @@ class DefaultBitmapDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             Assert.assertEquals("Bitmap(646x968,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
         }
@@ -592,7 +645,10 @@ class DefaultBitmapDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             Assert.assertEquals("Bitmap(323x484,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
         }
@@ -617,7 +673,10 @@ class DefaultBitmapDecoderTest {
             } else {
                 Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
             }
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -641,7 +700,10 @@ class DefaultBitmapDecoderTest {
             } else {
                 Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
             }
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -659,7 +721,10 @@ class DefaultBitmapDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f
             )
             Assert.assertEquals("Bitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -675,7 +740,10 @@ class DefaultBitmapDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f
             )
             Assert.assertEquals("Bitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -757,7 +825,10 @@ class DefaultBitmapDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             Assert.assertEquals("Bitmap(968x646,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1936x1291,'image/jpeg',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
         }
@@ -777,7 +848,10 @@ class DefaultBitmapDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             Assert.assertEquals("Bitmap(484x323,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1936x1291,'image/jpeg',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
         }
@@ -803,7 +877,10 @@ class DefaultBitmapDecoderTest {
             } else {
                 Assert.assertEquals("Bitmap(484x290,ARGB_8888)", bitmap.toShortInfoString())
             }
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1936x1291,'image/jpeg',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -828,7 +905,10 @@ class DefaultBitmapDecoderTest {
             } else {
                 Assert.assertEquals("Bitmap(193x322,ARGB_8888)", bitmap.toShortInfoString())
             }
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1936x1291,'image/jpeg',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -847,7 +927,10 @@ class DefaultBitmapDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f
             )
             Assert.assertEquals("Bitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1936x1291,'image/jpeg',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -864,7 +947,10 @@ class DefaultBitmapDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f
             )
             Assert.assertEquals("Bitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(1936x1291,'image/jpeg',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
@@ -924,5 +1010,158 @@ class DefaultBitmapDecoderTest {
             fillBitmap.corners().toString()
         )
         Assert.assertNotEquals(endCropBitmap.corners().toString(), fillBitmap.corners().toString())
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = DefaultBitmapDecoder.Factory()
+        val element11 = DefaultBitmapDecoder.Factory()
+        val element2 = DefaultBitmapDecoder.Factory()
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertEquals(element1, element2)
+        Assert.assertEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertEquals(element2.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testError() {
+        val (context, sketch) = getTestContextAndNewSketch()
+
+        /* full */
+        assertThrow(BitmapDecodeException::class) {
+            val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                resize(500, 500, LESS_PIXELS)
+            }
+            val dataSource = runBlocking {
+                sketch.components.newFetcher(request).fetch().dataSource
+            }
+            sketch.bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
+            DefaultBitmapDecoder(sketch, request, FullTestDataSource(dataSource))
+                .let { runBlocking { it.decode() } }
+        }
+
+        assertNoThrow {
+            val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                resize(500, 500, LESS_PIXELS)
+            }
+            val dataSource = runBlocking {
+                sketch.components.newFetcher(request).fetch().dataSource
+            }
+            sketch.bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
+            DefaultBitmapDecoder(
+                sketch,
+                request,
+                FullTestDataSource(dataSource, enabledCount = true)
+            ).let { runBlocking { it.decode() } }
+        }
+
+        /* region */
+        assertThrow(BitmapDecodeException::class) {
+            val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                resize(500, 500)
+            }
+            val dataSource1 = runBlocking {
+                sketch.components.newFetcher(request1).fetch().dataSource
+            }
+            DefaultBitmapDecoder(sketch, request1, RegionTestDataSource(dataSource1, true))
+                .let { runBlocking { it.decode() } }
+        }
+
+        assertThrow(BitmapDecodeException::class) {
+            val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                resize(500, 500)
+            }
+            val dataSource1 = runBlocking {
+                sketch.components.newFetcher(request1).fetch().dataSource
+            }
+            DefaultBitmapDecoder(sketch, request1, RegionTestDataSource(dataSource1, false))
+                .let { runBlocking { it.decode() } }
+        }
+
+        assertNoThrow {
+            val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                resize(500, 500)
+            }
+            val dataSource1 = runBlocking {
+                sketch.components.newFetcher(request1).fetch().dataSource
+            }
+            DefaultBitmapDecoder(
+                sketch,
+                request1,
+                RegionTestDataSource(dataSource1, false, enabledCount = true)
+            ).let { runBlocking { it.decode() } }
+        }
+
+        assertThrow(BitmapDecodeException::class) {
+            val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                resize(500, 500)
+            }
+            val dataSource1 = runBlocking {
+                sketch.components.newFetcher(request1).fetch().dataSource
+            }
+            DefaultBitmapDecoder(sketch, request1, RegionTestDataSource(dataSource1, null))
+                .let { runBlocking { it.decode() } }
+        }
+    }
+
+    class FullTestDataSource(
+        private val fileDataSource: DataSource,
+        private val enabledCount: Boolean = false,
+    ) : DataSource by fileDataSource {
+
+        private var count = 0
+
+        override fun newInputStream(): InputStream {
+            val stackStringList = Exception().stackTraceToString().split("\n")
+            if (stackStringList.find { it.contains(".realDecodeFull(") } != null) {
+                count++
+                if (!enabledCount || count == 1) {
+                    throw IllegalArgumentException("Problem decoding into existing bitmap")
+                }
+            }
+            return fileDataSource.newInputStream()
+        }
+    }
+
+    class RegionTestDataSource(
+        private val fileDataSource: DataSource,
+        private val srcError: Boolean? = false,
+        private val enabledCount: Boolean = false,
+    ) : DataSource by fileDataSource {
+
+        private var count = 0
+
+        override fun newInputStream(): InputStream {
+            val stackStringList = Exception().stackTraceToString().split("\n")
+            if (stackStringList.find { it.contains(".realDecodeRegion(") } != null) {
+                when (srcError) {
+                    true -> {
+                        throw IllegalArgumentException("rectangle is outside the image srcRect")
+                    }
+                    false -> {
+                        count++
+                        if (!enabledCount || count == 1) {
+                            throw IllegalArgumentException("Problem decoding into existing bitmap")
+                        }
+                    }
+                    else -> {
+                        throw Exception()
+                    }
+                }
+            }
+            return fileDataSource.newInputStream()
+        }
     }
 }

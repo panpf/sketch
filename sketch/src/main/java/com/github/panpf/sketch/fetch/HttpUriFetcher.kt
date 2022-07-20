@@ -6,7 +6,7 @@ import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.internal.copyToWithActive
 import com.github.panpf.sketch.fetch.internal.getMimeType
-import com.github.panpf.sketch.fetch.internal.safeAccessDownloadCache
+import com.github.panpf.sketch.fetch.internal.lockDownloadCache
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
@@ -20,7 +20,7 @@ import java.io.IOException
 /**
  * Support 'http://pexels.com/sample.jpg', 'https://pexels.com/sample.jpg' uri
  */
-class HttpUriFetcher(
+open class HttpUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,
     val url: String
@@ -34,11 +34,11 @@ class HttpUriFetcher(
 
     override suspend fun fetch(): FetchResult {
         requiredWorkThread()
-        return safeAccessDownloadCache(sketch, request) { diskCacheHelper ->
+        return lockDownloadCache(sketch, request) { diskCacheHelper ->
             /* read cache */
             val resultFromCache = diskCacheHelper?.read()
             if (resultFromCache != null) {
-                return@safeAccessDownloadCache resultFromCache
+                return@lockDownloadCache resultFromCache
             }
 
             /* verify depth */

@@ -2,6 +2,7 @@ package com.github.panpf.sketch.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.decode.HeifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
@@ -90,5 +91,28 @@ class XmlDrawableBitmapDecoderTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = XmlDrawableBitmapDecoder.Factory()
+        val element11 = XmlDrawableBitmapDecoder.Factory()
+        val element2 = XmlDrawableBitmapDecoder.Factory()
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertEquals(element1, element2)
+        Assert.assertEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertEquals(element2.hashCode(), element11.hashCode())
     }
 }

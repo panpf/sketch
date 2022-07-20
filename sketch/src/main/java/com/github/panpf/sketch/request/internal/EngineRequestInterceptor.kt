@@ -68,7 +68,7 @@ class EngineRequestInterceptor : RequestInterceptor {
     private suspend fun download(sketch: Sketch, request: DownloadRequest): DownloadData {
         val fetcher = sketch.components.newFetcher(request)
         if (fetcher !is HttpUriFetcher) {
-            throw IllegalArgumentException("Download only support HTTP and HTTPS uri: ${request.uriString}")
+            throw IllegalArgumentException("DownloadRequest only support HTTP and HTTPS uri: ${request.uriString}")
         }
 
         val fetchResult = fetcher.fetch()
@@ -76,7 +76,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         return when (val source = fetchResult.dataSource) {
             is ByteArrayDataSource -> DownloadData.Bytes(source.data, dataFrom)
             is DiskCacheDataSource -> DownloadData.Cache(source.diskCacheSnapshot, dataFrom)
-            else -> throw UnsupportedOperationException("Unsupported DataSource for download: ${source::class.qualifiedName}")
+            else -> throw UnsupportedOperationException("Unsupported DataSource for DownloadRequest: ${source::class.qualifiedName}")
         }
     }
 

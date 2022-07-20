@@ -42,7 +42,7 @@ class DefaultDrawableDecoder(
             request.context.resources, countBitmap, decodeResult.dataFrom
         ).apply {
             withContext(Dispatchers.Main) {
-                requestContext.pendingCountDrawable(this@apply, "newLoad")
+                requestContext.pendingCountDrawable(this@apply, "newDecode")
             }
         }
         return DrawableDecodeResult(

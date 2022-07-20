@@ -430,7 +430,7 @@ class DisplayRequestTest {
         val uriString1 = newAssetUri("sample.jpeg")
 
         DisplayRequest(context1, uriString1).apply {
-            Assert.assertNull(globalOptions)
+            Assert.assertNull(defaultOptions)
         }
 
         val options = ImageOptions {
@@ -441,7 +441,7 @@ class DisplayRequestTest {
         DisplayRequest(context1, uriString1) {
             default(options)
         }.apply {
-            Assert.assertSame(options, globalOptions)
+            Assert.assertSame(options, defaultOptions)
         }
     }
 
