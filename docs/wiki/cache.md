@@ -13,7 +13,7 @@ Sketch 为了提高图片的加载速度引入了下载缓存、结果缓存、�
 * 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/download`，另外为了兼容多进程，当在非主进程使用 Sketch
   时缓存目录名称后会加上进程名，例如 "download:push"
 
-> 你可以在初始化 Sketch 时创建 [LruDiskCache] 并修改最大容量或缓存目录，然后通过 downloadCache() 方法注册
+> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForDownloadBuilder 创建并修改最大容量或缓存目录，然后通过 downloadCache() 方法注册
 
 ### 配置请求
 
@@ -67,7 +67,7 @@ try {
 * 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/result`，另外为了兼容多进程，当在非主进程使用 Sketch
   时缓存目录名称后会加上进程名，例如 "result:push"
 
-> 你可以在初始化 Sketch 时创建 [LruDiskCache] 并修改最大容量或缓存目录，然后通过 resultCache() 方法注册
+> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForResultBuilder 创建并修改最大容量或缓存目录，然后通过 resultCache() 方法注册
 
 ### 配置请求
 
