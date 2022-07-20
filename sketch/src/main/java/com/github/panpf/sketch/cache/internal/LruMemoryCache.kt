@@ -101,9 +101,9 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
             logger?.d(MODULE) {
                 val hitRatio = ((hitCount1.toFloat() / getCount1).format(2) * 100).roundToInt()
                 if (this != null) {
-                    "get. hit. hit rate $hitRatio%. ${this.info}/${this.bitmap!!.toHexString()}. $key"
+                    "get. hit($hitRatio%). ${this.info}/${this.bitmap!!.toHexString()}. $key"
                 } else {
-                    "get. miss. hit rate $hitRatio%. $key"
+                    "get. miss($hitRatio%). $key"
                 }
             }
         }

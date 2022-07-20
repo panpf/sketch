@@ -122,9 +122,9 @@ class LruBitmapPool constructor(
                     val hitRatio = ((hitCount.toFloat() / getCount).format(2) * 100).roundToInt()
                     val key = strategy.logBitmap(width, height, config)
                     if (this != null) {
-                        "get. hit. hit rate $hitRatio%. ${this.logString}. ${size.formatFileSize()}. $key"
+                        "get. hit($hitRatio%). ${this.logString}. ${size.formatFileSize()}. $key"
                     } else {
-                        "get. miss. hit rate $hitRatio%. ${size.formatFileSize()}. $key"
+                        "get. miss($hitRatio%). ${size.formatFileSize()}. $key"
                     }
                 }
             }
