@@ -24,6 +24,8 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.transform.asPostProcessor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
 
 /**
@@ -121,7 +123,9 @@ abstract class BaseAnimatedImageDrawableDecoder(
             val onStart = request.animationStartCallback
             val onEnd = request.animationEndCallback
             if (onStart != null || onEnd != null) {
-                registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                withContext(Dispatchers.Main) {
+                    registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                }
             }
         }
         return DrawableDecodeResult(
