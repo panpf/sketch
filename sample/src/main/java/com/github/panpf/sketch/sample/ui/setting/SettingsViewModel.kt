@@ -194,7 +194,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
         add(
             SwitchMenuFlow(
                 title = "Memory Cache",
-                desc = "%s/%s（Long Click Clear）".format(
+                desc = "%s/%s（Long Click Clean）".format(
                     sketch.memoryCache.size.formatFileSize(0, false, true),
                     sketch.memoryCache.maxSize.formatFileSize(0, false, true)
                 ),
