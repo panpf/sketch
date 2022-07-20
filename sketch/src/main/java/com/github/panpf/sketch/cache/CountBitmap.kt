@@ -18,7 +18,6 @@ package com.github.panpf.sketch.cache
 import android.graphics.Bitmap
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.logString
@@ -37,7 +36,6 @@ class CountBitmap constructor(
     val requestKey: String,
     val requestCacheKey: String,
     val imageInfo: ImageInfo,
-    @ExifOrientation val imageExifOrientation: Int,
     val transformedList: List<String>?,
 ) {
 
@@ -64,7 +62,7 @@ class CountBitmap constructor(
             imageInfo.width,
             imageInfo.height,
             imageInfo.mimeType,
-            exifOrientationName(imageExifOrientation),
+            exifOrientationName(imageInfo.exifOrientation),
             bitmap.width,
             bitmap.height,
             bitmap.config,

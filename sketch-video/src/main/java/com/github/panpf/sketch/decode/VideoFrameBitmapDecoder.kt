@@ -56,21 +56,15 @@ class VideoFrameBitmapDecoder(
         }
         try {
             val imageInfo = readImageInfo(mediaMetadataRetriever)
-            val exifOrientation = if (!request.ignoreExifOrientation) {
-                readExifOrientation(mediaMetadataRetriever)
-            } else {
-                ExifInterface.ORIENTATION_UNDEFINED
-            }
             return realDecode(
                 request = request,
                 dataFrom = dataSource.dataFrom,
                 imageInfo = imageInfo,
-                exifOrientation = exifOrientation,
                 decodeFull = {
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it)
                 },
                 decodeRegion = null
-            ).applyExifOrientation(sketch.bitmapPool, request.ignoreExifOrientation)
+            ).applyExifOrientation(sketch.bitmapPool)
                 .applyResize(sketch, request.resize)
         } finally {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -90,7 +84,12 @@ class VideoFrameBitmapDecoder(
             val message = "Invalid video size. size=${srcWidth}x${srcHeight}"
             throw BitmapDecodeException(message)
         }
-        return ImageInfo(srcWidth, srcHeight, mimeType)
+        val exifOrientation = if (!request.ignoreExifOrientation) {
+            readExifOrientation(mediaMetadataRetriever)
+        } else {
+            ExifInterface.ORIENTATION_UNDEFINED
+        }
+        return ImageInfo(srcWidth, srcHeight, mimeType, exifOrientation)
     }
 
     private fun readExifOrientation(mediaMetadataRetriever: MediaMetadataRetriever): Int =

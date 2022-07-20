@@ -189,94 +189,71 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
     }
 
     private fun makeCacheMenuList(): List<Any> = buildList {
+        val sketch = application1.sketch
+
         add(
             SwitchMenuFlow(
-                title = "Bitmap Memory Cache",
-                desc = null,
+                title = "Memory Cache",
+                desc = "%s/%s（Long Click Clear）".format(
+                    sketch.memoryCache.size.formatFileSize(0, false, true),
+                    sketch.memoryCache.maxSize.formatFileSize(0, false, true)
+                ),
                 data = prefsService.disabledBitmapMemoryCache,
-                reverse = true
+                reverse = true,
+                onLongClick = {
+                    sketch.memoryCache.clear()
+                    updateList()
+                }
+            )
+        )
+
+        add(
+            SwitchMenuFlow(
+                title = "Result Cache",
+                desc = "%s/%s（Long Click Clean）".format(
+                    sketch.resultCache.size.formatFileSize(0, false, true),
+                    sketch.resultCache.maxSize.formatFileSize(0, false, true)
+                ),
+                data = prefsService.disabledBitmapResultCache,
+                reverse = true,
+                onLongClick = {
+                    sketch.resultCache.clear()
+                    updateList()
+                }
+            )
+        )
+
+        add(
+            SwitchMenuFlow(
+                title = "Download Cache",
+                desc = "%s/%s（Long Click Clean）".format(
+                    sketch.downloadCache.size.formatFileSize(0, false, true),
+                    sketch.downloadCache.maxSize.formatFileSize(0, false, true)
+                ),
+                data = prefsService.disabledDownloadCache,
+                reverse = true,
+                onLongClick = {
+                    sketch.downloadCache.clear()
+                    updateList()
+                }
             )
         )
 
         add(
             SwitchMenuFlow(
                 title = "Bitmap Pool",
-                desc = null,
+                desc = "%s/%s（Long Click Clean）".format(
+                    sketch.bitmapPool.size.formatFileSize(0, false, true),
+                    sketch.bitmapPool.maxSize.formatFileSize(0, false, true)
+                ),
                 data = prefsService.disallowReuseBitmap,
-                reverse = true
+                reverse = true,
+                onLongClick = {
+                    sketch.bitmapPool.clear()
+                    updateList()
+                }
             )
         )
-
-        add(
-            SwitchMenuFlow(
-                title = "Bitmap Result Disk Cache",
-                desc = null,
-                data = prefsService.disabledBitmapResultCache,
-                reverse = true
-            )
-        )
-
-        add(
-            SwitchMenuFlow(
-                title = "Download Disk Cache",
-                desc = null,
-                data = prefsService.disabledDownloadCache,
-                reverse = true
-            )
-        )
-
-        val sketch = application1.sketch
-        add(InfoMenu(
-            title = "Memory Cache Statistics",
-            desc = "Click clear",
-            info = "%s/%s".format(
-                sketch.memoryCache.size.formatFileSize(0, false, true),
-                sketch.memoryCache.maxSize.formatFileSize(0, false, true)
-            ),
-            onClick = {
-                sketch.memoryCache.clear()
-                updateList()
-            }
-        ))
-
-        add(InfoMenu(
-            title = "Bitmap Pool Statistics",
-            desc = "Click clear",
-            info = "%s/%s".format(
-                sketch.bitmapPool.size.formatFileSize(0, false, true),
-                sketch.bitmapPool.maxSize.formatFileSize(0, false, true)
-            ),
-            onClick = {
-                sketch.bitmapPool.clear()
-                updateList()
-            }
-        ))
-
-        add(InfoMenu(
-            "Download Disk Cache Statistics",
-            "Click clear",
-            info = "%s/%s".format(
-                sketch.downloadCache.size.formatFileSize(0, false, true),
-                sketch.downloadCache.maxSize.formatFileSize(0, false, true)
-            ),
-            onClick = {
-                sketch.downloadCache.clear()
-                updateList()
-            }
-        ))
-
-        add(InfoMenu(
-            "Result Disk Cache Statistics",
-            "Click clear",
-            info = "%s/%s".format(
-                sketch.resultCache.size.formatFileSize(0, false, true),
-                sketch.resultCache.maxSize.formatFileSize(0, false, true)
-            ),
-            onClick = {
-                sketch.resultCache.clear()
-                updateList()
-            }
-        ))
     }
 
     private fun makeOtherMenuList(): List<Any> = buildList {

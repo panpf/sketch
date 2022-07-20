@@ -27,7 +27,6 @@ import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.computeByteCount
 
@@ -37,7 +36,6 @@ class SketchAnimatableDrawable constructor(
     override val requestKey: String,
     override val requestCacheKey: String,
     override val imageInfo: ImageInfo,
-    override val imageExifOrientation: Int,
     override val dataFrom: DataFrom,
     override val transformedList: List<String>?,
     private val animatableDrawable: Drawable,
@@ -166,7 +164,6 @@ class SketchAnimatableDrawable constructor(
     override fun toString(): String =
         animatableDrawableName +
                 "(" + imageInfo.toShortString() +
-                "," + exifOrientationName(imageExifOrientation) +
                 "," + dataFrom +
                 "," + bitmapInfo.toShortString() +
                 "," + transformedList +
@@ -182,7 +179,6 @@ class SketchAnimatableDrawable constructor(
                 requestKey = requestKey,
                 requestCacheKey = requestCacheKey,
                 imageInfo = imageInfo,
-                imageExifOrientation = imageExifOrientation,
                 dataFrom = dataFrom,
                 transformedList = transformedList,
                 animatableDrawable = mutateDrawable,

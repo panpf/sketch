@@ -24,7 +24,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
-import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
@@ -33,7 +32,6 @@ import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
 import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
-import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.LoadRequest
@@ -52,7 +50,7 @@ fun createTileDecoder(
     context: Context,
     sketch: Sketch,
     imageUri: String,
-    disabledExifOrientation: Boolean
+    ignoreExifOrientation: Boolean
 ): TileDecoder? {
     requiredWorkThread()
 
@@ -62,14 +60,10 @@ fun createTileDecoder(
         fetch.fetch()
     }
 
-    val imageInfo = fetchResult.dataSource.readImageInfoWithBitmapFactoryOrNull()
-        ?: throw Exception("Unsupported image format.  $imageUri")
-    val exifOrientation = if (!disabledExifOrientation) {
-        fetchResult.dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
-    } else {
-        ExifInterface.ORIENTATION_UNDEFINED
-    }
-    val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
+    val imageInfo =
+        fetchResult.dataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrientation)
+            ?: throw Exception("Unsupported image format.  $imageUri")
+    val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val imageSize =
         exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
     val imageFormat = mimeTypeToImageFormat(imageInfo.mimeType)
@@ -80,7 +74,12 @@ fun createTileDecoder(
     return TileDecoder(
         sketch = sketch,
         imageUri = imageUri,
-        imageInfo = ImageInfo(imageSize.width, imageSize.height, imageInfo.mimeType),
+        imageInfo = ImageInfo(
+            imageSize.width,
+            imageSize.height,
+            imageInfo.mimeType,
+            imageInfo.exifOrientation
+        ),
         exifOrientationHelper = exifOrientationHelper,
         dataSource = fetchResult.dataSource,
     )

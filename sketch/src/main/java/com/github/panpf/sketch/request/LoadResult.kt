@@ -2,7 +2,6 @@ package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.SketchException
 
@@ -12,7 +11,6 @@ sealed interface LoadResult : ImageResult {
         override val request: LoadRequest,
         val bitmap: Bitmap,
         val imageInfo: ImageInfo,
-        @ExifOrientation val imageExifOrientation: Int,
         val dataFrom: DataFrom,
         val transformedList: List<String>?,
     ) : LoadResult, ImageResult.Success

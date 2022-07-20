@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.test.decode.internal
 
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
@@ -72,10 +71,9 @@ class XmlDrawableBitmapDecoderTest {
                 bitmap.toShortInfoString()
             )
             Assert.assertEquals(
-                "ImageInfo(${50.dp2px}x${40.dp2px},'image/android-xml')",
+                "ImageInfo(${50.dp2px}x${40.dp2px},'image/android-xml',UNDEFINED)",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -87,7 +85,8 @@ class XmlDrawableBitmapDecoderTest {
             }
             assertThrow(BitmapDecodeException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!
+                        .decode()
                 }
             }
         }

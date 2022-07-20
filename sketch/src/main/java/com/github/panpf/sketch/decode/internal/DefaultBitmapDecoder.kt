@@ -3,7 +3,6 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
-import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -32,26 +31,20 @@ open class DefaultBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
-        val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow()
-        val exifOrientation = if (!request.ignoreExifOrientation) {
-            dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
-        } else {
-            ExifInterface.ORIENTATION_UNDEFINED
-        }
+        val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow(request.ignoreExifOrientation)
         val canDecodeRegion = mimeTypeToImageFormat(imageInfo.mimeType)
             ?.supportBitmapRegionDecoder() == true
         return realDecode(
             request = request,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
-            exifOrientation = exifOrientation,
             decodeFull = { decodeConfig ->
                 realDecodeFull(imageInfo, decodeConfig)
             },
             decodeRegion = if (canDecodeRegion) { srcRect, decodeConfig ->
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
-        ).applyExifOrientation(bitmapPool, request.ignoreExifOrientation)
+        ).applyExifOrientation(bitmapPool)
             .applyResize(sketch, request.resize)
     }
 

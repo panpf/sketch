@@ -73,9 +73,9 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             val imageInfo = ImageInfo(
                 width = metaDataJSONObject.getInt("width"),
                 height = metaDataJSONObject.getInt("height"),
-                mimeType = metaDataJSONObject.getString("mimeType")
+                mimeType = metaDataJSONObject.getString("mimeType"),
+                exifOrientation = metaDataJSONObject.getInt("exifOrientation"),
             )
-            val exifOrientation = metaDataJSONObject.getInt("exifOrientation")
             val transformedList =
                 metaDataJSONObject.optJSONArray("transformedList")?.let { jsonArray ->
                     (0 until jsonArray.length()).map { index ->
@@ -85,7 +85,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
 
             val dataSource =
                 DiskCacheDataSource(sketch, request, RESULT_CACHE, bitmapDataDiskCacheSnapshot)
-            val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory()
+            val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory(true)
             val options = request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
                 .toBitmapOptions()
             if (!request.disallowReuseBitmap) {
@@ -97,7 +97,6 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                 BitmapDecodeResult(
                     bitmap = bitmap,
                     imageInfo = imageInfo,
-                    imageExifOrientation = exifOrientation,
                     dataFrom = RESULT_CACHE,
                     transformedList = transformedList
                 )
@@ -131,7 +130,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                     put("width", result.imageInfo.width)
                     put("height", result.imageInfo.height)
                     put("mimeType", result.imageInfo.mimeType)
-                    put("exifOrientation", result.imageExifOrientation)
+                    put("exifOrientation", result.imageInfo.exifOrientation)
                     put("transformedList", result.transformedList?.let { list ->
                         JSONArray().apply {
                             list.forEach { transformed ->

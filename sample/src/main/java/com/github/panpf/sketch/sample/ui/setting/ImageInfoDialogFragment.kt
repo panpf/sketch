@@ -52,7 +52,7 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             if (sketchDrawable != null) {
                 uri1 = sketchDrawable.imageUri
                 imageInfo = sketchDrawable.imageInfo.run {
-                    "${width}x${height}, ${mimeType}, ${exifOrientationName(sketchDrawable.imageExifOrientation)}"
+                    "${width}x${height}, ${mimeType}, ${exifOrientationName(exifOrientation)}"
                 }
 
                 val keyUri = sketchDrawable.requestKey.toUri()

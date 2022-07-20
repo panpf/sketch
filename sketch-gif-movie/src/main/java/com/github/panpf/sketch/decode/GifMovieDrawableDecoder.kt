@@ -81,14 +81,14 @@ class GifMovieDrawableDecoder constructor(
             setAnimatedTransformation(request.animatedTransformation)
         }
 
-        val imageInfo = ImageInfo(width, height, ImageFormat.GIF.mimeType)
+        val imageInfo =
+            ImageInfo(width, height, ImageFormat.GIF.mimeType, ExifInterface.ORIENTATION_UNDEFINED)
 
         val animatableDrawable = SketchAnimatableDrawable(
             imageUri = request.uriString,
             requestKey = request.key,
             requestCacheKey = request.cacheKey,
             imageInfo = imageInfo,
-            imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = null,
             animatableDrawable = movieDrawable,
@@ -105,7 +105,6 @@ class GifMovieDrawableDecoder constructor(
         return DrawableDecodeResult(
             drawable = animatableDrawable,
             imageInfo = imageInfo,
-            imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = null,
         )

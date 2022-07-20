@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.gif.movie.test.decode
 
 import android.os.Build
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -96,10 +95,9 @@ class GifMovieDrawableDecoderTest {
         val fetchResult = sketch.components.newFetcher(request).let { runBlocking { it.fetch() } }
         factory.create(sketch, request, RequestContext(request), fetchResult)!!
             .let { runBlocking { it.decode() } }.apply {
-                Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
+                Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
                 Assert.assertEquals(480, this.drawable.intrinsicHeight)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val movieDrawable =
@@ -116,10 +114,9 @@ class GifMovieDrawableDecoderTest {
         val fetchResult1 = sketch.components.newFetcher(request1).let { runBlocking { it.fetch() } }
         factory.create(sketch, request1, RequestContext(request1), fetchResult1)!!
             .let { runBlocking { it.decode() } }.apply {
-                Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
+                Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
                 Assert.assertEquals(480, this.drawable.intrinsicHeight)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val movieDrawable =

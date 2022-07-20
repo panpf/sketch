@@ -29,8 +29,6 @@ interface SketchDrawable {
 
     val imageInfo: ImageInfo
 
-    val imageExifOrientation: Int
-
     val dataFrom: DataFrom
 
     val transformedList: List<String>?

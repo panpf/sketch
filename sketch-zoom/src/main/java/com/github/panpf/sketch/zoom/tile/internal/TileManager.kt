@@ -259,7 +259,6 @@ class TileManager constructor(
                             requestKey = memoryCacheKey,
                             requestCacheKey = memoryCacheKey,
                             imageInfo = decoder.imageInfo,
-                            imageExifOrientation = decoder.exifOrientationHelper.exifOrientation,
                             transformedList = null,
                         )
                         memoryCache.put(memoryCacheKey, newCountBitmap)

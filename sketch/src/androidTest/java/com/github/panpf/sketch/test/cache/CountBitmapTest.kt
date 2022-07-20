@@ -55,9 +55,9 @@ class CountBitmapTest {
             "image1",
             100,
             100,
-            imageInfo = ImageInfo(100, 100, "image/png")
+            imageInfo = ImageInfo(100, 100, "image/png", 0)
         ).apply {
-            Assert.assertEquals(ImageInfo(100, 100, "image/png"), imageInfo)
+            Assert.assertEquals(ImageInfo(100, 100, "image/png", 0), imageInfo)
         }
 
         createCountBitmap(
@@ -65,9 +65,9 @@ class CountBitmapTest {
             "image2",
             100,
             150,
-            imageInfo = ImageInfo(100, 150, "image/gif")
+            imageInfo = ImageInfo(100, 150, "image/gif", 0)
         ).apply {
-            Assert.assertEquals(ImageInfo(100, 150, "image/gif"), imageInfo)
+            Assert.assertEquals(ImageInfo(100, 150, "image/gif", 0), imageInfo)
         }
     }
 
@@ -297,7 +297,7 @@ class CountBitmapTest {
         width: Int,
         height: Int,
         requestKey: String = imageUri,
-        imageInfo: ImageInfo = ImageInfo(width, height, "image/jpeg"),
+        imageInfo: ImageInfo = ImageInfo(width, height, "image/jpeg", 0),
         transformedList: List<String>? = null
     ): CountBitmap = CountBitmap(
         bitmap = Bitmap.createBitmap(width, height, ARGB_8888),
@@ -306,7 +306,6 @@ class CountBitmapTest {
         requestKey = requestKey,
         requestCacheKey = requestKey,
         imageInfo = imageInfo,
-        imageExifOrientation = 0,
         transformedList = transformedList,
     )
 }

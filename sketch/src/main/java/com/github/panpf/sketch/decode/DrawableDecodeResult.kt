@@ -9,7 +9,6 @@ import com.github.panpf.sketch.datasource.DataFrom
 data class DrawableDecodeResult constructor(
     val drawable: Drawable,
     val imageInfo: ImageInfo,
-    @ExifOrientation val imageExifOrientation: Int,
     val dataFrom: DataFrom,
     val transformedList: List<String>?
 )

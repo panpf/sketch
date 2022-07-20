@@ -80,13 +80,17 @@ class GifDrawableDrawableDecoder(
 
         val transformedList =
             if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
-        val imageInfo = ImageInfo(imageWidth, imageHeight, ImageFormat.GIF.mimeType)
+        val imageInfo = ImageInfo(
+            imageWidth,
+            imageHeight,
+            ImageFormat.GIF.mimeType,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
         val animatableDrawable = SketchAnimatableDrawable(
             imageUri = this.request.uriString,
             requestKey = this.request.key,
             requestCacheKey = this.request.cacheKey,
             imageInfo = imageInfo,
-            imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
             animatableDrawable = gifDrawable,
@@ -103,7 +107,6 @@ class GifDrawableDrawableDecoder(
         return DrawableDecodeResult(
             drawable = animatableDrawable,
             imageInfo = imageInfo,
-            imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
         )

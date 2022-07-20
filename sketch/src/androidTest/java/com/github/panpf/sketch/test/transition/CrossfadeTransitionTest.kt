@@ -42,8 +42,7 @@ class CrossfadeTransitionTest {
         val result = DisplayResult.Success(
             request = request,
             drawable = resultDrawable,
-            imageInfo = ImageInfo(100, 200, "image/jpeg"),
-            imageExifOrientation = 0,
+            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null
         )
@@ -93,8 +92,7 @@ class CrossfadeTransitionTest {
         val success = DisplayResult.Success(
             request = request,
             drawable = resultDrawable,
-            imageInfo = ImageInfo(100, 200, "image/jpeg"),
-            imageExifOrientation = 0,
+            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null
         )
@@ -131,8 +129,7 @@ class CrossfadeTransitionTest {
             imageViewTarget, DisplayResult.Success(
                 request = request,
                 drawable = imageViewTarget.drawable!!,
-                imageInfo = ImageInfo(100, 200, "image/jpeg"),
-                imageExifOrientation = 0,
+                imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
                 dataFrom = LOCAL,
                 transformedList = null
             )
@@ -178,8 +175,7 @@ class CrossfadeTransitionTest {
         val successResult = DisplayResult.Success(
             request = request,
             drawable = resultDrawable,
-            imageInfo = ImageInfo(100, 200, "image/jpeg"),
-            imageExifOrientation = 0,
+            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null
         )
@@ -195,8 +191,7 @@ class CrossfadeTransitionTest {
         val fromMemoryCacheSuccessResult = DisplayResult.Success(
             request = request,
             drawable = resultDrawable,
-            imageInfo = ImageInfo(100, 200, "image/jpeg"),
-            imageExifOrientation = 0,
+            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = MEMORY_CACHE,
             transformedList = null
         )

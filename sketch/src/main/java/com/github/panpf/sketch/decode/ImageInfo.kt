@@ -15,13 +15,20 @@
  */
 package com.github.panpf.sketch.decode
 
-// todo merge imageExifOrientation
+import com.github.panpf.sketch.decode.internal.exifOrientationName
+
 data class ImageInfo constructor(
     val width: Int,
     val height: Int,
     val mimeType: String,
+    @ExifOrientation val exifOrientation: Int,
 ) {
-    override fun toString(): String = "ImageInfo(width=$width, height=$height, mimeType='$mimeType')"
+    override fun toString(): String {
+        val exifOrientationName = exifOrientationName(exifOrientation)
+        return "ImageInfo(width=$width, height=$height, mimeType='$mimeType', exifOrientation=$exifOrientationName)"
+    }
 
-    fun toShortString(): String = "ImageInfo(${width}x$height,'$mimeType')"
+
+    fun toShortString(): String =
+        "ImageInfo(${width}x$height,'$mimeType',${exifOrientationName(exifOrientation)})"
 }

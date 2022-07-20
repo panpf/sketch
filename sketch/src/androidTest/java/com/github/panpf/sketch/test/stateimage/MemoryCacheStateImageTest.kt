@@ -50,8 +50,7 @@ class MemoryCacheStateImageTest {
                 imageUri = request.uriString,
                 requestKey = request.key,
                 requestCacheKey = request.cacheKey,
-                imageInfo = ImageInfo(100, 100, "image/jpeg"),
-                imageExifOrientation = 0,
+                imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                 transformedList = null,
             )
         )

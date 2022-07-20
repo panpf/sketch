@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.gif.koral.test.decode
 
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -92,10 +91,9 @@ class GifDrawableDrawableDecoderTest {
         val fetchResult = sketch.components.newFetcher(request).let { runBlocking { it.fetch() } }
         factory.create(sketch, request, RequestContext(request), fetchResult)!!
             .let { runBlocking { it.decode() } }.apply {
-                Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
+                Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
                 Assert.assertEquals(480, this.drawable.intrinsicHeight)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val gifDrawable =
@@ -112,10 +110,9 @@ class GifDrawableDrawableDecoderTest {
         val fetchResult1 = sketch.components.newFetcher(request1).let { runBlocking { it.fetch() } }
         factory.create(sketch, request1, RequestContext(request1), fetchResult1)!!
             .let { runBlocking { it.decode() } }.apply {
-                Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
+                Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
                 Assert.assertEquals(240, this.drawable.intrinsicWidth)
                 Assert.assertEquals(240, this.drawable.intrinsicHeight)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
                 val gifDrawable =

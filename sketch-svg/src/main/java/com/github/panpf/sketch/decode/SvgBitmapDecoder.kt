@@ -42,7 +42,6 @@ class SvgBitmapDecoder(
             request = request,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
-            exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             decodeFull = { decodeConfig: DecodeConfig ->
                 realDecodeFull(imageInfo, decodeConfig, svg)
             },
@@ -61,7 +60,7 @@ class SvgBitmapDecoder(
             width = svg.documentWidth.toInt()
             height = svg.documentHeight.toInt()
         }
-        return ImageInfo(width, height, MIME_TYPE)
+        return ImageInfo(width, height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
     }
 
     private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig, svg: SVG): Bitmap {

@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.test.decode
 
 import android.os.Build
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -105,9 +104,8 @@ class WebpAnimatedDrawableDecoderTest {
         val fetchResult = sketch.components.newFetcher(request).let { runBlocking { it.fetch() } }
         factory.create(sketch, request, RequestContext(request), fetchResult)!!
             .let { runBlocking { it.decode() } }.apply {
-                Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
+                Assert.assertEquals(ImageInfo(480, 270, "image/webp", 0), this.imageInfo)
                 Assert.assertEquals(Size(480, 270), this.drawable.intrinsicSize)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val animatedImageDrawable =
@@ -122,9 +120,8 @@ class WebpAnimatedDrawableDecoderTest {
         val fetchResult1 = sketch.components.newFetcher(request1).let { runBlocking { it.fetch() } }
         factory.create(sketch, request1, RequestContext(request1), fetchResult1)!!
             .let { runBlocking { it.decode() } }.apply {
-                Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
+                Assert.assertEquals(ImageInfo(480, 270, "image/webp", 0), this.imageInfo)
                 Assert.assertEquals(Size(240, 135), this.drawable.intrinsicSize)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, this.imageExifOrientation)
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
                 val animatedImageDrawable =

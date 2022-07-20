@@ -46,7 +46,6 @@ class MemoryCacheInterceptor : RequestInterceptor {
                 return DrawableDecodeResult(
                     drawable = countDrawable,
                     imageInfo = cachedCountBitmap.imageInfo,
-                    imageExifOrientation = cachedCountBitmap.imageExifOrientation,
                     dataFrom = DataFrom.MEMORY_CACHE,
                     transformedList = cachedCountBitmap.transformedList,
                 ).toDisplayData()

@@ -76,7 +76,12 @@ abstract class BaseAnimatedImageDrawableDecoder(
         var imageInfo: ImageInfo? = null
         var inSampleSize = 1
         val drawable = ImageDecoder.decodeDrawable(source) { decoder, info, _ ->
-            imageInfo = ImageInfo(info.size.width, info.size.height, info.mimeType)
+            imageInfo = ImageInfo(
+                info.size.width,
+                info.size.height,
+                info.mimeType,
+                ExifInterface.ORIENTATION_UNDEFINED
+            )
             val resize = request.resize
             if (resize != null) {
                 inSampleSize = calculateSampleSize(
@@ -106,7 +111,6 @@ abstract class BaseAnimatedImageDrawableDecoder(
             requestKey = request.key,
             requestCacheKey = request.cacheKey,
             imageInfo = imageInfo!!,
-            imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
             // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
@@ -123,7 +127,6 @@ abstract class BaseAnimatedImageDrawableDecoder(
         return DrawableDecodeResult(
             drawable = animatableDrawable,
             imageInfo = imageInfo!!,
-            imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList
         )

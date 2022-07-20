@@ -7,6 +7,7 @@ interface SwitchMenu {
     val title: String
     val desc: String?
     var isChecked: Boolean
+    val onLongClick: (() -> Unit)?
 }
 
 class SwitchMenuFlow constructor(
@@ -14,6 +15,7 @@ class SwitchMenuFlow constructor(
     override val desc: String?,
     private val data: BooleanMmkvData,
     private val reverse: Boolean = false,
+    override val onLongClick: (() -> Unit)? = null,
 ) : SwitchMenu {
 
     override var isChecked: Boolean

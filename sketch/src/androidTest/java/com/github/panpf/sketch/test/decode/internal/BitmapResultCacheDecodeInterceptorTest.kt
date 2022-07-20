@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.test.decode.internal
 
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -58,10 +57,9 @@ class BitmapResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.bitmap.width)
             Assert.assertEquals(484, result.bitmap.height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
+                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
                 result.imageInfo.toString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
@@ -74,10 +72,9 @@ class BitmapResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.bitmap.width)
             Assert.assertEquals(484, result.bitmap.height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
+                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
                 result.imageInfo.toString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
             Assert.assertEquals(DataFrom.RESULT_CACHE, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
@@ -92,10 +89,9 @@ class BitmapResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.bitmap.width)
             Assert.assertEquals(484, result.bitmap.height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
+                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
                 result.imageInfo.toString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
@@ -110,10 +106,9 @@ class BitmapResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.bitmap.width)
             Assert.assertEquals(484, result.bitmap.height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
+                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
                 result.imageInfo.toString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
@@ -129,10 +124,9 @@ class BitmapResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.bitmap.width)
             Assert.assertEquals(484, result.bitmap.height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
+                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
                 result.imageInfo.toString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",

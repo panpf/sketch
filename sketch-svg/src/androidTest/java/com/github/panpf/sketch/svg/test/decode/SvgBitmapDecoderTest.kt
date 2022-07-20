@@ -2,7 +2,6 @@ package com.github.panpf.sketch.svg.test.decode
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -72,8 +71,7 @@ class SvgBitmapDecoderTest {
             }
         }.apply {
             Assert.assertEquals("Bitmap(841x595,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml',UNDEFINED)", imageInfo.toShortString())
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -88,8 +86,7 @@ class SvgBitmapDecoderTest {
             }
         }.apply {
             Assert.assertEquals("Bitmap(841x595,RGB_565)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml',UNDEFINED)", imageInfo.toShortString())
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -105,8 +102,7 @@ class SvgBitmapDecoderTest {
         }.apply {
             Assert.assertEquals("Bitmap(421x298,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
-            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml',UNDEFINED)", imageInfo.toShortString())
             Assert.assertEquals(LOCAL, dataFrom)
         }
 

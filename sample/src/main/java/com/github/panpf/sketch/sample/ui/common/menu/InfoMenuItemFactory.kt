@@ -19,6 +19,11 @@ class InfoMenuItemFactory(private val compactModel: Boolean = false) :
             val data = item.dataOrThrow
             data.onClick()
         }
+        binding.root.setOnLongClickListener {
+            val data = item.dataOrThrow
+            data.onLongClick?.invoke()
+            true
+        }
 
         if (compactModel) {
             binding.infoMenuItemTitleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
@@ -38,6 +43,5 @@ class InfoMenuItemFactory(private val compactModel: Boolean = false) :
         binding.infoMenuItemTitleText.text = data.title
         binding.infoMenuItemInfoText.text = data.info
         binding.infoMenuItemDescText.text = data.desc
-        binding.infoMenuItemDescText.isVisible = !compactModel && data.desc?.isNotEmpty() == true
     }
 }

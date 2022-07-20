@@ -2,7 +2,6 @@ package com.github.panpf.sketch.video.ffmpeg.test.decode
 
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -83,8 +82,10 @@ class FFmpegVideoFrameBitmapDecoderTest {
             }
         }.apply {
             Assert.assertEquals("Bitmap(500x250,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+            Assert.assertEquals(
+                "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -99,8 +100,10 @@ class FFmpegVideoFrameBitmapDecoderTest {
             }
         }.apply {
             Assert.assertEquals("Bitmap(250x125,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+            Assert.assertEquals(
+                "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
         }

@@ -3,7 +3,6 @@ package com.github.panpf.sketch.sample.ui.common.menu
 import android.content.Context
 import android.util.TypedValue
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import com.github.panpf.activity.monitor.ActivityMonitor
 import com.github.panpf.sketch.sample.databinding.MultiSelectMenuItemBinding
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
@@ -42,8 +41,6 @@ class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
         binding.multiSelectMenuItemTitleText.text = data.title
         binding.multiSelectMenuItemInfoText.text = data.getValue()
         binding.multiSelectMenuItemDescText.text = data.desc
-        binding.multiSelectMenuItemDescText.isVisible =
-            !compactModel && data.desc?.isNotEmpty() == true
     }
 
     private fun showDialog(data: MultiSelectMenu, after: () -> Unit) {

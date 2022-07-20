@@ -2,7 +2,6 @@ package com.github.panpf.sketch.decode
 
 import android.content.pm.PackageManager
 import androidx.annotation.WorkerThread
-import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.internal.applyResize
@@ -37,9 +36,8 @@ class ApkIconBitmapDecoder(
         val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
         val bitmap =
             drawable.toNewBitmap(sketch.bitmapPool, request.bitmapConfig?.getConfig(MIME_TYPE))
-        val imageInfo = ImageInfo(bitmap.width, bitmap.height, MIME_TYPE)
-        return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
-            .applyResize(sketch, request.resize)
+        val imageInfo = ImageInfo(bitmap.width, bitmap.height, MIME_TYPE, 0)
+        return BitmapDecodeResult(bitmap, imageInfo, LOCAL).applyResize(sketch, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

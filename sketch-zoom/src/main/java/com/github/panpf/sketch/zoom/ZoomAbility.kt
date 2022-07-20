@@ -565,7 +565,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             "Use Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                 .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
         }
-        val exifOrientation: Int = sketchDrawable.imageExifOrientation
+        val exifOrientation: Int = sketchDrawable.imageInfo.exifOrientation
         val imageUri = sketchDrawable.imageUri
         return Tiles(
             context = host.context,

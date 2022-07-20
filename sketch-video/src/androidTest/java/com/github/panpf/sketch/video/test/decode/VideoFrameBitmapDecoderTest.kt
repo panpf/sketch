@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import android.media.MediaMetadataRetriever
 import android.os.Build
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -91,8 +90,10 @@ class VideoFrameBitmapDecoderTest {
             } else {
                 Assert.assertEquals("Bitmap(500x250,RGB_565)", bitmap.toShortInfoString())
             }
-            Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+            Assert.assertEquals(
+                "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -109,8 +110,10 @@ class VideoFrameBitmapDecoderTest {
                 }
             }.apply {
                 Assert.assertEquals("Bitmap(500x250,RGB_565)", bitmap.toShortInfoString())
-                Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+                Assert.assertEquals(
+                    "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                    imageInfo.toShortString()
+                )
                 Assert.assertEquals(LOCAL, dataFrom)
                 Assert.assertNull(transformedList)
             }
@@ -138,8 +141,10 @@ class VideoFrameBitmapDecoderTest {
                     transformedList
                 )
             }
-            Assert.assertEquals("ImageInfo(500x250,'video/mp4')", imageInfo.toShortString())
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+            Assert.assertEquals(
+                "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
         }
 

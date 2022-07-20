@@ -52,8 +52,7 @@ class SketchUtilsTest {
                 imageUri = "uri",
                 requestKey = "key",
                 requestCacheKey = "cacheKey",
-                imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg"),
-                imageExifOrientation = 0,
+                imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg", 0),
                 transformedList = null,
             ),
             dataFrom = LOCAL,
@@ -130,8 +129,7 @@ class SketchUtilsTest {
             imageUri = "uri",
             requestKey = "key",
             requestCacheKey = "cacheKey",
-            imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg"),
-            imageExifOrientation = 0,
+            imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg", 0),
             transformedList = null,
         )
         val resources = context.resources

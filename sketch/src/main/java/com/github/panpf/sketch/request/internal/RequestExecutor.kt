@@ -96,7 +96,6 @@ class RequestExecutor {
                     request = lastRequest,
                     drawable = imageData.drawable.tryToResizeDrawable(lastRequest),
                     imageInfo = imageData.imageInfo,
-                    imageExifOrientation = imageData.imageExifOrientation,
                     dataFrom = imageData.dataFrom,
                     transformedList = imageData.transformedList
                 )
@@ -104,7 +103,6 @@ class RequestExecutor {
                     request = lastRequest,
                     bitmap = imageData.bitmap,
                     imageInfo = imageData.imageInfo,
-                    imageExifOrientation = imageData.imageExifOrientation,
                     dataFrom = imageData.dataFrom,
                     transformedList = imageData.transformedList
                 )

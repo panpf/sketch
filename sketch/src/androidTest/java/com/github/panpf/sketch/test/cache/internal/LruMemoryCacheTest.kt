@@ -229,8 +229,7 @@ class LruMemoryCacheTest {
                 imageUri = imageUri,
                 requestKey = imageUri,
                 requestCacheKey = imageUri,
-                imageInfo = ImageInfo(width, height, "image/jpeg"),
-                imageExifOrientation = 0,
+                imageInfo = ImageInfo(width, height, "image/jpeg", 0),
                 transformedList = null,
             )
         )

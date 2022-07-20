@@ -95,11 +95,10 @@ class BitmapDecodeInterceptorChainTest {
         override suspend fun intercept(chain: Chain): BitmapDecodeResult {
             historyList.add("TestBitmapDecoderInterceptor3")
             return BitmapDecodeResult(
-                Bitmap.createBitmap(12, 45, RGB_565),
-                ImageInfo(12, 45, "image/jpeg"),
-                0,
-                LOCAL,
-                null
+                bitmap = Bitmap.createBitmap(12, 45, RGB_565),
+                imageInfo = ImageInfo(12, 45, "image/jpeg", 0),
+                dataFrom = LOCAL,
+                transformedList = null
             )
         }
     }

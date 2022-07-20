@@ -19,6 +19,11 @@ class SwitchMenuItemFactory(
         binding.root.setOnClickListener {
             binding.switchMenuItemSwitch.isChecked = !binding.switchMenuItemSwitch.isChecked
         }
+        binding.root.setOnLongClickListener {
+            val data = item.dataOrThrow
+            data.onLongClick?.invoke()
+            true
+        }
         binding.switchMenuItemSwitch.setOnCheckedChangeListener { _, isChecked ->
             val data = item.dataOrThrow
             if (data.isChecked != isChecked) {
@@ -43,6 +48,5 @@ class SwitchMenuItemFactory(
         binding.switchMenuItemTitleText.text = data.title
         binding.switchMenuItemSwitch.isChecked = data.isChecked
         binding.switchMenuItemDescText.text = data.desc
-        binding.switchMenuItemDescText.isVisible = !compactModel && data.desc?.isNotEmpty() == true
     }
 }

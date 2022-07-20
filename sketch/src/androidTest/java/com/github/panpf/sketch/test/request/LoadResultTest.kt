@@ -28,15 +28,13 @@ class LoadResultTest {
         LoadResult.Success(
             request1,
             Bitmap.createBitmap(100, 100, RGB_565),
-            ImageInfo(100, 100, "image/jpeg"),
-            ExifInterface.ORIENTATION_ROTATE_90,
+            ImageInfo(100, 100, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90),
             LOCAL,
             listOf(createCircleCropTransformed(END_CROP))
         ).apply {
             Assert.assertSame(request1, request)
             Assert.assertEquals("Bitmap(100x100,RGB_565)", bitmap.toShortInfoString())
-            Assert.assertEquals(ImageInfo(100, 100, "image/jpeg"), imageInfo)
-            Assert.assertEquals(ExifInterface.ORIENTATION_ROTATE_90, imageExifOrientation)
+            Assert.assertEquals(ImageInfo(100, 100, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createCircleCropTransformed(END_CROP)), transformedList)
         }

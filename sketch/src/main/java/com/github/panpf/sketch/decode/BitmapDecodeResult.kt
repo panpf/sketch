@@ -2,7 +2,6 @@ package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.util.toInfoString
 import java.util.LinkedList
 
@@ -12,7 +11,6 @@ import java.util.LinkedList
 data class BitmapDecodeResult constructor(
     val bitmap: Bitmap,
     val imageInfo: ImageInfo,
-    @ExifOrientation val imageExifOrientation: Int,
     val dataFrom: DataFrom,
     val transformedList: List<String>? = null,
 ) {
@@ -21,7 +19,6 @@ data class BitmapDecodeResult constructor(
         Builder(
             bitmap = bitmap,
             imageInfo = imageInfo,
-            imageExifOrientation = imageExifOrientation,
             dataFrom = dataFrom,
             transformedList = transformedList?.toMutableList(),
         ).apply {
@@ -31,14 +28,12 @@ data class BitmapDecodeResult constructor(
     override fun toString(): String =
         "BitmapDecodeResult(bitmap=${bitmap.toInfoString()}, " +
                 "imageInfo=$imageInfo, " +
-                "exifOrientation=${exifOrientationName(imageExifOrientation)}, " +
                 "dataFrom=$dataFrom, " +
                 "transformedList=$transformedList)"
 
     class Builder(
         private val bitmap: Bitmap,
         private var imageInfo: ImageInfo,
-        @ExifOrientation private val imageExifOrientation: Int,
         private val dataFrom: DataFrom,
         private var transformedList: MutableList<String>? = null,
     ) {
@@ -56,7 +51,6 @@ data class BitmapDecodeResult constructor(
         fun build(): BitmapDecodeResult = BitmapDecodeResult(
             bitmap = bitmap,
             imageInfo = imageInfo,
-            imageExifOrientation = imageExifOrientation,
             dataFrom = dataFrom,
             transformedList = transformedList?.toList(),
         )

@@ -977,7 +977,7 @@ class LoadRequestExecuteTest {
                 .let { runBlocking { sketch.execute(it) } }
                 .asOrNull<LoadResult.Success>()!!
                 .apply {
-                    Assert.assertEquals(it.exifOrientation, imageExifOrientation)
+                    Assert.assertEquals(it.exifOrientation, imageInfo.exifOrientation)
                     Assert.assertEquals(Size(1500, 750), imageInfo.size)
                 }
 
@@ -986,7 +986,7 @@ class LoadRequestExecuteTest {
             }.let { runBlocking { sketch.execute(it) } }
                 .asOrNull<LoadResult.Success>()!!
                 .apply {
-                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
+                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageInfo.exifOrientation)
                     if (it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
                         || it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
                         || it.exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
@@ -1011,7 +1011,7 @@ class LoadRequestExecuteTest {
             .let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!
             .apply {
-                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, imageExifOrientation)
+                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, imageInfo.exifOrientation)
                 Assert.assertEquals(Size(1291, 1936), imageInfo.size)
             }
     }

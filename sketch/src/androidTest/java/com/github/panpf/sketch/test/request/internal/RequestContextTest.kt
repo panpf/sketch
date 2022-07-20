@@ -66,8 +66,7 @@ class RequestContextTest {
                 imageUri = "imageUri",
                 requestKey = "requestKey",
                 requestCacheKey = "requestCacheKey",
-                imageInfo = ImageInfo(100, 100, "image/jpeg"),
-                imageExifOrientation = 0,
+                imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                 transformedList = null,
             ), NETWORK
         )
@@ -79,8 +78,7 @@ class RequestContextTest {
                 imageUri = "imageUri1",
                 requestKey = "requestKey1",
                 requestCacheKey = "requestCacheKey1",
-                imageInfo = ImageInfo(100, 100, "image/jpeg"),
-                imageExifOrientation = 0,
+                imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                 transformedList = null,
             ), NETWORK
         )

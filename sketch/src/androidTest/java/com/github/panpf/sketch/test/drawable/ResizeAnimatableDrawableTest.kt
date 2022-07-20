@@ -10,8 +10,6 @@ import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -22,16 +20,12 @@ class ResizeAnimatableDrawableTest {
 
     @Test
     fun test() {
-        val context = getTestContext()
-        val sketch = context.sketch
-
         val imageUri = newAssetUri("sample.jpeg")
         val animDrawable = SketchAnimatableDrawable(
             imageUri = imageUri,
             requestKey = imageUri,
             requestCacheKey = imageUri,
-            imageInfo = ImageInfo(100, 200, "image/jpeg"),
-            imageExifOrientation = 0,
+            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null,
             animatableDrawable = ColorDrawable(Color.GREEN),
@@ -60,16 +54,12 @@ class ResizeAnimatableDrawableTest {
 
     @Test
     fun testToString() {
-        val context = getTestContext()
-        val sketch = context.sketch
-
         val imageUri = newAssetUri("sample.jpeg")
         val animDrawable = SketchAnimatableDrawable(
             imageUri = imageUri,
             requestKey = imageUri,
             requestCacheKey = imageUri,
-            imageInfo = ImageInfo(100, 200, "image/jpeg"),
-            imageExifOrientation = 0,
+            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null,
             animatableDrawable = ColorDrawable(Color.GREEN),

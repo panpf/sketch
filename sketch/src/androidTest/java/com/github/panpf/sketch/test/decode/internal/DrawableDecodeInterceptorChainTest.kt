@@ -95,11 +95,10 @@ class DrawableDecodeInterceptorChainTest {
         override suspend fun intercept(chain: Chain): DrawableDecodeResult {
             historyList.add("TestDrawableDecoderInterceptor3")
             return DrawableDecodeResult(
-                ColorDrawable(Color.BLUE),
-                ImageInfo(12, 45, "image/jpeg"),
-                0,
-                LOCAL,
-                null
+                drawable = ColorDrawable(Color.BLUE),
+                imageInfo = ImageInfo(12, 45, "image/jpeg", 0),
+                dataFrom = LOCAL,
+                transformedList = null
             )
         }
     }

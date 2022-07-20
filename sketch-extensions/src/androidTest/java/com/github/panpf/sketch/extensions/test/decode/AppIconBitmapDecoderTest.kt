@@ -2,7 +2,6 @@ package com.github.panpf.sketch.extensions.test.decode
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -108,10 +107,9 @@ class AppIconBitmapDecoderTest {
                 bitmap.toShortInfoString()
             )
             Assert.assertEquals(
-                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.app-icon')",
+                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.app-icon',UNDEFINED)",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -132,10 +130,9 @@ class AppIconBitmapDecoderTest {
                 bitmap.toShortInfoString()
             )
             Assert.assertEquals(
-                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.app-icon')",
+                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.app-icon',UNDEFINED)",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -160,10 +157,9 @@ class AppIconBitmapDecoderTest {
                 bitmap.toShortInfoString()
             )
             Assert.assertEquals(
-                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.app-icon')",
+                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.app-icon',UNDEFINED)",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createResizeTransformed(Resize(100, 100, LESS_PIXELS, CENTER_CROP))),

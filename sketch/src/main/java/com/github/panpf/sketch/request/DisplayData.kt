@@ -9,10 +9,9 @@ import com.github.panpf.sketch.decode.ImageInfo
 data class DisplayData constructor(
     val drawable: Drawable,
     val imageInfo: ImageInfo,
-    @ExifOrientation val imageExifOrientation: Int,
     val dataFrom: DataFrom,
     val transformedList: List<String>?,
 ) : ImageData
 
 fun DrawableDecodeResult.toDisplayData(): DisplayData =
-    DisplayData(drawable, imageInfo, imageExifOrientation, dataFrom, transformedList)
+    DisplayData(drawable, imageInfo, dataFrom, transformedList)

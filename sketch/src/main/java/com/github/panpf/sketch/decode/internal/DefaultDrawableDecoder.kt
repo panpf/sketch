@@ -36,7 +36,6 @@ class DefaultDrawableDecoder(
             requestKey = request.key,
             requestCacheKey = request.cacheKey,
             imageInfo = decodeResult.imageInfo,
-            imageExifOrientation = decodeResult.imageExifOrientation,
             transformedList = decodeResult.transformedList,
         )
         val countDrawable = SketchCountBitmapDrawable(
@@ -49,7 +48,6 @@ class DefaultDrawableDecoder(
         return DrawableDecodeResult(
             drawable = countDrawable,
             imageInfo = countBitmap.imageInfo,
-            imageExifOrientation = countBitmap.imageExifOrientation,
             dataFrom = decodeResult.dataFrom,
             transformedList = null,
         )

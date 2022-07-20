@@ -12,6 +12,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
+import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
@@ -157,8 +158,7 @@ class DecodeUtilsTest {
             realDecode(
                 it,
                 LOCAL,
-                ImageInfo(1936, 1291, "image/jpeg"),
-                hasExifFile.exifOrientation,
+                ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -171,7 +171,7 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(imageInfo.size, bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -182,8 +182,7 @@ class DecodeUtilsTest {
             realDecode(
                 it,
                 LOCAL,
-                ImageInfo(1936, 1291, "image/jpeg"),
-                hasExifFile.exifOrientation,
+                ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -196,7 +195,7 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(imageInfo.size, bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
             Assert.assertEquals(result1.bitmap.corners(), bitmap.corners())
@@ -208,8 +207,7 @@ class DecodeUtilsTest {
             realDecode(
                 it,
                 LOCAL,
-                ImageInfo(1936, 1291, "image/jpeg"),
-                hasExifFile.exifOrientation,
+                ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -222,7 +220,7 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(Size(121, 60), bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(16), createResizeTransformed(Resize(100, 200))),
@@ -232,13 +230,11 @@ class DecodeUtilsTest {
 
         LoadRequest(context, hasExifFile.file.path).newLoadRequest {
             resize(100, 200)
-            ignoreExifOrientation(true)
         }.let {
             realDecode(
                 request = it,
                 dataFrom = LOCAL,
-                imageInfo = ImageInfo(1936, 1291, "image/jpeg"),
-                exifOrientation = hasExifFile.exifOrientation,
+                imageInfo = ImageInfo(1936, 1291, "image/jpeg", 0),
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -251,7 +247,7 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(Size(80, 161), bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(
@@ -269,8 +265,7 @@ class DecodeUtilsTest {
             realDecode(
                 it,
                 LOCAL,
-                ImageInfo(1936, 1291, "image/jpeg"),
-                hasExifFile.exifOrientation,
+                ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -283,7 +278,7 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(Size(121, 60), bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(
@@ -296,13 +291,11 @@ class DecodeUtilsTest {
 
         LoadRequest(context, hasExifFile.file.path).newLoadRequest {
             resize(100, 200, SAME_ASPECT_RATIO)
-            ignoreExifOrientation(true)
         }.let {
             realDecode(
                 request = it,
                 dataFrom = LOCAL,
-                imageInfo = ImageInfo(1936, 1291, "image/jpeg"),
-                exifOrientation = hasExifFile.exifOrientation,
+                imageInfo = ImageInfo(1936, 1291, "image/jpeg", 0),
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -315,7 +308,7 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(Size(80, 161), bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(
@@ -333,8 +326,7 @@ class DecodeUtilsTest {
             realDecode(
                 it,
                 LOCAL,
-                ImageInfo(1936, 1291, "image/jpeg"),
-                hasExifFile.exifOrientation,
+                ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -347,20 +339,18 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(Size(121, 81), bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createInSampledTransformed(16)), transformedList)
         }
 
         LoadRequest(context, hasExifFile.file.path).newLoadRequest {
             resize(100, 200, LESS_PIXELS)
-            ignoreExifOrientation(true)
         }.let {
             realDecode(
                 request = it,
                 dataFrom = LOCAL,
-                imageInfo = ImageInfo(1936, 1291, "image/jpeg"),
-                exifOrientation = hasExifFile.exifOrientation,
+                imageInfo = ImageInfo(1936, 1291, "image/jpeg", 0),
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -373,7 +363,7 @@ class DecodeUtilsTest {
             }
         }.apply {
             Assert.assertEquals(Size(121, 81), bitmap.size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createInSampledTransformed(16)), transformedList)
             Assert.assertEquals(result7.bitmap.corners(), bitmap.corners())
@@ -385,8 +375,7 @@ class DecodeUtilsTest {
             realDecode(
                 request = it,
                 dataFrom = LOCAL,
-                imageInfo = ImageInfo(700, 1012, "image/bmp"),
-                exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
+                imageInfo = ImageInfo(700, 1012, "image/bmp", 0),
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -396,7 +385,7 @@ class DecodeUtilsTest {
             )
         }.apply {
             Assert.assertEquals(Size(87, 126), bitmap.size)
-            Assert.assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
+            Assert.assertEquals(ImageInfo(700, 1012, "image/bmp", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createInSampledTransformed(8)), transformedList)
         }
@@ -408,8 +397,7 @@ class DecodeUtilsTest {
             realDecode(
                 request = it,
                 dataFrom = LOCAL,
-                imageInfo = ImageInfo(700, 1012, "image/jpeg"),
-                exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
+                imageInfo = ImageInfo(700, 1012, "image/jpeg", 0),
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
@@ -419,7 +407,7 @@ class DecodeUtilsTest {
             )
         }.apply {
             Assert.assertEquals(Size(87, 126), bitmap.size)
-            Assert.assertEquals(ImageInfo(700, 1012, "image/jpeg"), imageInfo)
+            Assert.assertEquals(ImageInfo(700, 1012, "image/jpeg", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createInSampledTransformed(8)), transformedList)
             Assert.assertEquals(result9.bitmap.corners(), bitmap.corners())
@@ -435,13 +423,12 @@ class DecodeUtilsTest {
         }.let {
             BitmapDecodeResult(
                 bitmap = it,
-                imageInfo = ImageInfo(it.width, it.height, "image/jpeg"),
-                imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
+                imageInfo = ImageInfo(it.width, it.height, "image/jpeg", 0),
                 dataFrom = LOCAL,
                 transformedList = null
             )
         }.apply {
-            val newResult = applyExifOrientation(ignoreExifOrientation = true)
+            val newResult = applyExifOrientation()
             Assert.assertSame(this, newResult)
 
             val newResult2 = applyExifOrientation()
@@ -453,15 +440,19 @@ class DecodeUtilsTest {
         BitmapFactory.decodeFile(hasExifFile.file.path).let {
             BitmapDecodeResult(
                 bitmap = it,
-                imageInfo = ImageInfo(it.width, it.height, "image/jpeg"),
-                imageExifOrientation = hasExifFile.exifOrientation,
+                imageInfo = ImageInfo(
+                    it.width,
+                    it.height,
+                    "image/jpeg",
+                    hasExifFile.exifOrientation
+                ),
                 dataFrom = LOCAL,
                 transformedList = null
             )
         }.apply {
             Assert.assertNull(this.transformedList?.getExifOrientationTransformed())
 
-            val newResult = applyExifOrientation(ignoreExifOrientation = true)
+            val newResult = applyExifOrientation()
             Assert.assertSame(this, newResult)
 
             val newResult2 = applyExifOrientation()
@@ -483,8 +474,7 @@ class DecodeUtilsTest {
         val newResult: () -> BitmapDecodeResult = {
             BitmapDecodeResult(
                 bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
-                imageInfo = ImageInfo(80, 50, "image/png"),
-                imageExifOrientation = 0,
+                imageInfo = ImageInfo(80, 50, "image/png", 0),
                 dataFrom = MEMORY,
                 transformedList = null
             )
@@ -580,6 +570,7 @@ class DecodeUtilsTest {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
                 Assert.assertEquals("image/jpeg", mimeType)
+                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             }
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp")
@@ -591,6 +582,7 @@ class DecodeUtilsTest {
                 } else {
                     Assert.assertEquals("", mimeType)
                 }
+                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             }
 
         ResourceDataSource(
@@ -603,6 +595,18 @@ class DecodeUtilsTest {
             Assert.assertEquals(-1, width)
             Assert.assertEquals(-1, height)
             Assert.assertEquals("", mimeType)
+            Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+        }
+
+        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
+            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                .readImageInfoWithBitmapFactory().apply {
+                    Assert.assertEquals(it.exifOrientation, exifOrientation)
+                }
+            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                .readImageInfoWithBitmapFactory(true).apply {
+                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+                }
         }
     }
 
@@ -615,6 +619,7 @@ class DecodeUtilsTest {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
                 Assert.assertEquals("image/jpeg", mimeType)
+                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             }
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp")
             .readImageInfoWithBitmapFactoryOrThrow().apply {
@@ -625,6 +630,7 @@ class DecodeUtilsTest {
                 } else {
                     Assert.assertEquals("", mimeType)
                 }
+                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             }
 
         assertThrow(Exception::class) {
@@ -635,6 +641,17 @@ class DecodeUtilsTest {
                 context.resources,
                 R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrThrow()
+        }
+
+        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
+            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                .readImageInfoWithBitmapFactoryOrThrow().apply {
+                    Assert.assertEquals(it.exifOrientation, exifOrientation)
+                }
+            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                .readImageInfoWithBitmapFactoryOrThrow(true).apply {
+                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+                }
         }
     }
 
@@ -647,6 +664,7 @@ class DecodeUtilsTest {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
                 Assert.assertEquals("image/jpeg", mimeType)
+                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             }
 
         AssetDataSource(sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp")
@@ -658,6 +676,7 @@ class DecodeUtilsTest {
                 } else {
                     Assert.assertEquals("", mimeType)
                 }
+                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             }
 
         Assert.assertNull(
@@ -669,6 +688,17 @@ class DecodeUtilsTest {
                 R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrNull()
         )
+
+        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
+            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                .readImageInfoWithBitmapFactoryOrNull()!!.apply {
+                    Assert.assertEquals(it.exifOrientation, exifOrientation)
+                }
+            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                .readImageInfoWithBitmapFactoryOrNull(true)!!.apply {
+                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+                }
+        }
     }
 
     @Test

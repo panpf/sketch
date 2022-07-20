@@ -220,7 +220,7 @@ class MemoryCacheInterceptorTest {
                     val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
                     val imageInfo: ImageInfo
                     val drawable = if (chain.request.uriString.contains(".jpeg")) {
-                        imageInfo = ImageInfo(100, 100, "image/jpeg")
+                        imageInfo = ImageInfo(100, 100, "image/jpeg", 0)
                         val countBitmap = CountBitmap(
                             bitmap = bitmap,
                             sketch = chain.sketch,
@@ -228,7 +228,6 @@ class MemoryCacheInterceptorTest {
                             requestKey = chain.request.key,
                             requestCacheKey = chain.request.cacheKey,
                             imageInfo = imageInfo,
-                            imageExifOrientation = 0,
                             transformedList = null
                         )
                         SketchCountBitmapDrawable(
@@ -237,15 +236,15 @@ class MemoryCacheInterceptorTest {
                             DataFrom.LOCAL
                         )
                     } else {
-                        imageInfo = ImageInfo(100, 100, "image/png")
+                        imageInfo = ImageInfo(100, 100, "image/png", 0)
                         BitmapDrawable(chain.sketch.context.resources, bitmap)
                     }
-                    DisplayData(drawable, imageInfo, 0, DataFrom.LOCAL, null)
+                    DisplayData(drawable, imageInfo, DataFrom.LOCAL, null)
                 }
                 is LoadRequest -> {
                     val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
-                    val imageInfo = ImageInfo(100, 100, "image/jpeg")
-                    LoadData(bitmap, imageInfo, 0, DataFrom.LOCAL, null)
+                    val imageInfo = ImageInfo(100, 100, "image/jpeg", 0)
+                    LoadData(bitmap, imageInfo, DataFrom.LOCAL, null)
                 }
                 is DownloadRequest -> {
                     DownloadData.Bytes(byteArrayOf(), DataFrom.NETWORK)

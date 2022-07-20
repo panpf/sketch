@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.test.decode.internal
 
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.datasource.DataFrom
@@ -40,10 +39,9 @@ class DrawableEngineDecodeInterceptorTest {
         Assert.assertEquals(1291, result.drawable.intrinsicWidth)
         Assert.assertEquals(1936, result.drawable.intrinsicHeight)
         Assert.assertEquals(
-            "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
+            "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
             result.imageInfo.toString()
         )
-        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.imageExifOrientation)
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
         Assert.assertNull(result.transformedList)
     }

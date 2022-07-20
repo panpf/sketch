@@ -20,15 +20,14 @@ class BitmapDecodeResultTest {
     @Test
     fun testConstructor() {
         val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
-        val imageInfo = ImageInfo(3000, 500, "image/png")
+        val imageInfo = ImageInfo(3000, 500, "image/png", 0)
         val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
-        BitmapDecodeResult(newBitmap, imageInfo, 0, LOCAL, transformedList).apply {
+        BitmapDecodeResult(newBitmap, imageInfo, LOCAL, transformedList).apply {
             Assert.assertTrue(newBitmap === bitmap)
             Assert.assertEquals(
-                "ImageInfo(width=3000, height=500, mimeType='image/png')",
+                "ImageInfo(width=3000, height=500, mimeType='image/png', exifOrientation=UNDEFINED)",
                 imageInfo.toString()
             )
-            Assert.assertEquals(0, imageExifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4), RotateTransformed(45)",
@@ -40,9 +39,9 @@ class BitmapDecodeResultTest {
     @Test
     fun testNew() {
         val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
-        val imageInfo = ImageInfo(3000, 500, "image/png")
+        val imageInfo = ImageInfo(3000, 500, "image/png", 0)
         val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
-        val result = BitmapDecodeResult(newBitmap, imageInfo, 0, LOCAL, transformedList)
+        val result = BitmapDecodeResult(newBitmap, imageInfo, LOCAL, transformedList)
         Assert.assertEquals(
             "InSampledTransformed(4), RotateTransformed(45)",
             result.transformedList?.joinToString()
