@@ -30,8 +30,8 @@ class DefaultDrawableDecoder(
             index = 0,
         ).proceed()
         val countBitmap = CountBitmap(
-            bitmap = decodeResult.bitmap,
             sketch = sketch,
+            bitmap = decodeResult.bitmap,
             imageUri = request.uriString,
             requestKey = request.key,
             requestCacheKey = request.cacheKey,

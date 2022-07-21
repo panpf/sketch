@@ -222,8 +222,8 @@ class MemoryCacheInterceptorTest {
                     val drawable = if (chain.request.uriString.contains(".jpeg")) {
                         imageInfo = ImageInfo(100, 100, "image/jpeg", 0)
                         val countBitmap = CountBitmap(
-                            bitmap = bitmap,
                             sketch = chain.sketch,
+                            bitmap = bitmap,
                             imageUri = chain.request.uriString,
                             requestKey = chain.request.key,
                             requestCacheKey = chain.request.cacheKey,

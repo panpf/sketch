@@ -253,8 +253,8 @@ class TileManager constructor(
                 isActive -> {
                     withContext(Dispatchers.Main) {
                         val newCountBitmap = CountBitmap(
-                            bitmap = bitmap,
                             sketch = sketch,
+                            bitmap = bitmap,
                             imageUri = imageUri,
                             requestKey = memoryCacheKey,
                             requestCacheKey = memoryCacheKey,

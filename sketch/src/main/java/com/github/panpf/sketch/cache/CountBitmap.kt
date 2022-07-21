@@ -30,8 +30,8 @@ import com.github.panpf.sketch.util.toHexString
  * Reference counts [Bitmap] and, when the count is 0, puts it into the BitmapPool
  */
 class CountBitmap constructor(
-    bitmap: Bitmap,
     private val sketch: Sketch,
+    bitmap: Bitmap,
     val imageUri: String,
     val requestKey: String,
     val requestCacheKey: String,

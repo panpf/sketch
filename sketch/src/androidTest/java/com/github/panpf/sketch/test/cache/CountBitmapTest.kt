@@ -302,8 +302,8 @@ class CountBitmapTest {
         imageInfo: ImageInfo = ImageInfo(width, height, "image/jpeg", 0),
         transformedList: List<String>? = null
     ): CountBitmap = CountBitmap(
-        bitmap = Bitmap.createBitmap(width, height, ARGB_8888),
         sketch = sketch,
+        bitmap = Bitmap.createBitmap(width, height, ARGB_8888),
         imageUri = imageUri,
         requestKey = requestKey,
         requestCacheKey = requestKey,

@@ -61,8 +61,8 @@ class RequestContextTest {
         val countDrawable = SketchCountBitmapDrawable(
             context.resources,
             CountBitmap(
-                bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
                 sketch = sketch,
+                bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
                 imageUri = "imageUri",
                 requestKey = "requestKey",
                 requestCacheKey = "requestCacheKey",
@@ -73,8 +73,8 @@ class RequestContextTest {
         val countDrawable1 = SketchCountBitmapDrawable(
             context.resources,
             CountBitmap(
-                bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
                 sketch = sketch,
+                bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
                 imageUri = "imageUri1",
                 requestKey = "requestKey1",
                 requestCacheKey = "requestCacheKey1",

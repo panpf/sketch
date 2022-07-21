@@ -53,22 +53,12 @@ class SketchCountBitmapDrawable constructor(
         if (other !is SketchCountBitmapDrawable) return false
         if (countBitmap != other.countBitmap) return false
         if (dataFrom != other.dataFrom) return false
-        if (imageUri != other.imageUri) return false
-        if (requestKey != other.requestKey) return false
-        if (requestCacheKey != other.requestCacheKey) return false
-        if (imageInfo != other.imageInfo) return false
-        if (transformedList != other.transformedList) return false
         return true
     }
 
     override fun hashCode(): Int {
         var result = countBitmap.hashCode()
         result = 31 * result + dataFrom.hashCode()
-        result = 31 * result + imageUri.hashCode()
-        result = 31 * result + requestKey.hashCode()
-        result = 31 * result + requestCacheKey.hashCode()
-        result = 31 * result + imageInfo.hashCode()
-        result = 31 * result + (transformedList?.hashCode() ?: 0)
         return result
     }
 

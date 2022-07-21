@@ -259,8 +259,8 @@ class LruMemoryCacheTest {
         val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
         return put(
             imageUri, CountBitmap(
-                bitmap = bitmap,
                 sketch = sketch,
+                bitmap = bitmap,
                 imageUri = imageUri,
                 requestKey = imageUri,
                 requestCacheKey = imageUri,
