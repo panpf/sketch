@@ -10,7 +10,7 @@ import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.tools4j.test.ktx.assertThrow
+import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,29 +22,20 @@ class ResizeAnimatableDrawableTest {
     fun test() {
         val imageUri = newAssetUri("sample.jpeg")
         val animDrawable = SketchAnimatableDrawable(
+            animatableDrawable = TestAnimatableDrawable1(ColorDrawable(Color.GREEN)),
             imageUri = imageUri,
             requestKey = imageUri,
             requestCacheKey = imageUri,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null,
-            animatableDrawable = ColorDrawable(Color.GREEN),
-            animatableDrawableName = "TestDrawable",
         )
         ResizeAnimatableDrawable(animDrawable, Resize(100, 500)).apply {
-            assertThrow(IllegalArgumentException::class) {
-                start()
-            }
-            assertThrow(IllegalArgumentException::class) {
-                stop()
-            }
-            assertThrow(IllegalArgumentException::class) {
-                isRunning
-            }
+            start()
+            stop()
+            isRunning
 
-            val callback = object : AnimationCallback() {
-
-            }
+            val callback = object : AnimationCallback() {}
             Assert.assertFalse(unregisterAnimationCallback(callback))
             registerAnimationCallback(callback)
             Assert.assertTrue(unregisterAnimationCallback(callback))
@@ -56,14 +47,13 @@ class ResizeAnimatableDrawableTest {
     fun testToString() {
         val imageUri = newAssetUri("sample.jpeg")
         val animDrawable = SketchAnimatableDrawable(
+            animatableDrawable = TestAnimatableDrawable1(ColorDrawable(Color.GREEN)),
             imageUri = imageUri,
             requestKey = imageUri,
             requestCacheKey = imageUri,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null,
-            animatableDrawable = ColorDrawable(Color.GREEN),
-            animatableDrawableName = "TestDrawable",
         )
         ResizeAnimatableDrawable(animDrawable, Resize(100, 500)).apply {
             Assert.assertEquals("ResizeAnimatableDrawable($animDrawable)", toString())

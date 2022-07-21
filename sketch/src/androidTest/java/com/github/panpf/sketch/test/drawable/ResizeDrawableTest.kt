@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
@@ -20,10 +21,13 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
+import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,14 +69,13 @@ class ResizeDrawableTest {
         }
 
         val animDrawable = SketchAnimatableDrawable(
+            animatableDrawable = TestAnimatableDrawable1(bitmapDrawable),
             imageUri = imageUri,
             requestKey = imageUri,
             requestCacheKey = imageUri,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null,
-            animatableDrawable = bitmapDrawable,
-            animatableDrawableName = "TestDrawable",
         )
         animDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
             resizeApplyToDrawable(true)
@@ -179,6 +182,34 @@ class ResizeDrawableTest {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
+        }
+    }
+
+    @Test
+    fun testMutate() {
+        val context = getTestContext()
+        val resizeDrawable = ResizeDrawable(
+            drawable = context.getDrawableCompat(android.R.drawable.bottom_bar),
+            resize = Resize(500, 300)
+        )
+        resizeDrawable.mutate()
+        resizeDrawable.alpha = 146
+
+        val drawable1 = context.getDrawableCompat(android.R.drawable.bottom_bar)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Assert.assertEquals(255, drawable1.alpha)
+        }
+
+        val resizeDrawable1 = ResizeDrawable(
+            drawable = TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
+            resize = Resize(500, 300)
+        )
+        resizeDrawable1.mutate()
+        resizeDrawable1.alpha = 146
+
+        val drawable2 = context.getDrawableCompat(android.R.drawable.bottom_bar)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Assert.assertEquals(255, drawable2.alpha)
         }
     }
 

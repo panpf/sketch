@@ -23,6 +23,8 @@ import android.graphics.drawable.Animatable2
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.datasource.DataFrom
@@ -32,19 +34,29 @@ import com.github.panpf.sketch.util.computeByteCount
 
 @SuppressLint("RestrictedApi")
 class SketchAnimatableDrawable constructor(
+    private val animatableDrawable: Drawable,
     override val imageUri: String,
     override val requestKey: String,
     override val requestCacheKey: String,
     override val imageInfo: ImageInfo,
     override val dataFrom: DataFrom,
     override val transformedList: List<String>?,
-    private val animatableDrawable: Drawable,
-    private val animatableDrawableName: String,
 ) : DrawableWrapper(animatableDrawable), SketchDrawable, Animatable2Compat {
 
     private var callbacks: MutableList<Animatable2Compat.AnimationCallback>? = null
     private var callbackMap: HashMap<Animatable2Compat.AnimationCallback, Animatable2.AnimationCallback>? =
         null
+    private val handler by lazy { Handler(Looper.getMainLooper()) }
+
+    init {
+        require(
+            animatableDrawable is Animatable
+                    || (VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2)
+                    || animatableDrawable is Animatable2Compat
+        ) {
+            "animatableDrawable must implement the Animatable or Animatable2 or Animatable2Compat interface"
+        }
+    }
 
     override val bitmapInfo: BitmapInfo by lazy {
         BitmapInfo(
@@ -98,9 +110,8 @@ class SketchAnimatableDrawable constructor(
     override fun unregisterAnimationCallback(callback: Animatable2Compat.AnimationCallback): Boolean =
         when {
             VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2 -> {
-                callbackMap?.get(callback)?.let {
-                    animatableDrawable.unregisterAnimationCallback(it)
-                } == true
+                callbackMap?.get(callback)
+                    ?.let { animatableDrawable.unregisterAnimationCallback(it) } == true
             }
             animatableDrawable is Animatable2Compat -> {
                 animatableDrawable.unregisterAnimationCallback(callback)
@@ -126,29 +137,33 @@ class SketchAnimatableDrawable constructor(
     }
 
     override fun start() {
-        val animatableDrawable = animatableDrawable
-        if (animatableDrawable !is Animatable) {
-            throw IllegalArgumentException("Drawable must implement the Animatable interface")
+        val animatableDrawable = animatableDrawable as Animatable
+        if (animatableDrawable.isRunning) {
+            return
         }
         animatableDrawable.start()
-        if (!(VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2) && animatableDrawable !is Animatable2Compat) {
-            val isRunning = isRunning
-            if (!isRunning) {
-                callbacks?.forEach { it.onAnimationStart(this) }
+        val callbacks = callbacks
+        if (callbacks != null && !(VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2) && animatableDrawable !is Animatable2Compat) {
+            handler.post {
+                for (callback in callbacks) {
+                    callback.onAnimationStart(this)
+                }
             }
         }
     }
 
     override fun stop() {
-        val animatableDrawable = animatableDrawable
-        if (animatableDrawable !is Animatable) {
-            throw IllegalArgumentException("Drawable must implement the Animatable interface")
+        val animatableDrawable = animatableDrawable as Animatable
+        if (!animatableDrawable.isRunning) {
+            return
         }
         animatableDrawable.stop()
-        if (!(VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2) && animatableDrawable !is Animatable2Compat) {
-            val isRunning = isRunning
-            if (isRunning) {
-                callbacks?.forEach { it.onAnimationEnd(this) }
+        val callbacks = callbacks
+        if (callbacks != null && !(VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2) && animatableDrawable !is Animatable2Compat) {
+            handler.post {
+                for (callback in callbacks) {
+                    callback.onAnimationEnd(this)
+                }
             }
         }
     }
@@ -161,31 +176,55 @@ class SketchAnimatableDrawable constructor(
         return animatableDrawable.isRunning
     }
 
-    override fun toString(): String =
-        animatableDrawableName +
-                "(" + imageInfo.toShortString() +
-                "," + dataFrom +
-                "," + bitmapInfo.toShortString() +
-                "," + transformedList +
-                "," + requestKey +
-                ")"
-
     @SuppressLint("RestrictedApi")
     override fun mutate(): SketchAnimatableDrawable {
         val mutateDrawable = wrappedDrawable.mutate()
         return if (mutateDrawable !== wrappedDrawable) {
             SketchAnimatableDrawable(
+                animatableDrawable = mutateDrawable,
                 imageUri = imageUri,
                 requestKey = requestKey,
                 requestCacheKey = requestCacheKey,
                 imageInfo = imageInfo,
                 dataFrom = dataFrom,
                 transformedList = transformedList,
-                animatableDrawable = mutateDrawable,
-                animatableDrawableName = animatableDrawableName
             )
         } else {
             this
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SketchAnimatableDrawable) return false
+        if (animatableDrawable != other.animatableDrawable) return false
+        if (imageUri != other.imageUri) return false
+        if (requestKey != other.requestKey) return false
+        if (requestCacheKey != other.requestCacheKey) return false
+        if (imageInfo != other.imageInfo) return false
+        if (dataFrom != other.dataFrom) return false
+        if (transformedList != other.transformedList) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = animatableDrawable.hashCode()
+        result = 31 * result + imageUri.hashCode()
+        result = 31 * result + requestKey.hashCode()
+        result = 31 * result + requestCacheKey.hashCode()
+        result = 31 * result + imageInfo.hashCode()
+        result = 31 * result + dataFrom.hashCode()
+        result = 31 * result + (transformedList?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String =
+        "SketchAnimatableDrawable(" +
+                animatableDrawable +
+                ", " + imageInfo.toShortString() +
+                "," + dataFrom +
+                "," + bitmapInfo.toShortString() +
+                "," + transformedList +
+                "," + requestKey +
+                ")"
 }

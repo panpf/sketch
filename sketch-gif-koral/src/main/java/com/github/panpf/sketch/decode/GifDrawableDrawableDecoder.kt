@@ -87,14 +87,13 @@ class GifDrawableDrawableDecoder(
             ExifInterface.ORIENTATION_UNDEFINED
         )
         val animatableDrawable = SketchAnimatableDrawable(
+            animatableDrawable = gifDrawable,
             imageUri = this.request.uriString,
             requestKey = this.request.key,
             requestCacheKey = this.request.cacheKey,
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
-            animatableDrawable = gifDrawable,
-            animatableDrawableName = "GifDrawable"
         ).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.
             val onStart = request.animationStartCallback
