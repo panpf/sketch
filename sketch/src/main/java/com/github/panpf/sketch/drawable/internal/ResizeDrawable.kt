@@ -3,7 +3,6 @@ package com.github.panpf.sketch.drawable.internal
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapper
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Resize
