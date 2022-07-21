@@ -12,6 +12,26 @@ import org.junit.runner.RunWith
 class HttpHeadersTest {
 
     @Test
+    fun testNewBuilder() {
+        val httpHeaders = HttpHeaders.Builder().apply {
+            set("key1", "value1")
+            set("key2", "value2")
+            add("key3", "value3")
+            add("key3", "value31")
+        }.build()
+
+        Assert.assertEquals(httpHeaders, httpHeaders.newBuilder().build())
+        Assert.assertNotEquals(httpHeaders, httpHeaders.newBuilder {
+            add("key3", "value32")
+        }.build())
+
+        Assert.assertEquals(httpHeaders, httpHeaders.newHttpHeaders())
+        Assert.assertNotEquals(httpHeaders, httpHeaders.newHttpHeaders() {
+            add("key3", "value32")
+        })
+    }
+
+    @Test
     fun testSizeAndCount() {
         HttpHeaders.Builder().build().apply {
             Assert.assertEquals(0, size)
@@ -154,75 +174,45 @@ class HttpHeadersTest {
     }
 
     @Test
-    fun testEquals() {
-        val httpHeaders1 = HttpHeaders.Builder().build()
-        val httpHeaders11 = HttpHeaders.Builder().build()
-
-        val httpHeaders2 = HttpHeaders.Builder().apply {
+    fun testEqualsAndHashCode() {
+        val element1 = HttpHeaders.Builder().apply {
             set("key1", "value1")
             add("key2", "value2")
         }.build()
-        val httpHeaders21 = HttpHeaders.Builder().apply {
+        val element11 = HttpHeaders.Builder().apply {
             set("key1", "value1")
             add("key2", "value2")
         }.build()
-
-        val httpHeaders3 = HttpHeaders.Builder().apply {
+        val element2 = HttpHeaders.Builder().apply {
             set("key1", "value1")
-            add("key2", "value2")
-            add("key2", "value21")
+            add("key3", "value3")
         }.build()
-        val httpHeaders31 = HttpHeaders.Builder().apply {
-            set("key1", "value1")
-            add("key2", "value2")
-            add("key2", "value21")
-        }.build()
-
-        Assert.assertNotSame(httpHeaders1, httpHeaders11)
-        Assert.assertNotSame(httpHeaders2, httpHeaders21)
-        Assert.assertNotSame(httpHeaders3, httpHeaders31)
-
-        Assert.assertEquals(httpHeaders1, httpHeaders11)
-        Assert.assertEquals(httpHeaders2, httpHeaders21)
-        Assert.assertEquals(httpHeaders3, httpHeaders31)
-
-        Assert.assertNotEquals(httpHeaders1, httpHeaders2)
-        Assert.assertNotEquals(httpHeaders1, httpHeaders3)
-        Assert.assertNotEquals(httpHeaders2, httpHeaders3)
-    }
-
-    @Test
-    fun testHashCode() {
-        val httpHeaders1 = HttpHeaders.Builder().build()
-        val httpHeaders11 = HttpHeaders.Builder().build()
-
-        val httpHeaders2 = HttpHeaders.Builder().apply {
-            set("key1", "value1")
-            add("key2", "value2")
-        }.build()
-        val httpHeaders21 = HttpHeaders.Builder().apply {
-            set("key1", "value1")
+        val element3 = HttpHeaders.Builder().apply {
+            set("key3", "value3")
             add("key2", "value2")
         }.build()
 
-        val httpHeaders3 = HttpHeaders.Builder().apply {
-            set("key1", "value1")
-            add("key2", "value2")
-            add("key2", "value21")
-        }.build()
-        val httpHeaders31 = HttpHeaders.Builder().apply {
-            set("key1", "value1")
-            add("key2", "value2")
-            add("key2", "value21")
-        }.build()
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
 
-        Assert.assertEquals(httpHeaders1.hashCode(), httpHeaders11.hashCode())
-        Assert.assertEquals(httpHeaders2.hashCode(), httpHeaders21.hashCode())
-        Assert.assertEquals(httpHeaders3.hashCode(), httpHeaders31.hashCode())
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
 
-        Assert.assertNotEquals(httpHeaders1.hashCode(), httpHeaders2.hashCode())
-        Assert.assertNotEquals(httpHeaders1.hashCode(), httpHeaders3.hashCode())
-        Assert.assertNotEquals(httpHeaders2.hashCode(), httpHeaders3.hashCode())
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test

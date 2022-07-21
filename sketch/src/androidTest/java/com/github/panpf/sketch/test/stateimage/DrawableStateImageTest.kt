@@ -91,13 +91,13 @@ class DrawableStateImageTest {
     fun testToString() {
         DrawableStateImage(android.R.drawable.btn_radio).apply {
             Assert.assertEquals(
-                "DrawableStateImage(drawable=ResDrawableFetcher(${android.R.drawable.btn_radio}))",
+                "DrawableStateImage(ResDrawable(${android.R.drawable.btn_radio}))",
                 toString()
             )
         }
         DrawableStateImage(android.R.drawable.btn_dialog).apply {
             Assert.assertEquals(
-                "DrawableStateImage(drawable=ResDrawableFetcher(${android.R.drawable.btn_dialog}))",
+                "DrawableStateImage(ResDrawable(${android.R.drawable.btn_dialog}))",
                 toString()
             )
         }

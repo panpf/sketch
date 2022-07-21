@@ -13,29 +13,29 @@ class IconStateImage private constructor(
     private val bg: Any?,
 ) : StateImage {
 
-    constructor(icon: Drawable, bg: Drawable? = null)
-            : this(RealDrawableFetcher(icon), bg?.let { RealDrawableFetcher(it) })
+    constructor(icon: Drawable, bg: Drawable)
+            : this(RealDrawable(icon), RealDrawable(bg))
 
-    constructor(icon: Drawable, @DrawableRes bg: Int? = null)
-            : this(RealDrawableFetcher(icon), bg?.let { ResDrawableFetcher(it) })
+    constructor(icon: Drawable, @DrawableRes bg: Int)
+            : this(RealDrawable(icon), ResDrawable(bg))
 
-    constructor(icon: Drawable, bg: ColorFetcher? = null)
-            : this(RealDrawableFetcher(icon), bg)
+    constructor(icon: Drawable, bg: ColorFetcher)
+            : this(RealDrawable(icon), bg)
 
     constructor(icon: Drawable)
-            : this(RealDrawableFetcher(icon), null)
+            : this(RealDrawable(icon), null)
 
-    constructor(@DrawableRes icon: Int, bg: Drawable? = null)
-            : this(ResDrawableFetcher(icon), bg?.let { RealDrawableFetcher(it) })
+    constructor(@DrawableRes icon: Int, bg: Drawable)
+            : this(ResDrawable(icon), RealDrawable(bg))
 
-    constructor(@DrawableRes icon: Int, @DrawableRes bg: Int? = null)
-            : this(ResDrawableFetcher(icon), bg?.let { ResDrawableFetcher(it) })
+    constructor(@DrawableRes icon: Int, @DrawableRes bg: Int)
+            : this(ResDrawable(icon), ResDrawable(bg))
 
-    constructor(@DrawableRes icon: Int, bg: ColorFetcher? = null)
-            : this(ResDrawableFetcher(icon), bg)
+    constructor(@DrawableRes icon: Int, bg: ColorFetcher)
+            : this(ResDrawable(icon), bg)
 
     constructor(@DrawableRes icon: Int)
-            : this(ResDrawableFetcher(icon), null)
+            : this(ResDrawable(icon), null)
 
     override fun getDrawable(
         sketch: Sketch,
@@ -54,10 +54,8 @@ class IconStateImage private constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is IconStateImage) return false
-
         if (icon != other.icon) return false
         if (bg != other.bg) return false
-
         return true
     }
 

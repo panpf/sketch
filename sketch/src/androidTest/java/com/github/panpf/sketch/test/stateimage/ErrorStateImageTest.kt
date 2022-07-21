@@ -56,62 +56,40 @@ class ErrorStateImageTest {
     }
 
     @Test
-    fun testEquals() {
-        val stateImage1 = ErrorStateImage(ColorStateImage(Color.RED))
-        val stateImage11 = ErrorStateImage(ColorStateImage(Color.RED))
+    fun testEqualsAndHashCode() {
+        val element1 = ErrorStateImage(ColorStateImage(Color.RED))
+        val element11 = ErrorStateImage(ColorStateImage(Color.RED))
+        val element2 = ErrorStateImage(ColorStateImage(Color.GREEN))
+        val element3 = ErrorStateImage(ColorStateImage(Color.BLUE))
 
-        val stateImage2 = ErrorStateImage(ColorStateImage(Color.GREEN))
-        val stateImage21 = ErrorStateImage(ColorStateImage(Color.GREEN))
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
 
-        val stateImage3 = ErrorStateImage(ColorStateImage(Color.BLUE)) {
-            uriEmptyError(ColorStateImage(Color.YELLOW))
-        }
-        val stateImage31 = ErrorStateImage(ColorStateImage(Color.BLUE)) {
-            uriEmptyError(ColorStateImage(Color.YELLOW))
-        }
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
 
-        Assert.assertNotSame(stateImage1, stateImage11)
-        Assert.assertNotSame(stateImage2, stateImage21)
-        Assert.assertNotSame(stateImage3, stateImage31)
-
-        Assert.assertEquals(stateImage1, stateImage11)
-        Assert.assertEquals(stateImage2, stateImage21)
-        Assert.assertEquals(stateImage3, stateImage31)
-
-        Assert.assertNotEquals(stateImage1, stateImage2)
-        Assert.assertNotEquals(stateImage1, stateImage3)
-        Assert.assertNotEquals(stateImage2, stateImage3)
-    }
-
-    @Test
-    fun testHashCode() {
-        val stateImage1 = ErrorStateImage(ColorStateImage(Color.RED))
-        val stateImage11 = ErrorStateImage(ColorStateImage(Color.RED))
-
-        val stateImage2 = ErrorStateImage(ColorStateImage(Color.GREEN))
-        val stateImage21 = ErrorStateImage(ColorStateImage(Color.GREEN))
-
-        val stateImage3 = ErrorStateImage(ColorStateImage(Color.BLUE)) {
-            uriEmptyError(ColorStateImage(Color.YELLOW))
-        }
-        val stateImage31 = ErrorStateImage(ColorStateImage(Color.BLUE)) {
-            uriEmptyError(ColorStateImage(Color.YELLOW))
-        }
-
-        Assert.assertEquals(stateImage1.hashCode(), stateImage11.hashCode())
-        Assert.assertEquals(stateImage2.hashCode(), stateImage21.hashCode())
-        Assert.assertEquals(stateImage3.hashCode(), stateImage31.hashCode())
-
-        Assert.assertNotEquals(stateImage1.hashCode(), stateImage2.hashCode())
-        Assert.assertNotEquals(stateImage1.hashCode(), stateImage3.hashCode())
-        Assert.assertNotEquals(stateImage2.hashCode(), stateImage3.hashCode())
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test
     fun testToString() {
         ErrorStateImage(ColorStateImage(Color.RED)).apply {
             Assert.assertEquals(
-                "ErrorStateImage([DefaultMatcher(ColorStateImage(color=IntColor(${Color.RED})))])",
+                "ErrorStateImage([DefaultMatcher(ColorStateImage(IntColor(${Color.RED})))])",
                 toString()
             )
         }
@@ -120,7 +98,7 @@ class ErrorStateImageTest {
             uriEmptyError(ColorStateImage(Color.YELLOW))
         }.apply {
             Assert.assertEquals(
-                "ErrorStateImage([UriEmptyMatcher(ColorStateImage(color=IntColor(${Color.YELLOW}))), DefaultMatcher(ColorStateImage(color=IntColor(${Color.GREEN})))])",
+                "ErrorStateImage([UriEmptyMatcher(ColorStateImage(IntColor(${Color.YELLOW}))), DefaultMatcher(ColorStateImage(IntColor(${Color.GREEN})))])",
                 toString()
             )
         }

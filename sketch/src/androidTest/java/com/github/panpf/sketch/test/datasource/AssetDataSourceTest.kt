@@ -25,6 +25,7 @@ class AssetDataSourceTest {
             request = request,
             assetFileName = "sample.jpeg"
         ).apply {
+            Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals("sample.jpeg", this.assetFileName)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
@@ -40,6 +41,7 @@ class AssetDataSourceTest {
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
         ).apply {
+            Assert.assertEquals(540456, length())
             Assert.assertEquals(540456, length())
         }
 

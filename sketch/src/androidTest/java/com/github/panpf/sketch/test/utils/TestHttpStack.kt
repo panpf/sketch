@@ -9,8 +9,7 @@ class TestHttpStack constructor(
     private val context: Context,
     val readDelayMillis: Long? = null,
     val connectionDelayMillis: Long? = null,
-) :
-    HttpStack {
+) : HttpStack {
 
     companion object {
         val testImages = arrayOf(TestImage("http://assets.com/sample.jpeg", 540456))

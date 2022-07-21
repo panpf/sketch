@@ -26,11 +26,11 @@ class DrawableStateImage : StateImage {
     private val drawableFetcher: DrawableFetcher
 
     constructor(@DrawableRes drawableRes: Int) {
-        this.drawableFetcher = ResDrawableFetcher(drawableRes)
+        this.drawableFetcher = ResDrawable(drawableRes)
     }
 
     constructor(drawable: Drawable) {
-        this.drawableFetcher = RealDrawableFetcher(drawable)
+        this.drawableFetcher = RealDrawable(drawable)
     }
 
     override fun getDrawable(
@@ -51,6 +51,6 @@ class DrawableStateImage : StateImage {
     }
 
     override fun toString(): String {
-        return "DrawableStateImage(drawable=$drawableFetcher)"
+        return "DrawableStateImage($drawableFetcher)"
     }
 }

@@ -48,6 +48,6 @@ class ColorStateImage constructor(private val color: ColorFetcher) : StateImage 
     }
 
     override fun toString(): String {
-        return "ColorStateImage(color=$color)"
+        return "ColorStateImage($color)"
     }
 }

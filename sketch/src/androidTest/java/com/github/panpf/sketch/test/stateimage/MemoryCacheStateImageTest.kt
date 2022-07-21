@@ -35,7 +35,7 @@ class MemoryCacheStateImageTest {
         MemoryCacheStateImage(null, null).apply {
             Assert.assertNull(getDrawable(sketch, request, null))
         }
-        MemoryCacheStateImage(memoryCacheKey, null).apply {
+        MemoryCacheStateImage(memoryCacheKey).apply {
             Assert.assertNull(getDrawable(sketch, request, null))
         }
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
@@ -69,67 +69,56 @@ class MemoryCacheStateImageTest {
     }
 
     @Test
-    fun testEquals() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
-        val memoryCacheKey = request.cacheKey
+    fun testEqualsAndHashCode() {
+        val element1 = MemoryCacheStateImage("key1", ColorStateImage(IntColor(Color.BLUE)))
+        val element11 = MemoryCacheStateImage("key1", ColorStateImage(IntColor(Color.BLUE)))
+        val element2 = MemoryCacheStateImage("key1", ColorStateImage(IntColor(Color.GREEN)))
+        val element3 = MemoryCacheStateImage("key2", ColorStateImage(IntColor(Color.BLUE)))
+        val element4 = MemoryCacheStateImage(null, ColorStateImage(IntColor(Color.BLUE)))
+        val element5 = MemoryCacheStateImage("key1", null)
 
-        val stateImage1 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE)))
-        val stateImage11 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE)))
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element1, element4)
+        Assert.assertNotSame(element1, element5)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
+        Assert.assertNotSame(element2, element4)
+        Assert.assertNotSame(element2, element5)
+        Assert.assertNotSame(element3, element4)
+        Assert.assertNotSame(element3, element5)
+        Assert.assertNotSame(element4, element5)
 
-        val stateImage2 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.GREEN)))
-        val stateImage21 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.GREEN)))
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element1, element4)
+        Assert.assertNotEquals(element1, element5)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element2, element4)
+        Assert.assertNotEquals(element2, element5)
+        Assert.assertNotEquals(element3, element4)
+        Assert.assertNotEquals(element3, element5)
+        Assert.assertNotEquals(element4, element5)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
 
-        val stateImage3 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.RED)))
-        val stateImage31 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.RED)))
-
-        Assert.assertNotSame(stateImage1, stateImage11)
-        Assert.assertNotSame(stateImage2, stateImage21)
-        Assert.assertNotSame(stateImage3, stateImage31)
-
-        Assert.assertEquals(stateImage1, stateImage11)
-        Assert.assertEquals(stateImage2, stateImage21)
-        Assert.assertEquals(stateImage3, stateImage31)
-
-        Assert.assertNotEquals(stateImage1, stateImage2)
-        Assert.assertNotEquals(stateImage1, stateImage3)
-        Assert.assertNotEquals(stateImage2, stateImage3)
-    }
-
-    @Test
-    fun testHashCode() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
-        val memoryCacheKey = request.cacheKey
-
-        val stateImage1 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE)))
-        val stateImage11 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE)))
-
-        val stateImage2 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.GREEN)))
-        val stateImage21 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.GREEN)))
-
-        val stateImage3 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.RED)))
-        val stateImage31 =
-            MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.RED)))
-
-        Assert.assertEquals(stateImage1.hashCode(), stateImage11.hashCode())
-        Assert.assertEquals(stateImage2.hashCode(), stateImage21.hashCode())
-        Assert.assertEquals(stateImage3.hashCode(), stateImage31.hashCode())
-
-        Assert.assertNotEquals(stateImage1.hashCode(), stateImage2.hashCode())
-        Assert.assertNotEquals(stateImage1.hashCode(), stateImage3.hashCode())
-        Assert.assertNotEquals(stateImage2.hashCode(), stateImage3.hashCode())
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element4.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element5.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element4.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element5.hashCode())
+        Assert.assertNotEquals(element3.hashCode(), element4.hashCode())
+        Assert.assertNotEquals(element3.hashCode(), element5.hashCode())
+        Assert.assertNotEquals(element4.hashCode(), element5.hashCode())
     }
 
     @Test
@@ -140,13 +129,13 @@ class MemoryCacheStateImageTest {
 
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
             Assert.assertEquals(
-                "MemoryCacheStateImage(memoryCacheKey=$memoryCacheKey, defaultImage=ColorStateImage(color=IntColor(${Color.BLUE})))",
+                "MemoryCacheStateImage(memoryCacheKey=$memoryCacheKey, defaultImage=ColorStateImage(IntColor(${Color.BLUE})))",
                 toString()
             )
         }
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.GREEN))).apply {
             Assert.assertEquals(
-                "MemoryCacheStateImage(memoryCacheKey=$memoryCacheKey, defaultImage=ColorStateImage(color=IntColor(${Color.GREEN})))",
+                "MemoryCacheStateImage(memoryCacheKey=$memoryCacheKey, defaultImage=ColorStateImage(IntColor(${Color.GREEN})))",
                 toString()
             )
         }

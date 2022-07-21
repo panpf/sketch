@@ -25,13 +25,13 @@ interface DrawableFetcher {
     fun getDrawable(context: Context): Drawable
 }
 
-class ResDrawableFetcher(@DrawableRes val drawableRes: Int) : DrawableFetcher {
+class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable = context.getDrawableCompat(drawableRes)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ResDrawableFetcher) return false
+        if (other !is ResDrawable) return false
         if (drawableRes != other.drawableRes) return false
         return true
     }
@@ -41,11 +41,11 @@ class ResDrawableFetcher(@DrawableRes val drawableRes: Int) : DrawableFetcher {
     }
 
     override fun toString(): String {
-        return "ResDrawableFetcher($drawableRes)"
+        return "ResDrawable($drawableRes)"
     }
 }
 
-class RealDrawableFetcher(val drawable: Drawable) : DrawableFetcher {
+class RealDrawable(val drawable: Drawable) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable {
         return drawable
@@ -53,7 +53,7 @@ class RealDrawableFetcher(val drawable: Drawable) : DrawableFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RealDrawableFetcher) return false
+        if (other !is RealDrawable) return false
         if (drawable != other.drawable) return false
         return true
     }
@@ -63,6 +63,6 @@ class RealDrawableFetcher(val drawable: Drawable) : DrawableFetcher {
     }
 
     override fun toString(): String {
-        return "RealDrawableFetcher($drawable)"
+        return "RealDrawable($drawable)"
     }
 }

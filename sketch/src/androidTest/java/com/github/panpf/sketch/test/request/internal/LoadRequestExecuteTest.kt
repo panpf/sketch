@@ -1452,17 +1452,13 @@ class LoadRequestExecuteTest {
     fun testExecuteAndEnqueue() {
         val context = getTestContext()
 
-        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-            resultCachePolicy(DISABLED)
-        }.let { request ->
+        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
             runBlocking { request.execute() }
         }.apply {
             Assert.assertTrue(this is LoadResult.Success)
         }
 
-        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-            resultCachePolicy(DISABLED)
-        }.let { request ->
+        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
             runBlocking { request.enqueue().job.await() }
         }.apply {
             Assert.assertTrue(this is LoadResult.Success)

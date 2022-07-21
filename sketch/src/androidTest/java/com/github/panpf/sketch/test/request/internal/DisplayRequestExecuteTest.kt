@@ -1719,17 +1719,13 @@ class DisplayRequestExecuteTest {
     fun testExecuteAndEnqueue() {
         val context = getTestContext()
 
-        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-            resultCachePolicy(DISABLED)
-        }.let { request ->
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
             runBlocking { request.execute() }
         }.apply {
             Assert.assertTrue(this is DisplayResult.Success)
         }
 
-        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-            resultCachePolicy(DISABLED)
-        }.let { request ->
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
             runBlocking { request.enqueue().job.await() }
         }.apply {
             Assert.assertTrue(this is DisplayResult.Success)

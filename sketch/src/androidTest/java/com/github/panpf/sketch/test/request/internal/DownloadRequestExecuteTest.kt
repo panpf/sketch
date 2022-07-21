@@ -487,17 +487,13 @@ class DownloadRequestExecuteTest {
             httpStack(TestHttpStack(context))
         }
 
-        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
-            resultCachePolicy(DISABLED)
-        }.let { request ->
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString).let { request ->
             runBlocking { request.execute(sketch) }
         }.apply {
             Assert.assertTrue(this is DownloadResult.Success)
         }
 
-        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
-            resultCachePolicy(DISABLED)
-        }.let { request ->
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString).let { request ->
             runBlocking { request.enqueue(sketch).job.await() }
         }.apply {
             Assert.assertTrue(this is DownloadResult.Success)

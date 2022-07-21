@@ -160,6 +160,7 @@ test = [
     "tools4a-dimen",
     "tools4a-test",
     "tools4a-display",
+    "tools4a-network",
 ]
 androidx-navigation = [
     "androidx-navigation-fragment",

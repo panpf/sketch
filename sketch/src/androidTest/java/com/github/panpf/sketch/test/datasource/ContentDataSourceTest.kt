@@ -15,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class ContentDataSourceTest {
@@ -36,6 +37,7 @@ class ContentDataSourceTest {
             request = request,
             contentUri = contentUri,
         ).apply {
+            Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals(contentUri, this.contentUri)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
@@ -59,12 +61,24 @@ class ContentDataSourceTest {
             contentUri = contentUri,
         ).apply {
             Assert.assertEquals(540456, length())
+            Assert.assertEquals(540456, length())
         }
 
         assertThrow(FileNotFoundException::class) {
             val errorContentUri = runBlocking {
                 Uri.fromFile(File("/sdcard/error.jpeg"))
             }
+            ContentDataSource(
+                sketch = sketch,
+                request = LoadRequest(context, errorContentUri.toString()),
+                contentUri = errorContentUri,
+            ).apply {
+                length()
+            }
+        }
+
+        assertThrow(FileNotFoundException::class) {
+            val errorContentUri = Uri.parse("content://fake/fake.jpeg")
             ContentDataSource(
                 sketch = sketch,
                 request = LoadRequest(context, errorContentUri.toString()),
@@ -128,9 +142,7 @@ class ContentDataSourceTest {
             Assert.assertEquals("01d95711e2e30d06b88b93f82e3e1bde.0", file.name)
         }
 
-        val errorContentUri = runBlocking {
-            Uri.fromFile(File("/sdcard/error.jpeg"))
-        }
+        val errorContentUri = Uri.fromFile(File("/sdcard/error.jpeg"))
         ContentDataSource(
             sketch = sketch,
             request = LoadRequest(context, errorContentUri.toString()),
@@ -140,6 +152,19 @@ class ContentDataSourceTest {
                 file()
             }
             Assert.assertEquals("/sdcard/error.jpeg", file.path)
+        }
+
+        assertThrow(FileNotFoundException::class) {
+            val errorContentUri1 = Uri.parse("content://fake/fake.jpeg")
+            ContentDataSource(
+                sketch = sketch,
+                request = LoadRequest(context, errorContentUri1.toString()),
+                contentUri = errorContentUri1,
+            ).apply {
+                runBlocking {
+                    file()
+                }
+            }
         }
     }
 

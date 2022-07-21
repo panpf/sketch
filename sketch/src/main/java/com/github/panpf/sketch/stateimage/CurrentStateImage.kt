@@ -46,10 +46,10 @@ class CurrentStateImage(
     }
 
     override fun hashCode(): Int {
-        return defaultImage?.hashCode() ?: javaClass.hashCode()
+        return defaultImage?.hashCode() ?: 0
     }
 
     override fun toString(): String {
-        return "CurrentStateImage(defaultImage=$defaultImage)"
+        return "CurrentStateImage($defaultImage)"
     }
 }

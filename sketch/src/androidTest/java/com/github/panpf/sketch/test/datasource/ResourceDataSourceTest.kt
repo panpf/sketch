@@ -2,13 +2,16 @@ package com.github.panpf.sketch.test.datasource
 
 import android.content.res.Resources
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +30,7 @@ class ResourceDataSourceTest {
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
+            Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals(R.drawable.ic_launcher, this.drawableId)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
@@ -43,6 +47,7 @@ class ResourceDataSourceTest {
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
+            Assert.assertEquals(14792, length())
             Assert.assertEquals(14792, length())
         }
 
@@ -82,6 +87,21 @@ class ResourceDataSourceTest {
             ).apply {
                 newInputStream()
             }
+        }
+    }
+
+    @Test
+    fun testFile() {
+        val (context, sketch) = getTestContextAndNewSketch()
+        ResourceDataSource(
+            sketch = sketch,
+            request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
+            packageName = context.packageName,
+            resources = context.resources,
+            drawableId = R.drawable.ic_launcher
+        ).apply {
+            val file = runBlocking { file() }
+            Assert.assertEquals("accdbfa7665e0c4cf90a9ffe501693b1.0", file.name)
         }
     }
 

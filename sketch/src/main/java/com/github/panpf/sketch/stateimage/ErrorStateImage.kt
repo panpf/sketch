@@ -102,21 +102,18 @@ interface ErrorStateImage : StateImage {
         ): Drawable?
     }
 
-    private class DefaultMatcher(val stateImage: StateImage) : Matcher {
+    class DefaultMatcher(private val stateImage: StateImage) : Matcher {
 
         override fun match(request: ImageRequest, exception: SketchException?): Boolean = true
 
         override fun getDrawable(
             sketch: Sketch, request: ImageRequest, throwable: SketchException?
-        ): Drawable? =
-            stateImage.getDrawable(sketch, request, throwable)
+        ): Drawable? = stateImage.getDrawable(sketch, request, throwable)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is DefaultMatcher) return false
-
             if (stateImage != other.stateImage) return false
-
             return true
         }
 
@@ -129,7 +126,7 @@ interface ErrorStateImage : StateImage {
         }
     }
 
-    class UriEmptyMatcher(val stateImage: StateImage) : Matcher {
+    class UriEmptyMatcher(private val stateImage: StateImage) : Matcher {
 
         override fun match(request: ImageRequest, exception: SketchException?): Boolean =
             exception is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())
@@ -141,9 +138,7 @@ interface ErrorStateImage : StateImage {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is UriEmptyMatcher) return false
-
             if (stateImage != other.stateImage) return false
-
             return true
         }
 

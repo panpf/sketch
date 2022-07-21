@@ -35,6 +35,7 @@ class FileDataSourceTest {
             request = request,
             file = file
         ).apply {
+            Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertTrue(file === this.file)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
@@ -56,6 +57,7 @@ class FileDataSourceTest {
             request = LoadRequest(context, newFileUri(file.path)),
             file = file
         ).apply {
+            Assert.assertEquals(540456, length())
             Assert.assertEquals(540456, length())
         }
 

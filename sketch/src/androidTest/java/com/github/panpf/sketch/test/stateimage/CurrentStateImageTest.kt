@@ -1,6 +1,9 @@
 package com.github.panpf.sketch.test.stateimage
 
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import android.widget.ImageView
@@ -9,6 +12,7 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
+import com.github.panpf.sketch.test.utils.TestDisplayTarget
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import org.junit.Assert
 import org.junit.Test
@@ -33,6 +37,23 @@ class CurrentStateImageTest {
 
         CurrentStateImage(ColorDrawable(Color.RED)).apply {
             Assert.assertTrue(getDrawable(sketch, request, null) is ColorDrawable)
+        }
+
+        imageView.setImageDrawable(
+            BitmapDrawable(
+                context.resources,
+                Bitmap.createBitmap(100, 100, ARGB_8888)
+            )
+        )
+        CurrentStateImage(ColorDrawable(Color.RED)).apply {
+            Assert.assertTrue(getDrawable(sketch, request, null) is BitmapDrawable)
+        }
+
+        val request1 = DisplayRequest(context, newAssetUri("sample.jpeg")) {
+            target(TestDisplayTarget())
+        }
+        CurrentStateImage(ColorDrawable(Color.RED)).apply {
+            Assert.assertTrue(getDrawable(sketch, request1, null) is ColorDrawable)
         }
     }
 
@@ -64,7 +85,7 @@ class CurrentStateImageTest {
     fun testEqualsAndHashCode() {
         val element1 = CurrentStateImage(android.R.drawable.btn_default)
         val element11 = CurrentStateImage(android.R.drawable.btn_default)
-        val element2 = CurrentStateImage(android.R.drawable.btn_dialog)
+        val element2 = CurrentStateImage()
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -86,14 +107,11 @@ class CurrentStateImageTest {
     @Test
     fun testToString() {
         CurrentStateImage().apply {
-            Assert.assertEquals(
-                "CurrentStateImage(defaultImage=null)",
-                toString()
-            )
+            Assert.assertEquals("CurrentStateImage(null)", toString())
         }
         CurrentStateImage(android.R.drawable.btn_default).apply {
             Assert.assertEquals(
-                "CurrentStateImage(defaultImage=DrawableStateImage(drawable=ResDrawableFetcher(${android.R.drawable.btn_default})))",
+                "CurrentStateImage(DrawableStateImage(ResDrawable(${android.R.drawable.btn_default})))",
                 toString()
             )
         }

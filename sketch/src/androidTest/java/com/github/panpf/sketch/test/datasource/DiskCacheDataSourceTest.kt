@@ -34,9 +34,33 @@ class DiskCacheDataSourceTest {
             dataFrom = DataFrom.DOWNLOAD_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
+            Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertTrue(diskCacheSnapshot === this.diskCacheSnapshot)
             Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, this.dataFrom)
+        }
+    }
+
+    @Test
+    fun testLength() {
+        val (context, sketch) = getTestContextAndNewSketch()
+        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
+        runBlocking {
+            AssetDataSource(
+                sketch = sketch,
+                request = request,
+                assetFileName = "sample.jpeg"
+            ).file()
+        }
+        val diskCache = sketch.resultCache
+        val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
+        DiskCacheDataSource(
+            sketch = sketch,
+            request = request,
+            dataFrom = DataFrom.DOWNLOAD_CACHE,
+            diskCacheSnapshot = diskCacheSnapshot,
+        ).apply {
+            Assert.assertEquals(540456, length())
             Assert.assertEquals(540456, length())
         }
     }

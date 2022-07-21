@@ -104,14 +104,12 @@ class HurlStack private constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is HurlStack) return false
-
         if (readTimeoutMillis != other.readTimeoutMillis) return false
         if (connectTimeoutMillis != other.connectTimeoutMillis) return false
         if (userAgent != other.userAgent) return false
         if (headers != other.headers) return false
         if (addHeaders != other.addHeaders) return false
         if (onBeforeConnect != other.onBeforeConnect) return false
-
         return true
     }
 
