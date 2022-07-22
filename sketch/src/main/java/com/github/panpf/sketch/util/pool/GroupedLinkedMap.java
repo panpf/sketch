@@ -17,7 +17,8 @@ import java.util.Map;
  * For the purposes of the LRU, we count gets for a particular size of bitmap as an access, even if no bitmaps
  * of that size are present. We do not count addition or removal of bitmaps as an access.
  */
-class GroupedLinkedMap<K extends Poolable, V> {
+public class GroupedLinkedMap<K extends Poolable, V> {
+
     private final LinkedEntry<K, V> head = new LinkedEntry<>();
     private final Map<K, LinkedEntry<K, V>> keyToEntry = new HashMap<>();
 

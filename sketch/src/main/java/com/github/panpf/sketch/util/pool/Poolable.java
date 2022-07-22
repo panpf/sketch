@@ -1,5 +1,5 @@
 package com.github.panpf.sketch.util.pool;
 
-interface Poolable {
+public interface Poolable {
     void offer();
 }
