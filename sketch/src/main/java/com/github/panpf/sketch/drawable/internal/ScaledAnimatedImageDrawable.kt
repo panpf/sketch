@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.withSave
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
+import com.github.panpf.sketch.util.requiredMainThread
 import kotlin.math.roundToInt
 
 /**
@@ -27,14 +28,21 @@ import kotlin.math.roundToInt
 class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     val child: AnimatedImageDrawable,
     val fitScale: Boolean = true
-) : Drawable(), Drawable.Callback, Animatable2 {
+) : Drawable(), Animatable2 {
 
     private var childDx = 0f
     private var childDy = 0f
     private var childScale = 1f
 
     init {
-        child.callback = this
+        child.callback = object : Callback {
+            override fun unscheduleDrawable(who: Drawable, what: Runnable) = unscheduleSelf(what)
+
+            override fun invalidateDrawable(who: Drawable) = invalidateSelf()
+
+            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) =
+                scheduleSelf(what, `when`)
+        }
     }
 
     override fun draw(canvas: Canvas) {
@@ -55,7 +63,7 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     @Suppress("DEPRECATION")
     override fun getOpacity() = child.opacity
 
-    override fun getColorFilter(): ColorFilter = DrawableCompat.getColorFilter(child)
+    override fun getColorFilter(): ColorFilter? = DrawableCompat.getColorFilter(child)
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
         child.colorFilter = colorFilter
@@ -95,13 +103,6 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
 
     override fun getIntrinsicHeight() = child.intrinsicHeight
 
-    override fun unscheduleDrawable(who: Drawable, what: Runnable) = unscheduleSelf(what)
-
-    override fun invalidateDrawable(who: Drawable) = invalidateSelf()
-
-    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) =
-        scheduleSelf(what, `when`)
-
     override fun setTint(tintColor: Int) = DrawableCompat.setTint(child, tintColor)
 
     override fun setTintList(tint: ColorStateList?) = DrawableCompat.setTintList(child, tint)
@@ -115,6 +116,7 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     override fun isRunning() = child.isRunning
 
     override fun registerAnimationCallback(callback: AnimationCallback) {
+        requiredMainThread()    // Consistent with AnimatedImageDrawable
         child.registerAnimationCallback(callback)
     }
 

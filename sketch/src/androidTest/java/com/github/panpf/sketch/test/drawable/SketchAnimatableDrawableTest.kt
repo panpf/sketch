@@ -20,6 +20,8 @@ import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.computeByteCount
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.tools4j.test.ktx.assertThrow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -106,7 +108,9 @@ class SketchAnimatableDrawableTest {
                     callbackAction.add("onAnimationEnd")
                 }
             }
-            registerAnimationCallback(callback3)
+            runBlocking(Dispatchers.Main) {
+                registerAnimationCallback(callback3)
+            }
 
             Assert.assertFalse(isRunning)
             Assert.assertEquals(listOf<String>(), callbackAction)
@@ -146,7 +150,9 @@ class SketchAnimatableDrawableTest {
                         callbackAction.add("onAnimationEnd")
                     }
                 }
-                registerAnimationCallback(callback3)
+                runBlocking(Dispatchers.Main) {
+                    registerAnimationCallback(callback3)
+                }
 
                 Assert.assertFalse(isRunning)
                 Assert.assertEquals(listOf<String>(), callbackAction)
@@ -186,7 +192,9 @@ class SketchAnimatableDrawableTest {
                     callbackAction.add("onAnimationEnd")
                 }
             }
-            registerAnimationCallback(callback3)
+            runBlocking(Dispatchers.Main) {
+                registerAnimationCallback(callback3)
+            }
 
             Assert.assertFalse(isRunning)
             Assert.assertEquals(listOf<String>(), callbackAction)
@@ -207,7 +215,7 @@ class SketchAnimatableDrawableTest {
     fun testCallback() {
         val context = getTestContext()
 
-        val animatableDrawable1 = SketchAnimatableDrawable(
+        SketchAnimatableDrawable(
             animatableDrawable = TestAnimatableDrawable1(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
@@ -217,16 +225,21 @@ class SketchAnimatableDrawableTest {
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
             transformedList = null as List<String>?
-        )
+        ).apply {
+            val callback = object : Animatable2Compat.AnimationCallback() {}
+            runBlocking(Dispatchers.Main) {
+                registerAnimationCallback(callback)
+            }
+            unregisterAnimationCallback(callback)
+            runBlocking(Dispatchers.Main) {
+                registerAnimationCallback(callback)
+            }
+            clearAnimationCallbacks()
+        }
 
-        val callback1 = object : Animatable2Compat.AnimationCallback() {}
-        animatableDrawable1.registerAnimationCallback(callback1)
-        animatableDrawable1.unregisterAnimationCallback(callback1)
-        animatableDrawable1.registerAnimationCallback(callback1)
-        animatableDrawable1.clearAnimationCallbacks()
 
         if (Build.VERSION.SDK_INT >= 23) {
-            val animatableDrawable2 = SketchAnimatableDrawable(
+            SketchAnimatableDrawable(
                 animatableDrawable = TestAnimatableDrawable2(
                     BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
                 ),
@@ -236,16 +249,20 @@ class SketchAnimatableDrawableTest {
                 imageInfo = ImageInfo(100, 100, "image/gif", 0),
                 dataFrom = LOCAL,
                 transformedList = null as List<String>?
-            )
-
-            val callback2 = object : Animatable2Compat.AnimationCallback() {}
-            animatableDrawable2.registerAnimationCallback(callback2)
-            animatableDrawable2.unregisterAnimationCallback(callback2)
-            animatableDrawable2.registerAnimationCallback(callback2)
-            animatableDrawable2.clearAnimationCallbacks()
+            ).apply {
+                val callback = object : Animatable2Compat.AnimationCallback() {}
+                runBlocking(Dispatchers.Main) {
+                    registerAnimationCallback(callback)
+                }
+                unregisterAnimationCallback(callback)
+                runBlocking(Dispatchers.Main) {
+                    registerAnimationCallback(callback)
+                }
+                clearAnimationCallbacks()
+            }
         }
 
-        val animatableDrawable3 = SketchAnimatableDrawable(
+        SketchAnimatableDrawable(
             animatableDrawable = TestAnimatableDrawable3(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
@@ -255,19 +272,24 @@ class SketchAnimatableDrawableTest {
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
             transformedList = null as List<String>?
-        )
-
-        val callback3 = object : Animatable2Compat.AnimationCallback() {}
-        animatableDrawable3.registerAnimationCallback(callback3)
-        animatableDrawable3.unregisterAnimationCallback(callback3)
-        animatableDrawable3.registerAnimationCallback(callback3)
-        animatableDrawable3.clearAnimationCallbacks()
+        ).apply {
+            val callback = object : Animatable2Compat.AnimationCallback() {}
+            runBlocking(Dispatchers.Main) {
+                registerAnimationCallback(callback)
+            }
+            unregisterAnimationCallback(callback)
+            runBlocking(Dispatchers.Main) {
+                registerAnimationCallback(callback)
+            }
+            clearAnimationCallbacks()
+        }
     }
 
     @Test
     fun testMutate() {
         val context = getTestContext()
-        val animatableDrawable = SketchAnimatableDrawable(
+
+        SketchAnimatableDrawable(
             animatableDrawable = TestAnimatableDrawable3(
                 context.getDrawableCompat(android.R.drawable.bottom_bar)
             ),
@@ -277,16 +299,18 @@ class SketchAnimatableDrawableTest {
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
             transformedList = null as List<String>?
-        )
-        animatableDrawable.mutate()
-        animatableDrawable.alpha = 146
+        ).apply {
+            mutate()
+            alpha = 146
 
-        val drawable1 = context.getDrawableCompat(android.R.drawable.bottom_bar)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Assert.assertEquals(255, drawable1.alpha)
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    Assert.assertEquals(255, it.alpha)
+                }
+            }
         }
 
-        val animatableDrawable1 = SketchAnimatableDrawable(
+        SketchAnimatableDrawable(
             animatableDrawable = TestAnimatableDrawable3(
                 TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
             ),
@@ -296,13 +320,15 @@ class SketchAnimatableDrawableTest {
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
             transformedList = null as List<String>?
-        )
-        animatableDrawable1.mutate()
-        animatableDrawable1.alpha = 146
+        ).apply {
+            mutate()
+            alpha = 146
 
-        val drawable2 = context.getDrawableCompat(android.R.drawable.bottom_bar)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Assert.assertEquals(255, drawable2.alpha)
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    Assert.assertEquals(255, it.alpha)
+                }
+            }
         }
     }
 

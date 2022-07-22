@@ -27,6 +27,8 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * A [DrawableDecoder] that uses [Movie] to decode GIFs.
@@ -85,20 +87,21 @@ class GifMovieDrawableDecoder constructor(
             ImageInfo(width, height, ImageFormat.GIF.mimeType, ExifInterface.ORIENTATION_UNDEFINED)
 
         val animatableDrawable = SketchAnimatableDrawable(
+            animatableDrawable = movieDrawable,
             imageUri = request.uriString,
             requestKey = request.key,
             requestCacheKey = request.cacheKey,
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
             transformedList = null,
-            animatableDrawable = movieDrawable,
-            animatableDrawableName = "MovieDrawable"
         ).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.
             val onStart = request.animationStartCallback
             val onEnd = request.animationEndCallback
             if (onStart != null || onEnd != null) {
-                registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                withContext(Dispatchers.Main) {
+                    registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                }
             }
         }
 

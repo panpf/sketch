@@ -8,18 +8,31 @@ import android.graphics.PorterDuff.Mode
 import android.graphics.Rect
 import android.graphics.Region
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Build.VERSION_CODES
-import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
 
 class IconDrawable constructor(
     val icon: Drawable,
     val bg: Drawable? = null,
-) : Drawable(), Drawable.Callback {
+) : Drawable() {
 
     init {
-        bg?.callback = this
-        icon.callback = this
+        val callback = object : Callback {
+            override fun invalidateDrawable(who: Drawable) {
+                invalidateSelf()
+            }
+
+            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+                scheduleSelf(what, `when`)
+            }
+
+            override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+                unscheduleSelf(what)
+            }
+        }
+        bg?.callback = callback
+        icon.callback = callback
     }
 
     override fun mutate(): IconDrawable {
@@ -58,12 +71,9 @@ class IconDrawable constructor(
         return icon.changingConfigurations
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun setDither(dither: Boolean) {
-        @Suppress("DEPRECATION")
-        bg?.setDither(dither)
-        @Suppress("DEPRECATION")
-        icon.setDither(dither)
+    override fun isFilterBitmap(): Boolean {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.M
+                && (icon.isFilterBitmap || bg?.isFilterBitmap == true)
     }
 
     override fun setFilterBitmap(filter: Boolean) {
@@ -76,14 +86,8 @@ class IconDrawable constructor(
         icon.alpha = alpha
     }
 
-    @RequiresApi(VERSION_CODES.KITKAT)
     override fun getAlpha(): Int {
-        return icon.alpha
-    }
-
-    @RequiresApi(VERSION_CODES.M)
-    override fun isFilterBitmap(): Boolean {
-        return icon.isFilterBitmap
+        return DrawableCompat.getAlpha(icon)
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
@@ -93,21 +97,23 @@ class IconDrawable constructor(
 
     @Deprecated("Deprecated in Java")
     override fun setColorFilter(color: Int, mode: Mode) {
-        bg?.clearColorFilter()
-        icon.clearColorFilter()
+        @Suppress("DEPRECATION")
+        bg?.setColorFilter(color, mode)
+        @Suppress("DEPRECATION")
+        icon.setColorFilter(color, mode)
     }
 
-    @RequiresApi(VERSION_CODES.LOLLIPOP)
     override fun getColorFilter(): ColorFilter? {
-        return icon.colorFilter
+        return DrawableCompat.getColorFilter(icon)
     }
 
-    @Suppress("DEPRECATION")
     @Deprecated("Deprecated in Java")
-    override fun getOpacity(): Int =
-        icon.opacity.takeIf { it != PixelFormat.OPAQUE }
+    override fun getOpacity(): Int {
+        @Suppress("DEPRECATION")
+        return icon.opacity.takeIf { it != PixelFormat.OPAQUE }
             ?: bg?.opacity.takeIf { it != PixelFormat.OPAQUE }
             ?: PixelFormat.OPAQUE
+    }
 
 
     override fun isStateful(): Boolean {
@@ -130,6 +136,7 @@ class IconDrawable constructor(
     }
 
     override fun setVisible(visible: Boolean, restart: Boolean): Boolean {
+        super.setVisible(visible, restart)
         val result1 = bg?.setVisible(visible, restart) == true
         val result2 = icon.setVisible(visible, restart)
         return result1 || result2
@@ -141,18 +148,6 @@ class IconDrawable constructor(
 
     override fun getPadding(padding: Rect): Boolean {
         return bg?.getPadding(padding) == true
-    }
-
-    override fun invalidateDrawable(who: Drawable) {
-        invalidateSelf()
-    }
-
-    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-        scheduleSelf(what, `when`)
-    }
-
-    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-        unscheduleSelf(what)
     }
 
     override fun onLevelChange(level: Int): Boolean {
@@ -196,3 +191,4 @@ class IconDrawable constructor(
         DrawableCompat.setHotspotBounds(icon, left, top, right, bottom)
     }
 }
+

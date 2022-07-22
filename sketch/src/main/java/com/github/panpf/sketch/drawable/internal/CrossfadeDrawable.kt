@@ -11,6 +11,8 @@ import android.graphics.Rect
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
@@ -19,6 +21,7 @@ import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.requiredMainThread
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -44,7 +47,7 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     val durationMillis: Int = DEFAULT_DURATION,
     val fadeStart: Boolean = true,
     val preferExactIntrinsicSize: Boolean = false,
-) : Drawable(), Drawable.Callback, Animatable2Compat {
+) : Drawable(), Animatable2Compat {
 
     companion object {
         private const val STATE_START = 0
@@ -55,6 +58,7 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()
+    private val handler by lazy { Handler(Looper.getMainLooper()) }
 
     private val intrinsicWidth =
         computeIntrinsicDimension(start?.intrinsicWidth, end?.intrinsicWidth)
@@ -72,8 +76,16 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     init {
         require(durationMillis > 0) { "durationMillis must be > 0." }
 
-        this.start?.callback = this
-        this.end?.callback = this
+        val callback = object : Callback {
+            override fun unscheduleDrawable(who: Drawable, what: Runnable) = unscheduleSelf(what)
+
+            override fun invalidateDrawable(who: Drawable) = invalidateSelf()
+
+            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) =
+                scheduleSelf(what, `when`)
+        }
+        this.start?.callback = callback
+        this.end?.callback = callback
     }
 
     override fun draw(canvas: Canvas) {
@@ -186,13 +198,6 @@ open class CrossfadeDrawable @JvmOverloads constructor(
 
     override fun getIntrinsicHeight() = intrinsicHeight
 
-    override fun unscheduleDrawable(who: Drawable, what: Runnable) = unscheduleSelf(what)
-
-    override fun invalidateDrawable(who: Drawable) = invalidateSelf()
-
-    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) =
-        scheduleSelf(what, `when`)
-
     override fun setTint(tintColor: Int) {
         start?.let { DrawableCompat.setTint(it, tintColor) }
         end?.let { DrawableCompat.setTint(it, tintColor) }
@@ -236,7 +241,9 @@ open class CrossfadeDrawable @JvmOverloads constructor(
 
         state = STATE_RUNNING
         startTimeMillis = SystemClock.uptimeMillis()
-        callbacks.forEach { it.onAnimationStart(this) }
+        handler.post {
+            callbacks.forEach { it.onAnimationStart(this) }
+        }
 
         invalidateSelf()
     }
@@ -251,6 +258,7 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
+        requiredMainThread()    // Consistent with AnimatedImageDrawable
         callbacks.add(callback)
     }
 
@@ -290,7 +298,9 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     private fun markDone() {
         state = STATE_DONE
         start = null
-        callbacks.forEach { it.onAnimationEnd(this) }
+        handler.post {
+            callbacks.forEach { it.onAnimationEnd(this) }
+        }
     }
 
     override fun mutate(): CrossfadeDrawable {

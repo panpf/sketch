@@ -188,28 +188,33 @@ class ResizeDrawableTest {
     @Test
     fun testMutate() {
         val context = getTestContext()
-        val resizeDrawable = ResizeDrawable(
+
+        ResizeDrawable(
             drawable = context.getDrawableCompat(android.R.drawable.bottom_bar),
             resize = Resize(500, 300)
-        )
-        resizeDrawable.mutate()
-        resizeDrawable.alpha = 146
+        ).apply {
+            mutate()
+            alpha = 146
 
-        val drawable1 = context.getDrawableCompat(android.R.drawable.bottom_bar)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Assert.assertEquals(255, drawable1.alpha)
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    Assert.assertEquals(255, it.alpha)
+                }
+            }
         }
 
-        val resizeDrawable1 = ResizeDrawable(
+        ResizeDrawable(
             drawable = TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
             resize = Resize(500, 300)
-        )
-        resizeDrawable1.mutate()
-        resizeDrawable1.alpha = 146
+        ).apply {
+            mutate()
+            alpha = 146
 
-        val drawable2 = context.getDrawableCompat(android.R.drawable.bottom_bar)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Assert.assertEquals(255, drawable2.alpha)
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    Assert.assertEquals(255, it.alpha)
+                }
+            }
         }
     }
 

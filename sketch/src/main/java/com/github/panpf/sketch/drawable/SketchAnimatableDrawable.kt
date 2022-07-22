@@ -31,6 +31,7 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.computeByteCount
+import com.github.panpf.sketch.util.requiredMainThread
 
 @SuppressLint("RestrictedApi")
 class SketchAnimatableDrawable constructor(
@@ -49,12 +50,8 @@ class SketchAnimatableDrawable constructor(
     private val handler by lazy { Handler(Looper.getMainLooper()) }
 
     init {
-        require(
-            animatableDrawable is Animatable
-                    || (VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2)
-                    || animatableDrawable is Animatable2Compat
-        ) {
-            "animatableDrawable must implement the Animatable or Animatable2 or Animatable2Compat interface"
+        require(animatableDrawable is Animatable) {
+            "animatableDrawable must implement the Animatable"
         }
     }
 
@@ -72,6 +69,7 @@ class SketchAnimatableDrawable constructor(
     }
 
     override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
+        requiredMainThread()    // Consistent with AnimatedImageDrawable
         when {
             VERSION.SDK_INT >= VERSION_CODES.M && animatableDrawable is Animatable2 -> {
                 val callbackMap = callbackMap

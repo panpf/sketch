@@ -23,6 +23,8 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
 import pl.droidsonroids.gif.transforms.Transform
@@ -99,7 +101,9 @@ class GifDrawableDrawableDecoder(
             val onStart = request.animationStartCallback
             val onEnd = request.animationEndCallback
             if (onStart != null || onEnd != null) {
-                registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                withContext(Dispatchers.Main) {
+                    registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                }
             }
         }
 

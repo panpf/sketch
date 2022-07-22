@@ -7,6 +7,7 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCall
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.requiredMainThread
 
 open class ResizeAnimatableDrawable(
     drawable: SketchAnimatableDrawable,
@@ -26,6 +27,7 @@ open class ResizeAnimatableDrawable(
     }
 
     override fun registerAnimationCallback(callback: AnimationCallback) {
+        requiredMainThread()    // Consistent with AnimatedImageDrawable
         wrappedDrawable.registerAnimationCallback(callback)
     }
 
