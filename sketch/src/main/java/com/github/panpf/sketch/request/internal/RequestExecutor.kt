@@ -67,6 +67,17 @@ class RequestExecutor {
                 requestContext.lastRequest.lifecycle.awaitStarted()
             }
 
+            // globalImageOptions
+            sketch.globalImageOptions?.let {
+                val defaultOptions = requestContext.lastRequest.defaultOptions
+                if (defaultOptions !== it) {
+                    val newDefaultOptions = defaultOptions?.merged(it) ?: it
+                    requestContext.addRequest(
+                        requestContext.lastRequest.newBuilder().default(newDefaultOptions).build()
+                    )
+                }
+            }
+
             // resolve resize size
             if (requestContext.lastRequest.resizeSize == null) {
                 val resizeSize = requestContext.lastRequest.resizeSizeResolver?.size()

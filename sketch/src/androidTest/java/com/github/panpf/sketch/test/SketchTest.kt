@@ -27,6 +27,7 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
@@ -318,6 +319,15 @@ class SketchTest {
                     listOf(DrawableEngineDecodeInterceptor()),
                     components.drawableDecodeInterceptorList
                 )
+            }
+
+            build().apply {
+                Assert.assertNull(globalImageOptions)
+            }
+            globalImageOptions(ImageOptions())
+            build().apply {
+                Assert.assertEquals(ImageOptions(), globalImageOptions)
+                Assert.assertNotNull(globalImageOptions)
             }
         }
     }
