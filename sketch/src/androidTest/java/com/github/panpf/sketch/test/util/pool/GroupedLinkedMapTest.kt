@@ -11,7 +11,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class GroupedLinkedMapTest {
-    // todo not yet implement
 
     @Test
     fun testPutGet() {
@@ -57,7 +56,7 @@ class GroupedLinkedMapTest {
             val bitmap2 = Bitmap.createBitmap(200, 100, ARGB_8888)
             put(bitmap2.toKey(), bitmap2)
             Assert.assertEquals(
-                "GroupedLinkedMap( {MyKey(key=100x100(ARGB_8888)):1}, {MyKey(key=200x100(ARGB_8888)):1} )",
+                "GroupedLinkedMap({MyKey(key=100x100(ARGB_8888)):1}, {MyKey(key=200x100(ARGB_8888)):1})",
                 toString()
             )
         }

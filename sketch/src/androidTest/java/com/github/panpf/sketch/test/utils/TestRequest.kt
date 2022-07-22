@@ -101,10 +101,10 @@ class TestRequest(
     )
 
     override fun newBuilder(configBlock: (Builder.() -> Unit)?): Builder {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 
     override fun newRequest(configBlock: (Builder.() -> Unit)?): ImageRequest {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 }

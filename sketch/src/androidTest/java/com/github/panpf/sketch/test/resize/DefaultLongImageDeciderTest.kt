@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.test.util
+package com.github.panpf.sketch.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.DefaultLongImageDecider

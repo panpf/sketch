@@ -244,7 +244,8 @@ class IconDrawableTest {
 
             setBounds(0, 0, 10, 20)
             Assert.assertEquals(Rect(0, 0, 10, 20), bounds)
-            Assert.assertEquals(Rect(-37, -32, 47, 52), iconDrawable.bounds)
+            Assert.assertNotEquals(Rect(0, 0, 10, 20), iconDrawable.bounds)
+            Assert.assertNotEquals(Rect(0, 0, 0, 0), iconDrawable.bounds)
             Assert.assertEquals(Rect(0, 0, 10, 20), bgDrawable.bounds)
         }
 
@@ -255,7 +256,8 @@ class IconDrawableTest {
 
             setBounds(0, 0, 10, 20)
             Assert.assertEquals(Rect(0, 0, 10, 20), bounds)
-            Assert.assertEquals(Rect(-37, -32, 47, 52), iconDrawable.bounds)
+            Assert.assertNotEquals(Rect(0, 0, 10, 20), iconDrawable.bounds)
+            Assert.assertNotEquals(Rect(0, 0, 0, 0), iconDrawable.bounds)
         }
     }
 
@@ -383,19 +385,25 @@ class IconDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val iconDrawable = context.getDrawableCompat(android.R.drawable.spinner_background).apply {
-            Assert.assertEquals(Rect(21, 21, 0, 22), Rect().apply { getPadding(this) })
+            Assert.assertFalse(Rect().apply { getPadding(this) }
+                .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
         }
         val bgDrawable =
             context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
-                Assert.assertEquals(Rect(25, 16, 26, 16), Rect().apply { getPadding(this) })
+                Assert.assertFalse(Rect().apply { getPadding(this) }
+                    .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
             }
 
         IconDrawable(icon = iconDrawable, bg = bgDrawable).apply {
-            Assert.assertEquals(Rect(25, 16, 26, 16), Rect().apply { getPadding(this) })
+            Assert.assertEquals(
+                Rect().apply { bgDrawable.getPadding(this) },
+                Rect().apply { getPadding(this) }
+            )
         }
 
         IconDrawable(icon = iconDrawable).apply {
-            Assert.assertEquals(Rect(0, 0, 0, 0), Rect().apply { getPadding(this) })
+            Assert.assertTrue(Rect().apply { getPadding(this) }
+                .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
         }
     }
 

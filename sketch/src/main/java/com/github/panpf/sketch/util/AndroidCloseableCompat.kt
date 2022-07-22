@@ -28,15 +28,15 @@ fun <R> AssetFileDescriptor.useCompat(block: (AssetFileDescriptor) -> R): R {
     }
 }
 
-/**
- * Constant check of api version used during compilation
- *
- * This function is evaluated at compile time to a constant value,
- * so there should be no references to it in other modules.
- *
- * The function usages are validated to have literal argument values.
- */
-@PublishedApi
-@SinceKotlin("1.2")
-internal fun apiVersionIsAtLeast(major: Int, minor: Int, patch: Int) =
-    KotlinVersion.CURRENT.isAtLeast(major, minor, patch)
+///**
+// * Constant check of api version used during compilation
+// *
+// * This function is evaluated at compile time to a constant value,
+// * so there should be no references to it in other modules.
+// *
+// * The function usages are validated to have literal argument values.
+// */
+//@PublishedApi
+//@SinceKotlin("1.2")
+//internal fun apiVersionIsAtLeast(major: Int, minor: Int, patch: Int) =
+//    KotlinVersion.CURRENT.isAtLeast(major, minor, patch)

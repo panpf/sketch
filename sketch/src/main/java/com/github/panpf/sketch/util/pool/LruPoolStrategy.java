@@ -2,6 +2,7 @@ package com.github.panpf.sketch.util.pool;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public interface LruPoolStrategy {
@@ -14,9 +15,11 @@ public interface LruPoolStrategy {
     @Nullable
     Bitmap removeLast();
 
-    String logBitmap(Bitmap bitmap);
+    @NonNull
+    String logBitmap(@NonNull Bitmap bitmap);
 
-    String logBitmap(int width, int height, Bitmap.Config config);
+    @NonNull
+    String logBitmap(int width, int height, @Nullable Bitmap.Config config);
 
-    int getSize(Bitmap bitmap);
+    int getSize(@NonNull Bitmap bitmap);
 }
