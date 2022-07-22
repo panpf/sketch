@@ -10,27 +10,19 @@ import com.github.panpf.sketch.util.BitmapUtilsKt;
  * A strategy for reusing bitmaps that requires any returned bitmap's dimensions to exactly match those request.
  */
 public class AttributeStrategy implements LruPoolStrategy {
+
     private final KeyPool keyPool = new KeyPool();
-    private final GroupedLinkedMap<Key, Bitmap> groupedMap = new GroupedLinkedMap<Key, Bitmap>();
+    private final GroupedLinkedMap<Key, Bitmap> groupedMap = new GroupedLinkedMap<>();
 
-    private static String getBitmapString(Bitmap bitmap) {
-        return getBitmapString(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
-    }
-
-    private static String getBitmapString(int width, int height, Bitmap.Config config) {
-        return "[" + width + "x" + height + "], " + config;
-    }
-
+    @Override
     public void put(Bitmap bitmap) {
         final Key key = keyPool.get(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
-
         groupedMap.put(key, bitmap);
     }
 
     @Override
     public Bitmap get(int width, int height, Bitmap.Config config) {
         final Key key = keyPool.get(width, height, config);
-
         return groupedMap.get(key);
     }
 
@@ -58,6 +50,14 @@ public class AttributeStrategy implements LruPoolStrategy {
     @Override
     public String toString() {
         return "AttributeStrategy(" + groupedMap + "）";
+    }
+
+    private static String getBitmapString(Bitmap bitmap) {
+        return getBitmapString(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+    }
+
+    private static String getBitmapString(int width, int height, Bitmap.Config config) {
+        return "[" + width + "x" + height + "], " + config;
     }
 
     // Visible for testing.
@@ -96,9 +96,7 @@ public class AttributeStrategy implements LruPoolStrategy {
         public boolean equals(Object o) {
             if (o instanceof Key) {
                 Key other = (Key) o;
-                return width == other.width
-                        && height == other.height
-                        && config == other.config;
+                return width == other.width && height == other.height && config == other.config;
             }
             return false;
         }

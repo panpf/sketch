@@ -5,9 +5,9 @@ import java.util.Queue;
 
 abstract class BaseKeyPool<T extends Poolable> {
     private static final int MAX_SIZE = 20;
-    private final Queue<T> keyPool = new ArrayDeque<T>(MAX_SIZE);
+    private final Queue<T> keyPool = new ArrayDeque<>(MAX_SIZE);
 
-    protected T get() {
+    T get() {
         T result = keyPool.poll();
         if (result == null) {
             result = create();
@@ -21,5 +21,5 @@ abstract class BaseKeyPool<T extends Poolable> {
         }
     }
 
-    protected abstract T create();
+    abstract T create();
 }

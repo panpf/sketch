@@ -1,5 +1,8 @@
 package com.github.panpf.sketch.util.recycle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,30 +18,31 @@ import java.util.Map;
  * of that size are present. We do not count addition or removal of bitmaps as an access.
  */
 class GroupedLinkedMap<K extends Poolable, V> {
-    private final LinkedEntry<K, V> head = new LinkedEntry<K, V>();
-    private final Map<K, LinkedEntry<K, V>> keyToEntry = new HashMap<K, LinkedEntry<K, V>>();
+    private final LinkedEntry<K, V> head = new LinkedEntry<>();
+    private final Map<K, LinkedEntry<K, V>> keyToEntry = new HashMap<>();
 
     public void put(K key, V value) {
         LinkedEntry<K, V> entry = keyToEntry.get(key);
 
         if (entry == null) {
-            entry = new LinkedEntry<K, V>(key);
+            entry = new LinkedEntry<>(key);
             makeTail(entry);
             keyToEntry.put(key, entry);
         } else {
             key.offer();
         }
 
-        // 2016/12/30 过滤重复的添加，这很重要，这里是为了备注修改了bitmap pool的代码了
+        // 2016/12/30 my changed
         if (!entry.contains(value)) {
             entry.add(value);
         }
     }
 
+    @Nullable
     public V get(K key) {
         LinkedEntry<K, V> entry = keyToEntry.get(key);
         if (entry == null) {
-            entry = new LinkedEntry<K, V>(key);
+            entry = new LinkedEntry<>(key);
             keyToEntry.put(key, entry);
         } else {
             key.offer();
@@ -49,6 +53,7 @@ class GroupedLinkedMap<K extends Poolable, V> {
         return entry.removeLast();
     }
 
+    @Nullable
     public V removeLast() {
         LinkedEntry<K, V> last = head.prev;
 
@@ -57,9 +62,12 @@ class GroupedLinkedMap<K extends Poolable, V> {
             if (removed != null) {
                 return removed;
             } else {
-                // We will clean up empty lru entries since they are likely to have been one off or unusual sizes and
-                // are not likely to be requested again so the gc thrash should be minimal. Doing so will speed up our
-                // removeLast operation in the future and prevent our linked list from growing to arbitrarily large
+                // We will clean up empty lru entries since they are likely to have been one off or
+                // unusual sizes and
+                // are not likely to be requested again so the gc thrash should be minimal. Doing so will
+                // speed up our
+                // removeLast operation in the future and prevent our linked list from growing to
+                // arbitrarily large
                 // sizes.
                 removeEntry(last);
                 keyToEntry.remove(last.key);
@@ -72,6 +80,7 @@ class GroupedLinkedMap<K extends Poolable, V> {
         return null;
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GroupedLinkedMap( ");
@@ -130,6 +139,7 @@ class GroupedLinkedMap<K extends Poolable, V> {
             this.key = key;
         }
 
+        @Nullable
         public V removeLast() {
             final int valueSize = size();
             return valueSize > 0 ? values.remove(valueSize - 1) : null;
@@ -145,7 +155,7 @@ class GroupedLinkedMap<K extends Poolable, V> {
 
         public void add(V value) {
             if (values == null) {
-                values = new ArrayList<V>();
+                values = new ArrayList<>();
             }
             values.add(value);
         }

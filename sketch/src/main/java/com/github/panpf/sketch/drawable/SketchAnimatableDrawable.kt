@@ -30,7 +30,7 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.BitmapInfo
-import com.github.panpf.sketch.util.computeByteCount
+import com.github.panpf.sketch.util.getBitmapByteSize
 import com.github.panpf.sketch.util.requiredMainThread
 
 @SuppressLint("RestrictedApi")
@@ -59,7 +59,7 @@ class SketchAnimatableDrawable constructor(
         BitmapInfo(
             animatableDrawable.intrinsicWidth,
             animatableDrawable.intrinsicHeight,
-            computeByteCount(
+            getBitmapByteSize(
                 animatableDrawable.intrinsicWidth,
                 animatableDrawable.intrinsicHeight,
                 ARGB_8888
