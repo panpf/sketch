@@ -20,7 +20,7 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.LruCache
+import com.github.panpf.sketch.util.cache.LruCache
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize

@@ -16,9 +16,9 @@ import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.isAndSupportHardware
-import com.github.panpf.sketch.util.recycle.AttributeStrategy
-import com.github.panpf.sketch.util.recycle.LruPoolStrategy
-import com.github.panpf.sketch.util.recycle.SizeConfigStrategy
+import com.github.panpf.sketch.util.pool.AttributeStrategy
+import com.github.panpf.sketch.util.pool.LruPoolStrategy
+import com.github.panpf.sketch.util.pool.SizeConfigStrategy
 import com.github.panpf.sketch.util.toHexString
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.roundToInt

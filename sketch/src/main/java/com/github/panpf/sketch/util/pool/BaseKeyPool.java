@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.util.recycle;
+package com.github.panpf.sketch.util.pool;
 
 import java.util.ArrayDeque;
 import java.util.Queue;

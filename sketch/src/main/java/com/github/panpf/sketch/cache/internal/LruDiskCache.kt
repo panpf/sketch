@@ -19,7 +19,7 @@ import android.content.Context
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
-import com.github.panpf.sketch.util.DiskLruCache
+import com.github.panpf.sketch.util.cache.DiskLruCache
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.fileNameCompatibilityMultiProcess
 import com.github.panpf.sketch.util.format

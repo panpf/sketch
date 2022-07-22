@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.cache
 
-import com.github.panpf.sketch.util.DiskLruCache
+import com.github.panpf.sketch.util.cache.DiskLruCache
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 import java.io.Closeable

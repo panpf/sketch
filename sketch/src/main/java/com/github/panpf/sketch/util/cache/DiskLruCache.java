@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.util;
+package com.github.panpf.sketch.util.cache;
 
 import android.util.Log;
 

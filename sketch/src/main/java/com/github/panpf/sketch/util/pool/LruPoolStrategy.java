@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.util.recycle;
+package com.github.panpf.sketch.util.pool;
 
 import android.graphics.Bitmap;
 
