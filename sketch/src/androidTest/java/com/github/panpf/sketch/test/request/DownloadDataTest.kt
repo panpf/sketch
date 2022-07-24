@@ -5,6 +5,7 @@ import com.github.panpf.sketch.datasource.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,16 +28,16 @@ class DownloadDataTest {
         val snapshot = sketch.downloadCache[diskCacheKey]!!
 
         val bytes = snapshot.newInputStream().use { it.readBytes() }
-        DownloadData.Bytes(bytes, MEMORY).apply {
-            Assert.assertSame(bytes, data)
+        DownloadData(bytes, MEMORY).apply {
+            Assert.assertSame(bytes, data.asOrThrow<DownloadData.ByteArrayData>().bytes)
             Assert.assertEquals(MEMORY, dataFrom)
-            Assert.assertTrue(newInputStream().apply { close() } is ByteArrayInputStream)
+            Assert.assertTrue(data.newInputStream().apply { close() } is ByteArrayInputStream)
         }
 
-        DownloadData.Cache(snapshot, DOWNLOAD_CACHE).apply {
-            Assert.assertSame(snapshot, diskCacheSnapshot)
+        DownloadData(snapshot, DOWNLOAD_CACHE).apply {
+            Assert.assertSame(snapshot, data.asOrThrow<DownloadData.DiskCacheData>().snapshot)
             Assert.assertEquals(DOWNLOAD_CACHE, dataFrom)
-            Assert.assertTrue(newInputStream().apply { close() } is FileInputStream)
+            Assert.assertTrue(data.newInputStream().apply { close() } is FileInputStream)
         }
     }
 }

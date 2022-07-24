@@ -32,11 +32,11 @@ class DiskCacheDataSourceTest {
             sketch = sketch,
             request = request,
             dataFrom = DataFrom.DOWNLOAD_CACHE,
-            diskCacheSnapshot = diskCacheSnapshot,
+            snapshot = diskCacheSnapshot,
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertTrue(diskCacheSnapshot === this.diskCacheSnapshot)
+            Assert.assertTrue(diskCacheSnapshot === this.snapshot)
             Assert.assertEquals(DataFrom.DOWNLOAD_CACHE, this.dataFrom)
         }
     }
@@ -58,7 +58,7 @@ class DiskCacheDataSourceTest {
             sketch = sketch,
             request = request,
             dataFrom = DataFrom.DOWNLOAD_CACHE,
-            diskCacheSnapshot = diskCacheSnapshot,
+            snapshot = diskCacheSnapshot,
         ).apply {
             Assert.assertEquals(540456, length())
             Assert.assertEquals(540456, length())
@@ -82,7 +82,7 @@ class DiskCacheDataSourceTest {
             sketch = sketch,
             request = request,
             dataFrom = DataFrom.DOWNLOAD_CACHE,
-            diskCacheSnapshot = diskCacheSnapshot,
+            snapshot = diskCacheSnapshot,
         ).apply {
             newInputStream().close()
         }
@@ -105,7 +105,7 @@ class DiskCacheDataSourceTest {
             sketch = sketch,
             request = request,
             dataFrom = DataFrom.DOWNLOAD_CACHE,
-            diskCacheSnapshot = diskCacheSnapshot,
+            snapshot = diskCacheSnapshot,
         ).apply {
             val file = runBlocking {
                 file()
@@ -134,7 +134,7 @@ class DiskCacheDataSourceTest {
             sketch = sketch,
             request = request,
             dataFrom = DataFrom.DOWNLOAD_CACHE,
-            diskCacheSnapshot = diskCacheSnapshot,
+            snapshot = diskCacheSnapshot,
         ).apply {
             Assert.assertEquals(
                 "DiskCacheDataSource(from=DOWNLOAD_CACHE,file='${diskCacheSnapshot.file.path}')",

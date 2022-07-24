@@ -74,8 +74,8 @@ class EngineRequestInterceptor : RequestInterceptor {
         val fetchResult = fetcher.fetch()
         val dataFrom = fetchResult.dataFrom
         return when (val source = fetchResult.dataSource) {
-            is ByteArrayDataSource -> DownloadData.Bytes(source.data, dataFrom)
-            is DiskCacheDataSource -> DownloadData.Cache(source.diskCacheSnapshot, dataFrom)
+            is ByteArrayDataSource -> DownloadData(source.data, dataFrom)
+            is DiskCacheDataSource -> DownloadData(source.snapshot, dataFrom)
             else -> throw UnsupportedOperationException("Unsupported DataSource for DownloadRequest: ${source::class.qualifiedName}")
         }
     }

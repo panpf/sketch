@@ -247,7 +247,7 @@ class MemoryCacheInterceptorTest {
                     LoadData(bitmap, imageInfo, DataFrom.LOCAL, null)
                 }
                 is DownloadRequest -> {
-                    DownloadData.Bytes(byteArrayOf(), DataFrom.NETWORK)
+                    DownloadData(byteArrayOf(), DataFrom.NETWORK)
                 }
                 else -> {
                     throw UnsupportedOperationException("Unsupported ImageRequest: ${chain.request::class.java}")

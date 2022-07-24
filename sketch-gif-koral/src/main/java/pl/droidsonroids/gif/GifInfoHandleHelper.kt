@@ -16,7 +16,7 @@ class GifInfoHandleHelper(private val dataSource: DataSource) {
                 GifInfoHandle(dataSource.data)
             }
             is DiskCacheDataSource -> {
-                GifInfoHandle(dataSource.diskCacheSnapshot.file.path)
+                GifInfoHandle(dataSource.snapshot.file.path)
             }
             is ResourceDataSource -> {
                 GifInfoHandle(dataSource.request.context.resources.openRawResourceFd(dataSource.drawableId))

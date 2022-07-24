@@ -99,10 +99,13 @@ class SizeConfigStrategyTest {
             Assert.assertNull(removeLast())
             put(Bitmap.createBitmap(50, 50, ARGB_8888))
             put(Bitmap.createBitmap(70, 70, RGB_565))
-            Assert.assertEquals(
-                "SizeConfigStrategy(groupedMap=GroupedLinkedMap({[10000](ARGB_8888):1}, {[9800](RGB_565):1}), sortedSizes=(RGB_565[{9800=1}], ARGB_8888[{10000=1}]))",
-                toString()
-            )
+            val toString1 =
+                "SizeConfigStrategy(groupedMap=GroupedLinkedMap({[10000](ARGB_8888):1}, {[9800](RGB_565):1}), sortedSizes=(RGB_565[{9800=1}], ARGB_8888[{10000=1}]))"
+            val toString2 =
+                "SizeConfigStrategy(groupedMap=GroupedLinkedMap({[10000](ARGB_8888):1}, {[9800](RGB_565):1}), sortedSizes=(ARGB_8888[{10000=1}], RGB_565[{9800=1}]))"
+            val toString = toString()
+            // sortedSizes map order problem
+            Assert.assertTrue(toString == toString1 || toString == toString2)
         }
     }
 }

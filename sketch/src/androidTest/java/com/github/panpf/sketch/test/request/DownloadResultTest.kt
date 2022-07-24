@@ -19,7 +19,7 @@ class DownloadResultTest {
         val context = getTestContext()
         val request1 = DownloadRequest(context, "http://sample.com/sample.jpeg")
 
-        DownloadResult.Success(request1, DownloadData.Bytes(byteArrayOf(), MEMORY)).apply {
+        DownloadResult.Success(request1, DownloadData(byteArrayOf(), MEMORY)).apply {
             Assert.assertSame(request1, request)
             Assert.assertNotNull(data)
             Assert.assertEquals(MEMORY, dataFrom)

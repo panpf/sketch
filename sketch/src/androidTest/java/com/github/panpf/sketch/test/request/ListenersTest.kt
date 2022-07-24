@@ -73,7 +73,7 @@ class ListenersTest {
         runBlocking(Dispatchers.Main) {
             listeners.onSuccess(
                 request,
-                DownloadResult.Success(request, DownloadData.Bytes(byteArrayOf(), MEMORY))
+                DownloadResult.Success(request, DownloadData(byteArrayOf(), MEMORY))
             )
         }
         Assert.assertEquals(
