@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.cache
 
-import com.github.panpf.sketch.util.cache.DiskLruCache
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 import java.io.Closeable
@@ -61,11 +60,6 @@ interface DiskCache : Closeable {
      * @return true if an entry was removed.
      */
     fun remove(key: String): Boolean
-
-    /**
-     * Returns exist of the entry named [key]
-     */
-    fun exist(key: String): Boolean
 
     /**
      * Returns a snapshot of the entry named [key], or null if it doesn't exist.
@@ -134,9 +128,6 @@ interface DiskCache : Closeable {
          */
         @Throws(
             IOException::class,
-            DiskLruCache.EditorChangedException::class,
-            DiskLruCache.ClosedException::class,
-            DiskLruCache.FileNotExistException::class
         )
         fun commit()
 

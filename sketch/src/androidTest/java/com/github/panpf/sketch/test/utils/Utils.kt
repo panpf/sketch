@@ -93,3 +93,8 @@ fun BitmapPool.exist(width: Int, height: Int, config: Bitmap.Config): Boolean {
     }
     return bitmap != null
 }
+
+/**
+ * Returns exist of the entry named [key]
+ */
+fun DiskCache.exist(key: String): Boolean = get(key) != null

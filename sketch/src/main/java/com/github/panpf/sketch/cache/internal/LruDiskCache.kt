@@ -19,7 +19,7 @@ import android.content.Context
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
-import com.github.panpf.sketch.util.cache.DiskLruCache
+import com.github.panpf.sketch.util.DiskLruCache
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.fileNameCompatibilityMultiProcess
 import com.github.panpf.sketch.util.format
@@ -98,7 +98,14 @@ class LruDiskCache private constructor(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return diskEditor?.let { LruDiskCacheEditor(this, logger, key, it) }
+        return diskEditor?.let {
+            MyEditor(
+                key = key,
+                cache = cache,
+                editor = it,
+                logger = logger
+            )
+        }
     }
 
     override fun remove(key: String): Boolean {
@@ -112,27 +119,16 @@ class LruDiskCache private constructor(
         }
     }
 
-    override fun exist(key: String): Boolean {
-        val cache = cache()
-        val encodedKey = keyMapperCache.mapKey(key)
-        return try {
-            cache.exist(encodedKey)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
     override fun get(key: String): Snapshot? {
         val cache = cache()
         val encodedKey = keyMapperCache.mapKey(key)
-        var snapshot: DiskLruCache.SimpleSnapshot? = null
+        var snapshot: DiskLruCache.Snapshot? = null
         try {
-            snapshot = cache.getSimpleSnapshot(encodedKey)
+            snapshot = cache.get(encodedKey)
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return (snapshot?.let { LruDiskCacheSnapshot(this, logger, key, it) }).apply {
+        return (snapshot?.let { MySnapshot(key, encodedKey, cache, it, logger) }).apply {
             val getCount1 = getCount.addAndGet(1)
             val hitCount1 = if (this != null) {
                 hitCount.addAndGet(1)
@@ -162,7 +158,7 @@ class LruDiskCache private constructor(
             }
             this._cache = null
         } else {
-            DiskLruCache.deleteContents(directory)
+            DiskLruCache.Util.deleteContents(directory)
         }
         logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
     }
@@ -210,27 +206,28 @@ class LruDiskCache private constructor(
         return result
     }
 
-    class LruDiskCacheSnapshot(
-        private val lruDiskCache: LruDiskCache,
-        private val logger: Logger?,
+    class MySnapshot constructor(
         override val key: String,
-        private val snapshot: DiskLruCache.SimpleSnapshot
+        private val encodedKey: String,
+        private val cache: DiskLruCache,
+        private val snapshot: DiskLruCache.Snapshot,
+        private val logger: Logger?,
     ) : Snapshot {
 
         override val file: File = snapshot.getFile(0)
 
         @Throws(IOException::class)
-        override fun newInputStream(): InputStream = snapshot.newInputStream(0)
+        override fun newInputStream(): InputStream = snapshot.getInputStream(0)
 
         override fun edit(): Editor? = snapshot.edit()?.let {
-            LruDiskCacheEditor(lruDiskCache, logger, key, it)
+            MyEditor(key, cache, it, logger)
         }
 
         override fun remove(): Boolean =
             try {
-                snapshot.diskLruCache.remove(snapshot.key)
+                cache.remove(encodedKey)
                 logger?.d(MODULE) {
-                    "delete. size ${lruDiskCache.size.formatFileSize()}. $key"
+                    "delete. size ${cache.size().formatFileSize()}. $key"
                 }
                 true
             } catch (e: Exception) {
@@ -239,39 +236,34 @@ class LruDiskCache private constructor(
             }
     }
 
-    class LruDiskCacheEditor(
-        private val lruDiskCache: LruDiskCache,
-        private val logger: Logger?,
+    class MyEditor(
         private val key: String,
-        private val diskEditor: DiskLruCache.Editor
+        private val cache: DiskLruCache,
+        private val editor: DiskLruCache.Editor,
+        private val logger: Logger?,
     ) : Editor {
 
         @Throws(IOException::class)
         override fun newOutputStream(): OutputStream {
-            return diskEditor.newOutputStream(0)
+            return editor.newOutputStream(0)
         }
 
-        @Throws(
-            IOException::class,
-            DiskLruCache.EditorChangedException::class,
-            DiskLruCache.ClosedException::class,
-            DiskLruCache.FileNotExistException::class
-        )
+        @Throws(IOException::class)
         override fun commit() {
-            diskEditor.commit()
+            editor.commit()
             logger?.d(MODULE) {
-                "commit. size ${lruDiskCache.size.formatFileSize()}. $key"
+                "commit. size ${cache.size().formatFileSize()}. $key"
             }
         }
 
         override fun abort() {
             try {
-                diskEditor.abort()
+                editor.abort()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             logger?.d(MODULE) {
-                "abort. size ${lruDiskCache.size.formatFileSize()}. $key"
+                "abort. size ${cache.size().formatFileSize()}. $key"
             }
         }
     }
