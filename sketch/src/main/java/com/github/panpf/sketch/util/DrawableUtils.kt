@@ -39,6 +39,3 @@ internal fun Drawable.toNewBitmap(
     setBounds(oldLeft, oldTop, oldRight, oldBottom) // restore bounds
     return bitmap
 }
-
-internal val Drawable.alphaCompat: Int
-    get() = DrawableCompat.getAlpha(this)

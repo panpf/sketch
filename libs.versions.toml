@@ -156,6 +156,7 @@ test = [
     "androidx-test-ext-junit",
     "tools4j-test",
     "tools4j-reflect",
+    "tools4j-security",
     "tools4a-run",
     "tools4a-dimen",
     "tools4a-test",

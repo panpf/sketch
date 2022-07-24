@@ -65,14 +65,8 @@ internal fun Context?.getLifecycle(): Lifecycle? {
     while (true) {
         when (context) {
             is LifecycleOwner -> return context.lifecycle
-            !is ContextWrapper -> return null
-            else -> context = context.baseContext
+            is ContextWrapper -> context = context.baseContext
+            else -> return null
         }
     }
 }
-
-//internal inline fun <reified T : Any> Context.requireSystemService(): T = getSystemService()!!
-//
-//internal fun Context.isPermissionGranted(permission: String): Boolean {
-//    return ContextCompat.checkSelfPermission(this, permission) == PERMISSION_GRANTED
-//}

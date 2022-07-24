@@ -71,8 +71,8 @@ class NetworkObserver21(context: Context) : NetworkObserver {
 
     private fun Network.isCellularNetworkConnected(): Boolean {
         val networkCapabilities = connectivityManager?.getNetworkCapabilities(this)
-        return networkCapabilities != null &&
-                networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        return networkCapabilities != null
+                && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
     }
 }

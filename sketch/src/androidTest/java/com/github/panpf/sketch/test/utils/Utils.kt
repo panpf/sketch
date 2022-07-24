@@ -6,6 +6,7 @@ import android.graphics.BitmapRegionDecoder
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
@@ -98,3 +99,6 @@ fun BitmapPool.exist(width: Int, height: Int, config: Bitmap.Config): Boolean {
  * Returns exist of the entry named [key]
  */
 fun DiskCache.exist(key: String): Boolean = get(key) != null
+
+val Drawable.alphaCompat: Int
+    get() = DrawableCompat.getAlpha(this)

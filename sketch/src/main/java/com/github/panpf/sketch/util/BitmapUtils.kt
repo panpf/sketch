@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.util
 
 import android.graphics.Bitmap
-import android.graphics.Bitmap.CompressFormat
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.os.Build.VERSION
@@ -46,13 +45,6 @@ internal fun Bitmap.Config?.getBytesPerPixel(): Int {
 internal fun getBitmapByteSize(width: Int, height: Int, config: Bitmap.Config?): Int {
     return width * height * config.getBytesPerPixel()
 }
-
-/**
- * Get the appropriate compression format according to the [Bitmap] configuration
- */
-@Suppress("unused")
-internal val Bitmap.Config?.getCompressFormat: CompressFormat
-    get() = if (this == Bitmap.Config.RGB_565) CompressFormat.JPEG else CompressFormat.PNG
 
 internal fun Bitmap.Config.isAndSupportHardware(): Boolean =
     VERSION.SDK_INT >= VERSION_CODES.O && this == Bitmap.Config.HARDWARE
