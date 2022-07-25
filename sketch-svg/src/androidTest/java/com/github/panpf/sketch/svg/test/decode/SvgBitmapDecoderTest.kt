@@ -2,6 +2,7 @@ package com.github.panpf.sketch.svg.test.decode
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
+import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -57,6 +58,31 @@ class SvgBitmapDecoderTest {
     }
 
     @Test
+    fun testFactoryEqualsAndHashCode() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+
+        val element1 = SvgBitmapDecoder.Factory()
+        val element11 = SvgBitmapDecoder.Factory()
+        val element2 = SvgBitmapDecoder.Factory(false)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+    }
+
+    @Test
     fun testDecode() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
@@ -71,7 +97,10 @@ class SvgBitmapDecoderTest {
             }
         }.apply {
             Assert.assertEquals("Bitmap(841x595,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(841x595,'image/svg+xml',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -86,7 +115,10 @@ class SvgBitmapDecoderTest {
             }
         }.apply {
             Assert.assertEquals("Bitmap(841x595,RGB_565)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(841x595,'image/svg+xml',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
         }
@@ -102,7 +134,10 @@ class SvgBitmapDecoderTest {
         }.apply {
             Assert.assertEquals("Bitmap(421x298,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
-            Assert.assertEquals("ImageInfo(841x595,'image/svg+xml',UNDEFINED)", imageInfo.toShortString())
+            Assert.assertEquals(
+                "ImageInfo(841x595,'image/svg+xml',UNDEFINED)",
+                imageInfo.toShortString()
+            )
             Assert.assertEquals(LOCAL, dataFrom)
         }
 

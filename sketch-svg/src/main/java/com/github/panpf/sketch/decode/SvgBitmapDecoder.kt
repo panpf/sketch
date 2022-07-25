@@ -141,9 +141,7 @@ class SvgBitmapDecoder(
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Factory) return false
-
             if (useViewBoundsAsIntrinsicSize != other.useViewBoundsAsIntrinsicSize) return false
-
             return true
         }
 

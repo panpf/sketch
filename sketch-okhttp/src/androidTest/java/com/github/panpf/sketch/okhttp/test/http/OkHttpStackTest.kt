@@ -1,14 +1,18 @@
 package com.github.panpf.sketch.okhttp.test.http
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.http.OkHttpStack.MyInterceptor
-import okhttp3.Request
-import okhttp3.internal.Version.userAgent
+import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.tools4a.network.Networkx
+import com.github.panpf.tools4j.test.ktx.assertThrow
+import okhttp3.OkHttpClient
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class OkHttpStackTest {
@@ -125,29 +129,82 @@ class OkHttpStackTest {
     }
 
     @Test
-    fun testMyInterceptor() {
-        val interceptor = MyInterceptor(
-            "TestUserAgent",
-            mapOf("Header1" to "HeaderValue2"),
-            listOf("AddHeader1" to "AddHeaderValue1", "AddHeader1" to "AddHeaderValue2")
+    fun testGetResponse() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        if (!Networkx.isConnected(context)) return
+
+        val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"
+
+        OkHttpStack.Builder().build().getResponse(DownloadRequest(context, url), url).apply {
+            Assert.assertEquals(200, code)
+            Assert.assertEquals("", message)
+            Assert.assertEquals(9904, contentLength)
+            Assert.assertEquals("image/png", contentType)
+            Assert.assertEquals("image/png", getHeaderField("Content-Type"))
+            content.use {
+                Assert.assertNotNull(it)
+            }
+        }
+
+        OkHttpStack.Builder().apply {
+            userAgent("Android 8.1")
+            headers("header1" to "value1")
+            addHeaders("addHeader1" to "addValue1")
+        }.build().getResponse(DownloadRequest(context, url) {
+            addHttpHeader("addHttpHeader1", "setHttpValue1")
+            setHttpHeader("setHttpHeader1", "setHttpValue1")
+        }, url).apply {
+            Assert.assertEquals(200, code)
+            Assert.assertEquals("", message)
+            Assert.assertEquals(9904, contentLength)
+            Assert.assertEquals("image/png", contentType)
+            Assert.assertEquals("image/png", getHeaderField("Content-Type"))
+            content.use {
+                Assert.assertNotNull(it)
+            }
+        }
+
+        assertThrow(IllegalArgumentException::class) {
+            OkHttpStack.Builder().build().getResponse(DownloadRequest(context, url), "")
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val okHttpClient = OkHttpClient.Builder().build()
+        val element1 = OkHttpStack(okHttpClient)
+        val element11 = OkHttpStack(okHttpClient)
+        val element2 = OkHttpStack(OkHttpClient.Builder().build())
+        val element3 = OkHttpStack(OkHttpClient.Builder().build())
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        Assert.assertEquals(
+            "OkHttpStack(connectTimeout=10000,readTimeout=10000)",
+            OkHttpStack(OkHttpClient.Builder().build()).toString()
         )
-
-        val request = Request.Builder().apply {
-            url("http://sample.com/sample.jpeg")
-        }.build()
-        request.apply {
-            Assert.assertEquals(null, header("User-Agent"))
-            Assert.assertEquals(null, header("Header1"))
-            Assert.assertEquals(listOf<String>(), headers("AddHeader1"))
-        }
-
-        interceptor.setupAttrs(request).apply {
-            Assert.assertEquals("TestUserAgent", header("User-Agent"))
-            Assert.assertEquals("HeaderValue2", header("Header1"))
-            Assert.assertEquals(
-                listOf("AddHeaderValue1", "AddHeaderValue2"),
-                headers("AddHeader1")
-            )
-        }
     }
 }

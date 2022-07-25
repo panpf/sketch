@@ -20,7 +20,7 @@ import android.os.SystemClock
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
-import com.github.panpf.sketch.internal.allocationByteCountCompat
+import com.github.panpf.sketch.gif.util.allocationByteCountCompat
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
@@ -211,6 +211,7 @@ class MovieDrawable constructor(
         paint.alpha = alpha
     }
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int {
         return if (paint.alpha == 255 && (pixelOpacity == OPAQUE || (pixelOpacity == UNCHANGED && movie.isOpaque))) {
             PixelFormat.OPAQUE

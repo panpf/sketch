@@ -178,4 +178,12 @@ class HurlStackTest {
         Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
     }
+
+    @Test
+    fun testToString() {
+        Assert.assertEquals(
+            "HurlStack(connectTimeout=${HttpStack.DEFAULT_TIMEOUT},readTimeout=${HttpStack.DEFAULT_TIMEOUT},userAgent=null)",
+            HurlStack.Builder().build().toString()
+        )
+    }
 }

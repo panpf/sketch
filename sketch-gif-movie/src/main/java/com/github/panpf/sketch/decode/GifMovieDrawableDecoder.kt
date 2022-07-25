@@ -60,23 +60,19 @@ class GifMovieDrawableDecoder constructor(
         val height = movie?.height() ?: 0
         check(movie != null && width > 0 && height > 0) { "Failed to decode GIF." }
 
-        val movieDrawable = MovieDrawable(
-            movie = movie,
-            config = when {
-                movie.isOpaque && request.bitmapConfig?.isLowQuality == true -> RGB_565
-                else -> ARGB_8888
-            },
-            if (!request.disallowReuseBitmap) {
-                object : MovieDrawable.BitmapCreator {
-                    override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
-                        sketch.bitmapPool.getOrCreate(width, height, config)
+        val config = if (movie.isOpaque && request.bitmapConfig?.isLowQuality == true)
+            RGB_565 else ARGB_8888
+        val bitmapCreator = if (!request.disallowReuseBitmap) {
+            object : MovieDrawable.BitmapCreator {
+                override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
+                    sketch.bitmapPool.getOrCreate(width, height, config)
 
-                    override fun freeBitmap(bitmap: Bitmap) {
-                        sketch.bitmapPool.free(bitmap, "MovieDrawable:recycle")
-                    }
+                override fun freeBitmap(bitmap: Bitmap) {
+                    sketch.bitmapPool.free(bitmap, "MovieDrawable:recycle")
                 }
-            } else null,
-        ).apply {
+            }
+        } else null
+        val movieDrawable = MovieDrawable(movie, config, bitmapCreator).apply {
             setRepeatCount(request.repeatCount ?: ANIMATION_REPEAT_INFINITE)
 
             // Set the animated transformation to be applied on each frame.
