@@ -206,12 +206,13 @@ class LruBitmapPool constructor(
         val inSampleSize = options.inSampleSize.coerceAtLeast(1)
         val finalWidth = samplingSize(imageWidth, inSampleSize)
         val finalHeight = samplingSize(imageHeight, inSampleSize)
-        // The following versions of KITKAT only support inBitmap of the same size and the format must be jpeg or png
+        // The following versions of KITKAT only support format is jpeg or png and inSampleSize is 1
         @Suppress("ReplaceGetOrSet")
         val inBitmap: Bitmap? = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
                 this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
+            // todo 测试是否需要限制 format 和 inSampleSize
             options.inSampleSize <= 1 && ImageFormat.JPEG.mimeType.equals(imageMimeType, true) -> {
                 this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
@@ -219,6 +220,10 @@ class LruBitmapPool constructor(
                 this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
             else -> {
+                logger?.w(MODULE) {
+                    "setInBitmap. The following versions of KITKAT only support format is jpeg or png and inSampleSize is 1. " +
+                            "imageMimeType=$imageMimeType, inSampleSize=${options.inSampleSize}"
+                }
                 null
             }
         }
@@ -261,7 +266,7 @@ class LruBitmapPool constructor(
         // BitmapRegionDecoder does not support inMutable, so creates Bitmap
         @Suppress("ReplaceGetOrSet")
         val inBitmap = this.get(finalWidth, finalHeight, options.inPreferredConfig)
-            ?: Bitmap.createBitmap(finalWidth, finalHeight, options.inPreferredConfig)
+            ?: Bitmap.createBitmap(finalWidth, finalHeight, options.inPreferredConfig)!!
         logger?.d(MODULE) {
             "setInBitmapForRegion. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
                 finalWidth,
@@ -274,7 +279,7 @@ class LruBitmapPool constructor(
         }
 
         options.inBitmap = inBitmap
-        return inBitmap != null
+        return true
     }
 
     override fun free(bitmap: Bitmap?, caller: String?): Boolean {

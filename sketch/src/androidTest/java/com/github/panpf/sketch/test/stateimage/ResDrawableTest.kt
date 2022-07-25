@@ -1,11 +1,11 @@
 package com.github.panpf.sketch.test.stateimage
 
 import android.graphics.drawable.BitmapDrawable
-import androidx.core.content.res.ResourcesCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.stateimage.ResDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,18 +18,18 @@ class ResDrawableTest {
         val context = getTestContext()
 
         ResDrawable(android.R.drawable.ic_delete).apply {
-            Assert.assertEquals(android.R.drawable.ic_delete, drawableRes)
+            Assert.assertEquals(android.R.drawable.ic_delete, resId)
             Assert.assertSame(
-                ResourcesCompat.getDrawable(context.resources, android.R.drawable.ic_delete, null)!!
+                context.getDrawableCompat(android.R.drawable.ic_delete)
                     .asOrThrow<BitmapDrawable>().bitmap,
                 getDrawable(context).asOrThrow<BitmapDrawable>().bitmap
             )
         }
 
         ResDrawable(android.R.drawable.bottom_bar).apply {
-            Assert.assertEquals(android.R.drawable.bottom_bar, drawableRes)
+            Assert.assertEquals(android.R.drawable.bottom_bar, resId)
             Assert.assertSame(
-                ResourcesCompat.getDrawable(context.resources, android.R.drawable.bottom_bar, null)!!
+                context.getDrawableCompat(android.R.drawable.bottom_bar)
                     .asOrThrow<BitmapDrawable>().bitmap,
                 getDrawable(context).asOrThrow<BitmapDrawable>().bitmap
             )

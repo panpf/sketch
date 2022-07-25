@@ -25,23 +25,23 @@ interface DrawableFetcher {
     fun getDrawable(context: Context): Drawable
 }
 
-class ResDrawable(@DrawableRes val drawableRes: Int) : DrawableFetcher {
+class ResDrawable(@DrawableRes val resId: Int) : DrawableFetcher {
 
-    override fun getDrawable(context: Context): Drawable = context.getDrawableCompat(drawableRes)
+    override fun getDrawable(context: Context): Drawable = context.getDrawableCompat(resId)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ResDrawable) return false
-        if (drawableRes != other.drawableRes) return false
+        if (resId != other.resId) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return drawableRes
+        return resId
     }
 
     override fun toString(): String {
-        return "ResDrawable($drawableRes)"
+        return "ResDrawable($resId)"
     }
 }
 

@@ -21,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 
+// todo rename to MemoryCacheRequestInterceptor
 class MemoryCacheInterceptor : RequestInterceptor {
 
     @WorkerThread

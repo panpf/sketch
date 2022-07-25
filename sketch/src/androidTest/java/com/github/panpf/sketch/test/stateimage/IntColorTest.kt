@@ -16,12 +16,12 @@ class IntColorTest {
         val context = getTestContext()
 
         IntColor(Color.RED).apply {
-            Assert.assertEquals(Color.RED, colorInt)
+            Assert.assertEquals(Color.RED, color)
             Assert.assertEquals(Color.RED, getColor(context))
         }
 
         IntColor(Color.GREEN).apply {
-            Assert.assertEquals(Color.GREEN, colorInt)
+            Assert.assertEquals(Color.GREEN, color)
             Assert.assertEquals(Color.GREEN, getColor(context))
         }
     }

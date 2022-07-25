@@ -10,6 +10,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataSource
@@ -129,7 +130,7 @@ class DefaultBitmapDecoderTest {
                     imageInfo.toShortString()
                 )
             } else {
-                Assert.assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
+                Assert.assertEquals("ImageInfo(1080x1344,'',UNDEFINED)", imageInfo.toShortString())
             }
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
@@ -1037,33 +1038,30 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testError() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndNewSketch{
+            bitmapPool(LruBitmapPool(1024 * 1024 * 20))
+        }
 
         /* full */
         assertThrow(BitmapDecodeException::class) {
-            val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-                resize(500, 500, LESS_PIXELS)
-            }
+            val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
             val dataSource = runBlocking {
                 sketch.components.newFetcher(request).fetch().dataSource
             }
-            sketch.bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
-            DefaultBitmapDecoder(sketch, request, FullTestDataSource(dataSource))
-                .let { runBlocking { it.decode() } }
+            sketch.bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
+            DefaultBitmapDecoder(
+                sketch, request, FullTestDataSource(dataSource)
+            ).let { runBlocking { it.decode() } }
         }
 
         assertNoThrow {
-            val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-                resize(500, 500, LESS_PIXELS)
-            }
+            val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
             val dataSource = runBlocking {
                 sketch.components.newFetcher(request).fetch().dataSource
             }
-            sketch.bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
+            sketch.bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
             DefaultBitmapDecoder(
-                sketch,
-                request,
-                FullTestDataSource(dataSource, enabledCount = true)
+                sketch, request, FullTestDataSource(dataSource, enabledCount = true)
             ).let { runBlocking { it.decode() } }
         }
 
@@ -1075,32 +1073,8 @@ class DefaultBitmapDecoderTest {
             val dataSource1 = runBlocking {
                 sketch.components.newFetcher(request1).fetch().dataSource
             }
-            DefaultBitmapDecoder(sketch, request1, RegionTestDataSource(dataSource1, true))
-                .let { runBlocking { it.decode() } }
-        }
-
-        assertThrow(BitmapDecodeException::class) {
-            val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-                resize(500, 500)
-            }
-            val dataSource1 = runBlocking {
-                sketch.components.newFetcher(request1).fetch().dataSource
-            }
-            DefaultBitmapDecoder(sketch, request1, RegionTestDataSource(dataSource1, false))
-                .let { runBlocking { it.decode() } }
-        }
-
-        assertNoThrow {
-            val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-                resize(500, 500)
-            }
-            val dataSource1 = runBlocking {
-                sketch.components.newFetcher(request1).fetch().dataSource
-            }
             DefaultBitmapDecoder(
-                sketch,
-                request1,
-                RegionTestDataSource(dataSource1, false, enabledCount = true)
+                sketch, request1, RegionTestDataSource(dataSource1, true)
             ).let { runBlocking { it.decode() } }
         }
 
@@ -1111,8 +1085,33 @@ class DefaultBitmapDecoderTest {
             val dataSource1 = runBlocking {
                 sketch.components.newFetcher(request1).fetch().dataSource
             }
-            DefaultBitmapDecoder(sketch, request1, RegionTestDataSource(dataSource1, null))
-                .let { runBlocking { it.decode() } }
+            DefaultBitmapDecoder(
+                sketch, request1, RegionTestDataSource(dataSource1, false)
+            ).let { runBlocking { it.decode() } }
+        }
+
+        assertNoThrow {
+            val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                resize(500, 500)
+            }
+            val dataSource1 = runBlocking {
+                sketch.components.newFetcher(request1).fetch().dataSource
+            }
+            DefaultBitmapDecoder(
+                sketch, request1, RegionTestDataSource(dataSource1, false, enabledCount = true)
+            ).let { runBlocking { it.decode() } }
+        }
+
+        assertThrow(BitmapDecodeException::class) {
+            val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+                resize(500, 500)
+            }
+            val dataSource1 = runBlocking {
+                sketch.components.newFetcher(request1).fetch().dataSource
+            }
+            DefaultBitmapDecoder(
+                sketch, request1, RegionTestDataSource(dataSource1, null)
+            ).let { runBlocking { it.decode() } }
         }
     }
 

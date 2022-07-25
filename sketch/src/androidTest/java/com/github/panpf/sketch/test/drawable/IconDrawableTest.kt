@@ -430,6 +430,8 @@ class IconDrawableTest {
 
     @Test
     fun testFilterBitmap() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val iconDrawable = context.getDrawableCompat(android.R.drawable.spinner_background).apply {
@@ -471,35 +473,35 @@ class IconDrawableTest {
     fun testChangingConfigurations() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val iconDrawable = context.getDrawableCompat(android.R.drawable.spinner_background).apply {
-            Assert.assertEquals(4096, changingConfigurations)
+        val iconDrawable = context.getDrawableCompat(android.R.drawable.spinner_background)
+        val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
+        val iconChangingConfigurations = iconDrawable.changingConfigurations
+        val bgChangingConfigurations = bgDrawable.changingConfigurations
+
+        iconDrawable.apply {
             changingConfigurations = 1
-            Assert.assertEquals(4097, changingConfigurations)
+            Assert.assertEquals(iconChangingConfigurations + 1, changingConfigurations)
         }
-        val bgDrawable =
-            context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
-                Assert.assertEquals(4096, changingConfigurations)
-                changingConfigurations = 2
-                Assert.assertEquals(4098, changingConfigurations)
-            }
+        bgDrawable.apply {
+            changingConfigurations = 2
+            Assert.assertEquals(bgChangingConfigurations + 2, changingConfigurations)
+        }
 
         IconDrawable(icon = iconDrawable, bg = bgDrawable).apply {
-            Assert.assertEquals(4097, changingConfigurations)
-
             changingConfigurations = 0
-            Assert.assertEquals(4096, changingConfigurations)
-            Assert.assertEquals(4096, iconDrawable.changingConfigurations)
-            Assert.assertEquals(4096, bgDrawable.changingConfigurations)
+            Assert.assertEquals(iconChangingConfigurations, changingConfigurations)
+            Assert.assertEquals(iconChangingConfigurations, iconDrawable.changingConfigurations)
+            Assert.assertEquals(bgChangingConfigurations, bgDrawable.changingConfigurations)
         }
 
         iconDrawable.changingConfigurations = 1
         IconDrawable(icon = iconDrawable).apply {
-            Assert.assertEquals(4097, changingConfigurations)
+            Assert.assertEquals(iconChangingConfigurations + 1, changingConfigurations)
 
             changingConfigurations = 0
-            Assert.assertEquals(4096, changingConfigurations)
-            Assert.assertEquals(4096, iconDrawable.changingConfigurations)
-            Assert.assertEquals(4096, bgDrawable.changingConfigurations)
+            Assert.assertEquals(iconChangingConfigurations, changingConfigurations)
+            Assert.assertEquals(iconChangingConfigurations, iconDrawable.changingConfigurations)
+            Assert.assertEquals(bgChangingConfigurations, bgDrawable.changingConfigurations)
         }
     }
 

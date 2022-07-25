@@ -96,7 +96,7 @@ class ViewDisplayTargetRequestManagerTest {
         // If there is no attached to the window, the display will inevitably fail
         runBlocking {
             imageView.displayImage(TestAssets.SAMPLE_JPEG_URI)
-            delay(1000)
+            delay(1500)
         }
         Assert.assertFalse(ViewCompat.isAttachedToWindow(imageView))
         Assert.assertNull(imageView.drawable)
@@ -107,7 +107,7 @@ class ViewDisplayTargetRequestManagerTest {
             withContext(Dispatchers.Main) {
                 fragment.attachImageView()
             }
-            delay(1000)
+            delay(1500)
         }
         Assert.assertTrue(ViewCompat.isAttachedToWindow(imageView))
         Assert.assertNotNull(imageView.drawable)
@@ -120,7 +120,7 @@ class ViewDisplayTargetRequestManagerTest {
             withContext(Dispatchers.Main) {
                 fragment.detachImageView()
             }
-            delay(1000)
+            delay(1500)
         }
         Assert.assertFalse(ViewCompat.isAttachedToWindow(imageView))
         Assert.assertNull(imageView.drawable)
@@ -131,7 +131,7 @@ class ViewDisplayTargetRequestManagerTest {
             withContext(Dispatchers.Main) {
                 fragment.attachImageView()
             }
-            delay(1000)
+            delay(1500)
         }
         Assert.assertTrue(ViewCompat.isAttachedToWindow(imageView))
         Assert.assertNotNull(imageView.drawable)

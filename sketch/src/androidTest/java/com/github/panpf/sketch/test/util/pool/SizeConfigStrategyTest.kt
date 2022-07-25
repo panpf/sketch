@@ -3,6 +3,7 @@ package com.github.panpf.sketch.test.util.pool
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
+import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.sizeString
 import com.github.panpf.sketch.util.pool.SizeConfigStrategy
@@ -15,6 +16,8 @@ class SizeConfigStrategyTest {
 
     @Test
     fun testPutGet() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+
         SizeConfigStrategy().apply {
             Assert.assertNull(get(100, 100, ARGB_8888))
             put(Bitmap.createBitmap(100, 100, ARGB_8888))
@@ -57,6 +60,8 @@ class SizeConfigStrategyTest {
 
     @Test
     fun testRemoveLast() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+
         SizeConfigStrategy().apply {
             Assert.assertNull(removeLast())
             put(Bitmap.createBitmap(50, 50, ARGB_8888))
@@ -70,6 +75,8 @@ class SizeConfigStrategyTest {
 
     @Test
     fun testLogBitmap() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+
         SizeConfigStrategy().apply {
             Assert.assertEquals(
                 "[10000](ARGB_8888)",
@@ -87,6 +94,8 @@ class SizeConfigStrategyTest {
 
     @Test
     fun testGetSize() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+
         SizeConfigStrategy().apply {
             Assert.assertEquals(10000, getSize(Bitmap.createBitmap(50, 50, ARGB_8888)))
             Assert.assertEquals(5000, getSize(Bitmap.createBitmap(50, 50, RGB_565)))
@@ -95,6 +104,8 @@ class SizeConfigStrategyTest {
 
     @Test
     fun testToString() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+
         SizeConfigStrategy().apply {
             Assert.assertNull(removeLast())
             put(Bitmap.createBitmap(50, 50, ARGB_8888))

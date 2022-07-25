@@ -16,7 +16,7 @@ class ResColorTest {
         val context = getTestContext()
 
         ResColor(android.R.color.background_dark).apply {
-            Assert.assertEquals(android.R.color.background_dark, colorRes)
+            Assert.assertEquals(android.R.color.background_dark, resId)
             Assert.assertEquals(
                 ResourcesCompat.getColor(context.resources, android.R.color.background_dark, null),
                 getColor(context)
@@ -24,7 +24,7 @@ class ResColorTest {
         }
 
         ResColor(android.R.color.background_light).apply {
-            Assert.assertEquals(android.R.color.background_light, colorRes)
+            Assert.assertEquals(android.R.color.background_light, resId)
             Assert.assertEquals(
                 ResourcesCompat.getColor(context.resources, android.R.color.background_light, null),
                 getColor(context)

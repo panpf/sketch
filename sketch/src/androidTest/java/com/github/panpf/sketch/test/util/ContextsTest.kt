@@ -2,6 +2,8 @@ package com.github.panpf.sketch.test.util
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -18,7 +20,6 @@ import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.xmlpull.v1.XmlPullParserException
 
 @RunWith(AndroidJUnit4::class)
 class ContextsTest {
@@ -54,6 +55,7 @@ class ContextsTest {
     @Test
     fun testGetXmlDrawableCompat() {
         val context = getTestContext()
+
         context.getXmlDrawableCompat(
             context.resources,
             com.github.panpf.sketch.test.R.drawable.ic_cloudy
@@ -65,11 +67,25 @@ class ContextsTest {
             }
         }
 
-        if (Build.VERSION.SDK_INT < 24) {
-            assertThrow(XmlPullParserException::class) {
+        context.getXmlDrawableCompat(
+            context.resources,
+            com.github.panpf.sketch.test.R.drawable.test_error
+        ).apply {
+            Assert.assertTrue(this is GradientDrawable)
+        }
+
+        if (Build.VERSION.SDK_INT >= 24) {
+            context.getXmlDrawableCompat(
+                context.resources,
+                com.github.panpf.sketch.test.R.drawable.ic_launcher
+            ).apply {
+                Assert.assertTrue(this is BitmapDrawable)
+            }
+        } else {
+            assertThrow(Resources.NotFoundException::class) {
                 context.getXmlDrawableCompat(
                     context.resources,
-                    com.github.panpf.sketch.test.R.drawable.test_error
+                    com.github.panpf.sketch.test.R.drawable.ic_launcher
                 )
             }
         }

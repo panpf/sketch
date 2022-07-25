@@ -43,17 +43,19 @@ class SketchAnimatableDrawableTest {
             dataFrom = LOCAL,
             transformedList = null as List<String>?
         )
-        SketchAnimatableDrawable(
-            animatableDrawable = TestAnimatableDrawable2(
-                BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
-            ),
-            imageUri = "imageUri1",
-            requestKey = "requestKey1",
-            requestCacheKey = "requestKey1",
-            imageInfo = ImageInfo(100, 100, "image/gif", 0),
-            dataFrom = LOCAL,
-            transformedList = null as List<String>?
-        )
+        if (Build.VERSION.SDK_INT >= 23) {
+            SketchAnimatableDrawable(
+                animatableDrawable = TestAnimatableDrawable2(
+                    BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
+                ),
+                imageUri = "imageUri1",
+                requestKey = "requestKey1",
+                requestCacheKey = "requestKey1",
+                imageInfo = ImageInfo(100, 100, "image/gif", 0),
+                dataFrom = LOCAL,
+                transformedList = null as List<String>?
+            )
+        }
         SketchAnimatableDrawable(
             animatableDrawable = TestAnimatableDrawable3(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),

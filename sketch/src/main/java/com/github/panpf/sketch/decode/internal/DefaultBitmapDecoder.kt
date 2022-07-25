@@ -2,6 +2,7 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.util.Log
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
@@ -49,16 +50,50 @@ open class DefaultBitmapDecoder(
             .applyResize(sketch, request.resize)
     }
 
+    private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+        val decodeOptions = decodeConfig.toBitmapOptions()
+
+        // Set inBitmap from bitmap pool
+        if (!request.disallowReuseBitmap) {
+            bitmapPool.setInBitmap(
+                decodeOptions, imageInfo.width, imageInfo.height, imageInfo.mimeType
+            )
+        }
+
+        Log.e("LruBitmapPool", "${decodeOptions.inBitmap != null}. $request")
+
+        val bitmap: Bitmap = try {
+            dataSource.decodeBitmap(decodeOptions)
+        } catch (throwable: Throwable) {
+            val inBitmap = decodeOptions.inBitmap
+            if (inBitmap != null && isInBitmapError(throwable)) {
+                val message = "Bitmap decode error. Because inBitmap. uri=${request.uriString}"
+                logger.e(MODULE, throwable, message)
+
+                decodeOptions.inBitmap = null
+                bitmapPool.free(inBitmap, "decode:error")
+                try {
+                    dataSource.decodeBitmap(decodeOptions)
+                } catch (throwable2: Throwable) {
+                    throw BitmapDecodeException("Bitmap decode error2: $throwable", throwable2)
+                }
+            } else {
+                throw BitmapDecodeException("Bitmap decode error: $throwable", throwable)
+            }
+        } ?: throw BitmapDecodeException("Bitmap decode return null")
+        if (bitmap.width <= 0 || bitmap.height <= 0) {
+            bitmap.recycle()
+            throw BitmapDecodeException("Invalid image, size=${bitmap.width}x${bitmap.height}")
+        }
+        return bitmap
+    }
+
     private fun realDecodeRegion(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
     ): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
         if (!request.disallowReuseBitmap) {
-            bitmapPool.setInBitmapForRegion(
-                options = decodeOptions,
-                imageWidth = srcRect.width(),
-                imageHeight = srcRect.height(),
-            )
+            bitmapPool.setInBitmapForRegion(decodeOptions, srcRect.width(), srcRect.height())
         }
 
         val bitmap = try {
@@ -90,42 +125,6 @@ open class DefaultBitmapDecoder(
                 }
             }
         } ?: throw BitmapDecodeException("Bitmap region decode return null")
-        if (bitmap.width <= 0 || bitmap.height <= 0) {
-            bitmap.recycle()
-            throw BitmapDecodeException("Invalid image, size=${bitmap.width}x${bitmap.height}")
-        }
-        return bitmap
-    }
-
-    private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
-        val decodeOptions = decodeConfig.toBitmapOptions()
-
-        // Set inBitmap from bitmap pool
-        if (!request.disallowReuseBitmap) {
-            bitmapPool.setInBitmap(
-                decodeOptions, imageInfo.width, imageInfo.height, imageInfo.mimeType
-            )
-        }
-
-        val bitmap: Bitmap = try {
-            dataSource.decodeBitmap(decodeOptions)
-        } catch (throwable: Throwable) {
-            val inBitmap = decodeOptions.inBitmap
-            if (inBitmap != null && isInBitmapError(throwable)) {
-                val message = "Bitmap decode error. Because inBitmap. uri=${request.uriString}"
-                logger.e(MODULE, throwable, message)
-
-                decodeOptions.inBitmap = null
-                bitmapPool.free(inBitmap, "decode:error")
-                try {
-                    dataSource.decodeBitmap(decodeOptions)
-                } catch (throwable2: Throwable) {
-                    throw BitmapDecodeException("Bitmap decode error", throwable2)
-                }
-            } else {
-                throw BitmapDecodeException("Bitmap decode error", throwable)
-            }
-        } ?: throw BitmapDecodeException("Bitmap decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             bitmap.recycle()
             throw BitmapDecodeException("Invalid image, size=${bitmap.width}x${bitmap.height}")

@@ -1240,7 +1240,8 @@ public final class DiskLruCache implements Closeable {
         public static void deleteContents(File dir) throws IOException {
             File[] files = dir.listFiles();
             if (files == null) {
-                throw new IOException("not a readable directory: " + dir);
+//                throw new IOException("not a readable directory: " + dir);
+                return;
             }
             for (File file : files) {
                 if (file.isDirectory()) {
