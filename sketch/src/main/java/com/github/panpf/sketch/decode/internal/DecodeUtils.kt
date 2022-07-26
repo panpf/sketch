@@ -89,7 +89,7 @@ fun calculateSampleSize(
 }
 
 fun samplingSize(size: Int, sampleSize: Double, mimeType: String? = null): Int {
-    return if (mimeType != null && ImageFormat.PNG.mimeType.equals(mimeType, ignoreCase = true)) {
+    return if (mimeType != null && ImageFormat.PNG.matched(mimeType)) {
         floor(size / sampleSize).toInt()
     } else {
         ceil(size / sampleSize).toInt()

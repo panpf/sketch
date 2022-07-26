@@ -213,10 +213,10 @@ class LruBitmapPool constructor(
                 this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
             // todo 测试是否需要限制 format 和 inSampleSize
-            options.inSampleSize <= 1 && ImageFormat.JPEG.mimeType.equals(imageMimeType, true) -> {
+            options.inSampleSize <= 1 && ImageFormat.JPEG.matched(imageMimeType) -> {
                 this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
-            options.inSampleSize <= 1 && ImageFormat.PNG.mimeType.equals(imageMimeType, true) -> {
+            options.inSampleSize <= 1 && ImageFormat.PNG.matched(imageMimeType) -> {
                 this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
             else -> {
