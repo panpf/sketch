@@ -69,6 +69,23 @@ class FFmpegVideoFrameBitmapDecoderTest {
     }
 
     @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = FFmpegVideoFrameBitmapDecoder.Factory()
+        val element11 = FFmpegVideoFrameBitmapDecoder.Factory()
+
+        Assert.assertNotSame(element1, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+
+        Assert.assertNotEquals(element1, Any())
+        Assert.assertNotEquals(element1, null)
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+    }
+
+    @Test
     fun testDecode() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch

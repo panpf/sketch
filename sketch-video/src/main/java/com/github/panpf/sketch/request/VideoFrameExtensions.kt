@@ -109,10 +109,23 @@ val ImageOptions.videoFrameMicros: Long?
  *
  * Default: 0.0
  */
+fun ImageRequest.Builder.videoFramePercentDuration(
+    @FloatRange(from = 0.0, to = 1.0) percentDuration: Float
+): ImageRequest.Builder = apply {
+    require(percentDuration in 0f..1f) { "percentDuration must be in 0f..1f." }
+    removeParameter(VIDEO_FRAME_MICROS_KEY)
+    setParameter(VIDEO_FRAME_PERCENT_DURATION_KEY, percentDuration)
+}
+
+/**
+ * Set the time of the frame to extract from a video (by percent duration).
+ *
+ * Default: 0.0
+ */
 fun LoadRequest.Builder.videoFramePercentDuration(
     @FloatRange(from = 0.0, to = 1.0) percentDuration: Float
 ): LoadRequest.Builder = apply {
-    require(percentDuration in 0.0..1.0) { "percentDuration must be in 0.0..1.0." }
+    require(percentDuration in 0f..1f) { "percentDuration must be in 0f..1f." }
     removeParameter(VIDEO_FRAME_MICROS_KEY)
     setParameter(VIDEO_FRAME_PERCENT_DURATION_KEY, percentDuration)
 }
@@ -144,7 +157,7 @@ val ImageRequest.videoFramePercentDuration: Float?
 fun ImageOptions.Builder.videoFramePercentDuration(
     @FloatRange(from = 0.0, to = 1.0) percentDuration: Float
 ) = apply {
-    require(percentDuration in 0.0..1.0) { "percentDuration must be in 0.0..1.0." }
+    require(percentDuration in 0f..1f) { "percentDuration must be in 0f..1f." }
     removeParameter(VIDEO_FRAME_MICROS_KEY)
     setParameter(VIDEO_FRAME_PERCENT_DURATION_KEY, percentDuration)
 }
@@ -155,6 +168,25 @@ fun ImageOptions.Builder.videoFramePercentDuration(
 val ImageOptions.videoFramePercentDuration: Float?
     get() = parameters?.value(VIDEO_FRAME_PERCENT_DURATION_KEY) as Float?
 
+
+/**
+ * Set the option for how to decode the video frame.
+ *
+ * Must be one of [OPTION_PREVIOUS_SYNC], [OPTION_NEXT_SYNC], [OPTION_CLOSEST_SYNC], [OPTION_CLOSEST].
+ *
+ * Default: [OPTION_CLOSEST_SYNC]
+ *
+ * @see MediaMetadataRetriever
+ */
+fun ImageRequest.Builder.videoFrameOption(option: Int): ImageRequest.Builder = apply {
+    require(
+        option == OPTION_PREVIOUS_SYNC ||
+                option == OPTION_NEXT_SYNC ||
+                option == OPTION_CLOSEST_SYNC ||
+                option == OPTION_CLOSEST
+    ) { "Invalid video frame option: $option." }
+    setParameter(VIDEO_FRAME_OPTION_KEY, option)
+}
 
 /**
  * Set the option for how to decode the video frame.

@@ -56,9 +56,7 @@ class SaveCellularTrafficMatcher(val stateImage: StateImage?) :
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is SaveCellularTrafficMatcher) return false
-
         if (stateImage != other.stateImage) return false
-
         return true
     }
 
@@ -67,6 +65,6 @@ class SaveCellularTrafficMatcher(val stateImage: StateImage?) :
     }
 
     override fun toString(): String {
-        return "SaveCellularTrafficMatcher(stateImage=$stateImage)"
+        return "SaveCellularTrafficMatcher($stateImage)"
     }
 }

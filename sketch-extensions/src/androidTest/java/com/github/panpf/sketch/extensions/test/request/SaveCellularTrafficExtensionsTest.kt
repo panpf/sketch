@@ -33,7 +33,7 @@ class SaveCellularTrafficExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).saveCellularTraffic(true)
+            (this as ImageRequest.Builder).saveCellularTraffic()
         }.apply {
             Assert.assertTrue(isSaveCellularTraffic)
         }
@@ -44,7 +44,7 @@ class SaveCellularTrafficExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            saveCellularTraffic(true)
+            saveCellularTraffic()
         }.apply {
             Assert.assertTrue(isSaveCellularTraffic)
         }
@@ -59,7 +59,7 @@ class SaveCellularTrafficExtensionsTest {
         }
 
         ImageOptions {
-            saveCellularTraffic(true)
+            saveCellularTraffic()
         }.apply {
             Assert.assertTrue(isSaveCellularTraffic)
         }
@@ -71,7 +71,7 @@ class SaveCellularTrafficExtensionsTest {
 
         val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
         val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
-            saveCellularTraffic(true)
+            saveCellularTraffic()
         }.key
         Assert.assertNotEquals(key1, key2)
 
@@ -91,7 +91,7 @@ class SaveCellularTrafficExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).ignoreSaveCellularTraffic(true)
+            (this as ImageRequest.Builder).ignoreSaveCellularTraffic()
         }.apply {
             Assert.assertTrue(isIgnoredSaveCellularTraffic)
         }
@@ -102,7 +102,7 @@ class SaveCellularTrafficExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            ignoreSaveCellularTraffic(true)
+            ignoreSaveCellularTraffic()
         }.apply {
             Assert.assertTrue(isIgnoredSaveCellularTraffic)
         }
@@ -117,7 +117,7 @@ class SaveCellularTrafficExtensionsTest {
         }
 
         ImageOptions {
-            ignoreSaveCellularTraffic(true)
+            ignoreSaveCellularTraffic()
         }.apply {
             Assert.assertTrue(isIgnoredSaveCellularTraffic)
         }
@@ -129,7 +129,7 @@ class SaveCellularTrafficExtensionsTest {
 
         val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
         val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
-            ignoreSaveCellularTraffic(true)
+            ignoreSaveCellularTraffic()
         }.key
         Assert.assertNotEquals(key1, key2)
 

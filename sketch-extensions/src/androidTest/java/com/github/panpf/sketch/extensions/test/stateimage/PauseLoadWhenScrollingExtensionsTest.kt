@@ -16,6 +16,7 @@ import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.PauseLoadWhenScrollingMatcher
+import com.github.panpf.sketch.stateimage.SaveCellularTrafficMatcher
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
 import org.junit.Assert
 import org.junit.Test
@@ -87,6 +88,33 @@ class PauseLoadWhenScrollingExtensionsTest {
             }
 
             Assert.assertTrue(getDrawable(sketch, request, null) is ColorDrawable)
+        }
+
+        val element1 = PauseLoadWhenScrollingMatcher(ColorStateImage(Color.BLUE))
+        val element11 = PauseLoadWhenScrollingMatcher(ColorStateImage(Color.BLUE))
+        val element2 = PauseLoadWhenScrollingMatcher(null)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+
+        PauseLoadWhenScrollingMatcher(ColorStateImage(Color.BLUE)).apply {
+            Assert.assertEquals(
+                "PauseLoadWhenScrollingMatcher(${stateImage})",
+                toString()
+            )
         }
     }
 }

@@ -70,14 +70,12 @@ class SaveCellularTrafficDisplayInterceptor constructor(
         return chain.proceed(finalRequest)
     }
 
-    override fun toString(): String = "SaveCellularTrafficDisplayInterceptor"
+    override fun toString(): String = "SaveCellularTrafficDisplayInterceptor($enabled)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is SaveCellularTrafficDisplayInterceptor) return false
-
         if (enabled != other.enabled) return false
-
         return true
     }
 

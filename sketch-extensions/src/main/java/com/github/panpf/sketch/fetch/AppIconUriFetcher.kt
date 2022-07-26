@@ -44,8 +44,11 @@ class AppIconUriFetcher(
             val uri = request.uri
             return ifOrNull(SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val packageName = uri.authority
+                    ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
                     ?: throw UriInvalidException("App icon uri 'packageName' part invalid: ${request.uriString}")
-                val versionCode = uri.lastPathSegment?.toIntOrNull()
+                val versionCode = uri.lastPathSegment
+                    ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+                    ?.toIntOrNull()
                     ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: ${request.uriString}")
                 AppIconUriFetcher(sketch, request, packageName, versionCode)
             }

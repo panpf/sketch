@@ -86,5 +86,32 @@ class SaveCellularTrafficExtensionsTest {
 
             Assert.assertTrue(getDrawable(sketch, request, null) is ColorDrawable)
         }
+
+        val element1 = SaveCellularTrafficMatcher(ColorStateImage(Color.BLUE))
+        val element11 = SaveCellularTrafficMatcher(ColorStateImage(Color.BLUE))
+        val element2 = SaveCellularTrafficMatcher(null)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+
+        SaveCellularTrafficMatcher(ColorStateImage(Color.BLUE)).apply {
+            Assert.assertEquals(
+                "SaveCellularTrafficMatcher(${stateImage})",
+                toString()
+            )
+        }
     }
 }

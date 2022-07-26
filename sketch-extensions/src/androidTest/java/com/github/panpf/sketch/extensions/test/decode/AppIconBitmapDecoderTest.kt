@@ -19,6 +19,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -80,6 +81,23 @@ class AppIconBitmapDecoderTest {
         }.apply {
             Assert.assertNull(this)
         }
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = AppIconBitmapDecoder.Factory()
+        val element11 = AppIconBitmapDecoder.Factory()
+
+        Assert.assertNotSame(element1, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+
+        Assert.assertNotEquals(element1, Any())
+        Assert.assertNotEquals(element1, null)
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test

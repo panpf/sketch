@@ -65,14 +65,12 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
         return chain.proceed(finalRequest)
     }
 
-    override fun toString(): String = "PauseLoadWhenScrollingDisplayInterceptor"
+    override fun toString(): String = "PauseLoadWhenScrollingDisplayInterceptor($enabled)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is PauseLoadWhenScrollingDisplayInterceptor) return false
-
         if (enabled != other.enabled) return false
-
         return true
     }
 

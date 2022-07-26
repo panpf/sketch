@@ -12,6 +12,7 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.VideoFrameBitmapDecoder
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
+import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
@@ -70,6 +71,23 @@ class VideoFrameBitmapDecoderTest {
         }.apply {
             Assert.assertNull(this)
         }
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = VideoFrameBitmapDecoder.Factory()
+        val element11 = VideoFrameBitmapDecoder.Factory()
+
+        Assert.assertNotSame(element1, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+
+        Assert.assertNotEquals(element1, Any())
+        Assert.assertNotEquals(element1, null)
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test

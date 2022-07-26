@@ -12,8 +12,4 @@ val Bitmap.cornerC: Int
 val Bitmap.cornerD: Int
     get() = getPixel(0, height - 1)
 
-fun Bitmap.corners(block: Bitmap.() -> List<Int>): List<Int> {
-    return block(this)
-}
-
 fun Bitmap.corners(): List<Int> = listOf(cornerA, cornerB, cornerC, cornerD)

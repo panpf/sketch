@@ -217,8 +217,69 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 Assert.assertEquals(MEMORY, chain.finalRequest.depth)
                 Assert.assertFalse(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
             }
+
+            // restore
+            interceptor.enabled = true
+            PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+            DisplayRequest(context, "http://sample.com/sample.jpeg") {
+                pauseLoadWhenScrolling()
+            }.let { request ->
+                Assert.assertTrue(interceptor.enabled)
+                Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
+                Assert.assertTrue(request.isPauseLoadWhenScrolling)
+                Assert.assertFalse(request.isIgnoredPauseLoadWhenScrolling)
+                Assert.assertEquals(Depth.NETWORK, request.depth)
+                Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
+
+                val chain =
+                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                runBlocking {
+                    interceptor.intercept(chain)
+                }
+                Assert.assertEquals(MEMORY, chain.finalRequest.depth)
+                Assert.assertTrue(chain.finalRequest.isDepthFromPauseLoadWhenScrolling)
+
+                interceptor.enabled = false
+                val chain1 =
+                    TestRequestInterceptorChain(sketch, chain.finalRequest, chain.finalRequest, RequestContext(chain.finalRequest))
+                runBlocking {
+                    interceptor.intercept(chain1)
+                }
+                Assert.assertEquals(Depth.NETWORK, chain1.finalRequest.depth)
+                Assert.assertFalse(chain1.finalRequest.isDepthFromPauseLoadWhenScrolling)
+            }
         } finally {
             PauseLoadWhenScrollingDisplayInterceptor.scrolling = false
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = PauseLoadWhenScrollingDisplayInterceptor()
+        val element11 = PauseLoadWhenScrollingDisplayInterceptor()
+        val element2 = PauseLoadWhenScrollingDisplayInterceptor().apply { enabled = false }
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        PauseLoadWhenScrollingDisplayInterceptor().apply {
+            Assert.assertEquals("PauseLoadWhenScrollingDisplayInterceptor($enabled)", toString())
         }
     }
 

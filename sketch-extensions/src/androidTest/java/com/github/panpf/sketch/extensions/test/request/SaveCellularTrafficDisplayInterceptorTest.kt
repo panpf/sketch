@@ -208,6 +208,70 @@ class SaveCellularTrafficDisplayInterceptorTest {
             Assert.assertEquals(Depth.LOCAL, chain.finalRequest.depth)
             Assert.assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
+
+        // restore
+        interceptor.enabled = true
+        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            saveCellularTraffic()
+        }.let { request ->
+
+            Assert.assertTrue(interceptor.enabled)
+            Assert.assertTrue(request.isSaveCellularTraffic)
+            Assert.assertFalse(request.isIgnoredSaveCellularTraffic)
+            Assert.assertEquals(NETWORK, request.depth)
+            Assert.assertFalse(request.isDepthFromSaveCellularTraffic)
+
+            val chain =
+                TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+            runBlocking {
+                interceptor.intercept(chain)
+            }
+            Assert.assertEquals(Depth.LOCAL, chain.finalRequest.depth)
+            Assert.assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
+
+            interceptor.enabled = false
+            val chain1 = TestRequestInterceptorChain(
+                sketch,
+                chain.finalRequest,
+                chain.finalRequest,
+                RequestContext(chain.finalRequest)
+            )
+            runBlocking {
+                interceptor.intercept(chain1)
+            }
+            Assert.assertEquals(NETWORK, chain1.finalRequest.depth)
+            Assert.assertFalse(chain1.finalRequest.isDepthFromSaveCellularTraffic)
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = SaveCellularTrafficDisplayInterceptor { true }
+        val element11 = SaveCellularTrafficDisplayInterceptor { true }
+        val element2 = SaveCellularTrafficDisplayInterceptor { true }.apply { enabled = false }
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        SaveCellularTrafficDisplayInterceptor { true }.apply {
+            Assert.assertEquals("SaveCellularTrafficDisplayInterceptor($enabled)", toString())
+        }
     }
 
     class TestRequestInterceptorChain(

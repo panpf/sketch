@@ -53,9 +53,7 @@ class PauseLoadWhenScrollingMatcher(val stateImage: StateImage?) :
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is PauseLoadWhenScrollingMatcher) return false
-
         if (stateImage != other.stateImage) return false
-
         return true
     }
 
@@ -64,6 +62,6 @@ class PauseLoadWhenScrollingMatcher(val stateImage: StateImage?) :
     }
 
     override fun toString(): String {
-        return "PauseLoadWhenScrollingMatcher(stateImage=$stateImage)"
+        return "PauseLoadWhenScrollingMatcher($stateImage)"
     }
 }

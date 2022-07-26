@@ -34,7 +34,7 @@ class PauseLoadWhenScrollingExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as Builder).pauseLoadWhenScrolling(true)
+            (this as Builder).pauseLoadWhenScrolling()
         }.apply {
             Assert.assertTrue(isPauseLoadWhenScrolling)
         }
@@ -45,7 +45,7 @@ class PauseLoadWhenScrollingExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            pauseLoadWhenScrolling(true)
+            pauseLoadWhenScrolling()
         }.apply {
             Assert.assertTrue(isPauseLoadWhenScrolling)
         }
@@ -60,7 +60,7 @@ class PauseLoadWhenScrollingExtensionsTest {
         }
 
         ImageOptions {
-            pauseLoadWhenScrolling(true)
+            pauseLoadWhenScrolling()
         }.apply {
             Assert.assertTrue(isPauseLoadWhenScrolling)
         }
@@ -72,7 +72,7 @@ class PauseLoadWhenScrollingExtensionsTest {
 
         val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
         val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
-            pauseLoadWhenScrolling(true)
+            pauseLoadWhenScrolling()
         }.key
         Assert.assertNotEquals(key1, key2)
 
@@ -92,7 +92,7 @@ class PauseLoadWhenScrollingExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as Builder).ignorePauseLoadWhenScrolling(true)
+            (this as Builder).ignorePauseLoadWhenScrolling()
         }.apply {
             Assert.assertTrue(isIgnoredPauseLoadWhenScrolling)
         }
@@ -103,7 +103,7 @@ class PauseLoadWhenScrollingExtensionsTest {
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            ignorePauseLoadWhenScrolling(true)
+            ignorePauseLoadWhenScrolling()
         }.apply {
             Assert.assertTrue(isIgnoredPauseLoadWhenScrolling)
         }
@@ -118,7 +118,7 @@ class PauseLoadWhenScrollingExtensionsTest {
         }
 
         ImageOptions {
-            ignorePauseLoadWhenScrolling(true)
+            ignorePauseLoadWhenScrolling()
         }.apply {
             Assert.assertTrue(isIgnoredPauseLoadWhenScrolling)
         }
@@ -130,7 +130,7 @@ class PauseLoadWhenScrollingExtensionsTest {
 
         val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
         val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
-            ignorePauseLoadWhenScrolling(true)
+            ignorePauseLoadWhenScrolling()
         }.key
         Assert.assertNotEquals(key1, key2)
 
