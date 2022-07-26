@@ -32,16 +32,13 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is OkHttpStack) return false
-
         if (okHttpClient != other.okHttpClient) return false
-
         return true
     }
 
     override fun hashCode(): Int {
         return okHttpClient.hashCode()
     }
-
 
     private class OkHttpResponse(val response: okhttp3.Response) : Response {
         override val code: Int by lazy {
@@ -169,7 +166,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         override fun intercept(chain: Chain): okhttp3.Response =
             chain.proceed(setupAttrs(chain.request()))
 
-        fun setupAttrs(request: Request): Request =
+        private fun setupAttrs(request: Request): Request =
             request.newBuilder().apply {
                 if (userAgent?.isNotEmpty() == true) {
                     header("User-Agent", userAgent)

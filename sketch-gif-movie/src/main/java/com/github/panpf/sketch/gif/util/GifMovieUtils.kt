@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.internal
+package com.github.panpf.sketch.gif.util
 
 import android.graphics.Bitmap
 import android.os.Build.VERSION

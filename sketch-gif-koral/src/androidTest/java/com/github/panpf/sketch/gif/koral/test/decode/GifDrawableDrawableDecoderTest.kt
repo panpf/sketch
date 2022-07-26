@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.gif.koral.test.decode
 
+import android.graphics.Canvas
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -13,6 +14,8 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.onAnimationEnd
+import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transform.PixelOpacity
@@ -82,43 +85,72 @@ class GifDrawableDrawableDecoderTest {
     }
 
     @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = GifDrawableDrawableDecoder.Factory()
+        val element11 = GifDrawableDrawableDecoder.Factory()
+        val element2 = GifDrawableDrawableDecoder.Factory()
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertEquals(element1, element2)
+        Assert.assertEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertEquals(element2.hashCode(), element11.hashCode())
+    }
+
+    @Test
     fun testDecode() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val factory = GifDrawableDrawableDecoder.Factory()
 
-        val request = DisplayRequest(context, newAssetUri("sample_anim.gif"))
-        val fetchResult = sketch.components.newFetcher(request).let { runBlocking { it.fetch() } }
-        factory.create(sketch, request, RequestContext(request), fetchResult)!!
-            .let { runBlocking { it.decode() } }.apply {
-                Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
-                Assert.assertEquals(480, this.drawable.intrinsicWidth)
-                Assert.assertEquals(480, this.drawable.intrinsicHeight)
-                Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertNull(this.transformedList)
-                val gifDrawable =
-                    (this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawable
-                Assert.assertEquals(0, gifDrawable.loopCount)
-                Assert.assertNull(gifDrawable.transform)
-            }
+        DisplayRequest(context, newAssetUri("sample_anim.gif")) {
+            onAnimationStart { }
+        }.apply {
+            val fetchResult = sketch.components.newFetcher(this).let { runBlocking { it.fetch() } }
+            factory.create(sketch, this, RequestContext(this), fetchResult)!!
+                .let { runBlocking { it.decode() } }.apply {
+                    Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
+                    Assert.assertEquals(480, this.drawable.intrinsicWidth)
+                    Assert.assertEquals(480, this.drawable.intrinsicHeight)
+                    Assert.assertEquals(LOCAL, this.dataFrom)
+                    Assert.assertNull(this.transformedList)
+                    val gifDrawable =
+                        (this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawable
+                    Assert.assertEquals(0, gifDrawable.loopCount)
+                    Assert.assertNull(gifDrawable.transform)
+                }
+        }
 
-        val request1 = DisplayRequest(context, newAssetUri("sample_anim.gif")) {
+        DisplayRequest(context, newAssetUri("sample_anim.gif")) {
             repeatCount(3)
             animatedTransformation { PixelOpacity.TRANSLUCENT }
+            onAnimationEnd {}
             resize(300, 300)
+        }.apply {
+            val fetchResult1 = sketch.components.newFetcher(this).let { runBlocking { it.fetch() } }
+            factory.create(sketch, this, RequestContext(this), fetchResult1)!!
+                .let { runBlocking { it.decode() } }.apply {
+                    Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
+                    Assert.assertEquals(240, this.drawable.intrinsicWidth)
+                    Assert.assertEquals(240, this.drawable.intrinsicHeight)
+                    Assert.assertEquals(LOCAL, this.dataFrom)
+                    Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
+                    val gifDrawable =
+                        (this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawable
+                    Assert.assertEquals(3, gifDrawable.loopCount)
+                    Assert.assertNotNull(gifDrawable.transform)
+                    gifDrawable.transform!!.onDraw(Canvas(), null, null)
+                }
         }
-        val fetchResult1 = sketch.components.newFetcher(request1).let { runBlocking { it.fetch() } }
-        factory.create(sketch, request1, RequestContext(request1), fetchResult1)!!
-            .let { runBlocking { it.decode() } }.apply {
-                Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
-                Assert.assertEquals(240, this.drawable.intrinsicWidth)
-                Assert.assertEquals(240, this.drawable.intrinsicHeight)
-                Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
-                val gifDrawable =
-                    (this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawable
-                Assert.assertEquals(3, gifDrawable.loopCount)
-                Assert.assertNotNull(gifDrawable.transform)
-            }
     }
 }
