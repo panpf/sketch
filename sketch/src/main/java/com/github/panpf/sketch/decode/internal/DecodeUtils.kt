@@ -88,6 +88,32 @@ fun calculateSampleSize(
     return limitedMaxBitmapSize(imageWidth, imageHeight, sampleSize)
 }
 
+// todo apply
+fun calculateSampleBitmapSizeForBitmapFactory(
+    imageSize: Size, sampleSize: Int, mimeType: String? = null
+): Size {
+    val widthValue = imageSize.width / sampleSize.toDouble()
+    val heightValue = imageSize.height / sampleSize.toDouble()
+    val isPNGFormat = ImageFormat.PNG.matched(mimeType)
+    val width = if (isPNGFormat) floor(widthValue).toInt() else ceil(widthValue).toInt()
+    val height = if (isPNGFormat) floor(heightValue).toInt() else ceil(heightValue).toInt()
+    return Size(width, height)
+}
+
+// todo apply
+fun calculateSampleBitmapSizeForBitmapRegionDecoder(
+    imageSize: Size, rect: Rect, sampleSize: Int
+): Size {
+    val widthValue = rect.width() / sampleSize.toDouble()
+    val heightValue = rect.height() / sampleSize.toDouble()
+    val sizeSame = rect.width() == imageSize.width && rect.height() == imageSize.height
+    val width = if (sizeSame && VERSION.SDK_INT >= VERSION_CODES.N)
+        ceil(widthValue).toInt() else floor(widthValue).toInt()
+    val height = if (sizeSame && VERSION.SDK_INT >= VERSION_CODES.N)
+        ceil(heightValue).toInt() else floor(heightValue).toInt()
+    return Size(width, height)
+}
+
 fun samplingSize(size: Int, sampleSize: Double, mimeType: String? = null): Int {
     return if (mimeType != null && ImageFormat.PNG.matched(mimeType)) {
         floor(size / sampleSize).toInt()

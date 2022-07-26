@@ -19,6 +19,8 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.applyExifOrientation
 import com.github.panpf.sketch.decode.internal.applyResize
+import com.github.panpf.sketch.decode.internal.calculateSampleBitmapSizeForBitmapFactory
+import com.github.panpf.sketch.decode.internal.calculateSampleBitmapSizeForBitmapRegionDecoder
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
@@ -849,6 +851,70 @@ class DecodeUtilsTest {
         )
         Assert.assertFalse(
             isSrcRectError(IllegalArgumentException(""))
+        )
+    }
+
+    @Test
+    fun testCalculateSampleBitmapSizeForBitmapFactory() {
+        Assert.assertEquals(
+            Size(503, 101),
+            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2)
+        )
+        Assert.assertEquals(
+            Size(503, 101),
+            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/jpeg")
+        )
+        Assert.assertEquals(
+            Size(502, 100),
+            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/png")
+        )
+        Assert.assertEquals(
+            Size(503, 101),
+            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/bmp")
+        )
+        Assert.assertEquals(
+            Size(503, 101),
+            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/gif")
+        )
+        Assert.assertEquals(
+            Size(503, 101),
+            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/webp")
+        )
+        Assert.assertEquals(
+            Size(503, 101),
+            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/heic")
+        )
+        Assert.assertEquals(
+            Size(503, 101),
+            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/heif")
+        )
+    }
+
+    @Test
+    fun testCalculateSampleBitmapSizeForBitmapRegionDecoder() {
+        Assert.assertEquals(
+            if (VERSION.SDK_INT >= VERSION_CODES.N) Size(503, 101) else Size(502, 100),
+            calculateSampleBitmapSizeForBitmapRegionDecoder(
+                Size(1005, 201), Rect(0, 0, 1005, 201), 2
+            )
+        )
+        Assert.assertEquals(
+            Size(288, 100),
+            calculateSampleBitmapSizeForBitmapRegionDecoder(
+                Size(1005, 201), Rect(0, 0, 577, 201), 2
+            )
+        )
+        Assert.assertEquals(
+            Size(502, 55),
+            calculateSampleBitmapSizeForBitmapRegionDecoder(
+                Size(1005, 201), Rect(0, 0, 1005, 111), 2
+            )
+        )
+        Assert.assertEquals(
+            Size(288, 55),
+            calculateSampleBitmapSizeForBitmapRegionDecoder(
+                Size(1005, 201), Rect(0, 0, 577, 111), 2
+            )
         )
     }
 }
