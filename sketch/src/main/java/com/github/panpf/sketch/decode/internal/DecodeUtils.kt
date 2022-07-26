@@ -88,18 +88,21 @@ fun calculateSampleSize(
     return limitedMaxBitmapSize(imageWidth, imageHeight, sampleSize)
 }
 
-
-fun samplingSize(size: Int, sampleSize: Double): Int {
-    return ceil(size / sampleSize).toInt()
+fun samplingSize(size: Int, sampleSize: Double, mimeType: String? = null): Int {
+    return if (mimeType != null && ImageFormat.PNG.mimeType.equals(mimeType, ignoreCase = true)) {
+        floor(size / sampleSize).toInt()
+    } else {
+        ceil(size / sampleSize).toInt()
+    }
 }
 
-fun samplingSize(size: Int, sampleSize: Int): Int {
-    return samplingSize(size, sampleSize.toDouble())
+fun samplingSize(size: Int, sampleSize: Int, mimeType: String? = null): Int {
+    return samplingSize(size, sampleSize.toDouble(), mimeType)
 }
 
 fun samplingSizeForRegion(size: Int, sampleSize: Double): Int {
-    val value = size / sampleSize
-    return if (VERSION.SDK_INT >= VERSION_CODES.N) ceil(value).toInt() else floor(value).toInt()
+    // 当 size 和图片的宽或高一样时，N 以上版本应该用 ceil，但此种情况不应该使用 BitmapRegionDecoder
+    return floor(size / sampleSize).toInt()
 }
 
 fun samplingSizeForRegion(size: Int, sampleSize: Int): Int {
@@ -107,12 +110,15 @@ fun samplingSizeForRegion(size: Int, sampleSize: Int): Int {
 }
 
 
-fun Size.sampling(sampleSize: Double): Size {
-    return Size(samplingSize(width, sampleSize), samplingSize(height, sampleSize))
+fun Size.sampling(sampleSize: Double, mimeType: String? = null): Size {
+    return Size(
+        samplingSize(width, sampleSize, mimeType),
+        samplingSize(height, sampleSize, mimeType)
+    )
 }
 
-fun Size.sampling(sampleSize: Int): Size {
-    return sampling(sampleSize.toDouble())
+fun Size.sampling(sampleSize: Int, mimeType: String? = null): Size {
+    return sampling(sampleSize.toDouble(), mimeType)
 }
 
 fun Size.samplingForRegion(sampleSize: Double): Size {
@@ -124,14 +130,18 @@ fun Size.samplingForRegion(sampleSize: Int): Size {
 }
 
 
-fun Size.samplingByTarget(@Px targetWidth: Int, @Px targetHeight: Int): Size {
+fun Size.samplingByTarget(
+    @Px targetWidth: Int,
+    @Px targetHeight: Int,
+    mimeType: String? = null
+): Size {
     val sampleSize = calculateSampleSize(width, height, targetWidth, targetHeight)
-    return sampling(sampleSize)
+    return sampling(sampleSize, mimeType)
 }
 
-fun Size.samplingByTarget(targetSize: Size): Size {
+fun Size.samplingByTarget(targetSize: Size, mimeType: String? = null): Size {
     val sampleSize = calculateSampleSize(width, height, targetSize.width, targetSize.height)
-    return sampling(sampleSize)
+    return sampling(sampleSize, mimeType)
 }
 
 

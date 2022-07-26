@@ -101,28 +101,33 @@ class DecodeUtilsTest {
 
     @Test
     fun testSamplingSize() {
-        Assert.assertEquals(75, samplingSize(150, 2))
+        Assert.assertEquals(78, samplingSize(155, 2))
         Assert.assertEquals(76, samplingSize(151, 2))
+
+        Assert.assertEquals(78, samplingSize(155, 2, "image/jpeg"))
+        Assert.assertEquals(76, samplingSize(151, 2, "image/jpeg"))
+
+        Assert.assertEquals(77, samplingSize(155, 2, "image/png"))
+        Assert.assertEquals(75, samplingSize(151, 2, "image/png"))
     }
 
     @Test
     fun testSamplingSizeForRegion() {
         Assert.assertEquals(75, samplingSizeForRegion(150, 2))
-        Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.N) 76 else 75,
-            samplingSizeForRegion(151, 2)
-        )
+        Assert.assertEquals(75, samplingSizeForRegion(151, 2))
     }
 
     @Test
     fun testSampling() {
-        Assert.assertEquals(Size(75, 76), Size(150, 151).sampling(2))
+        Assert.assertEquals(Size(78, 76), Size(155, 151).sampling(2))
+        Assert.assertEquals(Size(78, 76), Size(155, 151).sampling(2, "image/jpeg"))
+        Assert.assertEquals(Size(77, 75), Size(155, 151).sampling(2, "image/png"))
     }
 
     @Test
     fun testSamplingForRegion() {
         Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.N) Size(75, 76) else Size(75, 75),
+            Size(75, 75),
             Size(150, 151).samplingForRegion(2)
         )
     }
@@ -136,11 +141,11 @@ class DecodeUtilsTest {
     @Test
     fun testSamplingForRegionByTarget() {
         Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.N) Size(75, 76) else Size(75, 75),
+            Size(75, 75),
             Size(150, 151).samplingForRegionByTarget(80, 80)
         )
         Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.N) Size(75, 76) else Size(75, 75),
+            Size(75, 75),
             Size(150, 151).samplingForRegionByTarget(Size(80, 80))
         )
     }

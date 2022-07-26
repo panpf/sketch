@@ -277,11 +277,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                Assert.assertEquals("Bitmap(323x194,ARGB_8888)", bitmap.toShortInfoString())
-            } else {
-                Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
-            }
+            Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
                 imageInfo.toShortString()
@@ -304,11 +300,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                Assert.assertEquals("Bitmap(291x484,ARGB_8888)", bitmap.toShortInfoString())
-            } else {
-                Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
-            }
+            Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
                 imageInfo.toShortString()
@@ -669,11 +661,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                Assert.assertEquals("Bitmap(323x194,ARGB_8888)", bitmap.toShortInfoString())
-            } else {
-                Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
-            }
+            Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
                 imageInfo.toShortString()
@@ -696,11 +684,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                Assert.assertEquals("Bitmap(291x484,ARGB_8888)", bitmap.toShortInfoString())
-            } else {
-                Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
-            }
+            Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
                 imageInfo.toShortString()
@@ -873,11 +857,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                Assert.assertEquals("Bitmap(484x291,ARGB_8888)", bitmap.toShortInfoString())
-            } else {
-                Assert.assertEquals("Bitmap(484x290,ARGB_8888)", bitmap.toShortInfoString())
-            }
+            Assert.assertEquals("Bitmap(484x290,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
                 "ImageInfo(1936x1291,'image/jpeg',UNDEFINED)",
                 imageInfo.toShortString()
@@ -901,11 +881,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                Assert.assertEquals("Bitmap(194x323,ARGB_8888)", bitmap.toShortInfoString())
-            } else {
-                Assert.assertEquals("Bitmap(193x322,ARGB_8888)", bitmap.toShortInfoString())
-            }
+            Assert.assertEquals("Bitmap(193x322,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
                 "ImageInfo(1936x1291,'image/jpeg',UNDEFINED)",
                 imageInfo.toShortString()
@@ -1038,7 +1014,7 @@ class DefaultBitmapDecoderTest {
 
     @Test
     fun testError() {
-        val (context, sketch) = getTestContextAndNewSketch{
+        val (context, sketch) = getTestContextAndNewSketch {
             bitmapPool(LruBitmapPool(1024 * 1024 * 20))
         }
 

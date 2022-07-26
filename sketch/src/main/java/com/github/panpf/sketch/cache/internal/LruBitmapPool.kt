@@ -204,8 +204,8 @@ class LruBitmapPool constructor(
         }
 
         val inSampleSize = options.inSampleSize.coerceAtLeast(1)
-        val finalWidth = samplingSize(imageWidth, inSampleSize)
-        val finalHeight = samplingSize(imageHeight, inSampleSize)
+        val finalWidth = samplingSize(imageWidth, inSampleSize, imageMimeType)
+        val finalHeight = samplingSize(imageHeight, inSampleSize, imageMimeType)
         // The following versions of KITKAT only support format is jpeg or png and inSampleSize is 1
         @Suppress("ReplaceGetOrSet")
         val inBitmap: Bitmap? = when {
@@ -240,6 +240,8 @@ class LruBitmapPool constructor(
             }
         }
 
+        // IllegalArgumentException("Problem decoding into existing bitmap") is thrown when inSampleSize is 0 but inBitmap is not null
+        options.inSampleSize = inSampleSize
         options.inBitmap = inBitmap
         options.inMutable = true
         return inBitmap != null
@@ -278,6 +280,8 @@ class LruBitmapPool constructor(
             )
         }
 
+        // IllegalArgumentException("Problem decoding into existing bitmap") is thrown when inSampleSize is 0 but inBitmap is not null
+        options.inSampleSize = inSampleSize
         options.inBitmap = inBitmap
         return true
     }

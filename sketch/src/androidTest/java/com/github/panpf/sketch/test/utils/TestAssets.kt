@@ -10,5 +10,6 @@ object TestAssets {
     val SAMPLE_WEBP_URI = newAssetUri("sample.webp")
     val SAMPLE_ANIM_GIF_URI = newAssetUri("sample_anim.gif")
     val SAMPLE_ANIM_WEBP_URI = newAssetUri("sample_anim.webp")
+    val SAMPLE_ANIM_HEIf_URI = newAssetUri("sample_anim.heif")
     val ERROR_URI = newAssetUri("error.jpeg")
 }
