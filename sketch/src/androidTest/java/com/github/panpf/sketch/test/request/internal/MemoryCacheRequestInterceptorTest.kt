@@ -24,7 +24,7 @@ import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.request.internal.MemoryCacheInterceptor
+import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -37,14 +37,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class MemoryCacheInterceptorTest {
+class MemoryCacheRequestInterceptorTest {
 
     @Test
     fun testIntercept() {
         val (context, sketch) = getTestContextAndNewSketch()
         val memoryCache = sketch.memoryCache
 
-        val requestInterceptorList = listOf(MemoryCacheInterceptor(), FakeRequestInterceptor())
+        val requestInterceptorList = listOf(MemoryCacheRequestInterceptor(), FakeRequestInterceptor())
         val executeRequest: (ImageRequest) -> ImageData = { request ->
             runBlocking {
                 RequestInterceptorChain(
@@ -187,9 +187,9 @@ class MemoryCacheInterceptorTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = MemoryCacheInterceptor()
-        val element11 = MemoryCacheInterceptor()
-        val element2 = MemoryCacheInterceptor()
+        val element1 = MemoryCacheRequestInterceptor()
+        val element11 = MemoryCacheRequestInterceptor()
+        val element2 = MemoryCacheRequestInterceptor()
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -210,7 +210,7 @@ class MemoryCacheInterceptorTest {
 
     @Test
     fun testToString() {
-        Assert.assertEquals("MemoryCacheInterceptor", MemoryCacheInterceptor().toString())
+        Assert.assertEquals("MemoryCacheRequestInterceptor", MemoryCacheRequestInterceptor().toString())
     }
 
     class FakeRequestInterceptor : RequestInterceptor {

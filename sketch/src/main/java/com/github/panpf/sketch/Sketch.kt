@@ -58,7 +58,7 @@ import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.MemoryCacheInterceptor
+import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewDisplayTarget
@@ -174,7 +174,7 @@ class Sketch private constructor(
 
                 addDrawableDecoder(DefaultDrawableDecoder.Factory())
 
-                addRequestInterceptor(MemoryCacheInterceptor())
+                addRequestInterceptor(MemoryCacheRequestInterceptor())
                 addRequestInterceptor(EngineRequestInterceptor())
 
                 addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())

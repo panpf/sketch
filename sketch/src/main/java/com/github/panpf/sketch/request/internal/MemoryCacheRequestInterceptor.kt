@@ -21,8 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 
-// todo rename to MemoryCacheRequestInterceptor
-class MemoryCacheInterceptor : RequestInterceptor {
+class MemoryCacheRequestInterceptor : RequestInterceptor {
 
     @WorkerThread
     override suspend fun intercept(chain: Chain): ImageData {
@@ -89,7 +88,7 @@ class MemoryCacheInterceptor : RequestInterceptor {
         }
     }
 
-    override fun toString(): String = "MemoryCacheInterceptor"
+    override fun toString(): String = "MemoryCacheRequestInterceptor"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

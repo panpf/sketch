@@ -31,7 +31,7 @@ import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.MemoryCacheInterceptor
+import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
 import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
@@ -179,7 +179,7 @@ class SketchTest {
                         addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
                         addBitmapDecoder(DefaultBitmapDecoder.Factory())
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
-                        addRequestInterceptor(MemoryCacheInterceptor())
+                        addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
                         addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
@@ -209,7 +209,7 @@ class SketchTest {
                         addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
                         addBitmapDecoder(DefaultBitmapDecoder.Factory())
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
-                        addRequestInterceptor(MemoryCacheInterceptor())
+                        addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
                         addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
@@ -250,7 +250,7 @@ class SketchTest {
 
             build().apply {
                 Assert.assertEquals(
-                    listOf(MemoryCacheInterceptor(), EngineRequestInterceptor()),
+                    listOf(MemoryCacheRequestInterceptor(), EngineRequestInterceptor()),
                     components.requestInterceptorList
                 )
             }
@@ -259,11 +259,11 @@ class SketchTest {
             }
             build().apply {
                 Assert.assertEquals(
-                    listOf(TestRequestInterceptor(), MemoryCacheInterceptor(), EngineRequestInterceptor()),
+                    listOf(TestRequestInterceptor(), MemoryCacheRequestInterceptor(), EngineRequestInterceptor()),
                     components.requestInterceptorList
                 )
                 Assert.assertNotEquals(
-                    listOf(MemoryCacheInterceptor(), EngineRequestInterceptor()),
+                    listOf(MemoryCacheRequestInterceptor(), EngineRequestInterceptor()),
                     components.requestInterceptorList
                 )
             }
