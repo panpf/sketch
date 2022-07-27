@@ -561,6 +561,9 @@ class SketchTest {
         )
 
         /* cancel */
+        val sketch1 = newSketch {
+            httpStack(TestHttpStack(it, readDelayMillis = 500))
+        }
         var disposable3: Disposable<DownloadResult>? = null
         val listenerSupervisor3 = DownloadListenerSupervisor {
             disposable3?.job?.cancel()
@@ -571,7 +574,7 @@ class SketchTest {
             listener(listenerSupervisor3)
         }
         runBlocking {
-            disposable3 = sketch.enqueue(request3)
+            disposable3 = sketch1.enqueue(request3)
             disposable3?.job?.join()
         }
         Assert.assertEquals(
@@ -615,6 +618,9 @@ class SketchTest {
         )
 
         /* cancel */
+        val sketch1 = newSketch {
+            httpStack(TestHttpStack(it, readDelayMillis = 500))
+        }
         var deferred3: Deferred<DownloadResult>? = null
         val listenerSupervisor3 = DownloadListenerSupervisor {
             deferred3?.cancel()
@@ -626,7 +632,7 @@ class SketchTest {
         }
         runBlocking {
             deferred3 = async {
-                sketch.execute(request3)
+                sketch1.execute(request3)
             }
             deferred3?.join()
         }

@@ -567,11 +567,7 @@ class DisplayRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<DisplayResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
-                } else {
-                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
-                }
+                Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
                 Assert.assertEquals(smallSize1.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -596,11 +592,7 @@ class DisplayRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<DisplayResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 388), drawable.intrinsicSize)
-                } else {
-                    Assert.assertEquals(Size(322, 387), drawable.intrinsicSize)
-                }
+                Assert.assertEquals(Size(322, 387), drawable.intrinsicSize)
                 Assert.assertEquals(smallSize2.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -748,11 +740,7 @@ class DisplayRequestExecuteTest {
             .asOrNull<DisplayResult.Success>()!!.apply {
                 sarStartCropBitmap = drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
-                } else {
-                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
-                }
+                Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
                 Assert.assertEquals(size.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -761,11 +749,7 @@ class DisplayRequestExecuteTest {
             .asOrNull<DisplayResult.Success>()!!.apply {
                 sarCenterCropBitmap = drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
-                } else {
-                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
-                }
+                Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
                 Assert.assertEquals(size.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -774,11 +758,7 @@ class DisplayRequestExecuteTest {
             .asOrNull<DisplayResult.Success>()!!.apply {
                 sarEndCropBitmap = drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
-                } else {
-                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
-                }
+                Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
                 Assert.assertEquals(size.ratio, drawable.intrinsicSize.ratio)
             }
         DisplayRequest(context, imageUri) {
@@ -787,11 +767,7 @@ class DisplayRequestExecuteTest {
             .asOrNull<DisplayResult.Success>()!!.apply {
                 sarFillCropBitmap = drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), drawable.intrinsicSize)
-                } else {
-                    Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
-                }
+                Assert.assertEquals(Size(322, 268), drawable.intrinsicSize)
                 Assert.assertEquals(size.ratio, drawable.intrinsicSize.ratio)
             }
         Assert.assertNotEquals(sarStartCropBitmap!!.corners(), sarCenterCropBitmap!!.corners())
@@ -991,30 +967,6 @@ class DisplayRequestExecuteTest {
             Assert.assertFalse(bitmapPool.exist(323, 484, ARGB_8888))
         } else {
             Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
-        }
-
-        bitmapPool.clear()
-        bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
-        request.newDisplayRequest {
-            resize(null)
-            disallowReuseBitmap(false)
-        }.let { runBlocking { sketch.execute(it) } }
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-            Assert.assertFalse(bitmapPool.exist(1291, 1936, ARGB_8888))
-        } else {
-            Assert.assertTrue(bitmapPool.exist(1291, 1936, ARGB_8888))
-        }
-
-        bitmapPool.clear()
-        bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
-        request.newDisplayRequest {
-            resize(null)
-            disallowReuseBitmap(null)
-        }.let { runBlocking { sketch.execute(it) } }
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-            Assert.assertFalse(bitmapPool.exist(1291, 1936, ARGB_8888))
-        } else {
-            Assert.assertTrue(bitmapPool.exist(1291, 1936, ARGB_8888))
         }
     }
 

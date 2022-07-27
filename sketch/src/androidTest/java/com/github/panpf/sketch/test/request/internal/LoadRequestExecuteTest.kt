@@ -539,11 +539,7 @@ class LoadRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), bitmap.size)
-                } else {
-                    Assert.assertEquals(Size(322, 268), bitmap.size)
-                }
+                Assert.assertEquals(Size(322, 268), bitmap.size)
                 Assert.assertEquals(smallSize1.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -568,11 +564,7 @@ class LoadRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 388), bitmap.size)
-                } else {
-                    Assert.assertEquals(Size(322, 387), bitmap.size)
-                }
+                Assert.assertEquals(Size(322, 387), bitmap.size)
                 Assert.assertEquals(smallSize2.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -720,11 +712,7 @@ class LoadRequestExecuteTest {
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarStartCropBitmap = bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), bitmap.size)
-                } else {
-                    Assert.assertEquals(Size(322, 268), bitmap.size)
-                }
+                Assert.assertEquals(Size(322, 268), bitmap.size)
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -733,11 +721,7 @@ class LoadRequestExecuteTest {
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarCenterCropBitmap = bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), bitmap.size)
-                } else {
-                    Assert.assertEquals(Size(322, 268), bitmap.size)
-                }
+                Assert.assertEquals(Size(322, 268), bitmap.size)
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -746,11 +730,7 @@ class LoadRequestExecuteTest {
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarEndCropBitmap = bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), bitmap.size)
-                } else {
-                    Assert.assertEquals(Size(322, 268), bitmap.size)
-                }
+                Assert.assertEquals(Size(322, 268), bitmap.size)
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
@@ -759,11 +739,7 @@ class LoadRequestExecuteTest {
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarFillCropBitmap = bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    Assert.assertEquals(Size(323, 269), bitmap.size)
-                } else {
-                    Assert.assertEquals(Size(322, 268), bitmap.size)
-                }
+                Assert.assertEquals(Size(322, 268), bitmap.size)
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         Assert.assertNotEquals(sarStartCropBitmap!!.corners(), sarCenterCropBitmap!!.corners())
@@ -942,28 +918,6 @@ class LoadRequestExecuteTest {
             Assert.assertNull(bitmapPool.get(323, 484, ARGB_8888))
         } else {
             Assert.assertNotNull(bitmapPool.get(323, 484, ARGB_8888))
-        }
-
-        bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
-        request.newLoadRequest {
-            resize(null)
-            disallowReuseBitmap(false)
-        }.let { runBlocking { sketch.execute(it) } }
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-            Assert.assertNull(bitmapPool.get(1291, 1936, ARGB_8888))
-        } else {
-            Assert.assertNotNull(bitmapPool.get(1291, 1936, ARGB_8888))
-        }
-
-        bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
-        request.newLoadRequest {
-            resize(null)
-            disallowReuseBitmap(null)
-        }.let { runBlocking { sketch.execute(it) } }
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-            Assert.assertNull(bitmapPool.get(1291, 1936, ARGB_8888))
-        } else {
-            Assert.assertNotNull(bitmapPool.get(1291, 1936, ARGB_8888))
         }
     }
 

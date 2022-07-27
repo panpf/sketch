@@ -895,25 +895,31 @@ class DecodeUtilsTest {
         Assert.assertEquals(
             if (VERSION.SDK_INT >= VERSION_CODES.N) Size(503, 101) else Size(502, 100),
             calculateSampleBitmapSizeForBitmapRegionDecoder(
-                Size(1005, 201), Rect(0, 0, 1005, 201), 2
+                Rect(0, 0, 1005, 201), 2, Size(1005, 201)
             )
         )
         Assert.assertEquals(
             Size(288, 100),
             calculateSampleBitmapSizeForBitmapRegionDecoder(
-                Size(1005, 201), Rect(0, 0, 577, 201), 2
+                Rect(0, 0, 577, 201), 2, Size(1005, 201)
             )
         )
         Assert.assertEquals(
             Size(502, 55),
             calculateSampleBitmapSizeForBitmapRegionDecoder(
-                Size(1005, 201), Rect(0, 0, 1005, 111), 2
+                Rect(0, 0, 1005, 111), 2, Size(1005, 201)
             )
         )
         Assert.assertEquals(
             Size(288, 55),
             calculateSampleBitmapSizeForBitmapRegionDecoder(
-                Size(1005, 201), Rect(0, 0, 577, 111), 2
+                Rect(0, 0, 577, 111), 2, Size(1005, 201)
+            )
+        )
+        Assert.assertEquals(
+            Size(288, 55),
+            calculateSampleBitmapSizeForBitmapRegionDecoder(
+                Rect(0, 0, 577, 111), 2
             )
         )
     }

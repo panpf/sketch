@@ -355,7 +355,7 @@ class HttpUriFetcherTest {
     @Test
     fun testCancel() {
         val (context, sketch) = getTestContextAndNewSketch {
-            httpStack(TestHttpStack(it, readDelayMillis = 1000))
+            httpStack(TestHttpStack(it, readDelayMillis = 500))
         }
 
         val testUri = TestHttpStack.testImages.first()
@@ -387,7 +387,7 @@ class HttpUriFetcherTest {
     @Test
     fun testCancel2() {
         val (context, sketch) = getTestContextAndNewSketch {
-            httpStack(TestHttpStack(it, readDelayMillis = 1000, connectionDelayMillis = 1000))
+            httpStack(TestHttpStack(it, readDelayMillis = 500, connectionDelayMillis = 500))
         }
 
         val testUri = TestHttpStack.testImages.first()

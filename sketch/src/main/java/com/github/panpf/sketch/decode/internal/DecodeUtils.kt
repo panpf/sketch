@@ -102,14 +102,14 @@ fun calculateSampleBitmapSizeForBitmapFactory(
 
 // todo apply
 fun calculateSampleBitmapSizeForBitmapRegionDecoder(
-    imageSize: Size, rect: Rect, sampleSize: Int
+    rect: Rect, sampleSize: Int, imageSize: Size? = null
 ): Size {
     val widthValue = rect.width() / sampleSize.toDouble()
     val heightValue = rect.height() / sampleSize.toDouble()
-    val sizeSame = rect.width() == imageSize.width && rect.height() == imageSize.height
-    val width = if (sizeSame && VERSION.SDK_INT >= VERSION_CODES.N)
+    val sizeSame = rect.width() == imageSize?.width && rect.height() == imageSize.height
+    val width = if (VERSION.SDK_INT >= VERSION_CODES.N && sizeSame)
         ceil(widthValue).toInt() else floor(widthValue).toInt()
-    val height = if (sizeSame && VERSION.SDK_INT >= VERSION_CODES.N)
+    val height = if (VERSION.SDK_INT >= VERSION_CODES.N && sizeSame)
         ceil(heightValue).toInt() else floor(heightValue).toInt()
     return Size(width, height)
 }
