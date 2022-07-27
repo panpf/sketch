@@ -26,6 +26,7 @@ import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
 import com.github.panpf.sketch.util.BitmapInfo
+import com.github.panpf.sketch.util.Size
 
 /**
  * A [Drawable] that supports rendering [Movie]s (i.e. GIFs).
@@ -256,7 +257,7 @@ class MovieDrawable constructor(
             hardwareDy = 0f
         } else {
             hardwareScale =
-                1f / calculateSampleSize(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight)
+                1f / calculateSampleSize(Size(bitmapWidth, bitmapHeight), Size(boundsWidth, boundsHeight))
             hardwareScale =
                 computeSizeMultiplier(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, true)
                     .toFloat()

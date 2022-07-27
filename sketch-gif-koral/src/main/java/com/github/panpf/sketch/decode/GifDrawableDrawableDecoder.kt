@@ -23,6 +23,7 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pl.droidsonroids.gif.GifInfoHandleHelper
@@ -57,7 +58,7 @@ class GifDrawableDrawableDecoder(
         val resize = request.resize
         var inSampleSize = 1
         if (resize != null) {
-            inSampleSize = calculateSampleSize(imageWidth, imageHeight, resize.width, resize.height)
+            inSampleSize = calculateSampleSize(Size(imageWidth, imageHeight), Size(resize.width, resize.height))
             gifInfoHandleHelper.setOptions(GifOptions().apply {
                 setInSampleSize(inSampleSize)
             })

@@ -24,6 +24,7 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.transform.asPostProcessor
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
@@ -87,7 +88,8 @@ abstract class BaseAnimatedImageDrawableDecoder(
             val resize = request.resize
             if (resize != null) {
                 inSampleSize = calculateSampleSize(
-                    info.size.width, info.size.height, resize.width, resize.height
+                    imageSize = Size(info.size.width, info.size.height),
+                    targetSize = Size(resize.width, resize.height)
                 )
                 decoder.setTargetSampleSize(inSampleSize)
 

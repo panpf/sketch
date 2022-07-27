@@ -55,63 +55,163 @@ val maxBitmapSize: Size by lazy {
     }
 }
 
-/*
- * The width and height limit cannot be greater than the maximum size allowed by OpenGL
- */
-fun limitedMaxBitmapSize(@Px imageWidth: Int, @Px imageHeight: Int, inSampleSize: Int): Int {
-    val maximumBitmapSize = maxBitmapSize
-    var finalInSampleSize = inSampleSize.coerceAtLeast(1)
-    while ((samplingSize(imageWidth, finalInSampleSize) > maximumBitmapSize.width)
-        || (samplingSize(imageHeight, finalInSampleSize) > maximumBitmapSize.height)
-    ) {
-        finalInSampleSize *= 2
-    }
-    return finalInSampleSize
-}
-
-/**
- * Calculate the sample size for [BitmapFactory.Options]
- */
-fun calculateSampleSize(
-    @Px imageWidth: Int,
-    @Px imageHeight: Int,
-    @Px targetWidth: Int,
-    @Px targetHeight: Int,
-): Int {
-    val targetPixels = targetWidth * targetHeight
-    var sampleSize = 1
-    while (
-        samplingSize(imageWidth, sampleSize) * samplingSize(imageHeight, sampleSize) > targetPixels
-    ) {
-        sampleSize *= 2
-    }
-    return limitedMaxBitmapSize(imageWidth, imageHeight, sampleSize)
-}
 
 // todo apply
-fun calculateSampleBitmapSizeForBitmapFactory(
+fun calculateBitmapSizeBySampleSizeForBitmapFactory(
     imageSize: Size, sampleSize: Int, mimeType: String? = null
 ): Size {
     val widthValue = imageSize.width / sampleSize.toDouble()
     val heightValue = imageSize.height / sampleSize.toDouble()
     val isPNGFormat = ImageFormat.PNG.matched(mimeType)
-    val width = if (isPNGFormat) floor(widthValue).toInt() else ceil(widthValue).toInt()
-    val height = if (isPNGFormat) floor(heightValue).toInt() else ceil(heightValue).toInt()
+    val width: Int
+    val height: Int
+    if (isPNGFormat) {
+        width = floor(widthValue).toInt()
+        height = floor(heightValue).toInt()
+    } else {
+        width = ceil(widthValue).toInt()
+        height = ceil(heightValue).toInt()
+    }
     return Size(width, height)
 }
 
 // todo apply
-fun calculateSampleBitmapSizeForBitmapRegionDecoder(
-    rect: Rect, sampleSize: Int, imageSize: Size? = null
+fun calculateBitmapSizeBySampleSizeForBitmapRegionDecoder(
+    regionSize: Size, sampleSize: Int, imageSize: Size? = null
 ): Size {
-    val widthValue = rect.width() / sampleSize.toDouble()
-    val heightValue = rect.height() / sampleSize.toDouble()
-    val sizeSame = rect.width() == imageSize?.width && rect.height() == imageSize.height
-    val width = if (VERSION.SDK_INT >= VERSION_CODES.N && sizeSame)
-        ceil(widthValue).toInt() else floor(widthValue).toInt()
-    val height = if (VERSION.SDK_INT >= VERSION_CODES.N && sizeSame)
-        ceil(heightValue).toInt() else floor(heightValue).toInt()
+    val widthValue = regionSize.width / sampleSize.toDouble()
+    val heightValue = regionSize.height / sampleSize.toDouble()
+    val width: Int
+    val height: Int
+    if (VERSION.SDK_INT >= VERSION_CODES.N && regionSize == imageSize) {
+        width = ceil(widthValue).toInt()
+        height = ceil(heightValue).toInt()
+    } else {
+        width = floor(widthValue).toInt()
+        height = floor(heightValue).toInt()
+    }
     return Size(width, height)
+}
+
+
+/*
+ * The width and height limit cannot be greater than the maximum size allowed by OpenGL
+ */
+fun limitedSampleSizeByMaxBitmapSize(imageSize: Size, sampleSize: Int): Int {
+    val maximumBitmapSize = maxBitmapSize
+    var finalInSampleSize = sampleSize.coerceAtLeast(1)
+    while (true) {
+        val sampledWidth = ceil(imageSize.width / finalInSampleSize.toDouble()).toInt()
+        val sampledHeight = ceil(imageSize.height / finalInSampleSize.toDouble()).toInt()
+        if (sampledWidth <= maximumBitmapSize.width && sampledHeight <= maximumBitmapSize.height) {
+            break
+        } else {
+            finalInSampleSize *= 2
+        }
+    }
+    return finalInSampleSize
+}
+
+/*
+ * The width and height limit cannot be greater than the maximum size allowed by OpenGL for BitmapFactory
+ */
+fun limitedSampleSizeByMaxBitmapSizeForBitmapFactory(
+    imageSize: Size, sampleSize: Int, mimeType: String? = null
+): Int {
+    val maximumBitmapSize = maxBitmapSize
+    var finalSampleSize = sampleSize.coerceAtLeast(1)
+    while (true) {
+        val bitmapSize =
+            calculateBitmapSizeBySampleSizeForBitmapFactory(imageSize, finalSampleSize, mimeType)
+        if (bitmapSize.width <= maximumBitmapSize.width && bitmapSize.height <= maximumBitmapSize.height) {
+            break
+        } else {
+            finalSampleSize *= 2
+        }
+    }
+    return finalSampleSize
+}
+
+/*
+ * The width and height limit cannot be greater than the maximum size allowed by OpenGL for BitmapRegionDecoder
+ */
+fun limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(
+    regionSize: Size, sampleSize: Int, imageSize: Size? = null
+): Int {
+    val maximumBitmapSize = maxBitmapSize
+    var finalSampleSize = sampleSize.coerceAtLeast(1)
+    while (true) {
+        val bitmapSize =
+            calculateBitmapSizeBySampleSizeForBitmapRegionDecoder(
+                regionSize,
+                finalSampleSize,
+                imageSize
+            )
+        if (bitmapSize.width <= maximumBitmapSize.width && bitmapSize.height <= maximumBitmapSize.height) {
+            break
+        } else {
+            finalSampleSize *= 2
+        }
+    }
+    return finalSampleSize
+}
+
+/**
+ * Calculate the sample size
+ */
+fun calculateSampleSize(imageSize: Size, targetSize: Size): Int {
+    val targetPixels = targetSize.width * targetSize.height
+    var sampleSize = 1
+    while (true) {
+        val sampledWidth = ceil(imageSize.width / sampleSize.toDouble()).toInt()
+        val sampledHeight = ceil(imageSize.height / sampleSize.toDouble()).toInt()
+        if (sampledWidth * sampledHeight <= targetPixels) {
+            break
+        } else {
+            sampleSize *= 2
+        }
+    }
+    return limitedSampleSizeByMaxBitmapSize(imageSize, sampleSize)
+}
+
+/**
+ * Calculate the sample size for BitmapFactory
+ */
+fun calculateSampleSizeForBitmapFactory(
+    imageSize: Size, targetSize: Size, mimeType: String? = null
+): Int {
+    val targetPixels = targetSize.width * targetSize.height
+    var sampleSize = 1
+    while (true) {
+        val bitmapSize =
+            calculateBitmapSizeBySampleSizeForBitmapFactory(imageSize, sampleSize, mimeType)
+        if (bitmapSize.width * bitmapSize.height <= targetPixels) {
+            break
+        } else {
+            sampleSize *= 2
+        }
+    }
+    return limitedSampleSizeByMaxBitmapSizeForBitmapFactory(imageSize, sampleSize, mimeType)
+}
+
+/**
+ * Calculate the sample size for BitmapRegionDecoder
+ */
+fun calculateSampleSizeForBitmapRegionDecoder(
+    regionSize: Size, targetSize: Size, imageSize: Size? = null
+): Int {
+    val targetPixels = targetSize.width * targetSize.height
+    var sampleSize = 1
+    while (true) {
+        val bitmapSize =
+            calculateBitmapSizeBySampleSizeForBitmapRegionDecoder(regionSize, sampleSize, imageSize)
+        if (bitmapSize.width * bitmapSize.height <= targetPixels) {
+            break
+        } else {
+            sampleSize *= 2
+        }
+    }
+    return limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(regionSize, sampleSize, imageSize)
 }
 
 fun samplingSize(size: Int, sampleSize: Double, mimeType: String? = null): Int {
@@ -161,23 +261,23 @@ fun Size.samplingByTarget(
     @Px targetHeight: Int,
     mimeType: String? = null
 ): Size {
-    val sampleSize = calculateSampleSize(width, height, targetWidth, targetHeight)
+    val sampleSize = calculateSampleSize(Size(width, height), Size(targetWidth, targetHeight))
     return sampling(sampleSize, mimeType)
 }
 
 fun Size.samplingByTarget(targetSize: Size, mimeType: String? = null): Size {
-    val sampleSize = calculateSampleSize(width, height, targetSize.width, targetSize.height)
+    val sampleSize = calculateSampleSize(Size(width, height), targetSize)
     return sampling(sampleSize, mimeType)
 }
 
 
 fun Size.samplingForRegionByTarget(@Px targetWidth: Int, @Px targetHeight: Int): Size {
-    val sampleSize = calculateSampleSize(width, height, targetWidth, targetHeight)
+    val sampleSize = calculateSampleSize(Size(width, height), Size(targetWidth, targetHeight))
     return samplingForRegion(sampleSize)
 }
 
 fun Size.samplingForRegionByTarget(targetSize: Size): Size {
-    val sampleSize = calculateSampleSize(width, height, targetSize.width, targetSize.height)
+    val sampleSize = calculateSampleSize(Size(width, height), targetSize)
     return samplingForRegion(sampleSize)
 }
 
@@ -205,14 +305,23 @@ fun realDecode(
     decodeRegion: ((srcRect: Rect, decodeConfig: DecodeConfig) -> Bitmap)?
 ): BitmapDecodeResult {
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
-
     val resize = request.resize
-    val applySize = exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
-    val addedResize = resize?.let { exifOrientationHelper.addToResize(it, applySize) }
+    val appliedImageSize =
+        exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
+    val addedResize = resize?.let { exifOrientationHelper.addToResize(it, appliedImageSize) }
     val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-    val resizeTransformed: String?
-    val bitmap = if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
-        val precision = addedResize.getPrecision(imageInfo.width, imageInfo.height)
+    val transformeds = mutableListOf<String>()
+    val precision = if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
+        addedResize.getPrecision(imageInfo.width, imageInfo.height)
+    } else {
+        null
+    }
+    val bitmap = if (
+        addedResize != null
+        && precision != null
+        && precision != LESS_PIXELS
+        && decodeRegion != null
+    ) {
         val scale = addedResize.getScale(imageInfo.width, imageInfo.height)
         val resizeMapping = calculateResizeMapping(
             imageWidth = imageInfo.width,
@@ -222,36 +331,41 @@ fun realDecode(
             precision = precision,
             resizeScale = scale,
         )
-        // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
-        decodeConfig.inSampleSize = calculateSampleSize(
-            resizeMapping.srcRect.width(),
-            resizeMapping.srcRect.height(),
-            resizeMapping.destRect.width(),
-            resizeMapping.destRect.height(),
-        )
-        if (precision != LESS_PIXELS && decodeRegion != null) {
-            resizeTransformed = createResizeTransformed(resize)
-            decodeRegion(resizeMapping.srcRect, decodeConfig)
-        } else {
-            resizeTransformed = null
-            decodeFull(decodeConfig)
+        decodeConfig.inSampleSize = calculateSampleSizeForBitmapRegionDecoder(
+            regionSize = Size(resizeMapping.srcRect.width(), resizeMapping.srcRect.height()),
+            targetSize = Size(resizeMapping.destRect.width(), resizeMapping.destRect.height()),
+            imageSize = Size(imageInfo.width, imageInfo.height)
+        ).apply {
+            if (this > 1) {
+                transformeds.add(createInSampledTransformed(this))
+            }
         }
+        transformeds.add(createResizeTransformed(resize))
+        decodeRegion(resizeMapping.srcRect, decodeConfig)
     } else {
-        resizeTransformed = null
-        decodeConfig.inSampleSize = addedResize?.let {
-            calculateSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
-        } ?: limitedMaxBitmapSize(imageInfo.width, imageInfo.height, 1)
+        decodeConfig.inSampleSize = (addedResize?.let {
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(imageInfo.width, imageInfo.height),
+                targetSize = Size(it.width, it.height),
+                mimeType = imageInfo.mimeType
+            )
+        } ?: limitedSampleSizeByMaxBitmapSizeForBitmapFactory(
+            imageSize = Size(imageInfo.width, imageInfo.height),
+            sampleSize = 1,
+            mimeType = imageInfo.mimeType
+        )).apply {
+            if (this > 1) {
+                transformeds.add(createInSampledTransformed(this))
+            }
+        }
         decodeFull(decodeConfig)
     }
-
-    return BitmapDecodeResult.Builder(bitmap, imageInfo, dataFrom).apply {
-        decodeConfig.inSampleSize?.takeIf { it > 1 && bitmap.width < imageInfo.width }?.let {
-            addTransformed(createInSampledTransformed(it))
-        }
-        resizeTransformed?.let {
-            addTransformed(it)
-        }
-    }.build()
+    return BitmapDecodeResult(
+        bitmap = bitmap,
+        imageInfo = imageInfo,
+        dataFrom = dataFrom,
+        transformedList = transformeds.takeIf { it.isNotEmpty() }
+    )
 }
 
 fun BitmapDecodeResult.applyExifOrientation(bitmapPool: BitmapPool? = null): BitmapDecodeResult {
@@ -284,7 +398,8 @@ fun BitmapDecodeResult.applyResize(
     val precision = resize.getPrecision(inBitmap.width, inBitmap.height)
     val newBitmap = if (precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
-            inBitmap.width, inBitmap.height, resize.width, resize.height
+            imageSize = Size(inBitmap.width, inBitmap.height),
+            targetSize = Size(resize.width, resize.height)
         )
         if (sampleSize != 1) {
             inBitmap.scaled(1 / sampleSize.toDouble(), sketch.bitmapPool)

@@ -139,7 +139,7 @@ class LruBitmapPool constructor(
     override fun getOrCreate(width: Int, height: Int, config: Bitmap.Config): Bitmap {
         return get(width, height, config) ?: Bitmap.createBitmap(width, height, config).apply {
             logger?.d(MODULE) {
-                "Create bitmap. ${this.logString}. ${strategy.logBitmap(width, height, config)}"
+                "getOrCreate. new. ${this.logString}. ${strategy.logBitmap(width, height, config)}"
             }
         }
     }
@@ -213,10 +213,10 @@ class LruBitmapPool constructor(
                 this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
             // todo 测试是否需要限制 format 和 inSampleSize
-            options.inSampleSize <= 1 && ImageFormat.JPEG.matched(imageMimeType) -> {
+            inSampleSize == 1 && ImageFormat.JPEG.matched(imageMimeType) -> {
                 this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
-            options.inSampleSize <= 1 && ImageFormat.PNG.matched(imageMimeType) -> {
+            inSampleSize == 1 && ImageFormat.PNG.matched(imageMimeType) -> {
                 this.get(finalWidth, finalHeight, options.inPreferredConfig)
             }
             else -> {

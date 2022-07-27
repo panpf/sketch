@@ -19,9 +19,11 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.applyExifOrientation
 import com.github.panpf.sketch.decode.internal.applyResize
-import com.github.panpf.sketch.decode.internal.calculateSampleBitmapSizeForBitmapFactory
-import com.github.panpf.sketch.decode.internal.calculateSampleBitmapSizeForBitmapRegionDecoder
+import com.github.panpf.sketch.decode.internal.calculateBitmapSizeBySampleSizeForBitmapFactory
+import com.github.panpf.sketch.decode.internal.calculateBitmapSizeBySampleSizeForBitmapRegionDecoder
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
+import com.github.panpf.sketch.decode.internal.calculateSampleSizeForBitmapFactory
+import com.github.panpf.sketch.decode.internal.calculateSampleSizeForBitmapRegionDecoder
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
@@ -30,7 +32,9 @@ import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
-import com.github.panpf.sketch.decode.internal.limitedMaxBitmapSize
+import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSize
+import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSizeForBitmapFactory
+import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder
 import com.github.panpf.sketch.decode.internal.maxBitmapSize
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
@@ -72,33 +76,33 @@ class DecodeUtilsTest {
     @Test
     fun testLimitedMaxBitmapSize() {
         val maxSize = maxBitmapSize.width
-        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize - 1, maxSize, 1))
-        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize, maxSize - 1, 1))
-        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize - 1, maxSize - 1, 1))
-        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize, maxSize, 1))
-        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize + 1, maxSize, 1))
-        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize, maxSize + 1, 1))
-        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize + 1, maxSize + 1, 1))
+        Assert.assertEquals(1, limitedSampleSizeByMaxBitmapSize(Size(maxSize - 1, maxSize), 1))
+        Assert.assertEquals(1, limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize - 1), 1))
+        Assert.assertEquals(1, limitedSampleSizeByMaxBitmapSize(Size(maxSize - 1, maxSize - 1), 1))
+        Assert.assertEquals(1, limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize), 1))
+        Assert.assertEquals(2, limitedSampleSizeByMaxBitmapSize(Size(maxSize + 1, maxSize), 1))
+        Assert.assertEquals(2, limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize + 1), 1))
+        Assert.assertEquals(2, limitedSampleSizeByMaxBitmapSize(Size(maxSize + 1, maxSize + 1), 1))
 
-        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize, maxSize, 0))
-        Assert.assertEquals(1, limitedMaxBitmapSize(maxSize, maxSize, -1))
-        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize + 1, maxSize + 1, -1))
-        Assert.assertEquals(2, limitedMaxBitmapSize(maxSize + 1, maxSize + 1, 0))
+        Assert.assertEquals(1, limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize), 0))
+        Assert.assertEquals(1, limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize), -1))
+        Assert.assertEquals(2, limitedSampleSizeByMaxBitmapSize(Size(maxSize + 1, maxSize + 1), -1))
+        Assert.assertEquals(2, limitedSampleSizeByMaxBitmapSize(Size(maxSize + 1, maxSize + 1), 0))
     }
 
     @Test
     fun testCalculateSampleSize() {
-        Assert.assertEquals(1, calculateSampleSize(1000, 1000, 1100, 1100))
-        Assert.assertEquals(1, calculateSampleSize(1000, 1000, 1000, 1000))
-        Assert.assertEquals(2, calculateSampleSize(1000, 1000, 900, 900))
+        Assert.assertEquals(1, calculateSampleSize(Size(1000, 1000), Size(1100, 1100)))
+        Assert.assertEquals(1, calculateSampleSize(Size(1000, 1000), Size(1000, 1000)))
+        Assert.assertEquals(2, calculateSampleSize(Size(1000, 1000), Size(900, 900)))
 
-        Assert.assertEquals(2, calculateSampleSize(1000, 1000, 520, 520))
-        Assert.assertEquals(2, calculateSampleSize(1000, 1000, 500, 500))
-        Assert.assertEquals(4, calculateSampleSize(1000, 1000, 480, 480))
+        Assert.assertEquals(2, calculateSampleSize(Size(1000, 1000), Size(520, 520)))
+        Assert.assertEquals(2, calculateSampleSize(Size(1000, 1000), Size(500, 500)))
+        Assert.assertEquals(4, calculateSampleSize(Size(1000, 1000), Size(480, 480)))
 
-        Assert.assertEquals(4, calculateSampleSize(1000, 1000, 260, 260))
-        Assert.assertEquals(4, calculateSampleSize(1000, 1000, 250, 250))
-        Assert.assertEquals(8, calculateSampleSize(1000, 1000, 240, 240))
+        Assert.assertEquals(4, calculateSampleSize(Size(1000, 1000), Size(260, 260)))
+        Assert.assertEquals(4, calculateSampleSize(Size(1000, 1000), Size(250, 250)))
+        Assert.assertEquals(8, calculateSampleSize(Size(1000, 1000), Size(240, 240)))
     }
 
     @Test
@@ -855,71 +859,400 @@ class DecodeUtilsTest {
     }
 
     @Test
-    fun testCalculateSampleBitmapSizeForBitmapFactory() {
+    fun testCalculateBitmapSizeBySampleSizeForBitmapFactory() {
         Assert.assertEquals(
             Size(503, 101),
-            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2)
+            calculateBitmapSizeBySampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                sampleSize = 2
+            )
         )
         Assert.assertEquals(
             Size(503, 101),
-            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/jpeg")
+            calculateBitmapSizeBySampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                sampleSize = 2,
+                mimeType = "image/jpeg"
+            )
         )
         Assert.assertEquals(
             Size(502, 100),
-            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/png")
+            calculateBitmapSizeBySampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                sampleSize = 2,
+                mimeType = "image/png"
+            )
         )
         Assert.assertEquals(
             Size(503, 101),
-            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/bmp")
+            calculateBitmapSizeBySampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                sampleSize = 2,
+                mimeType = "image/bmp"
+            )
         )
         Assert.assertEquals(
             Size(503, 101),
-            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/gif")
+            calculateBitmapSizeBySampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                sampleSize = 2,
+                mimeType = "image/gif"
+            )
         )
         Assert.assertEquals(
             Size(503, 101),
-            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/webp")
+            calculateBitmapSizeBySampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                sampleSize = 2,
+                mimeType = "image/webp"
+            )
         )
         Assert.assertEquals(
             Size(503, 101),
-            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/heic")
+            calculateBitmapSizeBySampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                sampleSize = 2,
+                mimeType = "image/heic"
+            )
         )
         Assert.assertEquals(
             Size(503, 101),
-            calculateSampleBitmapSizeForBitmapFactory(Size(1005, 201), 2, "image/heif")
+            calculateBitmapSizeBySampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                sampleSize = 2,
+                mimeType = "image/heif"
+            )
         )
     }
 
     @Test
-    fun testCalculateSampleBitmapSizeForBitmapRegionDecoder() {
+    fun testCalculateBitmapSizeBySampleSizeForBitmapRegionDecoder() {
         Assert.assertEquals(
             if (VERSION.SDK_INT >= VERSION_CODES.N) Size(503, 101) else Size(502, 100),
-            calculateSampleBitmapSizeForBitmapRegionDecoder(
-                Rect(0, 0, 1005, 201), 2, Size(1005, 201)
+            calculateBitmapSizeBySampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 201),
+                sampleSize = 2,
+                imageSize = Size(1005, 201)
             )
         )
         Assert.assertEquals(
             Size(288, 100),
-            calculateSampleBitmapSizeForBitmapRegionDecoder(
-                Rect(0, 0, 577, 201), 2, Size(1005, 201)
+            calculateBitmapSizeBySampleSizeForBitmapRegionDecoder(
+                regionSize = Size(577, 201),
+                sampleSize = 2,
+                imageSize = Size(1005, 201)
             )
         )
         Assert.assertEquals(
             Size(502, 55),
-            calculateSampleBitmapSizeForBitmapRegionDecoder(
-                Rect(0, 0, 1005, 111), 2, Size(1005, 201)
+            calculateBitmapSizeBySampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 111),
+                sampleSize = 2,
+                imageSize = Size(1005, 201)
             )
         )
         Assert.assertEquals(
             Size(288, 55),
-            calculateSampleBitmapSizeForBitmapRegionDecoder(
-                Rect(0, 0, 577, 111), 2, Size(1005, 201)
+            calculateBitmapSizeBySampleSizeForBitmapRegionDecoder(
+                regionSize = Size(577, 111),
+                sampleSize = 2,
+                imageSize = Size(1005, 201)
             )
         )
         Assert.assertEquals(
             Size(288, 55),
-            calculateSampleBitmapSizeForBitmapRegionDecoder(
-                Rect(0, 0, 577, 111), 2
+            calculateBitmapSizeBySampleSizeForBitmapRegionDecoder(
+                regionSize = Size(577, 111),
+                sampleSize = 2
+            )
+        )
+    }
+
+    @Test
+    fun testCalculateSampleSizeForBitmapFactory() {
+        Assert.assertEquals(
+            1,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1006, 202),
+            )
+        )
+        Assert.assertEquals(
+            1,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1005, 201),
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1004, 200),
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(503, 101),
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(252, 51),
+            )
+        )
+        Assert.assertEquals(
+            8,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(251, 50),
+            )
+        )
+
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/jpeg"
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/png"
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/bmp"
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/webp"
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/gif"
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/heic"
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapFactory(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/heif"
+            )
+        )
+    }
+
+    @Test
+    fun testCalculateSampleSizeForBitmapRegionDecoder() {
+        Assert.assertEquals(
+            1,
+            calculateSampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 201),
+                targetSize = Size(1006, 202),
+            )
+        )
+        Assert.assertEquals(
+            1,
+            calculateSampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 201),
+                targetSize = Size(1005, 201),
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 201),
+                targetSize = Size(1004, 200),
+                imageSize = Size(2005, 301),
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                imageSize = Size(2005, 301),
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 201),
+                targetSize = Size(501, 99),
+                imageSize = Size(2005, 301),
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 201),
+                targetSize = Size(251, 50),
+                imageSize = Size(2005, 301),
+            )
+        )
+        Assert.assertEquals(
+            8,
+            calculateSampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 201),
+                targetSize = Size(250, 49),
+                imageSize = Size(2005, 301),
+            )
+        )
+
+        Assert.assertEquals(
+            if (VERSION.SDK_INT >= VERSION_CODES.N) 4 else 2,
+            calculateSampleSizeForBitmapRegionDecoder(
+                regionSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                imageSize = Size(1005, 201),
+            )
+        )
+    }
+
+    @Test
+    fun testLimitedSampleSizeByMaxBitmapSizeForBitmapFactory() {
+        val maxSize = maxBitmapSize.width
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize - 1, maxSize), 1)
+        )
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize, maxSize - 1), 1)
+        )
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize - 1, maxSize - 1), 1)
+        )
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize, maxSize), 1)
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize + 1, maxSize), 1)
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize, maxSize + 1), 1)
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize + 1, maxSize + 1), 1)
+        )
+
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize, maxSize), 0)
+        )
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize, maxSize), -1)
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize + 1, maxSize + 1), -1)
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapFactory(Size(maxSize + 1, maxSize + 1), 0)
+        )
+    }
+
+    @Test
+    fun testLimitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder() {
+        val maxSize = maxBitmapSize.width
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(Size(maxSize - 1, maxSize), 1)
+        )
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(Size(maxSize, maxSize - 1), 1)
+        )
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(
+                Size(maxSize - 1, maxSize - 1),
+                1
+            )
+        )
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(Size(maxSize, maxSize), 1)
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(Size(maxSize + 1, maxSize), 1)
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(Size(maxSize, maxSize + 1), 1)
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(
+                Size(maxSize + 1, maxSize + 1),
+                1
+            )
+        )
+
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(Size(maxSize, maxSize), 0)
+        )
+        Assert.assertEquals(
+            1,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(Size(maxSize, maxSize), -1)
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(
+                Size(maxSize + 1, maxSize + 1),
+                -1
+            )
+        )
+        Assert.assertEquals(
+            2,
+            limitedSampleSizeByMaxBitmapSizeForBitmapRegionDecoder(
+                Size(maxSize + 1, maxSize + 1),
+                0
             )
         )
     }

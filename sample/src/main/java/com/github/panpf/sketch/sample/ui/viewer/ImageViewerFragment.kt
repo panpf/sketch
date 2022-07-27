@@ -23,7 +23,6 @@ import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.launch
 
-// todo Added entry and exit transition animations
 class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
