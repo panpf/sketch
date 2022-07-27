@@ -469,7 +469,7 @@ class DefaultBitmapDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            Assert.assertEquals("Bitmap(350x210,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(175x105,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
                 "ImageInfo(700x1012,'image/bmp',UNDEFINED)",
                 imageInfo.toShortString()

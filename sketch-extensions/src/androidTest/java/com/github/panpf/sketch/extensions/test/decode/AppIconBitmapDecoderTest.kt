@@ -8,7 +8,8 @@ import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
-import com.github.panpf.sketch.decode.internal.samplingByTarget
+import com.github.panpf.sketch.extensions.test.intrinsicSize
+import com.github.panpf.sketch.extensions.test.samplingByTarget
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAppIconUri
@@ -19,7 +20,6 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -166,10 +166,7 @@ class AppIconBitmapDecoderTest {
                 factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
             }
         }.apply {
-            val bitmapSize = Size(
-                iconDrawable.intrinsicWidth,
-                iconDrawable.intrinsicHeight
-            ).samplingByTarget(100, 100)
+            val bitmapSize = samplingByTarget(iconDrawable.intrinsicSize, Size(100, 100))
             Assert.assertEquals(
                 "Bitmap(${bitmapSize.height}x${bitmapSize.height},ARGB_8888)",
                 bitmap.toShortInfoString()

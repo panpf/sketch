@@ -3,9 +3,7 @@ package com.github.panpf.sketch.test.decode.internal
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.samplingByTarget
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -13,6 +11,7 @@ import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.ratio
+import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
@@ -44,7 +43,7 @@ class DefaultDrawableDecoderTest {
             }
         }.apply {
             Assert.assertEquals(imageSize, imageInfo.size)
-            Assert.assertEquals(imageSize.samplingByTarget(displaySize), drawable.intrinsicSize)
+            Assert.assertEquals(samplingByTarget(imageSize, displaySize), drawable.intrinsicSize)
             Assert.assertEquals(imageInfo.size.ratio, drawable.intrinsicSize.ratio)
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }

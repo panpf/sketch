@@ -13,6 +13,8 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.calculateSampleSize
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapFactory
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 import com.github.panpf.sketch.util.Logger.Level.VERBOSE
@@ -103,3 +105,8 @@ fun DiskCache.exist(key: String): Boolean = get(key) != null
 
 val Drawable.alphaCompat: Int
     get() = DrawableCompat.getAlpha(this)
+
+fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null): Size {
+    val sampleSize = calculateSampleSize(imageSize, targetSize)
+    return calculateSampledBitmapSizeForBitmapFactory(imageSize, sampleSize, mimeType)
+}

@@ -7,8 +7,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.decode.internal.sampling
-import com.github.panpf.sketch.decode.internal.samplingSize
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapFactory
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
 import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -54,7 +53,7 @@ class BitmapFactoryTest {
         val bitmap = context.assets.open(imageName).use {
             BitmapFactory.decodeStream(it, null, options)
         }!!
-        Assert.assertEquals(imageSize.sampling(2), bitmap.size)
+        Assert.assertEquals(calculateSampledBitmapSizeForBitmapFactory(imageSize, 2), bitmap.size)
     }
 
     @Test
@@ -446,32 +445,27 @@ class BitmapFactoryTest {
         val message = "$assetUri(enabledInBitmap=$enabledInBitmap,sampleSize=$sampleSize)"
         val extension = assetName.substringAfterLast('.', missingDelimiterValue = "")
         val mimeType = "image/$extension"
+        val imageSize = Size(imageWidth, imageHeight)
 
         if (Build.VERSION.SDK_INT >= minAPI) {
+            val sampledBitmapSize = calculateSampledBitmapSizeForBitmapFactory(
+                imageSize = imageSize,
+                sampleSize = options.inSampleSize,
+                mimeType = mimeType
+            )
             if (enabledInBitmap) {
                 options.inBitmap = Bitmap.createBitmap(
-                    samplingSize(imageWidth, options.inSampleSize, mimeType),
-                    samplingSize(imageHeight, options.inSampleSize, mimeType),
+                    sampledBitmapSize.width,
+                    sampledBitmapSize.height,
                     Bitmap.Config.ARGB_8888
                 )
                 if (Build.VERSION.SDK_INT >= inBitmapMinAPI && (sampleSize == 1 || Build.VERSION.SDK_INT >= inBitmapAndInSampleSizeMinAPI)) {
                     decodeWithInBitmap(options)!!.also { bitmap ->
                         Assert.assertSame(message, options.inBitmap, bitmap)
                         if (Build.VERSION.SDK_INT >= sampleSizeMinAPI) {
-                            Assert.assertEquals(
-                                message,
-                                "%dx%d".format(
-                                    samplingSize(imageWidth, options.inSampleSize, mimeType),
-                                    samplingSize(imageHeight, options.inSampleSize, mimeType)
-                                ),
-                                "${bitmap.width}x${bitmap.height}"
-                            )
+                            Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
                         } else {
-                            Assert.assertEquals(
-                                message,
-                                "${imageWidth}x${imageHeight}",
-                                "${bitmap.width}x${bitmap.height}"
-                            )
+                            Assert.assertEquals(message, imageSize, bitmap.size)
                         }
                     }
                 } else {
@@ -488,20 +482,9 @@ class BitmapFactoryTest {
             } else {
                 decodeWithInBitmap(options)!!.also { bitmap ->
                     if (Build.VERSION.SDK_INT >= sampleSizeMinAPI) {
-                        Assert.assertEquals(
-                            message,
-                            "%dx%d".format(
-                                samplingSize(imageWidth, options.inSampleSize, mimeType),
-                                samplingSize(imageHeight, options.inSampleSize, mimeType)
-                            ),
-                            "${bitmap.width}x${bitmap.height}"
-                        )
+                        Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
                     } else {
-                        Assert.assertEquals(
-                            message,
-                            "${imageWidth}x${imageHeight}",
-                            "${bitmap.width}x${bitmap.height}"
-                        )
+                        Assert.assertEquals(message, imageSize, bitmap.size)
                     }
                 }
             }

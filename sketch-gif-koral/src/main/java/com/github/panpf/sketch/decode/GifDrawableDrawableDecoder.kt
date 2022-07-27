@@ -11,7 +11,6 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
-import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isGif
@@ -125,7 +124,7 @@ class GifDrawableDrawableDecoder(
             fetchResult: FetchResult
         ): GifDrawableDrawableDecoder? {
             if (!request.disallowAnimatedImage) {
-                val imageFormat = mimeTypeToImageFormat(fetchResult.mimeType)
+                val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
                 val isGif =
                     if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF

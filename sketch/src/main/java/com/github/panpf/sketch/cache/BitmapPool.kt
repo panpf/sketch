@@ -2,7 +2,9 @@ package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.BitmapRegionDecoder
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.Size
 
 /**
  * [Bitmap] reuse pool, used for caching and reuse [Bitmap],
@@ -63,8 +65,8 @@ interface BitmapPool {
      *
      * @return If true is returned, inBitmap is set
      */
-    fun setInBitmap(
-        options: BitmapFactory.Options, imageWidth: Int, imageHeight: Int, imageMimeType: String?,
+    fun setInBitmapForBitmapFactory(
+        options: BitmapFactory.Options, imageSize: Size, imageMimeType: String?,
     ): Boolean
 
     /**
@@ -73,10 +75,10 @@ interface BitmapPool {
      *
      * @return If true is returned, inBitmap is set
      */
-    fun setInBitmapForRegion(
+    fun setInBitmapForBitmapRegionDecoder(
         options: BitmapFactory.Options,
-        imageWidth: Int,
-        imageHeight: Int,
+        regionSize: Size,
+        imageSize: Size
     ): Boolean
 
     /**

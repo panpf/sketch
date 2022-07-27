@@ -512,6 +512,7 @@ class HttpUriFetcherTest {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+            delay(1000)
         }
         Assert.assertTrue(progressList.size > 0)
         Assert.assertNotNull(progressList.find { it == testUri.contentLength + 1 })

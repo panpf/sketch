@@ -6,7 +6,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
-import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isAnimatedHeif
 import com.github.panpf.sketch.request.ImageRequest
@@ -44,7 +43,7 @@ class HeifAnimatedDrawableDecoder(
             fetchResult: FetchResult
         ): HeifAnimatedDrawableDecoder? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !request.disallowAnimatedImage) {
-                val imageFormat = mimeTypeToImageFormat(fetchResult.mimeType)
+                val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 if ((imageFormat == null || imageFormat == ImageFormat.HEIC || imageFormat == ImageFormat.HEIF)
                     && fetchResult.headerBytes.isAnimatedHeif()
                 ) {

@@ -7,11 +7,11 @@ import android.graphics.Color
 import android.os.Build
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapFactory
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapRegionDecoder
 import com.github.panpf.sketch.decode.internal.logString
-import com.github.panpf.sketch.decode.internal.samplingSize
-import com.github.panpf.sketch.decode.internal.samplingSizeForRegion
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.allocationByteCountCompat
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.getTrimLevelName
@@ -185,58 +185,60 @@ class LruBitmapPool constructor(
         }
     }
 
-    override fun setInBitmap(
-        options: BitmapFactory.Options,
-        imageWidth: Int,
-        imageHeight: Int,
-        imageMimeType: String?,
+    override fun setInBitmapForBitmapFactory(
+        options: BitmapFactory.Options, imageSize: Size, imageMimeType: String?,
     ): Boolean {
-        if (imageWidth == 0 || imageHeight == 0) {
-            logger?.e(MODULE, "setInBitmap. outWidth or ourHeight is 0")
+        if (imageSize.isEmpty) {
+            logger?.e(MODULE, "setInBitmap. imageSize is empty: $imageSize")
             return false
         }
         if (options.inPreferredConfig?.isAndSupportHardware() == true) {
-            logger?.w(
-                MODULE,
+            logger?.w(MODULE) {
                 "setInBitmap. inPreferredConfig is HARDWARE does not support inBitmap"
-            )
+            }
             return false
         }
 
         val inSampleSize = options.inSampleSize.coerceAtLeast(1)
-        val finalWidth = samplingSize(imageWidth, inSampleSize, imageMimeType)
-        val finalHeight = samplingSize(imageHeight, inSampleSize, imageMimeType)
+        val sampledBitmapSize =
+            calculateSampledBitmapSizeForBitmapFactory(imageSize, inSampleSize, imageMimeType)
         // The following versions of KITKAT only support format is jpeg or png and inSampleSize is 1
         @Suppress("ReplaceGetOrSet")
         val inBitmap: Bitmap? = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                this.get(finalWidth, finalHeight, options.inPreferredConfig)
+                this.get(
+                    sampledBitmapSize.width,
+                    sampledBitmapSize.height,
+                    options.inPreferredConfig
+                )
             }
             // todo 测试是否需要限制 format 和 inSampleSize
             inSampleSize == 1 && ImageFormat.JPEG.matched(imageMimeType) -> {
-                this.get(finalWidth, finalHeight, options.inPreferredConfig)
+                this.get(
+                    sampledBitmapSize.width,
+                    sampledBitmapSize.height,
+                    options.inPreferredConfig
+                )
             }
             inSampleSize == 1 && ImageFormat.PNG.matched(imageMimeType) -> {
-                this.get(finalWidth, finalHeight, options.inPreferredConfig)
+                this.get(
+                    sampledBitmapSize.width,
+                    sampledBitmapSize.height,
+                    options.inPreferredConfig
+                )
             }
             else -> {
                 logger?.w(MODULE) {
                     "setInBitmap. The following versions of KITKAT only support format is jpeg or png and inSampleSize is 1. " +
-                            "imageMimeType=$imageMimeType, inSampleSize=${options.inSampleSize}"
+                            "imageSize=$imageSize, imageMimeType=$imageMimeType, inSampleSize=${options.inSampleSize}"
                 }
                 null
             }
         }
         if (inBitmap != null) {
             logger?.d(MODULE) {
-                "setInBitmap. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
-                    finalWidth,
-                    finalHeight,
-                    options.inPreferredConfig,
-                    inSampleSize,
-                    inBitmap.toHexString(),
-                    inBitmap.allocationByteCountCompat.formatFileSize()
-                )
+                "setInBitmap. imageSize=$imageSize, inSampleSize=$inSampleSize, imageMimeType=$imageMimeType. " +
+                        "inBitmap=${inBitmap.logString}"
             }
         }
 
@@ -247,37 +249,33 @@ class LruBitmapPool constructor(
         return inBitmap != null
     }
 
-    override fun setInBitmapForRegion(
-        options: BitmapFactory.Options, imageWidth: Int, imageHeight: Int,
+    override fun setInBitmapForBitmapRegionDecoder(
+        options: BitmapFactory.Options, regionSize: Size, imageSize: Size,
     ): Boolean {
-        if (imageWidth == 0 || imageHeight == 0) {
-            logger?.e(MODULE, "setInBitmapForRegion. outWidth or ourHeight is 0")
+        if (regionSize.isEmpty) {
+            logger?.e(MODULE, "setInBitmapForRegion. regionSize is empty: $regionSize")
             return false
         }
         if (options.inPreferredConfig?.isAndSupportHardware() == true) {
-            logger?.w(
-                MODULE,
+            logger?.w(MODULE) {
                 "setInBitmapForRegion. inPreferredConfig is HARDWARE does not support inBitmap"
-            )
+            }
             return false
         }
 
         val inSampleSize = options.inSampleSize.coerceAtLeast(1)
-        val finalWidth = samplingSizeForRegion(imageWidth, inSampleSize)
-        val finalHeight = samplingSizeForRegion(imageHeight, inSampleSize)
+        val sampledBitmapSize =
+            calculateSampledBitmapSizeForBitmapRegionDecoder(regionSize, inSampleSize, imageSize)
         // BitmapRegionDecoder does not support inMutable, so creates Bitmap
         @Suppress("ReplaceGetOrSet")
-        val inBitmap = this.get(finalWidth, finalHeight, options.inPreferredConfig)
-            ?: Bitmap.createBitmap(finalWidth, finalHeight, options.inPreferredConfig)!!
+        val inBitmap = this.get(
+            sampledBitmapSize.width, sampledBitmapSize.height, options.inPreferredConfig
+        ) ?: Bitmap.createBitmap(
+            sampledBitmapSize.width, sampledBitmapSize.height, options.inPreferredConfig
+        )!!
         logger?.d(MODULE) {
-            "setInBitmapForRegion. options=%dx%d,%s,%d. inBitmap=%s,%s".format(
-                finalWidth,
-                finalHeight,
-                options.inPreferredConfig,
-                inSampleSize,
-                inBitmap.toHexString(),
-                inBitmap.allocationByteCountCompat.formatFileSize()
-            )
+            "setInBitmapForRegion. regionSize=$regionSize, inSampleSize=$inSampleSize, imageSize=$imageSize. " +
+                    "inBitmap=${inBitmap.logString}"
         }
 
         // IllegalArgumentException("Problem decoding into existing bitmap") is thrown when inSampleSize is 0 but inBitmap is not null

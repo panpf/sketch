@@ -2,7 +2,6 @@ package com.github.panpf.sketch.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.ImageFormat
-import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,21 +22,21 @@ class ImageFormatTest {
 
     @Test
     fun testMimeTypeToImageFormat() {
-        Assert.assertEquals(ImageFormat.JPEG, mimeTypeToImageFormat("image/jpeg"))
-        Assert.assertEquals(ImageFormat.JPEG, mimeTypeToImageFormat("IMAGE/JPEG"))
-        Assert.assertEquals(ImageFormat.PNG, mimeTypeToImageFormat("image/png"))
-        Assert.assertEquals(ImageFormat.PNG, mimeTypeToImageFormat("IMAGE/PNG"))
-        Assert.assertEquals(ImageFormat.WEBP, mimeTypeToImageFormat("image/webp"))
-        Assert.assertEquals(ImageFormat.WEBP, mimeTypeToImageFormat("IMAGE/WEBP"))
-        Assert.assertEquals(ImageFormat.GIF, mimeTypeToImageFormat("image/gif"))
-        Assert.assertEquals(ImageFormat.GIF, mimeTypeToImageFormat("IMAGE/GIF"))
-        Assert.assertEquals(ImageFormat.BMP, mimeTypeToImageFormat("image/bmp"))
-        Assert.assertEquals(ImageFormat.BMP, mimeTypeToImageFormat("IMAGE/BMP"))
-        Assert.assertEquals(ImageFormat.HEIC, mimeTypeToImageFormat("image/heic"))
-        Assert.assertEquals(ImageFormat.HEIC, mimeTypeToImageFormat("IMAGE/HEIC"))
-        Assert.assertEquals(ImageFormat.HEIF, mimeTypeToImageFormat("image/heif"))
-        Assert.assertEquals(ImageFormat.HEIF, mimeTypeToImageFormat("IMAGE/HEIF"))
-        Assert.assertNull(mimeTypeToImageFormat("image/jpeg1"))
-        Assert.assertNull(mimeTypeToImageFormat("IMAGE/JPEG1"))
+        Assert.assertEquals(ImageFormat.JPEG, ImageFormat.parseMimeType("image/jpeg"))
+        Assert.assertEquals(ImageFormat.JPEG, ImageFormat.parseMimeType("IMAGE/JPEG"))
+        Assert.assertEquals(ImageFormat.PNG, ImageFormat.parseMimeType("image/png"))
+        Assert.assertEquals(ImageFormat.PNG, ImageFormat.parseMimeType("IMAGE/PNG"))
+        Assert.assertEquals(ImageFormat.WEBP, ImageFormat.parseMimeType("image/webp"))
+        Assert.assertEquals(ImageFormat.WEBP, ImageFormat.parseMimeType("IMAGE/WEBP"))
+        Assert.assertEquals(ImageFormat.GIF, ImageFormat.parseMimeType("image/gif"))
+        Assert.assertEquals(ImageFormat.GIF, ImageFormat.parseMimeType("IMAGE/GIF"))
+        Assert.assertEquals(ImageFormat.BMP, ImageFormat.parseMimeType("image/bmp"))
+        Assert.assertEquals(ImageFormat.BMP, ImageFormat.parseMimeType("IMAGE/BMP"))
+        Assert.assertEquals(ImageFormat.HEIC, ImageFormat.parseMimeType("image/heic"))
+        Assert.assertEquals(ImageFormat.HEIC, ImageFormat.parseMimeType("IMAGE/HEIC"))
+        Assert.assertEquals(ImageFormat.HEIF, ImageFormat.parseMimeType("image/heif"))
+        Assert.assertEquals(ImageFormat.HEIF, ImageFormat.parseMimeType("IMAGE/HEIF"))
+        Assert.assertNull(ImageFormat.parseMimeType("image/jpeg1"))
+        Assert.assertNull(ImageFormat.parseMimeType("IMAGE/JPEG1"))
     }
 }

@@ -7,9 +7,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
-import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
-import com.github.panpf.sketch.decode.internal.samplingByTarget
+import com.github.panpf.sketch.extensions.test.intrinsicSize
+import com.github.panpf.sketch.extensions.test.samplingByTarget
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
@@ -88,7 +88,7 @@ class ApkIconBitmapDecoderTest {
         val sketch = context.sketch
         val factory = ApkIconBitmapDecoder.Factory()
         val apkFilePath = context.applicationInfo.publicSourceDir
-        val iconDrawable = context.applicationInfo.loadIcon(context.packageManager)
+        val iconDrawable = context.applicationInfo.loadIcon(context.packageManager)!!
 
         LoadRequest(context, apkFilePath).run {
             val fetcher = sketch.components.newFetcher(this)
@@ -139,10 +139,7 @@ class ApkIconBitmapDecoderTest {
                 factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
             }
         }.apply {
-            val bitmapSize = Size(
-                iconDrawable.intrinsicWidth,
-                iconDrawable.intrinsicHeight
-            ).samplingByTarget(100, 100)
+            val bitmapSize = samplingByTarget(iconDrawable.intrinsicSize, Size(100, 100))
             Assert.assertEquals(
                 "Bitmap(${bitmapSize.height}x${bitmapSize.height},ARGB_8888)",
                 bitmap.toShortInfoString()

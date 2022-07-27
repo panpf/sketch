@@ -29,9 +29,9 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
+import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
-import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.LoadRequest
@@ -66,7 +66,7 @@ fun createTileDecoder(
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val imageSize =
         exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
-    val imageFormat = mimeTypeToImageFormat(imageInfo.mimeType)
+    val imageFormat = ImageFormat.parseMimeType(imageInfo.mimeType)
     if (imageFormat?.supportBitmapRegionDecoder() != true) {
         return null
     }
@@ -98,6 +98,7 @@ class TileDecoder internal constructor(
     private val decoderPool = LinkedList<BitmapRegionDecoder>()
     private var _destroyed: Boolean = false
     private var disableInBitmap: Boolean = false
+    private val addedImageSize: Size by lazy { exifOrientationHelper.addToSize(imageSize) }
 
     val imageSize: Size by lazy {
         Size(imageInfo.width, imageInfo.height)
@@ -129,11 +130,13 @@ class TileDecoder internal constructor(
         val newSrcRect = exifOrientationHelper.addToRect(srcRect, imageSize)
         val options = BitmapFactory.Options().apply {
             this.inSampleSize = inSampleSize
-            if (!disableInBitmap) {
-                bitmapPool.setInBitmapForRegion(
-                    this, newSrcRect.width(), newSrcRect.height()
-                )
-            }
+        }
+        if (!disableInBitmap) {
+            bitmapPool.setInBitmapForBitmapRegionDecoder(
+                options = options,
+                regionSize = Size(newSrcRect.width(), newSrcRect.height()),
+                imageSize = addedImageSize
+            )
         }
 
         return try {

@@ -10,6 +10,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONArray
 import org.json.JSONObject
@@ -89,8 +90,10 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             val options = request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
                 .toBitmapOptions()
             if (!request.disallowReuseBitmap) {
-                sketch.bitmapPool.setInBitmap(
-                    options, cacheImageInfo.width, cacheImageInfo.height, cacheImageInfo.mimeType
+                sketch.bitmapPool.setInBitmapForBitmapFactory(
+                    options = options,
+                    imageSize = Size(cacheImageInfo.width, cacheImageInfo.height),
+                    imageMimeType = cacheImageInfo.mimeType
                 )
             }
             dataSource.decodeBitmap(options)?.let { bitmap ->

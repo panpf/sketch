@@ -26,6 +26,19 @@ enum class ImageFormat(val mimeType: String) {
     ;
 
     fun matched(mimeType: String?): Boolean = this.mimeType.equals(mimeType, ignoreCase = true)
+
+    companion object {
+        fun parseMimeType(mimeType: String?): ImageFormat? = when {
+            JPEG.matched(mimeType) -> JPEG
+            PNG.matched(mimeType) -> PNG
+            WEBP.matched(mimeType) -> WEBP
+            GIF.matched(mimeType) -> GIF
+            BMP.matched(mimeType) -> BMP
+            HEIC.matched(mimeType) -> HEIC
+            HEIF.matched(mimeType) -> HEIF
+            else -> null
+        }
+    }
 }
 
 fun mimeTypeToImageFormat(mimeType: String?): ImageFormat? = when {

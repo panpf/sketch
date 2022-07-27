@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import com.github.panpf.sketch.decode.BitmapConfig.FixedBitmapConfig
 import com.github.panpf.sketch.decode.internal.ImageFormat
-import com.github.panpf.sketch.decode.internal.mimeTypeToImageFormat
 
 /**
  * Build a [BitmapConfig] with the specified [config]
@@ -47,7 +46,7 @@ sealed interface BitmapConfig {
 
         override fun getConfig(mimeType: String?): Bitmap.Config =
             when {
-                mimeTypeToImageFormat(mimeType) == ImageFormat.JPEG -> {
+                ImageFormat.parseMimeType(mimeType) == ImageFormat.JPEG -> {
                     Bitmap.Config.RGB_565
                 }
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT -> {

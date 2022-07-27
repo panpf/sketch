@@ -27,7 +27,6 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.resultCacheDataKey
-import com.github.panpf.sketch.decode.internal.samplingByTarget
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -55,6 +54,7 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
+import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -520,7 +520,7 @@ class LoadRequestExecuteTest {
             .let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(imageSize.samplingByTarget(displaySize), bitmap.size)
+                Assert.assertEquals(samplingByTarget(imageSize, displaySize), bitmap.size)
                 Assert.assertEquals(imageInfo.size.ratio, bitmap.size.ratio)
             }
 
@@ -739,7 +739,11 @@ class LoadRequestExecuteTest {
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarFillCropBitmap = bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(322, 268), bitmap.size)
+                Assert.assertEquals(
+                    if (VERSION.SDK_INT >= 24)
+                        Size(323, 269) else Size(322, 268),
+                    bitmap.size
+                )
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         Assert.assertNotEquals(sarStartCropBitmap!!.corners(), sarCenterCropBitmap!!.corners())

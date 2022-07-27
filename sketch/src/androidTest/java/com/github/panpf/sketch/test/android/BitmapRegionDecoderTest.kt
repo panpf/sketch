@@ -7,7 +7,7 @@ import android.graphics.Rect
 import android.os.Build
 import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.decode.internal.samplingSizeForRegion
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapRegionDecoder
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
 import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -60,12 +60,13 @@ class BitmapRegionDecoderTest {
                 .run { newBitmapRegionDecoderInstanceCompat() }!!
                 .use { decodeRegion(rect, options) }!!
                 .also { bitmap ->
+                    val sampledBitmapSize = calculateSampledBitmapSizeForBitmapRegionDecoder(
+                        regionSize = Size(rect.width(), rect.height()),
+                        sampleSize = options.inSampleSize,
+                        imageSize = imageSize
+                    )
                     Assert.assertEquals(
-                        Size(
-                            samplingSizeForRegion(rect.width(), options.inSampleSize)
-                                    + (if (Build.VERSION.SDK_INT >= 24) 1 else 0),
-                            samplingSizeForRegion(rect.height(), options.inSampleSize)
-                        ),
+                        sampledBitmapSize,
                         bitmap.size
                     )
                 }
@@ -76,11 +77,13 @@ class BitmapRegionDecoderTest {
                 .run { newBitmapRegionDecoderInstanceCompat() }!!
                 .use { decodeRegion(rect, options) }!!
                 .also { bitmap ->
+                    val sampledBitmapSize = calculateSampledBitmapSizeForBitmapRegionDecoder(
+                        regionSize = Size(rect.width(), rect.height()),
+                        sampleSize = options.inSampleSize,
+                        imageSize = imageSize
+                    )
                     Assert.assertEquals(
-                        Size(
-                            samplingSizeForRegion(rect.width(), options.inSampleSize),
-                            samplingSizeForRegion(rect.height(), options.inSampleSize)
-                        ),
+                        sampledBitmapSize,
                         bitmap.size
                     )
                 }
@@ -91,11 +94,13 @@ class BitmapRegionDecoderTest {
                 .run { newBitmapRegionDecoderInstanceCompat() }!!
                 .use { decodeRegion(rect, options) }!!
                 .also { bitmap ->
+                    val sampledBitmapSize = calculateSampledBitmapSizeForBitmapRegionDecoder(
+                        regionSize = Size(rect.width(), rect.height()),
+                        sampleSize = options.inSampleSize,
+                        imageSize = imageSize
+                    )
                     Assert.assertEquals(
-                        Size(
-                            samplingSizeForRegion(rect.width(), options.inSampleSize),
-                            samplingSizeForRegion(rect.height(), options.inSampleSize)
-                        ),
+                        sampledBitmapSize,
                         bitmap.size
                     )
                 }
@@ -106,11 +111,13 @@ class BitmapRegionDecoderTest {
                 .run { newBitmapRegionDecoderInstanceCompat() }!!
                 .use { decodeRegion(rect, options) }!!
                 .also { bitmap ->
+                    val sampledBitmapSize = calculateSampledBitmapSizeForBitmapRegionDecoder(
+                        regionSize = Size(rect.width(), rect.height()),
+                        sampleSize = options.inSampleSize,
+                        imageSize = imageSize
+                    )
                     Assert.assertEquals(
-                        Size(
-                            samplingSizeForRegion(rect.width(), options.inSampleSize),
-                            samplingSizeForRegion(rect.height(), options.inSampleSize)
-                        ),
+                        sampledBitmapSize,
                         bitmap.size
                     )
                 }
@@ -498,29 +505,28 @@ class BitmapRegionDecoderTest {
             "$assetUri(regionRect=$regionRect,enabledInBitmap=$enabledInBitmap,sampleSize=$sampleSize)"
 
         if (minAPI != -1 && Build.VERSION.SDK_INT >= minAPI) {
+            val sampledBitmapSize =
+                calculateSampledBitmapSizeForBitmapRegionDecoder(
+                    regionSize = Size(regionRect.width(), regionRect.height()),
+                    sampleSize = options.inSampleSize,
+                    imageSize = Size(imageWidth, imageHeight)
+                )
             if (enabledInBitmap) {
                 options.inBitmap = Bitmap.createBitmap(
-                    samplingSizeForRegion(regionRect.width(), options.inSampleSize),
-                    samplingSizeForRegion(regionRect.height(), options.inSampleSize),
+                    sampledBitmapSize.width,
+                    sampledBitmapSize.height,
                     Bitmap.Config.ARGB_8888
                 )
                 if (Build.VERSION.SDK_INT >= inBitmapMinAPI && (sampleSize == 1 || Build.VERSION.SDK_INT >= inBitmapAndInSampleSizeMinAPI)) {
                     decodeWithInBitmap(options)!!.also { bitmap ->
                         Assert.assertSame(message, options.inBitmap, bitmap)
                         if (Build.VERSION.SDK_INT >= sampleSizeMinAPI) {
-                            Assert.assertEquals(
-                                message,
-                                "%dx%d".format(
-                                    samplingSizeForRegion(regionRect.width(), options.inSampleSize),
-                                    samplingSizeForRegion(regionRect.height(), options.inSampleSize)
-                                ),
-                                "${bitmap.width}x${bitmap.height}"
-                            )
+                            Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
                         } else {
                             Assert.assertEquals(
                                 message,
-                                "${regionRect.width()}x${regionRect.height()}",
-                                "${bitmap.width}x${bitmap.height}"
+                                Size(regionRect.width(), regionRect.height()),
+                                bitmap.size
                             )
                         }
                     }
@@ -538,19 +544,12 @@ class BitmapRegionDecoderTest {
             } else {
                 decodeWithInBitmap(options)!!.also { bitmap ->
                     if (Build.VERSION.SDK_INT >= sampleSizeMinAPI) {
-                        Assert.assertEquals(
-                            message,
-                            "%dx%d".format(
-                                samplingSizeForRegion(regionRect.width(), options.inSampleSize),
-                                samplingSizeForRegion(regionRect.height(), options.inSampleSize)
-                            ),
-                            "${bitmap.width}x${bitmap.height}"
-                        )
+                        Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
                     } else {
                         Assert.assertEquals(
                             message,
-                            "${regionRect.width()}x${regionRect.height()}",
-                            "${bitmap.width}x${bitmap.height}"
+                            Size(regionRect.width(), regionRect.height()),
+                            bitmap.size
                         )
                     }
                 }

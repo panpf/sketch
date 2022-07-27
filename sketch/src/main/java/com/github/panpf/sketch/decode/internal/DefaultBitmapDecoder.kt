@@ -13,6 +13,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.util.Size
 
 /**
  * Decode image files using BitmapFactory
@@ -34,7 +35,7 @@ open class DefaultBitmapDecoder(
     override suspend fun decode(): BitmapDecodeResult {
         val imageInfo =
             dataSource.readImageInfoWithBitmapFactoryOrThrow(request.ignoreExifOrientation)
-        val canDecodeRegion = mimeTypeToImageFormat(imageInfo.mimeType)
+        val canDecodeRegion = ImageFormat.parseMimeType(imageInfo.mimeType)
             ?.supportBitmapRegionDecoder() == true
         return realDecode(
             request = request,
@@ -55,8 +56,10 @@ open class DefaultBitmapDecoder(
 
         // Set inBitmap from bitmap pool
         if (!request.disallowReuseBitmap) {
-            bitmapPool.setInBitmap(
-                decodeOptions, imageInfo.width, imageInfo.height, imageInfo.mimeType
+            bitmapPool.setInBitmapForBitmapFactory(
+                options = decodeOptions,
+                imageSize = Size(imageInfo.width, imageInfo.height),
+                imageMimeType = imageInfo.mimeType
             )
         }
 
@@ -93,7 +96,11 @@ open class DefaultBitmapDecoder(
     ): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
         if (!request.disallowReuseBitmap) {
-            bitmapPool.setInBitmapForRegion(decodeOptions, srcRect.width(), srcRect.height())
+            bitmapPool.setInBitmapForBitmapRegionDecoder(
+                options = decodeOptions,
+                regionSize = Size(srcRect.width(), srcRect.height()),
+                imageSize = Size(imageInfo.width, imageInfo.height)
+            )
         }
 
         val bitmap = try {

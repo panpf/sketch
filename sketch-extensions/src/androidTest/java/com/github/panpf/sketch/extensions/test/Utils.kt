@@ -2,10 +2,14 @@ package com.github.panpf.sketch.extensions.test
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
+import com.github.panpf.sketch.decode.internal.calculateSampleSize
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapFactory
+import com.github.panpf.sketch.util.Size
 import java.io.File
 
 fun getTestContextAndNewSketch(): Pair<Context, Sketch> {
@@ -33,3 +37,11 @@ fun Context.newTestDiskCacheDirectory(): File {
 }
 
 internal fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"
+
+val Drawable.intrinsicSize: Size
+    get() = Size(intrinsicWidth, intrinsicHeight)
+
+fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null): Size {
+    val sampleSize = calculateSampleSize(imageSize, targetSize)
+    return calculateSampledBitmapSizeForBitmapFactory(imageSize, sampleSize, mimeType)
+}
