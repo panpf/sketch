@@ -5,12 +5,11 @@ package com.github.panpf.sketch.test.android
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapFactory
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
 import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
-import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
@@ -39,21 +38,6 @@ class BitmapFactoryTest {
             BitmapFactory.decodeStream(it, null, options)
         }!!
         Assert.assertTrue(bitmap1.isMutable)
-    }
-
-    @Test
-    fun testInSampleSize() {
-        val context = getTestContext()
-        val imageName = "sample.jpeg"
-        val imageSize = Size(1291, 1936)
-
-        val options = BitmapFactory.Options().apply {
-            inSampleSize = 2
-        }
-        val bitmap = context.assets.open(imageName).use {
-            BitmapFactory.decodeStream(it, null, options)
-        }!!
-        Assert.assertEquals(calculateSampledBitmapSizeForBitmapFactory(imageSize, 2), bitmap.size)
     }
 
     @Test
@@ -100,355 +84,102 @@ class BitmapFactoryTest {
     }
 
     @Test
-    fun testInBitmapJPEG() {
-        testDecodeImage(
-            TestAssets.SAMPLE_JPEG_URI, 1291, 1936,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_JPEG_URI, 1291, 1936,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_JPEG_URI, 1291, 1936,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_JPEG_URI, 1291, 1936,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapPNG() {
-        testDecodeImage(
-            TestAssets.SAMPLE_PNG_URI, 750, 719,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_PNG_URI, 750, 719,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_PNG_URI, 750, 719,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_PNG_URI, 750, 719,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapBMP() {
-        testDecodeImage(
-            TestAssets.SAMPLE_BMP_URI, 700, 1012,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_BMP_URI, 700, 1012,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_BMP_URI, 700, 1012,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_BMP_URI, 700, 1012,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapWEBP() {
-        testDecodeImage(
-            TestAssets.SAMPLE_WEBP_URI, 1080, 1344,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_WEBP_URI, 1080, 1344,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_WEBP_URI, 1080, 1344,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_WEBP_URI, 1080, 1344,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapHEIC() {
-        testDecodeImage(
-            TestAssets.SAMPLE_HEIC_URI, 750, 932,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_HEIC_URI, 750, 932,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_HEIC_URI, 750, 932,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_HEIC_URI, 750, 932,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapGIF() {
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_GIF_URI, 480, 480,
-            minAPI = 16,
-            sampleSizeMinAPI = 21,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_GIF_URI, 480, 480,
-            minAPI = 16,
-            sampleSizeMinAPI = 21,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_GIF_URI, 480, 480,
-            minAPI = 16,
-            sampleSizeMinAPI = 21,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_GIF_URI, 480, 480,
-            minAPI = 16,
-            sampleSizeMinAPI = 21,
-            inBitmapMinAPI = 19,
-            inBitmapAndInSampleSizeMinAPI = 19,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapAnimWEBP() {
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_WEBP_URI, 480, 270,
-            minAPI = 26,
-            sampleSizeMinAPI = 26,
-            inBitmapMinAPI = 26,
-            inBitmapAndInSampleSizeMinAPI = 26,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_WEBP_URI, 480, 270,
-            minAPI = 26,
-            sampleSizeMinAPI = 26,
-            inBitmapMinAPI = 26,
-            inBitmapAndInSampleSizeMinAPI = 26,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_WEBP_URI, 480, 270,
-            minAPI = 26,
-            sampleSizeMinAPI = 26,
-            inBitmapMinAPI = 26,
-            inBitmapAndInSampleSizeMinAPI = 26,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_WEBP_URI, 480, 270,
-            minAPI = 26,
-            sampleSizeMinAPI = 26,
-            inBitmapMinAPI = 26,
-            inBitmapAndInSampleSizeMinAPI = 26,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapAnimHEIF() {
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_HEIf_URI, 256, 144,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_HEIf_URI, 256, 144,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_HEIf_URI, 256, 144,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        testDecodeImage(
-            TestAssets.SAMPLE_ANIM_HEIf_URI, 256, 144,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
+    fun testInBitmapAndInSampleSize() {
+        listOf(
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.jpeg",
+                imageSize = Size(1291, 1936),
+                minAPI = 16,
+                sampleSizeMinAPI = 16,
+                inBitmapMinAPI = 16,
+                inBitmapAndInSampleSizeMinAPI = 19
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.png",
+                imageSize = Size(750, 719),
+                minAPI = 16,
+                sampleSizeMinAPI = 16,
+                inBitmapMinAPI = 16,
+                inBitmapAndInSampleSizeMinAPI = 19
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.bmp",
+                imageSize = Size(700, 1012),
+                minAPI = 16,
+                sampleSizeMinAPI = 16,
+                inBitmapMinAPI = 19,
+                inBitmapAndInSampleSizeMinAPI = 19,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.webp",
+                imageSize = Size(1080, 1344),
+                minAPI = 16,
+                sampleSizeMinAPI = 16,
+                inBitmapMinAPI = 19,
+                inBitmapAndInSampleSizeMinAPI = 19,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.heic",
+                imageSize = Size(750, 932),
+                minAPI = 28,
+                sampleSizeMinAPI = 28,
+                inBitmapMinAPI = -1,
+                inBitmapAndInSampleSizeMinAPI = -1,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample_anim.gif",
+                imageSize = Size(480, 480),
+                minAPI = 16,
+                sampleSizeMinAPI = 21,
+                inBitmapMinAPI = 19,
+                inBitmapAndInSampleSizeMinAPI = 19,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample_anim.webp",
+                imageSize = Size(480, 270),
+                minAPI = 26,
+                sampleSizeMinAPI = 26,
+                inBitmapMinAPI = 26,
+                inBitmapAndInSampleSizeMinAPI = 26,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample_anim.heif",
+                imageSize = Size(256, 144),
+                minAPI = 28,
+                sampleSizeMinAPI = 28,
+                inBitmapMinAPI = 28,
+                inBitmapAndInSampleSizeMinAPI = 28,
+            ),
+        ).forEach {
+            testDecodeImage(image = it, enabledInBitmap = false, sampleSize = 1)
+            testDecodeImage(image = it, enabledInBitmap = false, sampleSize = 2)
+            testDecodeImage(image = it, enabledInBitmap = true, sampleSize = 1)
+            testDecodeImage(image = it, enabledInBitmap = true, sampleSize = 2)
+        }
     }
 
     private fun testDecodeImage(
-        assetUri: String,
-        imageWidth: Int,
-        imageHeight: Int,
-        minAPI: Int,
-        sampleSizeMinAPI: Int,
-        inBitmapMinAPI: Int,
-        inBitmapAndInSampleSizeMinAPI: Int,
+        image: ImageDecodeCompatibility,
         enabledInBitmap: Boolean,
         sampleSize: Int
     ) {
-        if (minAPI == -1) return
+        if (image.minAPI == -1) return
         val context = getTestContext()
-        val assetName = assetUri.toUri().authority!!
         val decodeWithInBitmap: (options: BitmapFactory.Options) -> Bitmap? = { options ->
-            context.assets.open(assetName).use {
+            context.assets.open(image.imageAssetName).use {
                 BitmapFactory.decodeStream(it, null, options)
             }
         }
         val options = BitmapFactory.Options().apply {
             inSampleSize = sampleSize
-            inMutable = true
         }
-        val message = "$assetUri(enabledInBitmap=$enabledInBitmap,sampleSize=$sampleSize)"
-        val extension = assetName.substringAfterLast('.', missingDelimiterValue = "")
+        val message = "${image.imageAssetName}(enabledInBitmap=$enabledInBitmap,sampleSize=$sampleSize)"
+        val extension = image.imageAssetName.substringAfterLast('.', missingDelimiterValue = "")
         val mimeType = "image/$extension"
-        val imageSize = Size(imageWidth, imageHeight)
+        val imageSize = image.imageSize
 
-        if (Build.VERSION.SDK_INT >= minAPI) {
-            val sampledBitmapSize = calculateSampledBitmapSizeForBitmapFactory(
+        if (Build.VERSION.SDK_INT >= image.minAPI) {
+            val sampledBitmapSize = calculateSampledBitmapSize(
                 imageSize = imageSize,
                 sampleSize = options.inSampleSize,
                 mimeType = mimeType
@@ -459,10 +190,10 @@ class BitmapFactoryTest {
                     sampledBitmapSize.height,
                     Bitmap.Config.ARGB_8888
                 )
-                if (Build.VERSION.SDK_INT >= inBitmapMinAPI && (sampleSize == 1 || Build.VERSION.SDK_INT >= inBitmapAndInSampleSizeMinAPI)) {
+                if (Build.VERSION.SDK_INT >= image.inBitmapMinAPI && (sampleSize == 1 || Build.VERSION.SDK_INT >= image.inBitmapAndInSampleSizeMinAPI)) {
                     decodeWithInBitmap(options)!!.also { bitmap ->
                         Assert.assertSame(message, options.inBitmap, bitmap)
-                        if (Build.VERSION.SDK_INT >= sampleSizeMinAPI) {
+                        if (Build.VERSION.SDK_INT >= image.sampleSizeMinAPI) {
                             Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
                         } else {
                             Assert.assertEquals(message, imageSize, bitmap.size)
@@ -481,7 +212,7 @@ class BitmapFactoryTest {
                 }
             } else {
                 decodeWithInBitmap(options)!!.also { bitmap ->
-                    if (Build.VERSION.SDK_INT >= sampleSizeMinAPI) {
+                    if (Build.VERSION.SDK_INT >= image.sampleSizeMinAPI) {
                         Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
                     } else {
                         Assert.assertEquals(message, imageSize, bitmap.size)
@@ -491,7 +222,7 @@ class BitmapFactoryTest {
         } else {
             val headerBytes = HeaderBytes(
                 ByteArray(1024).apply {
-                    context.assets.open(assetName).use { it.read(this) }
+                    context.assets.open(image.imageAssetName).use { it.read(this) }
                 }
             )
             if (headerBytes.isAnimatedWebP() && Build.VERSION.SDK_INT == 17) {

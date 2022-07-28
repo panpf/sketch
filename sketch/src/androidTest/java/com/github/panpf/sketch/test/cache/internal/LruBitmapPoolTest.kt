@@ -424,6 +424,7 @@ class LruBitmapPoolTest {
                 bitmapPool.setInBitmapForBitmapRegionDecoder(
                     this,
                     Size(0, 100),
+                    "image/jpeg",
                     Size(500, 300)
                 )
             )
@@ -439,6 +440,7 @@ class LruBitmapPoolTest {
                 bitmapPool.setInBitmapForBitmapRegionDecoder(
                     this,
                     Size(100, 0),
+                    "image/jpeg",
                     Size(500, 300)
                 )
             )
@@ -456,6 +458,7 @@ class LruBitmapPoolTest {
                     bitmapPool.setInBitmapForBitmapRegionDecoder(
                         this,
                         Size(100, 100),
+                        "image/jpeg",
                         Size(500, 300)
                     )
                 )
@@ -472,6 +475,7 @@ class LruBitmapPoolTest {
                 bitmapPool.setInBitmapForBitmapRegionDecoder(
                     this,
                     Size(100, 100),
+                    "image/jpeg",
                     Size(500, 300)
                 )
             )
@@ -488,6 +492,7 @@ class LruBitmapPoolTest {
                 bitmapPool.setInBitmapForBitmapRegionDecoder(
                     this,
                     Size(100, 100),
+                    "image/jpeg",
                     Size(500, 300)
                 )
             )
@@ -505,6 +510,7 @@ class LruBitmapPoolTest {
                 bitmapPool.setInBitmapForBitmapRegionDecoder(
                     this,
                     Size(200, 200),
+                    "image/jpeg",
                     Size(500, 300)
                 )
             )
@@ -522,6 +528,7 @@ class LruBitmapPoolTest {
                 bitmapPool.setInBitmapForBitmapRegionDecoder(
                     this,
                     Size(300, 300),
+                    "image/jpeg",
                     Size(500, 300)
                 )
             )

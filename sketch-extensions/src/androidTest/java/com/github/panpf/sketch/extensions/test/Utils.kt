@@ -8,7 +8,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapFactory
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.util.Size
 import java.io.File
 
@@ -43,5 +43,5 @@ val Drawable.intrinsicSize: Size
 
 fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null): Size {
     val sampleSize = calculateSampleSize(imageSize, targetSize)
-    return calculateSampledBitmapSizeForBitmapFactory(imageSize, sampleSize, mimeType)
+    return calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
 }

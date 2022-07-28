@@ -99,6 +99,7 @@ open class DefaultBitmapDecoder(
             bitmapPool.setInBitmapForBitmapRegionDecoder(
                 options = decodeOptions,
                 regionSize = Size(srcRect.width(), srcRect.height()),
+                imageMimeType = imageInfo.mimeType,
                 imageSize = Size(imageInfo.width, imageInfo.height)
             )
         }

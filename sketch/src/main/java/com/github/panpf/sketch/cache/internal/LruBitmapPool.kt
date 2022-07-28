@@ -7,8 +7,8 @@ import android.graphics.Color
 import android.os.Build
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.ImageFormat
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapFactory
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapRegionDecoder
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
@@ -201,7 +201,7 @@ class LruBitmapPool constructor(
 
         val inSampleSize = options.inSampleSize.coerceAtLeast(1)
         val sampledBitmapSize =
-            calculateSampledBitmapSizeForBitmapFactory(imageSize, inSampleSize, imageMimeType)
+            calculateSampledBitmapSize(imageSize, inSampleSize, imageMimeType)
         // The following versions of KITKAT only support format is jpeg or png and inSampleSize is 1
         @Suppress("ReplaceGetOrSet")
         val inBitmap: Bitmap? = when {
@@ -250,7 +250,7 @@ class LruBitmapPool constructor(
     }
 
     override fun setInBitmapForBitmapRegionDecoder(
-        options: BitmapFactory.Options, regionSize: Size, imageSize: Size,
+        options: BitmapFactory.Options, regionSize: Size, imageMimeType: String?, imageSize: Size,
     ): Boolean {
         if (regionSize.isEmpty) {
             logger?.e(MODULE, "setInBitmapForRegion. regionSize is empty: $regionSize")
@@ -264,8 +264,9 @@ class LruBitmapPool constructor(
         }
 
         val inSampleSize = options.inSampleSize.coerceAtLeast(1)
-        val sampledBitmapSize =
-            calculateSampledBitmapSizeForBitmapRegionDecoder(regionSize, inSampleSize, imageSize)
+        val sampledBitmapSize = calculateSampledBitmapSizeForRegion(
+            regionSize, inSampleSize, imageMimeType, imageSize
+        )
         // BitmapRegionDecoder does not support inMutable, so creates Bitmap
         @Suppress("ReplaceGetOrSet")
         val inBitmap = this.get(

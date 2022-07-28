@@ -135,6 +135,7 @@ class TileDecoder internal constructor(
             bitmapPool.setInBitmapForBitmapRegionDecoder(
                 options = options,
                 regionSize = Size(newSrcRect.width(), newSrcRect.height()),
+                imageMimeType = imageInfo.mimeType,
                 imageSize = addedImageSize
             )
         }

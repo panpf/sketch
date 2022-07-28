@@ -14,9 +14,8 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapFactory
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.Logger.Level.DEBUG
 import com.github.panpf.sketch.util.Logger.Level.VERBOSE
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
@@ -108,5 +107,5 @@ val Drawable.alphaCompat: Int
 
 fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null): Size {
     val sampleSize = calculateSampleSize(imageSize, targetSize)
-    return calculateSampledBitmapSizeForBitmapFactory(imageSize, sampleSize, mimeType)
+    return calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
 }

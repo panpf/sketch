@@ -5,12 +5,11 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build
-import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForBitmapRegionDecoder
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
 import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
-import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
@@ -46,85 +45,6 @@ class BitmapRegionDecoderTest {
     }
 
     @Test
-    fun testInSampleSize() {
-        val context = getTestContext()
-        val imageName = "sample.jpeg"
-        val imageSize = Size(1291, 1936)
-
-        val options = BitmapFactory.Options().apply {
-            inSampleSize = 2
-        }
-
-        Rect(0, 0, imageSize.width, imageSize.height).let { rect ->
-            context.assets.open(imageName)
-                .run { newBitmapRegionDecoderInstanceCompat() }!!
-                .use { decodeRegion(rect, options) }!!
-                .also { bitmap ->
-                    val sampledBitmapSize = calculateSampledBitmapSizeForBitmapRegionDecoder(
-                        regionSize = Size(rect.width(), rect.height()),
-                        sampleSize = options.inSampleSize,
-                        imageSize = imageSize
-                    )
-                    Assert.assertEquals(
-                        sampledBitmapSize,
-                        bitmap.size
-                    )
-                }
-        }
-
-        Rect(0, 0, imageSize.width / 2, imageSize.height).let { rect ->
-            context.assets.open(imageName)
-                .run { newBitmapRegionDecoderInstanceCompat() }!!
-                .use { decodeRegion(rect, options) }!!
-                .also { bitmap ->
-                    val sampledBitmapSize = calculateSampledBitmapSizeForBitmapRegionDecoder(
-                        regionSize = Size(rect.width(), rect.height()),
-                        sampleSize = options.inSampleSize,
-                        imageSize = imageSize
-                    )
-                    Assert.assertEquals(
-                        sampledBitmapSize,
-                        bitmap.size
-                    )
-                }
-        }
-
-        Rect(0, 0, imageSize.width, imageSize.height / 2).let { rect ->
-            context.assets.open(imageName)
-                .run { newBitmapRegionDecoderInstanceCompat() }!!
-                .use { decodeRegion(rect, options) }!!
-                .also { bitmap ->
-                    val sampledBitmapSize = calculateSampledBitmapSizeForBitmapRegionDecoder(
-                        regionSize = Size(rect.width(), rect.height()),
-                        sampleSize = options.inSampleSize,
-                        imageSize = imageSize
-                    )
-                    Assert.assertEquals(
-                        sampledBitmapSize,
-                        bitmap.size
-                    )
-                }
-        }
-
-        Rect(0, 0, imageSize.width / 2, imageSize.height / 2).let { rect ->
-            context.assets.open(imageName)
-                .run { newBitmapRegionDecoderInstanceCompat() }!!
-                .use { decodeRegion(rect, options) }!!
-                .also { bitmap ->
-                    val sampledBitmapSize = calculateSampledBitmapSizeForBitmapRegionDecoder(
-                        regionSize = Size(rect.width(), rect.height()),
-                        sampleSize = options.inSampleSize,
-                        imageSize = imageSize
-                    )
-                    Assert.assertEquals(
-                        sampledBitmapSize,
-                        bitmap.size
-                    )
-                }
-        }
-    }
-
-    @Test
     fun testInPreferredConfig() {
         val context = getTestContext()
         val imageName = "sample.jpeg"
@@ -153,363 +73,159 @@ class BitmapRegionDecoderTest {
     }
 
     @Test
-    fun testInBitmapJPEG() {
-        decodeRegion(
-            TestAssets.SAMPLE_JPEG_URI, 1291, 1936,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_JPEG_URI, 1291, 1936,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_JPEG_URI, 1291, 1936,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_JPEG_URI, 1291, 1936,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
+    fun testInBitmapAndInSampleSize() {
+        listOf(
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.jpeg",
+                imageSize = Size(1291, 1936),
+                minAPI = 16,
+                sampleSizeMinAPI = 16,
+                inBitmapMinAPI = 16,
+                inBitmapAndInSampleSizeMinAPI = 16,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.png",
+                imageSize = Size(750, 719),
+                minAPI = 16,
+                sampleSizeMinAPI = 16,
+                inBitmapMinAPI = 16,
+                inBitmapAndInSampleSizeMinAPI = 16,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.bmp",
+                imageSize = Size(700, 1012),
+                minAPI = -1,
+                sampleSizeMinAPI = -1,
+                inBitmapMinAPI = -1,
+                inBitmapAndInSampleSizeMinAPI = -1,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.webp",
+                imageSize = Size(1080, 1344),
+                minAPI = 16,
+                sampleSizeMinAPI = 16,
+                inBitmapMinAPI = 16,
+                inBitmapAndInSampleSizeMinAPI = 16,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample.heic",
+                imageSize = Size(750, 932),
+                minAPI = 28,
+                sampleSizeMinAPI = 28,
+                inBitmapMinAPI = 28,
+                inBitmapAndInSampleSizeMinAPI = 28,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample_anim.gif",
+                imageSize = Size(480, 480),
+                minAPI = -1,
+                sampleSizeMinAPI = -1,
+                inBitmapMinAPI = -1,
+                inBitmapAndInSampleSizeMinAPI = -1,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample_anim.webp",
+                imageSize = Size(480, 270),
+                minAPI = 26,
+                sampleSizeMinAPI = 26,
+                inBitmapMinAPI = 26,
+                inBitmapAndInSampleSizeMinAPI = 26,
+            ),
+            ImageDecodeCompatibility(
+                imageAssetName = "sample_anim.heif",
+                imageSize = Size(256, 144),
+                minAPI = 28,
+                sampleSizeMinAPI = 28,
+                inBitmapMinAPI = 28,
+                inBitmapAndInSampleSizeMinAPI = 28,
+            ),
+        ).forEach {
+            val itemWidth = it.imageSize.width / 3
+            val itemHeight = it.imageSize.height / 3
+            val regionRect =
+                Rect(itemWidth, itemHeight, itemWidth + itemWidth, itemHeight + itemHeight).apply {
+                    if (width() % 2 == 0) right++
+                    if (height() % 2 == 0) bottom++
+                }
+            val fullRect = Rect(0, 0, it.imageSize.width, it.imageSize.height)
+            testRegionDecodeImage(
+                image = it,
+                regionRect = regionRect,
+                enabledInBitmap = false,
+                sampleSize = 1
+            )
+            testRegionDecodeImage(
+                image = it,
+                regionRect = fullRect,
+                enabledInBitmap = false,
+                sampleSize = 1
+            )
+            testRegionDecodeImage(
+                image = it,
+                regionRect = regionRect,
+                enabledInBitmap = false,
+                sampleSize = 2
+            )
+            testRegionDecodeImage(
+                image = it,
+                regionRect = fullRect,
+                enabledInBitmap = false,
+                sampleSize = 2
+            )
+            testRegionDecodeImage(
+                image = it,
+                regionRect = regionRect,
+                enabledInBitmap = true,
+                sampleSize = 1
+            )
+            testRegionDecodeImage(
+                image = it,
+                regionRect = fullRect,
+                enabledInBitmap = true,
+                sampleSize = 1
+            )
+            testRegionDecodeImage(
+                image = it,
+                regionRect = regionRect,
+                enabledInBitmap = true,
+                sampleSize = 2
+            )
+            testRegionDecodeImage(
+                image = it,
+                regionRect = fullRect,
+                enabledInBitmap = true,
+                sampleSize = 2
+            )
+        }
     }
 
-    @Test
-    fun testInBitmapPNG() {
-        decodeRegion(
-            TestAssets.SAMPLE_PNG_URI, 750, 719,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_PNG_URI, 750, 719,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_PNG_URI, 750, 719,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_PNG_URI, 750, 719,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapBMP() {
-        decodeRegion(
-            TestAssets.SAMPLE_BMP_URI, 700, 1012,
-            minAPI = -1,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_BMP_URI, 700, 1012,
-            minAPI = -1,
-            sampleSizeMinAPI = -1,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_BMP_URI, 700, 1012,
-            minAPI = -1,
-            sampleSizeMinAPI = -1,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_BMP_URI, 700, 1012,
-            minAPI = -1,
-            sampleSizeMinAPI = -1,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapWEBP() {
-        decodeRegion(
-            TestAssets.SAMPLE_WEBP_URI, 1080, 1344,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_WEBP_URI, 1080, 1344,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_WEBP_URI, 1080, 1344,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_WEBP_URI, 1080, 1344,
-            minAPI = 16,
-            sampleSizeMinAPI = 16,
-            inBitmapMinAPI = 16,
-            inBitmapAndInSampleSizeMinAPI = 16,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapHEIC() {
-        decodeRegion(
-            TestAssets.SAMPLE_HEIC_URI, 750, 932,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_HEIC_URI, 750, 932,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_HEIC_URI, 750, 932,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_HEIC_URI, 750, 932,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapGIF() {
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_GIF_URI, 480, 480,
-            minAPI = -1,
-            sampleSizeMinAPI = -1,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_GIF_URI, 480, 480,
-            minAPI = -1,
-            sampleSizeMinAPI = -1,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_GIF_URI, 480, 480,
-            minAPI = -1,
-            sampleSizeMinAPI = -1,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_GIF_URI, 480, 480,
-            minAPI = -1,
-            sampleSizeMinAPI = -1,
-            inBitmapMinAPI = -1,
-            inBitmapAndInSampleSizeMinAPI = -1,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapAnimWEBP() {
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_WEBP_URI, 480, 270,
-            minAPI = 26,
-            sampleSizeMinAPI = 26,
-            inBitmapMinAPI = 26,
-            inBitmapAndInSampleSizeMinAPI = 26,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_WEBP_URI, 480, 270,
-            minAPI = 26,
-            sampleSizeMinAPI = 26,
-            inBitmapMinAPI = 26,
-            inBitmapAndInSampleSizeMinAPI = 26,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_WEBP_URI, 480, 270,
-            minAPI = 26,
-            sampleSizeMinAPI = 26,
-            inBitmapMinAPI = 26,
-            inBitmapAndInSampleSizeMinAPI = 26,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_WEBP_URI, 480, 270,
-            minAPI = 26,
-            sampleSizeMinAPI = 26,
-            inBitmapMinAPI = 26,
-            inBitmapAndInSampleSizeMinAPI = 26,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    @Test
-    fun testInBitmapAnimHEIF() {
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_HEIf_URI, 256, 144,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = false,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_HEIf_URI, 256, 144,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = false,
-            sampleSize = 2
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_HEIf_URI, 256, 144,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = true,
-            sampleSize = 1
-        )
-        decodeRegion(
-            TestAssets.SAMPLE_ANIM_HEIf_URI, 256, 144,
-            minAPI = 28,
-            sampleSizeMinAPI = 28,
-            inBitmapMinAPI = 28,
-            inBitmapAndInSampleSizeMinAPI = 28,
-            enabledInBitmap = true,
-            sampleSize = 2
-        )
-    }
-
-    private fun decodeRegion(
-        assetUri: String,
-        imageWidth: Int,
-        imageHeight: Int,
-        minAPI: Int,
-        sampleSizeMinAPI: Int,
-        inBitmapMinAPI: Int,
-        inBitmapAndInSampleSizeMinAPI: Int,
+    private fun testRegionDecodeImage(
+        image: ImageDecodeCompatibility,
+        regionRect: Rect,
         enabledInBitmap: Boolean,
         sampleSize: Int
     ) {
         val context = getTestContext()
-        val itemWidth = imageWidth / 3
-        val itemHeight = imageHeight / 3
-        val regionRect =
-            Rect(itemWidth, itemHeight, itemWidth + itemWidth, itemHeight + itemHeight).apply {
-                if (width() % 2 == 0) right++
-                if (height() % 2 == 0) bottom++
-            }
-        val assetName = assetUri.toUri().authority!!
         val decodeWithInBitmap: (options: BitmapFactory.Options) -> Bitmap? = { options ->
-            context.assets.open(assetName).use {
+            context.assets.open(image.imageAssetName).use {
                 it.newBitmapRegionDecoderInstanceCompat()!!.decodeRegion(regionRect, options)
             }
         }
         val options = BitmapFactory.Options().apply {
             inSampleSize = sampleSize
-            inMutable = true
         }
         val message =
-            "$assetUri(regionRect=$regionRect,enabledInBitmap=$enabledInBitmap,sampleSize=$sampleSize)"
+            "${image.imageAssetName}(regionRect=$regionRect,enabledInBitmap=$enabledInBitmap,sampleSize=$sampleSize)"
+        val extension = image.imageAssetName.substringAfterLast('.', missingDelimiterValue = "")
+        val mimeType = "image/$extension"
 
-        if (minAPI != -1 && Build.VERSION.SDK_INT >= minAPI) {
+        if (image.minAPI != -1 && Build.VERSION.SDK_INT >= image.minAPI) {
             val sampledBitmapSize =
-                calculateSampledBitmapSizeForBitmapRegionDecoder(
+                calculateSampledBitmapSizeForRegion(
                     regionSize = Size(regionRect.width(), regionRect.height()),
                     sampleSize = options.inSampleSize,
-                    imageSize = Size(imageWidth, imageHeight)
+                    mimeType = mimeType,
+                    imageSize = image.imageSize
                 )
             if (enabledInBitmap) {
                 options.inBitmap = Bitmap.createBitmap(
@@ -517,10 +233,10 @@ class BitmapRegionDecoderTest {
                     sampledBitmapSize.height,
                     Bitmap.Config.ARGB_8888
                 )
-                if (Build.VERSION.SDK_INT >= inBitmapMinAPI && (sampleSize == 1 || Build.VERSION.SDK_INT >= inBitmapAndInSampleSizeMinAPI)) {
+                if (Build.VERSION.SDK_INT >= image.inBitmapMinAPI && (sampleSize == 1 || Build.VERSION.SDK_INT >= image.inBitmapAndInSampleSizeMinAPI)) {
                     decodeWithInBitmap(options)!!.also { bitmap ->
                         Assert.assertSame(message, options.inBitmap, bitmap)
-                        if (Build.VERSION.SDK_INT >= sampleSizeMinAPI) {
+                        if (Build.VERSION.SDK_INT >= image.sampleSizeMinAPI) {
                             Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
                         } else {
                             Assert.assertEquals(
@@ -543,7 +259,7 @@ class BitmapRegionDecoderTest {
                 }
             } else {
                 decodeWithInBitmap(options)!!.also { bitmap ->
-                    if (Build.VERSION.SDK_INT >= sampleSizeMinAPI) {
+                    if (Build.VERSION.SDK_INT >= image.sampleSizeMinAPI) {
                         Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
                     } else {
                         Assert.assertEquals(
@@ -557,7 +273,7 @@ class BitmapRegionDecoderTest {
         } else {
             val headerBytes = HeaderBytes(
                 ByteArray(1024).apply {
-                    context.assets.open(assetName).use { it.read(this) }
+                    context.assets.open(image.imageAssetName).use { it.read(this) }
                 }
             )
             if (headerBytes.isAnimatedWebP()) {

@@ -78,6 +78,7 @@ interface BitmapPool {
     fun setInBitmapForBitmapRegionDecoder(
         options: BitmapFactory.Options,
         regionSize: Size,
+        imageMimeType: String?,
         imageSize: Size
     ): Boolean
 
