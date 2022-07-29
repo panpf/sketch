@@ -91,68 +91,68 @@ class ImageDecoderTest {
     fun testInSampleSize() {
         listOf(
             ImageDecodeCompatibility(
-                imageAssetName = "sample.jpeg",
-                imageSize = Size(1291, 1936),
+                assetName = "sample.jpeg",
+                size = Size(1291, 1936),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1
+                inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample.png",
-                imageSize = Size(750, 719),
+                assetName = "sample.png",
+                size = Size(750, 719),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1
+                inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample.bmp",
-                imageSize = Size(700, 1012),
+                assetName = "sample.bmp",
+                size = Size(700, 1012),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1
+                inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample.webp",
-                imageSize = Size(1080, 1344),
+                assetName = "sample.webp",
+                size = Size(1080, 1344),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1
+                inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample.heic",
-                imageSize = Size(750, 932),
+                assetName = "sample.heic",
+                size = Size(750, 932),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1
+                inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample_anim.gif",
-                imageSize = Size(480, 480),
+                assetName = "sample_anim.gif",
+                size = Size(480, 480),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1
+                inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample_anim.webp",
-                imageSize = Size(480, 270),
+                assetName = "sample_anim.webp",
+                size = Size(480, 270),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1
+                inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample_anim.heif",
-                imageSize = Size(256, 144),
+                assetName = "sample_anim.heif",
+                size = Size(256, 144),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1
+                inSampleSizeOnInBitmapMinAPI = -1
             ),
         ).forEach {
             testDecodeImage(image = it, enabledInBitmap = false, sampleSize = 1)
@@ -173,17 +173,18 @@ class ImageDecoderTest {
         sampleSize: Int
     ) {
         val context = getTestContext()
-        val message =
-            "${image.imageAssetName}(enabledInBitmap=$enabledInBitmap,sampleSize=$sampleSize)"
-        val extension = image.imageAssetName.substringAfterLast('.', missingDelimiterValue = "")
+        val message = "enabledInBitmap=$enabledInBitmap, sampleSize=$sampleSize. $image"
+        val extension = image.assetName.substringAfterLast('.', missingDelimiterValue = "")
         val mimeType = "image/$extension"
-        val imageSize = image.imageSize
+        val imageSize = image.size
 
         if (Build.VERSION.SDK_INT >= image.minAPI) {
-            decodeImageUseImageDecoder(
-                context, image.imageAssetName, sampleSize = sampleSize
-            ).also { bitmap ->
-                if (Build.VERSION.SDK_INT >= image.sampleSizeMinAPI) {
+            try {
+                decodeImageUseImageDecoder(context, image.assetName, sampleSize)
+            } catch (e: IllegalArgumentException) {
+                throw Exception(message, e)
+            }.also { bitmap ->
+                if (sampleSize > 1 && Build.VERSION.SDK_INT >= image.inSampleSizeMinAPI) {
                     val sampledBitmapSize = calculateSampledBitmapSize(
                         imageSize = imageSize,
                         sampleSize = sampleSize,
@@ -197,7 +198,7 @@ class ImageDecoderTest {
         } else {
             assertThrow(NoClassDefFoundError::class) {
                 ImageDecoder.decodeBitmap(
-                    ImageDecoder.createSource(context.assets, image.imageAssetName)
+                    ImageDecoder.createSource(context.assets, image.assetName)
                 )
             }
         }

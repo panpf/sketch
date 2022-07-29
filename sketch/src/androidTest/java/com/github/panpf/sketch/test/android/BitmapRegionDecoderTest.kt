@@ -14,6 +14,7 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -76,78 +77,78 @@ class BitmapRegionDecoderTest {
     fun testInBitmapAndInSampleSize() {
         listOf(
             ImageDecodeCompatibility(
-                imageAssetName = "sample.jpeg",
-                imageSize = Size(1291, 1936),
+                assetName = "sample.jpeg",
+                size = Size(1291, 1936),
                 minAPI = 16,
-                sampleSizeMinAPI = 16,
+                inSampleSizeMinAPI = 16,
                 inBitmapMinAPI = 16,
-                inBitmapAndInSampleSizeMinAPI = 16,
+                inSampleSizeOnInBitmapMinAPI = 16,
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample.png",
-                imageSize = Size(750, 719),
+                assetName = "sample.png",
+                size = Size(750, 719),
                 minAPI = 16,
-                sampleSizeMinAPI = 16,
+                inSampleSizeMinAPI = 16,
                 inBitmapMinAPI = 16,
-                inBitmapAndInSampleSizeMinAPI = 16,
+                inSampleSizeOnInBitmapMinAPI = 16,
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample.bmp",
-                imageSize = Size(700, 1012),
+                assetName = "sample.bmp",
+                size = Size(700, 1012),
                 minAPI = -1,
-                sampleSizeMinAPI = -1,
+                inSampleSizeMinAPI = -1,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1,
+                inSampleSizeOnInBitmapMinAPI = -1,
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample.webp",
-                imageSize = Size(1080, 1344),
+                assetName = "sample.webp",
+                size = Size(1080, 1344),
                 minAPI = 16,
-                sampleSizeMinAPI = 16,
+                inSampleSizeMinAPI = 16,
                 inBitmapMinAPI = 16,
-                inBitmapAndInSampleSizeMinAPI = 16,
+                inSampleSizeOnInBitmapMinAPI = 16,
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample.heic",
-                imageSize = Size(750, 932),
+                assetName = "sample.heic",
+                size = Size(750, 932),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = 28,
-                inBitmapAndInSampleSizeMinAPI = 28,
+                inSampleSizeOnInBitmapMinAPI = 28,
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample_anim.gif",
-                imageSize = Size(480, 480),
+                assetName = "sample_anim.gif",
+                size = Size(480, 480),
                 minAPI = -1,
-                sampleSizeMinAPI = -1,
+                inSampleSizeMinAPI = -1,
                 inBitmapMinAPI = -1,
-                inBitmapAndInSampleSizeMinAPI = -1,
+                inSampleSizeOnInBitmapMinAPI = -1,
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample_anim.webp",
-                imageSize = Size(480, 270),
+                assetName = "sample_anim.webp",
+                size = Size(480, 270),
                 minAPI = 26,
-                sampleSizeMinAPI = 26,
+                inSampleSizeMinAPI = 26,
                 inBitmapMinAPI = 26,
-                inBitmapAndInSampleSizeMinAPI = 26,
+                inSampleSizeOnInBitmapMinAPI = 26,
             ),
             ImageDecodeCompatibility(
-                imageAssetName = "sample_anim.heif",
-                imageSize = Size(256, 144),
+                assetName = "sample_anim.heif",
+                size = Size(256, 144),
                 minAPI = 28,
-                sampleSizeMinAPI = 28,
+                inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = 28,
-                inBitmapAndInSampleSizeMinAPI = 28,
+                inSampleSizeOnInBitmapMinAPI = 28,
             ),
         ).forEach {
-            val itemWidth = it.imageSize.width / 3
-            val itemHeight = it.imageSize.height / 3
+            val itemWidth = it.size.width / 3
+            val itemHeight = it.size.height / 3
             val regionRect =
                 Rect(itemWidth, itemHeight, itemWidth + itemWidth, itemHeight + itemHeight).apply {
                     if (width() % 2 == 0) right++
                     if (height() % 2 == 0) bottom++
                 }
-            val fullRect = Rect(0, 0, it.imageSize.width, it.imageSize.height)
+            val fullRect = Rect(0, 0, it.size.width, it.size.height)
             testRegionDecodeImage(
                 image = it,
                 regionRect = regionRect,
@@ -207,7 +208,7 @@ class BitmapRegionDecoderTest {
     ) {
         val context = getTestContext()
         val decodeWithInBitmap: (options: BitmapFactory.Options) -> Bitmap? = { options ->
-            context.assets.open(image.imageAssetName).use {
+            context.assets.open(image.assetName).use {
                 it.newBitmapRegionDecoderInstanceCompat()!!.decodeRegion(regionRect, options)
             }
         }
@@ -215,65 +216,95 @@ class BitmapRegionDecoderTest {
             inSampleSize = sampleSize
         }
         val message =
-            "${image.imageAssetName}(regionRect=$regionRect,enabledInBitmap=$enabledInBitmap,sampleSize=$sampleSize)"
-        val extension = image.imageAssetName.substringAfterLast('.', missingDelimiterValue = "")
+            "enabledInBitmap=$enabledInBitmap, sampleSize=$sampleSize, sdk=${Build.VERSION.SDK_INT}, regionRect=$regionRect. $image"
+        val extension = image.assetName.substringAfterLast('.', missingDelimiterValue = "")
         val mimeType = "image/$extension"
 
         if (image.minAPI != -1 && Build.VERSION.SDK_INT >= image.minAPI) {
-            val sampledBitmapSize =
-                calculateSampledBitmapSizeForRegion(
-                    regionSize = Size(regionRect.width(), regionRect.height()),
-                    sampleSize = options.inSampleSize,
-                    mimeType = mimeType,
-                    imageSize = image.imageSize
-                )
+            val sampledBitmapSize = calculateSampledBitmapSizeForRegion(
+                regionSize = Size(regionRect.width(), regionRect.height()),
+                sampleSize = options.inSampleSize,
+                mimeType = mimeType,
+                imageSize = image.size
+            )
             if (enabledInBitmap) {
-                options.inBitmap = Bitmap.createBitmap(
-                    sampledBitmapSize.width,
-                    sampledBitmapSize.height,
-                    Bitmap.Config.ARGB_8888
-                )
-                if (Build.VERSION.SDK_INT >= image.inBitmapMinAPI && (sampleSize == 1 || Build.VERSION.SDK_INT >= image.inBitmapAndInSampleSizeMinAPI)) {
-                    decodeWithInBitmap(options)!!.also { bitmap ->
-                        Assert.assertSame(message, options.inBitmap, bitmap)
-                        if (Build.VERSION.SDK_INT >= image.sampleSizeMinAPI) {
-                            Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                if (Build.VERSION.SDK_INT >= image.inBitmapMinAPI) {
+                    if (sampleSize > 1) {
+                        options.inBitmap = Bitmap.createBitmap(
+                            sampledBitmapSize.width,
+                            sampledBitmapSize.height,
+                            Bitmap.Config.ARGB_8888
+                        )
+                        if (Build.VERSION.SDK_INT >= image.inSampleSizeOnInBitmapMinAPI) {
+                            try {
+                                decodeWithInBitmap(options)!!
+                            } catch (e: IllegalArgumentException) {
+                                throw Exception(message, e)
+                            }.also { bitmap ->
+                                Assert.assertSame(message, options.inBitmap, bitmap)
+                                Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                            }
                         } else {
-                            Assert.assertEquals(
-                                message,
-                                Size(regionRect.width(), regionRect.height()),
-                                bitmap.size
-                            )
+                            /* sampleSize not support */
+                            try {
+                                val bitmap = decodeWithInBitmap(options)!!
+                                Assert.fail("inBitmapAndInSampleSizeMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
+                            } catch (e: IllegalArgumentException) {
+                                if (e.message != "Problem decoding into existing bitmap") {
+                                    throw Exception("exception type error. $message", e)
+                                }
+                            }
+                        }
+                    } else {
+                        /* sampleSize 1 */
+                        options.inBitmap = Bitmap.createBitmap(
+                            regionRect.width(),
+                            regionRect.height(),
+                            Bitmap.Config.ARGB_8888
+                        )
+                        try {
+                            decodeWithInBitmap(options)!!
+                        } catch (e: IllegalArgumentException) {
+                            throw Exception(message, e)
+                        }.also { bitmap ->
+                            Assert.assertSame(message, options.inBitmap, bitmap)
+                            Assert.assertEquals(message, regionRect.size(), bitmap.size)
                         }
                     }
                 } else {
+                    /* inBitmapMinAPI not support */
+                    options.inBitmap = Bitmap.createBitmap(
+                        regionRect.width(),
+                        regionRect.height(),
+                        Bitmap.Config.ARGB_8888
+                    )
                     try {
-                        decodeWithInBitmap(options)!!
-                        Assert.fail("$message. inBitmapMinAPI or inBitmapAndInSampleSizeMinAPI error")
+                        val bitmap = decodeWithInBitmap(options)!!
+                        Assert.fail("inBitmapMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
                     } catch (e: IllegalArgumentException) {
-                        e.printStackTrace()
                         if (e.message != "Problem decoding into existing bitmap") {
-                            Assert.fail("$message. exception type error: $e")
+                            throw Exception("exception type error. $message", e)
                         }
                     }
                 }
             } else {
-                decodeWithInBitmap(options)!!.also { bitmap ->
-                    if (Build.VERSION.SDK_INT >= image.sampleSizeMinAPI) {
-                        Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
-                    } else {
-                        Assert.assertEquals(
-                            message,
-                            Size(regionRect.width(), regionRect.height()),
-                            bitmap.size
-                        )
-                    }
+                /* enabledInBitmap false */
+                val bitmap = try {
+                    decodeWithInBitmap(options)!!
+                } catch (e: IllegalArgumentException) {
+                    throw Exception(message, e)
+                }
+                if (sampleSize > 1 && Build.VERSION.SDK_INT >= image.inSampleSizeMinAPI) {
+                    Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                } else {
+                    Assert.assertEquals(message, regionRect.size(), bitmap.size)
                 }
             }
         } else {
+            /* minAPI not support */
             val headerBytes = HeaderBytes(
                 ByteArray(1024).apply {
-                    context.assets.open(image.imageAssetName).use { it.read(this) }
+                    context.assets.open(image.assetName).use { it.read(this) }
                 }
             )
             if (headerBytes.isAnimatedWebP()) {
@@ -299,4 +330,6 @@ class BitmapRegionDecoderTest {
             recycle()
         }
     }
+
+    private fun Rect.size(): Size = Size(width(), height())
 }
