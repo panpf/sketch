@@ -132,7 +132,7 @@ class TileDecoder internal constructor(
             this.inSampleSize = inSampleSize
         }
         if (!disableInBitmap) {
-            bitmapPool.setInBitmapForBitmapRegionDecoder(
+            bitmapPool.setInBitmapForRegion(
                 options = options,
                 regionSize = Size(newSrcRect.width(), newSrcRect.height()),
                 imageMimeType = imageInfo.mimeType,

@@ -31,6 +31,8 @@ import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
+import com.github.panpf.sketch.decode.internal.isSupportInBitmap
+import com.github.panpf.sketch.decode.internal.isSupportInBitmapForRegion
 import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSize
 import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSizeForRegion
 import com.github.panpf.sketch.decode.internal.maxBitmapSize
@@ -1188,5 +1190,44 @@ class DecodeUtilsTest {
         Assert.assertFalse(
             isSrcRectError(IllegalArgumentException(""))
         )
+    }
+
+    @Test
+    fun testIsSupportInBitmap() {
+        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmap("image/jpeg", 1))
+        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/jpeg", 2))
+
+        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmap("image/png", 1))
+        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/png", 2))
+
+        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/gif", 1))
+        Assert.assertEquals(VERSION.SDK_INT >= 21, isSupportInBitmap("image/gif", 2))
+
+        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/webp", 1))
+        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/webp", 2))
+
+        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/bmp", 1))
+        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/bmp", 2))
+
+        Assert.assertEquals(false, isSupportInBitmap("image/heic", 1))
+        Assert.assertEquals(false, isSupportInBitmap("image/heic", 2))
+
+        Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmap("image/heif", 1))
+        Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmap("image/heif", 2))
+
+        Assert.assertEquals(VERSION.SDK_INT >= 32, isSupportInBitmap("image/svg", 1))
+        Assert.assertEquals(VERSION.SDK_INT >= 32, isSupportInBitmap("image/svg", 2))
+    }
+
+    @Test
+    fun testIsSupportInBitmapForRegion() {
+        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmapForRegion("image/jpeg"))
+        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmapForRegion("image/png"))
+        Assert.assertEquals(false, isSupportInBitmapForRegion("image/gif"))
+        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmapForRegion("image/webp"))
+        Assert.assertEquals(false, isSupportInBitmapForRegion("image/bmp"))
+        Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmapForRegion("image/heic"))
+        Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmapForRegion("image/heif"))
+        Assert.assertEquals(VERSION.SDK_INT >= 32, isSupportInBitmapForRegion("image/svg"))
     }
 }

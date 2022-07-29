@@ -17,6 +17,10 @@ import org.json.JSONObject
 
 class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
 
+    companion object {
+        const val MODULE = "BitmapResultCacheDecodeInterceptor"
+    }
+
     @WorkerThread
     override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
         val sketch = chain.sketch
@@ -90,19 +94,32 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             val options = request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
                 .toBitmapOptions()
             if (!request.disallowReuseBitmap) {
-                sketch.bitmapPool.setInBitmapForBitmapFactory(
+                sketch.bitmapPool.setInBitmap(
                     options = options,
                     imageSize = Size(cacheImageInfo.width, cacheImageInfo.height),
-                    imageMimeType = cacheImageInfo.mimeType
+                    imageMimeType = ImageFormat.PNG.mimeType
                 )
             }
-            dataSource.decodeBitmap(options)?.let { bitmap ->
-                BitmapDecodeResult(
-                    bitmap = bitmap,
-                    imageInfo = imageInfo,
-                    dataFrom = RESULT_CACHE,
-                    transformedList = transformedList
-                )
+            try {
+                dataSource.decodeBitmap(options)
+            } catch (throwable: IllegalArgumentException) {
+                val inBitmap = options.inBitmap
+                if (inBitmap != null && isInBitmapError(throwable)) {
+                    val message = "Bitmap decode error. Because inBitmap. uri=${request.uriString}"
+                    sketch.logger.e(MODULE, throwable, message)
+
+                    options.inBitmap = null
+                    sketch.bitmapPool.free(inBitmap, "decode:error")
+                    try {
+                        dataSource.decodeBitmap(options)
+                    } catch (throwable2: Throwable) {
+                        throw BitmapDecodeException("Bitmap decode error2: $throwable", throwable2)
+                    }
+                } else {
+                    throw BitmapDecodeException("Bitmap decode error: $throwable", throwable)
+                }
+            }?.let { bitmap ->
+                BitmapDecodeResult(bitmap, imageInfo, RESULT_CACHE, transformedList)
             }
         } catch (e: Throwable) {
             e.printStackTrace()

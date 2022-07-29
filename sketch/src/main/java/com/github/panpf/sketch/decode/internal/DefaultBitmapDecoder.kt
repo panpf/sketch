@@ -56,7 +56,7 @@ open class DefaultBitmapDecoder(
 
         // Set inBitmap from bitmap pool
         if (!request.disallowReuseBitmap) {
-            bitmapPool.setInBitmapForBitmapFactory(
+            bitmapPool.setInBitmap(
                 options = decodeOptions,
                 imageSize = Size(imageInfo.width, imageInfo.height),
                 imageMimeType = imageInfo.mimeType
@@ -96,7 +96,7 @@ open class DefaultBitmapDecoder(
     ): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
         if (!request.disallowReuseBitmap) {
-            bitmapPool.setInBitmapForBitmapRegionDecoder(
+            bitmapPool.setInBitmapForRegion(
                 options = decodeOptions,
                 regionSize = Size(srcRect.width(), srcRect.height()),
                 imageMimeType = imageInfo.mimeType,

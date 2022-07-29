@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.decode.internal
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
@@ -31,8 +32,6 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.ImageFormat.HEIC
-import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
@@ -391,7 +390,8 @@ fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
     this == ImageFormat.JPEG
             || this == ImageFormat.PNG
             || this == ImageFormat.WEBP
-            || (VERSION.SDK_INT >= VERSION_CODES.P && (this == HEIF || this == HEIC))
+            || (this == ImageFormat.HEIC && VERSION.SDK_INT >= VERSION_CODES.P)
+            || (this == ImageFormat.HEIF && VERSION.SDK_INT >= VERSION_CODES.P)
 
 @Throws(IOException::class)
 fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options? = null): Bitmap? =
@@ -446,4 +446,42 @@ fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig 
         if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != null) {
             inPreferredColorSpace = colorSpace
         }
+    }
+
+/**
+ * If true, indicates that the given mimeType and sampleSize combination can be using 'inBitmap' in BitmapFactory
+ *
+ * Test results based on the BitmapFactoryTest.testInBitmapAndInSampleSize() method
+ */
+@SuppressLint("ObsoleteSdkInt")
+fun isSupportInBitmap(mimeType: String?, sampleSize: Int): Boolean =
+    when (ImageFormat.parseMimeType(mimeType)) {
+        ImageFormat.JPEG -> if (sampleSize == 1) VERSION.SDK_INT >= 16 else VERSION.SDK_INT >= 19
+        ImageFormat.PNG -> if (sampleSize == 1) VERSION.SDK_INT >= 16 else VERSION.SDK_INT >= 19
+        ImageFormat.GIF -> if (sampleSize == 1) VERSION.SDK_INT >= 19 else VERSION.SDK_INT >= 21
+        ImageFormat.WEBP -> VERSION.SDK_INT >= 19
+//        ImageFormat.WEBP -> VERSION.SDK_INT >= 26 animated
+        ImageFormat.BMP -> VERSION.SDK_INT >= 19
+        ImageFormat.HEIC -> false
+        ImageFormat.HEIF -> VERSION.SDK_INT >= 28
+        else -> VERSION.SDK_INT >= 32   // Compatible with new image types supported in the future
+    }
+
+/**
+ * If true, indicates that the given mimeType can be using 'inBitmap' in BitmapRegionDecoder
+ *
+ * Test results based on the BitmapRegionDecoderTest.testInBitmapAndInSampleSize() method
+ */
+@SuppressLint("ObsoleteSdkInt")
+fun isSupportInBitmapForRegion(mimeType: String?): Boolean =
+    when (ImageFormat.parseMimeType(mimeType)) {
+        ImageFormat.JPEG -> VERSION.SDK_INT >= 16
+        ImageFormat.PNG -> VERSION.SDK_INT >= 16
+        ImageFormat.GIF -> false
+        ImageFormat.WEBP -> VERSION.SDK_INT >= 16
+//        ImageFormat.WEBP -> VERSION.SDK_INT >= 26 animated
+        ImageFormat.BMP -> false
+        ImageFormat.HEIC -> VERSION.SDK_INT >= 28
+        ImageFormat.HEIF -> VERSION.SDK_INT >= 28
+        else -> VERSION.SDK_INT >= 32   // Compatible with new image types supported in the future
     }
