@@ -1,3 +1,39 @@
+# v3.0.0-rc01
+
+### sketch
+
+Cache:
+
+* fix: Fix the bug that LruBitmapPool does not support RGBA_F16
+* change: Now the download cache directory name is 'download', and the result cache directory name
+  is 'result'
+* change: LruMemoryCache.put() now intercepts larger bitmaps
+* rename: downloadDiskCache rename to downloadCache, resultDiskCache rename to resultCache,
+  DISK_CACHE rename to DOWNLOAD_CACHE, RESULT_DISK_CACHE rename to RESULT_CACHE
+* improve: Improve disk cache
+
+Request:
+
+* fix: Fix the bug that the bitmap cannot be placed in the BitmapPool without using CountBitmap when
+  the memory cache is disabled
+* change: Now RequestInterceptor runs in worker thread, and Target.onStart() is executed before
+  RequestInterceptor
+* change: Remove Transformed and JsonSerializable
+* change: Refactor DownloadData
+* change: imageExifOrientation property merged into ImageInfo
+* new: Restore Sketch.globalImageOptions, because now placeholder is used before request interceptor
+
+Decoder:
+
+* fix: Fix BaseAnimatedImageDrawableDecoder registration callback is crash bug
+* fix: Fix the bug that Bitmap read from Result cache is always immutable
+
+### sketch-extensions
+
+* rename: SketchImageView's registerListener(), unregisterListener(), registerProgressListener(),
+  unregisterProgressListener() rename to registerDisplayListener(), unregisterDisplayListener(),
+  registerDisplayProgressListener(), unregisterDisplayProgress
+
 # v3.0.0-beta06
 
 ### sketch
