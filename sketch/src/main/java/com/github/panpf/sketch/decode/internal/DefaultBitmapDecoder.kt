@@ -47,8 +47,7 @@ open class DefaultBitmapDecoder(
             decodeRegion = if (canDecodeRegion) { srcRect, decodeConfig ->
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
-        ).applyExifOrientation(bitmapPool)
-            .applyResize(sketch, request.resize)
+        ).applyExifOrientation(sketch).applyResize(sketch, request.resize)
     }
 
     private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
@@ -56,7 +55,9 @@ open class DefaultBitmapDecoder(
 
         // Set inBitmap from bitmap pool
         if (!request.disallowReuseBitmap) {
-            bitmapPool.setInBitmap(
+            setInBitmap(
+                bitmapPool = sketch.bitmapPool,
+                logger = sketch.logger,
                 options = decodeOptions,
                 imageSize = Size(imageInfo.width, imageInfo.height),
                 imageMimeType = imageInfo.mimeType
@@ -74,7 +75,7 @@ open class DefaultBitmapDecoder(
                 logger.e(MODULE, throwable, message)
 
                 decodeOptions.inBitmap = null
-                bitmapPool.free(inBitmap, "decode:error")
+                freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decode:error")
                 try {
                     dataSource.decodeBitmap(decodeOptions)
                 } catch (throwable2: Throwable) {
@@ -96,7 +97,9 @@ open class DefaultBitmapDecoder(
     ): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
         if (!request.disallowReuseBitmap) {
-            bitmapPool.setInBitmapForRegion(
+            setInBitmapForRegion(
+                bitmapPool = sketch.bitmapPool,
+                logger = sketch.logger,
                 options = decodeOptions,
                 regionSize = Size(srcRect.width(), srcRect.height()),
                 imageMimeType = imageInfo.mimeType,
@@ -115,7 +118,7 @@ open class DefaultBitmapDecoder(
                     logger.e(MODULE, throwable, message)
 
                     decodeOptions.inBitmap = null
-                    bitmapPool.free(inBitmap, "decodeRegion:error")
+                    freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decodeRegion:error")
                     try {
                         dataSource.decodeRegionBitmap(srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {

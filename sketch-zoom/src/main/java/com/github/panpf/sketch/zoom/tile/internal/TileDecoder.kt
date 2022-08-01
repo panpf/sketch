@@ -30,9 +30,11 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
+import com.github.panpf.sketch.decode.internal.setInBitmapForRegion
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.Logger
@@ -43,7 +45,6 @@ import com.github.panpf.sketch.zoom.tile.Tile
 import com.github.panpf.sketch.zoom.tile.Tiles
 import kotlinx.coroutines.runBlocking
 import java.util.LinkedList
-
 
 @WorkerThread
 fun createTileDecoder(
@@ -132,7 +133,9 @@ class TileDecoder internal constructor(
             this.inSampleSize = inSampleSize
         }
         if (!disableInBitmap) {
-            bitmapPool.setInBitmapForRegion(
+            setInBitmapForRegion(
+                bitmapPool = bitmapPool,
+                logger = logger,
                 options = options,
                 regionSize = Size(newSrcRect.width(), newSrcRect.height()),
                 imageMimeType = imageInfo.mimeType,
@@ -154,7 +157,7 @@ class TileDecoder internal constructor(
                 )
 
                 options.inBitmap = null
-                bitmapPool.free(inBitmap, "tile:decodeRegion:error")
+                freeBitmap(bitmapPool, logger, inBitmap, "tile:decodeRegion:error")
                 try {
                     regionDecoder.decodeRegion(newSrcRect, options)
                 } catch (throwable1: Throwable) {
@@ -181,7 +184,7 @@ class TileDecoder internal constructor(
 
         val newBitmap = exifOrientationHelper.applyToBitmap(bitmap, bitmapPool)
         return if (newBitmap != null && newBitmap != bitmap) {
-            bitmapPool.free(bitmap, "tile:applyExifOrientation")
+            freeBitmap(bitmapPool, logger, bitmap, "tile:applyExifOrientation")
             newBitmap
         } else {
             bitmap

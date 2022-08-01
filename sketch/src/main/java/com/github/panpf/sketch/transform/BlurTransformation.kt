@@ -6,6 +6,7 @@ import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.fastGaussianBlur
 import com.github.panpf.sketch.util.safeConfig
@@ -52,7 +53,7 @@ class BlurTransformation constructor(
             input
         }
         if (compatAlphaBitmap !== input) {
-            sketch.bitmapPool.free(input)
+            freeBitmap(sketch.bitmapPool, sketch.logger, input, "blurCompatAlpha")
         }
 
         val outBitmap = fastGaussianBlur(compatAlphaBitmap, radius)

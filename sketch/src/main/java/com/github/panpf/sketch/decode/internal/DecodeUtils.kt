@@ -26,7 +26,6 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -273,7 +272,7 @@ fun realDecode(
     )
 }
 
-fun BitmapDecodeResult.applyExifOrientation(bitmapPool: BitmapPool? = null): BitmapDecodeResult {
+fun BitmapDecodeResult.applyExifOrientation(sketch: Sketch): BitmapDecodeResult {
     if (imageInfo.exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
         || imageInfo.exifOrientation == ExifInterface.ORIENTATION_NORMAL
     ) {
@@ -281,8 +280,8 @@ fun BitmapDecodeResult.applyExifOrientation(bitmapPool: BitmapPool? = null): Bit
     }
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val inBitmap = bitmap
-    val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, bitmapPool) ?: return this
-    bitmapPool?.free(inBitmap, "applyExifOrientation")
+    val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, sketch.bitmapPool) ?: return this
+    freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "applyExifOrientation")
     val newSize = exifOrientationHelper.applyToSize(
         Size(imageInfo.width, imageInfo.height)
     )
@@ -329,7 +328,7 @@ fun BitmapDecodeResult.applyResize(
         null
     }
     return if (newBitmap != null) {
-        sketch.bitmapPool.free(inBitmap, "applyResize")
+        freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "applyResize")
         newResult(bitmap = newBitmap) {
             addTransformed(createResizeTransformed(resize))
         }

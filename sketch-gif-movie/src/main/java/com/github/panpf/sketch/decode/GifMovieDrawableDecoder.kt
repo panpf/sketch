@@ -67,7 +67,12 @@ class GifMovieDrawableDecoder constructor(
                     sketch.bitmapPool.getOrCreate(width, height, config)
 
                 override fun freeBitmap(bitmap: Bitmap) {
-                    sketch.bitmapPool.free(bitmap, "MovieDrawable:recycle")
+                    com.github.panpf.sketch.decode.internal.freeBitmap(
+                        bitmapPool = sketch.bitmapPool,
+                        logger = sketch.logger,
+                        bitmap = bitmap,
+                        caller = "MovieDrawable:recycle"
+                    )
                 }
             }
         } else null

@@ -60,8 +60,7 @@ class FFmpegVideoFrameBitmapDecoder(
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it)
                 },
                 decodeRegion = null
-            ).applyExifOrientation(sketch.bitmapPool)
-                .applyResize(sketch, request.resize)
+            ).applyExifOrientation(sketch).applyResize(sketch, request.resize)
         } finally {
             mediaMetadataRetriever.release()
         }

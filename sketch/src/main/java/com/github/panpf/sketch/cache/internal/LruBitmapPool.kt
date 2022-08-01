@@ -2,21 +2,14 @@ package com.github.panpf.sketch.cache.internal
 
 import android.content.ComponentCallbacks2
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
-import com.github.panpf.sketch.decode.internal.isSupportInBitmap
-import com.github.panpf.sketch.decode.internal.isSupportInBitmapForRegion
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.getTrimLevelName
-import com.github.panpf.sketch.util.isAndSupportHardware
 import com.github.panpf.sketch.util.pool.AttributeStrategy
 import com.github.panpf.sketch.util.pool.LruPoolStrategy
 import com.github.panpf.sketch.util.pool.SizeConfigStrategy
@@ -184,112 +177,6 @@ class LruBitmapPool constructor(
                 }
             }
         }
-    }
-
-    override fun setInBitmap(
-        options: BitmapFactory.Options, imageSize: Size, imageMimeType: String?,
-    ): Boolean {
-        if (imageSize.isEmpty) {
-            logger?.e(MODULE, "setInBitmap. error. imageSize is empty: $imageSize")
-            return false
-        }
-        if (options.inPreferredConfig?.isAndSupportHardware() == true) {
-            logger?.e(MODULE) {
-                "setInBitmap. error. inPreferredConfig is HARDWARE does not support inBitmap"
-            }
-            return false
-        }
-
-        options.inMutable = true
-
-        val inSampleSize = options.inSampleSize.coerceAtLeast(1)
-        if (!isSupportInBitmap(imageMimeType, inSampleSize)) {
-            logger?.w(MODULE) {
-                "setInBitmap. error. The current configuration does not support the use of inBitmap in BitmapFactory. " +
-                        "imageMimeType=$imageMimeType, inSampleSize=${options.inSampleSize}. " +
-                        "For details, please refer to 'DecodeUtils.isSupportInBitmap()'"
-            }
-            return false
-        }
-        val sampledBitmapSize =
-            calculateSampledBitmapSize(imageSize, inSampleSize, imageMimeType)
-        val inBitmap: Bitmap? =
-            this.get(sampledBitmapSize.width, sampledBitmapSize.height, options.inPreferredConfig)
-        if (inBitmap != null) {
-            logger?.d(MODULE) {
-                "setInBitmap. successful. imageSize=$imageSize, inSampleSize=$inSampleSize, imageMimeType=$imageMimeType. " +
-                        "inBitmap=${inBitmap.logString}"
-            }
-        } else {
-            logger?.d(MODULE) {
-                "setInBitmap. failed. imageSize=$imageSize, inSampleSize=$inSampleSize, imageMimeType=$imageMimeType"
-            }
-        }
-
-        // IllegalArgumentException("Problem decoding into existing bitmap") is thrown when inSampleSize is 0 but inBitmap is not null
-        options.inSampleSize = inSampleSize
-        options.inBitmap = inBitmap
-        return inBitmap != null
-    }
-
-    override fun setInBitmapForRegion(
-        options: BitmapFactory.Options, regionSize: Size, imageMimeType: String?, imageSize: Size,
-    ): Boolean {
-        if (regionSize.isEmpty) {
-            logger?.e(MODULE, "setInBitmapForRegion. error. regionSize is empty: $regionSize")
-            return false
-        }
-        if (options.inPreferredConfig?.isAndSupportHardware() == true) {
-            logger?.e(MODULE) {
-                "setInBitmapForRegion. error. inPreferredConfig is HARDWARE does not support inBitmap"
-            }
-            return false
-        }
-        if (!isSupportInBitmapForRegion(imageMimeType)) {
-            logger?.w(MODULE) {
-                "setInBitmapForRegion. error. The current configuration does not support the use of inBitmap in BitmapFactory. " +
-                        "imageMimeType=$imageMimeType. For details, please refer to 'DecodeUtils.isSupportInBitmapForRegion()'"
-            }
-            return false
-        }
-
-        val inSampleSize = options.inSampleSize.coerceAtLeast(1)
-        val sampledBitmapSize = calculateSampledBitmapSizeForRegion(
-            regionSize, inSampleSize, imageMimeType, imageSize
-        )
-        // BitmapRegionDecoder does not support inMutable, so creates Bitmap
-        val inBitmap = this.get(
-            sampledBitmapSize.width, sampledBitmapSize.height, options.inPreferredConfig
-        ) ?: Bitmap.createBitmap(
-            sampledBitmapSize.width, sampledBitmapSize.height, options.inPreferredConfig
-        )!!
-        logger?.d(MODULE) {
-            "setInBitmapForRegion. successful. regionSize=$regionSize, inSampleSize=$inSampleSize, imageSize=$imageSize. " +
-                    "inBitmap=${inBitmap.logString}"
-        }
-
-        // IllegalArgumentException("Problem decoding into existing bitmap") is thrown when inSampleSize is 0 but inBitmap is not null
-        options.inSampleSize = inSampleSize
-        options.inBitmap = inBitmap
-        return true
-    }
-
-    override fun free(bitmap: Bitmap?, caller: String?): Boolean {
-        if (bitmap == null || bitmap.isRecycled) return false
-
-        val bitmapLogString = "${strategy.logBitmap(bitmap)}@${toHexString()}"
-        val success = put(bitmap, caller)
-        if (success) {
-            logger?.d(MODULE) {
-                "free. successful. $caller. $bitmapLogString"
-            }
-        } else {
-            bitmap.recycle()
-            logger?.w(MODULE) {
-                "free. failed. execute recycle. $caller. $bitmapLogString"
-            }
-        }
-        return success
     }
 
     override fun toString(): String {

@@ -796,7 +796,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testApplyExifOrientation() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, sketch) = getTestContextAndNewSketch()
 
         val hasExifFile = ExifOrientationTestFileHelper(context, "sample.jpeg")
             .files().find { it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 }!!
@@ -813,10 +813,10 @@ class DecodeUtilsTest {
             dataFrom = LOCAL,
             transformedList = null
         )
-
+        val resultCorners = result.bitmap.corners()
         Assert.assertNull(result.transformedList?.getExifOrientationTransformed())
 
-        result.applyExifOrientation().apply {
+        result.applyExifOrientation(sketch).apply {
             Assert.assertNotSame(result, this)
             Assert.assertNotSame(result.bitmap, this.bitmap)
             Assert.assertEquals(Size(result.bitmap.height, result.bitmap.width), this.bitmap.size)
@@ -824,14 +824,14 @@ class DecodeUtilsTest {
                 Size(result.imageInfo.height, result.imageInfo.width),
                 this.imageInfo.size
             )
-            Assert.assertNotEquals(result.bitmap.corners(), this.bitmap.corners())
+            Assert.assertNotEquals(resultCorners, this.bitmap.corners())
             Assert.assertNotNull(this.transformedList?.getExifOrientationTransformed())
         }
 
         val noExifOrientationResult = result.newResult(
             imageInfo = result.imageInfo.newImageInfo(exifOrientation = 0)
         )
-        noExifOrientationResult.applyExifOrientation().apply {
+        noExifOrientationResult.applyExifOrientation(sketch).apply {
             Assert.assertSame(noExifOrientationResult, this)
         }
     }

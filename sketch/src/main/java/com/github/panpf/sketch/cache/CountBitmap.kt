@@ -20,6 +20,7 @@ import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.exifOrientationName
+import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.formatFileSize
@@ -140,7 +141,7 @@ class CountBitmap constructor(
         } else if (isRecycled) {
             throw IllegalStateException("Bitmap recycled. $caller. $counts. ${bitmap.logString}. $requestKey")
         } else if (!pending && cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
-            sketch.bitmapPool.free(bitmap, caller)
+            freeBitmap(sketch.bitmapPool, sketch.logger, bitmap, caller)
             this._bitmap = null
             sketch.logger.w(MODULE, "free. $caller. ${bitmap.logString}. $requestKey")
         } else {

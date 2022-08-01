@@ -94,7 +94,9 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             val options = request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
                 .toBitmapOptions()
             if (!request.disallowReuseBitmap) {
-                sketch.bitmapPool.setInBitmap(
+                setInBitmap(
+                    bitmapPool = sketch.bitmapPool,
+                    logger = sketch.logger,
                     options = options,
                     imageSize = Size(cacheImageInfo.width, cacheImageInfo.height),
                     imageMimeType = ImageFormat.PNG.mimeType
@@ -109,7 +111,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                     sketch.logger.e(MODULE, throwable, message)
 
                     options.inBitmap = null
-                    sketch.bitmapPool.free(inBitmap, "decode:error")
+                    freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decode:error")
                     try {
                         dataSource.decodeBitmap(options)
                     } catch (throwable2: Throwable) {

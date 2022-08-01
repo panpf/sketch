@@ -29,6 +29,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.internal.format
 import com.github.panpf.sketch.zoom.internal.getScale
@@ -274,7 +275,7 @@ class TileManager constructor(
                     logger.w(Tiles.MODULE) {
                         "loadTile. canceled. $tile. $imageUri"
                     }
-                    bitmapPool.free(bitmap, "tile:jobCanceled")
+                    freeBitmap(bitmapPool, logger, bitmap, "tile:jobCanceled")
                 }
             }
         }

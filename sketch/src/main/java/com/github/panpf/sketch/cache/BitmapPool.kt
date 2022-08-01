@@ -1,10 +1,7 @@
 package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.BitmapRegionDecoder
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.Size
 
 /**
  * [Bitmap] reuse pool, used for caching and reuse [Bitmap],
@@ -21,6 +18,8 @@ interface BitmapPool {
      * Sum of the size of the all cache
      */
     val size: Long
+
+    var logger: Logger?
 
     /**
      * Puts the specified [bitmap] into the pool.
@@ -58,36 +57,4 @@ interface BitmapPool {
      * Clear all cached bitmaps
      */
     fun clear()
-
-    /**
-     * Set inBitmap to [BitmapFactory.Options]. Apply to [BitmapFactory]
-     * The inSampleSize and inPreferredConfig attributes of [BitmapFactory.Options] will be used, so you need to set them up before doing so
-     *
-     * @return If true is returned, inBitmap is set
-     */
-    fun setInBitmap(
-        options: BitmapFactory.Options, imageSize: Size, imageMimeType: String?,
-    ): Boolean
-
-    /**
-     * Set inBitmap to [BitmapFactory.Options]. Apply to [BitmapRegionDecoder]
-     * The inSampleSize and inPreferredConfig attributes of [BitmapFactory.Options] will be used, so you need to set them up before doing so
-     *
-     * @return If true is returned, inBitmap is set
-     */
-    fun setInBitmapForRegion(
-        options: BitmapFactory.Options,
-        regionSize: Size,
-        imageMimeType: String?,
-        imageSize: Size
-    ): Boolean
-
-    /**
-     * Try to put it in the pool first, or call [Bitmap.recycle] to recycle it
-     *
-     * @return If true is returned, it is in the pool
-     */
-    fun free(bitmap: Bitmap?, caller: String? = null): Boolean
-
-    var logger: Logger?
 }
