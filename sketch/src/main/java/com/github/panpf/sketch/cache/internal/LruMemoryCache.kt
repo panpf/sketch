@@ -26,8 +26,6 @@ import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.toHexString
-import kotlinx.coroutines.sync.Mutex
-import java.util.WeakHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.roundToInt
 
@@ -38,9 +36,6 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
 
     companion object {
         private const val MODULE = "LruMemoryCache"
-
-        @JvmStatic
-        private val editLockLock = Any()
     }
 
     private val cache: LruCache<String, CountBitmap> =
@@ -56,7 +51,6 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
                 old.setIsCached(false, MODULE)
             }
         }
-    private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
     private val getCount = AtomicInteger()
     private val hitCount = AtomicInteger()
 
@@ -148,12 +142,6 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         val oldSize = size
         cache.evictAll()
         logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
-    }
-
-    override fun editLock(key: String): Mutex = synchronized(editLockLock) {
-        editLockMap[key] ?: Mutex().apply {
-            this@LruMemoryCache.editLockMap[key] = this
-        }
     }
 
     override fun toString(): String = "$MODULE(maxSize=${maxSize.formatFileSize()})"

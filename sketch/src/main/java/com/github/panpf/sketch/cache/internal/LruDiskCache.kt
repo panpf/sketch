@@ -163,7 +163,6 @@ class LruDiskCache private constructor(
         logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
     }
 
-    @Synchronized
     override fun editLock(key: String): Mutex = synchronized(editLockLock) {
         val encodedKey = keyMapperCache.mapKey(key)
         editLockMap[encodedKey] ?: Mutex().apply {

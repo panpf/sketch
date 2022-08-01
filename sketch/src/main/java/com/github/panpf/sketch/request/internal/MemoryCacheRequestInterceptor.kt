@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -18,7 +17,6 @@ import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 
 class MemoryCacheRequestInterceptor : RequestInterceptor {
@@ -26,13 +24,10 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
-        val memoryCache = chain.sketch.memoryCache
 
         if (request is DisplayRequest) {
             val cachedCountBitmap = ifOrNull(request.memoryCachePolicy.readEnabled) {
-                memoryCache.lockMemoryCache(request) {
-                    chain.sketch.memoryCache[request.memoryCacheKey]
-                }
+                chain.sketch.memoryCache[request.memoryCacheKey]
             }
             if (cachedCountBitmap != null) {
                 val countDrawable = SketchCountBitmapDrawable(
@@ -57,14 +52,12 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             }
 
             return if (request.memoryCachePolicy.writeEnabled) {
-                memoryCache.lockMemoryCache(request) {
-                    chain.proceed(request).also { imageData ->
-                        val countDrawable = imageData.asOrThrow<DisplayData>()
-                            .drawable.asOrNull<SketchCountBitmapDrawable>()
-                        if (countDrawable != null) {
-                            chain.sketch.memoryCache
-                                .put(request.memoryCacheKey, countDrawable.countBitmap)
-                        }
+                chain.proceed(request).also { imageData ->
+                    val countDrawable = imageData.asOrThrow<DisplayData>()
+                        .drawable.asOrNull<SketchCountBitmapDrawable>()
+                    if (countDrawable != null) {
+                        chain.sketch.memoryCache
+                            .put(request.memoryCacheKey, countDrawable.countBitmap)
                     }
                 }
             } else {
@@ -72,19 +65,6 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             }
         } else {
             return chain.proceed(request)
-        }
-    }
-
-    private suspend fun <R> MemoryCache.lockMemoryCache(
-        request: ImageRequest,
-        block: suspend () -> R
-    ): R {
-        val lock: Mutex = editLock(request.memoryCacheLockKey)
-        lock.lock()
-        try {
-            return block()
-        } finally {
-            lock.unlock()
         }
     }
 

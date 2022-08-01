@@ -67,10 +67,5 @@ interface MemoryCache {
      */
     fun clear()
 
-    /**
-     * Gets an edit lock bound to the [key], or creates a new one if it does not exist
-     */
-    fun editLock(key: String): Mutex
-
     var logger: Logger?
 }
