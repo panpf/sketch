@@ -11,8 +11,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
-import com.github.panpf.sketch.decode.internal.applyExifOrientation
-import com.github.panpf.sketch.decode.internal.applyResize
+import com.github.panpf.sketch.decode.internal.appliedExifOrientation
+import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
@@ -64,7 +64,7 @@ class VideoFrameBitmapDecoder(
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it)
                 },
                 decodeRegion = null
-            ).applyExifOrientation(sketch).applyResize(sketch, request.resize)
+            ).appliedExifOrientation(sketch).appliedResize(sketch, request.resize)
         } finally {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mediaMetadataRetriever.close()

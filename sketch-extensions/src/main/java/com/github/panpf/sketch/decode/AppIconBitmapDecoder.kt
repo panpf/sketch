@@ -5,7 +5,7 @@ import android.content.pm.PackageManager
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.decode.internal.applyResize
+import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
@@ -42,7 +42,7 @@ class AppIconBitmapDecoder(
             request.bitmapConfig?.getConfig(AppIconUriFetcher.MIME_TYPE)
         )
         val imageInfo = ImageInfo(bitmap.width, bitmap.height, AppIconUriFetcher.MIME_TYPE, 0)
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL).applyResize(sketch, request.resize)
+        return BitmapDecodeResult(bitmap, imageInfo, LOCAL).appliedResize(sketch, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

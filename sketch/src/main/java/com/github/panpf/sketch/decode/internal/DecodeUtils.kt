@@ -272,7 +272,7 @@ fun realDecode(
     )
 }
 
-fun BitmapDecodeResult.applyExifOrientation(sketch: Sketch): BitmapDecodeResult {
+fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch): BitmapDecodeResult {
     if (imageInfo.exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
         || imageInfo.exifOrientation == ExifInterface.ORIENTATION_NORMAL
     ) {
@@ -281,7 +281,7 @@ fun BitmapDecodeResult.applyExifOrientation(sketch: Sketch): BitmapDecodeResult 
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val inBitmap = bitmap
     val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, sketch.bitmapPool) ?: return this
-    freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "applyExifOrientation")
+    freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "appliedExifOrientation")
     val newSize = exifOrientationHelper.applyToSize(
         Size(imageInfo.width, imageInfo.height)
     )
@@ -293,10 +293,7 @@ fun BitmapDecodeResult.applyExifOrientation(sketch: Sketch): BitmapDecodeResult 
     }
 }
 
-fun BitmapDecodeResult.applyResize(
-    sketch: Sketch,
-    resize: Resize?,
-): BitmapDecodeResult {
+fun BitmapDecodeResult.appliedResize(sketch: Sketch, resize: Resize?): BitmapDecodeResult {
     if (resize == null) return this
     val inBitmap = bitmap
     val precision = resize.getPrecision(inBitmap.width, inBitmap.height)
@@ -328,7 +325,7 @@ fun BitmapDecodeResult.applyResize(
         null
     }
     return if (newBitmap != null) {
-        freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "applyResize")
+        freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "appliedResize")
         newResult(bitmap = newBitmap) {
             addTransformed(createResizeTransformed(resize))
         }

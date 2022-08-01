@@ -10,7 +10,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.internal.applyResize
+import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isSvg
@@ -46,7 +46,7 @@ class SvgBitmapDecoder(
                 realDecodeFull(imageInfo, decodeConfig, svg)
             },
             decodeRegion = null
-        ).applyResize(sketch, request.resize)
+        ).appliedResize(sketch, request.resize)
     }
 
     private fun readImageInfo(svg: SVG): ImageInfo {

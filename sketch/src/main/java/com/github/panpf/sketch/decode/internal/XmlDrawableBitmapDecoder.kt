@@ -48,7 +48,7 @@ class XmlDrawableBitmapDecoder(
         val bitmap =
             drawable.toNewBitmap(sketch.bitmapPool, request.bitmapConfig?.getConfig(MIME_TYPE))
         val imageInfo = ImageInfo(bitmap.width, bitmap.height, MIME_TYPE, 0)
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL).applyResize(sketch, request.resize)
+        return BitmapDecodeResult(bitmap, imageInfo, LOCAL).appliedResize(sketch, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

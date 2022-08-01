@@ -28,9 +28,6 @@ open class DefaultBitmapDecoder(
         const val MODULE = "DefaultBitmapDecoder"
     }
 
-    private val bitmapPool = sketch.bitmapPool
-    private val logger = sketch.logger
-
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val imageInfo =
@@ -47,7 +44,7 @@ open class DefaultBitmapDecoder(
             decodeRegion = if (canDecodeRegion) { srcRect, decodeConfig ->
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
-        ).applyExifOrientation(sketch).applyResize(sketch, request.resize)
+        ).appliedExifOrientation(sketch).appliedResize(sketch, request.resize)
     }
 
     private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
@@ -72,7 +69,7 @@ open class DefaultBitmapDecoder(
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
                 val message = "Bitmap decode error. Because inBitmap. uri=${request.uriString}"
-                logger.e(MODULE, throwable, message)
+                sketch.logger.e(MODULE, throwable, message)
 
                 decodeOptions.inBitmap = null
                 freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decode:error")
@@ -115,7 +112,7 @@ open class DefaultBitmapDecoder(
                 inBitmap != null && isInBitmapError(throwable) -> {
                     val message =
                         "Bitmap decode region error. Because inBitmap. uri=${request.uriString}"
-                    logger.e(MODULE, throwable, message)
+                    sketch.logger.e(MODULE, throwable, message)
 
                     decodeOptions.inBitmap = null
                     freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decodeRegion:error")

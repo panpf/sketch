@@ -172,7 +172,7 @@ interface ImageRequest {
     /**
      * Ignore Orientation property in file Exif info
      *
-     * @see com.github.panpf.sketch.decode.internal.applyExifOrientation
+     * @see com.github.panpf.sketch.decode.internal.appliedExifOrientation
      */
     val ignoreExifOrientation: Boolean
 

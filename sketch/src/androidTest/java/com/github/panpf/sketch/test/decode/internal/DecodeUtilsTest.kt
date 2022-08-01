@@ -17,8 +17,8 @@ import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ImageFormat
-import com.github.panpf.sketch.decode.internal.applyExifOrientation
-import com.github.panpf.sketch.decode.internal.applyResize
+import com.github.panpf.sketch.decode.internal.appliedExifOrientation
+import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeForRegion
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
@@ -795,7 +795,7 @@ class DecodeUtilsTest {
     }
 
     @Test
-    fun testApplyExifOrientation() {
+    fun testAppliedExifOrientation() {
         val (context, sketch) = getTestContextAndNewSketch()
 
         val hasExifFile = ExifOrientationTestFileHelper(context, "sample.jpeg")
@@ -816,7 +816,7 @@ class DecodeUtilsTest {
         val resultCorners = result.bitmap.corners()
         Assert.assertNull(result.transformedList?.getExifOrientationTransformed())
 
-        result.applyExifOrientation(sketch).apply {
+        result.appliedExifOrientation(sketch).apply {
             Assert.assertNotSame(result, this)
             Assert.assertNotSame(result.bitmap, this.bitmap)
             Assert.assertEquals(Size(result.bitmap.height, result.bitmap.width), this.bitmap.size)
@@ -831,13 +831,13 @@ class DecodeUtilsTest {
         val noExifOrientationResult = result.newResult(
             imageInfo = result.imageInfo.newImageInfo(exifOrientation = 0)
         )
-        noExifOrientationResult.applyExifOrientation(sketch).apply {
+        noExifOrientationResult.appliedExifOrientation(sketch).apply {
             Assert.assertSame(noExifOrientationResult, this)
         }
     }
 
     @Test
-    fun testApplyResize() {
+    fun testAppliedResize() {
         val sketch = newSketch()
         val newResult: () -> BitmapDecodeResult = {
             BitmapDecodeResult(
@@ -853,7 +853,7 @@ class DecodeUtilsTest {
          */
         var resize: Resize? = null
         var result: BitmapDecodeResult = newResult()
-        result.applyResize(sketch, resize).apply {
+        result.appliedResize(sketch, resize).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -863,14 +863,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, LESS_PIXELS)
         result = newResult()
-        result.applyResize(sketch, resize).apply {
+        result.appliedResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("20x13", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, LESS_PIXELS)
         result = newResult()
-        result.applyResize(sketch, resize).apply {
+        result.appliedResize(sketch, resize).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -880,14 +880,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, SAME_ASPECT_RATIO)
         result = newResult()
-        result.applyResize(sketch, resize).apply {
+        result.appliedResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, SAME_ASPECT_RATIO)
         result = newResult()
-        result.applyResize(sketch, resize).apply {
+        result.appliedResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("17x50", this.bitmap.sizeString)
         }
@@ -898,14 +898,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, EXACTLY)
         result = newResult()
-        result.applyResize(sketch, resize).apply {
+        result.appliedResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, EXACTLY)
         result = newResult()
-        result.applyResize(sketch, resize).apply {
+        result.appliedResize(sketch, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("50x150", this.bitmap.sizeString)
         }
