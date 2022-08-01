@@ -31,7 +31,6 @@ android {
 
 dependencies {
     api(project(":sketch"))
-    api(project(":sketch-gif-movie"))
     api(libs.androidgifdrawable)
 
     androidTestImplementation(libs.bundles.test)
