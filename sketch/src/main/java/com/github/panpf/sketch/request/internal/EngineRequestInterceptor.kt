@@ -1,11 +1,12 @@
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.WorkerThread
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
+import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
@@ -17,11 +18,16 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.toDisplayData
 import com.github.panpf.sketch.request.toLoadData
+import com.github.panpf.sketch.target.DisplayTarget
+import com.github.panpf.sketch.target.DownloadTarget
+import com.github.panpf.sketch.target.LoadTarget
+import com.github.panpf.sketch.util.asOrNull
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class EngineRequestInterceptor : RequestInterceptor {
 
-    @WorkerThread
+    @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): ImageData =
         when (val request = chain.request) {
             is DisplayRequest -> display(chain.sketch, request, chain.requestContext)
@@ -30,13 +36,23 @@ class EngineRequestInterceptor : RequestInterceptor {
             else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${request::class.java}")
         }
 
-    @WorkerThread
+    @MainThread
     private suspend fun display(
         sketch: Sketch,
         request: DisplayRequest,
         requestContext: RequestContext,
-    ): DisplayData =
-        withContext(sketch.decodeTaskDispatcher) {
+    ): DisplayData {
+        // Why does Target.start() have to be executed after the memory cache check?
+        // First, when the memory cache is valid, one callback can be reduced
+        // Secondly, when RecyclerView executes notifyDataSetChanged(),
+        // it can avoid the flickering phenomenon caused by the fast switching of the picture between placeholder and result
+        request.target?.asOrNull<DisplayTarget>()?.let {
+            val placeholderDrawable = request.placeholder
+                ?.getDrawable(sketch, request, null)
+                ?.tryToResizeDrawable(request)
+            it.onStart(placeholderDrawable)
+        }
+        return withContext(sketch.decodeTaskDispatcher) {
             DrawableDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
@@ -46,14 +62,16 @@ class EngineRequestInterceptor : RequestInterceptor {
                 index = 0,
             ).proceed().toDisplayData()
         }
+    }
 
-    @WorkerThread
+    @MainThread
     private suspend fun load(
         sketch: Sketch,
         request: LoadRequest,
         chain: RequestInterceptor.Chain
-    ): LoadData =
-        withContext(sketch.decodeTaskDispatcher) {
+    ): LoadData {
+        request.target?.asOrNull<LoadTarget>()?.onStart()
+        return withContext(sketch.decodeTaskDispatcher) {
             BitmapDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
@@ -63,10 +81,17 @@ class EngineRequestInterceptor : RequestInterceptor {
                 index = 0,
             ).proceed().toLoadData()
         }
+    }
 
-    @WorkerThread
+    @MainThread
     private suspend fun download(sketch: Sketch, request: DownloadRequest): DownloadData {
-        val fetcher = sketch.components.newFetcher(request)
+        withContext(Dispatchers.Main) {
+            request.target?.asOrNull<DownloadTarget>()?.onStart()
+        }
+
+        val fetcher = withContext(sketch.decodeTaskDispatcher) {
+            sketch.components.newFetcher(request)
+        }
         if (fetcher !is HttpUriFetcher) {
             throw IllegalArgumentException("DownloadRequest only support HTTP and HTTPS uri: ${request.uriString}")
         }

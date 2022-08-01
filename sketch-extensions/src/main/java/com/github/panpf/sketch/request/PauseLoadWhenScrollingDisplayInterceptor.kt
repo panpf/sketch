@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.request
 
-import androidx.annotation.WorkerThread
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
@@ -22,7 +22,7 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
 
     var enabled = true
 
-    @WorkerThread
+    @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
         val finalRequest = when {

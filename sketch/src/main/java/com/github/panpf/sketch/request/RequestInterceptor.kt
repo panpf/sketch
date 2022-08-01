@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.request
 
-import androidx.annotation.WorkerThread
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -10,7 +10,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
  */
 fun interface RequestInterceptor {
 
-    @WorkerThread
+    @MainThread
     suspend fun intercept(chain: Chain): ImageData
 
     interface Chain {
@@ -28,7 +28,7 @@ fun interface RequestInterceptor {
          *
          * @param request The request to proceed with.
          */
-        @WorkerThread
+        @MainThread
         suspend fun proceed(request: ImageRequest): ImageData
     }
 }

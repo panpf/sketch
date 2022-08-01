@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.WorkerThread
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.DrawableDecodeResult
@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 
-    @WorkerThread
+    @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
         val memoryCache = chain.sketch.memoryCache

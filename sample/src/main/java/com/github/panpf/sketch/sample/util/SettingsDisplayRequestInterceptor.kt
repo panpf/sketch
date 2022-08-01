@@ -3,7 +3,7 @@ package com.github.panpf.sketch.sample.util
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.annotation.WorkerThread
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
@@ -19,7 +19,7 @@ import com.github.panpf.sketch.target.ViewDisplayTarget
 
 class SettingsDisplayRequestInterceptor : RequestInterceptor {
 
-    @WorkerThread
+    @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
         if (request !is DisplayRequest) {

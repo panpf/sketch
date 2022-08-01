@@ -33,7 +33,6 @@ import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
 
 class RequestExecutor {
@@ -90,16 +89,14 @@ class RequestExecutor {
 
             onStart(sketch, requestContext.lastRequest)
 
-            val imageData: ImageData = withContext(sketch.requestInterceptorDispatcher) {
-                RequestInterceptorChain(
-                    sketch = sketch,
-                    initialRequest = requestContext.lastRequest,
-                    request = requestContext.lastRequest,
-                    requestContext = requestContext,
-                    interceptors = sketch.components.requestInterceptorList,
-                    index = 0,
-                ).proceed(requestContext.lastRequest)
-            }
+            val imageData: ImageData = RequestInterceptorChain(
+                sketch = sketch,
+                initialRequest = requestContext.lastRequest,
+                request = requestContext.lastRequest,
+                requestContext = requestContext,
+                interceptors = sketch.components.requestInterceptorList,
+                index = 0,
+            ).proceed(requestContext.lastRequest)
 
             val lastRequest: ImageRequest = requestContext.lastRequest
             val successResult: ImageResult.Success = when {
@@ -155,20 +152,6 @@ class RequestExecutor {
 
     @MainThread
     private fun onStart(sketch: Sketch, request: ImageRequest) {
-        when (val target = request.target) {
-            is DisplayTarget -> {
-                val placeholderDrawable = request.placeholder
-                    ?.getDrawable(sketch, request, null)
-                    ?.tryToResizeDrawable(request)
-                target.onStart(placeholderDrawable)
-            }
-            is LoadTarget -> {
-                target.onStart()
-            }
-            is DownloadTarget -> {
-                target.onStart()
-            }
-        }
         request.listener?.onStart(request)
         sketch.logger.d(MODULE) {
             "Request started. ${request.key}"
