@@ -38,7 +38,7 @@ import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import java.util.LinkedList
 
-const val DEPTH_FROM_KEY = "sketch#depthFrom"
+const val DEPTH_FROM_KEY = "sketch#depth_from"
 
 /**
  * Build and set the [ImageOptions]

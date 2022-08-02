@@ -2,7 +2,7 @@ package com.github.panpf.sketch.request
 
 import androidx.annotation.ColorInt
 
-private const val SVG_BACKGROUND_COLOR_KEY = "sketch#svgBackgroundColor"
+private const val SVG_BACKGROUND_COLOR_KEY = "sketch#svg_background_color"
 
 /**
  * Set the background color of the SVG image, the default is transparent

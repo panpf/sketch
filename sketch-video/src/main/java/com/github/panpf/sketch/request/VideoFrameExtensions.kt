@@ -7,9 +7,9 @@ import android.media.MediaMetadataRetriever.OPTION_NEXT_SYNC
 import android.media.MediaMetadataRetriever.OPTION_PREVIOUS_SYNC
 import androidx.annotation.FloatRange
 
-private const val VIDEO_FRAME_MICROS_KEY = "sketch#videoFrameMicros"
-private const val VIDEO_FRAME_PERCENT_DURATION_KEY = "sketch#videoFramePercentDuration"
-private const val VIDEO_FRAME_OPTION_KEY = "sketch#videoFrameOption"
+private const val VIDEO_FRAME_MICROS_KEY = "sketch#video_frame_micros"
+private const val VIDEO_FRAME_PERCENT_DURATION_KEY = "sketch#video_frame_percent_duration"
+private const val VIDEO_FRAME_OPTION_KEY = "sketch#video_frame_option"
 
 /**
  * Set the time **in microseconds** of the frame to extract from a video.

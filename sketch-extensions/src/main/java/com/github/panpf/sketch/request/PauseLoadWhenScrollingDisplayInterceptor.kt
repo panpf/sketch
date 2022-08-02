@@ -17,7 +17,8 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
 
     companion object {
         var scrolling = false
-        private const val OLD_DEPTH_KEY = "PAUSE_LOAD_WHEN_SCROLLING_OLD_DEPTH"
+        private const val PAUSE_LOAD_WHEN_SCROLLING_OLD_DEPTH_KEY =
+            "sketch#pause_load_when_scrolling_old_depth"
     }
 
     var enabled = true
@@ -37,25 +38,27 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
                     val oldDepth = request.depth
                     request.newDisplayRequest {
                         depth(Depth.MEMORY, PAUSE_LOAD_WHEN_SCROLLING_KEY)
-                        setParameter(OLD_DEPTH_KEY, oldDepth.name, null)
+                        setParameter(PAUSE_LOAD_WHEN_SCROLLING_OLD_DEPTH_KEY, oldDepth.name, null)
                     }
                 } else {
                     request
                 }
             }
             else -> {
-                val oldDepth = request.parameters?.value<String>(OLD_DEPTH_KEY)?.let {
-                    try {
-                        Depth.valueOf(it)
-                    } catch (e: Exception) {
-                        e.toString()
-                        null
-                    }
-                }
+                val oldDepth =
+                    request.parameters?.value<String>(PAUSE_LOAD_WHEN_SCROLLING_OLD_DEPTH_KEY)
+                        ?.let {
+                            try {
+                                Depth.valueOf(it)
+                            } catch (e: Exception) {
+                                e.toString()
+                                null
+                            }
+                        }
                 if (oldDepth != null && request.depth != oldDepth) {
                     request.newDisplayRequest {
                         depth(oldDepth)
-                        removeParameter(OLD_DEPTH_KEY)
+                        removeParameter(PAUSE_LOAD_WHEN_SCROLLING_OLD_DEPTH_KEY)
                     }
                 } else {
                     request

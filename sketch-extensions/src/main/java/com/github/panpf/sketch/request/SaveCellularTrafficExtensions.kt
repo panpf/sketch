@@ -2,9 +2,9 @@ package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.util.SketchException
 
-const val SAVE_CELLULAR_TRAFFIC_KEY = "sketch#SaveCellularTraffic"
-private const val ENABLED_KEY = "sketch#enabledSaveCellularTraffic"
-private const val IGNORE_KEY = "sketch#ignoreSaveCellularTraffic"
+const val SAVE_CELLULAR_TRAFFIC_KEY = "sketch#save_cellular_traffic"
+private const val SAVE_CELLULAR_TRAFFIC_ENABLED_KEY = "sketch#save_cellular_traffic_enabled"
+private const val SAVE_CELLULAR_TRAFFIC_IGNORED_KEY = "sketch#save_cellular_traffic_ignored"
 
 /**
  * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficDisplayInterceptor]
@@ -12,9 +12,9 @@ private const val IGNORE_KEY = "sketch#ignoreSaveCellularTraffic"
 fun ImageRequest.Builder.saveCellularTraffic(enabled: Boolean = true): ImageRequest.Builder =
     apply {
         if (enabled) {
-            setParameter(ENABLED_KEY, true, null)
+            setParameter(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY, true, null)
         } else {
-            removeParameter(ENABLED_KEY)
+            removeParameter(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY)
         }
     }
 
@@ -24,9 +24,9 @@ fun ImageRequest.Builder.saveCellularTraffic(enabled: Boolean = true): ImageRequ
 fun DisplayRequest.Builder.saveCellularTraffic(enabled: Boolean = true): DisplayRequest.Builder =
     apply {
         if (enabled) {
-            setParameter(ENABLED_KEY, true, null)
+            setParameter(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY, true, null)
         } else {
-            removeParameter(ENABLED_KEY)
+            removeParameter(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY)
         }
     }
 
@@ -34,7 +34,7 @@ fun DisplayRequest.Builder.saveCellularTraffic(enabled: Boolean = true): Display
  * Returns true if cellular data saving has been enabled
  */
 val ImageRequest.isSaveCellularTraffic: Boolean
-    get() = parameters?.value<Boolean>(ENABLED_KEY) == true
+    get() = parameters?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY) == true
 
 /**
  * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficDisplayInterceptor]
@@ -42,9 +42,9 @@ val ImageRequest.isSaveCellularTraffic: Boolean
 fun ImageOptions.Builder.saveCellularTraffic(enabled: Boolean = true): ImageOptions.Builder =
     apply {
         if (enabled) {
-            setParameter(ENABLED_KEY, true, null)
+            setParameter(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY, true, null)
         } else {
-            removeParameter(ENABLED_KEY)
+            removeParameter(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY)
         }
     }
 
@@ -52,7 +52,7 @@ fun ImageOptions.Builder.saveCellularTraffic(enabled: Boolean = true): ImageOpti
  * Returns true if cellular data saving has been enabled
  */
 val ImageOptions.isSaveCellularTraffic: Boolean
-    get() = parameters?.value<Boolean>(ENABLED_KEY) == true
+    get() = parameters?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY) == true
 
 
 /**
@@ -61,9 +61,9 @@ val ImageOptions.isSaveCellularTraffic: Boolean
 fun ImageRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): ImageRequest.Builder =
     apply {
         if (ignore) {
-            setParameter(IGNORE_KEY, true, null)
+            setParameter(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY, true, null)
         } else {
-            removeParameter(IGNORE_KEY)
+            removeParameter(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY)
         }
     }
 
@@ -73,9 +73,9 @@ fun ImageRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): Imag
 fun DisplayRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): DisplayRequest.Builder =
     apply {
         if (ignore) {
-            setParameter(IGNORE_KEY, true, null)
+            setParameter(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY, true, null)
         } else {
-            removeParameter(IGNORE_KEY)
+            removeParameter(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY)
         }
     }
 
@@ -83,7 +83,7 @@ fun DisplayRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): Di
  * Returns true if ignore cellular data saving has been enabled
  */
 val ImageRequest.isIgnoredSaveCellularTraffic: Boolean
-    get() = parameters?.value<Boolean>(IGNORE_KEY) == true
+    get() = parameters?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY) == true
 
 /**
  * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficDisplayInterceptor]
@@ -91,9 +91,9 @@ val ImageRequest.isIgnoredSaveCellularTraffic: Boolean
 fun ImageOptions.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): ImageOptions.Builder =
     apply {
         if (ignore) {
-            setParameter(IGNORE_KEY, true, null)
+            setParameter(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY, true, null)
         } else {
-            removeParameter(IGNORE_KEY)
+            removeParameter(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY)
         }
     }
 
@@ -101,7 +101,7 @@ fun ImageOptions.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): Imag
  * Returns true if ignore cellular data saving has been enabled
  */
 val ImageOptions.isIgnoredSaveCellularTraffic: Boolean
-    get() = parameters?.value<Boolean>(IGNORE_KEY) == true
+    get() = parameters?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY) == true
 
 /**
  * Returns true if Depth is from the cellular saving feature

@@ -18,7 +18,7 @@ class SaveCellularTrafficDisplayInterceptor constructor(
 ) : RequestInterceptor {
 
     companion object {
-        private const val OLD_DEPTH_KEY = "SAVE_CELLULAR_TRAFFIC_OLD_DEPTH"
+        private const val SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY = "sketch#save_cellular_traffic_old_depth"
     }
 
     var enabled = true
@@ -42,14 +42,14 @@ class SaveCellularTrafficDisplayInterceptor constructor(
                     val oldDepth = request.depth
                     request.newDisplayRequest {
                         depth(Depth.LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
-                        setParameter(OLD_DEPTH_KEY, oldDepth.name, null)
+                        setParameter(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY, oldDepth.name, null)
                     }
                 } else {
                     request
                 }
             }
             else -> {
-                val oldDepth = request.parameters?.value<String>(OLD_DEPTH_KEY)?.let {
+                val oldDepth = request.parameters?.value<String>(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY)?.let {
                     try {
                         Depth.valueOf(it)
                     } catch (e: Exception) {
@@ -60,7 +60,7 @@ class SaveCellularTrafficDisplayInterceptor constructor(
                 if (oldDepth != null && request.depth != oldDepth) {
                     request.newDisplayRequest {
                         depth(oldDepth)
-                        removeParameter(OLD_DEPTH_KEY)
+                        removeParameter(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY)
                     }
                 } else {
                     request
