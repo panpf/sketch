@@ -25,6 +25,7 @@ import java.lang.Float.isInfinite
 import java.lang.Float.isNaN
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.sqrt
 
 class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestureListener) {
 
@@ -41,15 +42,13 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
     private var velocityTracker: VelocityTracker? = null
     private var activePointerId: Int = INVALID_POINTER_ID
     private var activePointerIndex: Int = 0
-    private var _isHorDragging = false
-    private var _isVerDragging = false
-    private var multiPoint = false
+    private var pointerCount = 0
 
-    var onActionListener: OnActionListener? = null
-    val isDragging: Boolean
-        get() = _isHorDragging || _isVerDragging
+    var isDragging = false
+        private set
     val isScaling: Boolean
         get() = scaleDetector.isInProgress
+    var onActionListener: OnActionListener? = null
 
     init {
         val configuration = ViewConfiguration.get(context)
@@ -74,6 +73,18 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
         })
     }
 
+    private fun getActiveX(ev: MotionEvent): Float = try {
+        ev.getX(activePointerIndex)
+    } catch (e: Exception) {
+        ev.x
+    }
+
+    private fun getActiveY(ev: MotionEvent): Float = try {
+        ev.getY(activePointerIndex)
+    } catch (e: Exception) {
+        ev.y
+    }
+
     fun onTouchEvent(ev: MotionEvent): Boolean {
         try {
             scaleDetector.onTouchEvent(ev)
@@ -92,55 +103,40 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
                 velocityTracker?.addMovement(ev)
                 lastTouchX = getActiveX(ev)
                 lastTouchY = getActiveY(ev)
-                _isHorDragging = false
-                _isVerDragging = false
-                multiPoint = false
+                isDragging = false
+                pointerCount = 1
                 onActionListener?.onActionDown(ev)
             }
-            MotionEvent.ACTION_POINTER_DOWN -> {
-                multiPoint = true
-            }
             MotionEvent.ACTION_MOVE -> {
-                if (!multiPoint) {
-                    val x = getActiveX(ev)
-                    val y = getActiveY(ev)
-                    val dx = x - lastTouchX
-                    val dy = y - lastTouchY
-                    if (!_isHorDragging) {
-                        _isHorDragging = abs(dx) >= touchSlop
+                val x = getActiveX(ev)
+                val y = getActiveY(ev)
+                val dx = x - lastTouchX
+                val dy = y - lastTouchY
+                if (!isDragging) {
+                    // Use Pythagoras to see if drag length is larger than touch slop
+                    isDragging = sqrt((dx * dx) + (dy * dy).toDouble()) >= touchSlop
+                }
+                if (isDragging) {
+                    // Disable multi-finger drag, which can prevent the ViewPager from accidentally triggering left and right swipe when the minimum zoom ratio is zoomed in
+                    if (pointerCount == 1) {
+                        onGestureListener.onDrag(dx, dy)
                     }
-                    if (!_isVerDragging) {
-                        _isVerDragging = abs(dy) >= touchSlop
-                    }
-                    if (_isHorDragging || _isVerDragging) {
-                        onGestureListener.onDrag(
-                            if (_isHorDragging) dx else 0f,
-                            if (_isVerDragging) dy else 0f
-                        )
-                        if (_isHorDragging) {
-                            lastTouchX = x
-                        }
-                        if (_isVerDragging) {
-                            lastTouchY = y
-                        }
-                        velocityTracker?.addMovement(ev)
-                    }
+                    lastTouchX = x
+                    lastTouchY = y
+                    velocityTracker?.addMovement(ev)
                 }
             }
             MotionEvent.ACTION_CANCEL -> {
                 activePointerId = INVALID_POINTER_ID
-
                 // Recycle Velocity Tracker
                 velocityTracker?.recycle()
                 velocityTracker = null
-
                 onActionListener?.onActionCancel(ev)
             }
             MotionEvent.ACTION_UP -> {
                 activePointerId = INVALID_POINTER_ID
-                if (_isHorDragging || _isVerDragging) {
-                    val velocityTracker = velocityTracker
-                    if (velocityTracker != null) {
+                if (isDragging) {
+                    velocityTracker?.let { velocityTracker ->
                         lastTouchX = getActiveX(ev)
                         lastTouchY = getActiveY(ev)
 
@@ -150,8 +146,7 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
                         val vX = velocityTracker.xVelocity
                         val vY = velocityTracker.yVelocity
 
-                        // If the velocity is greater than minVelocity, call
-                        // listener
+                        // If the velocity is greater than minVelocity, call listener
                         if (max(abs(vX), abs(vY)) >= minimumVelocity) {
                             onGestureListener.onFling(lastTouchX, lastTouchY, -vX, -vY)
                         }
@@ -161,11 +156,13 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
                 // Recycle Velocity Tracker
                 velocityTracker?.recycle()
                 velocityTracker = null
-
                 onActionListener?.onActionUp(ev)
             }
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                pointerCount++
+            }
             MotionEvent.ACTION_POINTER_UP -> {
-                multiPoint = false
+                pointerCount--
                 // Ignore deprecation, ACTION_POINTER_ID_MASK and
                 // ACTION_POINTER_ID_SHIFT has same value and are deprecated
                 // You can have either deprecation or lint target api warning
@@ -184,18 +181,6 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
 
         activePointerIndex =
             ev.findPointerIndex(if (activePointerId != INVALID_POINTER_ID) activePointerId else 0)
-    }
-
-    private fun getActiveX(ev: MotionEvent): Float = try {
-        ev.getX(activePointerIndex)
-    } catch (e: Exception) {
-        ev.x
-    }
-
-    private fun getActiveY(ev: MotionEvent): Float = try {
-        ev.getY(activePointerIndex)
-    } catch (e: Exception) {
-        ev.y
     }
 
     interface OnActionListener {
