@@ -21,7 +21,6 @@ import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
-import android.util.Log
 import android.view.MotionEvent
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.Sketch
@@ -69,9 +68,8 @@ internal class ScaleDragHelper constructor(
             ) = fling(startX, startY, velocityX, velocityY)
 
             override fun onScaleBegin(): Boolean = scaleBegin()
-            override fun onScale(
-                scaleFactor: Float, focusX: Float, focusY: Float
-            ) = scale(scaleFactor, focusX, focusY)
+            override fun onScale(scaleFactor: Float, focusX: Float, focusY: Float, dx: Float, dy: Float) =
+                scale(scaleFactor, focusX, focusY, dx, dy)
 
             override fun onScaleEnd() = scaleEnd()
         }
@@ -476,10 +474,10 @@ internal class ScaleDragHelper constructor(
         checkAndApplyMatrix()
     }
 
-    internal fun scale(scaleFactor: Float, focusX: Float, focusY: Float) {
+    internal fun scale(scaleFactor: Float, focusX: Float, focusY: Float, dx: Float, dy: Float) {
         var newScaleFactor = scaleFactor
         logger.v(Zoomer.MODULE) {
-            "onScale. scaleFactor: $newScaleFactor, focusX: $focusX, focusY: $focusY"
+            "onScale. scaleFactor: $newScaleFactor, focusX: $focusX, focusY: $focusY, dx: $dx, dy: $dy"
         }
         lastScaleFocusX = focusX
         lastScaleFocusY = focusY
@@ -505,6 +503,7 @@ internal class ScaleDragHelper constructor(
             }
         }
         supportMatrix.postScale(newScaleFactor, newScaleFactor, focusX, focusY)
+        supportMatrix.postTranslate(dx, dy)
         checkAndApplyMatrix()
         onScaleChanged(newScaleFactor, focusX, focusY)
     }

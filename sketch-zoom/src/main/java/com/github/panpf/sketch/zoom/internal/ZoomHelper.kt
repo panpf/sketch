@@ -66,7 +66,7 @@ internal class ZoomHelper(
             val deltaScale = scale / scaleDragHelper.scale
             val continueZoom = t < 1f
             scaleDragHelper.isZooming = continueZoom
-            scaleDragHelper.scale(deltaScale, scaleFocalX, scaleFocalY)
+            scaleDragHelper.scale(deltaScale, scaleFocalX, scaleFocalY, 0f, 0f)
 
             // We haven't hit our target scale yet, so post ourselves again
             if (continueZoom) {

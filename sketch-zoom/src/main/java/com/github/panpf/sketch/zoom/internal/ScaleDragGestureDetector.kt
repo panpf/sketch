@@ -54,17 +54,31 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
         minimumVelocity = configuration.scaledMinimumFlingVelocity.toFloat()
         touchSlop = configuration.scaledTouchSlop.toFloat()
         scaleDetector = ScaleGestureDetector(context, object : OnScaleGestureListener {
+            private var lastFocusX = 0f
+            private var lastFocusY = 0f
             override fun onScale(detector: ScaleGestureDetector): Boolean {
                 val scaleFactor =
                     detector.scaleFactor.takeIf { !isNaN(it) && !isInfinite(it) } ?: return false
                 if (scaleFactor >= 0) {
-                    onGestureListener.onScale(scaleFactor, detector.focusX, detector.focusY)
+                    onGestureListener.onScale(
+                        scaleFactor,
+                        detector.focusX,
+                        detector.focusY,
+                        detector.focusX - lastFocusX,
+                        detector.focusY - lastFocusY
+                    )
+                    lastFocusX = detector.focusX
+                    lastFocusY = detector.focusY
                 }
                 return true
             }
 
-            override fun onScaleBegin(detector: ScaleGestureDetector): Boolean =
+            override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+                lastFocusX = detector.focusX
+                lastFocusY = detector.focusY
                 onGestureListener.onScaleBegin()
+                return true
+            }
 
             override fun onScaleEnd(detector: ScaleGestureDetector) {
                 onGestureListener.onScaleEnd()
@@ -186,7 +200,7 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
     interface OnGestureListener {
         fun onDrag(dx: Float, dy: Float)
         fun onFling(startX: Float, startY: Float, velocityX: Float, velocityY: Float)
-        fun onScale(scaleFactor: Float, focusX: Float, focusY: Float)
+        fun onScale(scaleFactor: Float, focusX: Float, focusY: Float, dx: Float, dy: Float)
         fun onScaleBegin(): Boolean
         fun onScaleEnd()
     }
