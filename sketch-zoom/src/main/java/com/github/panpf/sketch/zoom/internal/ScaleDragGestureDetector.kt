@@ -42,7 +42,6 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
     private var velocityTracker: VelocityTracker? = null
     private var activePointerId: Int = INVALID_POINTER_ID
     private var activePointerIndex: Int = 0
-    private var pointerCount = 0
 
     var isDragging = false
         private set
@@ -104,7 +103,6 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
                 lastTouchX = getActiveX(ev)
                 lastTouchY = getActiveY(ev)
                 isDragging = false
-                pointerCount = 1
                 onActionListener?.onActionDown(ev)
             }
             MotionEvent.ACTION_MOVE -> {
@@ -118,7 +116,7 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
                 }
                 if (isDragging) {
                     // Disable multi-finger drag, which can prevent the ViewPager from accidentally triggering left and right swipe when the minimum zoom ratio is zoomed in
-                    if (pointerCount == 1) {
+                    if (ev.pointerCount == 1) {
                         onGestureListener.onDrag(dx, dy)
                     }
                     lastTouchX = x
@@ -158,11 +156,7 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
                 velocityTracker = null
                 onActionListener?.onActionUp(ev)
             }
-            MotionEvent.ACTION_POINTER_DOWN -> {
-                pointerCount++
-            }
             MotionEvent.ACTION_POINTER_UP -> {
-                pointerCount--
                 // Ignore deprecation, ACTION_POINTER_ID_MASK and
                 // ACTION_POINTER_ID_SHIFT has same value and are deprecated
                 // You can have either deprecation or lint target api warning
