@@ -20,6 +20,9 @@ import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
 import com.github.panpf.sketch.zoom.internal.TapHelper
 
+/**
+ * Based https://github.com/Baseflow/PhotoView git 565505d5 20210120
+ */
 class Zoomer constructor(
     val context: Context,
     val sketch: Sketch,
@@ -43,6 +46,11 @@ class Zoomer constructor(
                 listener.onMatrixChanged(this)
             }
         },
+        onViewDrag = { dx: Float, dy: Float ->
+            onViewDragListenerList?.forEach {
+                it.onDrag(dx, dy)
+            }
+        },
         onDragFling = { startX: Float, startY: Float, velocityX: Float, velocityY: Float ->
             onDragFlingListenerList?.forEach {
                 it.onFling(startX, startY, velocityX, velocityY)
@@ -52,13 +60,15 @@ class Zoomer constructor(
             onScaleChangeListenerList?.forEach {
                 it.onScaleChanged(scaleFactor, focusX, focusY)
             }
-        })
+        }
+    )
     private var scrollBarHelper: ScrollBarHelper? = ScrollBarHelper(context, this)
     private var _rotateDegrees = 0
 
     private var onMatrixChangeListenerList: MutableSet<OnMatrixChangeListener>? = null
     private var onRotateChangeListenerList: MutableSet<OnRotateChangeListener>? = null
     private var onDragFlingListenerList: MutableSet<OnDragFlingListener>? = null
+    private var onViewDragListenerList: MutableSet<OnViewDragListener>? = null
     private var onScaleChangeListenerList: MutableSet<OnScaleChangeListener>? = null
 
     /** Allows the parent ViewGroup to intercept events while sliding to an edge */
@@ -193,18 +203,18 @@ class Zoomer constructor(
      * @param focalX  Scale the x coordinate of the center point on the view
      * @param focalY  Scale the y coordinate of the center point on the view
      */
-    fun zoom(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
+    fun scale(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
         val finalScale = scale
             .coerceAtLeast(scales.min)
             .coerceAtMost(scales.max)
-        scaleDragHelper.zoom(finalScale, focalX, focalY, animate)
+        scaleDragHelper.scale(finalScale, focalX, focalY, animate)
     }
 
     /**
      * Scale to the specified scale. You don't have to worry about rotation degrees
      */
-    fun zoom(scale: Float, animate: Boolean = false) {
-        zoom(scale, (view.right / 2).toFloat(), (view.bottom / 2).toFloat(), animate)
+    fun scale(scale: Float, animate: Boolean = false) {
+        scale(scale, (view.right / 2).toFloat(), (view.bottom / 2).toFloat(), animate)
     }
 
     /**
@@ -258,7 +268,7 @@ class Zoomer constructor(
         get() = scaleDragHelper.scale
 
     val baseScale: Float
-        get() = scaleDragHelper.defaultScale
+        get() = scaleDragHelper.baseScale
 
     val supportScale: Float
         get() = scaleDragHelper.supportScale
@@ -284,8 +294,8 @@ class Zoomer constructor(
     val stepScales: FloatArray
         get() = scales.steps
 
-    val isZooming: Boolean
-        get() = scaleDragHelper.isZooming
+    val isScaling: Boolean
+        get() = scaleDragHelper.isScaling
 
     fun getDrawMatrix(matrix: Matrix) = scaleDragHelper.getDrawMatrix(matrix)
 
@@ -326,6 +336,16 @@ class Zoomer constructor(
 
     fun removeOnDragFlingListener(listener: OnDragFlingListener): Boolean {
         return onDragFlingListenerList?.remove(listener) == true
+    }
+
+    fun addOnViewDragListener(listener: OnViewDragListener) {
+        this.onViewDragListenerList = (onViewDragListenerList ?: LinkedHashSet()).apply {
+            add(listener)
+        }
+    }
+
+    fun removeOnViewDragListener(listener: OnViewDragListener): Boolean {
+        return onViewDragListenerList?.remove(listener) == true
     }
 
     fun addOnScaleChangeListener(listener: OnScaleChangeListener) {

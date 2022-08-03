@@ -117,15 +117,15 @@ open class SketchZoomImageView @JvmOverloads constructor(
      * @param focalX  Scale the x coordinate of the center point on the preview image
      * @param focalY  Scale the y coordinate of the center point on the preview image
      */
-    fun zoom(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
-        zoomAbility.zoom(scale, focalX, focalY, animate)
+    fun scale(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
+        zoomAbility.scale(scale, focalX, focalY, animate)
     }
 
     /**
      * Scale to the specified scale. You don't have to worry about rotation degrees
      */
-    fun zoom(scale: Float, animate: Boolean = false) {
-        zoomAbility.zoom(scale, animate)
+    fun scale(scale: Float, animate: Boolean = false) {
+        zoomAbility.scale(scale, animate)
     }
 
     /**
@@ -188,8 +188,8 @@ open class SketchZoomImageView @JvmOverloads constructor(
     val stepScales: FloatArray?
         get() = zoomAbility.stepScales
 
-    val isZooming: Boolean
-        get() = zoomAbility.isZooming
+    val isScaling: Boolean
+        get() = zoomAbility.isScaling
 
     val tileList: List<Tile>?
         get() = zoomAbility.tileList
@@ -239,6 +239,14 @@ open class SketchZoomImageView @JvmOverloads constructor(
 
     fun removeOnDragFlingListener(listener: OnDragFlingListener): Boolean {
         return zoomAbility.removeOnDragFlingListener(listener)
+    }
+
+    fun addOnViewDragListener(listener: OnViewDragListener) {
+        zoomAbility.addOnViewDragListener(listener)
+    }
+
+    fun removeOnViewDragListener(listener: OnViewDragListener): Boolean {
+        return zoomAbility.removeOnViewDragListener(listener)
     }
 
     fun addOnScaleChangeListener(listener: OnScaleChangeListener) {

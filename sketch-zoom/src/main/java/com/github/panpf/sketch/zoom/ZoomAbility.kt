@@ -81,6 +81,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private var onRotateChangeListenerList: MutableSet<OnRotateChangeListener>? = null
     private var onDragFlingListenerList: MutableSet<OnDragFlingListener>? = null
     private var onScaleChangeListenerList: MutableSet<OnScaleChangeListener>? = null
+    private var onOnViewDragListenerList: MutableSet<OnViewDragListener>? = null
     private var onTileChangedListenerList: MutableSet<OnTileChangedListener>? = null
     private val imageMatrix = Matrix()
     private val scope = CoroutineScope(
@@ -213,15 +214,15 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
      * @param focalX  Scale the x coordinate of the center point on the preview image
      * @param focalY  Scale the y coordinate of the center point on the preview image
      */
-    fun zoom(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
-        zoomer?.zoom(scale, focalX, focalY, animate)
+    fun scale(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
+        zoomer?.scale(scale, focalX, focalY, animate)
     }
 
     /**
      * Scale to the specified scale. You don't have to worry about rotation degrees
      */
-    fun zoom(scale: Float, animate: Boolean = false) {
-        zoomer?.zoom(scale, animate)
+    fun scale(scale: Float, animate: Boolean = false) {
+        zoomer?.scale(scale, animate)
     }
 
     /**
@@ -290,8 +291,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     val stepScales: FloatArray?
         get() = zoomer?.stepScales
 
-    val isZooming: Boolean
-        get() = zoomer?.isZooming == true
+    val isScaling: Boolean
+        get() = zoomer?.isScaling == true
 
     val tileList: List<Tile>?
         get() = tiles?.tileList
@@ -363,6 +364,18 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     fun removeOnScaleChangeListener(listener: OnScaleChangeListener): Boolean {
         zoomer?.removeOnScaleChangeListener(listener)
         return onScaleChangeListenerList?.remove(listener) == true
+    }
+
+    fun addOnViewDragListener(listener: OnViewDragListener) {
+        this.onOnViewDragListenerList = (onOnViewDragListenerList ?: LinkedHashSet()).apply {
+            add(listener)
+        }
+        zoomer?.addOnViewDragListener(listener)
+    }
+
+    fun removeOnViewDragListener(listener: OnViewDragListener): Boolean {
+        zoomer?.removeOnViewDragListener(listener)
+        return onOnViewDragListenerList?.remove(listener) == true
     }
 
     fun addOnTileChangedListener(listener: OnTileChangedListener) {

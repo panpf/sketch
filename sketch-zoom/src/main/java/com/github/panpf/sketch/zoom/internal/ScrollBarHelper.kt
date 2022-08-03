@@ -41,8 +41,8 @@ internal class ScrollBarHelper(context: Context, private val zoomer: Zoomer) {
     private val view = zoomer.view
     private val drawRectF = RectF()
     private val scrollBarRectF = RectF()
-    private val fadeTask: FadeTask = FadeTask(context, this)
-    private val startFadeTask: StartFadeTask = StartFadeTask(fadeTask)
+    private val fadeRunnable: FadeRunnable = FadeRunnable(context, this)
+    private val delayFadeRunnable: DelayFadeRunnable = DelayFadeRunnable(this, fadeRunnable)
 
     fun onDraw(canvas: Canvas) {
         val drawRectF = drawRectF.apply {
@@ -103,20 +103,28 @@ internal class ScrollBarHelper(context: Context, private val zoomer: Zoomer) {
 
     fun onMatrixChanged() {
         scrollBarPaint.alpha = scrollBarAlpha
-        if (fadeTask.isRunning) {
-            fadeTask.abort()
+        if (fadeRunnable.isRunning) {
+            fadeRunnable.cancel()
         }
-        view.removeCallbacks(startFadeTask)
-        ViewCompat.postOnAnimationDelayed(view, startFadeTask, 800)
+        delayFadeRunnable.start()
     }
 
-    private class StartFadeTask(val fadeTask: FadeTask) : Runnable {
+    private class DelayFadeRunnable(
+        val scrollBarHelper: ScrollBarHelper,
+        val fadeRunnable: FadeRunnable
+    ) : Runnable {
+
         override fun run() {
-            fadeTask.start()
+            fadeRunnable.start()
+        }
+
+        fun start() {
+            scrollBarHelper.view.removeCallbacks(this)
+            scrollBarHelper.view.postDelayed(this, 800)
         }
     }
 
-    private class FadeTask(context: Context, val scrollBarHelper: ScrollBarHelper) : Runnable {
+    private class FadeRunnable(context: Context, val scrollBarHelper: ScrollBarHelper) : Runnable {
 
         private val scroller: Scroller = Scroller(context, DecelerateInterpolator())
 
@@ -124,17 +132,16 @@ internal class ScrollBarHelper(context: Context, private val zoomer: Zoomer) {
             get() = !scroller.isFinished
 
         fun start() {
-            scroller.startScroll(
-                scrollBarHelper.scrollBarAlpha,
-                0,
-                -scrollBarHelper.scrollBarAlpha,
-                0,
-                300
-            )
-            ViewCompat.postOnAnimation(scrollBarHelper.view, this)
+            cancel()
+
+            val startX = scrollBarHelper.scrollBarAlpha
+            val dx = -startX
+            scroller.startScroll(startX, 0, dx, 0, 300)
+            scrollBarHelper.view.post(this)
         }
 
-        fun abort() {
+        fun cancel() {
+            scrollBarHelper.view.removeCallbacks(this)
             scroller.forceFinished(true)
         }
 
@@ -142,7 +149,7 @@ internal class ScrollBarHelper(context: Context, private val zoomer: Zoomer) {
             if (!scroller.isFinished && scroller.computeScrollOffset()) {
                 scrollBarHelper.scrollBarPaint.alpha = scroller.currX
                 scrollBarHelper.view.invalidate()
-                ViewCompat.postOnAnimationDelayed(scrollBarHelper.view, this, 60)
+                ViewCompat.postOnAnimation(scrollBarHelper.view, this)
             }
         }
     }

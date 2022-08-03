@@ -112,7 +112,7 @@ class Tiles constructor(
         }
 
         val previewSize = zoomer.drawableSize
-        val zooming = zoomer.isZooming
+        val scaling = zoomer.isScaling
         val drawMatrix = tempDrawMatrix.apply {
             zoomer.getDrawMatrix(this)
         }
@@ -128,9 +128,9 @@ class Tiles constructor(
             return
         }
 
-        if (zooming) {
+        if (scaling) {
             logger.d(MODULE) {
-                "refreshTiles. interrupted. zooming. $imageUri"
+                "refreshTiles. interrupted. scaling. $imageUri"
             }
             return
         }

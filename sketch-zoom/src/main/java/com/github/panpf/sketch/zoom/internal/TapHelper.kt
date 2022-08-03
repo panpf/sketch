@@ -54,9 +54,9 @@ internal class TapHelper constructor(
                 }
             }
             if (finalScale > currentScaleFormat) {
-                zoomer.zoom(finalScale, ev.x, ev.y, true)
+                zoomer.scale(finalScale, ev.x, ev.y, true)
             } else {
-                zoomer.zoom(finalScale, true)
+                zoomer.scale(finalScale, true)
             }
         } catch (e: ArrayIndexOutOfBoundsException) {
             // Can sometimes happen when getX() and getY() is called

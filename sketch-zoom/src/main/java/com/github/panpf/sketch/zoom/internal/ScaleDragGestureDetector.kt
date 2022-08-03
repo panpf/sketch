@@ -61,11 +61,11 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
                     detector.scaleFactor.takeIf { !isNaN(it) && !isInfinite(it) } ?: return false
                 if (scaleFactor >= 0) {
                     onGestureListener.onScale(
-                        scaleFactor,
-                        detector.focusX,
-                        detector.focusY,
-                        detector.focusX - lastFocusX,
-                        detector.focusY - lastFocusY
+                        scaleFactor = scaleFactor,
+                        focusX = detector.focusX,
+                        focusY = detector.focusY,
+                        dx = detector.focusX - lastFocusX,
+                        dy = detector.focusY - lastFocusY
                     )
                     lastFocusX = detector.focusX
                     lastFocusY = detector.focusY
