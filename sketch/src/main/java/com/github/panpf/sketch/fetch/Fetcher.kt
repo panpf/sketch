@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.fetch
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.BitmapDecoder
@@ -15,6 +16,7 @@ fun interface Fetcher {
     /**
      * Get the data stream from the uri of [ImageRequest] and wrap it as a [FetchResult] return
      */
+    @WorkerThread
     suspend fun fetch(): FetchResult
 
     /**

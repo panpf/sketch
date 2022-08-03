@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.fetch
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
@@ -32,6 +33,7 @@ open class HttpUriFetcher(
         const val MIME_TYPE_TEXT_PLAIN = "text/plain"
     }
 
+    @WorkerThread
     override suspend fun fetch(): FetchResult {
         requiredWorkThread()
         return lockDownloadCache(sketch, request) { diskCacheHelper ->

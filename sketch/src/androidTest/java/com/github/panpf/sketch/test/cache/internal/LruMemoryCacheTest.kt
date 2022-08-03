@@ -207,16 +207,6 @@ class LruMemoryCacheTest {
     }
 
     @Test
-    fun testEditLock() {
-        LruMemoryCache(10L * 1024 * 1024).apply {
-            Assert.assertNotNull(editLock("image1"))
-            Assert.assertNotNull(editLock("image2"))
-            Assert.assertNotNull(editLock("image3"))
-            Assert.assertNotNull(editLock("image4"))
-        }
-    }
-
-    @Test
     fun testEqualsAndHashCode() {
         val element1 = LruMemoryCache(100)
         val element11 = LruMemoryCache(100)

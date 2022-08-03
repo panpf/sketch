@@ -96,7 +96,9 @@ class EngineRequestInterceptor : RequestInterceptor {
             throw IllegalArgumentException("DownloadRequest only support HTTP and HTTPS uri: ${request.uriString}")
         }
 
-        val fetchResult = fetcher.fetch()
+        val fetchResult = withContext(sketch.decodeTaskDispatcher) {
+            fetcher.fetch()
+        }
         val dataFrom = fetchResult.dataFrom
         return when (val source = fetchResult.dataSource) {
             is ByteArrayDataSource -> DownloadData(source.data, dataFrom)

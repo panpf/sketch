@@ -1171,7 +1171,7 @@ class DisplayRequestExecuteTest {
         request.newDisplayRequest {
             placeholder(colorDrawable)
         }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertNotNull(onStartDrawable)
+        Assert.assertNull(onStartDrawable)
         Assert.assertNotNull(onStartDrawable === colorDrawable)
 
         onStartDrawable = null

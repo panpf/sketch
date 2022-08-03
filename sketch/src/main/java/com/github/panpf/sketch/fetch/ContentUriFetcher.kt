@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.fetch
 
 import android.net.Uri
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.request.ImageRequest
@@ -18,6 +19,7 @@ class ContentUriFetcher(
         const val SCHEME = "content"
     }
 
+    @WorkerThread
     override suspend fun fetch(): FetchResult {
         val mimeType = request.context.contentResolver.getType(contentUri)
         return FetchResult(ContentDataSource(sketch, request, contentUri), mimeType)

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
 import android.net.Uri
 import android.util.TypedValue
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
@@ -77,6 +78,7 @@ class ResourceUriFetcher(
         const val SCHEME = "android.resource"
     }
 
+    @WorkerThread
     override suspend fun fetch(): FetchResult {
         val packageName = contentUri.getQueryParameters("packageName")
             .firstOrNull()

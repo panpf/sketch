@@ -398,7 +398,7 @@ class DownloadRequestExecuteTest {
                     deferred?.join()
                 }
             }
-            Assert.assertNotNull(testTarget.start)
+            Assert.assertNull(testTarget.start)
             Assert.assertNull(testTarget.successBitmap)
             Assert.assertNull(testTarget.exception)
         }
@@ -422,7 +422,7 @@ class DownloadRequestExecuteTest {
                     deferred?.join()
                 }
             }
-            Assert.assertNotNull(testTarget.start)
+            Assert.assertNull(testTarget.start)
             Assert.assertNull(testTarget.successBitmap)
             Assert.assertNull(testTarget.exception)
         }

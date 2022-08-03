@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.fetch
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
@@ -33,6 +34,7 @@ class AppIconUriFetcher(
         const val MIME_TYPE = "application/vnd.android.app-icon"
     }
 
+    @WorkerThread
     override suspend fun fetch(): FetchResult = FetchResult(
         AppIconDataSource(sketch, request, LOCAL, packageName, versionCode),
         MIME_TYPE

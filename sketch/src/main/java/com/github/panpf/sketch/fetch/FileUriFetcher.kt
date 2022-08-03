@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.fetch
 
 import android.webkit.MimeTypeMap
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher.Companion.SCHEME
@@ -30,6 +31,7 @@ class FileUriFetcher(
         const val SCHEME = "file"
     }
 
+    @WorkerThread
     override suspend fun fetch(): FetchResult {
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
         return FetchResult(FileDataSource(sketch, request, file), mimeType)

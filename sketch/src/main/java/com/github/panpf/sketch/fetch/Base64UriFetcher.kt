@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.fetch
 
 import android.util.Base64
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
@@ -31,6 +32,7 @@ class Base64UriFetcher(
         const val BASE64_IDENTIFIER = "base64,"
     }
 
+    @WorkerThread
     override suspend fun fetch(): FetchResult {
         val bytes = Base64.decode(imageDataBase64StringLazy.value, Base64.DEFAULT)
         return FetchResult(ByteArrayDataSource(sketch, request, MEMORY, bytes), mimeType)

@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.fetch
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.AssetUriFetcher.Companion.SCHEME
@@ -24,6 +25,7 @@ class AssetUriFetcher(
         const val SCHEME = "asset"
     }
 
+    @WorkerThread
     override suspend fun fetch(): FetchResult {
         val mimeType = getMimeTypeFromUrl(assetFileName)
         return FetchResult(AssetDataSource(sketch, request, assetFileName), mimeType)

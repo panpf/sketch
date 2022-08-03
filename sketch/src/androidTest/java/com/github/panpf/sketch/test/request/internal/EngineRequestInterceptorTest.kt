@@ -20,6 +20,7 @@ import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -35,7 +36,7 @@ class EngineRequestInterceptorTest {
         }
 
         val executeRequest: (ImageRequest) -> ImageData = { request ->
-            runBlocking {
+            runBlocking(Dispatchers.Main) {
                 RequestInterceptorChain(
                     sketch = sketch,
                     initialRequest = request,
@@ -64,7 +65,7 @@ class EngineRequestInterceptorTest {
             }
         }
         val executeRequest1: (ImageRequest) -> ImageData = { request ->
-            runBlocking {
+            runBlocking(Dispatchers.Main) {
                 RequestInterceptorChain(
                     sketch = sketch1,
                     initialRequest = request,

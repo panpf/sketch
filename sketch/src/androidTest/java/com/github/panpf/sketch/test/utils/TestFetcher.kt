@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.utils
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
@@ -7,6 +8,7 @@ import com.github.panpf.sketch.request.ImageRequest
 
 class TestFetcher : Fetcher {
 
+    @WorkerThread
     override suspend fun fetch(): FetchResult {
         throw UnsupportedOperationException()
     }
