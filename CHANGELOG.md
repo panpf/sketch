@@ -1,3 +1,24 @@
+# v3.0.0-rc02
+
+### sketch
+
+* change: RequestInterceptor is now executed on the main thread and Target.start() is now executed
+  after checking the memory cache
+* change: BitmapPool remove setInBitmap(), setInBitmapForRegion(), free
+* improve: MemoryCache no longer needs edit lock
+
+### sketch-zoom
+
+* fix: Fix the bug that SketchZoomImageView location() is not as expected
+* fix: Fix the bug that the center point pans when SketchZoomImageView zooms with one finger
+  up [#160](https://github.com/panpf/sketch/issues/160)
+* improve: SketchZoomImageView translate image during scale
+* improve: Improve SketchZoomImageView
+
+### sketch-gif-koral
+
+* improve: 'sketch-gif-koral' no longer depends on 'sketch-gif-movie'
+
 # v3.0.0-rc01
 
 ### sketch
