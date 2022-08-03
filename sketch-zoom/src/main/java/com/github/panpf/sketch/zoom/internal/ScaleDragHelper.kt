@@ -277,17 +277,21 @@ internal class ScaleDragHelper constructor(
         }
         val newX = pointF.x
         val newY = pointF.y
-
-        val scale = scale.format(2)
+        var nowScale = scale.format(2)
         val fullZoomScale = zoomer.fullScale.format(2)
-        if (scale == fullZoomScale) {
-            zoom(zoomer.originScale, newX, newY, false)
+        if (nowScale == fullZoomScale) {
+            scale(
+                scale = zoomer.originScale,
+                focalX = zoomer.viewSize.width / 2f,
+                focalY = zoomer.viewSize.height / 2f,
+                animate = false
+            )
         }
 
         val drawRectF = drawRectF.apply { getDrawRect(this) }
-        val currentScale = scale
-        val scaleLocationX = (newX * currentScale).toInt()
-        val scaleLocationY = (newY * currentScale).toInt()
+        nowScale = scale
+        val scaleLocationX = (newX * nowScale).toInt()
+        val scaleLocationY = (newY * nowScale).toInt()
         val scaledLocationX =
             scaleLocationX.coerceAtLeast(0).coerceAtMost(drawRectF.width().toInt())
         val scaledLocationY =
