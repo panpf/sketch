@@ -57,8 +57,8 @@ class ListMenuViewModel(
             if (showLayoutModeMenu) {
                 add(SwitchMenuItemInfo(
                     values = arrayOf(
-                        LayoutMode.GRID,
-                        LayoutMode.STAGGERED_GRID,
+                        LayoutMode.GRID.toString(),
+                        LayoutMode.STAGGERED_GRID.toString(),
                     ),
                     initValue = application1.prefsService.photoListLayoutMode.value,
                     titles = null,
@@ -68,7 +68,7 @@ class ListMenuViewModel(
                     ),
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
                 ) { _, newValue ->
-                    application1.prefsService.photoListLayoutMode.value = newValue.toString()
+                    application1.prefsService.photoListLayoutMode.value = newValue
                     menuList.postValue(menuList.value)
                 })
             }
