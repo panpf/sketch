@@ -42,7 +42,7 @@ class CrossfadeDrawableTest {
 
         CrossfadeDrawable(startDrawable, endDrawable).apply {
             Assert.assertTrue(fitScale)
-            Assert.assertEquals(100, durationMillis)
+            Assert.assertEquals(200, durationMillis)
             Assert.assertTrue(fadeStart)
             Assert.assertFalse(preferExactIntrinsicSize)
         }

@@ -55,7 +55,7 @@ open class CrossfadeDrawable @JvmOverloads constructor(
         private const val STATE_RUNNING = 1
         private const val STATE_DONE = 2
 
-        const val DEFAULT_DURATION = 100
+        const val DEFAULT_DURATION = 200
     }
 
     private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()

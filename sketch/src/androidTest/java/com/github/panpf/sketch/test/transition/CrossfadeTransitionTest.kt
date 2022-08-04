@@ -47,7 +47,7 @@ class CrossfadeTransitionTest {
             transformedList = null
         )
         CrossfadeTransition(imageViewTarget, result).apply {
-            Assert.assertEquals(100, durationMillis)
+            Assert.assertEquals(200, durationMillis)
             Assert.assertEquals(false, preferExactIntrinsicSize)
             Assert.assertEquals(true, fitScale)
         }
@@ -140,7 +140,7 @@ class CrossfadeTransitionTest {
     @Test
     fun testFactoryConstructor() {
         CrossfadeTransition.Factory().apply {
-            Assert.assertEquals(100, durationMillis)
+            Assert.assertEquals(200, durationMillis)
             Assert.assertEquals(false, preferExactIntrinsicSize)
             Assert.assertEquals(false, alwaysUse)
         }
@@ -256,15 +256,15 @@ class CrossfadeTransitionTest {
         val element3 = CrossfadeTransition.Factory(alwaysUse = true)
 
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=100, preferExactIntrinsicSize=false, alwaysUse=false)",
+            "CrossfadeTransition.Factory(durationMillis=200, preferExactIntrinsicSize=false, alwaysUse=false)",
             element1.toString()
         )
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=100, preferExactIntrinsicSize=true, alwaysUse=false)",
+            "CrossfadeTransition.Factory(durationMillis=200, preferExactIntrinsicSize=true, alwaysUse=false)",
             element2.toString()
         )
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=100, preferExactIntrinsicSize=false, alwaysUse=true)",
+            "CrossfadeTransition.Factory(durationMillis=200, preferExactIntrinsicSize=false, alwaysUse=true)",
             element3.toString()
         )
     }
