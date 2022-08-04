@@ -15,7 +15,6 @@ class InsanityTestComposeFragment : ToolbarFragment() {
 
     private val viewModel by viewModels<InsanityTestViewModel>()
 
-    @OptIn(ExperimentalFoundationApi::class)
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         toolbar.title = "Insanity Test On Compose"
         return ComposeView(requireContext()).apply {

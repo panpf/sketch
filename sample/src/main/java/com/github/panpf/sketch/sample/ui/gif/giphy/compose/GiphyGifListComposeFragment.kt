@@ -15,7 +15,6 @@ class GiphyGifListComposeFragment : ToolbarFragment() {
 
     private val viewModel by viewModels<GiphyGifListViewModel>()
 
-    @OptIn(ExperimentalFoundationApi::class)
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         toolbar.title = "GIF On Compose"
         return ComposeView(requireContext()).apply {

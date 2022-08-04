@@ -14,7 +14,6 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
 
     private val viewModel by viewModels<PexelsPhotoListViewModel>()
 
-    @OptIn(ExperimentalFoundationApi::class)
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         toolbar.title = "Photos On Compose"
         return ComposeView(requireContext()).apply {

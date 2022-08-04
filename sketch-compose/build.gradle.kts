@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk = libs.versions.composeCompileSdk.get().toInt()
 
     defaultConfig {
         minSdk = libs.versions.composeMinSdk.get().toInt()
@@ -45,7 +45,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0-alpha03"
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
 }
 

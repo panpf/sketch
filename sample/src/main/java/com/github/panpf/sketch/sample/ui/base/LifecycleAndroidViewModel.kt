@@ -5,10 +5,17 @@ import android.app.Application
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.createViewModelLazy
-import androidx.lifecycle.*
-import java.util.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import java.util.LinkedList
 
-open class LifecycleAndroidViewModel(val application1: Application) : AndroidViewModel(application1), LifecycleOwner {
+open class LifecycleAndroidViewModel(val application1: Application) :
+    AndroidViewModel(application1), LifecycleOwner {
 
     private val clearedListenerList: MutableList<OnClearedListener> = LinkedList()
 
@@ -52,8 +59,12 @@ open class LifecycleAndroidViewModel(val application1: Application) : AndroidVie
 
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.parentViewModels(
-        noinline ownerProducer: () -> ViewModelStoreOwner = {
-            this.parentFragment ?: requireActivity()
-        },
-        noinline factoryProducer: (() -> ViewModelProvider.Factory)? = null
-): Lazy<VM> = createViewModelLazy(VM::class, { ownerProducer().viewModelStore }, factoryProducer)
+    noinline ownerProducer: () -> ViewModelStoreOwner = {
+        this.parentFragment ?: requireActivity()
+    },
+    noinline factoryProducer: (() -> ViewModelProvider.Factory)? = null
+): Lazy<VM> = createViewModelLazy(
+    viewModelClass = VM::class,
+    storeProducer = { ownerProducer().viewModelStore },
+    factoryProducer = factoryProducer
+)

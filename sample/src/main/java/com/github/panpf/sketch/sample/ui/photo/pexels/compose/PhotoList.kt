@@ -1,9 +1,8 @@
 package com.github.panpf.sketch.sample.ui.photo.pexels.compose
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.GridCells.Fixed
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells.Fixed
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -24,20 +23,18 @@ import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-@ExperimentalFoundationApi
 fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Boolean = false) {
     val items = photoPagingFlow.collectAsLazyPagingItems()
     LazyVerticalGrid(Fixed(3)) {
-        itemsIndexed(items) { index, photo ->
-            photo?.let { PhotoContent(index, it, disabledCache) }
+        itemsIndexed(items) { _, photo ->
+            photo?.let { PhotoContent(it, disabledCache) }
         }
     }
 }
 
 @Composable
-fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
+fun PhotoContent(photo: Photo, disabledCache: Boolean = false) {
     val itemSizeDp = LocalContext.current.getScreenWidth().px2dp / 3
-    val resources = LocalContext.current.resources
     AsyncImage(
         imageUri = photo.firstThumbnailUrl,
         modifier = Modifier.size(itemSizeDp.dp, itemSizeDp.dp),

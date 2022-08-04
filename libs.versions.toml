@@ -5,40 +5,41 @@ minSdk = "16"
 composeMinSdk = "21"
 targetSdk = "28"
 compileSdk = "31"
+composeCompileSdk = "32"
 
 # app version
 versionCode = "3012"
 versionName = "3.0.0-rc02"
 
 # android
-android-buildtools = "7.2.1"
+android-buildtools = "7.2.2"
 
 # maven
 maven-publishpluginx = "0.18.0"
 
 # kotlin
-kotlin = "1.6.10"
-kotlinx-coroutines = "1.6.1"
-kotlinx-serialization-json = "1.3.1"
+kotlin = "1.7.0"
+kotlinx-coroutines = "1.6.4"
+kotlinx-serialization-json = "1.3.3"
 
 # androidx
-androidx-activity = "1.4.0"
-androidx-appcompat = "1.3.1"
-androidx-annotation = "1.2.0"
-androidx-constraintlayout = "2.1.0"
-androidx-core = "1.6.0"
+androidx-activity = "1.5.1"
+androidx-annotation = "1.4.0"
+androidx-appcompat = "1.4.2"
+androidx-compose = "1.2.0"
+androidx-compose-compiler = "1.2.0"
+androidx-constraintlayout = "2.1.4"
+androidx-constraintlayout-compose = "1.0.1"
+androidx-core = "1.8.0"
 androidx-exifinterface = "1.3.3"
-androidx-fragment = "1.4.1"
-androidx-lifecycle = "2.4.0"
-androidx-lifecycle-viewmodel-compose = "1.0.0-alpha07"
+androidx-fragment = "1.5.1"
+androidx-lifecycle = "2.5.1"
 androidx-multidex = "2.0.1"
-androidx-navigation = "2.4.2"
-androidx-paging = "3.1.0"
+androidx-navigation = "2.5.1"
+androidx-paging = "3.1.1"
 androidx-paging-compose = "1.0.0-alpha14"
 androidx-recyclerview = "1.2.1"
 androidx-swiperefreshlayout = "1.1.0"
-androidx-compose = "1.1.1"
-androidx-activity-compose = "1.4.0"
 androidx-test = "1.4.0"
 androidx-test-ext-junit = "1.1.3"
 junit = "4.13.2"
@@ -81,6 +82,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 # androidx
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat" }
@@ -90,7 +92,7 @@ androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", vers
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-viewmodel-compose" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidx-multidex" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
@@ -104,7 +106,6 @@ androidx-compose-foundation = { module = "androidx.compose.foundation:foundation
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
