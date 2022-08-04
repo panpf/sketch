@@ -10,6 +10,7 @@ import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.Drawable.Callback
 import android.os.Build.VERSION
 import android.os.Handler
 import android.os.Looper
@@ -47,7 +48,7 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     val durationMillis: Int = DEFAULT_DURATION,
     val fadeStart: Boolean = true,
     val preferExactIntrinsicSize: Boolean = false,
-) : Drawable(), Animatable2Compat {
+) : Drawable(), Animatable2Compat, Callback {
 
     companion object {
         private const val STATE_START = 0
@@ -76,16 +77,8 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     init {
         require(durationMillis > 0) { "durationMillis must be > 0." }
 
-        val callback = object : Callback {
-            override fun unscheduleDrawable(who: Drawable, what: Runnable) = unscheduleSelf(what)
-
-            override fun invalidateDrawable(who: Drawable) = invalidateSelf()
-
-            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) =
-                scheduleSelf(what, `when`)
-        }
-        this.start?.callback = callback
-        this.end?.callback = callback
+        this.start?.callback = this
+        this.end?.callback = this
     }
 
     override fun draw(canvas: Canvas) {
@@ -318,6 +311,18 @@ open class CrossfadeDrawable @JvmOverloads constructor(
         } else {
             this
         }
+    }
+
+    override fun invalidateDrawable(who: Drawable) {
+        invalidateSelf()
+    }
+
+    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+        scheduleSelf(what, `when`)
+    }
+
+    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+        unscheduleSelf(what)
     }
 }
 

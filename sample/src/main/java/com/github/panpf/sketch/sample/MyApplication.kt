@@ -26,6 +26,7 @@ import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameBitmapDecoder
 import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
+import com.github.panpf.sketch.decode.GifMovieDrawableDecoder
 import com.github.panpf.sketch.decode.HeifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.decode.VideoFrameBitmapDecoder
@@ -69,7 +70,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
             addDrawableDecoder(
                 when {
                     VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
-//                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()  // todo not very useful
+                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
                     else -> GifDrawableDrawableDecoder.Factory()
                 }
             )

@@ -4,6 +4,7 @@ import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.getCrossfadeEndDrawable
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.util.asOrNull
 
 /**
  * A [Transition] that crossfades from the current drawable to a new one.
@@ -59,18 +60,18 @@ class CrossfadeTransition @JvmOverloads constructor(
             result: DisplayResult,
             fitScale: Boolean
         ): Transition? {
-            // Don't animate if the request was fulfilled by the memory cache.
-            if (result is DisplayResult.Success && !alwaysUse && result.dataFrom == MEMORY_CACHE) {
-                return null
+            val fromMemoryCache = result.asOrNull<DisplayResult.Success>()?.dataFrom == MEMORY_CACHE
+            return if (alwaysUse || !fromMemoryCache) {
+                CrossfadeTransition(
+                    target = target,
+                    result = result,
+                    durationMillis = durationMillis,
+                    preferExactIntrinsicSize = preferExactIntrinsicSize,
+                    fitScale = fitScale
+                )
+            } else {
+                null
             }
-
-            return CrossfadeTransition(
-                target,
-                result,
-                durationMillis,
-                preferExactIntrinsicSize,
-                fitScale
-            )
         }
 
         override fun equals(other: Any?): Boolean {

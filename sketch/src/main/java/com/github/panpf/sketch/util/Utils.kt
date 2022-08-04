@@ -3,7 +3,6 @@ package com.github.panpf.sketch.util
 import android.app.ActivityManager
 import android.content.ComponentCallbacks2
 import android.content.Context
-import android.content.ContextWrapper
 import android.os.Looper
 import android.os.Process
 import android.webkit.MimeTypeMap

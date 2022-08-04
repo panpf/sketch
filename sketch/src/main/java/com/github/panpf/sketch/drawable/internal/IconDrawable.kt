@@ -8,6 +8,7 @@ import android.graphics.PorterDuff.Mode
 import android.graphics.Rect
 import android.graphics.Region
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.Drawable.Callback
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import androidx.core.graphics.drawable.DrawableCompat
@@ -15,24 +16,11 @@ import androidx.core.graphics.drawable.DrawableCompat
 class IconDrawable constructor(
     val icon: Drawable,
     val bg: Drawable? = null,
-) : Drawable() {
+) : Drawable(), Callback {
 
     init {
-        val callback = object : Callback {
-            override fun invalidateDrawable(who: Drawable) {
-                invalidateSelf()
-            }
-
-            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-                scheduleSelf(what, `when`)
-            }
-
-            override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-                unscheduleSelf(what)
-            }
-        }
-        bg?.callback = callback
-        icon.callback = callback
+        bg?.callback = this
+        icon.callback = this
     }
 
     override fun mutate(): IconDrawable {
@@ -189,6 +177,18 @@ class IconDrawable constructor(
     override fun setHotspotBounds(left: Int, top: Int, right: Int, bottom: Int) {
         bg?.let { DrawableCompat.setHotspotBounds(it, left, top, right, bottom) }
         DrawableCompat.setHotspotBounds(icon, left, top, right, bottom)
+    }
+
+    override fun invalidateDrawable(who: Drawable) {
+        invalidateSelf()
+    }
+
+    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+        scheduleSelf(what, `when`)
+    }
+
+    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+        unscheduleSelf(what)
     }
 }
 

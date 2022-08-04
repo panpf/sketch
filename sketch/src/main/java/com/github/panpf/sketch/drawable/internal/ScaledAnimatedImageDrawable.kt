@@ -10,6 +10,7 @@ import android.graphics.drawable.Animatable2
 import android.graphics.drawable.Animatable2.AnimationCallback
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.Drawable.Callback
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
@@ -28,21 +29,14 @@ import kotlin.math.roundToInt
 class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     val child: AnimatedImageDrawable,
     val fitScale: Boolean = true
-) : Drawable(), Animatable2 {
+) : Drawable(), Animatable2, Callback {
 
     private var childDx = 0f
     private var childDy = 0f
     private var childScale = 1f
 
     init {
-        child.callback = object : Callback {
-            override fun unscheduleDrawable(who: Drawable, what: Runnable) = unscheduleSelf(what)
-
-            override fun invalidateDrawable(who: Drawable) = invalidateSelf()
-
-            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) =
-                scheduleSelf(what, `when`)
-        }
+        child.callback = this
     }
 
     override fun draw(canvas: Canvas) {
@@ -143,5 +137,17 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
         } else {
             this
         }
+    }
+
+    override fun invalidateDrawable(who: Drawable) {
+        invalidateSelf()
+    }
+
+    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+        scheduleSelf(what, `when`)
+    }
+
+    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+        unscheduleSelf(what)
     }
 }

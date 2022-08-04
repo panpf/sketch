@@ -80,7 +80,7 @@ val ViewAbilityContainer.isShowProgressIndicator: Boolean
  */
 class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbility,
     LayoutObserver, RequestListenerObserver, RequestProgressListenerObserver,
-    DrawObserver, VisibilityChangedObserver, AttachObserver {
+    DrawObserver, VisibilityChangedObserver, AttachObserver, Callback {
 
     private var lifecycle: Lifecycle? = null
         set(value) {
@@ -106,27 +106,10 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
         }
     }
 
-    // It must be defined here because Drawable holds the callback with a weak reference,
-    // so something other than Drawable needs to hold the callback
-    private val drawableCallback = object : Callback {
-        override fun invalidateDrawable(who: Drawable) {
-            host?.view?.invalidate()
-        }
-
-        override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-            val delay = `when` - SystemClock.uptimeMillis()
-            host?.view?.postDelayed(what, delay)
-        }
-
-        override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-            host?.view?.removeCallbacks(what)
-        }
-    }
-
     init {
         progressDrawable.apply {
             setVisible(false, false)
-            callback = drawableCallback
+            callback = this@ProgressIndicatorAbility
             onProgressEnd = {
                 requestRunning = false
                 resetDrawableVisible()
@@ -250,5 +233,18 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
         if (progressDrawable is Animatable) {
             progressDrawable.stop()
         }
+    }
+
+    override fun invalidateDrawable(who: Drawable) {
+        host?.view?.invalidate()
+    }
+
+    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+        val delay = `when` - SystemClock.uptimeMillis()
+        host?.view?.postDelayed(what, delay)
+    }
+
+    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+        host?.view?.removeCallbacks(what)
     }
 }
