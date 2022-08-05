@@ -11,7 +11,6 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
  * So it can only be implemented with Activity.
  */
 class ImageViewerActivity : BaseBindingActivity<FragmentContainerActivityBinding>() {
-    // todo Transparent background invalid after upgrading activity library
     private val args by navArgs<ImageViewerActivityArgs>()
 
     override fun onCreate(binding: FragmentContainerActivityBinding, savedInstanceState: Bundle?) {
