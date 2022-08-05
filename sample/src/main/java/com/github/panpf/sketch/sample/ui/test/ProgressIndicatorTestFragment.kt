@@ -31,6 +31,7 @@ import com.github.panpf.sketch.viewability.showRingProgressIndicator
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class ProgressIndicatorTestFragment :
     ToolbarBindingFragment<ProgressIndicatorTestFragmentBinding>() {
@@ -66,8 +67,8 @@ class ProgressIndicatorTestFragment :
             binding.testIndicatorTestImage2.progressIndicatorAbility.onRequestStart(request)
             binding.testIndicatorTestImage3.progressIndicatorAbility.onRequestStart(request)
             while (progress <= 100) {
-                delay(1000)
-                progress += 10
+                delay(Random.nextLong(500, 2000))
+                progress += 20
                 binding.testIndicatorTestImage1.progressIndicatorAbility
                     .onUpdateRequestProgress(request, 100, progress)
                 binding.testIndicatorTestImage2.progressIndicatorAbility

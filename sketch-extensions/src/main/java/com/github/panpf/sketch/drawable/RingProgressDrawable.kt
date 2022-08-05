@@ -29,6 +29,7 @@ import android.graphics.RectF
 import android.graphics.drawable.Animatable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.util.Log
 import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorInt
 import androidx.core.animation.addListener
@@ -38,7 +39,6 @@ import com.github.panpf.sketch.util.format
 
 /**
  * Ring Progress Drawable
- * todo 改进效果
  */
 class RingProgressDrawable(
     private val size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
@@ -53,7 +53,7 @@ class RingProgressDrawable(
         style = STROKE
     }
     private var helper: Helper? = null
-//    private var pendingProgress: Float = 0f
+    private var pendingProgress: Float = 0f
 
     private var _progress: Float = -1f
         set(value) {
@@ -94,47 +94,42 @@ class RingProgressDrawable(
             helper = null
             _progress = newProgress
         } else {
-            if (oldHelper is ProgressHelper) {
-                oldHelper.updateProgress(newProgress)
-            } else {
-                helper = ProgressHelper(this).apply {
-                    updateProgress(newProgress)
+            when {
+                oldProgress == 0f && oldHelper is IndeterminateHelper -> {
+                    oldHelper.stop()
+                    pendingProgress = newProgress
+                    val startProgress: (animator: Animator) -> Unit = {
+                        helper = ProgressHelper(this).apply {
+                            updateProgress(pendingProgress)
+                        }
+                        helper?.start()
+                    }
+                    helper = TransitionHelper(
+                        drawable = this,
+                        initStartAngle = oldHelper.startAngle,
+                        onEnd = startProgress
+                    )
+                    helper?.start()
                 }
-                helper?.start()
+                oldProgress == 0f && oldHelper is TransitionHelper -> {
+                    pendingProgress = newProgress
+                }
+                oldProgress == 0f && oldHelper is ProgressHelper -> {
+                    oldHelper.updateProgress(newProgress)
+                }
+                oldProgress == 0f -> {
+                    helper = ProgressHelper(this).apply {
+                        updateProgress(newProgress)
+                    }
+                    helper?.start()
+                }
+                oldHelper is ProgressHelper -> {
+                    oldHelper.updateProgress(newProgress)
+                }
+                else -> {
+                    throw IllegalStateException("There was an error")
+                }
             }
-//            when {
-//                oldProgress == 0f && oldHelper is IndeterminateHelper -> {
-//                    oldHelper.stop()
-//                    pendingProgress = newProgress
-//                    helper = TransitionHelper(this, oldHelper.startAngle, oldHelper.rotation) {
-////                        helper = null
-////                        progress = pendingProgress
-//                        helper = ProgressHelper(this).apply {
-//                            updateProgress(newProgress)
-//                        }
-//                        helper?.start()
-//                    }
-//                    helper?.start()
-//                }
-//                oldProgress == 0f && oldHelper is TransitionHelper -> {
-//                    pendingProgress = newProgress
-//                }
-//                oldProgress == 0f && oldHelper is ProgressHelper -> {
-//                    oldHelper.updateProgress(newProgress)
-//                }
-//                oldProgress == 0f -> {
-//                    helper = ProgressHelper(this).apply {
-//                        updateProgress(newProgress)
-//                    }
-//                    helper?.start()
-//                }
-//                oldHelper is ProgressHelper -> {
-//                    oldHelper.updateProgress(newProgress)
-//                }
-//                else -> {
-//                    throw IllegalStateException("There was an error")
-//                }
-//            }
         }
     }
 
@@ -174,6 +169,8 @@ class RingProgressDrawable(
         helper?.setColorFilter(colorFilter)
     }
 
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     override fun start() {
@@ -231,11 +228,8 @@ class RingProgressDrawable(
                 field = value
                 drawable.invalidateSelf()
             }
-        var rotation = 0f
-            private set
 
         override fun draw(canvas: Canvas, cx: Float, cy: Float, radius: Float) {
-            canvas.rotate(rotation, cx, cy)
             oval.set(cx - radius, cy - radius, cx + radius, cy + radius)
             canvas.drawArc(oval, startAngle, 100f, false, paint)
         }
@@ -268,7 +262,7 @@ class RingProgressDrawable(
 
         private fun createAnimator(): Animator {
             val animator = ValueAnimator.ofFloat(0f, 1f).apply {
-                duration = 2000
+                duration = 1500
                 interpolator = LinearInterpolator()
                 repeatMode = ValueAnimator.RESTART
                 repeatCount = ValueAnimator.INFINITE
@@ -286,9 +280,11 @@ class RingProgressDrawable(
                     startAngle =
                         ((interpolator.getInterpolation(value) * 360f)).format(2)
                     val rotationDegreesOfTurns = 360f / TURNS_COUNT
-                    rotation =
+                    val rotation =
                         (((currentRepeatCount * rotationDegreesOfTurns) + (value * rotationDegreesOfTurns)) % 360f)
                             .format(2)
+                    startAngle += rotation
+                    startAngle %= 360
                     lastValue = value
                 } else {
                     it?.cancel()
@@ -302,89 +298,83 @@ class RingProgressDrawable(
         }
     }
 
-//    private class TransitionHelper(
-//        val drawable: RingProgressDrawable,
-//        val initStartAngle: Float,
-//        val initRotation: Float,
-//        val onEnd: (animator: Animator) -> Unit
-//    ) : Helper {
-//        private val oval = RectF()
-//        private val paint = Paint().apply {
-//            isAntiAlias = true
-//            style = STROKE
-//            strokeWidth = drawable.ringWidth
-//            color = drawable.ringColor
-//            strokeCap = ROUND
-//            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-//                alpha = drawable.alpha
-//            }
-//            if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-//                colorFilter = drawable.colorFilter
-//            }
-//        }
-//        private var startAngle: Float = 0f
-//            set(value) {
-//                field = value
-//                drawable.invalidateSelf()
-//            }
-//        private var sweepAngle: Float = 0f
-//        private var rotation = 0f
-//        private var animator: Animator? = null
-//
-//        override fun draw(canvas: Canvas, cx: Float, cy: Float, radius: Float) {
-//            canvas.rotate(rotation, cx, cy)
-//            oval.set(cx - radius, cy - radius, cx + radius, cy + radius)
-//            canvas.drawArc(oval, startAngle, sweepAngle, false, paint)
-//        }
-//
-//        override fun isRunning(): Boolean = animator?.isRunning == true
-//
-//        override fun start() {
-//            val angleDistance = if (initStartAngle > 270f) {
-//                360f - (initStartAngle - 270f)
-//            } else {
-//                270f - initStartAngle
-//            }
-//            val rotationDistance = 360 - initRotation
-//            animator?.cancel()
-//            animator = ValueAnimator.ofFloat(0f, 1f).apply {
-//                addUpdateListener {
-//                    if (drawable.isActive()) {
-//                        val value = animatedValue as Float
-//                        rotation = initRotation + (value * rotationDistance)
-//                        sweepAngle = ((1f- value) * 100f)
-//                        startAngle = initStartAngle + (value * angleDistance)
-//                    } else {
-//                        it.cancel()
-//                    }
-//                }
-//                addListener(onEnd = this@TransitionHelper.onEnd)
-//                duration = 300
-//                start()
-//            }
-//        }
-//
-//        override fun stop() {
-//            animator?.end()
-//        }
-//
-//        override fun setAlpha(alpha: Int) {
-//
-//        }
-//
-//        override fun setColorFilter(colorFilter: ColorFilter?) {
-//        }
-//    }
+    private class TransitionHelper(
+        val drawable: RingProgressDrawable,
+        val initStartAngle: Float,
+        val onEnd: (animator: Animator) -> Unit
+    ) : Helper {
+        private val oval = RectF()
+        private val paint = Paint().apply {
+            isAntiAlias = true
+            style = STROKE
+            strokeWidth = drawable.ringWidth
+            color = drawable.ringColor
+            strokeCap = ROUND
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                alpha = drawable.alpha
+            }
+            if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+                colorFilter = drawable.colorFilter
+            }
+        }
+        private var startAngle: Float = 0f
+            set(value) {
+                field = value
+                drawable.invalidateSelf()
+            }
+        private var sweepAngle: Float = 0f
+        private var animator: Animator? = null
+
+        override fun draw(canvas: Canvas, cx: Float, cy: Float, radius: Float) {
+            Log.d(
+                "RingProgressDrawable",
+                "TransitionHelper. draw. startAngle=$startAngle, sweepAngle=$sweepAngle"
+            )
+            oval.set(cx - radius, cy - radius, cx + radius, cy + radius)
+            canvas.drawArc(oval, startAngle, sweepAngle, false, paint)
+        }
+
+        override fun isRunning(): Boolean = animator?.isRunning == true
+
+        override fun start() {
+            val angleDistance = if (initStartAngle > 270f) {
+                360f - (initStartAngle - 270f)
+            } else {
+                270f - initStartAngle
+            }
+            animator?.cancel()
+            animator = ValueAnimator.ofFloat(0f, 1f).apply {
+                addUpdateListener {
+                    if (drawable.isActive()) {
+                        val value = animatedValue as Float
+                        startAngle = initStartAngle + (value * angleDistance)
+                        startAngle %= 360
+                        sweepAngle = ((1f - value) * 100f)
+                    } else {
+                        it.cancel()
+                    }
+                }
+                addListener(onEnd = this@TransitionHelper.onEnd)
+                duration = if (angleDistance >= 180) 600 else 300
+                start()
+            }
+        }
+
+        override fun stop() {
+            animator?.end()
+        }
+
+        override fun setAlpha(alpha: Int) {
+
+        }
+
+        override fun setColorFilter(colorFilter: ColorFilter?) {
+        }
+    }
 
     private class ProgressHelper(val drawable: RingProgressDrawable) : Helper {
-        //        private var bufferedProgress: Float = 0f
-//            set(value) {
-//                field = value
-//                drawable.invalidateSelf()
-//            }
         private var progressAnimator: ValueAnimator? = null
 
-        //        private var bufferedProgressAnimator: ValueAnimator? = null
         private val progressPaint = Paint().apply {
             isAntiAlias = true
             style = STROKE
@@ -398,31 +388,12 @@ class RingProgressDrawable(
                 colorFilter = drawable.colorFilter
             }
         }
-
-        //        private val bufferedProgressPaint = Paint().apply {
-//            isAntiAlias = true
-//            style = STROKE
-//            strokeWidth = drawable.ringWidth
-//            color = ColorUtils.setAlphaComponent(drawable.ringColor, 180)
-//            strokeCap = ROUND
-//        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-//            alpha = drawable.alpha
-//        }
-//        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-//            colorFilter = drawable.colorFilter
-//        }
-//        }
         private val progressOval = RectF()
 
         override fun draw(canvas: Canvas, cx: Float, cy: Float, radius: Float) {
-            // _progress
             progressOval.set(cx - radius, cy - radius, cx + radius, cy + radius)
             val sweepAngle = drawable._progress.coerceAtLeast(0.01f) * 360f
             canvas.drawArc(progressOval, 270f, sweepAngle, false, progressPaint)
-
-//         buffered _progress
-//        val bufferedProgressSweepAngle = bufferedProgress.coerceAtLeast(0.01f) * 360f
-//        canvas.drawArc(progressOval, 270f, bufferedProgressSweepAngle, false, bufferedProgressPaint)
         }
 
         fun updateProgress(newProgress: Float) {
@@ -443,21 +414,6 @@ class RingProgressDrawable(
         override fun isRunning(): Boolean = progressAnimator?.isRunning == true
 
         override fun start() {
-
-            //        bufferedProgressAnimator?.cancel()
-            //        bufferedProgressAnimator = ValueAnimator.ofFloat(_progress, 1f).apply {
-            //            addUpdateListener {
-            //                bufferedProgress = animatedValue as Float
-            //        if (callback == null) {
-            //            bufferedProgressAnimator?.cancel()
-            //        }
-            //            }
-            //            duration = 2000
-            //            interpolator = AccelerateDecelerateInterpolator()
-            //            repeatMode = ValueAnimator.RESTART
-            //            repeatCount = ValueAnimator.INFINITE
-            //        }
-            //        bufferedProgressAnimator?.start()
         }
 
         override fun stop() {
@@ -466,12 +422,10 @@ class RingProgressDrawable(
 
         override fun setAlpha(alpha: Int) {
             progressPaint.alpha = alpha
-//            bufferedProgressPaint.alpha = alpha
         }
 
         override fun setColorFilter(colorFilter: ColorFilter?) {
             progressPaint.colorFilter = colorFilter
-//            bufferedProgressPaint.colorFilter = colorFilter
         }
     }
 }
