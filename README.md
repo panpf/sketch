@@ -18,7 +18,7 @@ Compose 等功能
     * sketch 最低支持 API 16，而 [coil] 最低仅支持 API 21
     * sketch 支持 bitmap 复用，而 [coil] 不支持
     * sketch 支持更加精细化的调整图片大小
-    * sketch 提供了清晰明了的显示、加载、下载请求
+    * sketch 明确区分显示、加载、下载请求
     * sketch 提供了图片缩放显示组件并且支持超大图采样
 
 ## 简介
