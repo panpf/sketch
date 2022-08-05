@@ -12,7 +12,7 @@ Sketch 的 [BitmapPool] 组件为复用 Bitmap 功能提供了 Bitmap 池服务�
 
 ### 禁用
 
-Sketch 默认开启了复用 Bitmap 功能，你可以通过 [ImageRequest] 或 [ImageOptions] 的 disallowReuseBitmap 属性控制禁用:
+Sketch 默认开启了复用 Bitmap 功能，你可以通过 [ImageRequest] 或 [ImageOptions] 的 disallowReuseBitmap 函数控制它:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {

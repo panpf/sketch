@@ -432,7 +432,7 @@ other:
 * change: 包名改为 `com.github.panpf.sketch` 因此与 2.\* 版本不会冲突
 * change: 基于 kotlin 协程重写，API、功能实现全部改变，当一个新的库用就行
 * improve: 不再要求必须使用 SketchImageView，任何 ImageView 及其子类都可以，甚至结合自定义 Target 可以支持任意 View
-* improve: Zoom 模块的分块显示超大图功能重构并且支持多线程，因此速度更快更高效
+* improve: Zoom 模块的超大图采样功能重构并且支持多线程，因此速度更快更高效
 * new: 新增支持 SVG
 * new: 新增支持 Jetpack Compose
 * new: 支持拦截请求和图片解码

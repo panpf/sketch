@@ -6,21 +6,26 @@
 [![version_icon]][version_link]
 ![QQ Group][qq_group_image]
 
-Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 GIF、SVG，手势缩放、分块显示超大图片、ExifInterface、视频缩略图、Jetpack
+Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 GIF、SVG，手势缩放、超大图采样、ExifInterface、视频缩略图、Jetpack
 Compose 等功能
 
 ## 关于 3.0 版本
 
 * maven groupId 改为 `io.github.panpf.sketch3`，因此 2.\* 版本不会提示升级
 * 包名改为 `com.github.panpf.sketch` 因此与 2.\* 版本不会冲突
-* 基于 kotlin 协程重写，API、功能实现全部改变，当一个新的库用就行
-* 参考 [coil] 2.0.0-alpha05 版本并结合 sketch 原有功能实现，[coil] 最低支持 API 21，而 sketch 最低支持 API 16
+* 基于 kotlin 协程重写，API、功能实现全部重构，当一个新的库用
+* 参考 [coil] 2.0.0-alpha05 版本并结合 sketch 原有功能实现，对比 [coil] 有以下区别：
+    * sketch 最低支持 API 16，而 [coil] 最低仅支持 API 21
+    * sketch 支持 bitmap 复用，而 [coil] 不支持
+    * sketch 支持更加精细化的调整图片大小
+    * sketch 提供了清晰明了的显示、加载、下载请求
+    * sketch 提供了图片缩放显示组件并且支持超大图采样
 
 ## 简介
 
 * 支持 http、asset、content、android.resource 等多种 URI
 * 支持播放 gif、webp、heif 等动图
-* 支持手势缩放及分块显示超大图片
+* 支持手势缩放及超大图采样
 * 支持下载、转换结果、内存三级缓存
 * 支持通过 Exif 纠正图片方向
 * 支持 Base64、视频帧、SVG 图片
@@ -71,7 +76,7 @@ dependencies {
     // 通过 wseemann 的 FFmpegMediaMetadataRetriever 库实现读取视频帧
     implementation("io.github.panpf.sketch3:sketch-video-ffmpeg:${LAST_VERSION}")
 
-    // 支持手势缩放以及分块显示超大图片
+    // 支持手势缩放以及超大图采样
     implementation("io.github.panpf.sketch3:sketch-zoom:${LAST_VERSION}")
 }
 ```
@@ -161,7 +166,7 @@ AsyncImage(
 特色功能：
 
 * [SketchImageView：通过 XML 属性配置请求][sketch_image_view]
-* [SketchZoomImageView：手势缩放及分块显示超大图][zoom]
+* [SketchZoomImageView：手势缩放及超大图采样][zoom]
 * [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
 * [显示下载进度][show_download_progress]
 * [显示图片类型角标][show_image_type]

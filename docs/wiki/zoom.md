@@ -2,7 +2,7 @@
 
 `需要导入 sketch-zoom 模块`
 
-Sketch 的 [SketchZoomImageView] 提供了手势缩放以及分块显示超大图功能，手势缩放功能参考 [PhotoView] 实现
+Sketch 的 [SketchZoomImageView] 提供了手势缩放以及超大图采样功能，手势缩放功能参考 [PhotoView] 实现
 
 ## 对比 PhotoView
 
@@ -24,7 +24,7 @@ sketchZoomImageView.displayImage("https://www.sample.com/image.jpg")
 
 > 注意：
 > * 缩放功能支持任意来源的 Drawable
-> * 分块显示超大图功能仅支持来自 Sketch 的 Drawable
+> * 超大图采样功能仅支持来自 Sketch 的 Drawable
 
 ## 缩放
 
@@ -172,13 +172,13 @@ class ImageDetailActivity : AppCompatActivity() {
 }
 ```
 
-## 分块显示超大图
+## 超大图采样
 
 超大图片通常尺寸巨大，想要完整读取到内存肯定会让 App 因内存不足而崩掉
 
-[SketchZoomImageView] 通过 BitmapRegionDecoder 支持了分块显示超大图的功能，避免 App 崩溃
+[SketchZoomImageView] 通过 BitmapRegionDecoder 支持了超大图采样的功能，避免 App 崩溃
 
-什么情况下会开启分块显示超大图功能？
+什么情况下会开启超大图采样功能？
 
 1. 图片是 BitmapRegionDecoder支持的类型
 2. Bitmap 尺寸比原始图片小
@@ -186,8 +186,8 @@ class ImageDetailActivity : AppCompatActivity() {
 
 ### Lifecycle
 
-[SketchZoomImageView] 能够监听 Lifecycle 的状态，在 pause 状态时暂停分块显示超大图并释放所有碎片的 Bitmap，在 resume
-状态时恢复分块显示超大图并重新加载碎片，这样能够在 Fragment 或 Activity 切换到后台或不显示时主动释放内存
+[SketchZoomImageView] 能够监听 Lifecycle 的状态，在 pause 状态时暂停超大图采样并释放所有碎片的 Bitmap，在 resume
+状态时恢复超大图采样并重新加载碎片，这样能够在 Fragment 或 Activity 切换到后台或不显示时主动释放内存
 
 [SketchZoomImageView] 会从 [DisplayRequest] 获取 Lifecycle，[DisplayRequest] 优先从 [SketchZoomImageView]
 .context 上获取 Lifecycle，这样通常获取到的是 Activity 的 Lifecycle，一般情况下是够用的
@@ -208,7 +208,7 @@ class MyFragment : Fragment() {
 }
 ```
 
-### 分块显示监听
+### 超大图采样监听
 
 ```kotlin
 // 监听碎片变化
