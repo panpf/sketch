@@ -8,9 +8,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:largeHeap="true"
         android:networkSecurityConfig="@xml/network_security_config"
-        tools:ignore="GoogleAppIndexingWarning"
-        android:largeHeap="true">
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".utils.TestActivity" />
         <activity android:name=".ImageViewExtensionsTest$TestActivity" />
     </application>

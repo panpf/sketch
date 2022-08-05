@@ -19,4 +19,4 @@
     app:sketch_resizeWidth="354px"
     app:sketch_resultCachePolicy="readOnly"
     app:sketch_transformation="roundedCorners"
-    app:sketch_transformation_roundedCorners_radius="200px"/>
+    app:sketch_transformation_roundedCorners_radius="200px" />

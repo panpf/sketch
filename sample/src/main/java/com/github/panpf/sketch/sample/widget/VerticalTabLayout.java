@@ -26,11 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -47,6 +42,11 @@ import androidx.viewpager.widget.ViewPager;
 import com.github.panpf.sketch.sample.R;
 import com.google.android.material.tabs.TabLayout;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * 垂直布局的TabLayout
  * 大部分代码从{@link TabLayout}当中拷贝出来，并结合垂直布局的特性进行改造
@@ -55,36 +55,14 @@ import com.google.android.material.tabs.TabLayout;
  */
 public class VerticalTabLayout extends ScrollView {
 
-    public interface OnTabSelectedListener {
-
-        void onTabSelected(Tab tab);
-
-        void onTabUnselected(Tab tab);
-
-        void onTabReselected(Tab tab);
-    }
-
-    public interface OnCustomTabViewRenderListener {
-        /**
-         * 当需要tab的item需要自定义view的时候，通过这个接口方法通知视图渲染
-         *
-         * @param tab
-         */
-        void onRender(Tab tab);
-    }
-
-    /**
-     * 绑定viewpager的时候，构造tabItem的构造器
-     */
-    public interface ViewPagerTabItemCreator {
-        Tab create(int position);
-    }
-
-
     private static final int DEFAULT_GAP_TEXT_ICON = 8; // dps
     private static final int INDICATOR_GRAVITY_LEFT = 100;
     private static final int INDICATOR_GRAVITY_RIGHT = 101;
     private static final int INDICATOR_GRAVITY_FILL = 102;
+    private static final Pools.Pool<Tab> sTabPool = new Pools.SynchronizedPool<>(16);
+    public static int TAB_MODE_FIXED = 10;
+    public static int TAB_MODE_SCROLLABLE = 11;
+    private final Pools.Pool<TabView> mTabViewPool = new Pools.SimplePool<>(12);
     /**
      * configure of styles
      */
@@ -100,17 +78,11 @@ public class VerticalTabLayout extends ScrollView {
     private int mTabPaddingTop;
     private int mTabPaddingEnd;
     private int mTabPaddingBottom;
-
     private int mIndicatorPaddingStart;
     private int mIndicatorPaddingTop;
     private int mIndicatorPaddingEnd;
     private int mIndicatorPaddingBottom;
-
     private int mIndicatorAnimDuration;
-
-    public static int TAB_MODE_FIXED = 10;
-    public static int TAB_MODE_SCROLLABLE = 11;
-
     /**
      * configure for {@link #setupWithViewPager(ViewPager)}
      */
@@ -127,21 +99,32 @@ public class VerticalTabLayout extends ScrollView {
     private Tab mSelectedTab;
     private List<Tab> tabs = new ArrayList<>();
     private List<OnTabSelectedListener> mTabSelectedListeners = new ArrayList<>();
-    private static final Pools.Pool<Tab> sTabPool = new Pools.SynchronizedPool<>(16);
-    private final Pools.Pool<TabView> mTabViewPool = new Pools.SimplePool<>(12);
-
-
     public VerticalTabLayout(Context context) {
         this(context, null);
     }
-
     public VerticalTabLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
     public VerticalTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initStyleConfigure(context, attrs);
+    }
+
+    private static ColorStateList createColorStateList(int defaultColor, int selectedColor) {
+        final int[][] states = new int[2][];
+        final int[] colors = new int[2];
+        int i = 0;
+
+        states[i] = SELECTED_STATE_SET;
+        colors[i] = selectedColor;
+        i++;
+
+        // Default enabled state
+        states[i] = EMPTY_STATE_SET;
+        colors[i] = defaultColor;
+        i++;
+
+        return new ColorStateList(states, colors);
     }
 
     private void initStyleConfigure(Context context, AttributeSet attrs) {
@@ -187,23 +170,6 @@ public class VerticalTabLayout extends ScrollView {
         super.onFinishInflate();
         if (getChildCount() > 0) removeAllViews();
         initTabStrip();
-    }
-
-    private static ColorStateList createColorStateList(int defaultColor, int selectedColor) {
-        final int[][] states = new int[2][];
-        final int[] colors = new int[2];
-        int i = 0;
-
-        states[i] = SELECTED_STATE_SET;
-        colors[i] = selectedColor;
-        i++;
-
-        // Default enabled state
-        states[i] = EMPTY_STATE_SET;
-        colors[i] = defaultColor;
-        i++;
-
-        return new ColorStateList(states, colors);
     }
 
     private void initTabStrip() {
@@ -600,6 +566,259 @@ public class VerticalTabLayout extends ScrollView {
         return Math.round(getResources().getDisplayMetrics().density * dps);
     }
 
+    public interface OnTabSelectedListener {
+
+        void onTabSelected(Tab tab);
+
+        void onTabUnselected(Tab tab);
+
+        void onTabReselected(Tab tab);
+    }
+
+    public interface OnCustomTabViewRenderListener {
+        /**
+         * 当需要tab的item需要自定义view的时候，通过这个接口方法通知视图渲染
+         *
+         * @param tab
+         */
+        void onRender(Tab tab);
+    }
+
+    /**
+     * 绑定viewpager的时候，构造tabItem的构造器
+     */
+    public interface ViewPagerTabItemCreator {
+        Tab create(int position);
+    }
+
+    /**
+     * modify from {@link TabLayout.Tab}
+     * <p>
+     * {@link VerticalTabLayout}的子单元
+     * 通过{@link VerticalTabLayout#addTab(Tab)}添加item
+     * 通过{@link VerticalTabLayout#newTab()}构建实例
+     */
+    public static final class Tab {
+
+        public static final int INVALID_POSITION = -1;
+        VerticalTabLayout mParent;
+        TabView mView;
+        private Object mTag;
+        private Drawable mIcon;
+        private CharSequence mText;
+        private CharSequence mContentDesc;
+        private int mPosition = INVALID_POSITION;
+        private View mCustomView;
+        private OnCustomTabViewRenderListener renderListener;
+
+        Tab() {
+        }
+
+        @Nullable
+        public Object getTag() {
+            return mTag;
+        }
+
+        @NonNull
+        public Tab setTag(@Nullable Object tag) {
+            mTag = tag;
+            return this;
+        }
+
+        @Nullable
+        public View getCustomView() {
+            return mCustomView;
+        }
+
+        @NonNull
+        public Tab setCustomView(@Nullable View view, OnCustomTabViewRenderListener listener) {
+            mCustomView = view;
+            renderListener = listener;
+            updateView();
+            return this;
+        }
+
+        @NonNull
+        public Tab setCustomView(@LayoutRes int resId, OnCustomTabViewRenderListener listener) {
+            final LayoutInflater inflater = LayoutInflater.from(mView.getContext());
+            return setCustomView(inflater.inflate(resId, mView, false), listener);
+        }
+
+        @Nullable
+        public Drawable getIcon() {
+            return mIcon;
+        }
+
+        @NonNull
+        public Tab setIcon(@Nullable Drawable icon) {
+            mIcon = icon;
+            updateView();
+            return this;
+        }
+
+        @NonNull
+        public Tab setIcon(@DrawableRes int resId) {
+            if (mParent == null) {
+                throw new IllegalArgumentException("Tab not attached to a TabLayout");
+            }
+            return setIcon(AppCompatResources.getDrawable(mParent.getContext(), resId));
+        }
+
+        public int getPosition() {
+            return mPosition;
+        }
+
+        void setPosition(int position) {
+            mPosition = position;
+        }
+
+        @Nullable
+        public CharSequence getText() {
+            return mText;
+        }
+
+        @NonNull
+        public Tab setText(@Nullable CharSequence text) {
+            mText = text;
+            updateView();
+            return this;
+        }
+
+        @NonNull
+        public Tab setText(@StringRes int resId) {
+            if (mParent == null) {
+                throw new IllegalArgumentException("Tab not attached to a TabLayout");
+            }
+            return setText(mParent.getResources().getText(resId));
+        }
+
+
+        public void select() {
+            if (mParent == null) {
+                throw new IllegalArgumentException("Tab not attached to a TabLayout");
+            }
+            mParent.selectTab(this);
+        }
+
+        public boolean isSelected() {
+            if (mParent == null) {
+                throw new IllegalArgumentException("Tab not attached to a TabLayout");
+            }
+            return mParent.getSelectedTabPosition() == mPosition;
+        }
+
+        @Nullable
+        public CharSequence getContentDescription() {
+            return mContentDesc;
+        }
+
+        @NonNull
+        public Tab setContentDescription(@StringRes int resId) {
+            if (mParent == null) {
+                throw new IllegalArgumentException("Tab not attached to a TabLayout");
+            }
+            return setContentDescription(mParent.getResources().getText(resId));
+        }
+
+        @NonNull
+        public Tab setContentDescription(@Nullable CharSequence contentDesc) {
+            mContentDesc = contentDesc;
+            updateView();
+            return this;
+        }
+
+        void updateView() {
+            if (mView != null) {
+                mView.update();
+                // 如果view是自定义的view，通过接口将渲染事件传递出去
+                if (renderListener != null) {
+                    renderListener.onRender(this);
+                }
+            }
+        }
+
+        void reset() {
+            mParent = null;
+            mView = null;
+            mTag = null;
+            mIcon = null;
+            mText = null;
+            mContentDesc = null;
+            mPosition = INVALID_POSITION;
+            mCustomView = null;
+            renderListener = null;
+        }
+    }
+
+    /**
+     * {@link ViewPager}和{@link VerticalTabLayout}的联动
+     * 监听{@link ViewPager}的变化，更新{@link VerticalTabLayout}
+     */
+    private static class OnTabPageChangeListener implements ViewPager.OnPageChangeListener {
+        private final WeakReference<VerticalTabLayout> mTabLayoutRef;
+        boolean mUpdateIndicator;
+        private int mPreviousScrollState;
+        private int mScrollState;
+
+        public OnTabPageChangeListener(VerticalTabLayout tabLayout) {
+            mTabLayoutRef = new WeakReference<>(tabLayout);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            mPreviousScrollState = mScrollState;
+            mScrollState = state;
+            mUpdateIndicator = !(mScrollState == ViewPager.SCROLL_STATE_SETTLING && mPreviousScrollState == ViewPager.SCROLL_STATE_IDLE);
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            final VerticalTabLayout tabLayout = mTabLayoutRef.get();
+            if (mUpdateIndicator && tabLayout != null) {
+                tabLayout.setScrollPosition(position, positionOffset);
+            }
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            final VerticalTabLayout tabLayout = mTabLayoutRef.get();
+            if (tabLayout != null && tabLayout.getSelectedTabPosition() != position && position < tabLayout.getTabCount()) {
+                tabLayout.selectTab(tabLayout.getTabAt(position), !mUpdateIndicator);
+            }
+        }
+    }
+
+    /**
+     * {@link ViewPager}和{@link VerticalTabLayout}的联动
+     * 监听{@link VerticalTabLayout}的变化，更新{@link ViewPager}
+     */
+    public static class ViewPagerOnVerticalTabSelectedListener implements OnTabSelectedListener {
+
+        private final WeakReference<ViewPager> viewPagerRef;
+
+        public ViewPagerOnVerticalTabSelectedListener(ViewPager viewPager) {
+            this.viewPagerRef = new WeakReference<>(viewPager);
+        }
+
+        @Override
+        public void onTabSelected(Tab tab) {
+            ViewPager viewPager = viewPagerRef.get();
+            if (viewPager != null && viewPager.getAdapter().getCount() >= tab.getPosition()) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+        }
+
+        @Override
+        public void onTabUnselected(Tab tab) {
+
+        }
+
+        @Override
+        public void onTabReselected(Tab tab) {
+
+        }
+    }
+
     private class TabStrip extends LinearLayout {
         private float mIndicatorTopY;
         private float mIndicatorX;
@@ -751,167 +970,6 @@ public class VerticalTabLayout extends ScrollView {
     }
 
     /**
-     * modify from {@link TabLayout.Tab}
-     * <p>
-     * {@link VerticalTabLayout}的子单元
-     * 通过{@link VerticalTabLayout#addTab(Tab)}添加item
-     * 通过{@link VerticalTabLayout#newTab()}构建实例
-     */
-    public static final class Tab {
-
-        public static final int INVALID_POSITION = -1;
-
-        private Object mTag;
-        private Drawable mIcon;
-        private CharSequence mText;
-        private CharSequence mContentDesc;
-        private int mPosition = INVALID_POSITION;
-        private View mCustomView;
-        private OnCustomTabViewRenderListener renderListener;
-
-        VerticalTabLayout mParent;
-        TabView mView;
-
-        Tab() {
-        }
-
-        @Nullable
-        public Object getTag() {
-            return mTag;
-        }
-
-        @NonNull
-        public Tab setTag(@Nullable Object tag) {
-            mTag = tag;
-            return this;
-        }
-
-        @Nullable
-        public View getCustomView() {
-            return mCustomView;
-        }
-
-        @NonNull
-        public Tab setCustomView(@Nullable View view, OnCustomTabViewRenderListener listener) {
-            mCustomView = view;
-            renderListener = listener;
-            updateView();
-            return this;
-        }
-
-        @NonNull
-        public Tab setCustomView(@LayoutRes int resId, OnCustomTabViewRenderListener listener) {
-            final LayoutInflater inflater = LayoutInflater.from(mView.getContext());
-            return setCustomView(inflater.inflate(resId, mView, false), listener);
-        }
-
-        @Nullable
-        public Drawable getIcon() {
-            return mIcon;
-        }
-
-        public int getPosition() {
-            return mPosition;
-        }
-
-        void setPosition(int position) {
-            mPosition = position;
-        }
-
-        @Nullable
-        public CharSequence getText() {
-            return mText;
-        }
-
-        @NonNull
-        public Tab setIcon(@Nullable Drawable icon) {
-            mIcon = icon;
-            updateView();
-            return this;
-        }
-
-        @NonNull
-        public Tab setIcon(@DrawableRes int resId) {
-            if (mParent == null) {
-                throw new IllegalArgumentException("Tab not attached to a TabLayout");
-            }
-            return setIcon(AppCompatResources.getDrawable(mParent.getContext(), resId));
-        }
-
-        @NonNull
-        public Tab setText(@Nullable CharSequence text) {
-            mText = text;
-            updateView();
-            return this;
-        }
-
-        @NonNull
-        public Tab setText(@StringRes int resId) {
-            if (mParent == null) {
-                throw new IllegalArgumentException("Tab not attached to a TabLayout");
-            }
-            return setText(mParent.getResources().getText(resId));
-        }
-
-
-        public void select() {
-            if (mParent == null) {
-                throw new IllegalArgumentException("Tab not attached to a TabLayout");
-            }
-            mParent.selectTab(this);
-        }
-
-        public boolean isSelected() {
-            if (mParent == null) {
-                throw new IllegalArgumentException("Tab not attached to a TabLayout");
-            }
-            return mParent.getSelectedTabPosition() == mPosition;
-        }
-
-        @NonNull
-        public Tab setContentDescription(@StringRes int resId) {
-            if (mParent == null) {
-                throw new IllegalArgumentException("Tab not attached to a TabLayout");
-            }
-            return setContentDescription(mParent.getResources().getText(resId));
-        }
-
-        @NonNull
-        public Tab setContentDescription(@Nullable CharSequence contentDesc) {
-            mContentDesc = contentDesc;
-            updateView();
-            return this;
-        }
-
-        @Nullable
-        public CharSequence getContentDescription() {
-            return mContentDesc;
-        }
-
-        void updateView() {
-            if (mView != null) {
-                mView.update();
-                // 如果view是自定义的view，通过接口将渲染事件传递出去
-                if (renderListener != null) {
-                    renderListener.onRender(this);
-                }
-            }
-        }
-
-        void reset() {
-            mParent = null;
-            mView = null;
-            mTag = null;
-            mIcon = null;
-            mText = null;
-            mContentDesc = null;
-            mPosition = INVALID_POSITION;
-            mCustomView = null;
-            renderListener = null;
-        }
-    }
-
-    /**
      * modify from {@link TabLayout.TabView}
      * <p>
      * tab的视图，由一个简单的{@link ImageView }+ {@link TextView} 组成
@@ -966,13 +1024,6 @@ public class VerticalTabLayout extends ScrollView {
             }
             if (mCustomView != null) {
                 mCustomView.setSelected(selected);
-            }
-        }
-
-        void setTab(@Nullable final Tab tab) {
-            if (mTab != tab) {
-                mTab = tab;
-                update();
             }
         }
 
@@ -1080,42 +1131,11 @@ public class VerticalTabLayout extends ScrollView {
         public Tab getTab() {
             return mTab;
         }
-    }
 
-    /**
-     * {@link ViewPager}和{@link VerticalTabLayout}的联动
-     * 监听{@link ViewPager}的变化，更新{@link VerticalTabLayout}
-     */
-    private static class OnTabPageChangeListener implements ViewPager.OnPageChangeListener {
-        private int mPreviousScrollState;
-        private final WeakReference<VerticalTabLayout> mTabLayoutRef;
-        private int mScrollState;
-        boolean mUpdateIndicator;
-
-        public OnTabPageChangeListener(VerticalTabLayout tabLayout) {
-            mTabLayoutRef = new WeakReference<>(tabLayout);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            mPreviousScrollState = mScrollState;
-            mScrollState = state;
-            mUpdateIndicator = !(mScrollState == ViewPager.SCROLL_STATE_SETTLING && mPreviousScrollState == ViewPager.SCROLL_STATE_IDLE);
-        }
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            final VerticalTabLayout tabLayout = mTabLayoutRef.get();
-            if (mUpdateIndicator && tabLayout != null) {
-                tabLayout.setScrollPosition(position, positionOffset);
-            }
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            final VerticalTabLayout tabLayout = mTabLayoutRef.get();
-            if (tabLayout != null && tabLayout.getSelectedTabPosition() != position && position < tabLayout.getTabCount()) {
-                tabLayout.selectTab(tabLayout.getTabAt(position), !mUpdateIndicator);
+        void setTab(@Nullable final Tab tab) {
+            if (mTab != tab) {
+                mTab = tab;
+                update();
             }
         }
     }
@@ -1132,37 +1152,6 @@ public class VerticalTabLayout extends ScrollView {
         @Override
         public void onInvalidated() {
             populateFromPagerAdapter(tabItemCreator);
-        }
-    }
-
-    /**
-     * {@link ViewPager}和{@link VerticalTabLayout}的联动
-     * 监听{@link VerticalTabLayout}的变化，更新{@link ViewPager}
-     */
-    public static class ViewPagerOnVerticalTabSelectedListener implements OnTabSelectedListener {
-
-        private final WeakReference<ViewPager> viewPagerRef;
-
-        public ViewPagerOnVerticalTabSelectedListener(ViewPager viewPager) {
-            this.viewPagerRef = new WeakReference<>(viewPager);
-        }
-
-        @Override
-        public void onTabSelected(Tab tab) {
-            ViewPager viewPager = viewPagerRef.get();
-            if (viewPager != null && viewPager.getAdapter().getCount() >= tab.getPosition()) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-        }
-
-        @Override
-        public void onTabUnselected(Tab tab) {
-
-        }
-
-        @Override
-        public void onTabReselected(Tab tab) {
-
         }
     }
 

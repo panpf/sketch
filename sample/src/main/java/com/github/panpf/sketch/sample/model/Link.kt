@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2021 panpf <panpfpanpf@outlook.com>
+ * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,8 @@ package com.github.panpf.sketch.sample.model
 import androidx.navigation.NavDirections
 import com.github.panpf.assemblyadapter.recycler.DiffKey
 
-data class Link(val title: String, val navDirections: NavDirections, val minSdk: Int? = null) : DiffKey {
+data class Link(val title: String, val navDirections: NavDirections, val minSdk: Int? = null) :
+    DiffKey {
 
     override val diffKey: String = "Link-$title"
 }

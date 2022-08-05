@@ -37,7 +37,8 @@ class MyApplication : Application(), SketchFactory {
 
 ### OkHttpStack
 
-Sketch 还提供了 [HttpStack] 的 [OkHttpStack] 实现，使用之前需要先导入 `sketch-okhttp` 模块，然后在初始化 Sketch 时通过 httpStack()
+Sketch 还提供了 [HttpStack] 的 [OkHttpStack] 实现，使用之前需要先导入 `sketch-okhttp` 模块，然后在初始化 Sketch 时通过
+httpStack()
 方法注册即可，如下：
 
 ```kotlin

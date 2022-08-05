@@ -3,4 +3,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:sketch_transformation="rotate"
-    app:sketch_transformation_rotate_degrees="444"/>
+    app:sketch_transformation_rotate_degrees="444" />

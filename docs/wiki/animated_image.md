@@ -81,8 +81,8 @@ Animatable2Compat 接口
 
 #### 初始状态
 
-[GenericViewDisplayTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查 ImageRequest.lifecycle 的状态，如果
-lifecycle 的状态大于 start 就开始播放
+[GenericViewDisplayTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查 ImageRequest.lifecycle
+的状态，如果 lifecycle 的状态大于 start 就开始播放
 
 #### 自动控制
 

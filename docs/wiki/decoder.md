@@ -3,13 +3,17 @@
 Decoder 用于解码图片文件得到一个 Bitmap 或 Drawable，因此 Sketch 有两种 Decoder：
 
 * [BitmapDecoder]：用于解码图片文件并将其转成 Bitmap
-    * [ApkIconBitmapDecoder][ApkIconBitmapDecoder]：解码 Apk 文件的图标，[点我了解如何使用](apk_app_icon.md#显示-apk-文件的图标)
-    * [AppIconBitmapDecoder][AppIconBitmapDecoder]：解码已安装 App 的图标，[点我了解如何使用](apk_app_icon.md#显示已安装-app-的图标)
+    * [ApkIconBitmapDecoder][ApkIconBitmapDecoder]：解码 Apk
+      文件的图标，[点我了解如何使用](apk_app_icon.md#显示-apk-文件的图标)
+    * [AppIconBitmapDecoder][AppIconBitmapDecoder]：解码已安装 App
+      的图标，[点我了解如何使用](apk_app_icon.md#显示已安装-app-的图标)
     * [DefaultBitmapDecoder][DefaultBitmapDecoder]：最后的 Bitmap 解码器，采用 Android 内置的 [BitmapFactory]
       解码图片
     * [FFmpegVideoFrameBitmapDecoder][FFmpegVideoFrameBitmapDecoder]：使用 [wseemann]
-      /[FFmpegMediaMetadataRetriever-project] 库的 [FFmpegMediaMetadataRetriever] 类解码视频文件的帧，[点我了解如何使用](video_frame.md)
-    * [SvgBitmapDecoder][SvgBitmapDecoder]：使用 [BigBadaboom]/[androidsvg] 库解码静态 svg 文件，[点我了解如何使用](svg.md)
+      /[FFmpegMediaMetadataRetriever-project] 库的 [FFmpegMediaMetadataRetriever]
+      类解码视频文件的帧，[点我了解如何使用](video_frame.md)
+    * [SvgBitmapDecoder][SvgBitmapDecoder]：使用 [BigBadaboom]/[androidsvg] 库解码静态 svg
+      文件，[点我了解如何使用](svg.md)
     * [VideoFrameBitmapDecoder][VideoFrameBitmapDecoder]：使用 Android 内置的 [MediaMetadataRetriever]
       类解码视频文件的帧，[点我了解如何使用](video_frame.md)
     * [XmlDrawableBitmapDecoder][XmlDrawableBitmapDecoder]：解码 vector、shape 等 Android 支持的 xml
@@ -21,7 +25,8 @@ Decoder 用于解码图片文件得到一个 Bitmap 或 Drawable，因此 Sketch
       ，[点我了解如何使用](animated_image.md)
     * [GifDrawableDrawableDecoder][GifDrawableDrawableDecoder]：使用 [koral--]/[android-gif-drawable]
       库的 [GifDrawable] 类解码 gif 图片，[点我了解如何使用](animated_image.md)
-    * [GifMovieDrawableDecoder][GifMovieDrawableDecoder]：使用 Android 内置的 [Movie] 类解码 gif 图片，[点我了解如何使用](animated_image.md)
+    * [GifMovieDrawableDecoder][GifMovieDrawableDecoder]：使用 Android 内置的 [Movie] 类解码 gif
+      图片，[点我了解如何使用](animated_image.md)
     * [HeifAnimatedDrawableDecoder][HeifAnimatedDrawableDecoder]：使用 Android 内置的 [ImageDecoder] 类解码
       heif 动图，[点我了解如何使用](animated_image.md)
     * [WebpAnimatedDrawableDecoder][WebpAnimatedDrawableDecoder]：使用 Android 内置的 [ImageDecoder] 类解码

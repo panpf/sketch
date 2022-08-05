@@ -1,5 +1,20 @@
 @file:Suppress("DEPRECATION", "unused")
 
+/*
+ * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.panpf.sketch.drawable
 
 import android.graphics.Bitmap
@@ -18,7 +33,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.SystemClock
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.gif.util.allocationByteCountCompat
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
@@ -26,7 +40,6 @@ import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
 import com.github.panpf.sketch.util.BitmapInfo
-import com.github.panpf.sketch.util.Size
 
 /**
  * A [Drawable] that supports rendering [Movie]s (i.e. GIFs).
@@ -256,8 +269,6 @@ class MovieDrawable constructor(
             hardwareDx = 0f
             hardwareDy = 0f
         } else {
-            hardwareScale =
-                1f / calculateSampleSize(Size(bitmapWidth, bitmapHeight), Size(boundsWidth, boundsHeight))
             hardwareScale =
                 computeSizeMultiplier(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, true)
                     .toFloat()

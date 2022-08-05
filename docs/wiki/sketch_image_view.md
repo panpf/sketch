@@ -32,6 +32,7 @@
 ### 其它功能
 
 得益于实现了 [ViewAbilityContainer] 接口，[SketchImageView] 还支持以下功能：
+
 * [显示下载进度][show_download_progress]
 * [显示图片类型角标][show_image_type]
 

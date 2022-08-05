@@ -4,5 +4,5 @@
         android:duration="@integer/nav_anim_duration"
         android:fromXDelta="0%p"
         android:interpolator="@android:anim/linear_interpolator"
-        android:toXDelta="100%p"/>
+        android:toXDelta="100%p" />
 </set>

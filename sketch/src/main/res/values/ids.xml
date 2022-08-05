@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="id" name="sketch_request_manager"/>
+    <item name="sketch_request_manager" type="id" />
 </resources>

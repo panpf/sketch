@@ -3,4 +3,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:sketch_transformation="circleCrop"
-    app:sketch_transformation_circleCrop_scale="endCrop"/>
+    app:sketch_transformation_circleCrop_scale="endCrop" />

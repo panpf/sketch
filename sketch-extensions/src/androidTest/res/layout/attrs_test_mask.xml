@@ -3,4 +3,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:sketch_transformation="mask"
-    app:sketch_transformation_mask_maskColor="#00FF00"/>
+    app:sketch_transformation_mask_maskColor="#00FF00" />

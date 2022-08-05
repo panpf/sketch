@@ -6,8 +6,8 @@
 [![version_icon]][version_link]
 ![QQ Group][qq_group_image]
 
-Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 GIF、SVG，手势缩放、超大图采样、ExifInterface、视频缩略图、Jetpack
-Compose 等功能
+Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 GIF、SVG，手势缩放、超大图采样、ExifInterface、视频缩略图、Jetpack Compose
+等功能
 
 ## 关于 3.0 版本
 
@@ -190,7 +190,7 @@ AsyncImage(
 
 ## License
 
-    Copyright (C) 2019 panpf <panpfpanpf@outlook.com>
+    Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
