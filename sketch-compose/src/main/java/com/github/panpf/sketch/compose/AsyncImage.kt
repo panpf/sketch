@@ -39,6 +39,8 @@ import com.github.panpf.sketch.compose.internal.rememberAsyncImagePainter
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resize.DefaultSizeResolver
 
+// todo copy coil-compose
+
 @Composable
 fun AsyncImage(
     imageUri: String?,
