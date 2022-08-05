@@ -1,3 +1,20 @@
+# v3.0.0-rc03
+
+### sketch
+
+* fix: Fixed the bug that the callback of the sub-drawables of CrossfadeDrawable, IconDrawable,
+  ScaledAnimatedImageDrawable would be lost, causing the sub-animation Drawable to fail to play
+* change: CrossfadeDrawable default duration changed from 100ms to 200ms
+* new: Added 'exist(): Boolean' method to BitmapPool and DiskCache
+
+### sketch-extensions
+
+* improve: Improved animation of RingProgressDrawable
+
+### other:
+
+upgrade: Upgrade the latest version of kotlin and androidx library
+
 # v3.0.0-rc02
 
 ### sketch

@@ -8,8 +8,8 @@ compileSdk = "31"
 composeCompileSdk = "32"
 
 # app version
-versionCode = "3012"
-versionName = "3.0.0-rc02"
+versionCode = "3013"
+versionName = "3.0.0-rc03"
 
 # android
 android-buildtools = "7.2.2"
