@@ -2,13 +2,13 @@
 
 Sketch 依赖 Lifecycle 监控页面的生命周期，用于以下功能：
 
-1. 在 onDestroy 时停止请求（ViewTargetRequestDelegate.onDestroy()）
-2. 在 onStart 和 onStop 时控制动图播放（GenericViewTarget.onStart()/onStop()）
-3. 在 onStart 和 onStop 时控制 SketchZoomView 释放碎片（ZoomAbility.lifecycleObserver）
+1. [ViewTargetRequestDelegate].onDestroy() 在 onDestroy 时停止请求
+2. [GenericViewDisplayTarget].onStart()/onStop() 在 onStart 和 onStop 时控制动图播放
+3. [ZoomAbility].lifecycleObserver 在 onStart 和 onStop 时控制释放碎片
 
 ### 配置
 
-ImageRequest.Builder 提供了 lifecycle() 方法用于设置 lifecycle，如下：
+[ImageRequest].Builder 提供了 lifecycle() 方法用于设置 lifecycle，如下：
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.gif") {
@@ -45,3 +45,11 @@ class ImageZoomFragment : Fragment() {
     }
 }
 ```
+
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+
+[ViewTargetRequestDelegate]: ../../sketch/src/main/java/com/github/panpf/sketch/request/internal/RequestDelegate.kt
+
+[GenericViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/GenericViewDisplayTarget.kt
+
+[ZoomAbility]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ZoomAbility.kt

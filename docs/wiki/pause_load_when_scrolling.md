@@ -1,7 +1,7 @@
 # 列表滑动中暂停加载图片
 
 列表滑动中暂停加载功能可以在列表滑动中将 [ImageRequest] 的 depth 参数设置为 [Depth]
-.MEMORY，这样就只会从内存中去找图片，不会再加载新图片，这在性能较差的设备上能帮助提高列表滑动流畅度
+.MEMORY，这样就只会从内存中去找图片，不会再加载新图片，这在性能较差的设备上能显著提高列表滑动流畅度
 
 ### 配置
 
@@ -40,7 +40,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-第 4 步. 可选. 配置使用 placeholder 图片作为列表滑动中暂停加载错误的图片，如下：
+第 4 步. 可选. 配置使用 placeholder 图片作为列表滑动中暂停加载错误状态图片，如下：
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {

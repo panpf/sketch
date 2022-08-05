@@ -12,7 +12,7 @@
 |data:image/, data:img/ |Base64|newBase64Uri()|
 |app.icon:// |App Icon|newAppIconUri()|
 
-> 上表中的 `Creator` 列展示了 Sketch 对部分 URI 提供的便捷创建函数
+> 上表中的 `创建函数` 列展示了 Sketch 对部分 URI 提供的便捷创建函数
 
 每一种 URI 都有对应的 Fetcher 对其提供支持，[点击查看更多 Fetcher 介绍以及如何扩展新的 URI][fetcher]
 
@@ -20,16 +20,16 @@
 
 |类型|API 限制|依赖模块|
 |:---|:---|:---|
-|jpeg|None|_|
-|png|None|_|
-|bmp|None|_|
-|webp|None|_|
-|svg|None|sketch-svg|
+|jpeg|_|_|
+|png|_|_|
+|bmp|_|_|
+|webp|_|_|
+|svg|_|sketch-svg|
 |heif|Android 9+|_|
-|gif|None|sketch-gif-movie<br>sketch-gif-koral|
+|gif|_|sketch-gif-movie<br>sketch-gif-koral|
 |webp Animated|Android 9+|_|
 |heif Animated|Android 11+|_|
-|video frames|None|sketch-video<br>sketch-video-ffmpeg|
+|video frames|_|sketch-video<br>sketch-video-ffmpeg|
 
 每一种图片类型都有对应的 Decoder 对其提供支持，[点击查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
 
@@ -64,8 +64,8 @@ class MyApplication : Application(), SketchFactory {
 [ImageRequest] 分为以下三种：
 
 * [DisplayRequest]：请求结果是 Drawable，用于显示图片到 ImageView、RemoteViews 或 Compose Painter 上
-* [LoadRequest]：请求结果是 Bitmap，用于需要 Bitmap 的场景
-* [DownloadRequest]：请求结果是 [DiskCache].Snapshot 或 Byte[]，用于提前下载图片或保存图片到相册
+* [LoadRequest]：请求结果是 Bitmap，用于需要直接操作 Bitmap 的场景
+* [DownloadRequest]：请求结果是 [DiskCache].Snapshot 或 ByteArray，用于提前下载图片或直接访问图片文件
 
 ### 创建请求
 
@@ -106,8 +106,8 @@ val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
 
 [ImageRequest] 创建好后调用其 enqueue() 或 execute() 方法将 [ImageRequest] 交给 [Sketch] 执行：
 
-* enqueue：将 [ImageRequest] 放入任务队列在后台线程上异步执行并返回一个 [Disposable]
-* execute：在当前协程中执行 [ImageRequest] 并返回一个 [ImageResult]
+* enqueue()：将 [ImageRequest] 放入任务队列在后台线程上异步执行并返回一个 [Disposable]
+* execute()：在当前协程中执行 [ImageRequest] 并返回一个 [ImageResult]
 
 enqueue 示例：
 
@@ -130,7 +130,7 @@ coroutineScope.launch(Dispatchers.Main) {
 [ImageRequest] 会在下列情况下自动取消:
 
 * request.lifecycle 变为 DESTROYED 状态
-* request.target 是一个 [ViewTarget] 并且注册到 view 的 onViewDetachedFromWindow() 方法被执行
+* request.target 是一个 [ViewDisplayTarget] 并且 view 的 onViewDetachedFromWindow() 方法被执行
 
 另外, enqueue() 方法会返回一个 [Disposable], 它可以用来取消请求，如下:
 
@@ -167,8 +167,6 @@ imageView.displayImage("https://www.example.com/image.jpg") {
 
 [comment]: <> (wiki)
 
-[image_requests]: image_requests.md
-
 [fetcher]: fetcher.md
 
 [decoder]: decoder.md
@@ -192,6 +190,6 @@ imageView.displayImage("https://www.example.com/image.jpg") {
 
 [DownloadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
 
-[ViewTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ViewDisplayTarget.kt
 
 [DiskCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/DiskCache.kt

@@ -26,7 +26,7 @@ class MyApplication : Application(), SketchFactory {
             // 添加一些可重复的 header。默认 null
             addExtraHeaders(Map<String, String>)
 
-            // HttpURLConnection 在 执行 connect 直线交由此方法处理一下。默认 null
+            // HttpURLConnection 在 执行 connect 之前交由此方法处理一下。默认 null
             processRequest { url: String, connection: HttpURLConnection ->
 
             }

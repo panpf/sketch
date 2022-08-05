@@ -39,7 +39,7 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-然后使用 `newAppIconUri()` 函数创建专用 uri 显示，如下：
+然后使用 `newAppIconUri()` 函数创建专用 uri 并执行显示，如下：
 
 ```kotlin
 imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", 1))

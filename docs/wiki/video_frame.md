@@ -1,6 +1,6 @@
 # Video Frame
 
-Sketch 支持解码视频文件的帧图片，由以下 Decoder 提供支持：
+Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 
 * [VideoFrameBitmapDecoder]：使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
     * 需要先导入 `sketch-video` 模块
@@ -45,7 +45,11 @@ DisplayRequest(context, "file:///sdcard/sample.mp4") {
 }
 ```
 
-[FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
+[wseemann]: https://github.com/wseemann
+
+[FFmpegMediaMetadataRetriever-project]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
+
+[FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever/blob/master/core/src/main/java/wseemann/media/FFmpegMediaMetadataRetriever.java
 
 [VideoFrameBitmapDecoder]: ../../sketch-video/src/main/java/com/github/panpf/sketch/decode/VideoFrameBitmapDecoder.kt
 

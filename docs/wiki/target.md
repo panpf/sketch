@@ -29,7 +29,8 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 
 > LoadTarget 和 DownloadTarget 同 DisplayTarget 使用方式大同小异
 
-[DisplayTarget] 通常用来将 Drawable 应用到 View，因此 Sketch 提供了 [ViewTarget] 和 [ImageViewTarget] 来简化使用
+[DisplayTarget] 通常用来将 Drawable 应用到 View，因此 Sketch 提供了 [ViewDisplayTarget] 和 [ImageViewDisplayTarget]
+来简化使用
 
 [DisplayRequest] 还提供了 target(ImageView) 方法来简化绑定到 ImageView，如下：
 
@@ -69,8 +70,8 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 }.enqueue()
 ```
 
-1. 如上所示 [RemoteViewsDisplayTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的 setImageViewBitmap 方法设置
-Bitmap
+1. 如上所示 [RemoteViewsDisplayTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的 setImageViewBitmap
+   方法设置 Bitmap
 2. 所以还需要你在 onUpdated 函数中刷新通知或 AppWidget 才能将 Bitmap 显示到屏幕上
 
 [getting_started]: getting_started.md
@@ -79,9 +80,9 @@ Bitmap
 
 [DisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/DisplayTarget.kt
 
-[ViewTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ViewDisplayTarget.kt
 
-[ImageViewTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ImageViewTarget.kt
+[ImageViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ImageViewDisplayTarget.kt
 
 [LoadTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/LoadTarget.kt
 
@@ -102,7 +103,3 @@ Bitmap
 [RemoteViews]: https://developer.android.google.cn/reference/android/widget/RemoteViews
 
 [RemoteViewsDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/RemoteViewsDisplayTarget.kt
-
-[RemoteViewsAppWidgetDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/RemoteViewsAppWidgetDisplayTarget.kt
-
-[RemoteViewsNotificationDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/RemoteViewsNotificationDisplayTarget.kt

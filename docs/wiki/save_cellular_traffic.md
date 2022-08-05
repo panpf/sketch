@@ -29,7 +29,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-第 3 步. 可选. 配置节省蜂窝流量功能专用的错误图片，如下：
+第 3 步. 可选. 配置节省蜂窝流量功能专用的错误状态图片，如下：
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -41,7 +41,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-第 4 步. 可选. 开启点击当前图片忽略节省蜂窝流量功能并重新显示图片
+第 4 步. 可选. 开启点击 ImageView 忽略节省蜂窝流量并重新显示图片功能
 
 此功能需要使用 [SketchImageView]
 

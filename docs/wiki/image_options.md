@@ -10,8 +10,8 @@
 * [ImageRequest].Builder.merge()/default()
 * [Sketch].globalImageOptions
 
-最终在构建 [ImageRequest] 时将以 [ImageRequest] > View 的 [ImageOptions]  > [ImageRequest]
-.Builder.defaultOptions > [Sketch].globalImageOptions 最后的顺序构建属性配置
+最终在构建 [ImageRequest] 时将以 [ImageRequest].Builder > View > [ImageRequest]
+.Builder.defaultOptions > [Sketch].globalImageOptions 的顺序构建
 
 ### 示例
 

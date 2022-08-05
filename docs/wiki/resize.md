@@ -9,7 +9,7 @@
     * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果尺寸不一致会根据 [Scale] 裁剪原图、优先使用 BitmapRegionDecoder 裁剪
     * SAME_ASPECT_RATIO：最终 Bitmap 的宽高比和 [Resize] 的宽高比一致并且像素数一定少于 [Resize]，如果比例不一致会根据 [Scale]
       裁剪原图、优先使用 BitmapRegionDecoder 裁剪
-    * LESS_PIXELS：只要最终 Bitmap 的像素数（宽乘以高）约等于 [Resize] 的像素数即可，允许有 10% 的误差
+    * LESS_PIXELS：只要最终 Bitmap 的像素数（宽乘以高）小于等于 [Resize] 的像素数即可
 * [PrecisionDecider]：精度决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Precision]
     * [FixedPrecisionDecider]：始终使用指定的 [Precision]
     * [LongImageClipPrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
@@ -47,7 +47,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 当你什么都不配置的情况下默认值为：
 
-* width、height：如果 target 是 [ViewTarget] 就取 view 的宽高，否则取屏幕的宽高
+* width、height：如果 target 是 [ViewDisplayTarget] 就取 view 的宽高，否则取屏幕的宽高
 * [Precision]：设置任意 resizeSize 或 resizeSizeResolver 时是 EXACTLY 否则是 LESS_PIXELS，
 * [Scale]：CENTER_CROP
 
@@ -83,7 +83,7 @@ Drawable 包一层，对外用 [Resize] 作为 intrinsicWidth 和 intrinsicHeigh
 
 [Precision]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Precision.kt
 
-[ViewTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ViewDisplayTarget.kt
 
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
@@ -97,7 +97,7 @@ Drawable 包一层，对外用 [Resize] 作为 intrinsicWidth 和 intrinsicHeigh
 
 [ResizeAnimatableDrawable]: ../../sketch/src/main/java/com/github/panpf/sketch/drawable/internal/ResizeAnimatableDrawable.kt
 
-[DefaultLongImageDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/util/LongImageDecider.kt
+[DefaultLongImageDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/LongImageDecider.kt
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails.md
 

@@ -1,6 +1,6 @@
 # 播放动图
 
-Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都由相应的 [DrawableDecoder] 提供支持，如下：
+Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [DrawableDecoder] 提供支持，如下：
 
 |Type|Decoder|APi Limit|Additional Module|
 |:---|:---|:---|:---|
@@ -11,14 +11,14 @@ Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都由相应的 [D
 |HEIF Animated|[HeifAnimatedDrawableDecoder]|Android 11+|_|
 
 > 注意：
-> 1. [GifMovieDrawableDecoder] 和 [GifDrawableDrawableDecoder] 需要依赖额外的 module
-> 2. GIF 提供了三种 [DrawableDecoder] 可以根据 app 支持的最低版本选择合适的 [DrawableDecoder]
+> 1. [GifMovieDrawableDecoder] 和 [GifDrawableDrawableDecoder] 需要依赖额外的模块
+> 2. GIF 提供了三种 [DrawableDecoder] 可以根据 app 支持的最低版本选择合适的
 > 3. `sketch-gif-movie` 模块使用 Android 自带的 [Movie] 类实现播放 GIF，不会额外增加包体积
 > 4. `sketch-gif-koral` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放 gif，库体积大概 250 KB
 
 ## 注册动图解码器
 
-Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你将需要的 [DrawableDecoder] 注册到 Sketch 才能播放动图
+Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你主动将 [DrawableDecoder] 注册到 Sketch 才能播放动图
 
 通过在 Application 类实现 [SketchFactory] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，如下：
 
@@ -51,7 +51,7 @@ class MyApplication : Application(), SketchFactory {
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.gif") {
-    // 禁用动图。有些情况下列表中需要禁用动图播放，点击进入详情页的时候才可以播放
+    // 禁用动图，会只解码动图的第一帧并显示
     disallowAnimatedImage()
 
     // 配置动图播放 1 次就停止，默认无限循环播放
@@ -81,12 +81,12 @@ Animatable2Compat 接口
 
 #### 初始状态
 
-[GenericViewTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查 ImageRequest.lifecycle 的状态，如果
+[GenericViewDisplayTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查 ImageRequest.lifecycle 的状态，如果
 lifecycle 的状态大于 start 就开始播放
 
 #### 自动控制
 
-[GenericViewTarget] 会监听 ImageRequest.lifecycle 的 start 和 stop 状态自动控制播放
+[GenericViewDisplayTarget] 会监听 ImageRequest.lifecycle 的 start 和 stop 状态自动控制播放
 
 [koral--]: https://github.com/koral--
 
@@ -117,3 +117,5 @@ lifecycle 的状态大于 start 就开始播放
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
+
+[GenericViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/GenericViewDisplayTarget.kt

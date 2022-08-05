@@ -40,7 +40,7 @@ sketch-extensions 模块提供的 [SketchImageView] 支持多种样式显示下�
 sketchImageView.showMaskProgressIndicator()
 
 // 在 SketchImageView 最上层显示一个扇形的进度条
-sketchImageView.showSrctorProgressIndicator()
+sketchImageView.showSectorProgressIndicator()
 
 // 在 SketchImageView 最上层显示一个环形的进度条
 sketchImageView.showRingProgressIndicator()
