@@ -32,6 +32,8 @@ interface DiskCache : Closeable {
         const val DEFAULT_DIR_NAME = "sketch3"
     }
 
+    var logger: Logger?
+
     /**
      * Get the cache directory on disk
      */
@@ -67,6 +69,11 @@ interface DiskCache : Closeable {
     operator fun get(key: String): Snapshot?
 
     /**
+     * Returns exist of the entry named [key]
+     */
+    fun exist(key: String): Boolean
+
+    /**
      * Clear all cached
      */
     fun clear()
@@ -75,8 +82,6 @@ interface DiskCache : Closeable {
      * Gets an edit lock bound to the specified [key], or creates a new one if it does not exist
      */
     fun editLock(key: String): Mutex
-
-    var logger: Logger?
 
     /**
      * Snapshot the values for an entry.

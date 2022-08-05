@@ -16,12 +16,13 @@
 package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.util.Logger
-import kotlinx.coroutines.sync.Mutex
 
 /**
  * Memory cache for bitmap
  */
 interface MemoryCache {
+
+    var logger: Logger?
 
     /**
      * Maximum allowed sum of the size of the all cache
@@ -66,6 +67,4 @@ interface MemoryCache {
      * Clear all cached bitmaps
      */
     fun clear()
-
-    var logger: Logger?
 }

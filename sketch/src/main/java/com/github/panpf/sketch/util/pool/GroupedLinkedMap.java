@@ -54,6 +54,11 @@ public class GroupedLinkedMap<K extends Poolable, V> {
         return entry.removeLast();
     }
 
+    public boolean exist(K key) {
+        LinkedEntry<K, V> entry = keyToEntry.get(key);
+        return entry != null && entry.size() > 0;
+    }
+
     @Nullable
     public V removeLast() {
         LinkedEntry<K, V> last = head.prev;

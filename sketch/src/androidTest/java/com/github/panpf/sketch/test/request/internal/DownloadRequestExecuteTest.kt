@@ -24,7 +24,6 @@ import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
 import com.github.panpf.sketch.test.utils.DownloadProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestDownloadTarget
 import com.github.panpf.sketch.test.utils.TestHttpStack
-import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.asOrNull

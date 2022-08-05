@@ -147,6 +147,17 @@ class LruDiskCache private constructor(
         }
     }
 
+    override fun exist(key: String): Boolean {
+        val cache = cache()
+        val encodedKey = keyMapperCache.mapKey(key)
+        return try {
+            cache.exist(encodedKey)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
     override fun clear() {
         val oldSize = size
         val cache = this._cache

@@ -12,6 +12,8 @@ public interface LruPoolStrategy {
     @Nullable
     Bitmap get(int width, int height, Bitmap.Config config);
 
+    boolean exist(int width, int height, Bitmap.Config config);
+
     @Nullable
     Bitmap removeLast();
 

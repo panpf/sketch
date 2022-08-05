@@ -3,7 +3,6 @@ package com.github.panpf.sketch.test.cache.internal
 import android.content.ComponentCallbacks2
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -14,7 +13,6 @@ import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
 import org.junit.Test
@@ -121,11 +119,13 @@ class LruBitmapPoolTest {
             logger = Logger()
 
             Assert.assertEquals("0B", size.formatFileSize())
+            Assert.assertFalse(exist(100, 100, ARGB_8888))
             Assert.assertNull(getDirty(100, 100, ARGB_8888))
 
             put(Bitmap.createBitmap(100, 100, ARGB_8888).apply {
                 setPixel(50, 50, Color.RED)
             })
+            Assert.assertTrue(exist(100, 100, ARGB_8888))
             Assert.assertEquals("39.06KB", size.formatFileSize())
             getDirty(100, 100, ARGB_8888).apply {
                 Assert.assertEquals(Color.RED, this!!.getPixel(50, 50))
@@ -141,10 +141,12 @@ class LruBitmapPoolTest {
 
             Assert.assertEquals("0B", size.formatFileSize())
             Assert.assertNull(get(100, 100, ARGB_8888))
+            Assert.assertFalse(exist(100, 100, ARGB_8888))
 
             put(Bitmap.createBitmap(100, 100, ARGB_8888).apply {
                 setPixel(50, 50, Color.RED)
             })
+            Assert.assertTrue(exist(100, 100, ARGB_8888))
             Assert.assertEquals("39.06KB", size.formatFileSize())
             get(100, 100, ARGB_8888).apply {
                 Assert.assertEquals(0, this!!.getPixel(50, 50))
@@ -159,12 +161,14 @@ class LruBitmapPoolTest {
             logger = Logger()
 
             Assert.assertEquals("0B", size.formatFileSize())
+            Assert.assertFalse(exist(100, 100, ARGB_8888))
             Assert.assertNotNull(getOrCreate(100, 100, ARGB_8888))
             Assert.assertEquals("0B", size.formatFileSize())
 
             put(Bitmap.createBitmap(100, 100, ARGB_8888).apply {
                 setPixel(50, 50, Color.RED)
             })
+            Assert.assertTrue(exist(100, 100, ARGB_8888))
             Assert.assertEquals("39.06KB", size.formatFileSize())
             getOrCreate(100, 100, ARGB_8888).apply {
                 Assert.assertEquals(0, this.getPixel(50, 50))

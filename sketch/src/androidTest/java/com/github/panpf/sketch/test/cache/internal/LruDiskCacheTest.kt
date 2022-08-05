@@ -3,7 +3,6 @@ package com.github.panpf.sketch.test.cache.internal
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
-import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newTestDiskCacheDirectory
 import com.github.panpf.sketch.util.formatFileSize

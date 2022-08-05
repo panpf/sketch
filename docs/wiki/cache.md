@@ -30,22 +30,44 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-#### 编辑
+#### 访问
 
 你可以通过 `sketch.downloadCache` 属性获取下载缓存实例来访问下载缓存。
 
 但要注意先获取编辑锁并且上锁再访问，这样能避免在多线程下出问题，如下：
 
 ```kotlin
-val lockKey = "...."
-val lock = context.diskCache.editLock(lockKey)
+val lockKey = "http://sample.com/sample.jpeg"
+val lock = context.sketch.diskCache.editLock(lockKey)
 lock.lock()
 try {
-    // ... 实现你的编辑逻辑
+    val diskCacheKey = "http://sample.com/sample.jpeg"
+
+    // edit
+    val editor: DiskCache.Editor = context.sketch.downloadCache.edit(diskCacheKey)
+    try {
+        editor.newOutputStream().use {
+            it.write("http://sample.com/sample.jpeg".toByteArray())
+        }
+        editor.commit()
+    } catch (e: Exception) {
+        editor.abort()
+    }
+
+    // get
+    val snapshot: Snapshot? = context.sketch.downloadCache.get(diskCacheKey)
+    snapshot?.newInputStream().use {
+        it.readBytes()
+    }
+
+    // exist
+    val exist: Boolean = context.sketch.downloadCache.exist(diskCacheKey)
 } finally {
     lock.unlock()
 }
 ```
+
+更多可用方法请参考 [DiskCache]
 
 #### 释放
 
@@ -89,22 +111,44 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-#### 编辑
+#### 访问
 
 你可以通过 `sketch.resultCache` 属性获取结果缓存实例来访问结果缓存。
 
 但要注意先获取编辑锁并且上锁再访问，这样能避免在多线程下出问题，如下：
 
 ```kotlin
-val lockKey = "...."
-val lock = context.resultCache.editLock(lockKey)
+val lockKey = "http://sample.com/sample.jpeg"
+val lock = context.sketch.resultCache.editLock(lockKey)
 lock.lock()
 try {
-    // ... 实现你的编辑逻辑
+    val diskCacheKey = "http://sample.com/sample.jpeg"
+
+    // edit
+    val editor: DiskCache.Editor = context.sketch.resultCache.edit(diskCacheKey)
+    try {
+        editor.newOutputStream().use {
+            it.write("http://sample.com/sample.jpeg".toByteArray())
+        }
+        editor.commit()
+    } catch (e: Exception) {
+        editor.abort()
+    }
+
+    // get
+    val snapshot: Snapshot? = context.sketch.resultCache.get(diskCacheKey)
+    snapshot?.newInputStream().use {
+        it.readBytes()
+    }
+
+    // exist
+    val exist: Boolean = context.sketch.resultCache.exist(diskCacheKey)
 } finally {
     lock.unlock()
 }
 ```
+
+更多可用方法请参考 [DiskCache]
 
 #### 释放
 
@@ -143,20 +187,24 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-#### 编辑
+#### 访问
 
-你可以通过 `sketch.diskCache` 属性获取 DiskCache 实例来访问磁盘缓存。但要注意先获取编辑锁并且上锁再访问，如下：
+你可以通过 `sketch.memoryCache` 属性获取内存缓存实例来访问内存缓存。
 
 ```kotlin
-val memoryCacheKey = "...."
-val lock = context.memoryCache.editLock(memoryCacheKey)
-lock.lock()
-try {
-    // ... 实现你的编辑逻辑
-} finally {
-    lock.unlock()
-}
+val memoryCacheKey = "http://sample.com/sample.jpeg"
+
+// put
+context.sketch.memoryCache.put(memoryCacheKey, CountBitmap())
+
+// get
+val countBitmap: CountBimtap? = context.sketch.memoryCache.get(memoryCacheKey)
+
+// exist
+val exist: Boolean = context.sketch.memoryCache.exist(memoryCacheKey)
 ```
+
+更多可用方法请参考 [MemoryCache]
 
 #### 释放
 

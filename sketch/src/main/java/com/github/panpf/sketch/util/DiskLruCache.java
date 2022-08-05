@@ -463,6 +463,23 @@ public final class DiskLruCache implements Closeable {
     }
 
     /**
+     * Returns exist of the entry named {@code key}
+     */
+    public synchronized boolean exist(String key) throws IOException {
+        checkNotClosed();
+        validateKey(key);
+        Entry entry = lruEntries.get(key);
+
+        redundantOpCount++;
+        journalWriter.append(READ + ' ' + key + '\n');
+        if (journalRebuildRequired()) {
+            executorService.submit(cleanupCallable);
+        }
+
+        return entry != null && entry.readable;
+    }
+
+    /**
      * Returns an editor for the entry named {@code key}, or null if another
      * edit is in progress.
      */

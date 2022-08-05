@@ -16,7 +16,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert

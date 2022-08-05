@@ -32,6 +32,12 @@ public class AttributeStrategy implements LruPoolStrategy {
         return groupedMap.get(key);
     }
 
+    @Override
+    public boolean exist(int width, int height, @Nullable Bitmap.Config config) {
+        final Key key = keyPool.get(width, height, config);
+        return groupedMap.exist(key);
+    }
+
     @Nullable
     @Override
     public Bitmap removeLast() {

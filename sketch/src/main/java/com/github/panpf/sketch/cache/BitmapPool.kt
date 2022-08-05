@@ -9,6 +9,8 @@ import com.github.panpf.sketch.util.Logger
  */
 interface BitmapPool {
 
+    var logger: Logger?
+
     /**
      * Maximum allowed sum of the size of the all cache
      */
@@ -18,8 +20,6 @@ interface BitmapPool {
      * Sum of the size of the all cache
      */
     val size: Long
-
-    var logger: Logger?
 
     /**
      * Puts the specified [bitmap] into the pool.
@@ -44,6 +44,11 @@ interface BitmapPool {
      * Get a reusable [Bitmap] if none is available, create a new one. Note that all colors are erased before returning.
      */
     fun getOrCreate(width: Int, height: Int, config: Bitmap.Config): Bitmap
+
+    /**
+     * Returns true if the specified configured Bitmap exists in the pool
+     */
+    fun exist(width: Int, height: Int, config: Bitmap.Config): Boolean
 
     /**
      * Trim memory based on the [level]

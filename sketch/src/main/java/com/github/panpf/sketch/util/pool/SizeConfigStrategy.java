@@ -99,6 +99,13 @@ public class SizeConfigStrategy implements LruPoolStrategy {
         return result;
     }
 
+    @Override
+    public boolean exist(int width, int height, @Nullable Bitmap.Config config) {
+        int size = BitmapUtilsKt.getBitmapByteSize(width, height, config);
+        Key bestKey = findBestKey(size, config);
+        return groupedMap.exist(bestKey);
+    }
+
     @NonNull
     private Key findBestKey(int size, @Nullable Bitmap.Config config) {
         Key result = keyPool.get(size, config);
