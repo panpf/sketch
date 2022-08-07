@@ -1,6 +1,6 @@
 # Decode Interceptor
 
-Sketch 的解码过程支持拦截器，你可以通过拦截器来拦截解码过程改变解码前后的输入和输出
+Sketch 的解码过程支持拦截器，您可以通过拦截器来拦截解码过程改变解码前后的输入和输出
 
 Sketch 将解码分为 Drawable 和 Bitmap 两种，因此拦截也同样分为两种 [BitmapDecodeInterceptor]
 和 [DrawableDecodeInterceptor]，如下：

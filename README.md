@@ -162,6 +162,7 @@ AsyncImage(
 * [LoadRequest：加载图片获取 Bitmap][load_request]
 * [预加载图片到内存][preloading]
 * [Lifecycle][lifecycle]
+* [Jetpack Compose][jetpack_compose]
 
 特色功能：
 
@@ -290,6 +291,8 @@ AsyncImage(
 [log]: docs/wiki/log.md
 
 [Lifecycle]: docs/wiki/lifecycle.md
+
+[jetpack_compose]: docs/wiki/jetpack_compose.md
 
 
 [comment]: <> (links)

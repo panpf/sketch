@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.photo.pexels.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells.Fixed
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -26,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.model.Photo
@@ -41,28 +41,81 @@ import kotlinx.coroutines.flow.Flow
 fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Boolean = false) {
     val items = photoPagingFlow.collectAsLazyPagingItems()
     LazyVerticalGrid(Fixed(3)) {
-        itemsIndexed(items) { _, photo ->
-            photo?.let { PhotoContent(it, disabledCache) }
+        itemsIndexed(items) { index, photo ->
+            photo?.let { PhotoContent(index, it, disabledCache) }
         }
     }
 }
 
 @Composable
-fun PhotoContent(photo: Photo, disabledCache: Boolean = false) {
+fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
     val itemSizeDp = LocalContext.current.getScreenWidth().px2dp / 3
-    AsyncImage(
-        imageUri = photo.firstThumbnailUrl,
-        modifier = Modifier.size(itemSizeDp.dp, itemSizeDp.dp),
-        contentScale = ContentScale.Crop,
-        contentDescription = ""
-    ) {
-        placeholder(IconStateImage(drawable.ic_image_outline, ResColor(color.placeholder_bg)))
-        error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
-        crossfade()
-        if (disabledCache) {
-            downloadCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            memoryCachePolicy(DISABLED)
+    when (index % 3) {
+        0 -> {
+            com.github.panpf.sketch.compose.AsyncImage(
+                imageUri = photo.firstThumbnailUrl,
+                modifier = Modifier.size(itemSizeDp.dp, itemSizeDp.dp),
+                contentScale = ContentScale.Crop,
+                contentDescription = ""
+            ) {
+                placeholder(
+                    IconStateImage(
+                        drawable.ic_image_outline,
+                        ResColor(color.placeholder_bg)
+                    )
+                )
+                error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
+                crossfade()
+                if (disabledCache) {
+                    downloadCachePolicy(DISABLED)
+                    resultCachePolicy(DISABLED)
+                    memoryCachePolicy(DISABLED)
+                }
+            }
+        }
+        1 -> {
+            com.github.panpf.sketch.compose.SubcomposeAsyncImage(
+                imageUri = photo.firstThumbnailUrl,
+                modifier = Modifier.size(itemSizeDp.dp, itemSizeDp.dp),
+                contentScale = ContentScale.Crop,
+                contentDescription = ""
+            ) {
+                placeholder(
+                    IconStateImage(
+                        drawable.ic_image_outline,
+                        ResColor(color.placeholder_bg)
+                    )
+                )
+                error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
+                crossfade()
+                if (disabledCache) {
+                    downloadCachePolicy(DISABLED)
+                    resultCachePolicy(DISABLED)
+                    memoryCachePolicy(DISABLED)
+                }
+            }
+        }
+        else -> {
+            Image(
+                painter = com.github.panpf.sketch.compose.rememberAsyncImagePainter(imageUri = photo.firstThumbnailUrl) {
+                    placeholder(
+                        IconStateImage(
+                            drawable.ic_image_outline,
+                            ResColor(color.placeholder_bg)
+                        )
+                    )
+                    error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
+                    crossfade()
+                    if (disabledCache) {
+                        downloadCachePolicy(DISABLED)
+                        resultCachePolicy(DISABLED)
+                        memoryCachePolicy(DISABLED)
+                    }
+                },
+                modifier = Modifier.size(itemSizeDp.dp, itemSizeDp.dp),
+                contentScale = ContentScale.Crop,
+                contentDescription = ""
+            )
         }
     }
 }

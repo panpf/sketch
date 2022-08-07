@@ -8,11 +8,11 @@ Sketch 的 [BitmapPool] 组件为复用 Bitmap 功能提供了 Bitmap 池服务�
 * 根据最少使用原则释放旧的 Bitmap
 * 最大容量是 6 个屏幕大小和最大可用内存的三分之一中的小者的三分之一
 
-> 你可以在初始化 Sketch 时创建 [LruBitmapPool] 并修改最大容量，然后通过 bitmapPool() 方法注册
+> 您可以在初始化 Sketch 时创建 [LruBitmapPool] 并修改最大容量，然后通过 bitmapPool() 方法注册
 
 ### 禁用
 
-Sketch 默认开启了复用 Bitmap 功能，你可以通过 [ImageRequest] 或 [ImageOptions] 的 disallowReuseBitmap 函数禁用它:
+Sketch 默认开启了复用 Bitmap 功能，您可以通过 [ImageRequest] 或 [ImageOptions] 的 disallowReuseBitmap 函数禁用它:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
