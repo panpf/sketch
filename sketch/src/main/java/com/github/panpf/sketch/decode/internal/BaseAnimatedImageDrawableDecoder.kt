@@ -93,28 +93,34 @@ abstract class BaseAnimatedImageDrawableDecoder(
 
         var imageInfo: ImageInfo? = null
         var inSampleSize = 1
-        val drawable = ImageDecoder.decodeDrawable(source) { decoder, info, _ ->
-            imageInfo = ImageInfo(
-                info.size.width,
-                info.size.height,
-                info.mimeType,
-                ExifInterface.ORIENTATION_UNDEFINED
-            )
-            val resize = request.resize
-            if (resize != null) {
-                inSampleSize = calculateSampleSize(
-                    imageSize = Size(info.size.width, info.size.height),
-                    targetSize = Size(resize.width, resize.height)
+        var imageDecoder: ImageDecoder? = null
+        val drawable = try {
+            ImageDecoder.decodeDrawable(source) { decoder, info, _ ->
+                imageDecoder = decoder
+                imageInfo = ImageInfo(
+                    info.size.width,
+                    info.size.height,
+                    info.mimeType,
+                    ExifInterface.ORIENTATION_UNDEFINED
                 )
-                decoder.setTargetSampleSize(inSampleSize)
+                val resize = request.resize
+                if (resize != null) {
+                    inSampleSize = calculateSampleSize(
+                        imageSize = Size(info.size.width, info.size.height),
+                        targetSize = Size(resize.width, resize.height)
+                    )
+                    decoder.setTargetSampleSize(inSampleSize)
 
-                request.colorSpace?.let {
-                    decoder.setTargetColorSpace(it)
+                    request.colorSpace?.let {
+                        decoder.setTargetColorSpace(it)
+                    }
+
+                    // Set the animated transformation to be applied on each frame.
+                    decoder.postProcessor = request.animatedTransformation?.asPostProcessor()
                 }
-
-                // Set the animated transformation to be applied on each frame.
-                decoder.postProcessor = request.animatedTransformation?.asPostProcessor()
             }
+        } finally {
+            imageDecoder?.close()
         }
         if (drawable !is AnimatedImageDrawable) {
             throw Exception("Only support AnimatedImageDrawable")
