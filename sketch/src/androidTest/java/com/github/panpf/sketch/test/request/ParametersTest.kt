@@ -310,14 +310,14 @@ class ParametersTest {
     @Test
     fun testToString() {
         Parameters.Builder().build().apply {
-            Assert.assertEquals("Parameters(map={})", toString())
+            Assert.assertEquals("Parameters({})", toString())
         }
 
         Parameters.Builder().apply {
             set("key1", "value1")
         }.build().apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1)})",
                 toString()
             )
         }
@@ -327,7 +327,7 @@ class ParametersTest {
             set("key2", "value2")
         }.build().apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1), key2=Entry(value=value2, cacheKey=value2)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1), key2=Entry(value=value2, cacheKey=value2)})",
                 toString()
             )
         }
@@ -336,21 +336,21 @@ class ParametersTest {
     @Test
     fun testNewBuilder() {
         Parameters.Builder().build().apply {
-            Assert.assertEquals("Parameters(map={})", toString())
+            Assert.assertEquals("Parameters({})", toString())
         }.newBuilder().build().apply {
-            Assert.assertEquals("Parameters(map={})", toString())
+            Assert.assertEquals("Parameters({})", toString())
         }.newBuilder {
             set("key1", "value1")
         }.build().apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1)})",
                 toString()
             )
         }.newBuilder {
             set("key2", "value2")
         }.build().apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1), key2=Entry(value=value2, cacheKey=value2)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1), key2=Entry(value=value2, cacheKey=value2)})",
                 toString()
             )
         }
@@ -359,21 +359,21 @@ class ParametersTest {
     @Test
     fun testNewParameters() {
         Parameters.Builder().build().apply {
-            Assert.assertEquals("Parameters(map={})", toString())
+            Assert.assertEquals("Parameters({})", toString())
         }.newParameters().apply {
-            Assert.assertEquals("Parameters(map={})", toString())
+            Assert.assertEquals("Parameters({})", toString())
         }.newParameters {
             set("key1", "value1")
         }.apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1)})",
                 toString()
             )
         }.newParameters {
             set("key2", "value2", "value2")
         }.apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1), key2=Entry(value=value2, cacheKey=value2)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1), key2=Entry(value=value2, cacheKey=value2)})",
                 toString()
             )
         }
@@ -382,14 +382,14 @@ class ParametersTest {
     @Test
     fun testMerged() {
         val parameters0 = Parameters.Builder().build().apply {
-            Assert.assertEquals("Parameters(map={})", toString())
+            Assert.assertEquals("Parameters({})", toString())
         }
 
         val parameters1 = Parameters.Builder().apply {
             set("key1", "value1")
         }.build().apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1)})",
                 toString()
             )
         }
@@ -398,7 +398,7 @@ class ParametersTest {
             set("key1", "value11")
         }.build().apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value11, cacheKey=value11)})",
+                "Parameters({key1=Entry(value=value11, cacheKey=value11)})",
                 toString()
             )
         }
@@ -408,30 +408,30 @@ class ParametersTest {
             set("key22", "value22")
         }.build().apply {
             Assert.assertEquals(
-                "Parameters(map={key21=Entry(value=value21, cacheKey=value21), key22=Entry(value=value22, cacheKey=value22)})",
+                "Parameters({key21=Entry(value=value21, cacheKey=value21), key22=Entry(value=value22, cacheKey=value22)})",
                 toString()
             )
         }
 
         parameters0.merged(parameters0).apply {
-            Assert.assertEquals("Parameters(map={})", toString())
+            Assert.assertEquals("Parameters({})", toString())
         }
         parameters0.merged(parameters1).apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1)})",
                 toString()
             )
         }
         parameters0.merged(parameters2).apply {
             Assert.assertEquals(
-                "Parameters(map={key21=Entry(value=value21, cacheKey=value21), key22=Entry(value=value22, cacheKey=value22)})",
+                "Parameters({key21=Entry(value=value21, cacheKey=value21), key22=Entry(value=value22, cacheKey=value22)})",
                 toString()
             )
         }
 
         parameters1.merged(parameters2).apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1), key21=Entry(value=value21, cacheKey=value21), key22=Entry(value=value22, cacheKey=value22)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1), key21=Entry(value=value21, cacheKey=value21), key22=Entry(value=value22, cacheKey=value22)})",
                 toString()
             )
         }
@@ -442,13 +442,13 @@ class ParametersTest {
 
         parameters1.merged(parameters11).apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value1, cacheKey=value1)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1)})",
                 toString()
             )
         }
         parameters11.merged(parameters1).apply {
             Assert.assertEquals(
-                "Parameters(map={key1=Entry(value=value11, cacheKey=value11)})",
+                "Parameters({key1=Entry(value=value11, cacheKey=value11)})",
                 toString()
             )
         }
