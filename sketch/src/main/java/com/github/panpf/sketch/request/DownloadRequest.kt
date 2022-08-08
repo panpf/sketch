@@ -390,8 +390,8 @@ interface DownloadRequest : ImageRequest {
             super.error(configBlock)
         }
 
-        override fun transition(transition: Factory?): Builder = apply {
-            super.transition(transition)
+        override fun transitionFactory(transitionFactory: Factory?): Builder = apply {
+            super.transitionFactory(transitionFactory)
         }
 
         override fun crossfade(
@@ -450,7 +450,7 @@ interface DownloadRequest : ImageRequest {
         override val resultCachePolicy: CachePolicy,
         override val placeholder: StateImage?,
         override val error: ErrorStateImage?,
-        override val transition: Factory?,
+        override val transitionFactory: Factory?,
         override val disallowAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,
         override val memoryCachePolicy: CachePolicy,

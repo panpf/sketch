@@ -1274,14 +1274,14 @@ class DisplayRequestExecuteTest {
 
         Assert.assertTrue(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
-            transition(CrossfadeTransition.Factory())
+            transitionFactory(CrossfadeTransition.Factory())
         }.let { runBlocking { sketch.enqueue(it).job.join() } }
         Assert.assertFalse(testTarget.drawable!! is CrossfadeDrawable)
 
         memoryCache.clear()
         Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newDisplayRequest {
-            transition(CrossfadeTransition.Factory())
+            transitionFactory(CrossfadeTransition.Factory())
         }.let { runBlocking { sketch.enqueue(it).job.join() } }
         Assert.assertTrue(testTarget.drawable!! is CrossfadeDrawable)
     }

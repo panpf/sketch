@@ -124,7 +124,7 @@ class DownloadRequestTest {
             Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
             Assert.assertNull(this.error)
-            Assert.assertNull(this.transition)
+            Assert.assertNull(this.transitionFactory)
             Assert.assertFalse(this.disallowAnimatedImage)
             Assert.assertFalse(this.resizeApplyToDrawable)
             Assert.assertEquals(ENABLED, this.memoryCachePolicy)
@@ -416,7 +416,7 @@ class DownloadRequestTest {
                 Assert.assertEquals(Resize(100, 50, EXACTLY, CENTER_CROP), resize)
                 Assert.assertEquals(DISABLED, memoryCachePolicy)
                 Assert.assertEquals(listOf(CircleCropTransformation()), transformations)
-                Assert.assertEquals(CrossfadeTransition.Factory(), transition)
+                Assert.assertEquals(CrossfadeTransition.Factory(), transitionFactory)
             }
 
             merge(ImageOptions {
@@ -426,7 +426,7 @@ class DownloadRequestTest {
                 Assert.assertEquals(Resize(100, 50, EXACTLY, CENTER_CROP), resize)
                 Assert.assertEquals(DISABLED, memoryCachePolicy)
                 Assert.assertEquals(listOf(CircleCropTransformation()), transformations)
-                Assert.assertEquals(CrossfadeTransition.Factory(), transition)
+                Assert.assertEquals(CrossfadeTransition.Factory(), transitionFactory)
             }
         }
     }
@@ -1345,22 +1345,22 @@ class DownloadRequestTest {
     }
 
     @Test
-    fun testTransition() {
+    fun testTransitionFactory() {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         DownloadRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertNull(transition)
+                Assert.assertNull(transitionFactory)
             }
 
-            transition(CrossfadeTransition.Factory())
+            transitionFactory(CrossfadeTransition.Factory())
             build().apply {
-                Assert.assertEquals(CrossfadeTransition.Factory(), transition)
+                Assert.assertEquals(CrossfadeTransition.Factory(), transitionFactory)
             }
 
-            transition(null)
+            transitionFactory(null)
             build().apply {
-                Assert.assertNull(transition)
+                Assert.assertNull(transitionFactory)
             }
         }
     }

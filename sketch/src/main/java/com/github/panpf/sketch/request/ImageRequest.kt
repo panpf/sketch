@@ -212,7 +212,7 @@ interface ImageRequest {
     /**
      * How the current image and the new image transition
      */
-    val transition: Transition.Factory?
+    val transitionFactory: Transition.Factory?
 
     /**
      * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
@@ -241,8 +241,8 @@ interface ImageRequest {
             resizeSize?.takeIf { it.width > 0 && it.height > 0 }?.let {
                 Resize(
                     width = it.width, height = it.height,
-                    precision = resizePrecisionDecider,
-                    scale = resizeScaleDecider
+                    precisionDecider = resizePrecisionDecider,
+                    scaleDecider = resizeScaleDecider
                 )
             }
         }
@@ -728,8 +728,8 @@ interface ImageRequest {
         /**
          * Set the transition between the current image and the new image
          */
-        open fun transition(transition: Transition.Factory?): Builder = apply {
-            definedOptionsBuilder.transition(transition)
+        open fun transitionFactory(transitionFactory: Transition.Factory?): Builder = apply {
+            definedOptionsBuilder.transitionFactory(transitionFactory)
         }
 
         /**
@@ -817,7 +817,7 @@ interface ImageRequest {
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
             val placeholder = finalOptions.placeholder
             val error = finalOptions.error
-            val transition = finalOptions.transition
+            val transitionFactory = finalOptions.transitionFactory
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: ENABLED
@@ -850,7 +850,7 @@ interface ImageRequest {
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholder = placeholder,
                         error = error,
-                        transition = transition,
+                        transitionFactory = transitionFactory,
                         disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
                         memoryCachePolicy = memoryCachePolicy,
@@ -883,7 +883,7 @@ interface ImageRequest {
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholder = placeholder,
                         error = error,
-                        transition = transition,
+                        transitionFactory = transitionFactory,
                         disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
                         memoryCachePolicy = memoryCachePolicy,
@@ -916,7 +916,7 @@ interface ImageRequest {
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholder = placeholder,
                         error = error,
-                        transition = transition,
+                        transitionFactory = transitionFactory,
                         disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
                         memoryCachePolicy = memoryCachePolicy,

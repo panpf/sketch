@@ -45,7 +45,7 @@ import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transform.Transformation
-import com.github.panpf.sketch.transition.Transition.Factory
+import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 
 class TestRequest(
@@ -63,7 +63,7 @@ class TestRequest(
     override val downloadCachePolicy: CachePolicy,
     override val bitmapConfig: BitmapConfig?,
     override val colorSpace: ColorSpace?,
-    override val preferQualityOverSpeed: Boolean,
+    @Suppress("OVERRIDE_DEPRECATION") override val preferQualityOverSpeed: Boolean,
     override val resizeSize: Size?,
     override val resizeSizeResolver: SizeResolver?,
     override val resizePrecisionDecider: PrecisionDecider,
@@ -74,7 +74,7 @@ class TestRequest(
     override val resultCachePolicy: CachePolicy,
     override val placeholder: StateImage?,
     override val error: ErrorStateImage?,
-    override val transition: Factory?,
+    override val transitionFactory: Transition.Factory?,
     override val disallowAnimatedImage: Boolean,
     override val resizeApplyToDrawable: Boolean,
     override val memoryCachePolicy: CachePolicy
@@ -109,7 +109,7 @@ class TestRequest(
         resultCachePolicy = ENABLED,
         placeholder = null,
         error = null,
-        transition = null,
+        transitionFactory = null,
         disallowAnimatedImage = true,
         resizeApplyToDrawable = true,
         memoryCachePolicy = ENABLED

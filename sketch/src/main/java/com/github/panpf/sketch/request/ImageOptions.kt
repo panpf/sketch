@@ -183,7 +183,7 @@ interface ImageOptions {
     /**
      * How the current image and the new image transition
      */
-    val transition: Transition.Factory?
+    val transitionFactory: Transition.Factory?
 
     /**
      * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
@@ -252,7 +252,7 @@ interface ImageOptions {
             && resultCachePolicy == null
             && placeholder == null
             && error == null
-            && transition == null
+            && transitionFactory == null
             && disallowAnimatedImage == null
             && resizeApplyToDrawable == null
             && memoryCachePolicy == null
@@ -278,7 +278,7 @@ interface ImageOptions {
 
         private var placeholder: StateImage? = null
         private var error: ErrorStateImage? = null
-        private var transition: Transition.Factory? = null
+        private var transitionFactory: Transition.Factory? = null
         private var disallowAnimatedImage: Boolean? = null
         private var resizeApplyToDrawable: Boolean? = null
         private var memoryCachePolicy: CachePolicy? = null
@@ -308,7 +308,7 @@ interface ImageOptions {
 
             this.placeholder = request.placeholder
             this.error = request.error
-            this.transition = request.transition
+            this.transitionFactory = request.transitionFactory
             this.disallowAnimatedImage = request.disallowAnimatedImage
             this.resizeApplyToDrawable = request.resizeApplyToDrawable
             this.memoryCachePolicy = request.memoryCachePolicy
@@ -691,8 +691,8 @@ interface ImageOptions {
         /**
          * Set the transition between the current image and the new image
          */
-        fun transition(transition: Transition.Factory?): Builder = apply {
-            this.transition = transition
+        fun transitionFactory(transitionFactory: Transition.Factory?): Builder = apply {
+            this.transitionFactory = transitionFactory
         }
 
         /**
@@ -703,12 +703,8 @@ interface ImageOptions {
             preferExactIntrinsicSize: Boolean = false,
             alwaysUse: Boolean = false,
         ): Builder = apply {
-            transition(
-                CrossfadeTransition.Factory(
-                    durationMillis,
-                    preferExactIntrinsicSize,
-                    alwaysUse
-                )
+            transitionFactory(
+                CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize, alwaysUse)
             )
         }
 
@@ -792,8 +788,8 @@ interface ImageOptions {
             if (this.error == null) {
                 this.error = options.error
             }
-            if (this.transition == null) {
-                this.transition = options.transition
+            if (this.transitionFactory == null) {
+                this.transitionFactory = options.transitionFactory
             }
             if (this.disallowAnimatedImage == null) {
                 this.disallowAnimatedImage = options.disallowAnimatedImage
@@ -825,7 +821,7 @@ interface ImageOptions {
             ignoreExifOrientation = ignoreExifOrientation,
             placeholder = placeholder,
             error = error,
-            transition = transition,
+            transitionFactory = transitionFactory,
             disallowAnimatedImage = disallowAnimatedImage,
             resizeApplyToDrawable = resizeApplyToDrawable,
             memoryCachePolicy = memoryCachePolicy,
@@ -853,7 +849,7 @@ interface ImageOptions {
         override val resultCachePolicy: CachePolicy?,
         override val placeholder: StateImage?,
         override val error: ErrorStateImage?,
-        override val transition: Transition.Factory?,
+        override val transitionFactory: Transition.Factory?,
         override val disallowAnimatedImage: Boolean?,
         override val resizeApplyToDrawable: Boolean?,
         override val memoryCachePolicy: CachePolicy?,
@@ -879,7 +875,7 @@ interface ImageOptions {
             if (resultCachePolicy != other.resultCachePolicy) return false
             if (placeholder != other.placeholder) return false
             if (error != other.error) return false
-            if (transition != other.transition) return false
+            if (transitionFactory != other.transitionFactory) return false
             if (disallowAnimatedImage != other.disallowAnimatedImage) return false
             if (resizeApplyToDrawable != other.resizeApplyToDrawable) return false
             if (memoryCachePolicy != other.memoryCachePolicy) return false
@@ -907,7 +903,7 @@ interface ImageOptions {
             result = 31 * result + (resultCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (placeholder?.hashCode() ?: 0)
             result = 31 * result + (error?.hashCode() ?: 0)
-            result = 31 * result + (transition?.hashCode() ?: 0)
+            result = 31 * result + (transitionFactory?.hashCode() ?: 0)
             result = 31 * result + (disallowAnimatedImage?.hashCode() ?: 0)
             result = 31 * result + (resizeApplyToDrawable?.hashCode() ?: 0)
             result = 31 * result + (memoryCachePolicy?.hashCode() ?: 0)
@@ -936,7 +932,7 @@ interface ImageOptions {
                 append("resultCachePolicy=$resultCachePolicy, ")
                 append("placeholder=$placeholder, ")
                 append("error=$error, ")
-                append("transition=$transition, ")
+                append("transition=$transitionFactory, ")
                 append("disallowAnimatedImage=$disallowAnimatedImage, ")
                 append("resizeApplyToDrawable=$resizeApplyToDrawable")
                 append("memoryCachePolicy=$memoryCachePolicy, ")

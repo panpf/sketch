@@ -10,7 +10,7 @@
 imageView.displayImage("https://www.sample.com/image.jpg") {
     crossfade()
     // 或
-    transition(CrossfadeTransition.Factory())
+    transitionFactory(CrossfadeTransition.Factory())
 }
 ```
 

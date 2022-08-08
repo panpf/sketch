@@ -108,7 +108,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
             Assert.assertNull(this.error)
-            Assert.assertNull(this.transition)
+            Assert.assertNull(this.transitionFactory)
             Assert.assertNull(this.disallowAnimatedImage)
             Assert.assertNull(this.resizeApplyToDrawable)
             Assert.assertNull(this.memoryCachePolicy)
@@ -255,11 +255,11 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            transition(CrossfadeTransition.Factory())
+            transitionFactory(CrossfadeTransition.Factory())
         }.apply {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
-            Assert.assertNotNull(this.transition)
+            Assert.assertNotNull(this.transitionFactory)
         }
 
         ImageOptions {
@@ -592,15 +592,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.transition)
+            Assert.assertEquals(null, this.transitionFactory)
         }.merged(ImageOptions {
-            transition(CrossfadeTransition.Factory())
+            transitionFactory(CrossfadeTransition.Factory())
         }).apply {
-            Assert.assertEquals(CrossfadeTransition.Factory(), this.transition)
+            Assert.assertEquals(CrossfadeTransition.Factory(), this.transitionFactory)
         }.merged(ImageOptions {
-            transition(TestTransition.Factory())
+            transitionFactory(TestTransition.Factory())
         }).apply {
-            Assert.assertEquals(CrossfadeTransition.Factory(), this.transition)
+            Assert.assertEquals(CrossfadeTransition.Factory(), this.transitionFactory)
         }
 
         ImageOptions().apply {
@@ -676,7 +676,7 @@ class ImageOptionsTest {
                 }.apply { add(this) }.newOptions {
                     error(android.R.drawable.btn_dialog)
                 }.apply { add(this) }.newOptions {
-                    transition(CrossfadeTransition.Factory())
+                    transitionFactory(CrossfadeTransition.Factory())
                 }.apply { add(this) }.newOptions {
                     resizeApplyToDrawable(true)
                 }.apply { add(this) }.newOptions {
@@ -1500,17 +1500,17 @@ class ImageOptionsTest {
     fun testTransition() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(transition)
+                Assert.assertNull(transitionFactory)
             }
 
-            transition(CrossfadeTransition.Factory())
+            transitionFactory(CrossfadeTransition.Factory())
             build().apply {
-                Assert.assertEquals(CrossfadeTransition.Factory(), transition)
+                Assert.assertEquals(CrossfadeTransition.Factory(), transitionFactory)
             }
 
-            transition(null)
+            transitionFactory(null)
             build().apply {
-                Assert.assertNull(transition)
+                Assert.assertNull(transitionFactory)
             }
         }
     }

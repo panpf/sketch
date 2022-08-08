@@ -247,13 +247,13 @@ class RequestExecutor {
 
         val fitScale =
             target.asOrNull<ViewDisplayTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
-        val transition = result.request.transition?.create(target, result, fitScale)
-        if (transition == null) {
+        val transitionFactory = result.request.transitionFactory?.create(target, result, fitScale)
+        if (transitionFactory == null) {
             setDrawable()
             return
         }
 
-        transition.transition()
+        transitionFactory.transition()
     }
 
     private fun getErrorDrawable(
