@@ -25,6 +25,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageRequest.Builder
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.svgBackgroundColor
+import com.github.panpf.sketch.request.svgCss
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -81,6 +82,59 @@ class SvgExtensionsTest {
         val cacheKey1 = LoadRequest(context, newAssetUri("sample.svg")).cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample.svg")) {
             svgBackgroundColor(Color.BLUE)
+        }.cacheKey
+        Assert.assertNotEquals(cacheKey1, cacheKey2)
+    }
+
+    @Test
+    fun testSvgCss() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+
+        (DisplayRequest(context, newAssetUri("sample.svg")) as ImageRequest).apply {
+            Assert.assertNull(svgCss)
+        }
+        (DisplayRequest(context, newAssetUri("sample.svg")) {
+            (this as Builder).svgCss("css1")
+        } as ImageRequest).apply {
+            Assert.assertEquals("css1", svgCss)
+        }
+
+        DisplayRequest(context, newAssetUri("sample.svg")).apply {
+            Assert.assertNull(svgCss)
+        }
+        DisplayRequest(context, newAssetUri("sample.svg")) {
+            svgCss("css1")
+        }.apply {
+            Assert.assertEquals("css1", svgCss)
+        }
+
+        LoadRequest(context, newAssetUri("sample.svg")).apply {
+            Assert.assertNull(svgCss)
+        }
+        LoadRequest(context, newAssetUri("sample.svg")) {
+            svgCss("css1")
+        }.apply {
+            Assert.assertEquals("css1", svgCss)
+        }
+
+        ImageOptions().apply {
+            Assert.assertNull(svgCss)
+        }
+        ImageOptions {
+            svgCss("css1")
+        }.apply {
+            Assert.assertEquals("css1", svgCss)
+        }
+
+        val key1 = LoadRequest(context, newAssetUri("sample.svg")).key
+        val key2 = LoadRequest(context, newAssetUri("sample.svg")) {
+            svgCss("css1")
+        }.key
+        Assert.assertNotEquals(key1, key2)
+
+        val cacheKey1 = LoadRequest(context, newAssetUri("sample.svg")).cacheKey
+        val cacheKey2 = LoadRequest(context, newAssetUri("sample.svg")) {
+            svgCss("css1")
         }.cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }

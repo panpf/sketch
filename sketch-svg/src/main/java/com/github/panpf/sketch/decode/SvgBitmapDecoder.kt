@@ -22,6 +22,7 @@ import android.graphics.RectF
 import android.os.Build.VERSION
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
@@ -32,17 +33,19 @@ import com.github.panpf.sketch.fetch.internal.isSvg
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
+import com.github.panpf.sketch.request.svgCss
 import kotlin.math.roundToInt
 
 /**
  * Decode svg file and convert to Bitmap
  */
-class SvgBitmapDecoder(
+class SvgBitmapDecoder constructor(
     private val sketch: Sketch,
     private val request: ImageRequest,
     private val dataSource: DataSource,
     private val useViewBoundsAsIntrinsicSize: Boolean = true,
     private val backgroundColor: Int?,
+    private val css: String?,
 ) : BitmapDecoder {
 
     companion object {
@@ -117,7 +120,8 @@ class SvgBitmapDecoder(
                 drawColor(it)
             }
         }
-        svg.renderToCanvas(canvas)
+        val renderOptions = css?.let { RenderOptions().css(it) }
+        svg.renderToCanvas(canvas, renderOptions)
         return bitmap
     }
 
@@ -145,7 +149,8 @@ class SvgBitmapDecoder(
                     request = request,
                     dataSource = fetchResult.dataSource,
                     useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
-                    backgroundColor = request.svgBackgroundColor
+                    backgroundColor = request.svgBackgroundColor,
+                    css = request.svgCss
                 )
             } else {
                 null

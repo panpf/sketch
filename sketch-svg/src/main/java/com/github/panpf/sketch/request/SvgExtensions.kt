@@ -18,6 +18,7 @@ package com.github.panpf.sketch.request
 import androidx.annotation.ColorInt
 
 private const val SVG_BACKGROUND_COLOR_KEY = "sketch#svg_background_color"
+private const val SVG_CSS_KEY = "sketch#svg_css"
 
 /**
  * Set the background color of the SVG image, the default is transparent
@@ -59,3 +60,45 @@ fun ImageOptions.Builder.svgBackgroundColor(@ColorInt color: Int) = apply {
  */
 val ImageOptions.svgBackgroundColor: Int?
     get() = parameters?.value<Int>(SVG_BACKGROUND_COLOR_KEY)
+
+
+/**
+ * Set the background color of the SVG image, the default is transparent
+ */
+fun ImageRequest.Builder.svgCss(css: String): ImageRequest.Builder = apply {
+    setParameter(SVG_CSS_KEY, css)
+}
+
+/**
+ * Set the background color of the SVG image, the default is transparent
+ */
+fun DisplayRequest.Builder.svgCss(css: String): DisplayRequest.Builder =
+    apply {
+        setParameter(SVG_CSS_KEY, css)
+    }
+
+/**
+ * Set the background color of the SVG image, the default is transparent
+ */
+fun LoadRequest.Builder.svgCss(css: String): LoadRequest.Builder = apply {
+    setParameter(SVG_CSS_KEY, css)
+}
+
+/**
+ * Get the background color of the SVG image
+ */
+val ImageRequest.svgCss: String?
+    get() = parameters?.value<String>(SVG_CSS_KEY)
+
+/**
+ * Set the background color of the SVG image, the default is transparent
+ */
+fun ImageOptions.Builder.svgCss(css: String) = apply {
+    setParameter(SVG_CSS_KEY, css)
+}
+
+/**
+ * Get the background color of the SVG image
+ */
+val ImageOptions.svgCss: String?
+    get() = parameters?.value<String>(SVG_CSS_KEY)
