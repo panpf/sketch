@@ -17,6 +17,7 @@ package com.github.panpf.sketch.video.ffmpeg.test.decode
 
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -34,6 +35,7 @@ import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.video.ffmpeg.test.utils.corners
+import com.github.panpf.tools4a.rom.Romx
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -102,6 +104,15 @@ class FFmpegVideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecode() {
+        if (Build.VERSION.SDK_INT < 24
+            && Romx.isAndroid()
+            && Build.SUPPORTED_64_BIT_ABIS.plus(Build.SUPPORTED_32_BIT_ABIS)
+                .any { it.startsWith("arm") }
+        ) {
+            // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
+            return
+        }
+
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val factory = FFmpegVideoFrameBitmapDecoder.Factory()
@@ -154,6 +165,15 @@ class FFmpegVideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecodeVideoFrameMicros() {
+        if (Build.VERSION.SDK_INT < 24
+            && Romx.isAndroid()
+            && Build.SUPPORTED_64_BIT_ABIS.plus(Build.SUPPORTED_32_BIT_ABIS)
+                .any { it.startsWith("arm") }
+        ) {
+            // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
+            return
+        }
+
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val sketch = context.sketch
@@ -198,6 +218,15 @@ class FFmpegVideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecodeVideoPercentDuration() {
+        if (Build.VERSION.SDK_INT < 24
+            && Romx.isAndroid()
+            && Build.SUPPORTED_64_BIT_ABIS.plus(Build.SUPPORTED_32_BIT_ABIS)
+                .any { it.startsWith("arm") }
+        ) {
+            // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
+            return
+        }
+
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val sketch = context.sketch
@@ -242,6 +271,15 @@ class FFmpegVideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecodeVideoOption() {
+        if (Build.VERSION.SDK_INT < 24
+            && Romx.isAndroid()
+            && Build.SUPPORTED_64_BIT_ABIS.plus(Build.SUPPORTED_32_BIT_ABIS)
+                .any { it.startsWith("arm") }
+        ) {
+            // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
+            return
+        }
+
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val sketch = context.sketch

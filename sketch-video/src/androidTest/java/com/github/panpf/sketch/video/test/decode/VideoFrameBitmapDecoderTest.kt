@@ -49,6 +49,8 @@ class VideoFrameBitmapDecoderTest {
 
     @Test
     fun testFactory() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val factory = VideoFrameBitmapDecoder.Factory()
@@ -89,6 +91,8 @@ class VideoFrameBitmapDecoderTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+
         val element1 = VideoFrameBitmapDecoder.Factory()
         val element11 = VideoFrameBitmapDecoder.Factory()
 
@@ -106,6 +110,8 @@ class VideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecode() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
         val factory = VideoFrameBitmapDecoder.Factory()
@@ -194,6 +200,8 @@ class VideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecodeVideoFrameMicros() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val sketch = context.sketch
@@ -238,6 +246,8 @@ class VideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecodeVideoFramePercent() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val sketch = context.sketch
@@ -282,6 +292,8 @@ class VideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecodeVideoOption() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val sketch = context.sketch

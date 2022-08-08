@@ -23,6 +23,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.VideoItemBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 
@@ -35,8 +36,8 @@ class LocalVideoItemFactory :
         item: BindingItem<VideoInfo, VideoItemBinding>
     ) {
         binding.videoItemIconImage.updateDisplayImageOptions {
-            placeholder(R.drawable.im_placeholder)
-            error(R.drawable.im_error) {
+            placeholder(IconStateImage(R.drawable.ic_image_outline, R.color.placeholder_bg))
+            error(IconStateImage(R.drawable.ic_error, R.color.placeholder_bg)) {
                 saveCellularTrafficError(R.drawable.im_save_cellular_traffic)
                 pauseLoadWhenScrollingError()
             }

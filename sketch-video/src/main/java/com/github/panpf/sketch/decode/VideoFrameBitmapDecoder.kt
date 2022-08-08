@@ -35,7 +35,6 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
-import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 
 /**
@@ -57,16 +56,11 @@ class VideoFrameBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
-        val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
-            MediaMetadataRetriever().apply {
-                if (dataSource is ContentDataSource) {
-                    setDataSource(request.context, dataSource.contentUri)
-                } else {
-                    val file = runBlocking {
-                        dataSource.file()
-                    }
-                    setDataSource(file.path)
-                }
+        val mediaMetadataRetriever = MediaMetadataRetriever().apply {
+            if (dataSource is ContentDataSource) {
+                setDataSource(request.context, dataSource.contentUri)
+            } else {
+                setDataSource(dataSource.file().path)
             }
         }
         try {
@@ -160,26 +154,28 @@ class VideoFrameBitmapDecoder(
                 mediaMetadataRetriever
                     .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight, bitmapParams)
                     ?: throw BitmapDecodeException(
-                        "Failed to getScaledFrameAtTime %d, option=%s, dst=%dx%d, preferredConfig=%s."
-                            .format(
-                                frameMicros, optionToName(option), dstWidth,
-                                dstHeight, decodeConfig.inPreferredConfig
-                            )
+                        "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d, preferredConfig=%s.".format(
+                            frameMicros, optionToName(option), dstWidth, dstHeight,
+                            imageInfo.width, imageInfo.height, decodeConfig.inPreferredConfig
+                        )
                     )
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
                 mediaMetadataRetriever
                     .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
                     ?: throw BitmapDecodeException(
-                        "Failed to getScaledFrameAtTime %d, option=%s, dst=%dx%d."
-                            .format(frameMicros, optionToName(option), dstWidth, dstHeight)
+                        "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d.".format(
+                            frameMicros, optionToName(option), dstWidth, dstHeight,
+                            imageInfo.width, imageInfo.height
+                        )
                     )
             }
             else -> {
                 mediaMetadataRetriever.getFrameAtTime(frameMicros, option)
                     ?: throw BitmapDecodeException(
-                        "Failed to getFrameAtTime %d, option=%s."
-                            .format(frameMicros, optionToName(option))
+                        "Failed to getFrameAtTime. frameMicros=%d, option=%s, image=%dx%d.".format(
+                            frameMicros, optionToName(option), imageInfo.width, imageInfo.height
+                        )
                     )
             }
         }

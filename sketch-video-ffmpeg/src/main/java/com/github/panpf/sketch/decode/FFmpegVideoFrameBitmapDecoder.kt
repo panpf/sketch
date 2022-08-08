@@ -33,7 +33,6 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
-import kotlinx.coroutines.runBlocking
 import wseemann.media.FFmpegMediaMetadataRetriever
 import kotlin.math.roundToInt
 
@@ -53,16 +52,11 @@ class FFmpegVideoFrameBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
-        val mediaMetadataRetriever: FFmpegMediaMetadataRetriever by lazy {
-            FFmpegMediaMetadataRetriever().apply {
-                if (dataSource is ContentDataSource) {
-                    setDataSource(dataSource.request.context, dataSource.contentUri)
-                } else {
-                    val file = runBlocking {
-                        dataSource.file()
-                    }
-                    setDataSource(file.path)
-                }
+        val mediaMetadataRetriever = FFmpegMediaMetadataRetriever().apply {
+            if (dataSource is ContentDataSource) {
+                setDataSource(dataSource.request.context, dataSource.contentUri)
+            } else {
+                setDataSource(dataSource.file().path)
             }
         }
         try {
@@ -144,8 +138,21 @@ class FFmpegVideoFrameBitmapDecoder(
         }
         return mediaMetadataRetriever.getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
             ?: throw BitmapDecodeException(
-                "Failed to decode frame at $frameMicros microseconds."
+                "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d.".format(
+                    frameMicros, optionToName(option), dstWidth, dstHeight,
+                    imageInfo.width, imageInfo.height
+                )
             )
+    }
+
+    private fun optionToName(option: Int): String {
+        return when (option) {
+            FFmpegMediaMetadataRetriever.OPTION_CLOSEST -> "CLOSEST"
+            FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC -> "CLOSEST_SYNC"
+            FFmpegMediaMetadataRetriever.OPTION_NEXT_SYNC -> "NEXT_SYNC"
+            FFmpegMediaMetadataRetriever.OPTION_PREVIOUS_SYNC -> "PREVIOUS_SYNC"
+            else -> "Unknown($option)"
+        }
     }
 
     class Factory : BitmapDecoder.Factory {
@@ -159,10 +166,10 @@ class FFmpegVideoFrameBitmapDecoder(
             val mimeType = fetchResult.mimeType
             if (mimeType?.startsWith("video/") == true) {
                 return FFmpegVideoFrameBitmapDecoder(
-                    sketch,
-                    request,
-                    fetchResult.dataSource,
-                    mimeType
+                    sketch = sketch,
+                    request = request,
+                    dataSource = fetchResult.dataSource,
+                    mimeType = mimeType
                 )
             }
             return null
