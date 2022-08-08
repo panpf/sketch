@@ -43,55 +43,55 @@ class ResizeTest {
         Resize(100, 30, SAME_ASPECT_RATIO, END_CROP).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(FixedScaleDecider(END_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(END_CROP), scaleDecider)
         }
         Resize(100, 30).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precision)
-            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
         }
 
         Resize(100, 30, SAME_ASPECT_RATIO).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
         }
 
         Resize(100, 30, END_CROP).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precision)
-            Assert.assertEquals(FixedScaleDecider(END_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(END_CROP), scaleDecider)
         }
 
         Resize(100, 30, LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), END_CROP).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(FixedScaleDecider(END_CROP), scale)
+            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(END_CROP), scaleDecider)
         }
         Resize(100, 30, LongImageClipPrecisionDecider(SAME_ASPECT_RATIO)).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scale)
+            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
         }
 
         Resize(100, 30, SAME_ASPECT_RATIO, LongImageScaleDecider(CENTER_CROP, END_CROP)).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scaleDecider)
         }
 
         Resize(100, 30, scale = LongImageScaleDecider(CENTER_CROP, END_CROP)).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precision)
-            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precisionDecider)
+            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scaleDecider)
         }
 
 
@@ -102,49 +102,49 @@ class ResizeTest {
         ).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scale)
+            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scaleDecider)
         }
         Resize(Size(100, 30)).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precision)
-            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
         }
 
         Resize(Size(100, 30), SAME_ASPECT_RATIO, END_CROP).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(FixedScaleDecider(END_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(END_CROP), scaleDecider)
         }
 
         Resize(Size(100, 30), SAME_ASPECT_RATIO).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
         }
 
         Resize(Size(100, 30), END_CROP).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precision)
-            Assert.assertEquals(FixedScaleDecider(END_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(END_CROP), scaleDecider)
         }
 
         Resize(Size(100, 30), LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), END_CROP).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(FixedScaleDecider(END_CROP), scale)
+            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(END_CROP), scaleDecider)
         }
 
         Resize(Size(100, 30), LongImageClipPrecisionDecider(SAME_ASPECT_RATIO)).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scale)
+            Assert.assertEquals(LongImageClipPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
         }
 
         Resize(
@@ -154,15 +154,15 @@ class ResizeTest {
         ).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precision)
-            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), precisionDecider)
+            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scaleDecider)
         }
 
         Resize(Size(100, 30), scale = LongImageScaleDecider(CENTER_CROP, END_CROP)).apply {
             Assert.assertEquals(100, width)
             Assert.assertEquals(30, height)
-            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precision)
-            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scale)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), precisionDecider)
+            Assert.assertEquals(LongImageScaleDecider(CENTER_CROP, END_CROP), scaleDecider)
         }
     }
 

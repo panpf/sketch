@@ -36,12 +36,12 @@ import com.github.panpf.sketch.util.format
 data class Resize constructor(
     val width: Int,
     val height: Int,
-    val precision: PrecisionDecider,
+    val precisionDecider: PrecisionDecider,
     /**
      * Which part of the original picture should be kept when the original topic needs to be cropped.
      * Works only when precision is [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
      */
-    val scale: ScaleDecider,
+    val scaleDecider: ScaleDecider,
 ) {
 
     constructor(
@@ -113,14 +113,14 @@ data class Resize constructor(
     ) : this(size.width, size.height, fixedPrecision(precision), scale)
 
     val key: String by lazy {
-        "Resize(${width}x$height,${precision.key},${scale.key})"
+        "Resize(${width}x$height,${precisionDecider.key},${scaleDecider.key})"
     }
 
     fun getPrecision(imageWidth: Int, imageHeight: Int): Precision =
-        precision.get(imageWidth, imageHeight, width, height)
+        precisionDecider.get(imageWidth, imageHeight, width, height)
 
     fun getScale(imageWidth: Int, imageHeight: Int): Scale =
-        scale.get(imageWidth, imageHeight, width, height)
+        scaleDecider.get(imageWidth, imageHeight, width, height)
 
     fun shouldClip(imageWidth: Int, imageHeight: Int): Boolean =
         when (getPrecision(imageWidth, imageHeight)) {
@@ -134,6 +134,6 @@ data class Resize constructor(
         }
 
     override fun toString(): String {
-        return "Resize(width=${width}, height=$height, precision=${precision}, scale=${scale})"
+        return "Resize(width=${width}, height=$height, precision=${precisionDecider}, scale=${scaleDecider})"
     }
 }

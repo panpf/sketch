@@ -50,7 +50,7 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
             scale
         } else {
             val resize = request.resize
-            val scaleDecider = resize?.scale ?: request.resizeScaleDecider
+            val scaleDecider = resize?.scaleDecider ?: request.resizeScaleDecider
             scaleDecider.get(
                 imageWidth = input.width,
                 imageHeight = input.height,

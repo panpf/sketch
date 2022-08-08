@@ -436,8 +436,8 @@ interface ImageOptions {
          */
         fun resize(resize: Resize?): Builder = apply {
             this.resizeSize = resize?.let { Size(it.width, it.height) }
-            this.resizePrecisionDecider = resize?.precision
-            this.resizeScaleDecider = resize?.scale
+            this.resizePrecisionDecider = resize?.precisionDecider
+            this.resizeScaleDecider = resize?.scaleDecider
         }
 
         /**
