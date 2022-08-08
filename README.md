@@ -14,7 +14,7 @@ Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础�
 * maven groupId 改为 `io.github.panpf.sketch3`，因此 2.\* 版本不会提示升级
 * 包名改为 `com.github.panpf.sketch` 因此与 2.\* 版本不会冲突
 * 基于 kotlin 协程重写，API、功能实现全部重构，当一个新的库用
-* 参考 [coil] 2.0.0-alpha05 版本并结合 sketch 原有功能实现，对比 [coil] 有以下区别：
+* 参考 [coil] v2.2.0 版本并结合 sketch 原有功能实现，对比 [coil] 有以下区别：
     * sketch 最低支持 API 16，而 [coil] 最低仅支持 API 21
     * sketch 支持 bitmap 复用，而 [coil] 不支持
     * sketch 支持更加精细化的调整图片大小

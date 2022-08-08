@@ -33,10 +33,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import com.github.panpf.sketch.util.Size as CoilSize
 
 /**
- * Based coil-compose v2.1.0
- */
-
-/**
  * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
  * @param imageUri [ImageRequest.uri] value.

@@ -58,14 +58,16 @@ abstract class GenericViewDisplayTarget<T : View> : ViewDisplayTarget<T>, Transi
     }
 
     /** Replace the [ImageView]'s current drawable with [drawable]. */
-    private fun updateDrawable(drawable: Drawable?) {
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun updateDrawable(drawable: Drawable?) {
         this.drawable.asOrNull<Animatable>()?.stop()
         this.drawable = drawable
         updateAnimation()
     }
 
     /** Start/stop the current [Drawable]'s animation based on the current lifecycle state. */
-    private fun updateAnimation() {
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun updateAnimation() {
         val animatable = this.drawable.asOrNull<Animatable>() ?: return
         if (isStarted) animatable.start() else animatable.stop()
     }
