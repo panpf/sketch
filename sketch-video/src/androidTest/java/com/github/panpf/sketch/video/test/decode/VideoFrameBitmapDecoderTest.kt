@@ -237,7 +237,7 @@ class VideoFrameBitmapDecoderTest {
     }
 
     @Test
-    fun testDecodeVideoPercentDuration() {
+    fun testDecodeVideoFramePercent() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val sketch = context.sketch

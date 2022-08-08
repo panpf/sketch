@@ -131,10 +131,9 @@ class VideoFrameBitmapDecoder(
         val option = request.videoFrameOption ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros
             ?: request.videoFramePercent?.let { percentDuration ->
-                val duration =
-                    mediaMetadataRetriever
-                        .extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                        ?.toLongOrNull() ?: 0L
+                val duration = mediaMetadataRetriever
+                    .extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                    ?.toLongOrNull() ?: 0L
                 (duration * percentDuration * 1000).toLong()
             }
             ?: 0L
@@ -160,15 +159,40 @@ class VideoFrameBitmapDecoder(
                 }
                 mediaMetadataRetriever
                     .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight, bitmapParams)
+                    ?: throw BitmapDecodeException(
+                        "Failed to getScaledFrameAtTime %d, option=%s, dst=%dx%d, preferredConfig=%s."
+                            .format(
+                                frameMicros, optionToName(option), dstWidth,
+                                dstHeight, decodeConfig.inPreferredConfig
+                            )
+                    )
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
                 mediaMetadataRetriever
                     .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
+                    ?: throw BitmapDecodeException(
+                        "Failed to getScaledFrameAtTime %d, option=%s, dst=%dx%d."
+                            .format(frameMicros, optionToName(option), dstWidth, dstHeight)
+                    )
             }
             else -> {
                 mediaMetadataRetriever.getFrameAtTime(frameMicros, option)
+                    ?: throw BitmapDecodeException(
+                        "Failed to getFrameAtTime %d, option=%s."
+                            .format(frameMicros, optionToName(option))
+                    )
             }
-        } ?: throw BitmapDecodeException("Failed to decode frame at $frameMicros microseconds.")
+        }
+    }
+
+    private fun optionToName(option: Int): String {
+        return when (option) {
+            MediaMetadataRetriever.OPTION_CLOSEST -> "CLOSEST"
+            MediaMetadataRetriever.OPTION_CLOSEST_SYNC -> "CLOSEST_SYNC"
+            MediaMetadataRetriever.OPTION_NEXT_SYNC -> "NEXT_SYNC"
+            MediaMetadataRetriever.OPTION_PREVIOUS_SYNC -> "PREVIOUS_SYNC"
+            else -> "Unknown($option)"
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.O_MR1)

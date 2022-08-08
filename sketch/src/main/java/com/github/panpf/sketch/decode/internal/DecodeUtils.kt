@@ -236,11 +236,7 @@ fun realDecode(
             targetSize = Size(resizeMapping.destRect.width(), resizeMapping.destRect.height()),
             mimeType = imageInfo.mimeType,
             imageSize = imageSize
-        ).apply {
-            if (this > 1) {
-                transformedList.add(createInSampledTransformed(this))
-            }
-        }
+        )
         transformedList.add(createResizeTransformed(resize))
         decodeRegion(resizeMapping.srcRect, decodeConfig)
     } else {
@@ -257,18 +253,18 @@ fun realDecode(
                 sampleSize = 1,
                 mimeType = imageInfo.mimeType
             )
-        }.apply {
-            if (this > 1) {
-                transformedList.add(createInSampledTransformed(this))
-            }
         }
         decodeFull(decodeConfig)
+    }
+    val inSampleSize = decodeConfig.inSampleSize ?: 0
+    if (inSampleSize > 1 && (bitmap.width < imageInfo.width || bitmap.height < imageInfo.height)) {
+        transformedList.add(0, createInSampledTransformed(inSampleSize))
     }
     return BitmapDecodeResult(
         bitmap = bitmap,
         imageInfo = imageInfo,
         dataFrom = dataFrom,
-        transformedList = transformedList.takeIf { it.isNotEmpty() }
+        transformedList = transformedList.takeIf { it.isNotEmpty() }?.toList()
     )
 }
 

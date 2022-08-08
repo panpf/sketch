@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.okhttp.test.http
 
+import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.http.HttpStack
@@ -151,7 +152,11 @@ class OkHttpStackTest {
 
         OkHttpStack.Builder().build().getResponse(DownloadRequest(context, url), url).apply {
             Assert.assertEquals(200, code)
-            Assert.assertEquals("", message)
+            if (Build.VERSION.SDK_INT >= 21) {
+                Assert.assertEquals("", message)
+            } else {
+                Assert.assertEquals("OK", message)
+            }
             Assert.assertEquals(9904, contentLength)
             Assert.assertEquals("image/png", contentType)
             Assert.assertEquals("image/png", getHeaderField("Content-Type"))
@@ -169,7 +174,11 @@ class OkHttpStackTest {
             setHttpHeader("setHttpHeader1", "setHttpValue1")
         }, url).apply {
             Assert.assertEquals(200, code)
-            Assert.assertEquals("", message)
+            if (Build.VERSION.SDK_INT >= 21) {
+                Assert.assertEquals("", message)
+            } else {
+                Assert.assertEquals("OK", message)
+            }
             Assert.assertEquals(9904, contentLength)
             Assert.assertEquals("image/png", contentType)
             Assert.assertEquals("image/png", getHeaderField("Content-Type"))
