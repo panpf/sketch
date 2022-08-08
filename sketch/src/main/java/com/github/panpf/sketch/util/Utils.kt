@@ -29,6 +29,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import java.math.BigDecimal
@@ -68,6 +69,7 @@ internal fun requiredWorkThread() {
     }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
     return try {
         getCompleted()
@@ -85,7 +87,7 @@ internal suspend fun Lifecycle.awaitStarted() {
     // Slow path: observe the lifecycle until we're started.
     var observer: LifecycleObserver? = null
     try {
-        suspendCancellableCoroutine<Unit> { continuation ->
+        suspendCancellableCoroutine { continuation ->
             observer = object : DefaultLifecycleObserver {
                 override fun onStart(owner: LifecycleOwner) {
                     continuation.resume(Unit)

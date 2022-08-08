@@ -28,7 +28,15 @@ import com.github.panpf.sketch.resize.calculateResizeMapping
 import com.github.panpf.sketch.util.safeConfig
 import java.lang.Integer.min
 
-class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transformation {
+/**
+ * A [Transformation] that crops an image using a centered circle as the mask.
+ *
+ * If you're using Jetpack Compose, use `Modifier.clip(CircleShape)` instead of this transformation
+ * as it's more efficient.
+ *
+ * @param scale Specify which part of the original image to keep. If null, use ImageRequest.resizeScaleDecider
+ */
+class CircleCropTransformation constructor(val scale: Scale? = null) : Transformation {
 
     override val key: String = "CircleCropTransformation($scale)"
 
@@ -38,6 +46,18 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
         input: Bitmap
     ): TransformResult {
         val newSize = min(input.width, input.height)
+        val scale = if (scale != null) {
+            scale
+        } else {
+            val resize = request.resize
+            val scaleDecider = resize?.scale ?: request.resizeScaleDecider
+            scaleDecider.get(
+                imageWidth = input.width,
+                imageHeight = input.height,
+                resizeWidth = newSize,
+                resizeHeight = newSize
+            )
+        }
         val resizeMapping = calculateResizeMapping(
             input.width, input.height, newSize, newSize, SAME_ASPECT_RATIO, scale
         )

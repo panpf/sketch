@@ -28,8 +28,23 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.safeConfig
 
+/**
+ * A [Transformation] that crops the image to fit the target's dimensions and rounds the corners of
+ * the image.
+ *
+ * If you're using Jetpack Compose, use `Modifier.clip(RoundedCornerShape(radius))` instead of this
+ * transformation as it's more efficient.
+ *
+ * @param radiusArray Eight radii from all four corners.
+ */
 class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
 
+    /**
+     * @param topLeft The radius for the top left corner.
+     * @param topRight The radius for the top right corner.
+     * @param bottomLeft The radius for the bottom left corner.
+     * @param bottomRight The radius for the bottom right corner.
+     */
     constructor(
         @Px topLeft: Float = 0f,
         @Px topRight: Float = 0f,

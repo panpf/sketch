@@ -40,7 +40,7 @@ class CircleCropTransformationTest {
     @Test
     fun testConstructor() {
         CircleCropTransformation().apply {
-            Assert.assertEquals(Scale.CENTER_CROP, scale)
+            Assert.assertEquals(null, scale)
         }
         CircleCropTransformation(Scale.START_CROP).apply {
             Assert.assertEquals(Scale.START_CROP, scale)

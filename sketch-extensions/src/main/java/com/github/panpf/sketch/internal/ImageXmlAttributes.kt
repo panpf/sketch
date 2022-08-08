@@ -259,7 +259,7 @@ private fun parseTransformation(value: Int, typedArray: TypedArray): Transformat
                             else -> throw IllegalArgumentException("Value not supported by the 'sketch_transformation_circleCrop_scale' attribute: $value")
                         }
                     }
-            CircleCropTransformation(scale ?: Scale.CENTER_CROP)
+            CircleCropTransformation(scale)
         }
         4 -> {
             val radius =
