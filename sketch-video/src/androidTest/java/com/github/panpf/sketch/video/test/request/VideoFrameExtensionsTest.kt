@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
-import com.github.panpf.sketch.request.videoFramePercentDuration
+import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -133,90 +133,90 @@ class VideoFrameExtensionsTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         LoadRequest(context, newAssetUri("sample.mp4")).apply {
-            Assert.assertNull(videoFramePercentDuration)
+            Assert.assertNull(videoFramePercent)
         }
         LoadRequest(context, newAssetUri("sample.mp4")) {
-            (this as ImageRequest.Builder).videoFramePercentDuration(0.45f)
+            (this as ImageRequest.Builder).videoFramePercent(0.45f)
         }.apply {
-            Assert.assertEquals(0.45f, videoFramePercentDuration)
+            Assert.assertEquals(0.45f, videoFramePercent)
         }
         assertThrow(IllegalArgumentException::class) {
             LoadRequest(context, newAssetUri("sample.mp4")) {
-                (this as ImageRequest.Builder).videoFramePercentDuration(-0.1f)
+                (this as ImageRequest.Builder).videoFramePercent(-0.1f)
             }
         }
         assertThrow(IllegalArgumentException::class) {
             LoadRequest(context, newAssetUri("sample.mp4")) {
-                (this as ImageRequest.Builder).videoFramePercentDuration(-1.1f)
+                (this as ImageRequest.Builder).videoFramePercent(-1.1f)
             }
         }
 
         LoadRequest(context, newAssetUri("sample.mp4")).apply {
-            Assert.assertNull(videoFramePercentDuration)
+            Assert.assertNull(videoFramePercent)
         }
         LoadRequest(context, newAssetUri("sample.mp4")) {
-            videoFramePercentDuration(0.45f)
+            videoFramePercent(0.45f)
         }.apply {
-            Assert.assertEquals(0.45f, videoFramePercentDuration)
+            Assert.assertEquals(0.45f, videoFramePercent)
         }
         assertThrow(IllegalArgumentException::class) {
             LoadRequest(context, newAssetUri("sample.mp4")) {
-                videoFramePercentDuration(-0.1f)
+                videoFramePercent(-0.1f)
             }
         }
         assertThrow(IllegalArgumentException::class) {
             LoadRequest(context, newAssetUri("sample.mp4")) {
-                videoFramePercentDuration(-1.1f)
+                videoFramePercent(-1.1f)
             }
         }
 
         DisplayRequest(context, newAssetUri("sample.mp4")).apply {
-            Assert.assertNull(videoFramePercentDuration)
+            Assert.assertNull(videoFramePercent)
         }
         DisplayRequest(context, newAssetUri("sample.mp4")) {
-            videoFramePercentDuration(0.45f)
+            videoFramePercent(0.45f)
         }.apply {
-            Assert.assertEquals(0.45f, videoFramePercentDuration)
+            Assert.assertEquals(0.45f, videoFramePercent)
         }
         assertThrow(IllegalArgumentException::class) {
             DisplayRequest(context, newAssetUri("sample.mp4")) {
-                videoFramePercentDuration(-0.1f)
+                videoFramePercent(-0.1f)
             }
         }
         assertThrow(IllegalArgumentException::class) {
             DisplayRequest(context, newAssetUri("sample.mp4")) {
-                videoFramePercentDuration(-1.1f)
+                videoFramePercent(-1.1f)
             }
         }
 
         ImageOptions().apply {
-            Assert.assertNull(videoFramePercentDuration)
+            Assert.assertNull(videoFramePercent)
         }
         ImageOptions {
-            videoFramePercentDuration(0.45f)
+            videoFramePercent(0.45f)
         }.apply {
-            Assert.assertEquals(0.45f, videoFramePercentDuration)
+            Assert.assertEquals(0.45f, videoFramePercent)
         }
         assertThrow(IllegalArgumentException::class) {
             ImageOptions {
-                videoFramePercentDuration(-0.1f)
+                videoFramePercent(-0.1f)
             }
         }
         assertThrow(IllegalArgumentException::class) {
             ImageOptions {
-                videoFramePercentDuration(-1.1f)
+                videoFramePercent(-1.1f)
             }
         }
 
         val key1 = LoadRequest(context, newAssetUri("sample.mp4")).key
         val key2 = LoadRequest(context, newAssetUri("sample.mp4")) {
-            videoFramePercentDuration(0.45f)
+            videoFramePercent(0.45f)
         }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 = LoadRequest(context, newAssetUri("sample.mp4")).cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample.mp4")) {
-            videoFramePercentDuration(0.45f)
+            videoFramePercent(0.45f)
         }.cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }

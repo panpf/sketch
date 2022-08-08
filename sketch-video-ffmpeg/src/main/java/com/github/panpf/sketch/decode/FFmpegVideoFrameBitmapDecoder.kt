@@ -32,7 +32,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
-import com.github.panpf.sketch.request.videoFramePercentDuration
+import com.github.panpf.sketch.request.videoFramePercent
 import kotlinx.coroutines.runBlocking
 import wseemann.media.FFmpegMediaMetadataRetriever
 import kotlin.math.roundToInt
@@ -123,7 +123,7 @@ class FFmpegVideoFrameBitmapDecoder(
         val option =
             request.videoFrameOption ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros
-            ?: request.videoFramePercentDuration?.let { percentDuration ->
+            ?: request.videoFramePercent?.let { percentDuration ->
                 val duration = mediaMetadataRetriever
                     .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION)
                     ?.toLongOrNull() ?: 0L

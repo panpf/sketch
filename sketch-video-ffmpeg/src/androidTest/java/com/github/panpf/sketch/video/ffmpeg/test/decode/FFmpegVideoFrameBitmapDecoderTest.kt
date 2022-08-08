@@ -30,7 +30,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
-import com.github.panpf.sketch.request.videoFramePercentDuration
+import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.video.ffmpeg.test.utils.corners
@@ -228,7 +228,7 @@ class FFmpegVideoFrameBitmapDecoderTest {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
-            videoFramePercentDuration(0.45f)
+            videoFramePercent(0.45f)
         }.run {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking { fetcher.fetch() }
@@ -249,7 +249,7 @@ class FFmpegVideoFrameBitmapDecoderTest {
         val bitmap1 = LoadRequest(context, newAssetUri("sample.mp4")) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            videoFramePercentDuration(0.5f)
+            videoFramePercent(0.5f)
         }.run {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking { fetcher.fetch() }
@@ -266,7 +266,7 @@ class FFmpegVideoFrameBitmapDecoderTest {
         val bitmap2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            videoFramePercentDuration(0.5f)
+            videoFramePercent(0.5f)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
             val fetcher = sketch.components.newFetcher(this)

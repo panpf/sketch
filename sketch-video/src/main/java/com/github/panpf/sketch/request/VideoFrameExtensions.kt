@@ -23,7 +23,7 @@ import android.media.MediaMetadataRetriever.OPTION_PREVIOUS_SYNC
 import androidx.annotation.FloatRange
 
 private const val VIDEO_FRAME_MICROS_KEY = "sketch#video_frame_micros"
-private const val VIDEO_FRAME_PERCENT_DURATION_KEY = "sketch#video_frame_percent_duration"
+private const val VIDEO_FRAME_PERCENT_KEY = "sketch#video_frame_percent"
 private const val VIDEO_FRAME_OPTION_KEY = "sketch#video_frame_option"
 
 /**
@@ -33,7 +33,7 @@ private const val VIDEO_FRAME_OPTION_KEY = "sketch#video_frame_option"
  */
 fun ImageRequest.Builder.videoFrameMicros(frameMicros: Long): ImageRequest.Builder = apply {
     require(frameMicros >= 0) { "frameMicros must be >= 0." }
-    removeParameter(VIDEO_FRAME_PERCENT_DURATION_KEY)
+    removeParameter(VIDEO_FRAME_PERCENT_KEY)
     setParameter(VIDEO_FRAME_MICROS_KEY, frameMicros)
 }
 
@@ -53,7 +53,7 @@ fun ImageRequest.Builder.videoFrameMillis(frameMillis: Long): ImageRequest.Build
  */
 fun LoadRequest.Builder.videoFrameMicros(frameMicros: Long): LoadRequest.Builder = apply {
     require(frameMicros >= 0) { "frameMicros must be >= 0." }
-    removeParameter(VIDEO_FRAME_PERCENT_DURATION_KEY)
+    removeParameter(VIDEO_FRAME_PERCENT_KEY)
     setParameter(VIDEO_FRAME_MICROS_KEY, frameMicros)
 }
 
@@ -73,7 +73,7 @@ fun LoadRequest.Builder.videoFrameMillis(frameMillis: Long): LoadRequest.Builder
  */
 fun DisplayRequest.Builder.videoFrameMicros(frameMicros: Long): DisplayRequest.Builder = apply {
     require(frameMicros >= 0) { "frameMicros must be >= 0." }
-    removeParameter(VIDEO_FRAME_PERCENT_DURATION_KEY)
+    removeParameter(VIDEO_FRAME_PERCENT_KEY)
     setParameter(VIDEO_FRAME_MICROS_KEY, frameMicros)
 }
 
@@ -99,7 +99,7 @@ val ImageRequest.videoFrameMicros: Long?
  */
 fun ImageOptions.Builder.videoFrameMicros(frameMicros: Long): ImageOptions.Builder = apply {
     require(frameMicros >= 0) { "frameMicros must be >= 0." }
-    removeParameter(VIDEO_FRAME_PERCENT_DURATION_KEY)
+    removeParameter(VIDEO_FRAME_PERCENT_KEY)
     setParameter(VIDEO_FRAME_MICROS_KEY, frameMicros)
 }
 
@@ -124,64 +124,64 @@ val ImageOptions.videoFrameMicros: Long?
  *
  * Default: 0.0
  */
-fun ImageRequest.Builder.videoFramePercentDuration(
-    @FloatRange(from = 0.0, to = 1.0) percentDuration: Float
+fun ImageRequest.Builder.videoFramePercent(
+    @FloatRange(from = 0.0, to = 1.0) framePercent: Float
 ): ImageRequest.Builder = apply {
-    require(percentDuration in 0f..1f) { "percentDuration must be in 0f..1f." }
+    require(framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
     removeParameter(VIDEO_FRAME_MICROS_KEY)
-    setParameter(VIDEO_FRAME_PERCENT_DURATION_KEY, percentDuration)
+    setParameter(VIDEO_FRAME_PERCENT_KEY, framePercent)
 }
 
 /**
- * Set the time of the frame to extract from a video (by percent duration).
+ * Set the time of the frame to extract from a video (by framePercent duration).
  *
  * Default: 0.0
  */
-fun LoadRequest.Builder.videoFramePercentDuration(
-    @FloatRange(from = 0.0, to = 1.0) percentDuration: Float
+fun LoadRequest.Builder.videoFramePercent(
+    @FloatRange(from = 0.0, to = 1.0) framePercent: Float
 ): LoadRequest.Builder = apply {
-    require(percentDuration in 0f..1f) { "percentDuration must be in 0f..1f." }
+    require(framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
     removeParameter(VIDEO_FRAME_MICROS_KEY)
-    setParameter(VIDEO_FRAME_PERCENT_DURATION_KEY, percentDuration)
+    setParameter(VIDEO_FRAME_PERCENT_KEY, framePercent)
 }
 
 /**
- * Set the time of the frame to extract from a video (by percent duration).
+ * Set the time of the frame to extract from a video (by framePercent duration).
  *
  * Default: 0.0
  */
-fun DisplayRequest.Builder.videoFramePercentDuration(
-    @FloatRange(from = 0.0, to = 1.0) percentDuration: Float
+fun DisplayRequest.Builder.videoFramePercent(
+    @FloatRange(from = 0.0, to = 1.0) framePercent: Float
 ): DisplayRequest.Builder = apply {
-    require(percentDuration in 0f..1f) { "percentDuration must be in 0f..1f." }
+    require(framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
     removeParameter(VIDEO_FRAME_MICROS_KEY)
-    setParameter(VIDEO_FRAME_PERCENT_DURATION_KEY, percentDuration)
+    setParameter(VIDEO_FRAME_PERCENT_KEY, framePercent)
 }
 
 /**
- * Get the time of the frame to extract from a video (by percent duration).
+ * Get the time of the frame to extract from a video (by framePercent duration).
  */
-val ImageRequest.videoFramePercentDuration: Float?
-    get() = parameters?.value(VIDEO_FRAME_PERCENT_DURATION_KEY) as Float?
+val ImageRequest.videoFramePercent: Float?
+    get() = parameters?.value(VIDEO_FRAME_PERCENT_KEY) as Float?
 
 /**
- * Set the time of the frame to extract from a video (by percent duration).
+ * Set the time of the frame to extract from a video (by framePercent duration).
  *
  * Default: 0.0
  */
-fun ImageOptions.Builder.videoFramePercentDuration(
-    @FloatRange(from = 0.0, to = 1.0) percentDuration: Float
+fun ImageOptions.Builder.videoFramePercent(
+    @FloatRange(from = 0.0, to = 1.0) framePercent: Float
 ) = apply {
-    require(percentDuration in 0f..1f) { "percentDuration must be in 0f..1f." }
+    require(framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
     removeParameter(VIDEO_FRAME_MICROS_KEY)
-    setParameter(VIDEO_FRAME_PERCENT_DURATION_KEY, percentDuration)
+    setParameter(VIDEO_FRAME_PERCENT_KEY, framePercent)
 }
 
 /**
  * Get the time of the frame to extract from a video (by percent duration).
  */
-val ImageOptions.videoFramePercentDuration: Float?
-    get() = parameters?.value(VIDEO_FRAME_PERCENT_DURATION_KEY) as Float?
+val ImageOptions.videoFramePercent: Float?
+    get() = parameters?.value(VIDEO_FRAME_PERCENT_KEY) as Float?
 
 
 /**
