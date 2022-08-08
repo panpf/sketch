@@ -4,7 +4,7 @@
 
 ### 修改 Level
 
-和 android.util.Log 一样，[Logger] 也支持 Level，默认 为 INFO，你可以在初始化 [Sketch] 时修改，如下：
+和 android.util.Log 一样，[Logger] 也支持 Level，默认 为 INFO，您可以在初始化 [Sketch] 时修改，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -17,7 +17,7 @@ class MyApplication : Application(), SketchFactory {
 
 ### 修改输出
 
-[Logger] 默认输出到 android.util.Log，你可以实现 [Logger].Proxy 接口自定义新的输出，然后在初始化 [Sketch] 时修改，如下：
+[Logger] 默认输出到 android.util.Log，您可以实现 [Logger].Proxy 接口自定义新的输出，然后在初始化 [Sketch] 时修改，如下：
 
 ```kotlin
 class MyProxy : Proxy {

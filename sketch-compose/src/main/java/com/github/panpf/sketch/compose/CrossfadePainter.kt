@@ -1,31 +1,15 @@
-/*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.github.panpf.sketch.compose.internal
+package com.github.panpf.sketch.compose
 
 import android.os.SystemClock
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
@@ -33,28 +17,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.times
 import kotlin.math.max
 
-/** Return a [CrossfadePainter] for the given [key]. */
-@Composable
-internal fun rememberCrossfadePainter(
-    key: Any,
-    start: Painter?,
-    end: Painter?,
-    contentScale: ContentScale,
-    durationMillis: Int,
-    fadeStart: Boolean,
-    preferExactIntrinsicSize: Boolean,
-): Painter = remember(key) {
-    CrossfadePainter(start, end, contentScale, durationMillis, fadeStart, preferExactIntrinsicSize)
-}
-
 /**
  * A [Painter] that crossfades from [start] to [end].
  *
- * NOTE: The animation can only be executed once as the [start] drawable is
- * dereferenced at the end of the transition.
+ * NOTE: The animation can only be executed once as the [start] drawable is dereferenced at
+ * the end of the transition.
  */
 @Stable
-private class CrossfadePainter(
+internal class CrossfadePainter(
     private var start: Painter?,
     private val end: Painter?,
     private val contentScale: ContentScale,
@@ -67,7 +37,7 @@ private class CrossfadePainter(
     private var startTimeMillis = -1L
     private var isDone = false
 
-    private var maxAlpha: Float by mutableStateOf(1f)
+    private var maxAlpha: Float by mutableStateOf(DefaultAlpha)
     private var colorFilter: ColorFilter? by mutableStateOf(null)
 
     override val intrinsicSize get() = computeIntrinsicSize()
@@ -87,7 +57,7 @@ private class CrossfadePainter(
         val percent = (uptimeMillis - startTimeMillis) / durationMillis.toFloat()
         val endAlpha = percent.coerceIn(0f, 1f) * maxAlpha
         val startAlpha = if (fadeStart) maxAlpha - endAlpha else maxAlpha
-        isDone = percent >= 1.0
+        isDone = percent >= 1f
 
         drawPainter(start, startAlpha)
         drawPainter(end, endAlpha)
@@ -149,7 +119,6 @@ private class CrossfadePainter(
         }
     }
 
-    /** Scale the src size into the dst size preserving aspect ratio. */
     private fun computeDrawSize(srcSize: Size, dstSize: Size): Size {
         if (srcSize.isUnspecified || srcSize.isEmpty()) return dstSize
         if (dstSize.isUnspecified || dstSize.isEmpty()) return dstSize

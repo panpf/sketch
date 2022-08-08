@@ -77,7 +77,7 @@ imageView.displayImage("https://www.example.com/image.gif") {
 动图相关的 [DrawableDecoder] 统一返回 [SketchAnimatableDrawable]，[SketchAnimatableDrawable] 实现了
 Animatable2Compat 接口
 
-你可以通过 Animatable2Compat 接口的 start() 和 stop() 方法手动控制开始播放和停止播放
+您可以通过 Animatable2Compat 接口的 start() 和 stop() 方法手动控制开始播放和停止播放
 
 #### 初始状态
 

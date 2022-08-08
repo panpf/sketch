@@ -110,7 +110,7 @@ sketchZoomImageView.zoomAbility.readModeDecider = MyReadModeDecider()
 
 ### 缩放信息
 
-一些缩放相关信息你可以通过 [ZoomAbility] 获取，如下：
+一些缩放相关信息您可以通过 [ZoomAbility] 获取，如下：
 
 ```kotlin
 // 获取当前缩放比例

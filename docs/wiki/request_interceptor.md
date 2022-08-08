@@ -1,6 +1,6 @@
 # RequestInterceptor
 
-Sketch 通过 [RequestInterceptor] 来拦截 [ImageRequest] 的执行过程，你可以借此改变执行过程的输入和输出
+Sketch 通过 [RequestInterceptor] 来拦截 [ImageRequest] 的执行过程，您可以借此改变执行过程的输入和输出
 
 先实现 [RequestInterceptor] 接口定义你的 RequestInterceptor：
 

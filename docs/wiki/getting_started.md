@@ -43,7 +43,7 @@
 val sketch = context.sketch
 ```
 
-你可以在你的 Application 类上实现 [SketchFactory] 接口来配置 Sketch ，如下：
+您可以在你的 Application 类上实现 [SketchFactory] 接口来配置 Sketch ，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -98,7 +98,7 @@ val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
 }
 ```
 
-你可以通过 Builder 提供的链式方法或同名函数提供的尾随 lambda 配置各种参数
+您可以通过 Builder 提供的链式方法或同名函数提供的尾随 lambda 配置请求
 
 更多可配置参数请参考 [DisplayRequest].Builder 类
 
