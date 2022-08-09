@@ -41,6 +41,6 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
     }
 
     override fun toString(): String {
-        return "FixedScaleDecider(scale=$scale)"
+        return "FixedScaleDecider($scale)"
     }
 }

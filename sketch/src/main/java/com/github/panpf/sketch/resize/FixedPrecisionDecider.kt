@@ -31,6 +31,6 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
     }
 
     override fun toString(): String {
-        return "FixedPrecisionDecider(precision=$precision)"
+        return "FixedPrecisionDecider($precision)"
     }
 }
