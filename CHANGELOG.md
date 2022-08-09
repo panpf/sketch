@@ -404,82 +404,104 @@ other:
 
 ### sketch
 
-* fix: 修复由于 ViewTargetRequestDelegate.start() 方法错误的移除了对 Lifecycle 的观察导致 GifDrawable 不会自动暂停的 bug
-* change: 现在只要设置了 resizeSize 或 resizeSizeResolver，默认的 Precision 就是 EXACTLY
-* change: RequestManagerUtils 合并到 SketchUtils
-* change: 现在 DefaultLongImageDecider 被分为 smallRatioMultiple 和 bigRatioMultiple
-* change: 将 SketchConfigurator 更改为 SketchFactory
-* change: 现在
-  DataSource、BitmapDecoder、DrawableDecoder、Fetcher、HttpStack、RequestInterceptor、StateImage、Transformation、DecodeInterceptor
-  等关键组件将使用 ImageRequest 携带的 Sketch
-* change: 现在创建 SketchBitmapDrawable 时需要传 Resources
-* new: 现在只有 Lifecycle 到达 Started 状态才会开始执行 ImageRequest
-* new: 为 ImageView 添加了一系列 displayImage 重载方法，例如 displayImage(Int)、displayImage(Uri)
-  、displayImage(File)、displayAssetImage(String) 等
+* fix: Fixed a bug where GifDrawable would not automatically pause due to the
+  ViewTargetRequestDelegate.start() method incorrectly removing the observation of Lifecycle
+* change: Now as long as resizeSize or resizeSizeResolver is set, the default Precision is EXACTLY
+* change: RequestManagerUtils merged into SketchUtils
+* change: Now DefaultLongImageDecider is split into smallRatioMultiple and bigRatioMultiple
+* change: Change SketchConfigurator to SketchFactory
+* change: Now key components such as DataSource, BitmapDecoder, DrawableDecoder, Fetcher, HttpStack,
+  RequestInterceptor, StateImage, Transformation, DecodeInterceptor will use Sketch carried by
+  ImageRequest
+* change: Now you need to pass Resources when creating SketchBitmapDrawable
+* new: Now the ImageRequest will only be executed if the Lifecycle reaches the Started state
+* new: Added a series of displayImage overloaded methods for ImageView, such as displayImage(Int),
+  displayImage(Uri), displayImage(File), displayAssetImage(String), etc.
 
 ### sketch-zoom
 
-* fix: 修复了 View 大小改变时 Tiles 没有重置的 bug
-* fix: 修复了 SketchZoomImageView 在非 SketchDrawable 时缩放异常的 bug
-* fix: 修复了 Zoomer 的 rotateTo() 方法崩溃的 bug
-* fix: 修复了 SketchZoomImageView 在没有设置 Drawable 时始终拦截触摸事件导致 ViewPager 无法左右滑动的 bug
+* fix: Fixed a bug where Tiles didn't reset when View size changed
+* fix: Fixed a bug that SketchZoomImageView zoomed abnormally when not SketchDrawable
+* fix: Fixed a crash bug in Zoomer's rotateTo() method
+* fix: Fixed the bug that SketchZoomImageView always intercepts touch events when no Drawable is
+  set, causing ViewPager to fail to slide left and right
 * change: ZoomAbility 的 zoomScale, baseZoomScale, supportZoomScale, fullZoomScale, fillZoomScale,
   originZoomScale, minZoomScale, maxZoomScale 和 doubleClickZoomScales 属性重命名为 scale, baseScale,
   supportScale, fullScale, fillScale, originScale, minScale, maxScale 和 stepScales
-* improve: 现在 Tiles 在当前缩放比例小于等于最小缩放比例时不会启用
-* improve: 改进 Zoomer 的代码
-* improve: ZoomAbility 现在改为监听 Lifecycle 的 ON_START 和 ON_STOP 事件来暂停和恢复 Tiles
-* improve: ZoomAbility 将从优先 ImageRequest 获取生命周期
+* improve: Tiles are now not enabled when the current zoom is less than or equal to the minimum zoom
+* improve: Improve Zoomer's code
+* improve: ZoomAbility now listens to Lifecycle's ON_START and ON_STOP events instead to pause and
+  resume Tiles
+* improve: ZoomAbility will get the lifecycle from the priority ImageRequest
 
 ### sketch-gif-koral
 
-* upgrade: 升级 android-gif-drawable 库的 1.2.15 版本
+* upgrade: Upgrade to version 1.2.15 of the android-gif-drawable library
 
 # v3.0.0-alpha02
 
 ### sketch
 
-* fix: 修复 AnimatedImageDrawable 不支持通过 bounds 缩放的 bug
-* fix: 修正了使用 VectorDrawable 作为状态图像时透明度不正常的 bug
-* change: 现在 DisplayTarget 的所有实现当 error Drawable 为空时，不继续设置
-* change: Scale.KEEP_ASPECT_RATIO 重命名为 SAME_ASPECT_RATIO
-* improve: CrossfadeDrawable 现在恢复为根据 start 和 end Drawable 的最大尺寸作为 intrinsic 宽高
-* improve: ColorResStateImage 合并到 ColorStateImage, DrawableResStateImage 合并到 DrawableStateImage,
-* improve: IconStateImage 的 bg 属性现在支持 Drawable
-* improve: 所有工具函数的访问控制现在为 internal
-* improve: LongImageClipPrecisionDecider 现在默认使用 Sketch.longImageDecider 来判定长图
-* new: ImageRequest 和 ImageOptions 增加 resizeApplyToDrawable 属性 IconDrawableStateImage 和
-  IconDrawableStateImage 合并为 IconStateImage
-* new: Resize 的 scale 属性现在支持 ScaleDecider 并提供 LongImageScaleDecider 实现
+* fix: Fix bug that AnimatedImageDrawable doesn't support scaling via bounds
+* fix: Fixed a bug with incorrect transparency when using VectorDrawable as state image
+* change: All implementations of DisplayTarget now do not continue to set when the error Drawable is
+  empty
+* change: Scale.KEEP_ASPECT_RATIO renamed to SAME_ASPECT_RATIO
+* improve: CrossfadeDrawable now reverts to using the maximum size of the start and end Drawable as
+  intrinsic width and height
+* improve: ColorResStateImage is merged into ColorStateImage, DrawableResStateImage is merged into
+  DrawableStateImage
+* improve: The bg property of IconStateImage now supports Drawable
+* improve: Access control for all utility functions is now internal
+* improve: LongImageClipPrecisionDecider now uses Sketch.longImageDecider by default to determine
+  long images
+* new: ImageRequest and ImageOptions added resizeApplyToDrawable property IconDrawableStateImage and
+  IconDrawableStateImage merged into IconStateImage
+* new: Resize's scale property now supports ScaleDecider and provides a LongImageScaleDecider
+  implementation
 
 ### sketch-extensions
 
-* new: SketchImageView 增加 xml 属性
+* new: SketchImageView adds xml attribute
 
 ### sketch-zoom
 
-* fix: 修复 findSampleSize 函数可能会崩溃的 bug
-* change: SketchZoomImageView 的 readMode 现在默认关闭
-* improve: DefaultReadModeDecider 改为 LongImageReadModeDecider，并默认使用 Sketch.longImageDecider 来判定长图
+* fix: Fixed a bug where the findSampleSize function might crash
+* change: The readMode of SketchZoomImageView is now off by default
+* improve: Change DefaultReadModeDecider to LongImageReadModeDecider, and use
+  Sketch.longImageDecider by default to determine long images
 
 ### sketch-compose
 
-* improve: 改进 CrossfadePainter
+* improve: Improved CrossfadePainter
 
 # v3.0.0-alpha01
 
-全新版本，新的开始
+New version, new beginning
 
-* change: maven groupId 改为 `io.github.panpf.sketch3`，因此 2.\* 版本不会提示升级
-* change: 包名改为 `com.github.panpf.sketch` 因此与 2.\* 版本不会冲突
-* change: 基于 kotlin 协程重写，API、功能实现全部改变，当一个新的库用就行
-* improve: 不再要求必须使用 SketchImageView，任何 ImageView 及其子类都可以，甚至结合自定义 Target 可以支持任意 View
-* improve: Zoom 模块的超大图采样功能重构并且支持多线程，因此速度更快更高效
-* new: 新增支持 SVG
-* new: 新增支持 Jetpack Compose
-* new: 支持拦截请求和图片解码
-
-> 参考 [coil] 2.0.0-alpha05 版本并结合 sketch 原有功能实现，[coil] 最低支持 API 21，而 sketch 最低支持 API 16
-
+* change: maven groupId changed to `io.github.panpf.sketch3`, so version 2.\* will not prompt to
+  upgrade
+* change: Changed the package name to `com.github.panpf.sketch` so it won't conflict with the 2.\*
+  version
+* change: Based on kotlin coroutine rewrite, API and function implementation are all changed, just
+  use a new library
+* improve: It is no longer required to use SketchImageView, any ImageView and its subclasses can,
+  combined with custom Target can support any View
+* improve: The Zoom function is split into independent modules that can be independently relied on,
+  and the large image sampling function is refactored and multi-threaded decoding is faster.
+* improve: The gif module now directly depends on the [android-gif-drawable] library and no longer
+  needs to be modified twice, and can be upgraded by itself
+* new: Added support for SVG
+* new: Added support for Jetpack Compose
+* new: Support for request and decode interceptors
+* new: Refer to [coil] v2.2.0 version and combine it with the original functions of sketch. Compared
+  with [coil], there are the following differences:
+    * Sketch supports minimum API 16, while [coil] only supports API 21 minimum
+    * Sketch supports bitmap multiplexing, but [coil] does not
+    * Sketch supports finer adjustment of image size
+    * Sketch clearly distinguishes between display, load, and download requests
+    * Sketch provides a picture zoom display component and supports large picture sampling
 
 [coil]: https://github.com/coil-kt/coil
+
+[android-gif-drawable]: https://github.com/koral--/android-gif-drawable
