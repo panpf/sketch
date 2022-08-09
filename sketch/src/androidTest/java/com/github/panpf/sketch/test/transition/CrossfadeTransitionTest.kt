@@ -229,11 +229,13 @@ class CrossfadeTransitionTest {
         val element2 = CrossfadeTransition.Factory(durationMillis = 300)
         val element3 = CrossfadeTransition.Factory(preferExactIntrinsicSize = true)
         val element4 = CrossfadeTransition.Factory(alwaysUse = true)
+        val element5 = CrossfadeTransition.Factory(fadeStart = false)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
         Assert.assertNotSame(element1, element3)
         Assert.assertNotSame(element1, element4)
+        Assert.assertNotSame(element1, element5)
         Assert.assertNotSame(element11, element2)
         Assert.assertNotSame(element11, element3)
         Assert.assertNotSame(element11, element4)
@@ -246,6 +248,7 @@ class CrossfadeTransitionTest {
         Assert.assertNotEquals(element1, element2)
         Assert.assertNotEquals(element1, element3)
         Assert.assertNotEquals(element1, element4)
+        Assert.assertNotEquals(element1, element5)
         Assert.assertNotEquals(element2, element11)
         Assert.assertNotEquals(element2, element3)
         Assert.assertNotEquals(element2, element4)
@@ -258,6 +261,7 @@ class CrossfadeTransitionTest {
         Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
         Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
         Assert.assertNotEquals(element1.hashCode(), element4.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element5.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element4.hashCode())
@@ -269,18 +273,23 @@ class CrossfadeTransitionTest {
         val element1 = CrossfadeTransition.Factory()
         val element2 = CrossfadeTransition.Factory(preferExactIntrinsicSize = true)
         val element3 = CrossfadeTransition.Factory(alwaysUse = true)
+        val element4 = CrossfadeTransition.Factory(fadeStart = false)
 
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=200, preferExactIntrinsicSize=false, alwaysUse=false)",
+            "CrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=false)",
             element1.toString()
         )
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=200, preferExactIntrinsicSize=true, alwaysUse=false)",
+            "CrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=true, alwaysUse=false)",
             element2.toString()
         )
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=200, preferExactIntrinsicSize=false, alwaysUse=true)",
+            "CrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=true)",
             element3.toString()
+        )
+        Assert.assertEquals(
+            "CrossfadeTransition.Factory(durationMillis=200, fadeStart=false, preferExactIntrinsicSize=false, alwaysUse=false)",
+            element4.toString()
         )
     }
 }

@@ -737,10 +737,11 @@ interface ImageRequest {
          */
         open fun crossfade(
             durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
+            fadeStart: Boolean = true,
             preferExactIntrinsicSize: Boolean = false,
             alwaysUse: Boolean = false,
         ): Builder = apply {
-            definedOptionsBuilder.crossfade(durationMillis, preferExactIntrinsicSize, alwaysUse)
+            definedOptionsBuilder.crossfade(durationMillis, fadeStart, preferExactIntrinsicSize, alwaysUse)
         }
 
         /**

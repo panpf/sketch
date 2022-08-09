@@ -77,7 +77,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
                 args.placeholderImageMemoryCacheKey?.let {
                     placeholder(MemoryCacheStateImage(it))
                 }
-                crossfade()
+                crossfade(fadeStart = false)
                 lifecycle(viewLifecycleOwner.lifecycle)
             }
         }

@@ -700,11 +700,12 @@ interface ImageOptions {
          */
         fun crossfade(
             durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
+            fadeStart: Boolean = true,
             preferExactIntrinsicSize: Boolean = false,
             alwaysUse: Boolean = false,
         ): Builder = apply {
             transitionFactory(
-                CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize, alwaysUse)
+                CrossfadeTransition.Factory(durationMillis, fadeStart, preferExactIntrinsicSize, alwaysUse)
             )
         }
 

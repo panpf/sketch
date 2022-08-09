@@ -117,10 +117,16 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
                             typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_crossfadeDurationMillis)
                         val preferExactIntrinsicSize =
                             typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_crossfadePreferExactIntrinsicSize)
+                        val fadeStart =
+                            typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_crossfadeFadeStart)
+                        val alwaysUse =
+                            typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_crossfadeAlwaysUse)
                         crossfade(
                             durationMillis = durationMillis
                                 ?: CrossfadeDrawable.DEFAULT_DURATION,
-                            preferExactIntrinsicSize = preferExactIntrinsicSize ?: false
+                            fadeStart = fadeStart ?: true,
+                            preferExactIntrinsicSize = preferExactIntrinsicSize ?: false,
+                            alwaysUse = alwaysUse ?: false,
                         )
                     }
                 }

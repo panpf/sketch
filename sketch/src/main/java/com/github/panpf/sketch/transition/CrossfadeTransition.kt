@@ -31,6 +31,7 @@ class CrossfadeTransition @JvmOverloads constructor(
     private val target: TransitionDisplayTarget,
     private val result: DisplayResult,
     val durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
+    val fadeStart: Boolean = true,
     val preferExactIntrinsicSize: Boolean = false,
     val fitScale: Boolean = true,
 ) : Transition {
@@ -50,8 +51,8 @@ class CrossfadeTransition @JvmOverloads constructor(
             start = startDrawable,
             end = endDrawable,
             fitScale = fitScale,
+            fadeStart = fadeStart,
             durationMillis = durationMillis,
-            fadeStart = true,
             preferExactIntrinsicSize = preferExactIntrinsicSize
         )
         when (result) {
@@ -62,6 +63,7 @@ class CrossfadeTransition @JvmOverloads constructor(
 
     class Factory @JvmOverloads constructor(
         val durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
+        val fadeStart: Boolean = true,
         val preferExactIntrinsicSize: Boolean = false,
         val alwaysUse: Boolean = false,
     ) : Transition.Factory {
@@ -81,6 +83,7 @@ class CrossfadeTransition @JvmOverloads constructor(
                     target = target,
                     result = result,
                     durationMillis = durationMillis,
+                    fadeStart = fadeStart,
                     preferExactIntrinsicSize = preferExactIntrinsicSize,
                     fitScale = fitScale
                 )
@@ -93,19 +96,21 @@ class CrossfadeTransition @JvmOverloads constructor(
             if (this === other) return true
             return other is Factory
                     && durationMillis == other.durationMillis
+                    && fadeStart == other.fadeStart
                     && preferExactIntrinsicSize == other.preferExactIntrinsicSize
                     && alwaysUse == other.alwaysUse
         }
 
         override fun hashCode(): Int {
             var result = durationMillis
+            result = 31 * result + fadeStart.hashCode()
             result = 31 * result + preferExactIntrinsicSize.hashCode()
             result = 31 * result + alwaysUse.hashCode()
             return result
         }
 
         override fun toString(): String {
-            return "CrossfadeTransition.Factory(durationMillis=$durationMillis, preferExactIntrinsicSize=$preferExactIntrinsicSize, alwaysUse=$alwaysUse)"
+            return "CrossfadeTransition.Factory(durationMillis=$durationMillis, fadeStart=$fadeStart, preferExactIntrinsicSize=$preferExactIntrinsicSize, alwaysUse=$alwaysUse)"
         }
     }
 }
