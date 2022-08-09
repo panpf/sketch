@@ -35,7 +35,7 @@ import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.video.ffmpeg.test.utils.corners
-import com.github.panpf.tools4a.rom.Romx
+import com.github.panpf.tools4a.device.Devicex
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -104,11 +104,7 @@ class FFmpegVideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecode() {
-        if (Build.VERSION.SDK_INT < 24
-            && Romx.isAndroid()
-            && Build.SUPPORTED_64_BIT_ABIS.plus(Build.SUPPORTED_32_BIT_ABIS)
-                .any { it.startsWith("arm") }
-        ) {
+        if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
             return
         }
@@ -165,11 +161,7 @@ class FFmpegVideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecodeVideoFrameMicros() {
-        if (Build.VERSION.SDK_INT < 24
-            && Romx.isAndroid()
-            && Build.SUPPORTED_64_BIT_ABIS.plus(Build.SUPPORTED_32_BIT_ABIS)
-                .any { it.startsWith("arm") }
-        ) {
+        if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
             return
         }
@@ -217,12 +209,8 @@ class FFmpegVideoFrameBitmapDecoderTest {
     }
 
     @Test
-    fun testDecodeVideoPercentDuration() {
-        if (Build.VERSION.SDK_INT < 24
-            && Romx.isAndroid()
-            && Build.SUPPORTED_64_BIT_ABIS.plus(Build.SUPPORTED_32_BIT_ABIS)
-                .any { it.startsWith("arm") }
-        ) {
+    fun testDecodeVideoFramePercent() {
+        if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
             return
         }
@@ -271,11 +259,7 @@ class FFmpegVideoFrameBitmapDecoderTest {
 
     @Test
     fun testDecodeVideoOption() {
-        if (Build.VERSION.SDK_INT < 24
-            && Romx.isAndroid()
-            && Build.SUPPORTED_64_BIT_ABIS.plus(Build.SUPPORTED_32_BIT_ABIS)
-                .any { it.startsWith("arm") }
-        ) {
+        if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
             return
         }

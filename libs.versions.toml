@@ -125,7 +125,6 @@ tools4a-toast = { module = "io.github.panpf.tools4a:tools4a-toast-ktx", version.
 tools4a-network = { module = "io.github.panpf.tools4a:tools4a-network-ktx", version.ref = "tools4a" }
 tools4a-run = { module = "io.github.panpf.tools4a:tools4a-run-ktx", version.ref = "tools4a" }
 tools4a-test = { module = "io.github.panpf.tools4a:tools4a-test-ktx", version.ref = "tools4a" }
-tools4a-rom = { module = "io.github.panpf.tools4a:tools4a-rom", version.ref = "tools4a" }
 tools4j-math = { module = "io.github.panpf.tools4j:tools4j-math-ktx", version.ref = "tools4j" }
 tools4j-date = { module = "io.github.panpf.tools4j:tools4j-date-ktx", version.ref = "tools4j" }
 tools4j-io = { module = "io.github.panpf.tools4j:tools4j-io-ktx", version.ref = "tools4j" }
@@ -164,7 +163,7 @@ test = [
     "tools4a-test",
     "tools4a-display",
     "tools4a-network",
-    "tools4a-rom",
+    "tools4a-device",
 ]
 androidx-navigation = [
     "androidx-navigation-fragment",
