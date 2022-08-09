@@ -1,3 +1,28 @@
+# v3.0.0-rc04
+
+### sketch
+
+* rename: transition rename to transitionFactory
+* rename: Resize's precision and scale rename to precisionDecider and scaleDecider
+* improve: Manually close ImageDecoder
+* improve: Improved Parameters
+* improve: CircleCropTransformation now defaults to get scale from ImageRequest.resizeScaleDecider
+* new: CrossfadeTransition now supports setting fadeStart
+
+### sketch-video/sketch-video-ffmpeg
+
+* rename: videoFramePercentDuration rename to videoFramePercent
+* improve: Improve exception information for VideoFrameBitmapDecoder and
+  FFmpegVideoFrameBitmapDecoder
+
+### sketch-svg
+
+* new: Support setting custom CSS rules for SVG
+
+### sketch-compose
+
+* improve: Improve AsyncImage based on coil v2.1.0
+
 # v3.0.0-rc03
 
 ### sketch
