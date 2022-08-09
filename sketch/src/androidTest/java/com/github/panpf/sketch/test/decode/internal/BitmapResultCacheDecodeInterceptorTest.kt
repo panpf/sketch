@@ -149,6 +149,24 @@ class BitmapResultCacheDecodeInterceptorTest {
             )
         }
         Assert.assertFalse(resultCache.exist(loadRequest.resultCacheDataKey))
+
+        val loadRequest1 = LoadRequest(context, newAssetUri("sample.jpeg")) {
+            resize(2000, 2000, LESS_PIXELS)
+            resultCachePolicy(ENABLED)
+        }
+        resultCache.clear()
+        Assert.assertFalse(resultCache.exist(loadRequest1.resultCacheDataKey))
+        executeRequest(loadRequest1).also { result ->
+            Assert.assertEquals(1291, result.bitmap.width)
+            Assert.assertEquals(1936, result.bitmap.height)
+            Assert.assertEquals(
+                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
+                result.imageInfo.toString()
+            )
+            Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
+            Assert.assertEquals(null, result.transformedList?.joinToString())
+        }
+        Assert.assertFalse(resultCache.exist(loadRequest1.resultCacheDataKey))
     }
 
     @Test

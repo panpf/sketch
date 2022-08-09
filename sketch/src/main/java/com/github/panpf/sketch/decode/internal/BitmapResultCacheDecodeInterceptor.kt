@@ -148,6 +148,10 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
 
     @WorkerThread
     private fun write(sketch: Sketch, request: ImageRequest, result: BitmapDecodeResult): Boolean {
+        if (result.transformedList.isNullOrEmpty()) {
+            return false
+        }
+
         val resultCache = sketch.resultCache
         val bitmapDataEditor = resultCache.edit(request.resultCacheDataKey)
         val metaDataEditor = resultCache.edit(request.resultCacheMetaKey)
@@ -168,7 +172,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                     put("height", result.imageInfo.height)
                     put("mimeType", result.imageInfo.mimeType)
                     put("exifOrientation", result.imageInfo.exifOrientation)
-                    put("transformedList", result.transformedList?.let { list ->
+                    put("transformedList", result.transformedList.let { list ->
                         JSONArray().apply {
                             list.forEach { transformed ->
                                 put(transformed)
