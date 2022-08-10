@@ -1,3 +1,11 @@
+# v3.0.0-rc05
+
+### sketch
+
+* fix: Fixed the bug that BitmapResultCacheDecodeInterceptor still writes Bitmap to the result cache
+  when BitmapDecodeResult.transformedList is empty
+* improve: Improve toString of FixedScaleDecider and FixedPrecisionDecider
+
 # v3.0.0-rc04
 
 ### sketch
