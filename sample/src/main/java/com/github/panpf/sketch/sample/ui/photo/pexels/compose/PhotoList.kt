@@ -16,40 +16,68 @@
 package com.github.panpf.sketch.sample.ui.photo.pexels.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells.Fixed
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.common.compose.itemsIndexed
+import com.github.panpf.sketch.sample.ui.common.compose.AppendState
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.tools4a.dimen.ktx.px2dp
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Boolean = false) {
     val items = photoPagingFlow.collectAsLazyPagingItems()
-    LazyVerticalGrid(Fixed(3)) {
-        itemsIndexed(items) { index, photo ->
-            photo?.let { PhotoContent(index, it, disabledCache) }
+    SwipeRefresh(
+        state = SwipeRefreshState(items.loadState.refresh is LoadState.Loading),
+        onRefresh = { items.refresh() }
+    ) {
+        LazyVerticalGrid(
+            columns = Fixed(3),
+            contentPadding = PaddingValues(dimensionResource(id = R.dimen.grid_divider)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
+        ) {
+            items(count = items.itemCount) { index ->
+                val item = items[index]
+                item?.let { PhotoContent(index, it, disabledCache) }
+            }
+
+            if (items.itemCount > 0) {
+                item(span = { GridItemSpan(this.maxLineSpan) }) {
+                    AppendState(items.loadState.append) {
+                        items.retry()
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
 fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
-    val itemSizeDp = LocalContext.current.getScreenWidth().px2dp / 3
+    val itemSizeDp =
+        (LocalContext.current.getScreenWidth().px2dp - dimensionResource(id = R.dimen.grid_divider).value) / 3
     when (index % 3) {
         0 -> {
             com.github.panpf.sketch.compose.AsyncImage(

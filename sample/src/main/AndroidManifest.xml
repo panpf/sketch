@@ -13,7 +13,6 @@
         androidx.compose.material.ripple,
         androidx.compose.foundation,
         androidx.compose.animation,
-        com.google.accompanist.drawablepainter,
         androidx.compose.foundation.layout,
         androidx.compose.material.icons,
         androidx.compose.animation.core,
@@ -24,7 +23,9 @@
         androidx.compose.runtime.saveable,
         androidx.compose.ui.unit,
         androidx.compose.ui.geometry,
-        androidx.compose.ui.util" />
+        androidx.compose.ui.util,
+        com.google.accompanist.swiperefresh,
+        com.google.accompanist.drawablepainter" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
