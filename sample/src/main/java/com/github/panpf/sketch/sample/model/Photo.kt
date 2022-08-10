@@ -17,6 +17,7 @@ package com.github.panpf.sketch.sample.model
 
 import android.os.Parcelable
 import com.github.panpf.assemblyadapter.recycler.DiffKey
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -30,8 +31,11 @@ data class Photo constructor(
     @SerialName("width") val width: Int?,
     @SerialName("height") val height: Int?,
     @SerialName("exifOrientation") val exifOrientation: Int,
+    @SerialName("index") val index: Int = 0,
 ) : Parcelable, DiffKey {
-    override val diffKey: String = toString()
+
+    @IgnoredOnParcel
+    override val diffKey: String by lazy { toString() }
 
     val firstThumbnailUrl: String = thumbnailUrl ?: middenUrl ?: originalUrl
 

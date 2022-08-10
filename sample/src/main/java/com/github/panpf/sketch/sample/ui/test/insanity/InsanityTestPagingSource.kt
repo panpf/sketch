@@ -49,7 +49,7 @@ class InsanityTestPagingSource(private val context: Context) :
     }
 
     private suspend fun urisToPhotos(uris: List<String>): List<Photo> = withToIO {
-        uris.map { uri ->
+        uris.mapIndexed { index, uri ->
             val sketch = context.sketch
             val fetcher = sketch.components.newFetcher(LoadRequest(context, uri))
             val dataSource = fetcher.fetch().dataSource
@@ -66,6 +66,7 @@ class InsanityTestPagingSource(private val context: Context) :
                     width = size.width,
                     height = size.height,
                     exifOrientation = imageInfo.exifOrientation,
+                    index = index,
                 )
             } else {
                 Photo(
@@ -75,6 +76,7 @@ class InsanityTestPagingSource(private val context: Context) :
                     width = null,
                     height = null,
                     exifOrientation = 0,
+                    index = index,
                 )
             }
         }

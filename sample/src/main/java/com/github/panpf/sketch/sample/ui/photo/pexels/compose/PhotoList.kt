@@ -56,7 +56,12 @@ fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Bo
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
         ) {
-            items(count = items.itemCount) { index ->
+            items(
+                count = items.itemCount,
+                key = { index ->
+                    items[index]?.diffKey ?: ""
+                }
+            ) { index ->
                 val item = items[index]
                 item?.let { PhotoContent(index, it, disabledCache) }
             }
