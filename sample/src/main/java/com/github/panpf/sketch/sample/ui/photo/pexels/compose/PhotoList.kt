@@ -58,16 +58,19 @@ fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Bo
         ) {
             items(
                 count = items.itemCount,
-                key = { index ->
-                    items[index]?.diffKey ?: ""
-                }
+                key = { items[it]?.diffKey ?: "" },
+                contentType = { 1 }
             ) { index ->
                 val item = items[index]
                 item?.let { PhotoContent(index, it, disabledCache) }
             }
 
             if (items.itemCount > 0) {
-                item(span = { GridItemSpan(this.maxLineSpan) }) {
+                item(
+                    key = "AppendState",
+                    span = { GridItemSpan(this.maxLineSpan) },
+                    contentType = 2
+                ) {
                     AppendState(items.loadState.append) {
                         items.retry()
                     }
