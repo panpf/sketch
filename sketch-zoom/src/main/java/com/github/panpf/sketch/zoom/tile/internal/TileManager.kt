@@ -39,6 +39,7 @@ import com.github.panpf.sketch.zoom.tile.Tiles
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.isActive
@@ -73,6 +74,7 @@ class TileManager constructor(
     private val scope: CoroutineScope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val decodeDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
     private var lastTileList: List<Tile>? = null
     private var lastSampleSize: Int? = null

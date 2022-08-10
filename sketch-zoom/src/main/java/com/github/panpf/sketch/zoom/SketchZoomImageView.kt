@@ -150,40 +150,40 @@ open class SketchZoomImageView @JvmOverloads constructor(
     /***************************************** Information ****************************************/
 
     val rotateDegrees: Int
-        get() = zoomAbility.rotateDegrees ?: 0
+        get() = zoomAbility.rotateDegrees
 
     val horScrollEdge: Edge
-        get() = zoomAbility.horScrollEdge ?: Edge.NONE
+        get() = zoomAbility.horScrollEdge
 
     val verScrollEdge: Edge
-        get() = zoomAbility.verScrollEdge ?: Edge.NONE
+        get() = zoomAbility.verScrollEdge
 
     val scale: Float
-        get() = zoomAbility.scale ?: 1f
+        get() = zoomAbility.scale
 
     val baseScale: Float
-        get() = zoomAbility.baseScale ?: 1f
+        get() = zoomAbility.baseScale
 
     val supportScale: Float
-        get() = zoomAbility.supportScale ?: 1f
+        get() = zoomAbility.supportScale
 
     /** Zoom ratio that makes the image fully visible */
     val fullScale: Float
-        get() = zoomAbility.fullScale ?: 1f
+        get() = zoomAbility.fullScale
 
     /** Gets the zoom that fills the image with the ImageView display */
     val fillScale: Float
-        get() = zoomAbility.fillScale ?: 1f
+        get() = zoomAbility.fillScale
 
     /** Gets the scale that allows the image to be displayed at scale to scale */
     val originScale: Float
-        get() = zoomAbility.originScale ?: 1f
+        get() = zoomAbility.originScale
 
     val minScale: Float
-        get() = zoomAbility.minScale ?: 1f
+        get() = zoomAbility.minScale
 
     val maxScale: Float
-        get() = zoomAbility.maxScale ?: 1f
+        get() = zoomAbility.maxScale
 
     val stepScales: FloatArray?
         get() = zoomAbility.stepScales

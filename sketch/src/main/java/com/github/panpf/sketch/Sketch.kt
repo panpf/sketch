@@ -69,6 +69,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
@@ -141,9 +142,11 @@ class Sketch private constructor(
     val systemCallbacks = SystemCallbacks(context, WeakReference(this))
 
     /* Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
+    @OptIn(ExperimentalCoroutinesApi::class)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 
     /* Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance */
+    @OptIn(ExperimentalCoroutinesApi::class)
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
 
     init {

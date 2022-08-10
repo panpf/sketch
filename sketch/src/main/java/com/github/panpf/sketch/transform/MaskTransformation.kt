@@ -20,6 +20,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
@@ -62,14 +64,16 @@ class MaskTransformation(
         paint.color = maskColor
         paint.xfermode = null
 
-        val saveCount = canvas.saveLayer(
-            0f,
-            0f,
-            input.width.toFloat(),
-            input.height.toFloat(),
-            paint,
-            Canvas.ALL_SAVE_FLAG
-        )
+        val saveCount = if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            canvas.saveLayer(
+                0f, 0f, input.width.toFloat(), input.height.toFloat(), paint
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            canvas.saveLayer(
+                0f, 0f, input.width.toFloat(), input.height.toFloat(), paint, Canvas.ALL_SAVE_FLAG
+            )
+        }
 
         canvas.drawBitmap(input, 0f, 0f, null)
 
