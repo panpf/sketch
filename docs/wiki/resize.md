@@ -45,20 +45,23 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 ### 默认值
 
-当你什么都不配置的情况下默认值为：
-
-* width、height：如果 target 是 [ViewDisplayTarget] 就取 view 的宽高，否则取屏幕的宽高
-* [Precision]：设置任意 resizeSize 或 resizeSizeResolver 时是 EXACTLY 否则是 LESS_PIXELS，
+* width、height：
+    1. 如果 target 是 [ViewDisplayTarget]
+        1. 优先取 view 的 LayoutParams 宽高
+        2. 其次延迟到绘制阶段取 View 的宽高，如果到绘制阶段还是宽高还是 0，那么请求不会继续执行
+    2. 如果是在 compose 中使用
+        1. 如果是使用的 AsyncImage 则取测量宽高
+        2. 如果是直接使用的 AsyncImagePainter 则在绘制阶段取绘制宽高，同样到绘制阶段还是宽高还是 0，那么请求不会继续执行
+    3. 取屏幕的宽高
+* [Precision]：主动设置任意 resizeSize 或 resizeSizeResolver 时是 EXACTLY，否则是 LESS_PIXELS
 * [Scale]：CENTER_CROP
-
-> 注意：如果 view 的宽高到 draw 阶段还是 0，那么请求不会继续执行
 
 ### resizeApplyToDrawable
 
 [ImageRequest] 和 [ImageOptions] 的 resizeApplyToDrawable 属性用于将 [Resize] 应用到 [DisplayTarget] 的
 placeholder, error, result Drawable 上
 
-如果此属性为 true，Sketch 会用 [ResizeDrawable] 或 [ResizeAnimatableDrawable] 将 placeholder, error, result
+Sketch 会用 [ResizeDrawable] 或 [ResizeAnimatableDrawable] 将 placeholder, error, result
 Drawable 包一层，对外用 [Resize] 作为 intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable 进行缩放
 
 此功能搭配 [CrossfadeTransition] 使用可实现完美过渡，[查看完美过渡介绍][transition]
