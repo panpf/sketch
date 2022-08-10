@@ -18,14 +18,14 @@ package com.github.panpf.sketch.sample.ui.photo.pexels.compose
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells.Fixed
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -39,8 +39,6 @@ import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.compose.AppendState
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
-import com.github.panpf.tools4a.dimen.ktx.px2dp
-import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.flow.Flow
@@ -53,7 +51,7 @@ fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Bo
         onRefresh = { items.refresh() }
     ) {
         LazyVerticalGrid(
-            columns = Fixed(3),
+            columns = GridCells.Adaptive(minSize = 100.dp),
             contentPadding = PaddingValues(dimensionResource(id = R.dimen.grid_divider)),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
@@ -76,13 +74,13 @@ fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Bo
 
 @Composable
 fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
-    val itemSizeDp =
-        (LocalContext.current.getScreenWidth().px2dp - dimensionResource(id = R.dimen.grid_divider).value) / 3
     when (index % 3) {
         0 -> {
             com.github.panpf.sketch.compose.AsyncImage(
                 imageUri = photo.firstThumbnailUrl,
-                modifier = Modifier.size(itemSizeDp.dp, itemSizeDp.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
                 contentScale = ContentScale.Crop,
                 contentDescription = ""
             ) {
@@ -104,7 +102,9 @@ fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
         1 -> {
             com.github.panpf.sketch.compose.SubcomposeAsyncImage(
                 imageUri = photo.firstThumbnailUrl,
-                modifier = Modifier.size(itemSizeDp.dp, itemSizeDp.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
                 contentScale = ContentScale.Crop,
                 contentDescription = ""
             ) {
@@ -140,7 +140,9 @@ fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
                         memoryCachePolicy(DISABLED)
                     }
                 },
-                modifier = Modifier.size(itemSizeDp.dp, itemSizeDp.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
                 contentScale = ContentScale.Crop,
                 contentDescription = ""
             )
