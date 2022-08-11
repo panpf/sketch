@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.request.internal
 
+import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -56,7 +57,7 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
     if (disallowAnimatedImage) {
         appendQueryParameter("_disallowAnimatedImage", true.toString())
     }
-}.build().toString()
+}.build().toString().let { Uri.decode(it) }
 
 internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
     depth.takeIf { it != NETWORK }?.let {
@@ -115,4 +116,4 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
             appendQueryParameter("_memoryCachePolicy", it.name)
         }
     }
-}.build().toString()
+}.build().toString().let { Uri.decode(it) }

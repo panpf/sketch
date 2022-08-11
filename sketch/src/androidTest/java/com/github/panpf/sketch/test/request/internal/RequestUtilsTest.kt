@@ -52,7 +52,7 @@ class RequestUtilsTest {
         val cacheKeyHistoryList = ArrayList<String>()
 
         // default
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -61,7 +61,7 @@ class RequestUtilsTest {
             setParameter("testKey1", "testValue1", null)
         }
         cacheKeyUri = cacheKeyUri.buildUpon().build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -72,7 +72,7 @@ class RequestUtilsTest {
         cacheKeyUri = cacheKeyUri.buildUpon().apply {
             appendQueryParameter("_parameters", request.parameters!!.cacheKey)
         }.build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -83,7 +83,7 @@ class RequestUtilsTest {
         cacheKeyUri = cacheKeyUri.buildUpon().apply {
             appendQueryParameter("_bitmapConfig", request.bitmapConfig!!.key)
         }.build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -95,7 +95,7 @@ class RequestUtilsTest {
             cacheKeyUri = cacheKeyUri.buildUpon().apply {
                 appendQueryParameter("_colorSpace", request.colorSpace!!.name.replace(" ", "_"))
             }.build()
-            Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+            Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
                 cacheKeyHistoryList.add(this)
             })
         }
@@ -106,7 +106,7 @@ class RequestUtilsTest {
             preferQualityOverSpeed(false)
         }
         cacheKeyUri = cacheKeyUri.buildUpon().build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -118,7 +118,7 @@ class RequestUtilsTest {
         cacheKeyUri = cacheKeyUri.buildUpon().apply {
             appendQueryParameter("_preferQualityOverSpeed", "true")
         }.build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -129,7 +129,7 @@ class RequestUtilsTest {
         cacheKeyUri = cacheKeyUri.buildUpon().apply {
             appendQueryParameter("_resize", request.resize!!.key)
         }.build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -145,7 +145,7 @@ class RequestUtilsTest {
                         it.key.replace("Transformation", "")
                     })
         }.build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -154,7 +154,7 @@ class RequestUtilsTest {
             ignoreExifOrientation(false)
         }
         cacheKeyUri = cacheKeyUri.buildUpon().build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -165,7 +165,7 @@ class RequestUtilsTest {
         cacheKeyUri = cacheKeyUri.buildUpon().apply {
             appendQueryParameter("_ignoreExifOrientation", "true")
         }.build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -174,7 +174,7 @@ class RequestUtilsTest {
             disallowAnimatedImage(false)
         }
         cacheKeyUri = cacheKeyUri.buildUpon().build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -185,7 +185,7 @@ class RequestUtilsTest {
         cacheKeyUri = cacheKeyUri.buildUpon().apply {
             appendQueryParameter("_disallowAnimatedImage", "true")
         }.build()
-        Assert.assertEquals(cacheKeyUri.toString(), request.newCacheKey().apply {
+        Assert.assertEquals(cacheKeyUri.toString().let { Uri.decode(it) }, request.newCacheKey().apply {
             cacheKeyHistoryList.add(this)
         })
 
@@ -203,7 +203,7 @@ class RequestUtilsTest {
         val keyHistoryList = ArrayList<String>()
 
         // default
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -214,7 +214,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_depth", request.depth.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -225,7 +225,7 @@ class RequestUtilsTest {
         val keyUri1 = keyUri.buildUpon().apply {
             appendQueryParameter("_parameters", request.parameters!!.key)
         }.build()
-        Assert.assertEquals(keyUri1.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri1.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -236,7 +236,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_parameters", request.parameters!!.key)
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -247,7 +247,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_httpHeaders", request.httpHeaders!!.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -258,7 +258,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_downloadCachePolicy", request.downloadCachePolicy.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -269,7 +269,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_bitmapConfig", request.bitmapConfig!!.key)
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -281,7 +281,7 @@ class RequestUtilsTest {
             keyUri = keyUri.buildUpon().apply {
                 appendQueryParameter("_colorSpace", request.colorSpace!!.name.replace(" ", "_"))
             }.build()
-            Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+            Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
                 keyHistoryList.add(this)
             })
         }
@@ -292,7 +292,7 @@ class RequestUtilsTest {
             preferQualityOverSpeed(false)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -304,7 +304,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_preferQualityOverSpeed", "true")
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -315,7 +315,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_resize", request.resize!!.key)
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -331,7 +331,7 @@ class RequestUtilsTest {
                         it.key.replace("Transformation", "")
                     })
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -340,7 +340,7 @@ class RequestUtilsTest {
             ignoreExifOrientation(false)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -351,7 +351,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_ignoreExifOrientation", "true")
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -362,7 +362,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_resultCachePolicy", request.resultCachePolicy.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -371,7 +371,7 @@ class RequestUtilsTest {
             disallowAnimatedImage(false)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -382,7 +382,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_disallowAnimatedImage", "true")
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -393,7 +393,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_memoryCachePolicy", request.memoryCachePolicy.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -411,7 +411,7 @@ class RequestUtilsTest {
         val keyHistoryList = ArrayList<String>()
 
         // default
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -422,7 +422,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_depth", request.depth.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -433,7 +433,7 @@ class RequestUtilsTest {
         val keyUri1 = keyUri.buildUpon().apply {
             appendQueryParameter("_parameters", request.parameters!!.key)
         }.build()
-        Assert.assertEquals(keyUri1.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri1.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -444,7 +444,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_parameters", request.parameters!!.key)
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -455,7 +455,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_httpHeaders", request.httpHeaders!!.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -466,7 +466,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_downloadCachePolicy", request.downloadCachePolicy.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -477,7 +477,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_bitmapConfig", request.bitmapConfig!!.key)
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -489,7 +489,7 @@ class RequestUtilsTest {
             keyUri = keyUri.buildUpon().apply {
                 appendQueryParameter("_colorSpace", request.colorSpace!!.name.replace(" ", "_"))
             }.build()
-            Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+            Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
                 keyHistoryList.add(this)
             })
         }
@@ -500,7 +500,7 @@ class RequestUtilsTest {
             preferQualityOverSpeed(false)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -512,7 +512,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_preferQualityOverSpeed", "true")
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -523,7 +523,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_resize", request.resize!!.key)
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -539,7 +539,7 @@ class RequestUtilsTest {
                         it.key.replace("Transformation", "")
                     })
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -548,7 +548,7 @@ class RequestUtilsTest {
             ignoreExifOrientation(false)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -559,7 +559,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_ignoreExifOrientation", "true")
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -570,7 +570,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_resultCachePolicy", request.resultCachePolicy.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -579,7 +579,7 @@ class RequestUtilsTest {
             disallowAnimatedImage(false)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -588,7 +588,7 @@ class RequestUtilsTest {
             disallowAnimatedImage(true)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -597,7 +597,7 @@ class RequestUtilsTest {
             memoryCachePolicy(DISABLED)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -615,7 +615,7 @@ class RequestUtilsTest {
         val keyHistoryList = ArrayList<String>()
 
         // default
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -626,7 +626,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_depth", request.depth.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -637,7 +637,7 @@ class RequestUtilsTest {
         val keyUri1 = keyUri.buildUpon().apply {
             appendQueryParameter("_parameters", request.parameters!!.key)
         }.build()
-        Assert.assertEquals(keyUri1.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri1.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -648,7 +648,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_parameters", request.parameters!!.key)
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -659,7 +659,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_httpHeaders", request.httpHeaders!!.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -670,7 +670,7 @@ class RequestUtilsTest {
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter("_downloadCachePolicy", request.downloadCachePolicy.toString())
         }.build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -679,7 +679,7 @@ class RequestUtilsTest {
             bitmapConfig(RGB_565)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -689,7 +689,7 @@ class RequestUtilsTest {
                 colorSpace(ColorSpace.get(SRGB))
             }
             keyUri = keyUri.buildUpon().build()
-            Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+            Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
                 keyHistoryList.add(this)
             })
         }
@@ -700,7 +700,7 @@ class RequestUtilsTest {
             preferQualityOverSpeed(false)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -710,7 +710,7 @@ class RequestUtilsTest {
             preferQualityOverSpeed(true)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -719,7 +719,7 @@ class RequestUtilsTest {
             resize(200, 300)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -728,7 +728,7 @@ class RequestUtilsTest {
             transformations(CircleCropTransformation(), RotateTransformation(40))
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -737,7 +737,7 @@ class RequestUtilsTest {
             ignoreExifOrientation(false)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -746,7 +746,7 @@ class RequestUtilsTest {
             ignoreExifOrientation(true)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -755,7 +755,7 @@ class RequestUtilsTest {
             resultCachePolicy(READ_ONLY)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -764,7 +764,7 @@ class RequestUtilsTest {
             disallowAnimatedImage(false)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -773,7 +773,7 @@ class RequestUtilsTest {
             disallowAnimatedImage(true)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
@@ -782,7 +782,7 @@ class RequestUtilsTest {
             memoryCachePolicy(DISABLED)
         }
         keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(keyUri.toString(), request.newKey().apply {
+        Assert.assertEquals(keyUri.toString().let { Uri.decode(it) }, request.newKey().apply {
             keyHistoryList.add(this)
         })
 
