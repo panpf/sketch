@@ -23,6 +23,7 @@ import android.graphics.ColorSpace.Named.ADOBE_RGB
 import android.graphics.ColorSpace.Named.SRGB
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
@@ -1113,6 +1114,7 @@ class DefaultBitmapDecoderTest {
 
         private var count = 0
 
+        @WorkerThread
         override fun newInputStream(): InputStream {
             val stackStringList = Exception().stackTraceToString().split("\n")
             if (stackStringList.find { it.contains(".realDecodeFull(") } != null) {
@@ -1133,6 +1135,7 @@ class DefaultBitmapDecoderTest {
 
         private var count = 0
 
+        @WorkerThread
         override fun newInputStream(): InputStream {
             val stackStringList = Exception().stackTraceToString().split("\n")
             if (stackStringList.find { it.contains(".realDecodeRegion(") } != null) {

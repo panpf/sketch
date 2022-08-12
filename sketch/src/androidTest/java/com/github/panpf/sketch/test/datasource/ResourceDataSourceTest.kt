@@ -113,7 +113,7 @@ class ResourceDataSourceTest {
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
-            val file = runBlocking { file() }
+            val file = file()
             Assert.assertEquals("d8613eafa03919093537960a44c4f919.0", file.name)
         }
     }

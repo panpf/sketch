@@ -20,7 +20,6 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -83,7 +82,7 @@ class ByteArrayDataSourceTest {
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
-            val file = runBlocking { file() }
+            val file = file()
             Assert.assertEquals("369c0aa172a8ac158a372f9b00fbd220.0", file.name)
         }
     }

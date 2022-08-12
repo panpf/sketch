@@ -24,6 +24,7 @@ import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.UriInvalidException
 import com.github.panpf.sketch.util.ifOrNull
+import java.io.IOException
 import java.io.InputStream
 
 /**
@@ -91,9 +92,14 @@ class AppIconUriFetcher(
         val packageName: String,
         val versionCode: Int,
     ) : UnavailableDataSource {
+
+        @WorkerThread
+        @Throws(IOException::class)
         override fun length(): Long =
             throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
 
+        @WorkerThread
+        @Throws(IOException::class)
         override fun newInputStream(): InputStream =
             throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
 

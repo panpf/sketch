@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.datasource
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.ByteArrayInputStream
@@ -28,9 +29,11 @@ class ByteArrayDataSource constructor(
     val data: ByteArray,
 ) : DataSource {
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun length(): Long = data.size.toLong()
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = ByteArrayInputStream(data)
 

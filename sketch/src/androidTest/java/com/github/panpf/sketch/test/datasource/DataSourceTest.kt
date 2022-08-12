@@ -21,7 +21,6 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,13 +37,9 @@ class DataSourceTest {
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
         ).apply {
-            val file = runBlocking {
-                file()
-            }
+            val file = file()
             Assert.assertTrue(file.path.contains("/cache/"))
-            val file1 = runBlocking {
-                file()
-            }
+            val file1 = file()
             Assert.assertEquals(file.path, file1.path)
         }
 
@@ -53,11 +48,7 @@ class DataSourceTest {
                 sketch = sketch,
                 request = LoadRequest(context, newAssetUri("not_found.jpeg")),
                 assetFileName = "not_found.jpeg"
-            ).apply {
-                runBlocking {
-                    file()
-                }
-            }
+            ).file()
         }
     }
 }

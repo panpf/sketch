@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.datasource
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
@@ -33,6 +34,7 @@ class FileDataSource constructor(
 
     private var _length = -1L
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
@@ -40,10 +42,13 @@ class FileDataSource constructor(
                 this@FileDataSource._length = this
             }
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = FileInputStream(file)
 
-    override suspend fun file(): File = file
+    @WorkerThread
+    @Throws(IOException::class)
+    override fun file(): File = file
 
     override fun toString(): String = "FileDataSource(file='${file.path}')"
 }

@@ -35,7 +35,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.sketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -51,14 +50,12 @@ class GifInfoHandlerHelperTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
-        val snapshot = runBlocking {
-            AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample_anim.gif")),
-                assetFileName = "sample_anim.gif"
-            ).file()
-            sketch.resultCache[newAssetUri("sample_anim.gif") + "_data_source"]!!
-        }
+        AssetDataSource(
+            sketch = sketch,
+            request = LoadRequest(context, newAssetUri("sample_anim.gif")),
+            assetFileName = "sample_anim.gif"
+        ).file()
+        val snapshot = sketch.resultCache[newAssetUri("sample_anim.gif") + "_data_source"]!!
 
         GifInfoHandleHelper(
             ByteArrayDataSource(

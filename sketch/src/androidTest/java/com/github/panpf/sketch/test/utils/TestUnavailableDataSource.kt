@@ -15,10 +15,12 @@
  */
 package com.github.panpf.sketch.test.utils
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.UnavailableDataSource
 import com.github.panpf.sketch.request.ImageRequest
+import java.io.IOException
 import java.io.InputStream
 
 class TestUnavailableDataSource(
@@ -26,9 +28,14 @@ class TestUnavailableDataSource(
     override val request: ImageRequest,
     override val dataFrom: DataFrom,
 ) : UnavailableDataSource {
+
+    @WorkerThread
+    @Throws(IOException::class)
     override fun length(): Long =
         throw UnsupportedOperationException("TestUnavailableDataSource cannot be used")
 
+    @WorkerThread
+    @Throws(IOException::class)
     override fun newInputStream(): InputStream =
         throw UnsupportedOperationException("TestUnavailableDataSource cannot be used")
 

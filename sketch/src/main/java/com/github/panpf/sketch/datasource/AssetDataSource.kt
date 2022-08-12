@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.datasource
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.useCompat
@@ -32,6 +33,7 @@ class AssetDataSource constructor(
 
     private var _length = -1L
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
@@ -41,6 +43,7 @@ class AssetDataSource constructor(
                 this@AssetDataSource._length = this
             }
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = request.context.assets.open(assetFileName)
 

@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.datasource
 
 import android.net.Uri
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
@@ -32,6 +33,7 @@ class ContentDataSource constructor(
 
     private var _length = -1L
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
@@ -42,13 +44,15 @@ class ContentDataSource constructor(
                 this@ContentDataSource._length = this
             }
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun newInputStream(): InputStream =
         request.context.contentResolver.openInputStream(contentUri)
             ?: throw IOException("Invalid content uri: $contentUri")
 
+    @WorkerThread
     @Throws(IOException::class)
-    override suspend fun file(): File =
+    override fun file(): File =
         if (contentUri.scheme.equals("file", ignoreCase = true)) {
             File(contentUri.toString().substring("file://".length))
         } else {

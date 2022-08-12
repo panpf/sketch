@@ -15,11 +15,11 @@
  */
 package com.github.panpf.sketch.datasource
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -32,14 +32,17 @@ interface DataSource {
 
     val dataFrom: DataFrom
 
+    @WorkerThread
     @Throws(IOException::class)
     fun length(): Long
 
+    @WorkerThread
     @Throws(IOException::class)
     fun newInputStream(): InputStream
 
+    @WorkerThread
     @Throws(IOException::class)
-    suspend fun file(): File = withContext(Dispatchers.IO) {
+    fun file(): File = runBlocking {
         val resultCache = sketch.resultCache
         val resultCacheKey = request.uriString + "_data_source"
         resultCache.editLock(resultCacheKey).withLock {
@@ -48,7 +51,7 @@ interface DataSource {
                 snapshot
             } else {
                 val editor = resultCache.edit(resultCacheKey)
-                    ?: throw IllegalArgumentException("Disk cache cannot be used")
+                    ?: throw IOException("Disk cache cannot be used")
                 try {
                     newInputStream().use { inputStream ->
                         editor.newOutputStream().buffered().use { outputStream ->
@@ -61,7 +64,7 @@ interface DataSource {
                     throw e
                 }
                 resultCache[resultCacheKey]
-                    ?: throw IllegalArgumentException("Disk cache cannot be used after edit")
+                    ?: throw IOException("Disk cache cannot be used after edit")
             }
         }.file
     }

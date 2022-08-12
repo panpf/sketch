@@ -24,7 +24,6 @@ import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,13 +36,11 @@ class FileDataSourceTest {
     @Test
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val file = runBlocking {
-            AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample.jpeg")),
-                assetFileName = "sample.jpeg"
-            ).file()
-        }
+        val file = AssetDataSource(
+            sketch = sketch,
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
+        ).file()
         val request = LoadRequest(context, newFileUri(file.path))
         FileDataSource(
             sketch = sketch,
@@ -60,13 +57,11 @@ class FileDataSourceTest {
     @Test
     fun testLength() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val file = runBlocking {
-            AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample.jpeg")),
-                assetFileName = "sample.jpeg"
-            ).file()
-        }
+        val file = AssetDataSource(
+            sketch = sketch,
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
+        ).file()
         FileDataSource(
             sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
@@ -88,13 +83,11 @@ class FileDataSourceTest {
     @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val file = runBlocking {
-            AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample.jpeg")),
-                assetFileName = "sample.jpeg"
-            ).file()
-        }
+        val file = AssetDataSource(
+            sketch = sketch,
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
+        ).file()
         FileDataSource(
             sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
@@ -117,21 +110,17 @@ class FileDataSourceTest {
     @Test
     fun testFile() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val file = runBlocking {
-            AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample.jpeg")),
-                assetFileName = "sample.jpeg"
-            ).file()
-        }
+        val file = AssetDataSource(
+            sketch = sketch,
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
+        ).file()
         FileDataSource(
             sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
             file = file,
         ).apply {
-            val file1 = runBlocking {
-                file()
-            }
+            val file1 = file()
             Assert.assertEquals(file, file1)
         }
     }
@@ -139,13 +128,11 @@ class FileDataSourceTest {
     @Test
     fun testToString() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val file = runBlocking {
-            AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample.jpeg")),
-                assetFileName = "sample.jpeg"
-            ).file()
-        }
+        val file = AssetDataSource(
+            sketch = sketch,
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
+        ).file()
         FileDataSource(
             sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),

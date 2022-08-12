@@ -135,7 +135,7 @@ class AppIconUriFetcherTest {
                 newInputStream()
             }
             assertThrow(UnsupportedOperationException::class) {
-                runBlocking { file() }
+                file()
             }
 
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)

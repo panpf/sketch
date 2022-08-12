@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.datasource
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.request.ImageRequest
@@ -31,6 +32,7 @@ class DiskCacheDataSource constructor(
 
     private var _length = -1L
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
@@ -38,10 +40,13 @@ class DiskCacheDataSource constructor(
                 this@DiskCacheDataSource._length = this
             }
 
+    @WorkerThread
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = snapshot.newInputStream()
 
-    override suspend fun file(): File = snapshot.file
+    @WorkerThread
+    @Throws(IOException::class)
+    override fun file(): File = snapshot.file
 
     override fun toString(): String =
         "DiskCacheDataSource(from=$dataFrom,file='${snapshot.file.path}')"
