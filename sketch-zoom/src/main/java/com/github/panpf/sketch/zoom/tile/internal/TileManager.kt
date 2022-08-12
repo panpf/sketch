@@ -46,6 +46,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.max
 
 class TileManager constructor(
     private val sketch: Sketch,
@@ -74,6 +75,7 @@ class TileManager constructor(
     private val scope: CoroutineScope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val decodeDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
     private var lastTileList: List<Tile>? = null
@@ -167,14 +169,16 @@ class TileManager constructor(
             return
         }
         resetVisibleAndLoadRect(previewSize, previewVisibleRect)
-        val targetScale = (imageSize.width / previewSize.width.toFloat())
+        val targetScale = max(
+            (imageSize.width / previewSize.width.toFloat()),
+            (imageSize.height / previewSize.height.toFloat())
+        )
         canvas.withSave {
             canvas.concat(drawMatrix)
             tileList.forEach { tile ->
                 if (tile.srcRect.crossWith(imageLoadRect)) {
                     val tileBitmap = tile.bitmap
                     val tileSrcRect = tile.srcRect
-                    // todo 垂直方向上 top 和 bottom 和预览图位置有些出入，越到底部越明显
                     val tileDrawRect = tileDrawRect.apply {
                         set(
                             floor(tileSrcRect.left / targetScale).toInt(),
