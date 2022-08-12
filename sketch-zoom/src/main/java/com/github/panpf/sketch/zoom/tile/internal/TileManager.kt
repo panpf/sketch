@@ -174,6 +174,7 @@ class TileManager constructor(
                 if (tile.srcRect.crossWith(imageLoadRect)) {
                     val tileBitmap = tile.bitmap
                     val tileSrcRect = tile.srcRect
+                    // todo 垂直方向上 top 和 bottom 和预览图位置有些出入，越到底部越明显
                     val tileDrawRect = tileDrawRect.apply {
                         set(
                             floor(tileSrcRect.left / targetScale).toInt(),
