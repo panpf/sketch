@@ -143,7 +143,6 @@ class LocalPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                     }
                 }
 
-
                 val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
                     ImageGridItemFactory().setOnViewClickListener(R.id.imageGridItemImage) { _, _, _, absoluteAdapterPosition, _ ->
                         startImageDetail(binding, absoluteAdapterPosition)
@@ -219,10 +218,10 @@ class LocalPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                 }
             }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageViewerActivity(
+            NavMainDirections.actionGlobalImageViewerPagerFragment(
                 Json.encodeToString(imageList),
                 position,
-            )
+            ),
         )
     }
 }

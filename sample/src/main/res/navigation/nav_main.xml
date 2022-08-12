@@ -205,21 +205,6 @@
         android:name="com.github.panpf.sketch.sample.ui.notify.RemoteViewsTestFragment"
         android:label="NotificationFragment" />
 
-    <activity
-        android:id="@+id/imageViewerActivity"
-        android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerActivity"
-        android:label="ImageViewerActivity">
-        <argument
-            android:name="imageDetailJsonArray"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="defaultPosition"
-            android:defaultValue="0"
-            app:argType="integer"
-            app:nullable="false" />
-    </activity>
-
     <fragment
         android:id="@+id/imageViewerPagerFragment"
         android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerPagerFragment"
@@ -239,6 +224,10 @@
         android:id="@+id/imageViewerFragment"
         android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerFragment"
         android:label="ImageViewerFragment">
+        <argument
+            android:name="position"
+            app:argType="integer"
+            app:nullable="false" />
         <argument
             android:name="imageUri"
             app:argType="string"
@@ -340,27 +329,15 @@
             app:nullable="true" />
     </dialog>
 
-    <!--<action
+    <action
         android:id="@+id/action_global_imageViewerPagerFragment"
         app:destination="@id/imageViewerPagerFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />-->
-
-    <action
-        android:id="@+id/action_global_imageViewerActivity"
-        app:destination="@id/imageViewerActivity"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
+        app:enterAnim="@anim/nav_enter_from_bottom"
+        app:exitAnim="@anim/nav_exit_from_bottom"
+        app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
+        app:popExitAnim="@anim/nav_pop_exit_from_bottom" />
 
     <action
         android:id="@+id/action_global_imageInfoDialogFragment"
-        app:destination="@id/imageInfoDialogFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
+        app:destination="@id/imageInfoDialogFragment"/>
 </navigation>

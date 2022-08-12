@@ -218,7 +218,7 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
                 }
             }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageViewerActivity(
+            NavMainDirections.actionGlobalImageViewerPagerFragment(
                 Json.encodeToString(imageList),
                 position,
             )

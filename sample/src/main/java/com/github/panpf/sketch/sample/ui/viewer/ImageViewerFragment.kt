@@ -18,11 +18,11 @@ package com.github.panpf.sketch.sample.ui.viewer
 import android.Manifest
 import android.os.Bundle
 import android.widget.ImageView
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
@@ -33,7 +33,6 @@ import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
-import com.github.panpf.sketch.sample.widget.SwipeBackLayout
 import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.launch
@@ -43,7 +42,6 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     private val args by navArgs<ImageViewerFragmentArgs>()
     private val viewModel by viewModels<ImageViewerViewModel>()
     private val pagerViewModel by parentViewModels<ImageViewerPagerViewModel>()
-    private val swipeExitViewModel by parentViewModels<ImageViewerSwipeExitViewModel>()
     private val requestPermissionResult = registerForActivityResult(RequestPermission()) {
         lifecycleScope.launch {
             handleActionResult(viewModel.save(args.imageUri))
@@ -51,14 +49,6 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     }
 
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    binding.imageViewerSwipeBack.back()
-                }
-            })
-
         binding.root.background = null
 
         binding.imageViewerZoomImage.apply {
@@ -67,12 +57,13 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
                 readModeEnabled = it
             }
             setOnClickListener {
-                binding.imageViewerSwipeBack.back()
+                findNavController().popBackStack()
             }
             setOnLongClickListener {
                 startImageInfoDialog(this)
                 true
             }
+
             displayImage(args.imageUri) {
                 args.placeholderImageMemoryCacheKey?.let {
                     placeholder(MemoryCacheStateImage(it))
@@ -81,17 +72,6 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
                 lifecycle(viewLifecycleOwner.lifecycle)
             }
         }
-
-        binding.imageViewerSwipeBack.callback =
-            object : SwipeBackLayout.Callback {
-                override fun onProgressChanged(progress: Float) {
-                    swipeExitViewModel.progressChangedEvent.value = progress
-                }
-
-                override fun onBack() {
-                    swipeExitViewModel.backEvent.value = true
-                }
-            }
 
         pagerViewModel.apply {
             shareEvent.listen(viewLifecycleOwner) {
@@ -137,7 +117,11 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             data: ImageDetail
         ): Fragment = ImageViewerFragment().apply {
             arguments =
-                ImageViewerFragmentArgs(data.url, data.placeholderImageMemoryCacheKey).toBundle()
+                ImageViewerFragmentArgs(
+                    data.position,
+                    data.url,
+                    data.placeholderImageMemoryCacheKey
+                ).toBundle()
         }
     }
 }
