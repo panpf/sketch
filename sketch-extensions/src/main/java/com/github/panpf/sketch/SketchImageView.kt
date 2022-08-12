@@ -43,6 +43,7 @@ open class SketchImageView @JvmOverloads constructor(
 
     init {
         imageXmlAttributes = parseImageXmlAttributes(context, attrs)
+        @Suppress("LeakingThis")
         displayImageOptions = imageXmlAttributes.options
         displaySrc()
     }

@@ -98,6 +98,3 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
 
 val ImageRequest.memoryCacheKey: String
     get() = cacheKey
-
-val ImageRequest.memoryCacheLockKey: String
-    get() = cacheKey

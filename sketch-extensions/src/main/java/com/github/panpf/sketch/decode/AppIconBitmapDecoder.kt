@@ -18,6 +18,7 @@ package com.github.panpf.sketch.decode
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.annotation.WorkerThread
+import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.internal.appliedResize
@@ -56,7 +57,12 @@ class AppIconBitmapDecoder(
             sketch.bitmapPool,
             request.bitmapConfig?.getConfig(AppIconUriFetcher.MIME_TYPE)
         )
-        val imageInfo = ImageInfo(bitmap.width, bitmap.height, AppIconUriFetcher.MIME_TYPE, 0)
+        val imageInfo = ImageInfo(
+            width = bitmap.width,
+            height = bitmap.height,
+            mimeType = AppIconUriFetcher.MIME_TYPE,
+            exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
+        )
         return BitmapDecodeResult(bitmap, imageInfo, LOCAL).appliedResize(sketch, request.resize)
     }
 

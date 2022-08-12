@@ -12,8 +12,7 @@ Sketch 依赖 Lifecycle 监控页面的生命周期，用于以下功能：
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.gif") {
-    val lifecycle: Lifecycle = ...
-    lifecycle(lifecycle)
+    lifecycle(fragment.viewLifecycleOwner.lifecyle)
 }
 ```
 

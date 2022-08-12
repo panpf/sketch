@@ -36,9 +36,9 @@ internal object GlobalLifecycle : Lifecycle() {
         }
 
         // Call the lifecycle methods in order and do not hold a reference to the observer.
-        observer.onStateChanged(owner, Lifecycle.Event.ON_CREATE)
-        observer.onStateChanged(owner, Lifecycle.Event.ON_START)
-        observer.onStateChanged(owner, Lifecycle.Event.ON_RESUME)
+        observer.onStateChanged(owner, Event.ON_CREATE)
+        observer.onStateChanged(owner, Event.ON_START)
+        observer.onStateChanged(owner, Event.ON_RESUME)
     }
 
     override fun removeObserver(observer: LifecycleObserver) {}

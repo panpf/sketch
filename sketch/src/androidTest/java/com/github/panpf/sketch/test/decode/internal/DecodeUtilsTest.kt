@@ -1016,7 +1016,7 @@ class DecodeUtilsTest {
                 Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             }
 
-        assertThrow(Exception::class) {
+        assertThrow(IOException::class) {
             ResourceDataSource(
                 sketch,
                 LoadRequest(context, newResourceUri(R.xml.network_security_config)),

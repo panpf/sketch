@@ -40,14 +40,3 @@ enum class ImageFormat(val mimeType: String) {
         }
     }
 }
-
-fun mimeTypeToImageFormat(mimeType: String?): ImageFormat? = when {
-    ImageFormat.JPEG.matched(mimeType) -> ImageFormat.JPEG
-    ImageFormat.PNG.matched(mimeType) -> ImageFormat.PNG
-    ImageFormat.WEBP.matched(mimeType) -> ImageFormat.WEBP
-    ImageFormat.GIF.matched(mimeType) -> ImageFormat.GIF
-    ImageFormat.BMP.matched(mimeType) -> ImageFormat.BMP
-    ImageFormat.HEIC.matched(mimeType) -> ImageFormat.HEIC
-    ImageFormat.HEIF.matched(mimeType) -> ImageFormat.HEIF
-    else -> null
-}

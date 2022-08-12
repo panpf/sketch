@@ -84,6 +84,7 @@ object OpenGLTextureHelper {
             dpy, configAttr, 0,
             configs, 0, 1, numConfig, 0
         )
+        @Suppress("ControlFlowWithEmptyBody")
         if (numConfig[0] == 0) {
             // TROUBLE! No config found.
         }
@@ -144,6 +145,7 @@ object OpenGLTextureHelper {
         val configs = arrayOfNulls<javax.microedition.khronos.egl.EGLConfig>(1)
         val numConfig = IntArray(1)
         egl.eglChooseConfig(dpy, configAttr, configs, 1, numConfig)
+        @Suppress("ControlFlowWithEmptyBody")
         if (numConfig[0] == 0) {
             // TROUBLE! No config found.
         }
@@ -154,7 +156,7 @@ object OpenGLTextureHelper {
             EGL10.EGL_NONE
         )
         val surf = egl.eglCreatePbufferSurface(dpy, config, surfAttr)
-        val EGL_CONTEXT_CLIENT_VERSION = 0x3098 // missing in EGL10
+        @Suppress("LocalVariableName") val EGL_CONTEXT_CLIENT_VERSION = 0x3098 // missing in EGL10
         val ctxAttrib = intArrayOf(
             EGL_CONTEXT_CLIENT_VERSION, 1,
             EGL10.EGL_NONE

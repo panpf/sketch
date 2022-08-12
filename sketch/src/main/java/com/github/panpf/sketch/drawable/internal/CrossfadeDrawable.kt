@@ -92,7 +92,9 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     init {
         require(durationMillis > 0) { "durationMillis must be > 0." }
 
+        @Suppress("LeakingThis")
         this.start?.callback = this
+        @Suppress("LeakingThis")
         this.end?.callback = this
     }
 

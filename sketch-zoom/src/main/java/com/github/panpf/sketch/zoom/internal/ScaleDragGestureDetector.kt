@@ -43,6 +43,7 @@ class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestur
     private var activePointerId: Int = INVALID_POINTER_ID
     private var activePointerIndex: Int = 0
 
+    @Suppress("MemberVisibilityCanBePrivate")
     var isDragging = false
         private set
     val isScaling: Boolean

@@ -69,6 +69,7 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
         return ActionResult.success()
     }
 
+    @Suppress("DEPRECATION")
     suspend fun save(imageUri: String): ActionResult {
         val application = application1
         val fetcher = withContext(Dispatchers.IO) {

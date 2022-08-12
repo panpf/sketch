@@ -68,7 +68,7 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
         child.alpha = alpha
     }
 
-    @Deprecated("Deprecated in Java")
+    @Deprecated("Deprecated in Java", ReplaceWith("child.opacity"))
     @Suppress("DEPRECATION")
     override fun getOpacity() = child.opacity
 

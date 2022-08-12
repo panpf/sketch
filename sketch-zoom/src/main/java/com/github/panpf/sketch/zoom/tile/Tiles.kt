@@ -63,6 +63,7 @@ class Tiles constructor(
     private var tileManager: TileManager? = null
     internal var onTileChangedListenerList: MutableSet<OnTileChangedListener>? = null
 
+    @Suppress("MemberVisibilityCanBePrivate")
     val destroyed: Boolean
         get() = _destroyed
     val tileList: List<Tile>?

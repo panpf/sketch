@@ -34,6 +34,7 @@ open class LifecycleAndroidViewModel(val application1: Application) :
 
     private val clearedListenerList: MutableList<OnClearedListener> = LinkedList()
 
+    @Suppress("LeakingThis")
     @SuppressLint("StaticFieldLeak")
     private var lifecycleRegistry = LifecycleRegistry(this)
 
@@ -43,6 +44,7 @@ open class LifecycleAndroidViewModel(val application1: Application) :
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 
+    @Suppress("unused")
     fun addOnClearedListener(clearedListener: OnClearedListener) {
         clearedListenerList.add(clearedListener)
     }

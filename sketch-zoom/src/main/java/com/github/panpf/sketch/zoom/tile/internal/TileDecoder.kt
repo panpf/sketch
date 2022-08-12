@@ -104,6 +104,7 @@ class TileDecoder internal constructor(
     val imageSize: Size by lazy {
         Size(imageInfo.width, imageInfo.height)
     }
+    @Suppress("MemberVisibilityCanBePrivate")
     val destroyed: Boolean
         get() = _destroyed
 

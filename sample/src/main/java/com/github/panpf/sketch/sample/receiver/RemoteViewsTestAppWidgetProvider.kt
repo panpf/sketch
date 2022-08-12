@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.receiver
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -27,7 +28,6 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.R.id
 import com.github.panpf.sketch.target.RemoteViewsDisplayTarget
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.tools4a.dimen.ktx.dp2px
@@ -76,6 +76,7 @@ class RemoteViewsTestAppWidgetProvider : AppWidgetProvider() {
         }
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun update(context: Context, appWidgetId: Int) {
         val nextImageUri = imageUris[imageUriIndex++ % imageUris.size]
         val remoteViews = RemoteViews(context.packageName, R.layout.remote_views_appwidget).apply {
@@ -97,7 +98,7 @@ class RemoteViewsTestAppWidgetProvider : AppWidgetProvider() {
             target(
                 RemoteViewsDisplayTarget(
                     remoteViews = remoteViews,
-                    imageViewId = id.remoteViewsAppWidgetImage1,
+                    imageViewId = R.id.remoteViewsAppWidgetImage1,
                     ignoreNullDrawable = true,
                     onUpdated = {
                         AppWidgetManager.getInstance(context)!!

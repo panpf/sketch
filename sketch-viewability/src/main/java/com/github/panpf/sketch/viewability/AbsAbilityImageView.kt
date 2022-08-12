@@ -48,6 +48,7 @@ abstract class AbsAbilityImageView @JvmOverloads constructor(
         get() = viewAbilityManager?.viewAbilityList ?: emptyList()
 
     init {
+        @Suppress("LeakingThis")
         viewAbilityManager = RealViewAbilityManager(this, this)
     }
 

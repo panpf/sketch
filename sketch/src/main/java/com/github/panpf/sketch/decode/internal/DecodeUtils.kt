@@ -356,7 +356,7 @@ fun DataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Bool
     val width = imageInfo.width
     val height = imageInfo.height
     if (width <= 0 || height <= 0) {
-        throw Exception("Invalid image, size=${width}x${height}")
+        throw IOException("Invalid image, size=${width}x${height}")
     }
     return imageInfo
 }
