@@ -1,3 +1,14 @@
+# v3.0.0-rc06
+
+### sketch
+
+* change: The DataSource.file() method removes the suspend tag
+* improve: Remove url escape characters in ImageRequest key and cacheKey
+
+### sketch-zoom
+
+* fix: Fix the bug that the tile and preview image of SketchZoomImageView are misplaced
+
 # v3.0.0-rc05
 
 ### sketch
