@@ -132,7 +132,7 @@ internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): Fi
 
 // The getRunningAppProcesses() method is a privacy method and cannot be called before agreeing to the privacy agreement,
 // so the process name can only be obtained in this way
-internal val processNameCompat: String? by lazy {
+internal fun getProcessNameCompat(): String? =
     if (Build.VERSION.SDK_INT >= 28) {
         Application.getProcessName()
     } else {
@@ -150,11 +150,10 @@ internal val processNameCompat: String? by lazy {
             null
         }
     }
-}
 
 internal fun getProcessNameSuffix(context: Context, processName: String? = null): String? {
     val packageName = context.packageName
-    val finalProcessName = processName ?: processNameCompat ?: return null
+    val finalProcessName = processName ?: getProcessNameCompat() ?: return null
     return if (
         finalProcessName.length > packageName.length
         && finalProcessName.startsWith(packageName)
