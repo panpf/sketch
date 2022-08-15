@@ -21,7 +21,7 @@ import android.os.Handler
 import android.os.IBinder
 
 /**
- * 这个 Service 只是为了测试 Sketch 在多进程下的兼容性
+ * This Service is just to test the compatibility of Sketch under multi-process
  */
 class NotificationService : Service() {
     override fun onBind(intent: Intent): IBinder? {

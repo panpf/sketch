@@ -15,11 +15,11 @@
  */
 package com.github.panpf.sketch.util
 
-import android.app.ActivityManager
+import android.app.Application
 import android.content.ComponentCallbacks2
 import android.content.Context
+import android.os.Build
 import android.os.Looper
-import android.os.Process
 import android.webkit.MimeTypeMap
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
@@ -121,9 +121,8 @@ internal fun getTrimLevelName(level: Int): String = when (level) {
 
 internal fun Any.toHexString(): String = Integer.toHexString(this.hashCode())
 
-internal fun Context.fileNameCompatibilityMultiProcess(file: File): File {
-    val processName = getProcessName()
-    val processNameSuffix = parseProcessNameSuffix(processName)
+internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): File {
+    val processNameSuffix = getProcessNameSuffix(context)
     return if (processNameSuffix != null) {
         File(file.parent, "${file.name}-$processNameSuffix")
     } else {
@@ -131,21 +130,37 @@ internal fun Context.fileNameCompatibilityMultiProcess(file: File): File {
     }
 }
 
-internal fun Context.getProcessName(): String {
-    val pid = Process.myPid()
-    val activityManager = getSystemService(Context.ACTIVITY_SERVICE).asOrNull<ActivityManager>()
-    val processInfo = activityManager?.runningAppProcesses?.find { it.pid == pid }
-    return processInfo?.processName ?: return packageName
+// The getRunningAppProcesses() method is a privacy method and cannot be called before agreeing to the privacy agreement,
+// so the process name can only be obtained in this way
+internal val processNameCompat: String? by lazy {
+    if (Build.VERSION.SDK_INT >= 28) {
+        Application.getProcessName()
+    } else {
+        try {
+            val activityThreadClass = Class.forName("android.app.ActivityThread")
+            val method = if (Build.VERSION.SDK_INT >= 18) {
+                activityThreadClass.getMethod("currentProcessName")
+            } else {
+                activityThreadClass.getMethod("currentPackageName")
+            }
+            method.isAccessible = true
+            method.invoke(null)?.toString()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            null
+        }
+    }
 }
 
-internal fun Context.parseProcessNameSuffix(processName: String): String? {
-    val packageName = packageName
+internal fun getProcessNameSuffix(context: Context, processName: String? = null): String? {
+    val packageName = context.packageName
+    val finalProcessName = processName ?: processNameCompat ?: return null
     return if (
-        processName.length > packageName.length
-        && processName.startsWith(packageName)
-        && processName[packageName.length] == ':'
+        finalProcessName.length > packageName.length
+        && finalProcessName.startsWith(packageName)
+        && finalProcessName[packageName.length] == ':'
     ) {
-        processName.substring(packageName.length + 1)
+        finalProcessName.substring(packageName.length + 1)
     } else {
         null
     }

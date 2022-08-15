@@ -64,7 +64,7 @@ class LruDiskCache private constructor(
     override val size: Long
         get() = _cache?.size() ?: 0
     override val directory: File by lazy {
-        context.fileNameCompatibilityMultiProcess(directory)
+        fileNameCompatibilityMultiProcess(context, directory)
     }
 
     private fun cache(): DiskLruCache = synchronized(this) {
