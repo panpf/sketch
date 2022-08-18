@@ -108,7 +108,7 @@ fun ImageView.displayResourceImage(
 /**
  * Dispose the request that's attached to this view (if there is one).
  */
-fun ImageView.dispose() {
+fun ImageView.disposeDisplay() {
     SketchUtils.dispose(this)
 }
 

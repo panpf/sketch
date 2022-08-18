@@ -25,7 +25,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayAssetImage
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResourceImage
-import com.github.panpf.sketch.dispose
+import com.github.panpf.sketch.disposeDisplay
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.result
 import com.github.panpf.sketch.test.utils.DelayTransformation
@@ -164,7 +164,7 @@ class ImageViewExtensionsTest {
     }
 
     @Test
-    fun testDispose() {
+    fun testDisposeDisplay() {
         val activity = TestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
@@ -183,7 +183,7 @@ class ImageViewExtensionsTest {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 addTransformations(DelayTransformation {
-                    imageView.dispose()
+                    imageView.disposeDisplay()
                 })
             }.job.join()
         }
@@ -212,7 +212,7 @@ class ImageViewExtensionsTest {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 addTransformations(DelayTransformation {
-                    imageView.dispose()
+                    imageView.disposeDisplay()
                 })
             }.job.join()
         }
