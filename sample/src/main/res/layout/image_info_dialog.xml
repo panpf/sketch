@@ -40,16 +40,16 @@
             android:layout_marginTop="8dp">
 
             <TextView
-                android:id="@+id/imageInfoImageTitle"
+                android:id="@+id/imageInfoOptionsTitle"
                 android:layout_width="76dp"
                 android:layout_height="wrap_content"
                 android:gravity="right"
-                android:text="Image："
+                android:text="Options："
                 android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
-                android:id="@+id/imageInfoImageContent"
+                android:id="@+id/imageInfoOptionsContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_title"
@@ -62,16 +62,38 @@
             android:layout_marginTop="8dp">
 
             <TextView
-                android:id="@+id/imageInfoOptionsTitle"
+                android:id="@+id/imageInfoThrowableTitle"
                 android:layout_width="76dp"
                 android:layout_height="wrap_content"
                 android:gravity="right"
-                android:text="Options："
+                android:text="Throwable："
                 android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
-                android:id="@+id/imageInfoOptionsContent"
+                android:id="@+id/imageInfoThrowableContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_title"
+                tools:text="http://sample.com/sample.jpeg" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/imageInfoImageTitle"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="Image："
+                android:textColor="@color/text_subtitle"
+                android:textSize="11dp" />
+
+            <TextView
+                android:id="@+id/imageInfoImageContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_title"
@@ -145,7 +167,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/imageInfoZoomItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp">
@@ -168,7 +189,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/imageInfoTilesItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp">

@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.ui.setting
 import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Bundle
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.graphics.toRect
 import androidx.core.net.toUri
@@ -25,6 +26,8 @@ import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.decode.internal.exifOrientationName
+import com.github.panpf.sketch.displayResult
+import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.ImageInfoDialogBinding
 import com.github.panpf.sketch.sample.ui.base.BindingDialogFragment
@@ -32,22 +35,43 @@ import com.github.panpf.sketch.sample.util.format
 import com.github.panpf.sketch.util.findLastSketchDrawable
 import com.github.panpf.sketch.zoom.SketchZoomImageView
 import com.github.panpf.tools4j.io.ktx.formatFileSize
+import com.github.panpf.tools4k.lang.asOrThrow
 
 class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() {
 
     private val args by navArgs<ImageInfoDialogFragmentArgs>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, 0)
+    }
+
     override fun onViewCreated(binding: ImageInfoDialogBinding, savedInstanceState: Bundle?) {
         binding.imageInfoUriContent.text = args.uri
+        binding.imageInfoOptionsContent.text = args.optionsInfo
+
+        binding.imageInfoThrowableContent.text = args.throwableString
         binding.imageInfoImageContent.text = args.imageInfo
         binding.imageInfoDrawableContent.text = args.drawableInfo
-        binding.imageInfoOptionsContent.text = args.optionsInfo
         binding.imageInfoDataFromContent.text = args.dataFromInfo
         binding.imageInfoTransformedContent.text = args.transformedInfo
         binding.imageInfoZoomContent.text = args.zoomInfo
-        binding.imageInfoZoomItem.isVisible = args.zoomInfo != null
         binding.imageInfoTilesContent.text = args.tilesInfo
-        binding.imageInfoTilesItem.isVisible = args.tilesInfo != null
+
+        binding.imageInfoThrowableContent.parent.asOrThrow<ViewGroup>().isVisible =
+            args.throwableString != null
+        binding.imageInfoImageContent.parent.asOrThrow<ViewGroup>().isVisible =
+            args.throwableString == null
+        binding.imageInfoDrawableContent.parent.asOrThrow<ViewGroup>().isVisible =
+            args.throwableString == null
+        binding.imageInfoDataFromContent.parent.asOrThrow<ViewGroup>().isVisible =
+            args.throwableString == null
+        binding.imageInfoTransformedContent.parent.asOrThrow<ViewGroup>().isVisible =
+            args.throwableString == null
+        binding.imageInfoZoomContent.parent.asOrThrow<ViewGroup>().isVisible =
+            args.throwableString == null && args.zoomInfo != null
+        binding.imageInfoTilesContent.parent.asOrThrow<ViewGroup>().isVisible =
+            args.throwableString == null && args.tilesInfo != null
     }
 
     companion object {
@@ -63,8 +87,10 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             var transformedInfo: String? = null
             var zoomInfo: String? = null
             var tilesInfo: String? = null
-            val sketchDrawable = imageView.drawable.findLastSketchDrawable()
-            if (sketchDrawable != null) {
+            var throwableString: String? = null
+            val displayResult = imageView.displayResult
+            if (displayResult is DisplayResult.Success) {
+                val sketchDrawable = displayResult.drawable.findLastSketchDrawable()!!
                 uri1 = sketchDrawable.imageUri
                 imageInfo = sketchDrawable.imageInfo.run {
                     "${width}x${height}, ${mimeType}, ${exifOrientationName(exifOrientation)}"
@@ -90,6 +116,20 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                     ?.joinToString(separator = "\n") { transformed ->
                         transformed.replace("Transformed", "")
                     }
+            } else if (displayResult is DisplayResult.Error) {
+                uri1 = displayResult.request.uriString
+
+                val keyUri = displayResult.request.key.toUri()
+                optionsInfo = keyUri.queryParameterNames.mapNotNull {
+                    if (it.startsWith("_")) {
+                        val value = keyUri.getQueryParameter(it)
+                        "$it=$value"
+                    } else {
+                        null
+                    }
+                }.joinToString(separator = "\n")
+
+                throwableString = displayResult.exception.toString()
             }
 
             if (imageView is SketchZoomImageView) {
@@ -140,7 +180,8 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                 dataFromInfo = dataFromInfo,
                 transformedInfo = transformedInfo,
                 zoomInfo = zoomInfo,
-                tilesInfo = tilesInfo
+                tilesInfo = tilesInfo,
+                throwableString = throwableString
             )
         }
     }

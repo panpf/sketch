@@ -327,6 +327,11 @@
             android:defaultValue="null"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="throwableString"
+            android:defaultValue="null"
+            app:argType="string"
+            app:nullable="true" />
     </dialog>
 
     <action
