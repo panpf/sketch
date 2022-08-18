@@ -15,6 +15,8 @@
  */
 package com.github.panpf.sketch.util
 
+import kotlin.math.abs
+
 open class Size(val width: Int, val height: Int) {
 
     constructor() : this(0, 0)
@@ -64,3 +66,15 @@ open class Size(val width: Int, val height: Int) {
 
 val Size.isNotEmpty: Boolean
     get() = !isEmpty
+
+fun Size.isSameAspectRatio(other: Size, delta: Float = 0f): Boolean {
+    val selfScale = this.width / this.height.toFloat()
+    val otherScale = other.width / other.height.toFloat()
+    if (selfScale.compareTo(otherScale) == 0) {
+        return true
+    }
+    if (delta != 0f && abs(selfScale - otherScale) <= delta) {
+        return true
+    }
+    return false
+}

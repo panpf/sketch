@@ -18,6 +18,7 @@ package com.github.panpf.sketch.test.util
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.isNotEmpty
+import com.github.panpf.sketch.util.isSameAspectRatio
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -67,6 +68,15 @@ class SizeTest {
         val (width1, height1) = Size(684, 4234)
         Assert.assertEquals(684, width1)
         Assert.assertEquals(4234, height1)
+    }
+
+    @Test
+    fun testIsSameAspectRatio() {
+        Assert.assertTrue(Size(400, 200).isSameAspectRatio(Size(400, 200)))
+        Assert.assertTrue(Size(400, 200).isSameAspectRatio(Size(200, 100)))
+        Assert.assertFalse(Size(400, 200).isSameAspectRatio(Size(200, 99)))
+        Assert.assertTrue(Size(400, 200).isSameAspectRatio(Size(200, 99), delta = 0.1f))
+        Assert.assertFalse(Size(400, 200).isSameAspectRatio(Size(200, 92), delta = 0.1f))
     }
 
     @Test
