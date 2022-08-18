@@ -115,5 +115,5 @@ fun ImageView.disposeDisplay() {
 /**
  * Get the [DisplayResult] of the most recently executed image request that's attached to this view.
  */
-val ImageView.result: DisplayResult?
+val ImageView.displayResult: DisplayResult?
     get() = SketchUtils.getResult(this)

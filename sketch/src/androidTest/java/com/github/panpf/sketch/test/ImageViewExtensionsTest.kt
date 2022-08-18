@@ -27,7 +27,7 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResourceImage
 import com.github.panpf.sketch.disposeDisplay
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.result
+import com.github.panpf.sketch.displayResult
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -191,21 +191,21 @@ class ImageViewExtensionsTest {
     }
 
     @Test
-    fun testResult() {
+    fun testDisplayResult() {
         val activity = TestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
-        Assert.assertNull(imageView.result)
+        Assert.assertNull(imageView.displayResult)
 
         runBlocking {
             imageView.displayImage(TestAssets.SAMPLE_JPEG_URI).job.join()
         }
-        Assert.assertTrue(imageView.result is DisplayResult.Success)
+        Assert.assertTrue(imageView.displayResult is DisplayResult.Success)
 
         runBlocking {
             imageView.displayImage("asset://fake.jpeg").job.join()
         }
-        Assert.assertTrue(imageView.result is DisplayResult.Error)
+        Assert.assertTrue(imageView.displayResult is DisplayResult.Error)
 
         runBlocking {
             imageView.displayImage(TestAssets.SAMPLE_PNG_URI) {
@@ -216,7 +216,7 @@ class ImageViewExtensionsTest {
                 })
             }.job.join()
         }
-        Assert.assertNull(imageView.result)
+        Assert.assertNull(imageView.displayResult)
     }
 
     class TestActivity : FragmentActivity() {
