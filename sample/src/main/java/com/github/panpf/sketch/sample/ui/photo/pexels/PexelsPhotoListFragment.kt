@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.photo.pexels
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
@@ -50,8 +51,11 @@ import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
+import com.github.panpf.sketch.sample.util.intrinsicSize
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.findLastSketchDrawable
+import com.github.panpf.sketch.util.isSameAspectRatio
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -193,11 +197,17 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
     private fun startImageDetail(binding: RecyclerFragmentBinding, position: Int) {
         val currentViewCacheKeyMap = mutableMapOf<Int, String>().apply {
             binding.recyclerRecycler.forEach { view ->
-                val cacheKey =
-                    view.findViewById<ImageView>(R.id.imageGridItemImage)?.drawable?.findLastSketchDrawable()?.requestCacheKey
-                val adapterPosition = binding.recyclerRecycler.getChildAdapterPosition(view)
-                if (cacheKey != null) {
-                    put(adapterPosition, cacheKey)
+                val sketchDrawable =
+                    view.findViewById<ImageView>(R.id.imageGridItemImage)?.drawable?.findLastSketchDrawable()
+                if (sketchDrawable != null) {
+                    val drawable = sketchDrawable as Drawable
+                    val drawableSize = drawable.intrinsicSize
+                    val imageSize = sketchDrawable.imageInfo.let { Size(it.width, it.height) }
+                    if (drawableSize.isSameAspectRatio(imageSize, delta = 0.1f)) {
+                        val adapterPosition = binding.recyclerRecycler.getChildAdapterPosition(view)
+                        val cacheKey = sketchDrawable.requestCacheKey
+                        put(adapterPosition, cacheKey)
+                    }
                 }
             }
         }
