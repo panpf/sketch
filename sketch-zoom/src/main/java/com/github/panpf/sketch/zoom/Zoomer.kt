@@ -165,15 +165,15 @@ class Zoomer constructor(
         scales = scalesFactory.create(
             sketch = sketch,
             viewSize = viewSize,
+            imageSize = imageSize,
             drawableSize = drawableSize,
             rotateDegrees = _rotateDegrees,
-            imageSize = imageSize,
             scaleType = scaleType,
             readModeDecider = readModeDecider
         )
         scaleDragHelper.reset()
         logger.d(MODULE) {
-            "reset. scales=$scales"
+            "reset. viewSize=$viewSize, imageSize=$imageSize, drawableSize=$drawableSize, rotateDegrees=$rotateDegrees, scaleType=$scaleType, readModeDecider=$readModeDecider, scales=$scales"
         }
     }
 

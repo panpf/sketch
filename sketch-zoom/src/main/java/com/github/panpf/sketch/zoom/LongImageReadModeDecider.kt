@@ -32,7 +32,7 @@ class LongImageReadModeDecider(
     ): Boolean = longImageDecider.isLongImage(imageWidth, imageHeight, viewWidth, viewHeight)
 
     override fun toString(): String {
-        return "LongImageReadModeDecider(longImageDecider=$longImageDecider)"
+        return "LongImageReadModeDecider($longImageDecider)"
     }
 
     override fun equals(other: Any?): Boolean {

@@ -107,9 +107,9 @@ interface ScalesFactory {
     fun create(
         sketch: Sketch,
         viewSize: Size,
+        imageSize: Size,
         drawableSize: Size,
         rotateDegrees: Int,
-        imageSize: Size,
         scaleType: ScaleType,
         readModeDecider: ReadModeDecider?,
     ): Scales
