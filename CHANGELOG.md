@@ -1,3 +1,16 @@
+# v3.0.0-rc07
+
+### sketch
+
+* rename: ImageView.result rename to ImageView.displayResult
+* rename: ImageView.dispose() rename to ImageView.disposeDisplay()
+* new: Size adds isSameAspectRatio extension function
+* fix: No longer use getRunningAppProcesses() method to avoid failure of privacy audit
+
+### sketch-zoom
+
+* improve: Improve reset log of SketchZoomImageView
+
 # v3.0.0-rc06
 
 ### sketch
