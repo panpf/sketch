@@ -35,6 +35,11 @@ abstract class BindingDialogFragment<VIEW_BINDING : ViewBinding> : DialogFragmen
     protected var dialogWidthRatio: Float = 0.85f
     protected var dialogHeightRatio: Float? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, 0)
+    }
+
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

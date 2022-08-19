@@ -41,11 +41,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
 
     private val args by navArgs<ImageInfoDialogFragmentArgs>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_TITLE, 0)
-    }
-
     override fun onViewCreated(binding: ImageInfoDialogBinding, savedInstanceState: Bundle?) {
         binding.imageInfoUriContent.text = args.uri
         binding.imageInfoOptionsContent.text = args.optionsInfo
