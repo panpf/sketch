@@ -16,6 +16,8 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = libs.versions.versionCode.get().toInt()
         versionName = "${libs.versions.versionName.get()}.${getGitVersion()}"
+
+        vectorDrawables.useSupportLibrary = true    // Converting svg to png under version 21 is not allowed
     }
 
     val releaseSigningConfig = readReleaseSigningConfig()
