@@ -21,10 +21,10 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.decode.BitmapDecodeException
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -58,7 +58,7 @@ class XmlDrawableBitmapDecoder(
             context.getXmlDrawableCompat(resources, drawableResId)
         }
         if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
-            throw BitmapDecodeException(
+            throw ImageInvalidException(
                 "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
             )
         }

@@ -82,8 +82,8 @@ class FFmpegVideoFrameBitmapDecoder(
             mediaMetadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
                 ?.toIntOrNull() ?: 0
         if (srcWidth <= 1 || srcHeight <= 1) {
-            val message = "Invalid video size. size=${srcWidth}x${srcHeight}"
-            throw BitmapDecodeException(message)
+            val message = "Invalid video file. size=${srcWidth}x${srcHeight}"
+            throw ImageInvalidException(message)
         }
         val exifOrientation = if (!request.ignoreExifOrientation) {
             readExifOrientation(mediaMetadataRetriever)

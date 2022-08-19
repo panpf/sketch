@@ -31,6 +31,7 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
@@ -350,13 +351,13 @@ fun DataSource.readImageInfoWithBitmapFactory(ignoreExifOrientation: Boolean = f
     )
 }
 
-@Throws(IOException::class)
+@Throws(IOException::class, ImageInvalidException::class)
 fun DataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Boolean = false): ImageInfo {
     val imageInfo = readImageInfoWithBitmapFactory(ignoreExifOrientation)
     val width = imageInfo.width
     val height = imageInfo.height
     if (width <= 0 || height <= 0) {
-        throw IOException("Invalid image, size=${width}x${height}")
+        throw ImageInvalidException("Invalid image. size=${width}x${height}")
     }
     return imageInfo
 }

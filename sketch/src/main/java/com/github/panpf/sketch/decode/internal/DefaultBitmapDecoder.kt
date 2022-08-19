@@ -26,6 +26,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -97,10 +98,10 @@ open class DefaultBitmapDecoder(
             } else {
                 throw BitmapDecodeException("Bitmap decode error: $throwable", throwable)
             }
-        } ?: throw BitmapDecodeException("Bitmap decode return null")
+        } ?: throw ImageInvalidException("Invalid image. decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             bitmap.recycle()
-            throw BitmapDecodeException("Invalid image, size=${bitmap.width}x${bitmap.height}")
+            throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         }
         return bitmap
     }
@@ -148,10 +149,10 @@ open class DefaultBitmapDecoder(
                     throw BitmapDecodeException("Bitmap region decode error", throwable)
                 }
             }
-        } ?: throw BitmapDecodeException("Bitmap region decode return null")
+        } ?: throw ImageInvalidException("Invalid image. region decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             bitmap.recycle()
-            throw BitmapDecodeException("Invalid image, size=${bitmap.width}x${bitmap.height}")
+            throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         }
         return bitmap
     }
