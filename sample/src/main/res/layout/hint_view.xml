@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 提示视图 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
@@ -51,15 +52,15 @@
                     tools:text="Loading…" />
             </LinearLayout>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_hint_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:drawableTop="@drawable/ic_error_outline"
                 android:drawablePadding="@dimen/padding_specialLarge"
                 android:gravity="center"
-                android:textColor="@color/text_normal" />
+                android:textColor="@color/text_normal"
+                app:drawableTopCompat="@drawable/ic_error_outline" />
         </ViewSwitcher>
 
         <Button

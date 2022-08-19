@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/testIndicatorTestText1"
-        tools:src="@drawable/im_placeholder" />
+        tools:srcCompat="@drawable/im_placeholder" />
 
     <TextView
         android:id="@+id/testIndicatorTestText2"
@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/testIndicatorTestText2"
-        tools:src="@drawable/im_placeholder" />
+        tools:srcCompat="@drawable/im_placeholder" />
 
     <TextView
         android:id="@+id/testIndicatorTestText3"
@@ -79,5 +79,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/testIndicatorTestText3"
-        tools:src="@drawable/im_placeholder" />
+        tools:srcCompat="@drawable/im_placeholder" />
 </androidx.constraintlayout.widget.ConstraintLayout>
