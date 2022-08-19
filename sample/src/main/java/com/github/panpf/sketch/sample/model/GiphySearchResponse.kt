@@ -31,6 +31,7 @@ class GiphyGif(
 @Serializable
 class GiphyImages(
     @SerialName("original") val original: GiphyImage,
+    @SerialName("fixed_width") val fixedWidth: GiphyImage,
     @SerialName("preview_gif") val previewGif: GiphyImage,
     @SerialName("preview_webp") val previewWebp: GiphyImage,
 )

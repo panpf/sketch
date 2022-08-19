@@ -30,7 +30,6 @@ class GiphyGifListPagingSource(private val context: Context) :
         val pageStart = params.key ?: 0
         val pageSize = params.loadSize
         val response = try {
-//            context.apiService.giphy.search("young girl", pageStart, pageSize)
             context.apiService.giphy.trending(pageStart, pageSize)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -41,8 +40,8 @@ class GiphyGifListPagingSource(private val context: Context) :
             val dataList = response.body()?.dataList?.map {
                 Photo(
                     originalUrl = it.images.original.url,
-                    thumbnailUrl = it.images.previewGif.url,
-                    middenUrl = null,
+                    previewUrl = it.images.original.url,
+                    thumbnailUrl = it.images.fixedWidth.url,
                     width = it.images.original.width.toInt(),
                     height = it.images.original.height.toInt(),
                     exifOrientation = 0,

@@ -142,6 +142,7 @@ tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyi
 retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit2" }
 retrofit2_kotlinxSerializationConverter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2_kotlinxSerializationConverter" }
 okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
+okhttp3_logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3" }
 androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
 accompanist_drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanist_drawablepainter" }
 accompanist_swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist_drawablepainter" }

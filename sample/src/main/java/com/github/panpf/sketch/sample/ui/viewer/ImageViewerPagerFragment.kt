@@ -22,6 +22,9 @@ import android.view.ViewGroup
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
@@ -29,12 +32,15 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.databinding.ImageViewerPagerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenHeight
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
+import com.github.panpf.tools4a.toast.ktx.showLongToast
+import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
@@ -63,7 +69,8 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    val imageUrl = imageList[position].let { it.middenUrl ?: it.url }
+                    val imageUrl =
+                        imageList[position].let { it.bgUrl ?: it.previewUrl ?: it.originUrl }
                     binding.imageViewerBgImage.displayImage(imageUrl) {
                         resize(
                             requireContext().getScreenWidth() / 4,
@@ -128,6 +135,25 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
 
         binding.imageViewerPagerInfo.setOnClickListener {
             viewModel.infoEvent.value = 0
+        }
+
+        binding.imageViewerPagerOrigin.apply {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(State.STARTED) {
+                    prefsService.showOriginImage.stateFlow.collect {
+                        isSelected = it
+                    }
+                }
+            }
+
+            setOnClickListener {
+                prefsService.showOriginImage.value = !prefsService.showOriginImage.value
+                if (prefsService.showOriginImage.value) {
+                    showLongToast("Opened View original image")
+                } else {
+                    showLongToast("Closed View original image")
+                }
+            }
         }
     }
 }

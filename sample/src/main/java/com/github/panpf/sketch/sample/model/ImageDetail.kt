@@ -24,7 +24,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ImageDetail constructor(
     @SerialName("position") val position: Int,
-    @SerialName("url") val url: String,
-    @SerialName("middenUrl") val middenUrl: String?,
+    @SerialName("originUrl") val originUrl: String,
+    @SerialName("previewUrl") val previewUrl: String?,
+    @SerialName("bgUrl") val bgUrl: String?,
     @SerialName("placeholderImageMemoryCacheKey") val placeholderImageMemoryCacheKey: String?,
 ) : Parcelable

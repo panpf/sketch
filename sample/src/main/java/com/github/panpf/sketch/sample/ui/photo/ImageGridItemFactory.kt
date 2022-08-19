@@ -140,7 +140,7 @@ class ImageGridItemFactory(val disabledCache: Boolean = false) :
                 }
             }
 
-            displayImage(data.firstThumbnailUrl) {
+            displayImage(data.listThumbnailUrl) {
                 resizeScale(
                     when (val value = prefsService.resizeScale.value) {
                         "LongImageMode" -> longImageScale(

@@ -85,7 +85,7 @@ fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
     when (index % 3) {
         0 -> {
             com.github.panpf.sketch.compose.AsyncImage(
-                imageUri = photo.firstThumbnailUrl,
+                imageUri = photo.listThumbnailUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f),
@@ -109,7 +109,7 @@ fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
         }
         1 -> {
             com.github.panpf.sketch.compose.SubcomposeAsyncImage(
-                imageUri = photo.firstThumbnailUrl,
+                imageUri = photo.listThumbnailUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f),
@@ -133,7 +133,7 @@ fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
         }
         else -> {
             Image(
-                painter = com.github.panpf.sketch.compose.rememberAsyncImagePainter(imageUri = photo.firstThumbnailUrl) {
+                painter = com.github.panpf.sketch.compose.rememberAsyncImagePainter(imageUri = photo.listThumbnailUrl) {
                     placeholder(
                         IconStateImage(
                             drawable.ic_image_outline,

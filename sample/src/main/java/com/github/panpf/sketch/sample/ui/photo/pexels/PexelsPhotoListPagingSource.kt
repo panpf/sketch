@@ -39,8 +39,8 @@ class PexelsPhotoListPagingSource(private val context: Context) :
             val dataList = (response.body()?.photos?.map {
                 Photo(
                     originalUrl = it.src.original,
+                    previewUrl = it.src.large,
                     thumbnailUrl = it.src.medium,
-                    middenUrl = it.src.large,
                     width = it.width,
                     height = it.height,
                     exifOrientation = 0,

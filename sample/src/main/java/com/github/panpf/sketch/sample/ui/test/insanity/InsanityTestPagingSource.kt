@@ -61,8 +61,8 @@ class InsanityTestPagingSource(private val context: Context) :
                     exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
                 Photo(
                     originalUrl = uri,
+                    previewUrl = null,
                     thumbnailUrl = null,
-                    middenUrl = null,
                     width = size.width,
                     height = size.height,
                     exifOrientation = imageInfo.exifOrientation,
@@ -71,8 +71,8 @@ class InsanityTestPagingSource(private val context: Context) :
             } else {
                 Photo(
                     originalUrl = uri,
+                    previewUrl = null,
                     thumbnailUrl = null,
-                    middenUrl = null,
                     width = null,
                     height = null,
                     exifOrientation = 0,

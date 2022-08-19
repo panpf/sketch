@@ -39,7 +39,7 @@ class FetcherTestFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {
         viewModel.data.observe(viewLifecycleOwner) { data ->
             val imageFromData = data ?: return@observe
             val images = imageFromData.uris.mapIndexed { index, s ->
-                ImageDetail(index, s, s, null)
+                ImageDetail(index, s, s, s, null)
             }
             val titles = imageFromData.titles
 

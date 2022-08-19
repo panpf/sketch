@@ -229,7 +229,11 @@
             app:argType="integer"
             app:nullable="false" />
         <argument
-            android:name="imageUri"
+            android:name="originImageUri"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="previewImageUri"
             app:argType="string"
             app:nullable="false" />
         <argument

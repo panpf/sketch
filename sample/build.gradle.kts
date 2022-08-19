@@ -111,6 +111,7 @@ dependencies {
     implementation(libs.liveevent)
     implementation(libs.activitymonitor)
     implementation(libs.bundles.retrofit2)
+    implementation(libs.okhttp3.logging)
     implementation(libs.mmkv)
 
     debugImplementation(libs.leakcanary)

@@ -16,11 +16,14 @@
 package com.github.panpf.sketch.sample.data.api
 
 import android.content.Context
+import android.util.Log
+import com.github.panpf.sketch.sample.BuildConfig
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 class ApiServices(@Suppress("unused") private val context: Context) {
@@ -33,6 +36,18 @@ class ApiServices(@Suppress("unused") private val context: Context) {
     private val jsonConverterFactory = json.asConverterFactory(MediaType.get("application/json"))
 
     val giphy: GiphyService = Retrofit.Builder()
+        .client(
+            OkHttpClient.Builder()
+                .addInterceptor(
+                    HttpLoggingInterceptor { message ->
+                        if (BuildConfig.DEBUG) {
+                            Log.d("ApiService", message)
+                        }
+                    }.apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    }
+                ).build()
+        )
         .baseUrl("https://api.giphy.com")
         .addConverterFactory(jsonConverterFactory)
         .build()
@@ -41,15 +56,28 @@ class ApiServices(@Suppress("unused") private val context: Context) {
     val pexels: PexelsService = Retrofit.Builder()
         .baseUrl("https://api.pexels.com")
         .addConverterFactory(jsonConverterFactory)
-        .client(OkHttpClient.Builder().addInterceptor {
-            val newRequest = it.request()
-                .newBuilder()
-                .addHeader(
-                    "Authorization",
-                    "563492ad6f917000010000011ee9732fe9a644d0a798296f68b93c4e"
-                ).build()
-            it.proceed(newRequest)
-        }.build())
+        .client(
+            OkHttpClient.Builder()
+                .addInterceptor(
+                    HttpLoggingInterceptor { message ->
+                        if (BuildConfig.DEBUG) {
+                            Log.d("ApiService", message)
+                        }
+                    }.apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    }
+                )
+                .addInterceptor {
+                    val newRequest = it.request()
+                        .newBuilder()
+                        .addHeader(
+                            "Authorization",
+                            "563492ad6f917000010000011ee9732fe9a644d0a798296f68b93c4e"
+                        ).build()
+                    it.proceed(newRequest)
+                }
+                .build()
+        )
         .build()
         .create(PexelsService::class.java)
 }

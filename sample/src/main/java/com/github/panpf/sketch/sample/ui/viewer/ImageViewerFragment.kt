@@ -21,7 +21,9 @@ import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
@@ -44,7 +46,9 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     private val pagerViewModel by parentViewModels<ImageViewerPagerViewModel>()
     private val requestPermissionResult = registerForActivityResult(RequestPermission()) {
         lifecycleScope.launch {
-            handleActionResult(viewModel.save(args.imageUri))
+            val imageUri =
+                if (prefsService.showOriginImage.value) args.originImageUri else args.previewImageUri
+            handleActionResult(viewModel.save(imageUri))
         }
     }
 
@@ -64,12 +68,18 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
                 true
             }
 
-            displayImage(args.imageUri) {
-                args.placeholderImageMemoryCacheKey?.let {
-                    placeholder(MemoryCacheStateImage(it))
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(State.STARTED) {
+                    prefsService.showOriginImage.stateFlow.collect {
+                        displayImage(if (it) args.originImageUri else args.previewImageUri) {
+                            args.placeholderImageMemoryCacheKey?.let { key ->
+                                placeholder(MemoryCacheStateImage(key))
+                            }
+                            crossfade(fadeStart = false)
+                            lifecycle(viewLifecycleOwner.lifecycle)
+                        }
+                    }
                 }
-                crossfade(fadeStart = false)
-                lifecycle(viewLifecycleOwner.lifecycle)
             }
         }
 
@@ -77,7 +87,9 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             shareEvent.listen(viewLifecycleOwner) {
                 if (isResumed) {
                     lifecycleScope.launch {
-                        handleActionResult(viewModel.share(args.imageUri))
+                        val imageUri =
+                            if (prefsService.showOriginImage.value) args.originImageUri else args.previewImageUri
+                        handleActionResult(viewModel.share(imageUri))
                     }
                 }
             }
@@ -116,12 +128,12 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             absoluteAdapterPosition: Int,
             data: ImageDetail
         ): Fragment = ImageViewerFragment().apply {
-            arguments =
-                ImageViewerFragmentArgs(
-                    data.position,
-                    data.url,
-                    data.placeholderImageMemoryCacheKey
-                ).toBundle()
+            arguments = ImageViewerFragmentArgs(
+                position = data.position,
+                originImageUri = data.originUrl,
+                previewImageUri = data.previewUrl ?: data.originUrl,
+                placeholderImageMemoryCacheKey = data.placeholderImageMemoryCacheKey
+            ).toBundle()
         }
     }
 }

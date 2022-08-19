@@ -26,8 +26,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Photo constructor(
     @SerialName("originalUrl") val originalUrl: String,
+    @SerialName("previewUrl") val previewUrl: String?,
     @SerialName("thumbnailUrl") val thumbnailUrl: String?,
-    @SerialName("middenUrl") val middenUrl: String?,
     @SerialName("width") val width: Int?,
     @SerialName("height") val height: Int?,
     @SerialName("exifOrientation") val exifOrientation: Int,
@@ -37,7 +37,9 @@ data class Photo constructor(
     @IgnoredOnParcel
     override val diffKey: String by lazy { toString() }
 
-    val firstThumbnailUrl: String = thumbnailUrl ?: middenUrl ?: originalUrl
+    @IgnoredOnParcel
+    val listThumbnailUrl: String = thumbnailUrl ?: previewUrl ?: originalUrl
 
-    val firstMiddenUrl: String = middenUrl ?: originalUrl
+    @IgnoredOnParcel
+    val detailPreviewUrl: String = previewUrl ?: originalUrl
 }

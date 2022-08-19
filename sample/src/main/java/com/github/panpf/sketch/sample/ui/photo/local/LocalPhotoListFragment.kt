@@ -219,8 +219,9 @@ class LocalPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                 if (index >= position - 50 && index <= position + 50) {
                     ImageDetail(
                         position = index,
-                        url = photo!!.originalUrl,
-                        middenUrl = photo.middenUrl,
+                        originUrl = photo!!.originalUrl,
+                        previewUrl = photo.detailPreviewUrl,
+                        bgUrl = photo.listThumbnailUrl,
                         placeholderImageMemoryCacheKey = currentViewCacheKeyMap[index]
                     )
                 } else {
