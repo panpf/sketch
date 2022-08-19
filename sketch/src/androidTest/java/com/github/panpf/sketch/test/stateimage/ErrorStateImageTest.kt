@@ -20,7 +20,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.internal.UriInvalidException
+import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage

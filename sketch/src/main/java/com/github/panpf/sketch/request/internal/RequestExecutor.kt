@@ -34,6 +34,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
@@ -70,7 +71,7 @@ class RequestExecutor {
         try {
             val uriString = requestContext.lastRequest.uriString
             if (uriString.isEmpty() || uriString.isBlank()) {
-                throw UriInvalidException("Request uri is empty or blank: $uriString")
+                throw UriInvalidException("Request uri is empty or blank")
             }
 
             // Set up the request's lifecycle observers. Cancel the request when destroy

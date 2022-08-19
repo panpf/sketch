@@ -21,6 +21,7 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.BitmapDecodeException
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DecodeConfig

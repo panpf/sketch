@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
-import com.github.panpf.sketch.request.internal.UriInvalidException
+import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.roundToInt
 

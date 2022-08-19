@@ -25,7 +25,6 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.internal.BitmapDecodeException
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.realDecode

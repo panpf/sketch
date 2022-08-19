@@ -22,7 +22,7 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.UnavailableDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.UriInvalidException
+import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.util.ifOrNull
 import java.io.IOException
 import java.io.InputStream

@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.request.internal
+package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.util.SketchException
 
-class UriInvalidException constructor(message: String) : SketchException(message, null)
+/**
+ * Bitmap decode related exception
+ */
+class BitmapDecodeException constructor(
+    message: String,
+    cause: Throwable? = null
+) : SketchException(message, cause)

@@ -31,7 +31,7 @@ import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.FileDataSource
-import com.github.panpf.sketch.decode.internal.BitmapDecodeException
+import com.github.panpf.sketch.decode.BitmapDecodeException
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed

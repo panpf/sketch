@@ -21,6 +21,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.decode.BitmapDecodeException
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo

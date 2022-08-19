@@ -23,7 +23,7 @@ import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.BASE64_IDENTIFIER
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.UriInvalidException
+import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.util.ifOrNull
 
 /**

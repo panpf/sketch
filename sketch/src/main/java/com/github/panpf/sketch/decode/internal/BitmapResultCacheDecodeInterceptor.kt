@@ -21,6 +21,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
+import com.github.panpf.sketch.decode.BitmapDecodeException
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo

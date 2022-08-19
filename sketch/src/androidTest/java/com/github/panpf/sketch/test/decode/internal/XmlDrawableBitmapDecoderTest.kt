@@ -17,7 +17,7 @@ package com.github.panpf.sketch.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.internal.BitmapDecodeException
+import com.github.panpf.sketch.decode.BitmapDecodeException
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
