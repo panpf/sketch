@@ -49,15 +49,24 @@ class MyApplication : MultiDexApplication(), SketchFactory {
         logger(Logger(Logger.Level.valueOf(prefsService.logLevel.value)))
         httpStack(OkHttpStack.Builder().build())
         components {
+            // global image request config
             addRequestInterceptor(SettingsDisplayRequestInterceptor())
+
             addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+
             addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
 
+            // app icon
             addFetcher(AppIconUriFetcher.Factory())
-
-            addBitmapDecoder(SvgBitmapDecoder.Factory())
-            addBitmapDecoder(ApkIconBitmapDecoder.Factory())
             addBitmapDecoder(AppIconBitmapDecoder.Factory())
+
+            // apk icon
+            addBitmapDecoder(ApkIconBitmapDecoder.Factory())
+
+            // svg
+            addBitmapDecoder(SvgBitmapDecoder.Factory())
+
+            // video
             addBitmapDecoder(
                 if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
                     VideoFrameBitmapDecoder.Factory()
@@ -66,6 +75,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
                 }
             )
 
+            // gif
             addDrawableDecoder(
                 when {
                     VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
@@ -73,9 +83,13 @@ class MyApplication : MultiDexApplication(), SketchFactory {
                     else -> GifDrawableDrawableDecoder.Factory()
                 }
             )
+
+            // webp animated
             if (VERSION.SDK_INT >= VERSION_CODES.P) {
                 addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
             }
+
+            // heif animated
             if (VERSION.SDK_INT >= VERSION_CODES.R) {
                 addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
             }
