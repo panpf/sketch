@@ -30,7 +30,7 @@
             android:layout_height="34dp"
             android:layout_marginStart="10dp"
             android:background="@drawable/bg_circle_accent"
-            android:padding="6dp"
+            android:padding="8dp"
             app:srcCompat="@drawable/ic_action"
             app:tint="@color/text_normal" />
 
