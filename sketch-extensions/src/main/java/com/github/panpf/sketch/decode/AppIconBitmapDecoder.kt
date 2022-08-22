@@ -22,6 +22,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.internal.appliedResize
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
@@ -38,6 +39,10 @@ class AppIconBitmapDecoder(
     private val packageName: String,
     private val versionCode: Int,
 ) : BitmapDecoder {
+
+    companion object {
+        const val MODULE = "AppIconBitmapDecoder"
+    }
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
@@ -63,7 +68,11 @@ class AppIconBitmapDecoder(
             mimeType = AppIconUriFetcher.MIME_TYPE,
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
         )
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL).appliedResize(sketch, request.resize)
+        sketch.logger.d(MODULE) {
+            "decode. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+        }
+        return BitmapDecodeResult(bitmap, imageInfo, LOCAL)
+            .appliedResize(sketch, request, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

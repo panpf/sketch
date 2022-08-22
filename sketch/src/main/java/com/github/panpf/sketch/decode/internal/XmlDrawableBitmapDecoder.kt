@@ -44,6 +44,7 @@ class XmlDrawableBitmapDecoder(
 ) : BitmapDecoder {
 
     companion object {
+        const val MODULE = "XmlDrawableBitmapDecoder"
         const val MIME_TYPE = "image/android-xml"
     }
 
@@ -66,7 +67,11 @@ class XmlDrawableBitmapDecoder(
             drawable.toNewBitmap(sketch.bitmapPool, request.bitmapConfig?.getConfig(MIME_TYPE))
         val imageInfo =
             ImageInfo(bitmap.width, bitmap.height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL).appliedResize(sketch, request.resize)
+        sketch.logger.d(MODULE) {
+            "decode. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+        }
+        return BitmapDecodeResult(bitmap, imageInfo, LOCAL)
+            .appliedResize(sketch, request, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

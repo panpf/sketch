@@ -27,6 +27,7 @@ import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
@@ -53,6 +54,10 @@ class VideoFrameBitmapDecoder(
     private val mimeType: String,
 ) : BitmapDecoder {
 
+    companion object {
+        const val MODULE = "VideoFrameBitmapDecoder"
+    }
+
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val mediaMetadataRetriever = MediaMetadataRetriever().apply {
@@ -72,7 +77,8 @@ class VideoFrameBitmapDecoder(
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it)
                 },
                 decodeRegion = null
-            ).appliedExifOrientation(sketch).appliedResize(sketch, request.resize)
+            ).appliedExifOrientation(sketch, request)
+                .appliedResize(sketch, request, request.resize)
         } finally {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mediaMetadataRetriever.close()
@@ -142,7 +148,7 @@ class VideoFrameBitmapDecoder(
         } else {
             imageInfo.height
         }
-        return when {
+        val bitmap = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 val bitmapParams = BitmapParams().apply {
                     val inPreferredConfigFromRequest = decodeConfig.inPreferredConfig
@@ -178,6 +184,10 @@ class VideoFrameBitmapDecoder(
                     )
             }
         }
+        sketch.logger.d(MODULE) {
+            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+        }
+        return bitmap
     }
 
     private fun optionToName(option: Int): String {

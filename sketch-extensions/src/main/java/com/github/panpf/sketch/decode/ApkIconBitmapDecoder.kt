@@ -21,6 +21,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.internal.appliedResize
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -37,6 +38,7 @@ class ApkIconBitmapDecoder(
 ) : BitmapDecoder {
 
     companion object {
+        const val MODULE = "ApkIconBitmapDecoder"
         const val MIME_TYPE = "application/vnd.android.package-archive"
     }
 
@@ -54,7 +56,11 @@ class ApkIconBitmapDecoder(
             drawable.toNewBitmap(sketch.bitmapPool, request.bitmapConfig?.getConfig(MIME_TYPE))
         val imageInfo =
             ImageInfo(bitmap.width, bitmap.height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL).appliedResize(sketch, request.resize)
+        sketch.logger.d(MODULE) {
+            "decode. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+        }
+        return BitmapDecodeResult(bitmap, imageInfo, LOCAL)
+            .appliedResize(sketch, request, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

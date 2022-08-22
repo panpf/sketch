@@ -19,13 +19,10 @@ import android.graphics.Bitmap
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.allocationByteCountCompat
-import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.requiredMainThread
-import com.github.panpf.sketch.util.toHexString
 
 /**
  * Reference counts [Bitmap] and, when the count is 0, puts it into the BitmapPool
@@ -59,17 +56,7 @@ class CountBitmap constructor(
         get() = bitmap?.allocationByteCountCompat ?: 0
 
     val info: String by lazy {
-        "CountBitmap(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%s/%s)".format(
-            imageInfo.width,
-            imageInfo.height,
-            imageInfo.mimeType,
-            exifOrientationName(imageInfo.exifOrientation),
-            bitmap.width,
-            bitmap.height,
-            bitmap.config,
-            bitmap.allocationByteCountCompat.formatFileSize(),
-            bitmap.toHexString(),
-        )
+        "CountBitmap(${bitmap.logString},${imageInfo.toShortString()})"
     }
 
     private val counts: String
@@ -139,14 +126,14 @@ class CountBitmap constructor(
         if (bitmap == null) {
             sketch.logger.w(MODULE, "Bitmap freed. $caller. $counts. $requestKey")
         } else if (isRecycled) {
-            throw IllegalStateException("Bitmap recycled. $caller. $counts. ${bitmap.logString}. $requestKey")
+            throw IllegalStateException("Bitmap recycled. $caller. $counts. ${info}. $requestKey")
         } else if (!pending && cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
             freeBitmap(sketch.bitmapPool, sketch.logger, bitmap, caller)
             this._bitmap = null
-            sketch.logger.w(MODULE, "free. $caller. ${bitmap.logString}. $requestKey")
+            sketch.logger.w(MODULE, "free. $caller. ${info}. $requestKey")
         } else {
             sketch.logger.d(MODULE) {
-                "keep. $caller. $counts. ${bitmap.logString}. $requestKey"
+                "keep. $caller. $counts. ${info}. $requestKey"
             }
         }
     }

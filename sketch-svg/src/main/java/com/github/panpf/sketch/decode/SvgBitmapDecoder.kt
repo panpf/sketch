@@ -27,6 +27,7 @@ import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedResize
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isSvg
@@ -49,6 +50,7 @@ class SvgBitmapDecoder constructor(
 ) : BitmapDecoder {
 
     companion object {
+        const val MODULE = "SvgBitmapDecoder"
         const val MIME_TYPE = "image/svg+xml"
     }
 
@@ -64,7 +66,7 @@ class SvgBitmapDecoder constructor(
                 realDecodeFull(imageInfo, decodeConfig, svg)
             },
             decodeRegion = null
-        ).appliedResize(sketch, request.resize)
+        ).appliedResize(sketch, request, request.resize)
     }
 
     private fun readImageInfo(svg: SVG): ImageInfo {
@@ -122,6 +124,9 @@ class SvgBitmapDecoder constructor(
         }
         val renderOptions = css?.let { RenderOptions().css(it) }
         svg.renderToCanvas(canvas, renderOptions)
+        sketch.logger.d(MODULE) {
+            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+        }
         return bitmap
     }
 

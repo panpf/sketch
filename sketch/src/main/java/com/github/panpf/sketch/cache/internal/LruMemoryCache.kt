@@ -19,13 +19,11 @@ import android.content.ComponentCallbacks2
 import androidx.collection.LruCache
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.getTrimLevelName
-import com.github.panpf.sketch.util.toHexString
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.roundToInt
 
@@ -48,6 +46,9 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
             override fun entryRemoved(
                 evicted: Boolean, key: String, old: CountBitmap, new: CountBitmap?
             ) {
+                logger?.w(MODULE) {
+                    "removed. ${old.info}. ${size.formatFileSize()}. $key"
+                }
                 old.setIsCached(false, MODULE)
             }
         }
@@ -63,7 +64,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         if (bitmap.allocationByteCountCompat >= maxSize * 0.7f) {
             logger?.w(MODULE) {
                 val bitmapSize = bitmap.allocationByteCountCompat.formatFileSize()
-                "write. reject. Bitmap too big ${bitmapSize}, maxSize ${maxSize.formatFileSize()}, ${bitmap.logString}"
+                "put. reject. Bitmap too big ${bitmapSize}, maxSize is ${maxSize.formatFileSize()}, ${countBitmap.info}"
             }
             return false
         }
@@ -75,17 +76,12 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
             }
             true
         } else {
-            logger?.w(MODULE, "put. exist. key=$key")
+            logger?.w(MODULE, "put. exist. ${countBitmap.info}. key=$key")
             false
         }
     }
 
-    override fun remove(key: String): CountBitmap? =
-        cache.remove(key)?.apply {
-            logger?.d(MODULE) {
-                "remove. ${this.info}. ${size.formatFileSize()}. $key"
-            }
-        }
+    override fun remove(key: String): CountBitmap? = cache.remove(key)
 
     override fun get(key: String): CountBitmap? =
         cache[key]?.takeIf {
@@ -108,7 +104,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
             logger?.d(MODULE) {
                 val hitRatio = ((hitCount1.toFloat() / getCount1).format(2) * 100).roundToInt()
                 if (this != null) {
-                    "get. hit($hitRatio%). ${this.info}/${this.bitmap!!.toHexString()}. $key"
+                    "get. hit($hitRatio%). ${this.info}}. $key"
                 } else {
                     "get. miss($hitRatio%). $key"
                 }

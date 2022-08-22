@@ -174,14 +174,14 @@ class CountBitmapTest {
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertEquals(
-                "CountBitmap(ImageInfo=100x100/image/jpeg/UNDEFINED,BitmapInfo=100x100/ARGB_8888/39.06KB/${this.bitmap!!.toHexString()})",
+                "CountBitmap(Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()}),ImageInfo(100x100,'image/jpeg',UNDEFINED))",
                 info
             )
         }
 
         createCountBitmap(sketch, "image1", 200, 100).apply {
             Assert.assertEquals(
-                "CountBitmap(ImageInfo=200x100/image/jpeg/UNDEFINED,BitmapInfo=200x100/ARGB_8888/78.13KB/${this.bitmap!!.toHexString()})",
+                "CountBitmap(Bitmap(200x100,ARGB_8888,@${this.bitmap!!.toHexString()}),ImageInfo(200x100,'image/jpeg',UNDEFINED))",
                 info
             )
         }

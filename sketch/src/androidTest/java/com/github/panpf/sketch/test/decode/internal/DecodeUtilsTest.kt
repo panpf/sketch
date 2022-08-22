@@ -31,6 +31,7 @@ import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
@@ -67,9 +68,9 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -812,6 +813,7 @@ class DecodeUtilsTest {
     @Test
     fun testAppliedExifOrientation() {
         val (context, sketch) = getTestContextAndNewSketch()
+        val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
 
         val hasExifFile = ExifOrientationTestFileHelper(context, "sample.jpeg")
             .files().find { it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 }!!
@@ -831,7 +833,7 @@ class DecodeUtilsTest {
         val resultCorners = result.bitmap.corners()
         Assert.assertNull(result.transformedList?.getExifOrientationTransformed())
 
-        result.appliedExifOrientation(sketch).apply {
+        result.appliedExifOrientation(sketch, request).apply {
             Assert.assertNotSame(result, this)
             Assert.assertNotSame(result.bitmap, this.bitmap)
             Assert.assertEquals(Size(result.bitmap.height, result.bitmap.width), this.bitmap.size)
@@ -846,14 +848,15 @@ class DecodeUtilsTest {
         val noExifOrientationResult = result.newResult(
             imageInfo = result.imageInfo.newImageInfo(exifOrientation = 0)
         )
-        noExifOrientationResult.appliedExifOrientation(sketch).apply {
+        noExifOrientationResult.appliedExifOrientation(sketch, request).apply {
             Assert.assertSame(noExifOrientationResult, this)
         }
     }
 
     @Test
     fun testAppliedResize() {
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndNewSketch()
+        val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
         val newResult: () -> BitmapDecodeResult = {
             BitmapDecodeResult(
                 bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
@@ -868,7 +871,7 @@ class DecodeUtilsTest {
          */
         var resize: Resize? = null
         var result: BitmapDecodeResult = newResult()
-        result.appliedResize(sketch, resize).apply {
+        result.appliedResize(sketch, request, resize).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -878,14 +881,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, LESS_PIXELS)
         result = newResult()
-        result.appliedResize(sketch, resize).apply {
+        result.appliedResize(sketch, request, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("20x13", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, LESS_PIXELS)
         result = newResult()
-        result.appliedResize(sketch, resize).apply {
+        result.appliedResize(sketch, request, resize).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -895,14 +898,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, SAME_ASPECT_RATIO)
         result = newResult()
-        result.appliedResize(sketch, resize).apply {
+        result.appliedResize(sketch, request, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, SAME_ASPECT_RATIO)
         result = newResult()
-        result.appliedResize(sketch, resize).apply {
+        result.appliedResize(sketch, request, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("17x50", this.bitmap.sizeString)
         }
@@ -913,14 +916,14 @@ class DecodeUtilsTest {
         // small
         resize = Resize(40, 20, EXACTLY)
         result = newResult()
-        result.appliedResize(sketch, resize).apply {
+        result.appliedResize(sketch, request, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
         resize = Resize(50, 150, EXACTLY)
         result = newResult()
-        result.appliedResize(sketch, resize).apply {
+        result.appliedResize(sketch, request, resize).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("50x150", this.bitmap.sizeString)
         }
@@ -1016,7 +1019,7 @@ class DecodeUtilsTest {
                 Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             }
 
-        assertThrow(IOException::class) {
+        assertThrow(ImageInvalidException::class) {
             ResourceDataSource(
                 sketch,
                 LoadRequest(context, newResourceUri(R.xml.network_security_config)),

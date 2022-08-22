@@ -110,13 +110,16 @@ fun setInBitmapForRegion(
         regionSize, inSampleSize, imageMimeType, imageSize
     )
     // BitmapRegionDecoder does not support inMutable, so creates Bitmap
+    var newCreate = false
     val inBitmap = bitmapPool.get(
         sampledBitmapSize.width, sampledBitmapSize.height, options.inPreferredConfig
     ) ?: Bitmap.createBitmap(
         sampledBitmapSize.width, sampledBitmapSize.height, options.inPreferredConfig
-    )!!
+    )!!.apply {
+        newCreate = true
+    }
     logger.d(MODULE) {
-        "setInBitmapForRegion. successful. regionSize=$regionSize, inSampleSize=$inSampleSize, imageSize=$imageSize. " +
+        "setInBitmapForRegion. successful. newCreate $newCreate. regionSize=$regionSize, inSampleSize=$inSampleSize, imageSize=$imageSize. " +
                 "inBitmap=${inBitmap.logString}"
     }
 

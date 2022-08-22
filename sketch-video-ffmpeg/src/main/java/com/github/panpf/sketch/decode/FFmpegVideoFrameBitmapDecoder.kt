@@ -25,6 +25,7 @@ import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
@@ -49,6 +50,10 @@ class FFmpegVideoFrameBitmapDecoder(
     private val mimeType: String,
 ) : BitmapDecoder {
 
+    companion object {
+        const val MODULE = "FFmpegVideoFrameBitmapDecoder"
+    }
+
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val mediaMetadataRetriever = FFmpegMediaMetadataRetriever().apply {
@@ -68,7 +73,8 @@ class FFmpegVideoFrameBitmapDecoder(
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it)
                 },
                 decodeRegion = null
-            ).appliedExifOrientation(sketch).appliedResize(sketch, request.resize)
+            ).appliedExifOrientation(sketch, request)
+                .appliedResize(sketch, request, request.resize)
         } finally {
             mediaMetadataRetriever.release()
         }
@@ -135,13 +141,19 @@ class FFmpegVideoFrameBitmapDecoder(
         } else {
             imageInfo.height
         }
-        return mediaMetadataRetriever.getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
-            ?: throw BitmapDecodeException(
-                "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d.".format(
-                    frameMicros, optionToName(option), dstWidth, dstHeight,
-                    imageInfo.width, imageInfo.height
+        val bitmap =
+            mediaMetadataRetriever.getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
+                ?: throw BitmapDecodeException(
+                    "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d."
+                        .format(
+                            frameMicros, optionToName(option), dstWidth, dstHeight,
+                            imageInfo.width, imageInfo.height
+                        )
                 )
-            )
+        sketch.logger.d(MODULE) {
+            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+        }
+        return bitmap
     }
 
     private fun optionToName(option: Int): String {

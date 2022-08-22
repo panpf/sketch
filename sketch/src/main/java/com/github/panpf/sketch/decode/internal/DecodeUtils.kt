@@ -40,7 +40,6 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toHexString
-import com.github.panpf.sketch.util.toShortInfoString
 import java.io.IOException
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -269,7 +268,7 @@ fun realDecode(
     )
 }
 
-fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch): BitmapDecodeResult {
+fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch, request: ImageRequest): BitmapDecodeResult {
     if (imageInfo.exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
         || imageInfo.exifOrientation == ExifInterface.ORIENTATION_NORMAL
     ) {
@@ -282,6 +281,9 @@ fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch): BitmapDecodeResul
     val newSize = exifOrientationHelper.applyToSize(
         Size(imageInfo.width, imageInfo.height)
     )
+    sketch.logger.d("appliedExifOrientation") {
+        "appliedExifOrientation. successful. ${newBitmap.logString}. ${imageInfo}. ${request.key}"
+    }
     return newResult(
         bitmap = newBitmap,
         imageInfo = imageInfo.newImageInfo(width = newSize.width, height = newSize.height)
@@ -290,7 +292,7 @@ fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch): BitmapDecodeResul
     }
 }
 
-fun BitmapDecodeResult.appliedResize(sketch: Sketch, resize: Resize?): BitmapDecodeResult {
+fun BitmapDecodeResult.appliedResize(sketch: Sketch, request: ImageRequest, resize: Resize?): BitmapDecodeResult {
     if (resize == null) return this
     val inBitmap = bitmap
     val precision = resize.getPrecision(inBitmap.width, inBitmap.height)
@@ -322,6 +324,9 @@ fun BitmapDecodeResult.appliedResize(sketch: Sketch, resize: Resize?): BitmapDec
         null
     }
     return if (newBitmap != null) {
+        sketch.logger.d("appliedResize") {
+            "appliedResize. successful. ${newBitmap.logString}. ${imageInfo}. ${request.key}"
+        }
         freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "appliedResize")
         newResult(bitmap = newBitmap) {
             addTransformed(createResizeTransformed(resize))
@@ -419,7 +424,7 @@ fun isSrcRectError(throwable: Throwable): Boolean =
     }
 
 val Bitmap.logString: String
-    get() = "${toShortInfoString()}@${toHexString()}"
+    get() = "Bitmap(${width}x${height},$config,@${toHexString()})"
 
 val Bitmap.sizeString: String
     get() = "${width}x${height}"

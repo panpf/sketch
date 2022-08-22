@@ -17,7 +17,7 @@ package com.github.panpf.sketch.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.BitmapDecodeException
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
@@ -98,7 +98,7 @@ class XmlDrawableBitmapDecoderTest {
             val fetchResult = runBlocking {
                 fetcher.fetch()
             }
-            assertThrow(BitmapDecodeException::class) {
+            assertThrow(ImageInvalidException::class) {
                 runBlocking {
                     factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!
                         .decode()

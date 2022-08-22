@@ -51,6 +51,12 @@ class LruBitmapPoolTest {
     fun testAllowedConfigs() {
         LruBitmapPool(10L * 1024 * 1024).apply {
             when {
+                VERSION.SDK_INT >= 33 -> {
+                    Assert.assertEquals(
+                        "[null, ALPHA_8, RGB_565, ARGB_4444, ARGB_8888, RGBA_F16, HARDWARE, RGBA_1010102]",
+                        allowedConfigs.toString()
+                    )
+                }
                 VERSION.SDK_INT >= 26 -> {
                     Assert.assertEquals(
                         "[null, ALPHA_8, RGB_565, ARGB_4444, ARGB_8888, RGBA_F16, HARDWARE]",

@@ -61,7 +61,8 @@ open class DefaultBitmapDecoder(
             decodeRegion = if (canDecodeRegion) { srcRect, decodeConfig ->
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
-        ).appliedExifOrientation(sketch).appliedResize(sketch, request.resize)
+        ).appliedExifOrientation(sketch, request)
+            .appliedResize(sketch, request, request.resize)
     }
 
     private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
@@ -100,8 +101,15 @@ open class DefaultBitmapDecoder(
             }
         } ?: throw ImageInvalidException("Invalid image. decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
+            sketch.logger.e(MODULE) {
+                "realDecodeFull. Invalid image. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+            }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
+        } else {
+            sketch.logger.d(MODULE) {
+                "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+            }
         }
         return bitmap
     }
@@ -151,8 +159,15 @@ open class DefaultBitmapDecoder(
             }
         } ?: throw ImageInvalidException("Invalid image. region decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
+            sketch.logger.e(MODULE) {
+                "realDecodeRegion. Invalid image. ${bitmap.logString}. ${imageInfo}. ${srcRect}. ${request.key}"
+            }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
+        } else {
+            sketch.logger.d(MODULE) {
+                "realDecodeRegion. successful. ${bitmap.logString}. ${imageInfo}. ${srcRect}. ${request.key}"
+            }
         }
         return bitmap
     }
