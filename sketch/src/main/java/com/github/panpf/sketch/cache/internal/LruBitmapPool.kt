@@ -69,6 +69,7 @@ class LruBitmapPool constructor(
         get() = _size
 
     override fun put(bitmap: Bitmap, caller: String?): Boolean {
+        // todo Intercept repeated put of the same bitmap
         val bitmapLogString = "${strategy.logBitmap(bitmap)}@${toHexString()}"
         if (bitmap.isRecycled) {
             logger?.w(MODULE, "put. reject. Recycled. $caller. $bitmapLogString")
