@@ -217,8 +217,14 @@ class RequestExecutor {
             }
         }
         request.listener?.onError(request, result)
-        sketch.logger.e(MODULE, result.exception.takeIf { it !is DepthException }) {
-            "Request failed. ${result.exception.message}. ${request.key}"
+        if (result.exception is DepthException) {
+            sketch.logger.w(MODULE) {
+                "Request failed. ${result.exception.message}. ${request.key}"
+            }
+        } else {
+            sketch.logger.e(MODULE, result.exception) {
+                "Request failed. ${result.exception.message}. ${request.key}"
+            }
         }
     }
 
