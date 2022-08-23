@@ -132,8 +132,21 @@ class Logger constructor(
         proxy.flush()
     }
 
-    private fun joinModuleAndMsg(module: String?, msg: String): String =
-        if (module?.isNotEmpty() == true) "$module. $msg" else msg
+    private fun joinModuleAndMsg(module: String?, msg: String): String {
+        val threadName = Thread.currentThread().name.let {
+            // kotlin coroutine thread name 'DefaultDispatcher-worker-1' change to 'worker1'
+            if (it.startsWith("DefaultDispatcher-worker-")) {
+                it.replace("DefaultDispatcher-worker-", "work")
+            } else {
+                it
+            }
+        }
+        return if (module?.isNotEmpty() == true) {
+            "$threadName - $module. $msg"
+        } else {
+            "$threadName - $msg"
+        }
+    }
 
     override fun toString(): String = "Logger(level=$level,proxy=$proxy)"
 

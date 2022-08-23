@@ -22,6 +22,7 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.toBitmapInfo
@@ -120,14 +121,7 @@ class SketchCountBitmapDrawableTest {
             transformedList = null,
         )
         Assert.assertEquals(
-            "SketchCountBitmapDrawable(" +
-                    countBitmap.imageInfo.toShortString() +
-                    "," + MEMORY +
-                    "," + countBitmap.bitmap!!.toBitmapInfo().toShortString() +
-                    "," + null +
-                    "," + "requestKey1" +
-                    ")",
-            SketchCountBitmapDrawable(context.resources, countBitmap, MEMORY).toString()
+            "SketchCountBitmapDrawable(${countBitmap.bitmap!!.logString},${countBitmap.imageInfo.toShortString()},$MEMORY,null,requestKey1)", SketchCountBitmapDrawable(context.resources, countBitmap, MEMORY).toString()
         )
     }
 }

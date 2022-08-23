@@ -42,20 +42,21 @@ class LoggerTest {
         }
 
         val testProxy = TestProxy()
+        val threadName = Thread.currentThread().name
         Logger(proxy = testProxy).apply {
             Assert.assertEquals(0, testProxy.logList.size)
 
             w("moduleTest1") { "messageTest1" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=WARNING, tag=Sketch, msg=moduleTest1. messageTest1, tr=null)",
+                "LogEntry(level=WARNING, tag=Sketch, msg=${threadName} - moduleTest1. messageTest1, tr=null)",
                 testProxy.logList[0].toString()
             )
 
             e("moduleTest2") { "messageTest2" }
             Assert.assertEquals(2, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=ERROR, tag=Sketch, msg=moduleTest2. messageTest2, tr=null)",
+                "LogEntry(level=ERROR, tag=Sketch, msg=${threadName} - moduleTest2. messageTest2, tr=null)",
                 testProxy.logList[1].toString()
             )
         }
@@ -126,6 +127,7 @@ class LoggerTest {
     @Test
     fun testV() {
         val testProxy = TestProxy()
+        val threadName = Thread.currentThread().name
         Logger(proxy = testProxy).apply {
             testProxy.logList.clear()
             Assert.assertEquals(0, testProxy.logList.size)
@@ -137,7 +139,7 @@ class LoggerTest {
             v("module") { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=VERBOSE, tag=Sketch, msg=module. message, tr=null)",
+                "LogEntry(level=VERBOSE, tag=Sketch, msg=${threadName} - module. message, tr=null)",
                 testProxy.logList[0].toString()
             )
 
@@ -153,7 +155,7 @@ class LoggerTest {
             v("module", Exception("exception")) { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=VERBOSE, tag=Sketch, msg=module. message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=VERBOSE, tag=Sketch, msg=${threadName} - module. message, tr=java.lang.Exception: exception)",
                 testProxy.logList[0].toString()
             )
         }
@@ -162,6 +164,7 @@ class LoggerTest {
     @Test
     fun testD() {
         val testProxy = TestProxy()
+        val threadName = Thread.currentThread().name
         Logger(proxy = testProxy).apply {
             testProxy.logList.clear()
             Assert.assertEquals(0, testProxy.logList.size)
@@ -173,7 +176,7 @@ class LoggerTest {
             d("module") { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=DEBUG, tag=Sketch, msg=module. message, tr=null)",
+                "LogEntry(level=DEBUG, tag=Sketch, msg=${threadName} - module. message, tr=null)",
                 testProxy.logList[0].toString()
             )
 
@@ -189,7 +192,7 @@ class LoggerTest {
             d("module", Exception("exception")) { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=DEBUG, tag=Sketch, msg=module. message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=DEBUG, tag=Sketch, msg=${threadName} - module. message, tr=java.lang.Exception: exception)",
                 testProxy.logList[0].toString()
             )
         }
@@ -198,6 +201,7 @@ class LoggerTest {
     @Test
     fun testI() {
         val testProxy = TestProxy()
+        val threadName = Thread.currentThread().name
         Logger(proxy = testProxy).apply {
             testProxy.logList.clear()
             Assert.assertEquals(0, testProxy.logList.size)
@@ -209,7 +213,7 @@ class LoggerTest {
             i("module") { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=INFO, tag=Sketch, msg=module. message, tr=null)",
+                "LogEntry(level=INFO, tag=Sketch, msg=${threadName} - module. message, tr=null)",
                 testProxy.logList[0].toString()
             )
 
@@ -225,7 +229,7 @@ class LoggerTest {
             i("module", Exception("exception")) { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=INFO, tag=Sketch, msg=module. message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=INFO, tag=Sketch, msg=${threadName} - module. message, tr=java.lang.Exception: exception)",
                 testProxy.logList[0].toString()
             )
         }
@@ -234,6 +238,7 @@ class LoggerTest {
     @Test
     fun testW() {
         val testProxy = TestProxy()
+        val threadName = Thread.currentThread().name
         Logger(proxy = testProxy).apply {
             testProxy.logList.clear()
             Assert.assertEquals(0, testProxy.logList.size)
@@ -245,7 +250,7 @@ class LoggerTest {
             w("module") { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=WARNING, tag=Sketch, msg=module. message, tr=null)",
+                "LogEntry(level=WARNING, tag=Sketch, msg=${threadName} - module. message, tr=null)",
                 testProxy.logList[0].toString()
             )
 
@@ -259,7 +264,7 @@ class LoggerTest {
             w("module", "message")
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=WARNING, tag=Sketch, msg=module. message, tr=null)",
+                "LogEntry(level=WARNING, tag=Sketch, msg=${threadName} - module. message, tr=null)",
                 testProxy.logList[0].toString()
             )
 
@@ -275,7 +280,7 @@ class LoggerTest {
             w("module", Exception("exception")) { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=WARNING, tag=Sketch, msg=module. message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=WARNING, tag=Sketch, msg=${threadName} - module. message, tr=java.lang.Exception: exception)",
                 testProxy.logList[0].toString()
             )
 
@@ -289,7 +294,7 @@ class LoggerTest {
             w("module", Exception("exception"), "message")
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=WARNING, tag=Sketch, msg=module. message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=WARNING, tag=Sketch, msg=${threadName} - module. message, tr=java.lang.Exception: exception)",
                 testProxy.logList[0].toString()
             )
         }
@@ -298,6 +303,7 @@ class LoggerTest {
     @Test
     fun testE() {
         val testProxy = TestProxy()
+        val threadName = Thread.currentThread().name
         Logger(proxy = testProxy).apply {
             testProxy.logList.clear()
             Assert.assertEquals(0, testProxy.logList.size)
@@ -309,7 +315,7 @@ class LoggerTest {
             e("module") { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=ERROR, tag=Sketch, msg=module. message, tr=null)",
+                "LogEntry(level=ERROR, tag=Sketch, msg=${threadName} - module. message, tr=null)",
                 testProxy.logList[0].toString()
             )
 
@@ -323,7 +329,7 @@ class LoggerTest {
             e("module", "message")
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=ERROR, tag=Sketch, msg=module. message, tr=null)",
+                "LogEntry(level=ERROR, tag=Sketch, msg=${threadName} - module. message, tr=null)",
                 testProxy.logList[0].toString()
             )
 
@@ -339,7 +345,7 @@ class LoggerTest {
             e("module", Exception("exception")) { "message" }
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=ERROR, tag=Sketch, msg=module. message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=ERROR, tag=Sketch, msg=${threadName} - module. message, tr=java.lang.Exception: exception)",
                 testProxy.logList[0].toString()
             )
 
@@ -353,7 +359,7 @@ class LoggerTest {
             e("module", Exception("exception"), "message")
             Assert.assertEquals(1, testProxy.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=ERROR, tag=Sketch, msg=module. message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=ERROR, tag=Sketch, msg=${threadName} - module. message, tr=java.lang.Exception: exception)",
                 testProxy.logList[0].toString()
             )
         }
