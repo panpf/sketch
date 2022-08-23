@@ -36,7 +36,7 @@ interface Transformation {
      * Apply the transformation to [input] and return the transformed [Bitmap].
      *
      * @param request [ImageRequest].
-     * @param input The input [Bitmap] to transform.
+     * @param input The input [Bitmap] to transform. Don't recycle or put input into BitmapPool, it will cause unpredictable errors
      * @return The transformed [Bitmap].
      */
     suspend fun transform(sketch: Sketch, request: ImageRequest, input: Bitmap): TransformResult?

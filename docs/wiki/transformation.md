@@ -29,6 +29,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 * 同一个 [Transformation] 输入相同的参数输出相同的 key
 * 同一个 [Transformation] 输入不同的参数输出不同的 key
 
+> 注意：自定义的 Transformation 不要对 transform 方法的 input Bitmap 执行 recycle() 或将其放到 BitmapPool 中，这会造成不可预知的错误
+
 [Transformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/Transformation.kt
 
 [CircleCropTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/CircleCropTransformation.kt
