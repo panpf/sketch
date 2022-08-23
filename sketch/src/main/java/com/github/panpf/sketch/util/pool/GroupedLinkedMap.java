@@ -33,10 +33,7 @@ public class GroupedLinkedMap<K extends Poolable, V> {
             key.offer();
         }
 
-        // 2016/12/30 my changed
-        if (!entry.contains(value)) {
-            entry.add(value);
-        }
+        entry.add(value);
     }
 
     @Nullable
@@ -57,6 +54,11 @@ public class GroupedLinkedMap<K extends Poolable, V> {
     public boolean exist(K key) {
         LinkedEntry<K, V> entry = keyToEntry.get(key);
         return entry != null && entry.size() > 0;
+    }
+
+    public boolean exist(K key, V value) {
+        LinkedEntry<K, V> entry = keyToEntry.get(key);
+        return entry != null && entry.contains(value);
     }
 
     @Nullable

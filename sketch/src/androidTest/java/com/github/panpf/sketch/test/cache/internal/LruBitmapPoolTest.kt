@@ -131,6 +131,13 @@ class LruBitmapPoolTest {
             // !allowedConfigs.contains(bitmap.config)
             Assert.assertFalse(put(Bitmap.createBitmap(10, 10, RGB_565)))
             Assert.assertEquals("3MB", size.formatFileSize())
+
+            // repeat put same bitmap
+            val bitmap = Bitmap.createBitmap(10, 10, ARGB_8888)
+            Assert.assertTrue(put(bitmap))
+            Assert.assertTrue(put(bitmap))
+            Assert.assertSame(bitmap, get(10, 10, ARGB_8888))
+            Assert.assertNull(get(10, 10, ARGB_8888))
         }
     }
 
