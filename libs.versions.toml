@@ -53,7 +53,7 @@ liveevent = "1.0.0"
 activitymonitor = "1.0.0"
 
 # other
-google-material = "1.3.0"
+google-material = "1.6.1"
 androidgifdrawable = "1.2.15"
 tinypinyin = "2.0.3"
 retrofit2 = "2.6.4"
