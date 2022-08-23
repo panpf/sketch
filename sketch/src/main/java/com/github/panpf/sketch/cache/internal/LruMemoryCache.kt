@@ -61,6 +61,11 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
 
     override fun put(key: String, countBitmap: CountBitmap): Boolean {
         val bitmap = countBitmap.bitmap ?: return false
+//        cache.snapshot().values.forEach {
+//            if (it.bitmap === bitmap) {
+//                throw IllegalArgumentException("Same Bitmap, different CountBitmap. ${countBitmap.info}")
+//            }
+//        }
         if (bitmap.allocationByteCountCompat >= maxSize * 0.7f) {
             logger?.w(MODULE) {
                 val bitmapSize = bitmap.allocationByteCountCompat.formatFileSize()

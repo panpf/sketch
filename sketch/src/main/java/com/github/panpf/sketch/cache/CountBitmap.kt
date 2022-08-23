@@ -128,9 +128,11 @@ class CountBitmap constructor(
         } else if (isRecycled) {
             throw IllegalStateException("Bitmap recycled. $caller. $counts. ${info}. $requestKey")
         } else if (!pending && cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
-            freeBitmap(sketch.bitmapPool, sketch.logger, bitmap, caller)
             this._bitmap = null
-            sketch.logger.w(MODULE, "free. $caller. ${info}. $requestKey")
+            freeBitmap(sketch.bitmapPool, sketch.logger, bitmap, caller)
+            sketch.logger.d(MODULE) {
+                "freeBitmap. $caller. ${info}. $requestKey"
+            }
         } else {
             sketch.logger.d(MODULE) {
                 "keep. $caller. $counts. ${info}. $requestKey"

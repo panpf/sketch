@@ -17,7 +17,6 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.util.Log
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
@@ -78,19 +77,24 @@ open class DefaultBitmapDecoder(
                 imageMimeType = imageInfo.mimeType
             )
         }
-
-        Log.e("LruBitmapPool", "${decodeOptions.inBitmap != null}. $request")
+        sketch.logger.d(MODULE) {
+            "realDecodeFull. inBitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
+        }
 
         val bitmap: Bitmap = try {
             dataSource.decodeBitmap(decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
-                val message = "Bitmap decode error. Because inBitmap. uri=${request.uriString}"
+                val message = "Bitmap decode error. Because inBitmap. ${request.key}"
                 sketch.logger.e(MODULE, throwable, message)
 
-                decodeOptions.inBitmap = null
                 freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decode:error")
+                sketch.logger.d(MODULE) {
+                    "realDecodeFull. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. ${request.key}"
+                }
+
+                decodeOptions.inBitmap = null
                 try {
                     dataSource.decodeBitmap(decodeOptions)
                 } catch (throwable2: Throwable) {
@@ -128,6 +132,9 @@ open class DefaultBitmapDecoder(
                 imageSize = Size(imageInfo.width, imageInfo.height)
             )
         }
+        sketch.logger.d(MODULE) {
+            "realDecodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
+        }
 
         val bitmap = try {
             dataSource.decodeRegionBitmap(srcRect, decodeOptions)
@@ -135,12 +142,15 @@ open class DefaultBitmapDecoder(
             val inBitmap = decodeOptions.inBitmap
             when {
                 inBitmap != null && isInBitmapError(throwable) -> {
-                    val message =
-                        "Bitmap decode region error. Because inBitmap. uri=${request.uriString}"
+                    val message = "Bitmap decode region error. Because inBitmap. ${request.key}"
                     sketch.logger.e(MODULE, throwable, message)
 
-                    decodeOptions.inBitmap = null
                     freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decodeRegion:error")
+                    sketch.logger.d(MODULE) {
+                        "realDecodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. ${request.key}"
+                    }
+
+                    decodeOptions.inBitmap = null
                     try {
                         dataSource.decodeRegionBitmap(srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {

@@ -20,6 +20,7 @@ import android.graphics.drawable.BitmapDrawable
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.toBitmapInfo
 
@@ -63,11 +64,5 @@ class SketchCountBitmapDrawable constructor(
     }
 
     override fun toString(): String =
-        "SketchCountBitmapDrawable(" +
-                imageInfo.toShortString() +
-                "," + dataFrom +
-                "," + bitmapInfo.toShortString() +
-                "," + transformedList +
-                "," + requestKey +
-                ")"
+        "SketchCountBitmapDrawable(${bitmap.logString},${imageInfo.toShortString()},$dataFrom,$transformedList,$requestKey)"
 }

@@ -56,12 +56,11 @@ fun setInBitmap(
     }
     val sampledBitmapSize =
         calculateSampledBitmapSize(imageSize, inSampleSize, imageMimeType)
-    val inBitmap: Bitmap? =
-        bitmapPool.get(
-            sampledBitmapSize.width,
-            sampledBitmapSize.height,
-            options.inPreferredConfig
-        )
+    val inBitmap: Bitmap? = bitmapPool.get(
+        width = sampledBitmapSize.width,
+        height = sampledBitmapSize.height,
+        config = options.inPreferredConfig
+    )
     if (inBitmap != null) {
         logger.d(MODULE) {
             "setInBitmap. successful. imageSize=$imageSize, inSampleSize=$inSampleSize, imageMimeType=$imageMimeType. " +
@@ -140,12 +139,12 @@ fun freeBitmap(
     val success = bitmapPool.put(bitmap, caller)
     if (success) {
         logger.d(MODULE) {
-            "free. successful. $caller. ${bitmap.logString}"
+            "freeBitmap. successful. $caller. ${bitmap.logString}"
         }
     } else {
         bitmap.recycle()
         logger.w(MODULE) {
-            "free. failed. execute recycle. $caller. ${bitmap.logString}"
+            "freeBitmap. failed. execute recycle. $caller. ${bitmap.logString}"
         }
     }
     return success

@@ -33,6 +33,7 @@ import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.setInBitmapForRegion
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
@@ -104,6 +105,7 @@ class TileDecoder internal constructor(
     val imageSize: Size by lazy {
         Size(imageInfo.width, imageInfo.height)
     }
+
     @Suppress("MemberVisibilityCanBePrivate")
     val destroyed: Boolean
         get() = _destroyed
@@ -130,37 +132,42 @@ class TileDecoder internal constructor(
 
         val imageSize = imageSize
         val newSrcRect = exifOrientationHelper.addToRect(srcRect, imageSize)
-        val options = BitmapFactory.Options().apply {
+        val decodeOptions = BitmapFactory.Options().apply {
             this.inSampleSize = inSampleSize
         }
         if (!disableInBitmap) {
             setInBitmapForRegion(
                 bitmapPool = bitmapPool,
                 logger = logger,
-                options = options,
+                options = decodeOptions,
                 regionSize = Size(newSrcRect.width(), newSrcRect.height()),
                 imageMimeType = imageInfo.mimeType,
                 imageSize = addedImageSize
             )
         }
+        logger.d(Tiles.MODULE) {
+            "decodeRegion. inBitmap=${decodeOptions.inBitmap?.logString} $imageUri}"
+        }
 
         return try {
-            regionDecoder.decodeRegion(newSrcRect, options)
+            regionDecoder.decodeRegion(newSrcRect, decodeOptions)
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
-            val inBitmap = options.inBitmap
+            val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
                 disableInBitmap = true
-                logger.e(
-                    Tiles.MODULE,
-                    throwable,
+                logger.e(Tiles.MODULE, throwable) {
                     "decodeRegion. Bitmap region decode inBitmap error. $imageUri"
-                )
+                }
 
-                options.inBitmap = null
                 freeBitmap(bitmapPool, logger, inBitmap, "tile:decodeRegion:error")
+                logger.d(Tiles.MODULE) {
+                    "decodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. $imageUri"
+                }
+
+                decodeOptions.inBitmap = null
                 try {
-                    regionDecoder.decodeRegion(newSrcRect, options)
+                    regionDecoder.decodeRegion(newSrcRect, decodeOptions)
                 } catch (throwable1: Throwable) {
                     throwable1.printStackTrace()
                     logger.e(Tiles.MODULE, throwable) {
@@ -170,7 +177,7 @@ class TileDecoder internal constructor(
                 }
             } else if (isSrcRectError(throwable)) {
                 logger.e(Tiles.MODULE, throwable) {
-                    "decodeRegion. Bitmap region decode srcRect error. imageSize=$imageSize, srcRect=$newSrcRect, inSampleSize=${options.inSampleSize}. $imageUri"
+                    "decodeRegion. Bitmap region decode srcRect error. imageSize=$imageSize, srcRect=$newSrcRect, inSampleSize=${decodeOptions.inSampleSize}. $imageUri"
                 }
                 null
             } else {
@@ -186,6 +193,9 @@ class TileDecoder internal constructor(
         val newBitmap = exifOrientationHelper.applyToBitmap(bitmap, bitmapPool)
         return if (newBitmap != null && newBitmap != bitmap) {
             freeBitmap(bitmapPool, logger, bitmap, "tile:applyExifOrientation")
+            logger.d(Tiles.MODULE) {
+                "applyExifOrientation. freeBitmap. bitmap=${bitmap.logString}. $imageUri"
+            }
             newBitmap
         } else {
             bitmap

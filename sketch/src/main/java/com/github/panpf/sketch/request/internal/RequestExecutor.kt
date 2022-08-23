@@ -20,6 +20,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayData
@@ -192,10 +193,19 @@ class RequestExecutor {
         }
         request.listener?.onSuccess(request, result)
         sketch.logger.d(MODULE) {
-            if (result is DisplayResult.Success) {
-                "Request Successful. ${result.drawable}. ${request.key}"
-            } else {
-                "Request Successful. ${request.uriString}"
+            when (result) {
+                is DisplayResult.Success -> {
+                    "Request Successful. ${result.drawable}. ${request.key}"
+                }
+                is LoadResult.Success -> {
+                    "Request Successful. ${result.bitmap.logString}. ${result.imageInfo}. ${result.transformedList}. ${request.key}"
+                }
+                is DownloadResult.Success -> {
+                    "Request Successful. ${result.data}. ${request.key}"
+                }
+                else -> {
+                    "Request Successful. ${request.uriString}"
+                }
             }
         }
     }

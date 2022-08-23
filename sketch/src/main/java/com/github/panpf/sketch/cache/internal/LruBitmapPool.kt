@@ -28,7 +28,6 @@ import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.pool.AttributeStrategy
 import com.github.panpf.sketch.util.pool.LruPoolStrategy
 import com.github.panpf.sketch.util.pool.SizeConfigStrategy
-import com.github.panpf.sketch.util.toHexString
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.roundToInt
 
@@ -69,31 +68,31 @@ class LruBitmapPool constructor(
         get() = _size
 
     override fun put(bitmap: Bitmap, caller: String?): Boolean {
-        val bitmapLogString = "${strategy.logBitmap(bitmap)}@${toHexString()}"
+        val bitmapKey = "${strategy.logBitmap(bitmap)}}"
         if (bitmap.isRecycled) {
-            logger?.w(MODULE, "put. reject. Recycled. $caller. $bitmapLogString")
+            logger?.w(MODULE, "put. reject. Recycled. $caller. ${bitmap.logString}. $bitmapKey")
             return false
         }
         if (!bitmap.isMutable) {
-            logger?.w(MODULE, "put. reject. Immutable. $caller. $bitmapLogString")
+            logger?.w(MODULE, "put. reject. Immutable. $caller. ${bitmap.logString}. $bitmapKey")
             return false
         }
         val bitmapSize = strategy.getSize(bitmap).toLong()
         if (bitmapSize > maxSize * 0.7f) {
             logger?.w(MODULE) {
-                "put. reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}. $caller. $bitmapLogString"
+                "put. reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}. $caller. ${bitmap.logString}. $bitmapKey"
             }
             return false
         }
         if (!allowedConfigs.contains(bitmap.config)) {
             logger?.w(MODULE) {
-                "put. reject. Disallowed config ${bitmap.config}. $caller. $bitmapLogString"
+                "put. reject. Disallowed config ${bitmap.config}. $caller. ${bitmap.logString}. $bitmapKey"
             }
             return false
         }
         if (strategy.exist(bitmap)) {
             logger?.d(MODULE) {
-                "put. successful. bitmap exist. $caller. $bitmapLogString"
+                "put. successful. bitmap exist. $caller. ${bitmap.logString}. $bitmapKey"
             }
             return true
         }
@@ -104,7 +103,7 @@ class LruBitmapPool constructor(
             puts++
             this._size += bitmapSize
             logger?.d(MODULE) {
-                "put. successful. bitmap size ${bitmapSize.formatFileSize()}, pool size ${size.formatFileSize()}. $caller. $bitmapLogString"
+                "put. successful. ${bitmap.logString}. size ${bitmapSize.formatFileSize()}, pool size ${size.formatFileSize()}. $caller. $bitmapKey"
             }
         }
         return true
@@ -135,11 +134,11 @@ class LruBitmapPool constructor(
 
                 logger?.d(MODULE) {
                     val hitRatio = ((hitCount.toFloat() / getCount).format(2) * 100).roundToInt()
-                    val logString = strategy.logBitmap(width, height, config)
+                    val bitmapKey = strategy.logBitmap(width, height, config)
                     if (this != null) {
-                        "get. hit($hitRatio%). ${this.logString}. ${size.formatFileSize()}. $logString"
+                        "get. hit($hitRatio%). ${this.logString}. ${size.formatFileSize()}. $bitmapKey"
                     } else {
-                        "get. miss($hitRatio%). ${size.formatFileSize()}. $logString"
+                        "get. miss($hitRatio%). ${size.formatFileSize()}. $bitmapKey"
                     }
                 }
             }

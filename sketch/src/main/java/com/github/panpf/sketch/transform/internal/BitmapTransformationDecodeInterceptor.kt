@@ -19,6 +19,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.internal.freeBitmap
+import com.github.panpf.sketch.decode.internal.logString
 import java.util.LinkedList
 
 class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
@@ -39,6 +40,9 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
             if (transformResult != null) {
                 if (transformResult.bitmap !== inputBitmap) {
                     freeBitmap(sketch.bitmapPool, sketch.logger, inputBitmap, "transform:${next}")
+                    sketch.logger.d("BitmapTransformationDecodeInterceptor") {
+                        "transform. freeBitmap. bitmap=${inputBitmap.logString}. ${request.key}"
+                    }
                 }
                 transformedList.add(transformResult.transformed)
                 transformResult.bitmap

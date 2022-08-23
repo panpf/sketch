@@ -107,29 +107,36 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             val dataSource =
                 DiskCacheDataSource(sketch, request, RESULT_CACHE, bitmapDataDiskCacheSnapshot)
             val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory(true)
-            val options = request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
+            val decodeOptions = request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
                 .toBitmapOptions()
             if (!request.disallowReuseBitmap) {
                 setInBitmap(
                     bitmapPool = sketch.bitmapPool,
                     logger = sketch.logger,
-                    options = options,
+                    options = decodeOptions,
                     imageSize = Size(cacheImageInfo.width, cacheImageInfo.height),
                     imageMimeType = ImageFormat.PNG.mimeType
                 )
             }
+            sketch.logger.d(MODULE) {
+                "read. inBitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
+            }
             try {
-                dataSource.decodeBitmap(options)
+                dataSource.decodeBitmap(decodeOptions)
             } catch (throwable: IllegalArgumentException) {
-                val inBitmap = options.inBitmap
+                val inBitmap = decodeOptions.inBitmap
                 if (inBitmap != null && isInBitmapError(throwable)) {
-                    val message = "Bitmap decode error. Because inBitmap. uri=${request.uriString}"
+                    val message = "Bitmap decode error. Because inBitmap. ${request.key}"
                     sketch.logger.e(MODULE, throwable, message)
 
-                    options.inBitmap = null
                     freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decode:error")
+                    sketch.logger.d(MODULE) {
+                        "read. freeBitmap. inBitmap error. bitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
+                    }
+
+                    decodeOptions.inBitmap = null
                     try {
-                        dataSource.decodeBitmap(options)
+                        dataSource.decodeBitmap(decodeOptions)
                     } catch (throwable2: Throwable) {
                         throw BitmapDecodeException("Bitmap decode error2: $throwable", throwable2)
                     }
@@ -137,6 +144,9 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                     throw BitmapDecodeException("Bitmap decode error: $throwable", throwable)
                 }
             }?.let { bitmap ->
+                sketch.logger.d(MODULE) {
+                    "read. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+                }
                 BitmapDecodeResult(bitmap, imageInfo, RESULT_CACHE, transformedList)
             }
         } catch (e: Throwable) {

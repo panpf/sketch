@@ -275,9 +275,13 @@ fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch, request: ImageRequ
         return this
     }
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
-    val inBitmap = bitmap
-    val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, sketch.bitmapPool) ?: return this
-    freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "appliedExifOrientation")
+    val inputBitmap = bitmap
+    val newBitmap = exifOrientationHelper.applyToBitmap(inputBitmap, sketch.bitmapPool) ?: return this
+    freeBitmap(sketch.bitmapPool, sketch.logger, inputBitmap, "appliedExifOrientation")
+    sketch.logger.d("appliedExifOrientation") {
+        "appliedExifOrientation. freeBitmap. bitmap=${inputBitmap.logString}. ${request.key}"
+    }
+
     val newSize = exifOrientationHelper.applyToSize(
         Size(imageInfo.width, imageInfo.height)
     )
@@ -294,31 +298,31 @@ fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch, request: ImageRequ
 
 fun BitmapDecodeResult.appliedResize(sketch: Sketch, request: ImageRequest, resize: Resize?): BitmapDecodeResult {
     if (resize == null) return this
-    val inBitmap = bitmap
-    val precision = resize.getPrecision(inBitmap.width, inBitmap.height)
+    val inputBitmap = bitmap
+    val precision = resize.getPrecision(inputBitmap.width, inputBitmap.height)
     val newBitmap = if (precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
-            imageSize = Size(inBitmap.width, inBitmap.height),
+            imageSize = Size(inputBitmap.width, inputBitmap.height),
             targetSize = Size(resize.width, resize.height)
         )
         if (sampleSize != 1) {
-            inBitmap.scaled(1 / sampleSize.toDouble(), sketch.bitmapPool)
+            inputBitmap.scaled(1 / sampleSize.toDouble(), sketch.bitmapPool)
         } else {
             null
         }
-    } else if (resize.shouldClip(inBitmap.width, inBitmap.height)) {
-        val scale = resize.getScale(inBitmap.width, inBitmap.height)
+    } else if (resize.shouldClip(inputBitmap.width, inputBitmap.height)) {
+        val scale = resize.getScale(inputBitmap.width, inputBitmap.height)
         val mapping = calculateResizeMapping(
-            imageWidth = inBitmap.width,
-            imageHeight = inBitmap.height,
+            imageWidth = inputBitmap.width,
+            imageHeight = inputBitmap.height,
             resizeWidth = resize.width,
             resizeHeight = resize.height,
             precision = precision,
             resizeScale = scale,
         )
-        val config = inBitmap.safeConfig
+        val config = inputBitmap.safeConfig
         sketch.bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config).apply {
-            Canvas(this).drawBitmap(inBitmap, mapping.srcRect, mapping.destRect, null)
+            Canvas(this).drawBitmap(inputBitmap, mapping.srcRect, mapping.destRect, null)
         }
     } else {
         null
@@ -327,7 +331,10 @@ fun BitmapDecodeResult.appliedResize(sketch: Sketch, request: ImageRequest, resi
         sketch.logger.d("appliedResize") {
             "appliedResize. successful. ${newBitmap.logString}. ${imageInfo}. ${request.key}"
         }
-        freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "appliedResize")
+        freeBitmap(sketch.bitmapPool, sketch.logger, inputBitmap, "appliedResize")
+        sketch.logger.d("appliedResize") {
+            "appliedResize. freeBitmap. bitmap=${inputBitmap.logString}. ${request.key}"
+        }
         newResult(bitmap = newBitmap) {
             addTransformed(createResizeTransformed(resize))
         }

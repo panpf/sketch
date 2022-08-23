@@ -29,6 +29,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -88,6 +89,9 @@ class GifMovieDrawableDecoder constructor(
                         bitmap = bitmap,
                         caller = "MovieDrawable:recycle"
                     )
+                    sketch.logger.d("GifMovieDrawableDecoder") {
+                        "freeBitmap. freeBitmap. bitmap=${bitmap.logString}. ${request.key}"
+                    }
                 }
             }
         } else null
