@@ -1,3 +1,14 @@
+# v3.0.0-rc08
+
+### sketch
+
+* fix: Fix the bug that BlurTransformation put input Bitmap to BitmapPool causing exception
+* improve: Logger now outputs thread name
+* improve: The log level for DepthException errors is now WARNING
+* improve: LruBitmapPool intercepts repeated put the same bitmap
+* improve: The history of the Bitmap can now be obtained from the log
+* improve: Added ImageInvalidException to specifically represent invalid image file exceptions
+
 # v3.0.0-rc07
 
 ### sketch
