@@ -21,6 +21,8 @@ import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.freeBitmap
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.fastGaussianBlur
 import com.github.panpf.sketch.util.safeConfig
@@ -38,6 +40,10 @@ class BlurTransformation constructor(
     @ColorInt
     val maskColor: Int? = null,
 ) : Transformation {
+
+    companion object {
+        private const val MODULE = "BlurTransformation"
+    }
 
     init {
         require(radius in 1..100) {
@@ -68,6 +74,22 @@ class BlurTransformation constructor(
         }
 
         val outBitmap = fastGaussianBlur(compatAlphaBitmap, radius)
+        if (outBitmap !== compatAlphaBitmap) {
+            sketch.logger.d(MODULE) {
+                "transform. newBitmap. ${outBitmap.logString}. ${request.key}"
+            }
+            if (compatAlphaBitmap !== input) {
+                freeBitmap(
+                    bitmapPool = sketch.bitmapPool,
+                    logger = sketch.logger,
+                    bitmap = compatAlphaBitmap,
+                    caller = "BlurTransformation"
+                )
+                sketch.logger.d(MODULE) {
+                    "transform. freeBitmap. bitmap=${compatAlphaBitmap.logString}. ${request.key}"
+                }
+            }
+        }
         maskColor?.let {
             Canvas(outBitmap).drawColor(it)
         }
