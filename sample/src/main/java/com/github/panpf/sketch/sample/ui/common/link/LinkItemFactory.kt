@@ -30,18 +30,6 @@ class LinkItemFactory : MyBindingItemFactory<Link, LinkItemBinding>(Link::class)
         binding: LinkItemBinding,
         item: BindingItem<Link, LinkItemBinding>
     ) {
-        binding.root.setOnClickListener {
-            val data = item.dataOrThrow
-            if (data.minSdk == null || Build.VERSION.SDK_INT >= data.minSdk) {
-                it.findNavController().navigate(data.navDirections)
-            } else {
-                Toast.makeText(
-                    context,
-                    "Must be API ${data.minSdk} or above",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
     }
 
     override fun bindItemData(

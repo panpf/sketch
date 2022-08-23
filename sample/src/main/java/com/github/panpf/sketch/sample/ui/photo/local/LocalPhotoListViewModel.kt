@@ -25,7 +25,8 @@ import androidx.paging.cachedIn
 class LocalPhotoListViewModel(application: Application) : AndroidViewModel(application) {
     val pagingFlow = Pager(
         config = PagingConfig(
-            pageSize = 80,
+            pageSize = 60,
+            initialLoadSize = 120,
             enablePlaceholders = false,
         ),
         initialKey = 0,

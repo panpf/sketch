@@ -17,13 +17,19 @@ package com.github.panpf.sketch.sample.service
 
 import android.app.Service
 import android.content.Intent
-import android.os.Handler
 import android.os.IBinder
+import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.sketch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * This Service is just to test the compatibility of Sketch under multi-process
  */
 class NotificationService : Service() {
+
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
@@ -31,6 +37,17 @@ class NotificationService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        Handler(mainLooper).postDelayed({ stopSelf() }, (60 * 1000).toLong())
+        // Test whether result LruDiskCache:67 can use different cache folders under multi-process
+        @Suppress("OPT_IN_USAGE")
+        GlobalScope.launch(Dispatchers.Main) {
+            LoadRequest(this@NotificationService, AssetImages.STATICS.first()) {
+                resize(200, 200)
+            }.execute()
+
+            val cacheDirName = sketch.resultCache.directory.name
+            require(cacheDirName.startsWith("result") && cacheDirName != "result")
+
+            stopSelf()
+        }
     }
 }

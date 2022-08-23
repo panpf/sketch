@@ -15,9 +15,12 @@
  */
 package com.github.panpf.sketch.sample.ui
 
+import android.Manifest
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +34,14 @@ import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 
 class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
+
+    private var pendingStartLink: Link? = null
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grantedMap ->
+            val pendingStartLink = pendingStartLink ?: return@registerForActivityResult
+            this@MainFragment.pendingStartLink = null
+            requestLinkPermissionsResult(grantedMap, pendingStartLink)
+        }
 
     override fun onViewCreated(
         toolbar: Toolbar,
@@ -49,61 +60,113 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
         binding.mainRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = AssemblyRecyclerAdapter(
-                listOf(LinkItemFactory(), ListSeparatorItemFactory()),
+                listOf(LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
+                    startLink(data)
+                }, ListSeparatorItemFactory()),
                 listOf(
                     ListSeparator("Samples"),
                     Link(
-                        "Pexels Photos",
-                        MainFragmentDirections.actionPexelsPhotoListFragment()
-                    ),
-                    Link("Giphy GIF", MainFragmentDirections.actionGiphyGifListFragment()),
-                    Link(
-                        "Local Photos",
-                        MainFragmentDirections.actionLocalPhotoListFragment()
+                        title = "Pexels Photos",
+                        navDirections = MainFragmentDirections.actionPexelsPhotoListFragment()
                     ),
                     Link(
-                        "Local Video",
-                        MainFragmentDirections.actionLocalVideoListFragment()
+                        title = "Giphy GIF",
+                        navDirections = MainFragmentDirections.actionGiphyGifListFragment()
                     ),
-                    Link("Huge Image", MainFragmentDirections.actionHugeImageHomeFragment()),
-                    Link("RemoteViews", MainFragmentDirections.actionRemoteViewsTestFragment()),
+                    Link(
+                        title = "Local Photos",
+                        navDirections = MainFragmentDirections.actionLocalPhotoListFragment(),
+                        permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    ),
+                    Link(
+                        title = "Local Video",
+                        navDirections = MainFragmentDirections.actionLocalVideoListFragment(),
+                        permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    ),
+                    Link(
+                        title = "Huge Image",
+                        navDirections = MainFragmentDirections.actionHugeImageHomeFragment()
+                    ),
+                    Link(
+                        title = "RemoteViews",
+                        navDirections = MainFragmentDirections.actionRemoteViewsTestFragment()
+                    ),
 
                     ListSeparator("Jetpack Compose"),
                     Link(
-                        "Photos On Compose",
-                        MainFragmentDirections.actionPexelsPhotoListComposeFragment(),
-                        Build.VERSION_CODES.LOLLIPOP
+                        title = "Photos On Compose",
+                        navDirections = MainFragmentDirections.actionPexelsPhotoListComposeFragment(),
+                        minSdk = Build.VERSION_CODES.LOLLIPOP
                     ),
                     Link(
-                        "GIF On Compose",
-                        MainFragmentDirections.actionGiphyGifListComposeFragment(),
-                        Build.VERSION_CODES.LOLLIPOP
+                        title = "GIF On Compose",
+                        navDirections = MainFragmentDirections.actionGiphyGifListComposeFragment(),
+                        minSdk = Build.VERSION_CODES.LOLLIPOP
                     ),
                     Link(
-                        "Insanity Test On Compose",
-                        MainFragmentDirections.actionInsanityTestComposeFragment(),
-                        Build.VERSION_CODES.LOLLIPOP
+                        title = "Insanity Test On Compose",
+                        navDirections = MainFragmentDirections.actionInsanityTestComposeFragment(),
+                        minSdk = Build.VERSION_CODES.LOLLIPOP
                     ),
 
                     ListSeparator("Test"),
-                    Link("Fetcher", MainFragmentDirections.actionFetcherTestFragment()),
-                    Link("Decoder", MainFragmentDirections.actionDecoderTestFragment()),
                     Link(
-                        "Transformation",
-                        MainFragmentDirections.actionTransformationTestPagerFragment()
+                        title = "Fetcher",
+                        navDirections = MainFragmentDirections.actionFetcherTestFragment(),
+                        permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     ),
                     Link(
-                        "ExifOrientation",
-                        MainFragmentDirections.actionExifOrientationTestPagerFragment()
+                        title = "Decoder",
+                        navDirections = MainFragmentDirections.actionDecoderTestFragment()
                     ),
                     Link(
-                        "ProgressIndicator",
-                        MainFragmentDirections.actionProgressIndicatorTestFragment()
+                        title = "Transformation",
+                        navDirections = MainFragmentDirections.actionTransformationTestPagerFragment()
                     ),
-                    Link("Insanity Test", MainFragmentDirections.actionInsanityTestFragment()),
-                    Link("Other Test", MainFragmentDirections.actionTestFragment()),
+                    Link(
+                        title = "ExifOrientation",
+                        navDirections = MainFragmentDirections.actionExifOrientationTestPagerFragment()
+                    ),
+                    Link(
+                        title = "ProgressIndicator",
+                        navDirections = MainFragmentDirections.actionProgressIndicatorTestFragment()
+                    ),
+                    Link(
+                        title = "Insanity Test",
+                        navDirections = MainFragmentDirections.actionInsanityTestFragment()
+                    ),
+                    Link(
+                        title = "Other Test",
+                        navDirections = MainFragmentDirections.actionTestFragment()
+                    ),
                 )
             )
+        }
+    }
+
+    private fun startLink(data: Link) {
+        if (data.minSdk == null || Build.VERSION.SDK_INT >= data.minSdk) {
+            val permissions = data.permissions
+            if (permissions != null) {
+                pendingStartLink = data
+                permissionLauncher.launch(permissions.toTypedArray())
+            } else {
+                findNavController().navigate(data.navDirections)
+            }
+        } else {
+            Toast.makeText(
+                context,
+                "Must be API ${data.minSdk} or above",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun requestLinkPermissionsResult(grantedMap: Map<String, Boolean>, data: Link) {
+        if (grantedMap.values.all { it }) {
+            findNavController().navigate(data.navDirections)
+        } else {
+            Toast.makeText(context, "Please grant permission", Toast.LENGTH_LONG).show()
         }
     }
 }

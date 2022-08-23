@@ -70,8 +70,8 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
 
         dialogHeightRatio = when {
             args.throwableString != null -> 0.45f
-            arrayOf(args.zoomInfo, args.tilesInfo).all { it?.isNotEmpty() == true } -> 0.75f
-            args.zoomInfo?.isNotEmpty() == true -> 0.65f
+            arrayOf(args.zoomInfo, args.tilesInfo).all { it?.isNotEmpty() == true } -> 0.8f
+            args.zoomInfo?.isNotEmpty() == true -> 0.7f
             else -> 0.45f
         }
     }
