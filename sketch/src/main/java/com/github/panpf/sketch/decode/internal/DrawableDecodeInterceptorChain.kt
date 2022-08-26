@@ -37,12 +37,9 @@ internal class DrawableDecodeInterceptorChain constructor(
     override suspend fun proceed(): DrawableDecodeResult {
         requiredWorkThread()
         val interceptor = interceptors[index]
-        val next = copy(index = index + 1)
+        val next = DrawableDecodeInterceptorChain(
+            sketch, request, requestContext, fetchResult, interceptors, index + 1
+        )
         return interceptor.intercept(next)
     }
-
-    private fun copy(index: Int): DrawableDecodeInterceptorChain =
-        DrawableDecodeInterceptorChain(
-            sketch, request, requestContext, fetchResult, interceptors, index
-        )
 }

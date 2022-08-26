@@ -37,12 +37,9 @@ internal class BitmapDecodeInterceptorChain constructor(
     override suspend fun proceed(): BitmapDecodeResult {
         requiredWorkThread()
         val interceptor = interceptors[index]
-        val next = copy(index = index + 1)
+        val next = BitmapDecodeInterceptorChain(
+            sketch, request, requestContext, fetchResult, interceptors, index + 1
+        )
         return interceptor.intercept(next)
     }
-
-    private fun copy(index: Int): BitmapDecodeInterceptorChain =
-        BitmapDecodeInterceptorChain(
-            sketch, request, requestContext, fetchResult, interceptors, index
-        )
 }
