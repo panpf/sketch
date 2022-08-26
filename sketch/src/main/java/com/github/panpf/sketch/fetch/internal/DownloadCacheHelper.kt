@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.sync.Mutex
 import java.io.IOException
 
+// todo improve
 suspend fun <R> lockDownloadCache(
     sketch: Sketch,
     request: ImageRequest,

@@ -226,6 +226,8 @@ interface ImageRequest {
 
     /**
      * Bitmap memory caching policy
+     *
+     * @see com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
      */
     val memoryCachePolicy: CachePolicy
 
