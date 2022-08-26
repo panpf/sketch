@@ -19,6 +19,7 @@ import android.graphics.Bitmap.CompressFormat.PNG
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeException
@@ -27,6 +28,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONArray
 import org.json.JSONObject
@@ -42,20 +44,16 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         val sketch = chain.sketch
         val request = chain.request
         val resultCache = sketch.resultCache
+        val resultCachePolicy = request.resultCachePolicy
 
-        if (request.resultCachePolicy.readEnabled) {
-            val cachedResult = resultCache.lockResultCache(chain.request) {
-                read(sketch, request)
-            }
-            if (cachedResult != null) {
-                return cachedResult
-            }
-        }
-
-        return if (request.resultCachePolicy.writeEnabled) {
+        return if (resultCachePolicy.isReadOrWrite) {
             resultCache.lockResultCache(chain.request) {
-                chain.proceed().apply {
-                    write(sketch, request, this)
+                ifOrNull(resultCachePolicy.readEnabled) {
+                    read(sketch, request)
+                } ?: chain.proceed().apply {
+                    if (resultCachePolicy.writeEnabled) {
+                        write(sketch, request, this)
+                    }
                 }
             }
         } else {
