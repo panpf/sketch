@@ -1,3 +1,11 @@
+# v3.0.0-rc09
+
+### sketch
+
+* fix: Fix the bug that BitmapResultCacheDecodeInterceptor may cause multiple writes to the cache
+  when the same image is loaded multiple times
+* improve: BlurTransformation now actively recycles intermediate bitmaps
+
 # v3.0.0-rc08
 
 ### sketch
