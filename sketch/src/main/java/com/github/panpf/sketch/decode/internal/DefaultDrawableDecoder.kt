@@ -64,7 +64,7 @@ class DefaultDrawableDecoder(
             drawable = countDrawable,
             imageInfo = countBitmap.imageInfo,
             dataFrom = decodeResult.dataFrom,
-            transformedList = null,
+            transformedList = decodeResult.transformedList,
         )
     }
 

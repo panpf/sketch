@@ -18,6 +18,7 @@ package com.github.panpf.sketch.test.decode.internal
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -41,12 +42,10 @@ class DefaultDrawableDecoderTest {
     fun testDecode() {
         val (context, sketch) = getTestContextAndNewSketch()
         val imageSize = Size(1291, 1936)
-        val displaySize = context.resources.displayMetrics.let {
-            Size(it.widthPixels, it.heightPixels)
-        }
+        val resizeSize = Size(500, 400)
         val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             resultCachePolicy(DISABLED)
-            resize(displaySize, LESS_PIXELS)
+            resize(resizeSize, LESS_PIXELS)
         }
 
         request.let {
@@ -57,10 +56,11 @@ class DefaultDrawableDecoderTest {
                     .decode()
             }
         }.apply {
-            Assert.assertEquals(imageSize, imageInfo.size)
-            Assert.assertEquals(samplingByTarget(imageSize, displaySize), drawable.intrinsicSize)
+            Assert.assertEquals(samplingByTarget(imageSize, resizeSize), drawable.intrinsicSize)
             Assert.assertEquals(imageInfo.size.ratio, drawable.intrinsicSize.ratio)
+            Assert.assertEquals(ImageInfo(1291, 1936, "image/jpeg", 1), imageInfo)
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+            Assert.assertEquals(listOf("InSampledTransformed(4)"), transformedList)
         }
     }
 
