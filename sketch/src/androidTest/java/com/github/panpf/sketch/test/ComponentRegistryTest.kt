@@ -255,6 +255,13 @@ class ComponentRegistryTest {
             assertThrow(IllegalArgumentException::class) {
                 newFetcher(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
             }
+
+            Assert.assertNull(
+                newFetcherOrNull(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            )
+            Assert.assertNull(
+                newFetcherOrNull(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
+            )
         }
 
         ComponentRegistry.Builder().apply {
@@ -266,6 +273,13 @@ class ComponentRegistryTest {
             assertThrow(IllegalArgumentException::class) {
                 newFetcher(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
             }
+
+            Assert.assertNotNull(
+                newFetcherOrNull(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            )
+            Assert.assertNull(
+                newFetcherOrNull(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
+            )
         }
 
         ComponentRegistry.Builder().apply {
@@ -278,6 +292,13 @@ class ComponentRegistryTest {
             assertNoThrow {
                 newFetcher(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
             }
+
+            Assert.assertNotNull(
+                newFetcherOrNull(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            )
+            Assert.assertNotNull(
+                newFetcherOrNull(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
+            )
         }
     }
 
@@ -308,6 +329,9 @@ class ComponentRegistryTest {
             assertThrow(IllegalArgumentException::class) {
                 newBitmapDecoder(sketch, request, requestContext, fetchResult)
             }
+            Assert.assertNull(
+                newBitmapDecoderOrNull(sketch, request, requestContext, fetchResult)
+            )
         }
 
         ComponentRegistry.Builder().apply {
@@ -319,6 +343,9 @@ class ComponentRegistryTest {
             assertNoThrow {
                 newBitmapDecoder(sketch, request, requestContext, fetchResult)
             }
+            Assert.assertNotNull(
+                newBitmapDecoderOrNull(sketch, request, requestContext, fetchResult)
+            )
         }
     }
 
@@ -349,6 +376,9 @@ class ComponentRegistryTest {
             assertThrow(IllegalArgumentException::class) {
                 newDrawableDecoder(sketch, request, requestContext, fetchResult)
             }
+            Assert.assertNull(
+                newDrawableDecoderOrNull(sketch, request, requestContext, fetchResult)
+            )
         }
 
         ComponentRegistry.Builder().apply {
@@ -360,6 +390,9 @@ class ComponentRegistryTest {
             assertNoThrow {
                 newDrawableDecoder(sketch, request, requestContext, fetchResult)
             }
+            Assert.assertNotNull(
+                newDrawableDecoderOrNull(sketch, request, requestContext, fetchResult)
+            )
         }
     }
 

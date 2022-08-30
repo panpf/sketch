@@ -30,11 +30,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
+import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
+import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.Depth.LOCAL
@@ -73,6 +77,13 @@ import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.test.utils.TestActivity
+import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestBitmapDecoder
+import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDrawableDecoder
+import com.github.panpf.sketch.test.utils.TestFetcher
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -1482,6 +1493,43 @@ class DownloadRequestTest {
             build().apply {
                 Assert.assertNull(progressListener)
             }
+        }
+    }
+
+    @Test
+    fun testComponents() {
+        val context = getTestContext()
+        DownloadRequest(context, TestAssets.SAMPLE_JPEG_URI).apply {
+            Assert.assertNull(componentRegistry)
+        }
+
+        DownloadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            components {
+                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher.Factory())
+                addBitmapDecoder(DefaultBitmapDecoder.Factory())
+                addBitmapDecoder(TestBitmapDecoder.Factory())
+                addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+            }
+        }.apply {
+            Assert.assertEquals(
+                ComponentRegistry.Builder().apply {
+                    addFetcher(HttpUriFetcher.Factory())
+                    addFetcher(TestFetcher.Factory())
+                    addBitmapDecoder(DefaultBitmapDecoder.Factory())
+                    addBitmapDecoder(TestBitmapDecoder.Factory())
+                    addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                    addDrawableDecoder(TestDrawableDecoder.Factory())
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                    addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                }.build(),
+                componentRegistry
+            )
         }
     }
 }

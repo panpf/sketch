@@ -15,16 +15,13 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
+import com.github.panpf.sketch.decode.DrawableDecodeResult
 
-class TestRequestInterceptor : RequestInterceptor {
+class Test3DrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
-    override suspend fun intercept(chain: Chain): ImageData {
-        return chain.proceed(chain.request.newRequest {
-            setParameter("TestRequestInterceptor", "true")
-        })
+    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
+        throw UnsupportedOperationException()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -38,6 +35,6 @@ class TestRequestInterceptor : RequestInterceptor {
     }
 
     override fun toString(): String {
-        return "TestRequestInterceptor"
+        return "TestDrawableDecodeInterceptor"
     }
 }

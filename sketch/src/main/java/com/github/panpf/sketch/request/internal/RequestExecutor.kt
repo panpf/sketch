@@ -111,7 +111,7 @@ class RequestExecutor {
                 initialRequest = requestContext.lastRequest,
                 request = requestContext.lastRequest,
                 requestContext = requestContext,
-                interceptors = sketch.components.requestInterceptorList,
+                interceptors = sketch.components.getRequestInterceptorList(requestContext.lastRequest),
                 index = 0,
             ).proceed(requestContext.lastRequest)
 

@@ -25,6 +25,7 @@ import android.widget.ImageView
 import androidx.annotation.AnyThread
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
@@ -448,6 +449,16 @@ interface DisplayRequest : ImageRequest {
         override fun default(options: ImageOptions?): Builder = apply {
             super.default(options)
         }
+
+
+        override fun components(components: ComponentRegistry?): Builder = apply {
+            super.components(components)
+        }
+
+        override fun components(configBlock: ComponentRegistry.Builder.() -> Unit): Builder =
+            apply {
+                super.components(configBlock)
+            }
     }
 
     class DisplayRequestImpl internal constructor(
@@ -482,6 +493,7 @@ interface DisplayRequest : ImageRequest {
         override val disallowAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,
         override val memoryCachePolicy: CachePolicy,
+        override val componentRegistry: ComponentRegistry?,
     ) : BaseImageRequest(), DisplayRequest {
 
         override fun toString(): String {

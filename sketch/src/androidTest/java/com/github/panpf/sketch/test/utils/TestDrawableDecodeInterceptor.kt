@@ -21,7 +21,12 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 class TestDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
     override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
-        throw UnsupportedOperationException()
+        return chain.proceed().let {
+            it.copy(
+                transformedList = (it.transformedList
+                    ?: listOf()).plus("TestDrawableDecodeInterceptor")
+            )
+        }
     }
 
     override fun equals(other: Any?): Boolean {

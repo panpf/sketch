@@ -21,7 +21,9 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 class TestBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
     override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
-        throw UnsupportedOperationException()
+        return chain.proceed().newResult {
+            addTransformed("TestBitmapDecodeInterceptor")
+        }
     }
 
     override fun equals(other: Any?): Boolean {

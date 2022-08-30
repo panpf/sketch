@@ -14,14 +14,15 @@ Sketch 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下
 
 ### 扩展新的 Fetcher
 
-1.首先需要实现 [Fetcher] 接口定义你的 [Fetcher] 和它的 Factory，如下：
+#### 1. 定义
+
+首先需要实现 [Fetcher] 接口定义你的 [Fetcher] 和它的 Factory，如下：
 
 ```kotlin
 class MyFetcher : Fetcher {
 
     override suspend fun fetch(): FetchResult {
         // 在这里解析你的 uri，获取数据
-        TODO("implementation")
     }
 
     companion object {
@@ -41,7 +42,9 @@ class MyFetcher : Fetcher {
 }
 ```
 
-2.然后在配置 Sketch 时通过 components 方法将其 Factory 注册到 Sketch，如下：
+#### 2.使用
+
+如果要让所有的 ImageRequest 都使用就在配置 Sketch 时通过 components 方法注册，这样所有的 ImageRequest 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -51,6 +54,16 @@ class MyApplication : Application(), SketchFactory {
             addFetcher(MyFetcher.Factory())
         }
     }.build()
+}
+```
+
+如果只想让当前 ImageRequest 使用就通过 ImageRequest 的 components 方法注册，这样所有的 ImageRequest 都可以使用，如下：
+
+```kotlin
+DisplayRequest(context, "http://sample.com/sample.jpeg") {
+    components {
+        addFetcher(MyFetcher.Factory())
+    }
 }
 ```
 

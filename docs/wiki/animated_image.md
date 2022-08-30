@@ -20,7 +20,7 @@ Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [D
 
 Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你主动将 [DrawableDecoder] 注册到 Sketch 才能播放动图
 
-通过在 Application 类实现 [SketchFactory] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，如下：
+通过在 Application 类实现 [SketchFactory] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，这样所有的 ImageRequest 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -42,6 +42,28 @@ class MyApplication : Application(), SketchFactory {
             }
         }
     }.build()
+}
+```
+
+或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+
+```kotlin
+imageView.displayImage("https://www.example.com/image.gif") {
+    components {
+        addDrawableDecoder(
+            when {
+                VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
+                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
+                else -> GifDrawableDrawableDecoder.Factory()
+            }
+        )
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
+        }
+    }
 }
 ```
 

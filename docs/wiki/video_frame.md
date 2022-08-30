@@ -12,7 +12,7 @@ Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 
 ### 注册
 
-根据情况选择合适的 Decoder，然后在初始化 Sketch 时通过 components() 方法注册即可：
+根据情况选择合适的 Decoder，然后在初始化 Sketch 时通过 components() 方法注册，这样所有的 ImageRequest 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -25,12 +25,22 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
+或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+
+```kotlin
+imageView.displayImage("file:///sdcard/sample.mp4") {
+    components {
+        addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
+    }
+}
+```
+
 ### 配置
 
 [DisplayRequest] 和 [LoadRequest] 支持一些视频帧相关的配置，如下：
 
 ```kotlin
-DisplayRequest(context, "file:///sdcard/sample.mp4") {
+imageView.displayImage("file:///sdcard/sample.mp4") {
     // 提取 1000000 微秒处的帧
     videoFrameMicros(1000000)
 

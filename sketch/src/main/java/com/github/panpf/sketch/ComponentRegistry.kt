@@ -84,6 +84,17 @@ open class ComponentRegistry private constructor(
      * Create a [Fetcher] with the registered [Fetcher.Factory]
      */
     @WorkerThread
+    internal fun newFetcherOrNull(sketch: Sketch, request: ImageRequest): Fetcher? {
+        requiredWorkThread()
+        return fetcherFactoryList.firstNotNullOfOrNull {
+            it.create(sketch, request)
+        }
+    }
+
+    /**
+     * Create a [Fetcher] with the registered [Fetcher.Factory]
+     */
+    @WorkerThread
     internal fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher {
         requiredWorkThread()
         return fetcherFactoryList.firstNotNullOfOrNull {
@@ -92,6 +103,22 @@ open class ComponentRegistry private constructor(
             "No Fetcher can handle this uri '${request.uriString}', " +
                     "please pass ComponentRegistry. Builder addFetcher () function to add a new Fetcher to support it"
         )
+    }
+
+    /**
+     * Create a [BitmapDecoder] with the registered [BitmapDecoder.Factory]
+     */
+    @WorkerThread
+    internal fun newBitmapDecoderOrNull(
+        sketch: Sketch,
+        request: ImageRequest,
+        requestContext: RequestContext,
+        fetchResult: FetchResult,
+    ): BitmapDecoder? {
+        requiredWorkThread()
+        return bitmapDecoderFactoryList.firstNotNullOfOrNull {
+            it.create(sketch, request, requestContext, fetchResult)
+        }
     }
 
     /**
@@ -111,6 +138,22 @@ open class ComponentRegistry private constructor(
             "No BitmapDecoder can handle this uri '${request.uriString}', " +
                     "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
         )
+    }
+
+    /**
+     * Create a [DrawableDecoder] with the registered [DrawableDecoder.Factory]
+     */
+    @WorkerThread
+    internal fun newDrawableDecoderOrNull(
+        sketch: Sketch,
+        request: ImageRequest,
+        requestContext: RequestContext,
+        fetchResult: FetchResult,
+    ): DrawableDecoder? {
+        requiredWorkThread()
+        return drawableDecoderFactoryList.firstNotNullOfOrNull {
+            it.create(sketch, request, requestContext, fetchResult)
+        }
     }
 
     /**
@@ -212,31 +255,30 @@ open class ComponentRegistry private constructor(
         /**
          * Register an [Fetcher.Factory]
          */
-        fun addFetcher(fetchFactory: Fetcher.Factory) {
+        fun addFetcher(fetchFactory: Fetcher.Factory): Builder = apply {
             fetcherFactoryList.add(fetchFactory)
         }
 
         /**
          * Register an [BitmapDecoder.Factory]
          */
-        fun addBitmapDecoder(bitmapDecoderFactory: BitmapDecoder.Factory) {
+        fun addBitmapDecoder(bitmapDecoderFactory: BitmapDecoder.Factory): Builder = apply {
             bitmapDecoderFactoryList.add(bitmapDecoderFactory)
         }
 
         /**
          * Register an [DrawableDecoder.Factory]
          */
-        fun addDrawableDecoder(drawableDecoderFactory: DrawableDecoder.Factory) {
+        fun addDrawableDecoder(drawableDecoderFactory: DrawableDecoder.Factory): Builder = apply {
             drawableDecoderFactoryList.add(drawableDecoderFactory)
         }
 
         /**
          * Append an [RequestInterceptor]
          */
-        fun addRequestInterceptor(interceptor: RequestInterceptor): Builder =
-            apply {
-                this.requestInterceptors.add(interceptor)
-            }
+        fun addRequestInterceptor(interceptor: RequestInterceptor): Builder = apply {
+            this.requestInterceptors.add(interceptor)
+        }
 
         /**
          * Append an [BitmapDecodeInterceptor]
@@ -270,28 +312,34 @@ open class ComponentRegistry private constructor(
  */
 class Components(private val sketch: Sketch, internal val registry: ComponentRegistry) {
 
-    /**
-     * All [RequestInterceptor]
-     */
-    val requestInterceptorList: List<RequestInterceptor> = registry.requestInterceptorList
+    fun getRequestInterceptorList(request: ImageRequest): List<RequestInterceptor> {
+        val localRequestInterceptorList =
+            request.componentRegistry?.requestInterceptorList?.takeIf { it.isNotEmpty() }
+        return localRequestInterceptorList?.plus(registry.requestInterceptorList)
+            ?: registry.requestInterceptorList
+    }
 
-    /**
-     * All [BitmapDecodeInterceptor]
-     */
-    val bitmapDecodeInterceptorList: List<BitmapDecodeInterceptor> =
-        registry.bitmapDecodeInterceptorList
+    fun getBitmapDecodeInterceptorList(request: ImageRequest): List<BitmapDecodeInterceptor> {
+        val localBitmapDecodeInterceptorList =
+            request.componentRegistry?.bitmapDecodeInterceptorList?.takeIf { it.isNotEmpty() }
+        return localBitmapDecodeInterceptorList?.plus(registry.bitmapDecodeInterceptorList)
+            ?: registry.bitmapDecodeInterceptorList
+    }
 
-    /**
-     * All [DrawableDecodeInterceptor]
-     */
-    val drawableDecodeInterceptorList: List<DrawableDecodeInterceptor> =
-        registry.drawableDecodeInterceptorList
+    fun getDrawableDecodeInterceptorList(request: ImageRequest): List<DrawableDecodeInterceptor> {
+        val localDrawableDecodeInterceptorList =
+            request.componentRegistry?.drawableDecodeInterceptorList?.takeIf { it.isNotEmpty() }
+        return localDrawableDecodeInterceptorList?.plus(registry.drawableDecodeInterceptorList)
+            ?: registry.drawableDecodeInterceptorList
+    }
 
     /**
      * Create a [Fetcher] with the registered [Fetcher.Factory]
      */
     @WorkerThread
-    fun newFetcher(request: ImageRequest): Fetcher = registry.newFetcher(sketch, request)
+    fun newFetcher(request: ImageRequest): Fetcher =
+        request.componentRegistry?.newFetcherOrNull(sketch, request)
+            ?: registry.newFetcher(sketch, request)
 
     /**
      * Create a [BitmapDecoder] with the registered [BitmapDecoder.Factory]
@@ -301,7 +349,10 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
         request: ImageRequest,
         requestContext: RequestContext,
         fetchResult: FetchResult,
-    ): BitmapDecoder = registry.newBitmapDecoder(sketch, request, requestContext, fetchResult)
+    ): BitmapDecoder =
+        request.componentRegistry
+            ?.newBitmapDecoderOrNull(sketch, request, requestContext, fetchResult)
+            ?: registry.newBitmapDecoder(sketch, request, requestContext, fetchResult)
 
     /**
      * Create a [DrawableDecoder] with the registered [DrawableDecoder.Factory]
@@ -311,7 +362,10 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
         request: ImageRequest,
         requestContext: RequestContext,
         fetchResult: FetchResult,
-    ): DrawableDecoder = registry.newDrawableDecoder(sketch, request, requestContext, fetchResult)
+    ): DrawableDecoder =
+        request.componentRegistry
+            ?.newDrawableDecoderOrNull(sketch, request, requestContext, fetchResult)
+            ?: registry.newDrawableDecoder(sketch, request, requestContext, fetchResult)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -325,6 +379,6 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     }
 
     override fun toString(): String {
-        return "Components(registry=$registry)"
+        return "Components($registry)"
     }
 }

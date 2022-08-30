@@ -15,16 +15,18 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.fetch.AssetUriFetcher
+import com.github.panpf.sketch.fetch.Fetcher
+import com.github.panpf.sketch.request.ImageRequest
 
-class TestRequestInterceptor : RequestInterceptor {
+class TestAssetFetcherFactory : Fetcher.Factory {
 
-    override suspend fun intercept(chain: Chain): ImageData {
-        return chain.proceed(chain.request.newRequest {
-            setParameter("TestRequestInterceptor", "true")
-        })
+    override fun create(sketch: Sketch, request: ImageRequest): Fetcher? {
+        if(request.uri.scheme == "test") {
+            return AssetUriFetcher(sketch, request, request.uriString.replace("test://", ""))
+        }
+        return null
     }
 
     override fun equals(other: Any?): Boolean {
@@ -38,6 +40,6 @@ class TestRequestInterceptor : RequestInterceptor {
     }
 
     override fun toString(): String {
-        return "TestRequestInterceptor"
+        return "TestAssetFetcher"
     }
 }

@@ -18,6 +18,7 @@ package com.github.panpf.sketch.test.utils
 import android.content.Context
 import android.graphics.ColorSpace
 import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
@@ -77,7 +78,8 @@ class TestRequest(
     override val transitionFactory: Transition.Factory?,
     override val disallowAnimatedImage: Boolean,
     override val resizeApplyToDrawable: Boolean,
-    override val memoryCachePolicy: CachePolicy
+    override val memoryCachePolicy: CachePolicy,
+    override val componentRegistry: ComponentRegistry?,
 ) : BaseImageRequest() {
 
     constructor(
@@ -112,7 +114,8 @@ class TestRequest(
         transitionFactory = null,
         disallowAnimatedImage = true,
         resizeApplyToDrawable = true,
-        memoryCachePolicy = ENABLED
+        memoryCachePolicy = ENABLED,
+        componentRegistry = null,
     )
 
     override fun newBuilder(configBlock: (Builder.() -> Unit)?): Builder {

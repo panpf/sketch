@@ -6,7 +6,9 @@
 
 `需要导入 sketch-extensions 模块`
 
-第 1 步. 在初始化 [Sketch] 时添加 [SaveCellularTrafficDisplayInterceptor] 请求拦截器，如下：
+第 1 步. 注册 
+
+在初始化 [Sketch] 时添加 [SaveCellularTrafficDisplayInterceptor] 请求拦截器，这样所有的 ImageRequest 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -16,6 +18,16 @@ class MyApplication : Application(), SketchFactory {
             addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
         }
     }.build()
+}
+```
+
+或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    components {
+        addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+    }
 }
 ```
 

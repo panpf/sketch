@@ -41,7 +41,7 @@ class DefaultDrawableDecoder(
             request = request,
             requestContext = requestContext,
             fetchResult = fetchResult,
-            interceptors = sketch.components.bitmapDecodeInterceptorList,
+            interceptors = sketch.components.getBitmapDecodeInterceptorList(request),
             index = 0,
         ).proceed()
         val countBitmap = CountBitmap(

@@ -30,6 +30,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.ComponentRegistry.Builder
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
@@ -78,13 +80,13 @@ import com.github.panpf.sketch.util.getLifecycle
 interface ImageRequest {
 
     val context: Context
+    val uri: Uri
     val uriString: String
+    val key: String
+    val lifecycle: Lifecycle
+    val target: Target?
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
     val progressListener: ProgressListener<ImageRequest>?
-    val target: Target?
-    val lifecycle: Lifecycle
-    val uri: Uri
-    val key: String
 
     /** Used to cache bitmaps in memory and on disk */
     val cacheKey: String
@@ -231,6 +233,12 @@ interface ImageRequest {
      */
     val memoryCachePolicy: CachePolicy
 
+
+    /**
+     * Components that are only valid for the current request
+     */
+    val componentRegistry: ComponentRegistry?
+
     abstract class BaseImageRequest : ImageRequest {
         override val uri: Uri by lazy { Uri.parse(uriString) }
 
@@ -280,6 +288,7 @@ interface ImageRequest {
         private var viewTargetOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
         private var resizeSizeResolver: SizeResolver? = null
+        private var componentRegistry: ComponentRegistry? = null
 
         protected constructor(context: Context, uriString: String?) {
             this.context = context
@@ -303,6 +312,7 @@ interface ImageRequest {
             this.defaultOptions = request.defaultOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
             this.resizeSizeResolver = request.resizeSizeResolver
+            this.componentRegistry = request.componentRegistry
         }
 
         /**
@@ -743,7 +753,12 @@ interface ImageRequest {
             preferExactIntrinsicSize: Boolean = false,
             alwaysUse: Boolean = false,
         ): Builder = apply {
-            definedOptionsBuilder.crossfade(durationMillis, fadeStart, preferExactIntrinsicSize, alwaysUse)
+            definedOptionsBuilder.crossfade(
+                durationMillis,
+                fadeStart,
+                preferExactIntrinsicSize,
+                alwaysUse
+            )
         }
 
         /**
@@ -781,6 +796,20 @@ interface ImageRequest {
         open fun default(options: ImageOptions?): Builder = apply {
             this.defaultOptions = options
         }
+
+
+        /**
+         * Set the [ComponentRegistry]
+         */
+        open fun components(components: ComponentRegistry?): Builder = apply {
+            this.componentRegistry = components
+        }
+
+        /**
+         * Build and set the [ComponentRegistry]
+         */
+        open fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            components(Builder().apply(configBlock).build())
 
 
         @SuppressLint("NewApi")
@@ -857,6 +886,7 @@ interface ImageRequest {
                         disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
                         memoryCachePolicy = memoryCachePolicy,
+                        componentRegistry = componentRegistry,
                     )
                 }
                 is LoadRequest.Builder -> {
@@ -890,6 +920,7 @@ interface ImageRequest {
                         disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
                         memoryCachePolicy = memoryCachePolicy,
+                        componentRegistry = componentRegistry,
                     )
                 }
                 is DownloadRequest.Builder -> {
@@ -923,6 +954,7 @@ interface ImageRequest {
                         disallowAnimatedImage = disallowAnimatedImage,
                         resizeApplyToDrawable = resizeApplyToDrawable,
                         memoryCachePolicy = memoryCachePolicy,
+                        componentRegistry = componentRegistry,
                     )
                 }
                 else -> throw UnsupportedOperationException("Unsupported ImageRequest.Builder: ${this@Builder::class.java}")

@@ -24,6 +24,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.AnyThread
 import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
@@ -425,6 +426,16 @@ interface LoadRequest : ImageRequest {
         override fun default(options: ImageOptions?): Builder = apply {
             super.default(options)
         }
+
+
+        override fun components(components: ComponentRegistry?): Builder = apply {
+            super.components(components)
+        }
+
+        override fun components(configBlock: ComponentRegistry.Builder.() -> Unit): Builder =
+            apply {
+                super.components(configBlock)
+            }
     }
 
     class LoadRequestImpl internal constructor(
@@ -459,6 +470,7 @@ interface LoadRequest : ImageRequest {
         override val disallowAnimatedImage: Boolean,
         override val resizeApplyToDrawable: Boolean,
         override val memoryCachePolicy: CachePolicy,
+        override val componentRegistry: ComponentRegistry?,
     ) : BaseImageRequest(), LoadRequest {
 
         override fun toString(): String {

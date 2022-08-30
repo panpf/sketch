@@ -44,7 +44,6 @@ class MyBitmapDecoder : BitmapDecoder {
 
     override suspend fun decode(): BitmapDecodeResult {
         // 在这里解析图片
-        TODO("implementation")
     }
 
     companion object {
@@ -73,7 +72,7 @@ class MyBitmapDecoder : BitmapDecoder {
 }
 ```
 
-2.然后在配置 Sketch 时通过 components 方法将其 Factory 注册到 Sketch，如下：
+2.然后在配置 Sketch 时通过 components 方法将其 Factory 注册到 Sketch，这样所有的 ImageRequest 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -83,6 +82,16 @@ class MyApplication : Application(), SketchFactory {
             addBitmapDecoder(MyBitmapDecoder.Factory())
         }
     }.build()
+}
+```
+
+或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+
+```kotlin
+imageView.displayImage("mypng://my.png") {
+    components {
+        addBitmapDecoder(MyBitmapDecoder.Factory())
+    }
 }
 ```
 

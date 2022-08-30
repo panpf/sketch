@@ -38,7 +38,8 @@ class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 > 3. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [BitmapDecodeResult] 或 [DrawableDecodeResult] 即可
 > 4. 如果想不再执行请求只需不执行 proceed 方法即可
 
-然后在初始化 Sketch 时通过 addBitmapDecodeInterceptor() 和 addDrawableDecodeInterceptor() 方法注册即可：
+然后在初始化 Sketch 时通过 addBitmapDecodeInterceptor() 和 addDrawableDecodeInterceptor() 方法注册，这样所有的
+ImageRequest 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -49,6 +50,17 @@ class MyApplication : Application(), SketchFactory {
             addDrawableDecodeInterceptor(MyDrawableDecodeInterceptor())
         }
     }.build()
+}
+```
+
+或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+
+```kotlin
+imageView.displayImage("file:///sdcard/sample.mp4") {
+    components {
+        addBitmapDecodeInterceptor(MyBitmapDecodeInterceptor())
+        addDrawableDecodeInterceptor(MyDrawableDecodeInterceptor())
+    }
 }
 ```
 

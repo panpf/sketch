@@ -2,6 +2,8 @@
 
 Sketch 通过 [RequestInterceptor] 来拦截 [ImageRequest] 的执行过程，您可以借此改变执行过程的输入和输出
 
+### 定义
+
 先实现 [RequestInterceptor] 接口定义你的 RequestInterceptor：
 
 ```kotlin
@@ -21,7 +23,9 @@ class MyRequestInterceptor : RequestInterceptor {
 > 2. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [ImageData] 即可
 > 3. 如果想不再执行请求只需不执行 proceed 方法即可
 
-然后在初始化 Sketch 时通过 addRequestInterceptor() 方法注册即可：
+### 注册
+
+然后在初始化 Sketch 时通过 addRequestInterceptor() 方法注册，这样所有的 ImageRequest 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -31,6 +35,16 @@ class MyApplication : Application(), SketchFactory {
             addRequestInterceptor(MyRequestInterceptor())
         }
     }.build()
+}
+```
+
+或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    components {
+        addRequestInterceptor(MyRequestInterceptor())
+    }
 }
 ```
 

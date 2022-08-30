@@ -19,12 +19,10 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
-class TestRequestInterceptor : RequestInterceptor {
+class Test2RequestInterceptor : RequestInterceptor {
 
     override suspend fun intercept(chain: Chain): ImageData {
-        return chain.proceed(chain.request.newRequest {
-            setParameter("TestRequestInterceptor", "true")
-        })
+        return chain.proceed(chain.request)
     }
 
     override fun equals(other: Any?): Boolean {

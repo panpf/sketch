@@ -35,13 +35,20 @@ import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.GlobalLifecycle
+import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
 import com.github.panpf.sketch.test.utils.DownloadProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestDownloadTarget
+import com.github.panpf.sketch.test.utils.TestErrorBitmapDecoder.Factory
+import com.github.panpf.sketch.test.utils.TestErrorDrawableDecoder
+import com.github.panpf.sketch.test.utils.TestHttpFetcherFactory
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.asOrThrow
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -353,6 +360,95 @@ class DownloadRequestExecuteTest {
                 testImage.contentLength,
                 listenerSupervisor.callbackActionList.last().toLong()
             )
+        }
+    }
+
+    @Test
+    fun testComponents() {
+        val (context, sketch) = getTestContextAndNewSketch {
+            httpStack(TestHttpStack(it))
+        }
+
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString)
+            .let { runBlocking { it.execute(sketch) } }.asOrThrow<DownloadResult.Success>().apply {
+                Assert.assertNull(request.parameters?.get("TestRequestInterceptor"))
+            }
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+            components {
+                addRequestInterceptor(TestRequestInterceptor())
+            }
+        }.let { runBlocking { it.execute(sketch) } }.asOrThrow<DownloadResult.Success>().apply {
+            Assert.assertEquals("true", request.parameters?.get("TestRequestInterceptor"))
+        }
+
+//        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+//            downloadCachePolicy(DISABLED)
+//        }.let { runBlocking { it.execute(sketch) } }.asOrThrow<DownloadResult.Success>().apply {
+//            Assert.assertFalse(transformedList?.contains("TestBitmapDecodeInterceptor") == true)
+//        }
+//        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+//            downloadCachePolicy(DISABLED)
+//            components {
+//                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+//            }
+//        }.let { runBlocking { it.execute(sketch) } }.asOrThrow<DownloadResult.Success>().apply {
+//            Assert.assertTrue(transformedList?.contains("TestBitmapDecodeInterceptor") == true)
+//        }
+//
+//        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+//            downloadCachePolicy(DISABLED)
+//        }.let { runBlocking { it.execute(sketch) } }.asOrThrow<DownloadResult.Success>().apply {
+//            Assert.assertFalse(transformedList?.contains("TestDrawableDecodeInterceptor") == true)
+//        }
+//        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+//            downloadCachePolicy(DISABLED)
+//            components {
+//                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+//            }
+//        }.let { runBlocking { it.execute(sketch) } }.asOrThrow<DownloadResult.Success>().apply {
+//            Assert.assertFalse(transformedList?.contains("TestDrawableDecodeInterceptor") == true)
+//        }
+
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString.replace("http://", "test://")) {
+            downloadCachePolicy(DISABLED)
+        }.let { runBlocking { it.execute(sketch) } }.apply {
+            Assert.assertTrue(this is DownloadResult.Error)
+        }
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString.replace("http://", "test://")) {
+            downloadCachePolicy(DISABLED)
+            components {
+                addFetcher(TestHttpFetcherFactory())
+            }
+        }.let { runBlocking { it.execute(sketch) } }.apply {
+            Assert.assertTrue(this is DownloadResult.Success)
+        }
+
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+            downloadCachePolicy(DISABLED)
+        }.let { runBlocking { it.execute(sketch) } }.apply {
+            Assert.assertTrue(this is DownloadResult.Success)
+        }
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+            downloadCachePolicy(DISABLED)
+            components {
+                addBitmapDecoder(Factory())
+            }
+        }.let { runBlocking { it.execute(sketch) } }.apply {
+            Assert.assertTrue(this is DownloadResult.Success)
+        }
+
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+            downloadCachePolicy(DISABLED)
+        }.let { runBlocking { it.execute(sketch) } }.apply {
+            Assert.assertTrue(this is DownloadResult.Success)
+        }
+        DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
+            downloadCachePolicy(DISABLED)
+            components {
+                addDrawableDecoder(TestErrorDrawableDecoder.Factory())
+            }
+        }.let { runBlocking { it.execute(sketch) } }.apply {
+            Assert.assertTrue(this is DownloadResult.Success)
         }
     }
 

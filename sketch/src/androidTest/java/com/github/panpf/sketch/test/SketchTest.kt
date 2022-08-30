@@ -266,7 +266,7 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     listOf(MemoryCacheRequestInterceptor(), EngineRequestInterceptor()),
-                    components.requestInterceptorList
+                    components.getRequestInterceptorList(DisplayRequest(context, ""))
                 )
             }
             components {
@@ -279,11 +279,11 @@ class SketchTest {
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
-                    components.requestInterceptorList
+                    components.getRequestInterceptorList(DisplayRequest(context, ""))
                 )
                 Assert.assertNotEquals(
                     listOf(MemoryCacheRequestInterceptor(), EngineRequestInterceptor()),
-                    components.requestInterceptorList
+                    components.getRequestInterceptorList(DisplayRequest(context, ""))
                 )
             }
 
@@ -294,7 +294,7 @@ class SketchTest {
                         BitmapTransformationDecodeInterceptor(),
                         BitmapEngineDecodeInterceptor()
                     ),
-                    components.bitmapDecodeInterceptorList
+                    components.getBitmapDecodeInterceptorList(DisplayRequest(context, ""))
                 )
             }
             components {
@@ -308,7 +308,7 @@ class SketchTest {
                         BitmapTransformationDecodeInterceptor(),
                         BitmapEngineDecodeInterceptor()
                     ),
-                    components.bitmapDecodeInterceptorList
+                    components.getBitmapDecodeInterceptorList(DisplayRequest(context, ""))
                 )
                 Assert.assertNotEquals(
                     listOf(
@@ -316,14 +316,14 @@ class SketchTest {
                         BitmapTransformationDecodeInterceptor(),
                         BitmapEngineDecodeInterceptor()
                     ),
-                    components.bitmapDecodeInterceptorList
+                    components.getBitmapDecodeInterceptorList(DisplayRequest(context, ""))
                 )
             }
 
             build().apply {
                 Assert.assertEquals(
                     listOf(DrawableEngineDecodeInterceptor()),
-                    components.drawableDecodeInterceptorList
+                    components.getDrawableDecodeInterceptorList(DisplayRequest(context, ""))
                 )
             }
             components {
@@ -332,11 +332,11 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     listOf(TestDrawableDecodeInterceptor(), DrawableEngineDecodeInterceptor()),
-                    components.drawableDecodeInterceptorList
+                    components.getDrawableDecodeInterceptorList(DisplayRequest(context, ""))
                 )
                 Assert.assertNotEquals(
                     listOf(DrawableEngineDecodeInterceptor()),
-                    components.drawableDecodeInterceptorList
+                    components.getDrawableDecodeInterceptorList(DisplayRequest(context, ""))
                 )
             }
 

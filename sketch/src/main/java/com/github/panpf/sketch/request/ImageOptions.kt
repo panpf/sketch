@@ -707,7 +707,12 @@ interface ImageOptions {
             alwaysUse: Boolean = false,
         ): Builder = apply {
             transitionFactory(
-                CrossfadeTransition.Factory(durationMillis, fadeStart, preferExactIntrinsicSize, alwaysUse)
+                CrossfadeTransition.Factory(
+                    durationMillis = durationMillis,
+                    fadeStart = fadeStart,
+                    preferExactIntrinsicSize = preferExactIntrinsicSize,
+                    alwaysUse = alwaysUse
+                )
             )
         }
 

@@ -60,6 +60,7 @@ import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.GlobalLifecycle
+import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -71,9 +72,15 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
 import com.github.panpf.sketch.test.utils.DisplayProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.test.utils.TestAssetFetcherFactory
 import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDisplayTarget
+import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestErrorBitmapDecoder
+import com.github.panpf.sketch.test.utils.TestErrorDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransitionDisplayTarget
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -92,6 +99,7 @@ import com.github.panpf.sketch.transform.getRoundedCornersTransformed
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.asOrThrow
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -1552,6 +1560,103 @@ class DisplayRequestExecuteTest {
                 testImage.contentLength,
                 listenerSupervisor.callbackActionList.last().toLong()
             )
+        }
+    }
+
+    @Test
+    fun testComponents() {
+        val context = getTestContext()
+
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+            .let { runBlocking { it.execute() } }.asOrThrow<DisplayResult.Success>().apply {
+                Assert.assertNull(request.parameters?.get("TestRequestInterceptor"))
+            }
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            components {
+                addRequestInterceptor(TestRequestInterceptor())
+            }
+        }.let { runBlocking { it.execute() } }.asOrThrow<DisplayResult.Success>().apply {
+            Assert.assertEquals("true", request.parameters?.get("TestRequestInterceptor"))
+        }
+
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+        }.let { runBlocking { it.execute() } }.asOrThrow<DisplayResult.Success>().apply {
+            Assert.assertFalse(transformedList?.contains("TestBitmapDecodeInterceptor") == true)
+        }
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            components {
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+            }
+        }.let { runBlocking { it.execute() } }.asOrThrow<DisplayResult.Success>().apply {
+            Assert.assertTrue(transformedList?.contains("TestBitmapDecodeInterceptor") == true)
+        }
+
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+        }.let { runBlocking { it.execute() } }.asOrThrow<DisplayResult.Success>().apply {
+            Assert.assertFalse(transformedList?.contains("TestDrawableDecodeInterceptor") == true)
+        }
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            components {
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+            }
+        }.let { runBlocking { it.execute() } }.asOrThrow<DisplayResult.Success>().apply {
+            Assert.assertTrue(transformedList?.contains("TestDrawableDecodeInterceptor") == true)
+        }
+
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI.replace("asset", "test")) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+        }.let { runBlocking { it.execute() } }.apply {
+            Assert.assertTrue(this is DisplayResult.Error)
+        }
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI.replace("asset", "test")) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            components {
+                addFetcher(TestAssetFetcherFactory())
+            }
+        }.let { runBlocking { it.execute() } }.apply {
+            Assert.assertTrue(this is DisplayResult.Success)
+        }
+
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+        }.let { runBlocking { it.execute() } }.apply {
+            Assert.assertTrue(this is DisplayResult.Success)
+        }
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            components {
+                addBitmapDecoder(TestErrorBitmapDecoder.Factory())
+            }
+        }.let { runBlocking { it.execute() } }.apply {
+            Assert.assertTrue(this is DisplayResult.Error)
+        }
+
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+        }.let { runBlocking { it.execute() } }.apply {
+            Assert.assertTrue(this is DisplayResult.Success)
+        }
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            components {
+                addDrawableDecoder(TestErrorDrawableDecoder.Factory())
+            }
+        }.let { runBlocking { it.execute() } }.apply {
+            Assert.assertTrue(this is DisplayResult.Error)
         }
     }
 
