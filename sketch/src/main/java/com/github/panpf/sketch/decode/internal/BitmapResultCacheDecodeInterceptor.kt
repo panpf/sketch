@@ -51,10 +51,10 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         return if (resultCachePolicy.isReadOrWrite) {
             resultCache.lockResultCache(chain.request) {
                 ifOrNull(resultCachePolicy.readEnabled) {
-                    read(sketch, request)
+                    readCache(sketch, request)
                 } ?: chain.proceed().apply {
                     if (resultCachePolicy.writeEnabled) {
-                        write(sketch, request, this)
+                        writeCache(sketch, request, this)
                     }
                 }
             }
@@ -77,7 +77,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
     }
 
     @WorkerThread
-    private fun read(sketch: Sketch, request: ImageRequest): BitmapDecodeResult? {
+    private fun readCache(sketch: Sketch, request: ImageRequest): BitmapDecodeResult? {
         val resultCache = sketch.resultCache
         val bitmapDataDiskCacheSnapshot = resultCache[request.resultCacheDataKey]
         val bitmapMetaDiskCacheSnapshot = resultCache[request.resultCacheMetaKey]
@@ -171,7 +171,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
     }
 
     @WorkerThread
-    private fun write(sketch: Sketch, request: ImageRequest, result: BitmapDecodeResult): Boolean {
+    private fun writeCache(sketch: Sketch, request: ImageRequest, result: BitmapDecodeResult): Boolean {
         val transformedList = result.transformedList
         if (transformedList.isNullOrEmpty()) {
             return false
