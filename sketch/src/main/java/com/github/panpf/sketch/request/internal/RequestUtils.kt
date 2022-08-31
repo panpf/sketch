@@ -51,6 +51,19 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
             }
         )
     }
+    componentRegistry?.bitmapDecodeInterceptorList.orEmpty()
+        .mapNotNull { it.key }
+        .plus(componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key })
+        .takeIf { it.isNotEmpty() }
+        ?.let { list ->
+            appendQueryParameter(
+                "_decodeInterceptors",
+                list.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                    it.replace("BitmapDecodeInterceptor", "")
+                        .replace("DrawableDecodeInterceptor", "")
+                }
+            )
+        }
     if (ignoreExifOrientation) {
         appendQueryParameter("_ignoreExifOrientation", true.toString())
     }
@@ -97,6 +110,19 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
                 }
             )
         }
+        componentRegistry?.bitmapDecodeInterceptorList.orEmpty()
+            .mapNotNull { it.key }
+            .plus(componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key })
+            .takeIf { it.isNotEmpty() }
+            ?.let { list ->
+                appendQueryParameter(
+                    "_decodeInterceptors",
+                    list.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                        it.replace("BitmapDecodeInterceptor", "")
+                            .replace("DrawableDecodeInterceptor", "")
+                    }
+                )
+            }
         if (disallowReuseBitmap) {
             appendQueryParameter("_disallowReuseBitmap", true.toString())
         }

@@ -15,15 +15,15 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
-import com.github.panpf.sketch.decode.DrawableDecodeResult
+import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
+import com.github.panpf.sketch.decode.BitmapDecodeResult
 
-class Test3DrawableDecodeInterceptor : DrawableDecodeInterceptor {
+class Test3BitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
-    override val key: String? = null
+    override val key: String = "Test3BitmapDecodeInterceptor"
 
-    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
-        throw UnsupportedOperationException()
+    override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
+        return chain.proceed()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -37,6 +37,6 @@ class Test3DrawableDecodeInterceptor : DrawableDecodeInterceptor {
     }
 
     override fun toString(): String {
-        return "Test3DrawableDecodeInterceptor"
+        return "Test3BitmapDecodeInterceptor"
     }
 }

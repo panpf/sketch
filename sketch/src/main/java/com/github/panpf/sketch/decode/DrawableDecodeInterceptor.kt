@@ -26,7 +26,12 @@ import com.github.panpf.sketch.request.internal.RequestContext
 /**
  * Intercept the execution of [Drawable] decode, you can change the output, register to [ComponentRegistry] to take effect
  */
-fun interface DrawableDecodeInterceptor {
+interface DrawableDecodeInterceptor {
+
+    /**
+     * If the current DrawableDecodeInterceptor will change the DrawableDecodeResult, provide a valid key to build request key
+     */
+    val key: String?
 
     @WorkerThread
     suspend fun intercept(chain: Chain): DrawableDecodeResult

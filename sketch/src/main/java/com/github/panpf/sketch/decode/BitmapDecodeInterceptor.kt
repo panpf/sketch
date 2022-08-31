@@ -26,7 +26,12 @@ import com.github.panpf.sketch.request.internal.RequestContext
 /**
  * Intercept the execution of [Bitmap] decode, you can change the output, register to [ComponentRegistry] to take effect
  */
-fun interface BitmapDecodeInterceptor {
+interface BitmapDecodeInterceptor {
+
+    /**
+     * If the current BitmapDecodeInterceptor will change the BitmapDecodeResult, provide a valid key to build request key
+     */
+    val key: String?
 
     @WorkerThread
     suspend fun intercept(chain: Chain): BitmapDecodeResult

@@ -24,6 +24,8 @@ import java.util.LinkedList
 
 class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
 
+    override val key: String? = null
+
     @WorkerThread
     override suspend fun intercept(
         chain: BitmapDecodeInterceptor.Chain,

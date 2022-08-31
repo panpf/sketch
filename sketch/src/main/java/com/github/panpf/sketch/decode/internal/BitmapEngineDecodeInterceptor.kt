@@ -21,6 +21,8 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 
 class BitmapEngineDecodeInterceptor : BitmapDecodeInterceptor {
 
+    override val key: String? = null
+
     @WorkerThread
     override suspend fun intercept(
         chain: BitmapDecodeInterceptor.Chain,

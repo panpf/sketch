@@ -91,6 +91,9 @@ class DrawableDecodeInterceptorChainTest {
 
     private class TestDrawableDecoderInterceptor1(val historyList: MutableList<String>) :
         DrawableDecodeInterceptor {
+
+        override val key: String? = null
+
         override suspend fun intercept(chain: Chain): DrawableDecodeResult {
             historyList.add("TestDrawableDecoderInterceptor1")
             return chain.proceed()
@@ -99,6 +102,9 @@ class DrawableDecodeInterceptorChainTest {
 
     private class TestDrawableDecoderInterceptor2(val historyList: MutableList<String>) :
         DrawableDecodeInterceptor {
+
+        override val key: String? = null
+
         override suspend fun intercept(chain: Chain): DrawableDecodeResult {
             historyList.add("TestDrawableDecoderInterceptor2")
             return chain.proceed()
@@ -107,6 +113,9 @@ class DrawableDecodeInterceptorChainTest {
 
     private class TestDrawableDecoderInterceptor3(val historyList: MutableList<String>) :
         DrawableDecodeInterceptor {
+
+        override val key: String? = null
+
         override suspend fun intercept(chain: Chain): DrawableDecodeResult {
             historyList.add("TestDrawableDecoderInterceptor3")
             return DrawableDecodeResult(

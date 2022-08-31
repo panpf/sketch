@@ -21,6 +21,8 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 
 class DrawableEngineDecodeInterceptor : DrawableDecodeInterceptor {
 
+    override val key: String? = null
+
     @WorkerThread
     override suspend fun intercept(
         chain: DrawableDecodeInterceptor.Chain,

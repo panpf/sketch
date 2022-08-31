@@ -91,6 +91,9 @@ class BitmapDecodeInterceptorChainTest {
 
     private class TestBitmapDecoderInterceptor1(val historyList: MutableList<String>) :
         BitmapDecodeInterceptor {
+
+        override val key: String? = null
+
         override suspend fun intercept(chain: Chain): BitmapDecodeResult {
             historyList.add("TestBitmapDecoderInterceptor1")
             return chain.proceed()
@@ -99,6 +102,9 @@ class BitmapDecodeInterceptorChainTest {
 
     private class TestBitmapDecoderInterceptor2(val historyList: MutableList<String>) :
         BitmapDecodeInterceptor {
+
+        override val key: String? = null
+
         override suspend fun intercept(chain: Chain): BitmapDecodeResult {
             historyList.add("TestBitmapDecoderInterceptor2")
             return chain.proceed()
@@ -107,6 +113,9 @@ class BitmapDecodeInterceptorChainTest {
 
     private class TestBitmapDecoderInterceptor3(val historyList: MutableList<String>) :
         BitmapDecodeInterceptor {
+
+        override val key: String? = null
+
         override suspend fun intercept(chain: Chain): BitmapDecodeResult {
             historyList.add("TestBitmapDecoderInterceptor3")
             return BitmapDecodeResult(

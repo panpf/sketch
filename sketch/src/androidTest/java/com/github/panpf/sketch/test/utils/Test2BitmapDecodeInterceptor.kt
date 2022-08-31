@@ -20,6 +20,8 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 
 class Test2BitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
+    override val key: String? = null
+
     override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
         throw UnsupportedOperationException()
     }

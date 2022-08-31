@@ -20,6 +20,8 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 
 class Test2DrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
+    override val key: String? = null
+
     override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
         throw UnsupportedOperationException()
     }
@@ -35,6 +37,6 @@ class Test2DrawableDecodeInterceptor : DrawableDecodeInterceptor {
     }
 
     override fun toString(): String {
-        return "TestDrawableDecodeInterceptor"
+        return "Test2DrawableDecodeInterceptor"
     }
 }

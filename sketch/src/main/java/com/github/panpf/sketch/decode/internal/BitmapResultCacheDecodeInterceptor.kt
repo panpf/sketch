@@ -39,6 +39,8 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         const val MODULE = "BitmapResultCacheDecodeInterceptor"
     }
 
+    override val key: String? = null
+
     @WorkerThread
     override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
         val sketch = chain.sketch

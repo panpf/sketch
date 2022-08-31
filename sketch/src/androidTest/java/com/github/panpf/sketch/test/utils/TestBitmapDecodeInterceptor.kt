@@ -20,6 +20,8 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 
 class TestBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
+    override val key: String? = null
+
     override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
         return chain.proceed().newResult {
             addTransformed("TestBitmapDecodeInterceptor")

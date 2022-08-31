@@ -18,12 +18,12 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 
-class Test3DrawableDecodeInterceptor : DrawableDecodeInterceptor {
+class Test4DrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
-    override val key: String? = null
+    override val key: String = "Test4DrawableDecodeInterceptor"
 
     override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
-        throw UnsupportedOperationException()
+        return chain.proceed()
     }
 
     override fun equals(other: Any?): Boolean {

@@ -20,6 +20,8 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 
 class TestDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
+    override val key: String? = null
+
     override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
         return chain.proceed().let {
             it.copy(
