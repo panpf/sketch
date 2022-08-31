@@ -115,13 +115,13 @@ class LruDiskCacheTest {
 
         LruDiskCache.ForResultBuilder(context).build().apply {
             Assert.assertEquals(1, appVersion)
-            Assert.assertEquals(2, internalVersion)
+            Assert.assertEquals(3, internalVersion)
         }
         LruDiskCache.ForResultBuilder(context).apply {
             appVersion(2)
         }.build().apply {
             Assert.assertEquals(2, appVersion)
-            Assert.assertEquals(2, internalVersion)
+            Assert.assertEquals(3, internalVersion)
         }
 
         assertThrow(IllegalArgumentException::class) {
@@ -393,7 +393,7 @@ class LruDiskCacheTest {
             directory(defaultCacheDir)
         }.build().use {
             Assert.assertEquals(
-                "LruDiskCache(maxSize=200MB,appVersion=1,internalVersion=2,directory='${defaultCacheDir.path}')",
+                "LruDiskCache(maxSize=200MB,appVersion=1,internalVersion=3,directory='${defaultCacheDir.path}')",
                 it.toString()
             )
         }
@@ -415,7 +415,7 @@ class LruDiskCacheTest {
             appVersion(2)
         }.build().use {
             Assert.assertEquals(
-                "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=2,directory='${cacheDir.path}')",
+                "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=3,directory='${cacheDir.path}')",
                 it.toString()
             )
         }
