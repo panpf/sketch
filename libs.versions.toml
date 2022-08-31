@@ -38,6 +38,7 @@ androidx-multidex = "2.0.1"
 androidx-navigation = "2.5.1"
 androidx-paging = "3.1.1"
 androidx-paging-compose = "1.0.0-alpha14"
+androidx-palette = "1.0.0"
 androidx-recyclerview = "1.2.1"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-test = "1.4.0"
@@ -100,6 +101,7 @@ androidx-navigation-safeargsgradlepluginx = { module = "androidx.navigation:navi
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "androidx-paging" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "androidx-paging" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging-compose" }
+androidx-palette = { module = "androidx.palette:palette", version.ref = "androidx-palette" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }

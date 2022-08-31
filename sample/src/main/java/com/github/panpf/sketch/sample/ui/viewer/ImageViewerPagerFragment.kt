@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.sample.ui.viewer
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
@@ -34,12 +35,15 @@ import com.github.panpf.sketch.sample.databinding.ImageViewerPagerFragmentBindin
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.util.DynamicAccentColorBitmapDecoderInterceptor
+import com.github.panpf.sketch.sample.util.dynamicAccentColor
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenHeight
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.toast.ktx.showLongToast
+import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -86,6 +90,20 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
                         placeholder(CurrentStateImage())
                         disallowAnimatedImage()
                         crossfade(alwaysUse = true, durationMillis = 400)
+                        components {
+                            addBitmapDecodeInterceptor(DynamicAccentColorBitmapDecoderInterceptor())
+                        }
+                        listener(
+                            onSuccess = { _, result ->
+                                changeButtonBg(
+                                    binding,
+                                    result.dynamicAccentColor ?: Color.parseColor("#bf5660")
+                                )
+                            },
+                            onError = { _, _ ->
+                                changeButtonBg(binding, Color.parseColor("#bf5660"))
+                            }
+                        )
                     }
                 }
             })
@@ -154,6 +172,20 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
                     showLongToast("Closed View original image")
                 }
             }
+        }
+    }
+
+    private fun changeButtonBg(binding: ImageViewerPagerFragmentBinding, color: Int) {
+        val finalInt = ColorUtils.setAlphaComponent(color, 160)
+        listOf(
+            binding.imageViewerPagerOrigin,
+            binding.imageViewerPagerShare,
+            binding.imageViewerPagerSave,
+            binding.imageViewerPagerRotate,
+            binding.imageViewerPagerInfo,
+            binding.imageViewerPagerPageNumber,
+        ).forEach {
+            it.background.asOrThrow<GradientDrawable>().setColor(finalInt)
         }
     }
 }

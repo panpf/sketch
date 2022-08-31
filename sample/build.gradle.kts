@@ -101,6 +101,7 @@ dependencies {
     implementation(libs.bundles.androidx.paging)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.palette)
 
     implementation(libs.google.material)
     implementation(libs.bundles.assemblyadapter4)
