@@ -35,8 +35,8 @@ import com.github.panpf.sketch.sample.databinding.ImageViewerPagerFragmentBindin
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
-import com.github.panpf.sketch.sample.util.DynamicAccentColorBitmapDecoderInterceptor
-import com.github.panpf.sketch.sample.util.dynamicAccentColor
+import com.github.panpf.sketch.sample.util.PaletteBitmapDecoderInterceptor
+import com.github.panpf.sketch.sample.util.simplePalette
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenHeight
@@ -91,13 +91,22 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
                         disallowAnimatedImage()
                         crossfade(alwaysUse = true, durationMillis = 400)
                         components {
-                            addBitmapDecodeInterceptor(DynamicAccentColorBitmapDecoderInterceptor())
+                            addBitmapDecodeInterceptor(PaletteBitmapDecoderInterceptor())
                         }
                         listener(
                             onSuccess = { _, result ->
+                                val simplePalette = result.simplePalette
+                                val accentColor =
+                                    simplePalette?.lightVibrantSwatch?.rgb
+                                        ?: simplePalette?.vibrantSwatch?.rgb
+                                        ?: simplePalette?.lightMutedSwatch?.rgb
+                                        ?: simplePalette?.mutedSwatch?.rgb
+                                        ?: simplePalette?.dominantSwatch?.rgb
+                                        ?: simplePalette?.darkVibrantSwatch?.rgb
+                                        ?: simplePalette?.darkMutedSwatch?.rgb
                                 changeButtonBg(
                                     binding,
-                                    result.dynamicAccentColor ?: Color.parseColor("#bf5660")
+                                    accentColor ?: Color.parseColor("#bf5660")
                                 )
                             },
                             onError = { _, _ ->
