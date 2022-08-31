@@ -103,6 +103,13 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                         jsonArray[index].toString()
                     }
                 }
+            val extras = metaDataJSONObject.optJSONObject("extras")?.let {
+                val extras = mutableMapOf<String, String>()
+                it.keys().forEach { key ->
+                    extras[key] = it.getString(key)
+                }
+                extras.toMap()
+            }
 
             val dataSource =
                 DiskCacheDataSource(sketch, request, RESULT_CACHE, bitmapDataDiskCacheSnapshot)
@@ -147,7 +154,13 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                 sketch.logger.d(MODULE) {
                     "read. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
                 }
-                BitmapDecodeResult(bitmap, imageInfo, RESULT_CACHE, transformedList)
+                BitmapDecodeResult(
+                    bitmap = bitmap,
+                    imageInfo = imageInfo,
+                    dataFrom = RESULT_CACHE,
+                    transformedList = transformedList,
+                    extras = extras
+                )
             }
         } catch (e: Throwable) {
             e.printStackTrace()
@@ -159,7 +172,8 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
 
     @WorkerThread
     private fun write(sketch: Sketch, request: ImageRequest, result: BitmapDecodeResult): Boolean {
-        if (result.transformedList.isNullOrEmpty()) {
+        val transformedList = result.transformedList
+        if (transformedList.isNullOrEmpty()) {
             return false
         }
 
@@ -177,21 +191,28 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             }
             bitmapDataEditor.commit()
 
-            metaDataEditor.newOutputStream().bufferedWriter().use {
+            metaDataEditor.newOutputStream().bufferedWriter().use { writer ->
                 val metaJSONObject = JSONObject().apply {
                     put("width", result.imageInfo.width)
                     put("height", result.imageInfo.height)
                     put("mimeType", result.imageInfo.mimeType)
                     put("exifOrientation", result.imageInfo.exifOrientation)
-                    put("transformedList", result.transformedList.let { list ->
+                    put("transformedList", transformedList.let { list ->
                         JSONArray().apply {
                             list.forEach { transformed ->
                                 put(transformed)
                             }
                         }
                     })
+                    result.extras?.entries?.takeIf { it.isNotEmpty() }?.let { entries ->
+                        put("extras", JSONObject().apply {
+                            entries.forEach { entry ->
+                                put(entry.key, entry.value)
+                            }
+                        })
+                    }
                 }
-                it.write(metaJSONObject.toString())
+                writer.write(metaJSONObject.toString())
             }
             metaDataEditor.commit()
             true

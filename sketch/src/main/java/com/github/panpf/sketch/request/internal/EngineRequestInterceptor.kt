@@ -31,8 +31,6 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.toDisplayData
-import com.github.panpf.sketch.request.toLoadData
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
@@ -75,7 +73,15 @@ class EngineRequestInterceptor : RequestInterceptor {
                 fetchResult = null,
                 interceptors = sketch.components.getDrawableDecodeInterceptorList(request),
                 index = 0,
-            ).proceed().toDisplayData()
+            ).proceed().let {
+                DisplayData(
+                    drawable = it.drawable,
+                    imageInfo = it.imageInfo,
+                    dataFrom = it.dataFrom,
+                    transformedList = it.transformedList,
+                    extras = it.extras
+                )
+            }
         }
     }
 
@@ -94,7 +100,15 @@ class EngineRequestInterceptor : RequestInterceptor {
                 fetchResult = null,
                 interceptors = sketch.components.getBitmapDecodeInterceptorList(request),
                 index = 0,
-            ).proceed().toLoadData()
+            ).proceed().let {
+                LoadData(
+                    bitmap = it.bitmap,
+                    imageInfo = it.imageInfo,
+                    dataFrom = it.dataFrom,
+                    transformedList = it.transformedList,
+                    extras = it.extras
+                )
+            }
         }
     }
 

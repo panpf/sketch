@@ -21,6 +21,7 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
@@ -46,7 +47,7 @@ class BitmapResultCacheDecodeInterceptorTest {
         val resultCache = sketch.resultCache
 
         val interceptors =
-            listOf(BitmapResultCacheDecodeInterceptor(), BitmapEngineDecodeInterceptor())
+            listOf(BitmapResultCacheDecodeInterceptor(), ExtrasTestBitmapDecodeInterceptor(), BitmapEngineDecodeInterceptor())
         val executeRequest: (ImageRequest) -> BitmapDecodeResult = { request ->
             runBlocking {
                 BitmapDecodeInterceptorChain(
@@ -59,7 +60,6 @@ class BitmapResultCacheDecodeInterceptorTest {
                 ).proceed()
             }
         }
-
 
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg")) {
             resize(500, 500, LESS_PIXELS)
@@ -80,6 +80,10 @@ class BitmapResultCacheDecodeInterceptorTest {
                 "InSampledTransformed(4)",
                 result.transformedList?.joinToString()
             )
+            Assert.assertEquals(
+                mapOf("key" to "hasExtras"),
+                result.extras
+            )
         }
 
         Assert.assertTrue(resultCache.exist(loadRequest.resultCacheDataKey))
@@ -94,6 +98,10 @@ class BitmapResultCacheDecodeInterceptorTest {
             Assert.assertEquals(
                 "InSampledTransformed(4)",
                 result.transformedList?.joinToString()
+            )
+            Assert.assertEquals(
+                mapOf("key" to "hasExtras"),
+                result.extras
             )
         }
 
@@ -112,6 +120,10 @@ class BitmapResultCacheDecodeInterceptorTest {
                 "InSampledTransformed(4)",
                 result.transformedList?.joinToString()
             )
+            Assert.assertEquals(
+                mapOf("key" to "hasExtras"),
+                result.extras
+            )
         }
 
         Assert.assertTrue(resultCache.exist(loadRequest.resultCacheDataKey))
@@ -128,6 +140,10 @@ class BitmapResultCacheDecodeInterceptorTest {
             Assert.assertEquals(
                 "InSampledTransformed(4)",
                 result.transformedList?.joinToString()
+            )
+            Assert.assertEquals(
+                mapOf("key" to "hasExtras"),
+                result.extras
             )
         }
 
@@ -147,6 +163,10 @@ class BitmapResultCacheDecodeInterceptorTest {
                 "InSampledTransformed(4)",
                 result.transformedList?.joinToString()
             )
+            Assert.assertEquals(
+                mapOf("key" to "hasExtras"),
+                result.extras
+            )
         }
         Assert.assertFalse(resultCache.exist(loadRequest.resultCacheDataKey))
 
@@ -165,6 +185,10 @@ class BitmapResultCacheDecodeInterceptorTest {
             )
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
             Assert.assertEquals(null, result.transformedList?.joinToString())
+            Assert.assertEquals(
+                mapOf("key" to "hasExtras"),
+                result.extras
+            )
         }
         Assert.assertFalse(resultCache.exist(loadRequest1.resultCacheDataKey))
     }
@@ -198,5 +222,16 @@ class BitmapResultCacheDecodeInterceptorTest {
             "BitmapResultCacheDecodeInterceptor",
             BitmapResultCacheDecodeInterceptor().toString()
         )
+    }
+
+    class ExtrasTestBitmapDecodeInterceptor : BitmapDecodeInterceptor {
+
+        override val key: String? = null
+
+        override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
+            return chain.proceed().newResult {
+                addExtras("key", "hasExtras")
+            }
+        }
     }
 }

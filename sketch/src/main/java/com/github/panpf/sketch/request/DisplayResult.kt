@@ -30,6 +30,7 @@ sealed interface DisplayResult : ImageResult {
         val imageInfo: ImageInfo,
         val dataFrom: DataFrom,
         val transformedList: List<String>?,
+        val extras: Map<String, String>?,
     ) : DisplayResult, ImageResult.Success
 
     data class Error constructor(

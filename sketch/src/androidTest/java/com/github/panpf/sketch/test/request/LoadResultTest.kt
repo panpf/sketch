@@ -41,24 +41,27 @@ class LoadResultTest {
         val request1 = LoadRequest(context, "http://sample.com/sample.jpeg")
 
         LoadResult.Success(
-            request1,
-            Bitmap.createBitmap(100, 100, RGB_565),
-            ImageInfo(100, 100, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90),
-            LOCAL,
-            listOf(createCircleCropTransformed(END_CROP))
+            request = request1,
+            bitmap = Bitmap.createBitmap(100, 100, RGB_565),
+            imageInfo = ImageInfo(100, 100, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90),
+            dataFrom = LOCAL,
+            transformedList = listOf(createCircleCropTransformed(END_CROP)),
+            extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertSame(request1, request)
             Assert.assertEquals("Bitmap(100x100,RGB_565)", bitmap.toShortInfoString())
             Assert.assertEquals(
                 ImageInfo(
-                    100,
-                    100,
-                    "image/jpeg",
-                    ExifInterface.ORIENTATION_ROTATE_90
-                ), imageInfo
+                    width = 100,
+                    height = 100,
+                    mimeType = "image/jpeg",
+                    exifOrientation = ExifInterface.ORIENTATION_ROTATE_90
+                ),
+                imageInfo
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createCircleCropTransformed(END_CROP)), transformedList)
+            Assert.assertEquals(mapOf("age" to "16"), extras)
         }
 
         LoadResult.Error(request1, UnknownException("")).apply {

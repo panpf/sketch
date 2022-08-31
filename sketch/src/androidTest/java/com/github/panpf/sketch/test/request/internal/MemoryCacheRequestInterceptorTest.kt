@@ -248,7 +248,8 @@ class MemoryCacheRequestInterceptorTest {
                             requestKey = chain.request.key,
                             requestCacheKey = chain.request.cacheKey,
                             imageInfo = imageInfo,
-                            transformedList = null
+                            transformedList = null,
+                            extras = null,
                         )
                         SketchCountBitmapDrawable(
                             chain.sketch.context.resources,
@@ -259,12 +260,12 @@ class MemoryCacheRequestInterceptorTest {
                         imageInfo = ImageInfo(100, 100, "image/png", 0)
                         BitmapDrawable(chain.sketch.context.resources, bitmap)
                     }
-                    DisplayData(drawable, imageInfo, DataFrom.LOCAL, null)
+                    DisplayData(drawable, imageInfo, DataFrom.LOCAL, null, null)
                 }
                 is LoadRequest -> {
                     val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
                     val imageInfo = ImageInfo(100, 100, "image/jpeg", 0)
-                    LoadData(bitmap, imageInfo, DataFrom.LOCAL, null)
+                    LoadData(bitmap, imageInfo, DataFrom.LOCAL, null, null)
                 }
                 is DownloadRequest -> {
                     DownloadData(byteArrayOf(), DataFrom.NETWORK)

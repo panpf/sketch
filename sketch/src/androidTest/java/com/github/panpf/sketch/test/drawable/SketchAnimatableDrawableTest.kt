@@ -56,7 +56,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = "requestKey1",
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
-            transformedList = null as List<String>?
+            transformedList = null as List<String>?,
+            extras = null,
         )
         if (Build.VERSION.SDK_INT >= 23) {
             SketchAnimatableDrawable(
@@ -68,7 +69,8 @@ class SketchAnimatableDrawableTest {
                 requestCacheKey = "requestKey1",
                 imageInfo = ImageInfo(100, 100, "image/gif", 0),
                 dataFrom = LOCAL,
-                transformedList = null as List<String>?
+                transformedList = null as List<String>?,
+                extras = null,
             )
         }
         SketchAnimatableDrawable(
@@ -80,7 +82,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = "requestKey1",
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
-            transformedList = null as List<String>?
+            transformedList = null as List<String>?,
+            extras = null,
         )
         assertThrow(IllegalArgumentException::class) {
             SketchAnimatableDrawable(
@@ -93,7 +96,8 @@ class SketchAnimatableDrawableTest {
                 requestCacheKey = "requestKey1",
                 imageInfo = ImageInfo(100, 100, "image/gif", 0),
                 dataFrom = LOCAL,
-                transformedList = null as List<String>?
+                transformedList = null as List<String>?,
+                extras = null,
             )
         }
     }
@@ -111,7 +115,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = "requestKey1",
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
-            transformedList = null as List<String>?
+            transformedList = null as List<String>?,
+            extras = null,
         ).apply {
             val callbackAction = mutableListOf<String>()
             val callback3 = object : Animatable2Compat.AnimationCallback() {
@@ -153,7 +158,8 @@ class SketchAnimatableDrawableTest {
                 requestCacheKey = "requestKey1",
                 imageInfo = ImageInfo(100, 100, "image/gif", 0),
                 dataFrom = LOCAL,
-                transformedList = null as List<String>?
+                transformedList = null as List<String>?,
+                extras = null,
             ).apply {
                 val callbackAction = mutableListOf<String>()
                 val callback3 = object : Animatable2Compat.AnimationCallback() {
@@ -195,7 +201,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = "requestKey1",
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
-            transformedList = null as List<String>?
+            transformedList = null as List<String>?,
+            extras = null,
         ).apply {
             val callbackAction = mutableListOf<String>()
             val callback3 = object : Animatable2Compat.AnimationCallback() {
@@ -241,7 +248,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = "requestKey1",
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
-            transformedList = null as List<String>?
+            transformedList = null as List<String>?,
+            extras = null,
         ).apply {
             val callback = object : Animatable2Compat.AnimationCallback() {}
             runBlocking(Dispatchers.Main) {
@@ -265,7 +273,8 @@ class SketchAnimatableDrawableTest {
                 requestCacheKey = "requestKey1",
                 imageInfo = ImageInfo(100, 100, "image/gif", 0),
                 dataFrom = LOCAL,
-                transformedList = null as List<String>?
+                transformedList = null as List<String>?,
+                extras = null,
             ).apply {
                 val callback = object : Animatable2Compat.AnimationCallback() {}
                 runBlocking(Dispatchers.Main) {
@@ -288,7 +297,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = "requestKey1",
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
-            transformedList = null as List<String>?
+            transformedList = null as List<String>?,
+            extras = null,
         ).apply {
             val callback = object : Animatable2Compat.AnimationCallback() {}
             runBlocking(Dispatchers.Main) {
@@ -315,7 +325,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = "requestKey1",
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
-            transformedList = null as List<String>?
+            transformedList = null as List<String>?,
+            extras = null,
         ).apply {
             mutate()
             alpha = 146
@@ -336,7 +347,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = "requestKey1",
             imageInfo = ImageInfo(100, 100, "image/gif", 0),
             dataFrom = LOCAL,
-            transformedList = null as List<String>?
+            transformedList = null as List<String>?,
+            extras = null,
         ).apply {
             mutate()
             alpha = 146
@@ -372,7 +384,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
-            transformedList = transformedList
+            transformedList = transformedList,
+            extras = null,
         )
         val element11 = SketchAnimatableDrawable(
             animatableDrawable = drawable,
@@ -381,7 +394,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
-            transformedList = transformedList
+            transformedList = transformedList,
+            extras = null,
         )
         val element2 = SketchAnimatableDrawable(
             animatableDrawable = drawable1,
@@ -390,7 +404,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
-            transformedList = transformedList
+            transformedList = transformedList,
+            extras = null,
         )
         val element3 = SketchAnimatableDrawable(
             animatableDrawable = drawable,
@@ -399,7 +414,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
-            transformedList = transformedList
+            transformedList = transformedList,
+            extras = null,
         )
         val element4 = SketchAnimatableDrawable(
             animatableDrawable = drawable,
@@ -408,7 +424,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
-            transformedList = transformedList
+            transformedList = transformedList,
+            extras = null,
         )
         val element5 = SketchAnimatableDrawable(
             animatableDrawable = drawable,
@@ -417,7 +434,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey + "2",
             imageInfo = imageInfo,
             dataFrom = dataFrom,
-            transformedList = transformedList
+            transformedList = transformedList,
+            extras = null,
         )
         val element6 = SketchAnimatableDrawable(
             animatableDrawable = drawable,
@@ -426,7 +444,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey,
             imageInfo = imageInfo.newImageInfo(width = 300),
             dataFrom = dataFrom,
-            transformedList = transformedList
+            transformedList = transformedList,
+            extras = null,
         )
         val element7 = SketchAnimatableDrawable(
             animatableDrawable = drawable,
@@ -435,7 +454,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey,
             imageInfo = imageInfo,
             dataFrom = RESULT_CACHE,
-            transformedList = transformedList
+            transformedList = transformedList,
+            extras = null,
         )
         val element8 = SketchAnimatableDrawable(
             animatableDrawable = drawable,
@@ -444,7 +464,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
-            transformedList = listOf("transformed1")
+            transformedList = listOf("transformed1"),
+            extras = null,
         )
 
         Assert.assertNotSame(element1, element11)
@@ -507,7 +528,8 @@ class SketchAnimatableDrawableTest {
             requestCacheKey = requestKey,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
-            transformedList = transformedList
+            transformedList = transformedList,
+            extras = null,
         )
         Assert.assertEquals(
             "SketchAnimatableDrawable(" +

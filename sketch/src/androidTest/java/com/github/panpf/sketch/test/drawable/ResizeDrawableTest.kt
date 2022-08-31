@@ -91,6 +91,7 @@ class ResizeDrawableTest {
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null,
+            extras = null,
         )
         animDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
             resizeApplyToDrawable(true)
@@ -190,6 +191,7 @@ class ResizeDrawableTest {
                 requestCacheKey = imageUri,
                 imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
                 transformedList = null,
+                extras = null,
             ),
             dataFrom = LOCAL,
         )

@@ -28,6 +28,7 @@ sealed interface LoadResult : ImageResult {
         val imageInfo: ImageInfo,
         val dataFrom: DataFrom,
         val transformedList: List<String>?,
+        val extras: Map<String, String>?,
     ) : LoadResult, ImageResult.Success
 
     data class Error constructor(

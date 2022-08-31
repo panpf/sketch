@@ -69,6 +69,7 @@ class SketchUtilsTest {
                 requestCacheKey = "cacheKey",
                 imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg", 0),
                 transformedList = null,
+                extras = null,
             ),
             dataFrom = LOCAL,
         )
@@ -146,6 +147,7 @@ class SketchUtilsTest {
             requestCacheKey = "cacheKey",
             imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg", 0),
             transformedList = null,
+            extras = null,
         )
         val resources = context.resources
         val countDrawable = SketchCountBitmapDrawable(

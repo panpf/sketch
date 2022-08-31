@@ -35,6 +35,7 @@ class CountBitmap constructor(
     val requestCacheKey: String,
     val imageInfo: ImageInfo,
     val transformedList: List<String>?,
+    val extras: Map<String, String>?,
 ) {
 
     companion object {

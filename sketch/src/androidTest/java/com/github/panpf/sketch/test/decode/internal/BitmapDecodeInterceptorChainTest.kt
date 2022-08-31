@@ -122,7 +122,8 @@ class BitmapDecodeInterceptorChainTest {
                 bitmap = Bitmap.createBitmap(12, 45, RGB_565),
                 imageInfo = ImageInfo(12, 45, "image/jpeg", 0),
                 dataFrom = LOCAL,
-                transformedList = null
+                transformedList = null,
+                extras = null,
             )
         }
     }

@@ -122,7 +122,8 @@ class DrawableDecodeInterceptorChainTest {
                 drawable = ColorDrawable(Color.BLUE),
                 imageInfo = ImageInfo(12, 45, "image/jpeg", 0),
                 dataFrom = LOCAL,
-                transformedList = null
+                transformedList = null,
+                extras = null,
             )
         }
     }

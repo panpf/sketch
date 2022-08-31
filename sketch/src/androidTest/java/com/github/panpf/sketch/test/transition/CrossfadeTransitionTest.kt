@@ -59,7 +59,8 @@ class CrossfadeTransitionTest {
             drawable = resultDrawable,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
-            transformedList = null
+            transformedList = null,
+            extras = null,
         )
         CrossfadeTransition(imageViewTarget, result).apply {
             Assert.assertEquals(200, durationMillis)
@@ -109,7 +110,8 @@ class CrossfadeTransitionTest {
             drawable = resultDrawable,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
-            transformedList = null
+            transformedList = null,
+            extras = null,
         )
         CrossfadeTransition(imageViewTarget, success).transition()
         (imageView.drawable as CrossfadeDrawable).apply {
@@ -146,7 +148,8 @@ class CrossfadeTransitionTest {
                 drawable = imageViewTarget.drawable!!,
                 imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
                 dataFrom = LOCAL,
-                transformedList = null
+                transformedList = null,
+                extras = null,
             )
         ).transition()
         Assert.assertTrue(imageViewTarget.drawable!! is ColorDrawable)
@@ -192,7 +195,8 @@ class CrossfadeTransitionTest {
             drawable = resultDrawable,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
-            transformedList = null
+            transformedList = null,
+            extras = null,
         )
         Assert.assertNotNull(factory.create(imageViewTarget, successResult, true))
 
@@ -208,7 +212,8 @@ class CrossfadeTransitionTest {
             drawable = resultDrawable,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = MEMORY_CACHE,
-            transformedList = null
+            transformedList = null,
+            extras = null,
         )
         Assert.assertNull(factory.create(imageViewTarget, fromMemoryCacheSuccessResult, true))
 

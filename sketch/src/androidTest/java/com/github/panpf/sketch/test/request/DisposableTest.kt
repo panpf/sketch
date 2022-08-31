@@ -66,11 +66,12 @@ class DisposableTest {
                 delay(100)
                 delay(100)
                 DisplayResult.Success(
-                    DisplayRequest(view, TestAssets.SAMPLE_JPEG_URI),
-                    ColorDrawable(Color.BLACK),
-                    ImageInfo(100, 100, "image/jpeg", 0),
-                    DOWNLOAD_CACHE,
-                    null
+                    request = DisplayRequest(view, TestAssets.SAMPLE_JPEG_URI),
+                    drawable = ColorDrawable(Color.BLACK),
+                    imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
+                    dataFrom = DOWNLOAD_CACHE,
+                    transformedList = null,
+                    extras = null,
                 )
             }
 

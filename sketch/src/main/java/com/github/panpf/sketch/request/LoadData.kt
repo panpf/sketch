@@ -17,7 +17,6 @@ package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 
 data class LoadData constructor(
@@ -25,7 +24,5 @@ data class LoadData constructor(
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
     val transformedList: List<String>?,
+    val extras: Map<String, String>?,
 ) : ImageData
-
-fun BitmapDecodeResult.toLoadData(): LoadData =
-    LoadData(bitmap, imageInfo, dataFrom, transformedList)

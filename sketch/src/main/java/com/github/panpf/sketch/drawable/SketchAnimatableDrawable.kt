@@ -42,6 +42,7 @@ class SketchAnimatableDrawable constructor(
     override val imageInfo: ImageInfo,
     override val dataFrom: DataFrom,
     override val transformedList: List<String>?,
+    override val extras: Map<String, String>?,
 ) : DrawableWrapper(animatableDrawable), SketchDrawable, Animatable2Compat {
 
     private var callbacks: MutableList<Animatable2Compat.AnimationCallback>? = null
@@ -186,6 +187,7 @@ class SketchAnimatableDrawable constructor(
                 imageInfo = imageInfo,
                 dataFrom = dataFrom,
                 transformedList = transformedList,
+                extras = extras,
             )
         } else {
             this

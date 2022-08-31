@@ -35,7 +35,7 @@ class DrawableDecodeResultTest {
         val newDrawable = ColorDrawable(Color.RED)
         val imageInfo = ImageInfo(3000, 500, "image/png", 0)
         val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
-        DrawableDecodeResult(newDrawable, imageInfo, LOCAL, transformedList).apply {
+        DrawableDecodeResult(newDrawable, imageInfo, LOCAL, transformedList, mapOf("age" to "16")).apply {
             Assert.assertTrue(newDrawable === drawable)
             Assert.assertEquals(
                 "ImageInfo(width=3000, height=500, mimeType='image/png', exifOrientation=UNDEFINED)",
@@ -45,6 +45,10 @@ class DrawableDecodeResultTest {
             Assert.assertEquals(
                 "InSampledTransformed(4), RotateTransformed(45)",
                 this.transformedList?.joinToString()
+            )
+            Assert.assertEquals(
+                mapOf("age" to "16"),
+                this.extras
             )
         }
     }

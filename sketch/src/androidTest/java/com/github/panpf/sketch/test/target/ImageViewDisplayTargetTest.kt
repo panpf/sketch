@@ -58,6 +58,7 @@ class ImageViewDisplayTargetTest {
             requestCacheKey = request.cacheKey,
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
+            extras = null,
         )
         val sketchCountBitmapDrawable =
             SketchCountBitmapDrawable(context.resources, countBitmap, LOCAL)
@@ -69,6 +70,7 @@ class ImageViewDisplayTargetTest {
             requestCacheKey = request.cacheKey,
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
+            extras = null,
         )
         val sketchCountBitmapDrawable2 =
             SketchCountBitmapDrawable(context.resources, countBitmap2, LOCAL)

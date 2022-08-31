@@ -39,7 +39,13 @@ class BitmapDecodeResultTest {
         val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
         val imageInfo = ImageInfo(3000, 500, "image/png", 0)
         val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
-        BitmapDecodeResult(newBitmap, imageInfo, LOCAL, transformedList).apply {
+        BitmapDecodeResult(
+            newBitmap,
+            imageInfo,
+            LOCAL,
+            transformedList,
+            mapOf("age" to "16")
+        ).apply {
             Assert.assertTrue(newBitmap === bitmap)
             Assert.assertEquals(
                 "ImageInfo(width=3000, height=500, mimeType='image/png', exifOrientation=UNDEFINED)",
@@ -50,6 +56,10 @@ class BitmapDecodeResultTest {
                 "InSampledTransformed(4), RotateTransformed(45)",
                 this.transformedList?.joinToString()
             )
+            Assert.assertEquals(
+                mapOf("age" to "16"),
+                this.extras
+            )
         }
     }
 
@@ -59,13 +69,15 @@ class BitmapDecodeResultTest {
             bitmap = Bitmap.createBitmap(100, 100, RGB_565),
             imageInfo = ImageInfo(3000, 500, "image/png", 0),
             dataFrom = LOCAL,
-            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
+            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+            extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertEquals(
                 "BitmapDecodeResult(bitmap=${bitmap.toInfoString()}, " +
                         "imageInfo=$imageInfo, " +
                         "dataFrom=$dataFrom, " +
-                        "transformedList=$transformedList)",
+                        "transformedList=$transformedList, " +
+                        "extras={age=16})",
                 toString()
             )
         }
@@ -80,7 +92,8 @@ class BitmapDecodeResultTest {
             bitmap = bitmap1,
             imageInfo = ImageInfo(3000, 500, "image/png", 0),
             dataFrom = LOCAL,
-            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
+            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+            extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertEquals(bitmap1, bitmap)
             Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
@@ -88,6 +101,10 @@ class BitmapDecodeResultTest {
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                 transformedList
+            )
+            Assert.assertEquals(
+                mapOf("age" to "16"),
+                this.extras
             )
         }
 
@@ -101,6 +118,10 @@ class BitmapDecodeResultTest {
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                 transformedList
             )
+            Assert.assertEquals(
+                mapOf("age" to "16"),
+                this.extras
+            )
         }
 
         result.newResult(bitmap = bitmap2).apply {
@@ -112,6 +133,10 @@ class BitmapDecodeResultTest {
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                 transformedList
+            )
+            Assert.assertEquals(
+                mapOf("age" to "16"),
+                this.extras
             )
         }
 
@@ -126,6 +151,10 @@ class BitmapDecodeResultTest {
                     listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                     transformedList
                 )
+                Assert.assertEquals(
+                    mapOf("age" to "16"),
+                    this.extras
+                )
             }
 
         result.newResult(dataFrom = MEMORY).apply {
@@ -137,6 +166,10 @@ class BitmapDecodeResultTest {
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                 transformedList
+            )
+            Assert.assertEquals(
+                mapOf("age" to "16"),
+                this.extras
             )
         }
 
@@ -155,6 +188,28 @@ class BitmapDecodeResultTest {
                     createCircleCropTransformed(FILL)
                 ),
                 transformedList
+            )
+            Assert.assertEquals(
+                mapOf("age" to "16"),
+                this.extras
+            )
+        }
+
+        result.newResult {
+            addExtras("sex", "male")
+        }.apply {
+            Assert.assertNotSame(result, this)
+            Assert.assertNotEquals(result, this)
+            Assert.assertEquals(bitmap1, bitmap)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformedList
+            )
+            Assert.assertEquals(
+                mapOf("age" to "16", "sex" to "male"),
+                this.extras
             )
         }
     }

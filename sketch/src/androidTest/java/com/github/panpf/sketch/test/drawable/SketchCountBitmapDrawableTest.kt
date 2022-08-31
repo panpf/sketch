@@ -47,6 +47,7 @@ class SketchCountBitmapDrawableTest {
                 requestCacheKey = "requestCacheKey1",
                 imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                 transformedList = null,
+                extras = null,
             ), MEMORY
         ).apply {
             Assert.assertEquals("imageUri1", imageUri)
@@ -69,6 +70,7 @@ class SketchCountBitmapDrawableTest {
             requestCacheKey = "requestCacheKey1",
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
+            extras = null,
         )
         val countBitmap2 = CountBitmap(
             sketch = sketch,
@@ -78,6 +80,7 @@ class SketchCountBitmapDrawableTest {
             requestCacheKey = "requestCacheKey2",
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
+            extras = null,
         )
         val element1 = SketchCountBitmapDrawable(context.resources, countBitmap, MEMORY)
         val element11 = SketchCountBitmapDrawable(context.resources, countBitmap, MEMORY)
@@ -119,9 +122,10 @@ class SketchCountBitmapDrawableTest {
             requestCacheKey = "requestCacheKey1",
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
+            extras = null,
         )
         Assert.assertEquals(
-            "SketchCountBitmapDrawable(${countBitmap.bitmap!!.logString},${countBitmap.imageInfo.toShortString()},$MEMORY,null,requestKey1)", SketchCountBitmapDrawable(context.resources, countBitmap, MEMORY).toString()
+            "SketchCountBitmapDrawable(${countBitmap.bitmap!!.logString},${countBitmap.imageInfo.toShortString()},$MEMORY,null,null,requestKey1)", SketchCountBitmapDrawable(context.resources, countBitmap, MEMORY).toString()
         )
     }
 }

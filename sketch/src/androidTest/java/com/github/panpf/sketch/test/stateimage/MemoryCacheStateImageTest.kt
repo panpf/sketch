@@ -67,6 +67,7 @@ class MemoryCacheStateImageTest {
                 requestCacheKey = request.cacheKey,
                 imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                 transformedList = null,
+                extras = null,
             )
         )
 

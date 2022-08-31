@@ -114,6 +114,7 @@ class GifDrawableDrawableDecoder(
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
+            extras = null,
         ).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.
             val onStart = request.animationStartCallback
@@ -127,9 +128,10 @@ class GifDrawableDrawableDecoder(
 
         return DrawableDecodeResult(
             drawable = animatableDrawable,
-            imageInfo = imageInfo,
-            dataFrom = dataSource.dataFrom,
-            transformedList = transformedList,
+            imageInfo = animatableDrawable.imageInfo,
+            dataFrom = animatableDrawable.dataFrom,
+            transformedList = animatableDrawable.transformedList,
+            extras = animatableDrawable.extras,
         )
     }
 

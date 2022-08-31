@@ -45,6 +45,9 @@ class SketchCountBitmapDrawable constructor(
     override val transformedList: List<String>?
         get() = countBitmap.transformedList
 
+    override val extras: Map<String, String>?
+        get() = countBitmap.extras
+
     override val bitmapInfo: BitmapInfo by lazy {
         bitmap.toBitmapInfo()
     }
@@ -64,5 +67,5 @@ class SketchCountBitmapDrawable constructor(
     }
 
     override fun toString(): String =
-        "SketchCountBitmapDrawable(${bitmap.logString},${imageInfo.toShortString()},$dataFrom,$transformedList,$requestKey)"
+        "SketchCountBitmapDrawable(${bitmap.logString},${imageInfo.toShortString()},$dataFrom,$transformedList,$extras,$requestKey)"
 }

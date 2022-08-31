@@ -52,6 +52,7 @@ class DefaultDrawableDecoder(
             requestCacheKey = request.cacheKey,
             imageInfo = decodeResult.imageInfo,
             transformedList = decodeResult.transformedList,
+            extras = decodeResult.extras,
         )
         val countDrawable = SketchCountBitmapDrawable(
             request.context.resources, countBitmap, decodeResult.dataFrom
@@ -65,6 +66,7 @@ class DefaultDrawableDecoder(
             imageInfo = countBitmap.imageInfo,
             dataFrom = decodeResult.dataFrom,
             transformedList = decodeResult.transformedList,
+            extras = decodeResult.extras,
         )
     }
 

@@ -17,7 +17,6 @@ package com.github.panpf.sketch.request
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 
 data class DisplayData constructor(
@@ -25,7 +24,5 @@ data class DisplayData constructor(
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
     val transformedList: List<String>?,
+    val extras: Map<String, String>?,
 ) : ImageData
-
-fun DrawableDecodeResult.toDisplayData(): DisplayData =
-    DisplayData(drawable, imageInfo, dataFrom, transformedList)

@@ -17,7 +17,6 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
@@ -27,7 +26,6 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.request.toDisplayData
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.ifOrNull
@@ -52,13 +50,13 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                         chain.requestContext.pendingCountDrawable(this@apply, "loadBefore")
                     }
                 }
-
-                return DrawableDecodeResult(
+                return DisplayData(
                     drawable = countDrawable,
                     imageInfo = cachedCountBitmap.imageInfo,
                     dataFrom = DataFrom.MEMORY_CACHE,
                     transformedList = cachedCountBitmap.transformedList,
-                ).toDisplayData()
+                    extras = cachedCountBitmap.extras,
+                )
             }
 
             val depth = request.depth

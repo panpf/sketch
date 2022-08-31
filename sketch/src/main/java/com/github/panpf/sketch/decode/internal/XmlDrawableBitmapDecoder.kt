@@ -70,7 +70,7 @@ class XmlDrawableBitmapDecoder(
         sketch.logger.d(MODULE) {
             "decode. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
         }
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL)
+        return BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
             .appliedResize(sketch, request, request.resize)
     }
 

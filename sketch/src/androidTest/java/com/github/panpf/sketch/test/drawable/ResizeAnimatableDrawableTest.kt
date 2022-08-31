@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.test.drawable
 
-import android.R.drawable
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -51,6 +50,7 @@ class ResizeAnimatableDrawableTest {
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null,
+            extras = null,
         )
         ResizeAnimatableDrawable(animDrawable, Resize(100, 500)).apply {
             start()
@@ -81,6 +81,7 @@ class ResizeAnimatableDrawableTest {
                 imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
                 dataFrom = LOCAL,
                 transformedList = null,
+                extras = null,
             ),
             resize = Resize(500, 300)
         ).apply {
@@ -97,7 +98,7 @@ class ResizeAnimatableDrawableTest {
         ResizeAnimatableDrawable(
             drawable = SketchAnimatableDrawable(
                 animatableDrawable = TestAnimatableDrawable1(
-                    TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar))
+                    TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
                 ),
                 imageUri = imageUri,
                 requestKey = imageUri,
@@ -105,6 +106,7 @@ class ResizeAnimatableDrawableTest {
                 imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
                 dataFrom = LOCAL,
                 transformedList = null,
+                extras = null,
             ),
             resize = Resize(500, 300)
         ).apply {
@@ -130,6 +132,7 @@ class ResizeAnimatableDrawableTest {
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
             transformedList = null,
+            extras = null,
         )
         ResizeAnimatableDrawable(animDrawable, Resize(100, 500)).apply {
             Assert.assertEquals("ResizeAnimatableDrawable($animDrawable)", toString())

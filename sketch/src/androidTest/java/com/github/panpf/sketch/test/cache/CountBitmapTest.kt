@@ -324,5 +324,6 @@ class CountBitmapTest {
         requestCacheKey = requestKey,
         imageInfo = imageInfo,
         transformedList = transformedList,
+        extras = null,
     )
 }

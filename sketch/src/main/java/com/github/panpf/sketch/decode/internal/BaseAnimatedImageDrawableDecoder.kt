@@ -141,6 +141,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
+            extras = null,
         ).apply {
             val onStart = request.animationStartCallback
             val onEnd = request.animationEndCallback
@@ -152,9 +153,10 @@ abstract class BaseAnimatedImageDrawableDecoder(
         }
         return DrawableDecodeResult(
             drawable = animatableDrawable,
-            imageInfo = imageInfo!!,
-            dataFrom = dataSource.dataFrom,
-            transformedList = transformedList
+            imageInfo = animatableDrawable.imageInfo,
+            dataFrom = animatableDrawable.dataFrom,
+            transformedList = animatableDrawable.transformedList,
+            extras = animatableDrawable.extras,
         )
     }
 }

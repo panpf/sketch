@@ -269,6 +269,7 @@ class TileManager constructor(
                             requestCacheKey = memoryCacheKey,
                             imageInfo = decoder.imageInfo,
                             transformedList = null,
+                            extras = null,
                         )
                         memoryCache.put(memoryCacheKey, newCountBitmap)
                         tile.countBitmap = newCountBitmap

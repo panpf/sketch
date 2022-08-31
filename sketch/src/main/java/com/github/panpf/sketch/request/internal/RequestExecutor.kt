@@ -122,14 +122,16 @@ class RequestExecutor {
                     drawable = imageData.drawable.tryToResizeDrawable(lastRequest),
                     imageInfo = imageData.imageInfo,
                     dataFrom = imageData.dataFrom,
-                    transformedList = imageData.transformedList
+                    transformedList = imageData.transformedList,
+                    extras = imageData.extras,
                 )
                 lastRequest is LoadRequest && imageData is LoadData -> LoadResult.Success(
                     request = lastRequest,
                     bitmap = imageData.bitmap,
                     imageInfo = imageData.imageInfo,
                     dataFrom = imageData.dataFrom,
-                    transformedList = imageData.transformedList
+                    transformedList = imageData.transformedList,
+                    extras = imageData.extras,
                 )
                 lastRequest is DownloadRequest && imageData is DownloadData -> DownloadResult.Success(
                     lastRequest, imageData

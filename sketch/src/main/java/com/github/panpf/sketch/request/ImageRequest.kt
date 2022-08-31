@@ -80,7 +80,7 @@ import com.github.panpf.sketch.util.getLifecycle
 interface ImageRequest {
 
     val context: Context
-    val uri: Uri
+    val uri: Uri    // todo Consider supporting bitmap, drawable, bytes
     val uriString: String
     val key: String
     val lifecycle: Lifecycle

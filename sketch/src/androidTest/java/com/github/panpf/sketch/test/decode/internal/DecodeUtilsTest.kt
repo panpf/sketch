@@ -828,7 +828,8 @@ class DecodeUtilsTest {
                 exifOrientation = hasExifFile.exifOrientation
             ),
             dataFrom = LOCAL,
-            transformedList = null
+            transformedList = null,
+            extras = null,
         )
         val resultCorners = result.bitmap.corners()
         Assert.assertNull(result.transformedList?.getExifOrientationTransformed())
@@ -862,7 +863,8 @@ class DecodeUtilsTest {
                 bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
                 imageInfo = ImageInfo(80, 50, "image/png", 0),
                 dataFrom = MEMORY,
-                transformedList = null
+                transformedList = null,
+                extras = null,
             )
         }
 

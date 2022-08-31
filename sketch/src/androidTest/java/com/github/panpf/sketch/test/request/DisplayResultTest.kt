@@ -40,24 +40,27 @@ class DisplayResultTest {
         val request1 = DisplayRequest(context, "http://sample.com/sample.jpeg")
 
         DisplayResult.Success(
-            request1,
-            ColorDrawable(Color.BLACK),
-            ImageInfo(100, 100, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90),
-            LOCAL,
-            listOf(createCircleCropTransformed(END_CROP))
+            request = request1,
+            drawable = ColorDrawable(Color.BLACK),
+            imageInfo = ImageInfo(100, 100, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90),
+            dataFrom = LOCAL,
+            transformedList = listOf(createCircleCropTransformed(END_CROP)),
+            extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertSame(request1, request)
             Assert.assertTrue(drawable is ColorDrawable)
             Assert.assertEquals(
                 ImageInfo(
-                    100,
-                    100,
-                    "image/jpeg",
-                    ExifInterface.ORIENTATION_ROTATE_90
-                ), imageInfo
+                    width = 100,
+                    height = 100,
+                    mimeType = "image/jpeg",
+                    exifOrientation = ExifInterface.ORIENTATION_ROTATE_90
+                ),
+                imageInfo
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createCircleCropTransformed(END_CROP)), transformedList)
+            Assert.assertEquals(mapOf("age" to "16"), extras)
         }
 
         DisplayResult.Error(request1, ColorDrawable(Color.BLACK), UnknownException("")).apply {

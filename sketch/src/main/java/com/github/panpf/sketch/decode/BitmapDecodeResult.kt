@@ -27,7 +27,8 @@ data class BitmapDecodeResult constructor(
     val bitmap: Bitmap,
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
-    val transformedList: List<String>? = null,
+    val transformedList: List<String>?,
+    val extras: Map<String, String>?,
 ) {
 
     fun newResult(
@@ -40,6 +41,7 @@ data class BitmapDecodeResult constructor(
         imageInfo = imageInfo,
         dataFrom = dataFrom,
         transformedList = transformedList?.toMutableList(),
+        extras = extras?.toMutableMap(),
     ).apply {
         block?.invoke(this)
     }.build()
@@ -48,13 +50,15 @@ data class BitmapDecodeResult constructor(
         "BitmapDecodeResult(bitmap=${bitmap.toInfoString()}, " +
                 "imageInfo=$imageInfo, " +
                 "dataFrom=$dataFrom, " +
-                "transformedList=$transformedList)"
+                "transformedList=$transformedList, " +
+                "extras=$extras)"
 
     class Builder internal constructor(
         private val bitmap: Bitmap,
         private val imageInfo: ImageInfo,
         private val dataFrom: DataFrom,
         private var transformedList: MutableList<String>? = null,
+        private var extras: MutableMap<String, String>? = null,
     ) {
 
         fun addTransformed(transformed: String): Builder = apply {
@@ -63,11 +67,18 @@ data class BitmapDecodeResult constructor(
             }
         }
 
+        fun addExtras(key: String, value: String): Builder = apply {
+            this.extras = (this.extras ?: mutableMapOf()).apply {
+                put(key, value)
+            }
+        }
+
         fun build(): BitmapDecodeResult = BitmapDecodeResult(
             bitmap = bitmap,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
             transformedList = transformedList?.toList(),
+            extras = extras?.toMap(),
         )
     }
 }

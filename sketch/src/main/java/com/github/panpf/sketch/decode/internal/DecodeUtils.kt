@@ -264,7 +264,8 @@ fun realDecode(
         bitmap = bitmap,
         imageInfo = imageInfo,
         dataFrom = dataFrom,
-        transformedList = transformedList.takeIf { it.isNotEmpty() }?.toList()
+        transformedList = transformedList.takeIf { it.isNotEmpty() }?.toList(),
+        extras = null,
     )
 }
 

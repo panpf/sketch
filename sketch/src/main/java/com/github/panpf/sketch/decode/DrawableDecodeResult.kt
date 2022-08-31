@@ -25,5 +25,6 @@ data class DrawableDecodeResult constructor(
     val drawable: Drawable,
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
-    val transformedList: List<String>?
+    val transformedList: List<String>?,
+    val extras: Map<String, String>?,
 )

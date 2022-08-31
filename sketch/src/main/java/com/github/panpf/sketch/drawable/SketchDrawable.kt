@@ -33,5 +33,7 @@ interface SketchDrawable {
 
     val transformedList: List<String>?
 
+    val extras: Map<String, String>?
+
     val bitmapInfo: BitmapInfo
 }
