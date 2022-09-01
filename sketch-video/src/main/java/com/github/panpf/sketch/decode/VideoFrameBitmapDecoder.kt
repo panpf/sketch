@@ -64,6 +64,8 @@ class VideoFrameBitmapDecoder(
             if (dataSource is ContentDataSource) {
                 setDataSource(request.context, dataSource.contentUri)
             } else {
+                // Currently running on a limited number of IO contexts, so this warning can be ignored
+                @Suppress("BlockingMethodInNonBlockingContext")
                 setDataSource(dataSource.file().path)
             }
         }

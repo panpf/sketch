@@ -59,7 +59,7 @@ class DisplaySizeResolverTest {
     fun testToString() {
         val context = getTestContext()
         DisplaySizeResolver(context).apply {
-            Assert.assertEquals("DisplaySizeResolver(context=${context})", toString())
+            Assert.assertEquals("DisplaySizeResolver(${context})", toString())
         }
     }
 }

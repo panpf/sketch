@@ -35,7 +35,7 @@ import com.github.panpf.sketch.test.utils.InternalDrawableWrapperImpl
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.util.findLastSketchDrawable
-import com.github.panpf.sketch.util.foreachSketchCountDrawable
+import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -160,7 +160,7 @@ class SketchUtilsTest {
 
         countDrawable.let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(listOf("SketchCountBitmapDrawable"), this)
@@ -171,7 +171,7 @@ class SketchUtilsTest {
             CrossfadeDrawable(colorDrawable2, countDrawable)
         ).let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(
@@ -185,7 +185,7 @@ class SketchUtilsTest {
             CrossfadeDrawable(countDrawable, colorDrawable2)
         ).let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(
@@ -201,7 +201,7 @@ class SketchUtilsTest {
             )
         ).let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(
@@ -217,7 +217,7 @@ class SketchUtilsTest {
             )
         ).let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(
@@ -228,7 +228,7 @@ class SketchUtilsTest {
 
         CompatDrawableWrapper(countDrawable).let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(listOf("SketchCountBitmapDrawable"), this)
@@ -237,7 +237,7 @@ class SketchUtilsTest {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             InternalDrawableWrapperImpl(countDrawable).let { drawable ->
                 mutableListOf<String>().also { list ->
-                    drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                    drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
                 }
             }.apply {
                 Assert.assertEquals(listOf("SketchCountBitmapDrawable"), this)
@@ -247,7 +247,7 @@ class SketchUtilsTest {
 
         colorDrawable.let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(listOf<String>(), this)
@@ -258,7 +258,7 @@ class SketchUtilsTest {
             CrossfadeDrawable(colorDrawable2, colorDrawable)
         ).let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(listOf<String>(), this)
@@ -271,7 +271,7 @@ class SketchUtilsTest {
             )
         ).let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(listOf<String>(), this)
@@ -279,7 +279,7 @@ class SketchUtilsTest {
 
         CompatDrawableWrapper(colorDrawable).let { drawable ->
             mutableListOf<String>().also { list ->
-                drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
         }.apply {
             Assert.assertEquals(listOf<String>(), this)
@@ -288,7 +288,7 @@ class SketchUtilsTest {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             InternalDrawableWrapperImpl(colorDrawable).let { drawable ->
                 mutableListOf<String>().also { list ->
-                    drawable.foreachSketchCountDrawable { list.add(it::class.java.simpleName) }
+                    drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
                 }
             }.apply {
                 Assert.assertEquals(listOf<String>(), this)

@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.ImageRequest
 class TestAssetFetcherFactory : Fetcher.Factory {
 
     override fun create(sketch: Sketch, request: ImageRequest): Fetcher? {
-        if(request.uri.scheme == "test") {
+        if (request.uri.scheme == "test") {
             return AssetUriFetcher(sketch, request, request.uriString.replace("test://", ""))
         }
         return null

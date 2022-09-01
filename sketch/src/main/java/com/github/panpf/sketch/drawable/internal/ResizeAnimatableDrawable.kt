@@ -24,6 +24,10 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.requiredMainThread
 
+/**
+ * Using [resize] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [resize].
+ * ResizeDrawable is suitable for changing the start and end pictures to the same size when using CrossfadeDrawable to display pictures in transition, so as to avoid the start or end pictures being scaled when the transition animation starts
+ */
 open class ResizeAnimatableDrawable(
     drawable: SketchAnimatableDrawable,
     resize: Resize

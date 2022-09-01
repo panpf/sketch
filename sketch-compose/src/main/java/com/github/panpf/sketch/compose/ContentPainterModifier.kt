@@ -90,7 +90,8 @@ internal data class ContentPainterModifier(
     ): Int {
         return if (painter.intrinsicSize.isSpecified) {
             val constraints = Constraints(maxWidth = width)
-            val layoutHeight = measurable.minIntrinsicHeight(modifyConstraints(constraints).maxWidth)
+            val layoutHeight =
+                measurable.minIntrinsicHeight(modifyConstraints(constraints).maxWidth)
             val scaledSize = calculateScaledSize(Size(width.toFloat(), layoutHeight.toFloat()))
             max(scaledSize.height.roundToInt(), layoutHeight)
         } else {
@@ -104,7 +105,8 @@ internal data class ContentPainterModifier(
     ): Int {
         return if (painter.intrinsicSize.isSpecified) {
             val constraints = Constraints(maxWidth = width)
-            val layoutHeight = measurable.maxIntrinsicHeight(modifyConstraints(constraints).maxWidth)
+            val layoutHeight =
+                measurable.maxIntrinsicHeight(modifyConstraints(constraints).maxWidth)
             val scaledSize = calculateScaledSize(Size(width.toFloat(), layoutHeight.toFloat()))
             max(scaledSize.height.roundToInt(), layoutHeight)
         } else {

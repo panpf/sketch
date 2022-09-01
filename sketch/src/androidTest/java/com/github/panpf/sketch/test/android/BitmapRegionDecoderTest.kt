@@ -22,12 +22,12 @@ import android.graphics.Rect
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
-import com.github.panpf.sketch.fetch.internal.HeaderBytes
-import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
+import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -317,12 +317,12 @@ class BitmapRegionDecoderTest {
             }
         } else {
             /* minAPI not support */
-            val headerBytes = HeaderBytes(
+            val bytes = Bytes(
                 ByteArray(1024).apply {
                     context.assets.open(image.assetName).use { it.read(this) }
                 }
             )
-            if (headerBytes.isAnimatedWebP()) {
+            if (bytes.isAnimatedWebP()) {
                 when (Build.VERSION.SDK_INT) {
                     16 -> assertThrow(IOException::class) {
                         decodeWithInBitmap(options)

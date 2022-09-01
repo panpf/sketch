@@ -20,7 +20,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
-import com.github.panpf.sketch.util.foreachSketchCountDrawable
+import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
 
 /**
  * A [Target] that handles setting images on an [ImageView].
@@ -35,7 +35,7 @@ open class ImageViewDisplayTarget(override val view: ImageView) :
         get() = view.drawable
         set(value) {
             val oldDrawable = view.drawable
-            value?.foreachSketchCountDrawable {
+            value?.iterateSketchCountBitmapDrawable {
                 it.countBitmap.setIsDisplayed(true, "ImageView")
             }
             if (value is CrossfadeDrawable) {
@@ -56,7 +56,7 @@ open class ImageViewDisplayTarget(override val view: ImageView) :
                 }
                 require(value.end?.callback != null) { "end.callback is null. set after" }
             }
-            oldDrawable?.foreachSketchCountDrawable {
+            oldDrawable?.iterateSketchCountBitmapDrawable {
                 it.countBitmap.setIsDisplayed(false, "ImageView")
             }
             if (oldDrawable is Animatable) {

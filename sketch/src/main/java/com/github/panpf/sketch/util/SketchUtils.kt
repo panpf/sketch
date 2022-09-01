@@ -80,7 +80,7 @@ fun Drawable.findLastSketchDrawable(): SketchDrawable? {
  * Traverse all SketchCountBitmapDrawable in specified Drawable
  */
 @SuppressLint("RestrictedApi")
-fun Drawable.foreachSketchCountDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
+fun Drawable.iterateSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
     val drawable = this
     when {
         drawable is SketchCountBitmapDrawable -> {
@@ -89,18 +89,18 @@ fun Drawable.foreachSketchCountDrawable(block: (SketchCountBitmapDrawable) -> Un
         drawable is LayerDrawable -> {
             val layerCount = drawable.numberOfLayers
             for (index in 0 until layerCount) {
-                drawable.getDrawable(index).foreachSketchCountDrawable(block)
+                drawable.getDrawable(index).iterateSketchCountBitmapDrawable(block)
             }
         }
         drawable is CrossfadeDrawable -> {
-            drawable.start?.foreachSketchCountDrawable(block)
-            drawable.end?.foreachSketchCountDrawable(block)
+            drawable.start?.iterateSketchCountBitmapDrawable(block)
+            drawable.end?.iterateSketchCountBitmapDrawable(block)
         }
         drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {
-            drawable.wrappedDrawable?.foreachSketchCountDrawable(block)
+            drawable.wrappedDrawable?.iterateSketchCountBitmapDrawable(block)
         }
         VERSION.SDK_INT >= VERSION_CODES.M && drawable is android.graphics.drawable.DrawableWrapper -> {
-            drawable.drawable?.foreachSketchCountDrawable(block)
+            drawable.drawable?.iterateSketchCountBitmapDrawable(block)
         }
     }
 }

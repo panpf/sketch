@@ -27,6 +27,6 @@ data class DisplaySizeResolver constructor(private val context: Context) : SizeR
     }
 
     override fun toString(): String {
-        return "DisplaySizeResolver(context=$context)"
+        return "DisplaySizeResolver($context)"
     }
 }

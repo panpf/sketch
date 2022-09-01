@@ -21,8 +21,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 

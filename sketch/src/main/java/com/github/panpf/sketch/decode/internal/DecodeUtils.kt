@@ -36,11 +36,13 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.calculateResizeMapping
+import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toHexString
 import java.io.IOException
+import kotlin.experimental.and
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
@@ -269,7 +271,10 @@ fun realDecode(
     )
 }
 
-fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch, request: ImageRequest): BitmapDecodeResult {
+fun BitmapDecodeResult.appliedExifOrientation(
+    sketch: Sketch,
+    request: ImageRequest
+): BitmapDecodeResult {
     if (imageInfo.exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
         || imageInfo.exifOrientation == ExifInterface.ORIENTATION_NORMAL
     ) {
@@ -277,7 +282,8 @@ fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch, request: ImageRequ
     }
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val inputBitmap = bitmap
-    val newBitmap = exifOrientationHelper.applyToBitmap(inputBitmap, sketch.bitmapPool) ?: return this
+    val newBitmap =
+        exifOrientationHelper.applyToBitmap(inputBitmap, sketch.bitmapPool) ?: return this
     freeBitmap(sketch.bitmapPool, sketch.logger, inputBitmap, "appliedExifOrientation")
     sketch.logger.d("appliedExifOrientation") {
         "appliedExifOrientation. freeBitmap. bitmap=${inputBitmap.logString}. ${request.key}"
@@ -297,7 +303,11 @@ fun BitmapDecodeResult.appliedExifOrientation(sketch: Sketch, request: ImageRequ
     }
 }
 
-fun BitmapDecodeResult.appliedResize(sketch: Sketch, request: ImageRequest, resize: Resize?): BitmapDecodeResult {
+fun BitmapDecodeResult.appliedResize(
+    sketch: Sketch,
+    request: ImageRequest,
+    resize: Resize?
+): BitmapDecodeResult {
     if (resize == null) return this
     val inputBitmap = bitmap
     val precision = resize.getPrecision(inputBitmap.width, inputBitmap.height)
@@ -491,3 +501,50 @@ fun isSupportInBitmapForRegion(mimeType: String?): Boolean =
         ImageFormat.HEIF -> VERSION.SDK_INT >= 28
         else -> VERSION.SDK_INT >= 32   // Compatible with new image types supported in the future
     }
+
+
+// https://developers.google.com/speed/webp/docs/riff_container
+private val WEBP_HEADER_RIFF = "RIFF".toByteArray()
+private val WEBP_HEADER_WEBP = "WEBP".toByteArray()
+private val WEBP_HEADER_VP8X = "VP8X".toByteArray()
+
+// https://nokiatech.github.io/heif/technical.html
+private val HEIF_HEADER_FTYP = "ftyp".toByteArray()
+private val HEIF_HEADER_MSF1 = "msf1".toByteArray()
+private val HEIF_HEADER_HEVC = "hevc".toByteArray()
+private val HEIF_HEADER_HEVX = "hevx".toByteArray()
+
+// https://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
+private val GIF_HEADER_87A = "GIF87a".toByteArray()
+private val GIF_HEADER_89A = "GIF89a".toByteArray()
+
+/**
+ * Return 'true' if the [Bytes] contains a WebP image.
+ */
+fun Bytes.isWebP(): Boolean =
+    rangeEquals(0, WEBP_HEADER_RIFF) && rangeEquals(8, WEBP_HEADER_WEBP)
+
+/**
+ * Return 'true' if the [Bytes] contains an animated WebP image.
+ */
+fun Bytes.isAnimatedWebP(): Boolean =
+    isWebP() && rangeEquals(12, WEBP_HEADER_VP8X) && (get(16) and 0b00000010) > 0
+
+/**
+ * Return 'true' if the [Bytes] contains an HEIF image. The [Bytes] is not consumed.
+ */
+fun Bytes.isHeif(): Boolean = rangeEquals(4, HEIF_HEADER_FTYP)
+
+/**
+ * Return 'true' if the [Bytes] contains an animated HEIF image sequence.
+ */
+fun Bytes.isAnimatedHeif(): Boolean = isHeif()
+        && (rangeEquals(8, HEIF_HEADER_MSF1)
+        || rangeEquals(8, HEIF_HEADER_HEVC)
+        || rangeEquals(8, HEIF_HEADER_HEVX))
+
+/**
+ * Return 'true' if the [Bytes] contains a GIF image.
+ */
+fun Bytes.isGif(): Boolean =
+    rangeEquals(0, GIF_HEADER_89A) || rangeEquals(0, GIF_HEADER_87A)

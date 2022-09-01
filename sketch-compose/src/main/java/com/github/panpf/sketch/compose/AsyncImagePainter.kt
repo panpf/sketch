@@ -358,7 +358,8 @@ class AsyncImagePainter internal constructor(
         // Invoke the transition factory and wrap the painter in a `CrossfadePainter` if it returns
         // a `CrossfadeTransformation`.
 //        val transition = result.request.transition?.create(FakeTransitionTarget, result)
-        val transition = result.request.transitionFactory?.create(FakeTransitionTarget, result, true)
+        val transition =
+            result.request.transitionFactory?.create(FakeTransitionTarget, result, true)
         @Suppress("LiftReturnOrAssignment")
         if (transition is CrossfadeTransition) {
             return CrossfadePainter(

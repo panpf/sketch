@@ -45,10 +45,15 @@ import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
+import com.github.panpf.sketch.decode.internal.isAnimatedHeif
+import com.github.panpf.sketch.decode.internal.isAnimatedWebP
+import com.github.panpf.sketch.decode.internal.isGif
+import com.github.panpf.sketch.decode.internal.isHeif
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
 import com.github.panpf.sketch.decode.internal.isSupportInBitmap
 import com.github.panpf.sketch.decode.internal.isSupportInBitmapForRegion
+import com.github.panpf.sketch.decode.internal.isWebP
 import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSize
 import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSizeForRegion
 import com.github.panpf.sketch.decode.internal.maxBitmapSize
@@ -70,8 +75,10 @@ import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -1249,5 +1256,163 @@ class DecodeUtilsTest {
         Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmapForRegion("image/heic"))
         Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmapForRegion("image/heif"))
         Assert.assertEquals(VERSION.SDK_INT >= 32, isSupportInBitmapForRegion("image/svg"))
+    }
+
+    @Test
+    fun testIsWebP() {
+        val context = getTestContext()
+
+        Bytes(context.assets.open("sample.webp").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertTrue(isWebP())
+        }
+        Bytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertTrue(isWebP())
+        }
+
+        Bytes(context.assets.open("sample.webp").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(8, 'V'.code.toByte())
+            }
+        }).apply {
+            Assert.assertFalse(isWebP())
+        }
+        Bytes(context.assets.open("sample.jpeg").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isWebP())
+        }
+    }
+
+    @Test
+    fun testIsAnimatedWebP() {
+        val context = getTestContext()
+
+        Bytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertTrue(isAnimatedWebP())
+        }
+
+        Bytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(12, 'X'.code.toByte())
+            }
+        }).apply {
+            Assert.assertFalse(isAnimatedWebP())
+        }
+        Bytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(16, 0)
+            }
+        }).apply {
+            Assert.assertFalse(isAnimatedWebP())
+        }
+        Bytes(context.assets.open("sample.webp").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isAnimatedWebP())
+        }
+        Bytes(context.assets.open("sample.jpeg").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isAnimatedWebP())
+        }
+    }
+
+    @Test
+    fun testIsHeif() {
+        val context = getTestContext()
+
+        Bytes(context.assets.open("sample.heic").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertTrue(isHeif())
+        }
+
+        Bytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isHeif())
+        }
+        Bytes(context.assets.open("sample.jpeg").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isHeif())
+        }
+    }
+
+    @Test
+    fun testIsAnimatedHeif() {
+        val context = getTestContext()
+
+        Bytes(context.assets.open("sample_anim.heif").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertTrue(isAnimatedHeif())
+        }
+        Bytes(context.assets.open("sample_anim.heif").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(8, 'h'.code.toByte())
+                set(9, 'e'.code.toByte())
+                set(10, 'v'.code.toByte())
+                set(11, 'c'.code.toByte())
+            }
+        }).apply {
+            Assert.assertTrue(isAnimatedHeif())
+        }
+        Bytes(context.assets.open("sample_anim.heif").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(8, 'h'.code.toByte())
+                set(9, 'e'.code.toByte())
+                set(10, 'v'.code.toByte())
+                set(11, 'x'.code.toByte())
+            }
+        }).apply {
+            Assert.assertTrue(isAnimatedHeif())
+        }
+
+        Bytes(context.assets.open("sample.heic").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isAnimatedHeif())
+        }
+        Bytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isAnimatedHeif())
+        }
+        Bytes(context.assets.open("sample.jpeg").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isAnimatedHeif())
+        }
+    }
+
+    @Test
+    fun testIsGif() {
+        val context = getTestContext()
+
+        Bytes(context.assets.open("sample_anim.gif").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertTrue(isGif())
+        }
+        Bytes(context.assets.open("sample_anim.gif").use {
+            ByteArray(1024).apply { it.read(this) }.apply {
+                set(4, '7'.code.toByte())
+            }
+        }).apply {
+            Assert.assertTrue(isGif())
+        }
+
+        Bytes(context.assets.open("sample_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isGif())
+        }
     }
 }

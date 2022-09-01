@@ -171,7 +171,11 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
     }
 
     @WorkerThread
-    private fun writeCache(sketch: Sketch, request: ImageRequest, result: BitmapDecodeResult): Boolean {
+    private fun writeCache(
+        sketch: Sketch,
+        request: ImageRequest,
+        result: BitmapDecodeResult
+    ): Boolean {
         val transformedList = result.transformedList
         if (transformedList.isNullOrEmpty()) {
             return false

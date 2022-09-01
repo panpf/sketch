@@ -24,6 +24,6 @@ data class DefaultSizeResolver(val wrapped: SizeResolver) : SizeResolver {
     }
 
     override fun toString(): String {
-        return "DefaultSizeResolver(wrapped=$wrapped)"
+        return "DefaultSizeResolver($wrapped)"
     }
 }

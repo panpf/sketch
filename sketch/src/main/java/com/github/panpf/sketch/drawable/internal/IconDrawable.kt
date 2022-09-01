@@ -28,6 +28,10 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import androidx.core.graphics.drawable.DrawableCompat
 
+/**
+ * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
+ * It is suitable for use as a placeholder image for waterfall flow.
+ */
 class IconDrawable constructor(
     val icon: Drawable,
     val bg: Drawable? = null,

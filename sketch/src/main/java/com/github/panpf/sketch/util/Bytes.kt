@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.fetch.internal
+package com.github.panpf.sketch.util
 
-import kotlin.experimental.and
-
-class HeaderBytes constructor(val bytes: ByteArray) {
+class Bytes constructor(val bytes: ByteArray) {
 
     fun rangeEquals(offset: Int, bytes: ByteArray): Boolean {
         require(bytes.isNotEmpty()) { "bytes is empty" }
@@ -75,49 +73,3 @@ class HeaderBytes constructor(val bytes: ByteArray) {
 
     fun get(position: Int): Byte = bytes[position]
 }
-
-// https://developers.google.com/speed/webp/docs/riff_container
-private val WEBP_HEADER_RIFF = "RIFF".toByteArray()
-private val WEBP_HEADER_WEBP = "WEBP".toByteArray()
-private val WEBP_HEADER_VP8X = "VP8X".toByteArray()
-
-// https://nokiatech.github.io/heif/technical.html
-private val HEIF_HEADER_FTYP = "ftyp".toByteArray()
-private val HEIF_HEADER_MSF1 = "msf1".toByteArray()
-private val HEIF_HEADER_HEVC = "hevc".toByteArray()
-private val HEIF_HEADER_HEVX = "hevx".toByteArray()
-
-// https://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
-private val GIF_HEADER_87A = "GIF87a".toByteArray()
-private val GIF_HEADER_89A = "GIF89a".toByteArray()
-
-/**
- * Return 'true' if the [HeaderBytes] contains a WebP image.
- */
-fun HeaderBytes.isWebP(): Boolean =
-    rangeEquals(0, WEBP_HEADER_RIFF) && rangeEquals(8, WEBP_HEADER_WEBP)
-
-/**
- * Return 'true' if the [HeaderBytes] contains an animated WebP image.
- */
-fun HeaderBytes.isAnimatedWebP(): Boolean =
-    isWebP() && rangeEquals(12, WEBP_HEADER_VP8X) && (get(16) and 0b00000010) > 0
-
-/**
- * Return 'true' if the [HeaderBytes] contains an HEIF image. The [HeaderBytes] is not consumed.
- */
-fun HeaderBytes.isHeif(): Boolean = rangeEquals(4, HEIF_HEADER_FTYP)
-
-/**
- * Return 'true' if the [HeaderBytes] contains an animated HEIF image sequence.
- */
-fun HeaderBytes.isAnimatedHeif(): Boolean = isHeif()
-        && (rangeEquals(8, HEIF_HEADER_MSF1)
-        || rangeEquals(8, HEIF_HEADER_HEVC)
-        || rangeEquals(8, HEIF_HEADER_HEVX))
-
-/**
- * Return 'true' if the [HeaderBytes] contains a GIF image.
- */
-fun HeaderBytes.isGif(): Boolean =
-    rangeEquals(0, GIF_HEADER_89A) || rangeEquals(0, GIF_HEADER_87A)

@@ -38,6 +38,8 @@ import java.text.DecimalFormat
 import kotlin.coroutines.resume
 
 
+inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (value) block() else null
+
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null
  */

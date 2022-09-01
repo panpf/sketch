@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.decode.internal
 
-inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (value) block() else null
+import com.github.panpf.sketch.util.Bytes
+
+private val SVG_TAG = "<svg ".toByteArray()
+private val LEFT_ANGLE_BRACKET = "<".toByteArray()
+
+fun Bytes.isSvg(): Boolean =
+    rangeEquals(0, LEFT_ANGLE_BRACKET) && indexOf(SVG_TAG, 0, 1024) != -1

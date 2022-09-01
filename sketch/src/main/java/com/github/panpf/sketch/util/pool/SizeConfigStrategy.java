@@ -34,20 +34,8 @@ public class SizeConfigStrategy implements LruPoolStrategy {
     private static final int MAX_SIZE_MULTIPLE = 8;
     @NonNull
     private static final Bitmap.Config[] ARGB_8888_IN_CONFIGS;
-
-    static {
-        // null: The value returned by Bitmaps with the hidden Bitmap config.
-        Bitmap.Config[] result = new Bitmap.Config[]{Bitmap.Config.ARGB_8888, null};
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            result = Arrays.copyOf(result, result.length + 1);
-            result[result.length - 1] = Bitmap.Config.RGBA_F16;
-        }
-        ARGB_8888_IN_CONFIGS = result;
-    }
-
     @NonNull
-    private static final Bitmap.Config[] RGBA_F16_IN_CONFIGS = ARGB_8888_IN_CONFIGS;
-
+    private static final Bitmap.Config[] RGBA_F16_IN_CONFIGS;
     // We probably could allow ARGB_4444 and RGB_565 to decode into each other, but ARGB_4444 is
     // deprecated and we'd rather be safe.
     @NonNull
@@ -60,12 +48,53 @@ public class SizeConfigStrategy implements LruPoolStrategy {
     private static final Bitmap.Config[] ALPHA_8_IN_CONFIGS =
             new Bitmap.Config[]{Bitmap.Config.ALPHA_8};
 
+    static {
+        // null: The value returned by Bitmaps with the hidden Bitmap config.
+        Bitmap.Config[] result = new Bitmap.Config[]{Bitmap.Config.ARGB_8888, null};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            result = Arrays.copyOf(result, result.length + 1);
+            result[result.length - 1] = Bitmap.Config.RGBA_F16;
+        }
+        ARGB_8888_IN_CONFIGS = result;
+        RGBA_F16_IN_CONFIGS = result;
+    }
+
     @NonNull
     private final KeyPool keyPool = new KeyPool();
     @NonNull
     private final GroupedLinkedMap<Key, Bitmap> groupedMap = new GroupedLinkedMap<>();
     @NonNull
     private final Map<Bitmap.Config, NavigableMap<Integer, Integer>> sortedSizes = new HashMap<>();
+
+    @NonNull
+    private static String getBitmapString(int size, @Nullable Bitmap.Config config) {
+        return "[" + size + "](" + config + ")";
+    }
+
+    @NonNull
+    private static Bitmap.Config[] getInConfigs(@Nullable Bitmap.Config requested) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Bitmap.Config.RGBA_F16.equals(requested)) { // NOPMD - Avoid short circuiting sdk checks.
+                return RGBA_F16_IN_CONFIGS;
+            }
+        }
+
+        if (requested == null) {
+            return new Bitmap.Config[]{null};
+        }
+        switch (requested) {
+            case ARGB_8888:
+                return ARGB_8888_IN_CONFIGS;
+            case RGB_565:
+                return RGB_565_IN_CONFIGS;
+            case ARGB_4444:
+                return ARGB_4444_IN_CONFIGS;
+            case ALPHA_8:
+                return ALPHA_8_IN_CONFIGS;
+            default:
+                return new Bitmap.Config[]{requested};
+        }
+    }
 
     @Override
     public void put(@NonNull Bitmap bitmap) {
@@ -265,36 +294,6 @@ public class SizeConfigStrategy implements LruPoolStrategy {
             int result = size;
             result = 31 * result + (config != null ? config.hashCode() : 0);
             return result;
-        }
-    }
-
-    @NonNull
-    private static String getBitmapString(int size, @Nullable Bitmap.Config config) {
-        return "[" + size + "](" + config + ")";
-    }
-
-    @NonNull
-    private static Bitmap.Config[] getInConfigs(@Nullable Bitmap.Config requested) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (Bitmap.Config.RGBA_F16.equals(requested)) { // NOPMD - Avoid short circuiting sdk checks.
-                return RGBA_F16_IN_CONFIGS;
-            }
-        }
-
-        if (requested == null) {
-            return new Bitmap.Config[]{null};
-        }
-        switch (requested) {
-            case ARGB_8888:
-                return ARGB_8888_IN_CONFIGS;
-            case RGB_565:
-                return RGB_565_IN_CONFIGS;
-            case ARGB_4444:
-                return ARGB_4444_IN_CONFIGS;
-            case ALPHA_8:
-                return ALPHA_8_IN_CONFIGS;
-            default:
-                return new Bitmap.Config[]{requested};
         }
     }
 }

@@ -57,11 +57,11 @@ class DiskCacheDataSourceTest {
     fun testLength() {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
-            AssetDataSource(
-                sketch = sketch,
-                request = request,
-                assetFileName = "sample.jpeg"
-            ).file()
+        AssetDataSource(
+            sketch = sketch,
+            request = request,
+            assetFileName = "sample.jpeg"
+        ).file()
         val diskCache = sketch.resultCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
@@ -79,11 +79,11 @@ class DiskCacheDataSourceTest {
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
-            AssetDataSource(
-                sketch = sketch,
-                request = request,
-                assetFileName = "sample.jpeg"
-            ).file()
+        AssetDataSource(
+            sketch = sketch,
+            request = request,
+            assetFileName = "sample.jpeg"
+        ).file()
         val diskCache = sketch.resultCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
@@ -100,11 +100,11 @@ class DiskCacheDataSourceTest {
     fun testFile() {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
-            AssetDataSource(
-                sketch = sketch,
-                request = request,
-                assetFileName = "sample.jpeg"
-            ).file()
+        AssetDataSource(
+            sketch = sketch,
+            request = request,
+            assetFileName = "sample.jpeg"
+        ).file()
         val diskCache = sketch.resultCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
@@ -125,11 +125,11 @@ class DiskCacheDataSourceTest {
     fun testToString() {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
-            AssetDataSource(
-                sketch = sketch,
-                request = request,
-                assetFileName = "sample.jpeg"
-            ).file()
+        AssetDataSource(
+            sketch = sketch,
+            request = request,
+            assetFileName = "sample.jpeg"
+        ).file()
         val diskCache = sketch.resultCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(

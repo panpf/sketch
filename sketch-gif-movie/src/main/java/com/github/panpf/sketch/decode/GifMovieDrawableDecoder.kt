@@ -29,11 +29,11 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.fetch.internal.isGif
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
@@ -69,6 +69,8 @@ class GifMovieDrawableDecoder constructor(
 
     @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
+        // Currently running on a limited number of IO contexts, so this warning can be ignored
+        @Suppress("BlockingMethodInNonBlockingContext")
         val movie: Movie? = dataSource.newInputStream().buffered().use { Movie.decodeStream(it) }
 
         val width = movie?.width() ?: 0

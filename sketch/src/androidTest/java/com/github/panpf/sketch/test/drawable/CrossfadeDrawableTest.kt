@@ -33,7 +33,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
-import com.github.panpf.sketch.drawable.internal.getCrossfadeEndDrawable
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
@@ -112,27 +111,6 @@ class CrossfadeDrawableTest {
         Assert.assertEquals(Rect(50, 0, 150, 200), startDrawable.bounds)
         Assert.assertEquals(Rect(0, 50, 200, 150), endDrawable.bounds)
         Assert.assertEquals(Rect(0, 0, 200, 200), crossfadeDrawable.bounds)
-    }
-
-    @Test
-    fun testGetCrossfadeEndDrawable() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val resources = context.resources
-
-        val startDrawable =
-            BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565)).apply {
-                Assert.assertEquals(Rect(), bounds)
-            }
-        val endDrawable = BitmapDrawable(resources, Bitmap.createBitmap(200, 100, RGB_565)).apply {
-            Assert.assertEquals(Rect(), bounds)
-        }
-        val crossfadeDrawable = CrossfadeDrawable(startDrawable, endDrawable).apply {
-            Assert.assertEquals(Rect(), bounds)
-        }
-
-        Assert.assertSame(endDrawable, crossfadeDrawable.getCrossfadeEndDrawable())
-        Assert.assertSame(endDrawable, endDrawable.getCrossfadeEndDrawable())
-        Assert.assertSame(startDrawable, startDrawable.getCrossfadeEndDrawable())
     }
 
     @Test

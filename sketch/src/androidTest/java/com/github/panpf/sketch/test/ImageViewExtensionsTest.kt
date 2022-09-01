@@ -25,9 +25,9 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayAssetImage
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResourceImage
+import com.github.panpf.sketch.displayResult
 import com.github.panpf.sketch.disposeDisplay
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.displayResult
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssets

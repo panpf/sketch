@@ -40,7 +40,10 @@ fun Drawable.tryToResizeDrawable(request: ImageRequest): Drawable {
     }
 }
 
-
+/**
+ * Using [resize] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [resize].
+ * ResizeDrawable is suitable for changing the start and end pictures to the same size when using CrossfadeDrawable to display pictures in transition, so as to avoid the start or end pictures being scaled when the transition animation starts
+ */
 @SuppressLint("RestrictedApi")
 open class ResizeDrawable constructor(drawable: Drawable, val resize: Resize) :
     DrawableWrapper(drawable) {

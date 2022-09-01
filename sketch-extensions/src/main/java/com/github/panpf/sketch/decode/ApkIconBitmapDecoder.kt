@@ -44,6 +44,8 @@ class ApkIconBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
+        // Currently running on a limited number of IO contexts, so this warning can be ignored
+        @Suppress("BlockingMethodInNonBlockingContext")
         val file = fetchResult.dataSource.file()
         val packageManager = request.context.packageManager
         val packageInfo =

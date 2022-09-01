@@ -22,6 +22,16 @@ public class GroupedLinkedMap<K extends Poolable, V> {
     private final LinkedEntry<K, V> head = new LinkedEntry<>();
     private final Map<K, LinkedEntry<K, V>> keyToEntry = new HashMap<>();
 
+    private static <K, V> void updateEntry(LinkedEntry<K, V> entry) {
+        entry.next.prev = entry;
+        entry.prev.next = entry;
+    }
+
+    private static <K, V> void removeEntry(LinkedEntry<K, V> entry) {
+        entry.prev.next = entry.next;
+        entry.next.prev = entry.prev;
+    }
+
     public void put(K key, V value) {
         LinkedEntry<K, V> entry = keyToEntry.get(key);
 
@@ -121,21 +131,11 @@ public class GroupedLinkedMap<K extends Poolable, V> {
         updateEntry(entry);
     }
 
-    private static <K, V> void updateEntry(LinkedEntry<K, V> entry) {
-        entry.next.prev = entry;
-        entry.prev.next = entry;
-    }
-
-    private static <K, V> void removeEntry(LinkedEntry<K, V> entry) {
-        entry.prev.next = entry.next;
-        entry.next.prev = entry.prev;
-    }
-
     private static class LinkedEntry<K, V> {
         private final K key;
-        private List<V> values;
         LinkedEntry<K, V> next;
         LinkedEntry<K, V> prev;
+        private List<V> values;
 
         // Used only for the first item in the list which we will treat specially and which will not contain a value.
         public LinkedEntry() {

@@ -94,8 +94,8 @@ import java.util.regex.Pattern;
  */
 public final class DiskLruCache implements Closeable {
     public static final String JOURNAL_FILE = "journal";
-    static final String JOURNAL_FILE_TEMP = "journal.tmp";
     public static final String JOURNAL_FILE_BACKUP = "journal.bkp";
+    static final String JOURNAL_FILE_TEMP = "journal.tmp";
     static final String MAGIC = "libcore.io.DiskLruCache";
     static final String VERSION_1 = "1";
     static final long ANY_SEQUENCE_NUMBER = -1;
@@ -145,33 +145,35 @@ public final class DiskLruCache implements Closeable {
      * "journal.tmp" will be used during compaction; that file should be deleted if
      * it exists when the cache is opened.
      */
-
-    private final File directory;
-    private final File journalFile;
-    private final File journalFileTmp;
-    private final File journalFileBackup;
-    private final int appVersion;
-    private long maxSize;
-    private final int valueCount;
-    private long size = 0;
-    private Writer journalWriter;
-    private final LinkedHashMap<String, Entry> lruEntries =
-            new LinkedHashMap<String, Entry>(0, 0.75f, true);
-    private int redundantOpCount;
-
-    /**
-     * To differentiate between old and current snapshots, each entry is given
-     * a sequence number each time an edit is committed. A snapshot is stale if
-     * its sequence number is not equal to its entry's sequence number.
-     */
-    private long nextSequenceNumber = 0;
-
+    private static final OutputStream NULL_OUTPUT_STREAM = new OutputStream() {
+        @Override
+        public void write(int b) throws IOException {
+            // Eat all writes silently. Nom nom.
+        }
+    };
     /**
      * This cache uses a single background thread to evict entries.
      */
     final ThreadPoolExecutor executorService =
             new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-    private final Callable<Void> cleanupCallable = new Callable<Void>() {
+    private final File directory;
+    private final File journalFile;
+    private final File journalFileTmp;
+    private final File journalFileBackup;
+    private final int appVersion;
+    private final int valueCount;
+    private final LinkedHashMap<String, Entry> lruEntries =
+            new LinkedHashMap<String, Entry>(0, 0.75f, true);
+    private long maxSize;
+    private long size = 0;
+    private Writer journalWriter;
+    private int redundantOpCount;
+    /**
+     * To differentiate between old and current snapshots, each entry is given
+     * a sequence number each time an edit is committed. A snapshot is stale if
+     * its sequence number is not equal to its entry's sequence number.
+     */
+    private long nextSequenceNumber = 0;    private final Callable<Void> cleanupCallable = new Callable<Void>() {
         public Void call() throws Exception {
             synchronized (DiskLruCache.this) {
                 if (journalWriter == null) {
@@ -250,6 +252,25 @@ public final class DiskLruCache implements Closeable {
         cache = new DiskLruCache(directory, appVersion, valueCount, maxSize);
         cache.rebuildJournal();
         return cache;
+    }
+
+    private static void deleteIfExists(File file) throws IOException {
+        if (file.exists() && !file.delete()) {
+            throw new IOException();
+        }
+    }
+
+    private static void renameTo(File from, File to, boolean deleteDestination) throws IOException {
+        if (deleteDestination) {
+            deleteIfExists(to);
+        }
+        if (!from.renameTo(to)) {
+            throw new IOException();
+        }
+    }
+
+    private static String inputStreamToString(InputStream in) throws IOException {
+        return Util.readFully(new InputStreamReader(in, Util.UTF_8));
     }
 
     private void readJournal() throws IOException {
@@ -395,21 +416,6 @@ public final class DiskLruCache implements Closeable {
 
         journalWriter = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(journalFile, true), Util.US_ASCII));
-    }
-
-    private static void deleteIfExists(File file) throws IOException {
-        if (file.exists() && !file.delete()) {
-            throw new IOException();
-        }
-    }
-
-    private static void renameTo(File from, File to, boolean deleteDestination) throws IOException {
-        if (deleteDestination) {
-            deleteIfExists(to);
-        }
-        if (!from.renameTo(to)) {
-            throw new IOException();
-        }
     }
 
     /**
@@ -707,10 +713,6 @@ public final class DiskLruCache implements Closeable {
         }
     }
 
-    private static String inputStreamToString(InputStream in) throws IOException {
-        return Util.readFully(new InputStreamReader(in, Util.UTF_8));
-    }
-
 //    /** A snapshot of the values for an entry. */
 //    public final class Snapshot implements Closeable {
 //        private final String key;
@@ -755,6 +757,232 @@ public final class DiskLruCache implements Closeable {
 //            }
 //        }
 //    }
+
+    /**
+     * Buffers input from an {@link InputStream} for reading lines.
+     *
+     * <p>This class is used for buffered reading of lines. For purposes of this class, a line ends
+     * with "\n" or "\r\n". End of input is reported by throwing {@code EOFException}. Unterminated
+     * line at end of input is invalid and will be ignored, the caller may use {@code
+     * hasUnterminatedLine()} to detect it after catching the {@code EOFException}.
+     *
+     * <p>This class is intended for reading input that strictly consists of lines, such as line-based
+     * cache entries or cache journal. Unlike the {@link java.io.BufferedReader} which in conjunction
+     * with {@link java.io.InputStreamReader} provides similar functionality, this class uses different
+     * end-of-input reporting and a more restrictive definition of a line.
+     *
+     * <p>This class supports only charsets that encode '\r' and '\n' as a single byte with value 13
+     * and 10, respectively, and the representation of no other character contains these values.
+     * We currently check in constructor that the charset is one of US-ASCII, UTF-8 and ISO-8859-1.
+     * The default charset is US_ASCII.
+     */
+    static class StrictLineReader implements Closeable {
+        private static final byte CR = (byte) '\r';
+        private static final byte LF = (byte) '\n';
+
+        private final InputStream in;
+        private final Charset charset;
+
+        /*
+         * Buffered data is stored in {@code buf}. As long as no exception occurs, 0 <= pos <= end
+         * and the data in the range [pos, end) is buffered for reading. At end of input, if there is
+         * an unterminated line, we set end == -1, otherwise end == pos. If the underlying
+         * {@code InputStream} throws an {@code IOException}, end may remain as either pos or -1.
+         */
+        private byte[] buf;
+        private int pos;
+        private int end;
+
+        /**
+         * Constructs a new {@code LineReader} with the specified charset and the default capacity.
+         *
+         * @param in      the {@code InputStream} to read data from.
+         * @param charset the charset used to decode data. Only US-ASCII, UTF-8 and ISO-8859-1 are
+         *                supported.
+         * @throws NullPointerException     if {@code in} or {@code charset} is null.
+         * @throws IllegalArgumentException if the specified charset is not supported.
+         */
+        public StrictLineReader(InputStream in, Charset charset) {
+            this(in, 8192, charset);
+        }
+
+        /**
+         * Constructs a new {@code LineReader} with the specified capacity and charset.
+         *
+         * @param in       the {@code InputStream} to read data from.
+         * @param capacity the capacity of the buffer.
+         * @param charset  the charset used to decode data. Only US-ASCII, UTF-8 and ISO-8859-1 are
+         *                 supported.
+         * @throws NullPointerException     if {@code in} or {@code charset} is null.
+         * @throws IllegalArgumentException if {@code capacity} is negative or zero
+         *                                  or the specified charset is not supported.
+         */
+        public StrictLineReader(InputStream in, int capacity, Charset charset) {
+            if (in == null || charset == null) {
+                throw new NullPointerException();
+            }
+            if (capacity < 0) {
+                throw new IllegalArgumentException("capacity <= 0");
+            }
+            if (!(charset.equals(Util.US_ASCII))) {
+                throw new IllegalArgumentException("Unsupported encoding");
+            }
+
+            this.in = in;
+            this.charset = charset;
+            buf = new byte[capacity];
+        }
+
+        /**
+         * Closes the reader by closing the underlying {@code InputStream} and
+         * marking this reader as closed.
+         *
+         * @throws IOException for errors when closing the underlying {@code InputStream}.
+         */
+        public void close() throws IOException {
+            synchronized (in) {
+                if (buf != null) {
+                    buf = null;
+                    in.close();
+                }
+            }
+        }
+
+        /**
+         * Reads the next line. A line ends with {@code "\n"} or {@code "\r\n"},
+         * this end of line marker is not included in the result.
+         *
+         * @return the next line from the input.
+         * @throws IOException  for underlying {@code InputStream} errors.
+         * @throws EOFException for the end of source stream.
+         */
+        public String readLine() throws IOException {
+            synchronized (in) {
+                if (buf == null) {
+                    throw new IOException("LineReader is closed");
+                }
+
+                // Read more data if we are at the end of the buffered data.
+                // Though it's an error to read after an exception, we will let {@code fillBuf()}
+                // throw again if that happens; thus we need to handle end == -1 as well as end == pos.
+                if (pos >= end) {
+                    fillBuf();
+                }
+                // Try to find LF in the buffered data and return the line if successful.
+                for (int i = pos; i != end; ++i) {
+                    if (buf[i] == LF) {
+                        int lineEnd = (i != pos && buf[i - 1] == CR) ? i - 1 : i;
+                        String res = new String(buf, pos, lineEnd - pos, charset.name());
+                        pos = i + 1;
+                        return res;
+                    }
+                }
+
+                // Let's anticipate up to 80 characters on top of those already read.
+                ByteArrayOutputStream out = new ByteArrayOutputStream(end - pos + 80) {
+                    @Override
+                    public String toString() {
+                        int length = (count > 0 && buf[count - 1] == CR) ? count - 1 : count;
+                        try {
+                            return new String(buf, 0, length, charset.name());
+                        } catch (UnsupportedEncodingException e) {
+                            throw new AssertionError(e); // Since we control the charset this will never happen.
+                        }
+                    }
+                };
+
+                while (true) {
+                    out.write(buf, pos, end - pos);
+                    // Mark unterminated line in case fillBuf throws EOFException or IOException.
+                    end = -1;
+                    fillBuf();
+                    // Try to find LF in the buffered data and return the line if successful.
+                    for (int i = pos; i != end; ++i) {
+                        if (buf[i] == LF) {
+                            if (i != pos) {
+                                out.write(buf, pos, i - pos);
+                            }
+                            pos = i + 1;
+                            return out.toString();
+                        }
+                    }
+                }
+            }
+        }
+
+        public boolean hasUnterminatedLine() {
+            return end == -1;
+        }
+
+        /**
+         * Reads new input data into the buffer. Call only with pos == end or end == -1,
+         * depending on the desired outcome if the function throws.
+         */
+        private void fillBuf() throws IOException {
+            int result = in.read(buf, 0, buf.length);
+            if (result == -1) {
+                throw new EOFException();
+            }
+            pos = 0;
+            end = result;
+        }
+    }
+
+    /**
+     * Junk drawer of utility methods.
+     */
+    public final static class Util {
+        static final Charset US_ASCII = Charset.forName("US-ASCII");
+        static final Charset UTF_8 = Charset.forName("UTF-8");
+
+        private Util() {
+        }
+
+        static String readFully(Reader reader) throws IOException {
+            try {
+                StringWriter writer = new StringWriter();
+                char[] buffer = new char[1024];
+                int count;
+                while ((count = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, count);
+                }
+                return writer.toString();
+            } finally {
+                reader.close();
+            }
+        }
+
+        /**
+         * Deletes the contents of {@code dir}. Throws an IOException if any file
+         * could not be deleted, or if {@code dir} is not a readable directory.
+         */
+        public static void deleteContents(File dir) throws IOException {
+            File[] files = dir.listFiles();
+            if (files == null) {
+//                throw new IOException("not a readable directory: " + dir);
+                return;
+            }
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    deleteContents(file);
+                }
+                if (!file.delete()) {
+                    throw new IOException("failed to delete file: " + file);
+                }
+            }
+        }
+
+        static void closeQuietly(/*Auto*/Closeable closeable) {
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                } catch (RuntimeException rethrown) {
+                    throw rethrown;
+                } catch (Exception ignored) {
+                }
+            }
+        }
+    }
 
     /**
      * A snapshot of the values for an entry.
@@ -814,13 +1042,6 @@ public final class DiskLruCache implements Closeable {
             return lengths[index];
         }
     }
-
-    private static final OutputStream NULL_OUTPUT_STREAM = new OutputStream() {
-        @Override
-        public void write(int b) throws IOException {
-            // Eat all writes silently. Nom nom.
-        }
-    };
 
     /**
      * Edits the values for an entry.
@@ -1056,229 +1277,5 @@ public final class DiskLruCache implements Closeable {
         }
     }
 
-    /**
-     * Buffers input from an {@link InputStream} for reading lines.
-     *
-     * <p>This class is used for buffered reading of lines. For purposes of this class, a line ends
-     * with "\n" or "\r\n". End of input is reported by throwing {@code EOFException}. Unterminated
-     * line at end of input is invalid and will be ignored, the caller may use {@code
-     * hasUnterminatedLine()} to detect it after catching the {@code EOFException}.
-     *
-     * <p>This class is intended for reading input that strictly consists of lines, such as line-based
-     * cache entries or cache journal. Unlike the {@link java.io.BufferedReader} which in conjunction
-     * with {@link java.io.InputStreamReader} provides similar functionality, this class uses different
-     * end-of-input reporting and a more restrictive definition of a line.
-     *
-     * <p>This class supports only charsets that encode '\r' and '\n' as a single byte with value 13
-     * and 10, respectively, and the representation of no other character contains these values.
-     * We currently check in constructor that the charset is one of US-ASCII, UTF-8 and ISO-8859-1.
-     * The default charset is US_ASCII.
-     */
-    static class StrictLineReader implements Closeable {
-        private static final byte CR = (byte) '\r';
-        private static final byte LF = (byte) '\n';
 
-        private final InputStream in;
-        private final Charset charset;
-
-        /*
-         * Buffered data is stored in {@code buf}. As long as no exception occurs, 0 <= pos <= end
-         * and the data in the range [pos, end) is buffered for reading. At end of input, if there is
-         * an unterminated line, we set end == -1, otherwise end == pos. If the underlying
-         * {@code InputStream} throws an {@code IOException}, end may remain as either pos or -1.
-         */
-        private byte[] buf;
-        private int pos;
-        private int end;
-
-        /**
-         * Constructs a new {@code LineReader} with the specified charset and the default capacity.
-         *
-         * @param in      the {@code InputStream} to read data from.
-         * @param charset the charset used to decode data. Only US-ASCII, UTF-8 and ISO-8859-1 are
-         *                supported.
-         * @throws NullPointerException     if {@code in} or {@code charset} is null.
-         * @throws IllegalArgumentException if the specified charset is not supported.
-         */
-        public StrictLineReader(InputStream in, Charset charset) {
-            this(in, 8192, charset);
-        }
-
-        /**
-         * Constructs a new {@code LineReader} with the specified capacity and charset.
-         *
-         * @param in       the {@code InputStream} to read data from.
-         * @param capacity the capacity of the buffer.
-         * @param charset  the charset used to decode data. Only US-ASCII, UTF-8 and ISO-8859-1 are
-         *                 supported.
-         * @throws NullPointerException     if {@code in} or {@code charset} is null.
-         * @throws IllegalArgumentException if {@code capacity} is negative or zero
-         *                                  or the specified charset is not supported.
-         */
-        public StrictLineReader(InputStream in, int capacity, Charset charset) {
-            if (in == null || charset == null) {
-                throw new NullPointerException();
-            }
-            if (capacity < 0) {
-                throw new IllegalArgumentException("capacity <= 0");
-            }
-            if (!(charset.equals(Util.US_ASCII))) {
-                throw new IllegalArgumentException("Unsupported encoding");
-            }
-
-            this.in = in;
-            this.charset = charset;
-            buf = new byte[capacity];
-        }
-
-        /**
-         * Closes the reader by closing the underlying {@code InputStream} and
-         * marking this reader as closed.
-         *
-         * @throws IOException for errors when closing the underlying {@code InputStream}.
-         */
-        public void close() throws IOException {
-            synchronized (in) {
-                if (buf != null) {
-                    buf = null;
-                    in.close();
-                }
-            }
-        }
-
-        /**
-         * Reads the next line. A line ends with {@code "\n"} or {@code "\r\n"},
-         * this end of line marker is not included in the result.
-         *
-         * @return the next line from the input.
-         * @throws IOException  for underlying {@code InputStream} errors.
-         * @throws EOFException for the end of source stream.
-         */
-        public String readLine() throws IOException {
-            synchronized (in) {
-                if (buf == null) {
-                    throw new IOException("LineReader is closed");
-                }
-
-                // Read more data if we are at the end of the buffered data.
-                // Though it's an error to read after an exception, we will let {@code fillBuf()}
-                // throw again if that happens; thus we need to handle end == -1 as well as end == pos.
-                if (pos >= end) {
-                    fillBuf();
-                }
-                // Try to find LF in the buffered data and return the line if successful.
-                for (int i = pos; i != end; ++i) {
-                    if (buf[i] == LF) {
-                        int lineEnd = (i != pos && buf[i - 1] == CR) ? i - 1 : i;
-                        String res = new String(buf, pos, lineEnd - pos, charset.name());
-                        pos = i + 1;
-                        return res;
-                    }
-                }
-
-                // Let's anticipate up to 80 characters on top of those already read.
-                ByteArrayOutputStream out = new ByteArrayOutputStream(end - pos + 80) {
-                    @Override
-                    public String toString() {
-                        int length = (count > 0 && buf[count - 1] == CR) ? count - 1 : count;
-                        try {
-                            return new String(buf, 0, length, charset.name());
-                        } catch (UnsupportedEncodingException e) {
-                            throw new AssertionError(e); // Since we control the charset this will never happen.
-                        }
-                    }
-                };
-
-                while (true) {
-                    out.write(buf, pos, end - pos);
-                    // Mark unterminated line in case fillBuf throws EOFException or IOException.
-                    end = -1;
-                    fillBuf();
-                    // Try to find LF in the buffered data and return the line if successful.
-                    for (int i = pos; i != end; ++i) {
-                        if (buf[i] == LF) {
-                            if (i != pos) {
-                                out.write(buf, pos, i - pos);
-                            }
-                            pos = i + 1;
-                            return out.toString();
-                        }
-                    }
-                }
-            }
-        }
-
-        public boolean hasUnterminatedLine() {
-            return end == -1;
-        }
-
-        /**
-         * Reads new input data into the buffer. Call only with pos == end or end == -1,
-         * depending on the desired outcome if the function throws.
-         */
-        private void fillBuf() throws IOException {
-            int result = in.read(buf, 0, buf.length);
-            if (result == -1) {
-                throw new EOFException();
-            }
-            pos = 0;
-            end = result;
-        }
-    }
-
-    /**
-     * Junk drawer of utility methods.
-     */
-    public final static class Util {
-        static final Charset US_ASCII = Charset.forName("US-ASCII");
-        static final Charset UTF_8 = Charset.forName("UTF-8");
-
-        private Util() {
-        }
-
-        static String readFully(Reader reader) throws IOException {
-            try {
-                StringWriter writer = new StringWriter();
-                char[] buffer = new char[1024];
-                int count;
-                while ((count = reader.read(buffer)) != -1) {
-                    writer.write(buffer, 0, count);
-                }
-                return writer.toString();
-            } finally {
-                reader.close();
-            }
-        }
-
-        /**
-         * Deletes the contents of {@code dir}. Throws an IOException if any file
-         * could not be deleted, or if {@code dir} is not a readable directory.
-         */
-        public static void deleteContents(File dir) throws IOException {
-            File[] files = dir.listFiles();
-            if (files == null) {
-//                throw new IOException("not a readable directory: " + dir);
-                return;
-            }
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    deleteContents(file);
-                }
-                if (!file.delete()) {
-                    throw new IOException("failed to delete file: " + file);
-                }
-            }
-        }
-
-        static void closeQuietly(/*Auto*/Closeable closeable) {
-            if (closeable != null) {
-                try {
-                    closeable.close();
-                } catch (RuntimeException rethrown) {
-                    throw rethrown;
-                } catch (Exception ignored) {
-                }
-            }
-        }
-    }
 }

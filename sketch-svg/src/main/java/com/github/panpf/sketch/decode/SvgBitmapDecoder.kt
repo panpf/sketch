@@ -27,10 +27,10 @@ import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedResize
+import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.fetch.internal.isSvg
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
@@ -56,6 +56,8 @@ class SvgBitmapDecoder constructor(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
+        // Currently running on a limited number of IO contexts, so this warning can be ignored
+        @Suppress("BlockingMethodInNonBlockingContext")
         val svg = dataSource.newInputStream().buffered().use { SVG.getFromInputStream(it) }
         val imageInfo = readImageInfo(svg)
         return realDecode(

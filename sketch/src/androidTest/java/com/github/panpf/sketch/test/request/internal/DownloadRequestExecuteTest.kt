@@ -409,12 +409,18 @@ class DownloadRequestExecuteTest {
 //            Assert.assertFalse(transformedList?.contains("TestDrawableDecodeInterceptor") == true)
 //        }
 
-        DownloadRequest(context, TestHttpStack.testImages.first().uriString.replace("http://", "test://")) {
+        DownloadRequest(
+            context,
+            TestHttpStack.testImages.first().uriString.replace("http://", "test://")
+        ) {
             downloadCachePolicy(DISABLED)
         }.let { runBlocking { it.execute(sketch) } }.apply {
             Assert.assertTrue(this is DownloadResult.Error)
         }
-        DownloadRequest(context, TestHttpStack.testImages.first().uriString.replace("http://", "test://")) {
+        DownloadRequest(
+            context,
+            TestHttpStack.testImages.first().uriString.replace("http://", "test://")
+        ) {
             downloadCachePolicy(DISABLED)
             components {
                 addFetcher(TestHttpFetcherFactory())

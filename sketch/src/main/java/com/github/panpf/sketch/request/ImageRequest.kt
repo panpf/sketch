@@ -64,7 +64,6 @@ import com.github.panpf.sketch.resize.fixedPrecision
 import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.sketch.target.DisplayListenerProvider
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transform.Transformation
@@ -87,37 +86,27 @@ interface ImageRequest {
     val target: Target?
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
     val progressListener: ProgressListener<ImageRequest>?
-
-    /** Used to cache bitmaps in memory and on disk */
-    val cacheKey: String
     val definedOptions: ImageOptions
     val defaultOptions: ImageOptions?
 
-    /**
-     * The processing depth of the request.
-     */
+    /** Used to cache bitmaps in memory and on disk */
+    val cacheKey: String
+
+    /** The processing depth of the request. */
     val depth: Depth
 
-    /**
-     * where does this depth come from
-     */
+    /** where does this depth come from */
     val depthFrom: String?
         get() = parameters?.value(DEPTH_FROM_KEY)
 
-    /**
-     * A map of generic values that can be used to pass custom data to [Fetcher] and [BitmapDecoder] and [DrawableDecoder].
-     */
+    /** A map of generic values that can be used to pass custom data to [Fetcher] and [BitmapDecoder] and [DrawableDecoder]. */
     val parameters: Parameters?
 
 
-    /**
-     * Set headers for http requests
-     */
+    /** Set headers for http requests */
     val httpHeaders: HttpHeaders?
 
-    /**
-     * Http download cache policy
-     */
+    /** Http download cache policy */
     val downloadCachePolicy: CachePolicy
 
     /**
@@ -161,29 +150,19 @@ interface ImageRequest {
      */
     val resizeSize: Size?
 
-    /**
-     * Lazy calculation of resize size. If resizeSize is null at runtime, size is calculated and assigned to resizeSize
-     */
+    /** Lazy calculation of resize size. If resizeSize is null at runtime, size is calculated and assigned to resizeSize */
     val resizeSizeResolver: SizeResolver?
 
-    /**
-     * Decide what Precision to use with [resizeSize] to calculate the size of the final Bitmap
-     */
+    /** Decide what Precision to use with [resizeSize] to calculate the size of the final Bitmap */
     val resizePrecisionDecider: PrecisionDecider
 
-    /**
-     * Which part of the original image to keep when [resizePrecisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
-     */
+    /** Which part of the original image to keep when [resizePrecisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO] */
     val resizeScaleDecider: ScaleDecider
 
-    /**
-     * The list of [Transformation]s to be applied to this request
-     */
+    /** The list of [Transformation]s to be applied to this request */
     val transformations: List<Transformation>?
 
-    /**
-     * Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
-     */
+    /** Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap */
     val disallowReuseBitmap: Boolean
 
     /**
@@ -201,29 +180,19 @@ interface ImageRequest {
     val resultCachePolicy: CachePolicy
 
 
-    /**
-     * Placeholder image when loading
-     */
+    /** Placeholder image when loading */
     val placeholder: StateImage?
 
-    /**
-     * Image to display when loading fails
-     */
+    /** Image to display when loading fails */
     val error: ErrorStateImage?
 
-    /**
-     * How the current image and the new image transition
-     */
+    /** How the current image and the new image transition */
     val transitionFactory: Transition.Factory?
 
-    /**
-     * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-     */
+    /** Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable */
     val disallowAnimatedImage: Boolean
 
-    /**
-     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
-     */
+    /** Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize] */
     val resizeApplyToDrawable: Boolean
 
     /**
@@ -234,9 +203,7 @@ interface ImageRequest {
     val memoryCachePolicy: CachePolicy
 
 
-    /**
-     * Components that are only valid for the current request
-     */
+    /** Components that are only valid for the current request */
     val componentRegistry: ComponentRegistry?
 
     abstract class BaseImageRequest : ImageRequest {

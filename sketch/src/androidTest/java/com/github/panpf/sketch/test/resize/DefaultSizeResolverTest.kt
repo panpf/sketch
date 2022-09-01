@@ -64,7 +64,7 @@ class DefaultSizeResolverTest {
         val defaultSizeResolver = DefaultSizeResolver(displaySizeResolver)
         defaultSizeResolver.apply {
             Assert.assertEquals(
-                "DefaultSizeResolver(wrapped=DisplaySizeResolver(context=${context}))",
+                "DefaultSizeResolver(DisplaySizeResolver(${context}))",
                 toString()
             )
         }

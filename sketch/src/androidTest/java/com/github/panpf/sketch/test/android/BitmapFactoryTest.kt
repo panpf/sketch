@@ -23,11 +23,11 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.fetch.internal.HeaderBytes
-import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
+import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
 import org.junit.Assert
@@ -291,10 +291,10 @@ class BitmapFactoryTest {
             } catch (e: IllegalArgumentException) {
                 throw Exception(message, e)
             }
-            val headerBytes = HeaderBytes(
+            val bytes = Bytes(
                 ByteArray(1024).apply { context.assets.open(image.assetName).use { it.read(this) } }
             )
-            if (headerBytes.isAnimatedWebP() && Build.VERSION.SDK_INT == 17) {
+            if (bytes.isAnimatedWebP() && Build.VERSION.SDK_INT == 17) {
                 Assert.assertNotNull(message, bitmap)
             } else {
                 Assert.assertNull(message, bitmap)

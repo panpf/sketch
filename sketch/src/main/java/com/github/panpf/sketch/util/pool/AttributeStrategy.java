@@ -19,6 +19,16 @@ public class AttributeStrategy implements LruPoolStrategy {
     @NonNull
     private final GroupedLinkedMap<Key, Bitmap> groupedMap = new GroupedLinkedMap<>();
 
+    @NonNull
+    private static String getBitmapString(@NonNull Bitmap bitmap) {
+        return getBitmapString(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+    }
+
+    @NonNull
+    private static String getBitmapString(int width, int height, @Nullable Bitmap.Config config) {
+        return String.format(Locale.getDefault(), "[%dx%d](%s)", width, height, config);
+    }
+
     @Override
     public void put(@NonNull Bitmap bitmap) {
         final Key key = keyPool.get(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
@@ -71,16 +81,6 @@ public class AttributeStrategy implements LruPoolStrategy {
     @Override
     public String toString() {
         return "AttributeStrategy(" + groupedMap + ")";
-    }
-
-    @NonNull
-    private static String getBitmapString(@NonNull Bitmap bitmap) {
-        return getBitmapString(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
-    }
-
-    @NonNull
-    private static String getBitmapString(int width, int height, @Nullable Bitmap.Config config) {
-        return String.format(Locale.getDefault(), "[%dx%d](%s)", width, height, config);
     }
 
     private static class KeyPool extends BaseKeyPool<Key> {

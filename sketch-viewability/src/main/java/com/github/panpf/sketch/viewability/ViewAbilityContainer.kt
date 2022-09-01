@@ -20,8 +20,8 @@ import android.graphics.drawable.Drawable
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.request.DisplayListenerProvider
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.target.DisplayListenerProvider
 
 /**
  * Provides access services for ViewAbility registration, uninstallation, and event callbacks and properties

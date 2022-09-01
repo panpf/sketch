@@ -46,6 +46,8 @@ open class DefaultBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
+        // Currently running on a limited number of IO contexts, so this warning can be ignored
+        @Suppress("BlockingMethodInNonBlockingContext")
         val imageInfo =
             dataSource.readImageInfoWithBitmapFactoryOrThrow(request.ignoreExifOrientation)
         val canDecodeRegion = ImageFormat.parseMimeType(imageInfo.mimeType)

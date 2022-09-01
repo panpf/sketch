@@ -24,7 +24,6 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

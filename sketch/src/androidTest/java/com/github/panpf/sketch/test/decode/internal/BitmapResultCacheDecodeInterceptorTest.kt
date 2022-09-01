@@ -47,7 +47,11 @@ class BitmapResultCacheDecodeInterceptorTest {
         val resultCache = sketch.resultCache
 
         val interceptors =
-            listOf(BitmapResultCacheDecodeInterceptor(), ExtrasTestBitmapDecodeInterceptor(), BitmapEngineDecodeInterceptor())
+            listOf(
+                BitmapResultCacheDecodeInterceptor(),
+                ExtrasTestBitmapDecodeInterceptor(),
+                BitmapEngineDecodeInterceptor()
+            )
         val executeRequest: (ImageRequest) -> BitmapDecodeResult = { request ->
             runBlocking {
                 BitmapDecodeInterceptorChain(
