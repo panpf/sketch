@@ -40,6 +40,8 @@ import kotlinx.coroutines.withContext
 
 class EngineRequestInterceptor : RequestInterceptor {
 
+    override val key: String? = null
+
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): ImageData =
         when (val request = chain.request) {

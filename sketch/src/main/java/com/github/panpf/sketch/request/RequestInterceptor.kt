@@ -23,7 +23,14 @@ import com.github.panpf.sketch.request.internal.RequestContext
 /**
  * Intercept the execution of [ImageRequest], you can change the input and output, register to [ComponentRegistry] to take effect
  */
-fun interface RequestInterceptor {
+interface RequestInterceptor {
+
+    /**
+     * If the current RequestInterceptor will change the ImageData,
+     * and may only be used for a single [ImageRequest],
+     * provide a valid key to build request key and cache key
+     */
+    val key: String?
 
     @MainThread
     suspend fun intercept(chain: Chain): ImageData

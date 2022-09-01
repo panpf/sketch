@@ -29,7 +29,9 @@ import com.github.panpf.sketch.request.internal.RequestContext
 interface BitmapDecodeInterceptor {
 
     /**
-     * If the current BitmapDecodeInterceptor will change the BitmapDecodeResult, provide a valid key to build request key
+     * If the current BitmapDecodeInterceptor will change the BitmapDecodeResult,
+     * and may only be used for a single [ImageRequest],
+     * provide a valid key to build request key and cache key
      */
     val key: String?
 

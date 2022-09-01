@@ -234,6 +234,9 @@ class MemoryCacheRequestInterceptorTest {
     }
 
     class FakeRequestInterceptor : RequestInterceptor {
+
+        override val key: String? = null
+
         override suspend fun intercept(chain: Chain): ImageData {
             return when (chain.request) {
                 is DisplayRequest -> {

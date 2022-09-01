@@ -34,6 +34,8 @@ import kotlinx.coroutines.withContext
 
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 
+    override val key: String? = null
+
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request

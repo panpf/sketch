@@ -51,17 +51,14 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
             }
         )
     }
-    componentRegistry?.bitmapDecodeInterceptorList.orEmpty()
-        .mapNotNull { it.key }
+    componentRegistry?.requestInterceptorList.orEmpty().mapNotNull { it.key }
+        .plus(componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key })
         .plus(componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key })
         .takeIf { it.isNotEmpty() }
         ?.let { list ->
             appendQueryParameter(
-                "_decodeInterceptors",
-                list.joinToString(prefix = "[", postfix = "]", separator = ",") {
-                    it.replace("BitmapDecodeInterceptor", "")   // todo cannot be replaced
-                        .replace("DrawableDecodeInterceptor", "")
-                }
+                "_interceptors",
+                list.joinToString(prefix = "[", postfix = "]", separator = ",")
             )
         }
     if (ignoreExifOrientation) {
@@ -110,17 +107,14 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
                 }
             )
         }
-        componentRegistry?.bitmapDecodeInterceptorList.orEmpty()
-            .mapNotNull { it.key }
+        componentRegistry?.requestInterceptorList.orEmpty().mapNotNull { it.key }
+            .plus(componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key })
             .plus(componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key })
             .takeIf { it.isNotEmpty() }
             ?.let { list ->
                 appendQueryParameter(
-                    "_decodeInterceptors",
-                    list.joinToString(prefix = "[", postfix = "]", separator = ",") {
-                        it.replace("BitmapDecodeInterceptor", "")   // todo cannot be replaced
-                            .replace("DrawableDecodeInterceptor", "")
-                    }
+                    "_interceptors",
+                    list.joinToString(prefix = "[", postfix = "]", separator = ",")
                 )
             }
         if (disallowReuseBitmap) {

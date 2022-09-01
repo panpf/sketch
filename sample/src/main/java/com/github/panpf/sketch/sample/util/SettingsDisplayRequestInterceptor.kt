@@ -34,6 +34,8 @@ import com.github.panpf.sketch.target.ViewDisplayTarget
 
 class SettingsDisplayRequestInterceptor : RequestInterceptor {
 
+    override val key: String? = null
+
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request

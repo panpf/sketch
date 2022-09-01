@@ -32,6 +32,8 @@ class SaveCellularTrafficDisplayInterceptor constructor(
     isCellularNetworkConnected: ((Sketch) -> Boolean)? = null
 ) : RequestInterceptor {
 
+    override val key: String? = null
+
     companion object {
         private const val SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY =
             "sketch#save_cellular_traffic_old_depth"

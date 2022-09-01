@@ -30,6 +30,8 @@ import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
  */
 class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor {
 
+    override val key: String? = null
+
     companion object {
         var scrolling = false
         private const val PAUSE_LOAD_WHEN_SCROLLING_OLD_DEPTH_KEY =

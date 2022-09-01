@@ -33,6 +33,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.test.utils.Test3BitmapDecodeInterceptor
+import com.github.panpf.sketch.test.utils.Test3RequestInterceptor
 import com.github.panpf.sketch.test.utils.Test4DrawableDecodeInterceptor
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -164,14 +165,15 @@ class RequestUtilsTest {
         // decodeInterceptors
         request = request.newDisplayRequest {
             components {
+                addRequestInterceptor(Test3RequestInterceptor())
                 addBitmapDecodeInterceptor(Test3BitmapDecodeInterceptor())
                 addDrawableDecodeInterceptor(Test4DrawableDecodeInterceptor())
             }
         }
         cacheKeyUri = cacheKeyUri.buildUpon().apply {
             appendQueryParameter(
-                "_decodeInterceptors",
-                "[Test3,Test4]"
+                "_interceptors",
+                "[Test3RequestInterceptor,Test3BitmapDecodeInterceptor,Test4DrawableDecodeInterceptor]"
             )
         }.build()
         Assert.assertEquals(
@@ -384,14 +386,15 @@ class RequestUtilsTest {
         // bitmapDecodeInterceptors
         request = request.newDisplayRequest {
             components {
+                addRequestInterceptor(Test3RequestInterceptor())
                 addBitmapDecodeInterceptor(Test3BitmapDecodeInterceptor())
                 addDrawableDecodeInterceptor(Test4DrawableDecodeInterceptor())
             }
         }
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter(
-                "_decodeInterceptors",
-                "[Test3,Test4]"
+                "_interceptors",
+                "[Test3RequestInterceptor,Test3BitmapDecodeInterceptor,Test4DrawableDecodeInterceptor]"
             )
         }.build()
         Assert.assertEquals(
@@ -628,14 +631,15 @@ class RequestUtilsTest {
         // bitmapDecodeInterceptors
         request = request.newLoadRequest {
             components {
+                addRequestInterceptor(Test3RequestInterceptor())
                 addBitmapDecodeInterceptor(Test3BitmapDecodeInterceptor())
                 addDrawableDecodeInterceptor(Test4DrawableDecodeInterceptor())
             }
         }
         keyUri = keyUri.buildUpon().apply {
             appendQueryParameter(
-                "_decodeInterceptors",
-                "[Test3,Test4]"
+                "_interceptors",
+                "[Test3RequestInterceptor,Test3BitmapDecodeInterceptor,Test4DrawableDecodeInterceptor]"
             )
         }.build()
         Assert.assertEquals(
