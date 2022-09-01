@@ -1,3 +1,17 @@
+# v3.0.0-rc10
+
+### sketch
+
+* fix: Fixed the bug that the transformedList of the DrawableDecodeResult returned by
+  DefaultDrawableDecoder was always null
+* change: RequestInterceptor, BitmapDecodeInterceptor and DrawableDecodeInterceptor add key
+  attribute
+* improve: Improve HttpUriFetcher
+* new: Added 'extras: Map<String, String>' property to DisplayResult and LoadResult to facilitate
+  passing more information during decoding or transform stage
+* new: ImageRequest and ImageOptions supports ComponentRegistry, you can configure components that
+  only work on the current ImageRequest
+
 # v3.0.0-rc09
 
 ### sketch
