@@ -19,7 +19,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 
-class DrawableEngineDecodeInterceptor : DrawableDecodeInterceptor {
+class EngineDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
     override val key: String? = null
 
@@ -35,7 +35,7 @@ class DrawableEngineDecodeInterceptor : DrawableDecodeInterceptor {
             .decode()
     }
 
-    override fun toString(): String = "DrawableEngineDecodeInterceptor"
+    override fun toString(): String = "EngineDrawableDecodeInterceptor"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

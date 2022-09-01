@@ -58,6 +58,15 @@ open class ComponentRegistry private constructor(
     val drawableDecodeInterceptorList: List<DrawableDecodeInterceptor>,
 ) {
 
+    fun isEmpty(): Boolean {
+        return fetcherFactoryList.isEmpty()
+                && bitmapDecoderFactoryList.isEmpty()
+                && drawableDecoderFactoryList.isEmpty()
+                && requestInterceptorList.isEmpty()
+                && bitmapDecodeInterceptorList.isEmpty()
+                && drawableDecodeInterceptorList.isEmpty()
+    }
+
     /**
      * Create a new [ComponentRegistry.Builder] based on the current [ComponentRegistry].
      *
@@ -188,7 +197,8 @@ open class ComponentRegistry private constructor(
             .joinToString(prefix = "[", postfix = "]", separator = ",")
         val drawableDecodeInterceptorsString = drawableDecodeInterceptorList
             .joinToString(prefix = "[", postfix = "]", separator = ",")
-        return "ComponentRegistry(fetcherFactoryList=${fetchersString}," +
+        return "ComponentRegistry(" +
+                "fetcherFactoryList=${fetchersString}," +
                 "bitmapDecoderFactoryList=${bitmapDecodersString}," +
                 "drawableDecoderFactoryList=${drawableDecodersString}," +
                 "requestInterceptorList=${requestInterceptorsString}," +
@@ -226,17 +236,17 @@ open class ComponentRegistry private constructor(
         private val fetcherFactoryList: MutableList<Fetcher.Factory>
         private val bitmapDecoderFactoryList: MutableList<BitmapDecoder.Factory>
         private val drawableDecoderFactoryList: MutableList<DrawableDecoder.Factory>
-        private val requestInterceptors: MutableList<RequestInterceptor>
-        private val bitmapDecodeInterceptors: MutableList<BitmapDecodeInterceptor>
-        private val drawableDecodeInterceptors: MutableList<DrawableDecodeInterceptor>
+        private val requestInterceptorList: MutableList<RequestInterceptor>
+        private val bitmapDecodeInterceptorList: MutableList<BitmapDecodeInterceptor>
+        private val drawableDecodeInterceptorList: MutableList<DrawableDecodeInterceptor>
 
         constructor() {
             this.fetcherFactoryList = mutableListOf()
             this.bitmapDecoderFactoryList = mutableListOf()
             this.drawableDecoderFactoryList = mutableListOf()
-            this.requestInterceptors = mutableListOf()
-            this.bitmapDecodeInterceptors = mutableListOf()
-            this.drawableDecodeInterceptors = mutableListOf()
+            this.requestInterceptorList = mutableListOf()
+            this.bitmapDecodeInterceptorList = mutableListOf()
+            this.drawableDecodeInterceptorList = mutableListOf()
         }
 
         constructor(componentRegistry: ComponentRegistry) {
@@ -245,10 +255,10 @@ open class ComponentRegistry private constructor(
                 componentRegistry.bitmapDecoderFactoryList.toMutableList()
             this.drawableDecoderFactoryList =
                 componentRegistry.drawableDecoderFactoryList.toMutableList()
-            this.requestInterceptors = componentRegistry.requestInterceptorList.toMutableList()
-            this.bitmapDecodeInterceptors =
+            this.requestInterceptorList = componentRegistry.requestInterceptorList.toMutableList()
+            this.bitmapDecodeInterceptorList =
                 componentRegistry.bitmapDecodeInterceptorList.toMutableList()
-            this.drawableDecodeInterceptors =
+            this.drawableDecodeInterceptorList =
                 componentRegistry.drawableDecodeInterceptorList.toMutableList()
         }
 
@@ -277,7 +287,7 @@ open class ComponentRegistry private constructor(
          * Append an [RequestInterceptor]
          */
         fun addRequestInterceptor(interceptor: RequestInterceptor): Builder = apply {
-            this.requestInterceptors.add(interceptor)
+            this.requestInterceptorList.add(interceptor)
         }
 
         /**
@@ -285,7 +295,7 @@ open class ComponentRegistry private constructor(
          */
         fun addBitmapDecodeInterceptor(bitmapDecodeInterceptor: BitmapDecodeInterceptor): Builder =
             apply {
-                this.bitmapDecodeInterceptors.add(bitmapDecodeInterceptor)
+                this.bitmapDecodeInterceptorList.add(bitmapDecodeInterceptor)
             }
 
         /**
@@ -293,18 +303,46 @@ open class ComponentRegistry private constructor(
          */
         fun addDrawableDecodeInterceptor(drawableDecodeInterceptor: DrawableDecodeInterceptor): Builder =
             apply {
-                this.drawableDecodeInterceptors.add(drawableDecodeInterceptor)
+                this.drawableDecodeInterceptorList.add(drawableDecodeInterceptor)
             }
 
         fun build(): ComponentRegistry = ComponentRegistry(
             fetcherFactoryList = fetcherFactoryList.toList(),
             bitmapDecoderFactoryList = bitmapDecoderFactoryList.toList(),
             drawableDecoderFactoryList = drawableDecoderFactoryList.toList(),
-            requestInterceptorList = requestInterceptors.toList(),
-            bitmapDecodeInterceptorList = bitmapDecodeInterceptors.toList(),
-            drawableDecodeInterceptorList = drawableDecodeInterceptors.toList(),
+            requestInterceptorList = requestInterceptorList.toList(),
+            bitmapDecodeInterceptorList = bitmapDecodeInterceptorList.toList(),
+            drawableDecodeInterceptorList = drawableDecodeInterceptorList.toList(),
         )
     }
+}
+
+fun ComponentRegistry.isNotEmpty(): Boolean = !isEmpty()
+
+fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
+    if (this == null || other == null) {
+        return this ?: other
+    }
+    return this.newBuilder().apply {
+        other.fetcherFactoryList.forEach {
+            addFetcher(it)
+        }
+        other.bitmapDecoderFactoryList.forEach {
+            addBitmapDecoder(it)
+        }
+        other.drawableDecoderFactoryList.forEach {
+            addDrawableDecoder(it)
+        }
+        other.requestInterceptorList.forEach {
+            addRequestInterceptor(it)
+        }
+        other.bitmapDecodeInterceptorList.forEach {
+            addBitmapDecodeInterceptor(it)
+        }
+        other.drawableDecodeInterceptorList.forEach {
+            addDrawableDecodeInterceptor(it)
+        }
+    }.build()
 }
 
 /**

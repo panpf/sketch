@@ -31,11 +31,11 @@ import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecoder
-import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -179,9 +179,9 @@ class Sketch private constructor(
 
                 addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
                 addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-                addBitmapDecodeInterceptor(BitmapEngineDecodeInterceptor())
+                addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
 
-                addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
+                addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
             }.build()
         components = Components(this, componentRegistry)
 

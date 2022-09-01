@@ -183,19 +183,15 @@ fun Parameters.isNotEmpty(): Boolean = !isEmpty()
 /** Returns the value associated with [key] or null if [key] has no mapping. */
 operator fun Parameters.get(key: String): Any? = value(key)
 
-fun Parameters?.merged(other: Parameters?): Parameters? =
-    if (this != null) {
-        if (other != null) {
-            this.newBuilder().apply {
-                other.values().forEach {
-                    if (this@merged.entry(it.key) == null) {
-                        set(it.key, it.value)
-                    }
-                }
-            }.build()
-        } else {
-            this
-        }
-    } else {
-        other
+fun Parameters?.merged(other: Parameters?): Parameters? {
+    if (this == null || other == null) {
+        return this ?: other
     }
+    return this.newBuilder().apply {
+        other.values().forEach {
+            if (this@merged.entry(it.key) == null) {
+                set(it.key, it.value)
+            }
+        }
+    }.build()
+}

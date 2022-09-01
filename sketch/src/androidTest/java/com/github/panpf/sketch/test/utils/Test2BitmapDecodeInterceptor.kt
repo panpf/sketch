@@ -37,6 +37,6 @@ class Test2BitmapDecodeInterceptor : BitmapDecodeInterceptor {
     }
 
     override fun toString(): String {
-        return "TestBitmapDecodeInterceptor"
+        return "Test2BitmapDecodeInterceptor"
     }
 }

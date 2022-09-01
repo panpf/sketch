@@ -22,10 +22,10 @@ import com.github.panpf.sketch.Components
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
-import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -131,12 +131,12 @@ class ComponentsTest {
 
         Components(sketch, ComponentRegistry.Builder().apply {
             addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-            addBitmapDecodeInterceptor(BitmapEngineDecodeInterceptor())
+            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
         }.build()).apply {
             Assert.assertEquals(
                 listOf(
                     BitmapTransformationDecodeInterceptor(),
-                    BitmapEngineDecodeInterceptor()
+                    EngineBitmapDecodeInterceptor()
                 ),
                 getBitmapDecodeInterceptorList(emptyRequest)
             )
@@ -145,7 +145,7 @@ class ComponentsTest {
                     TestBitmapDecodeInterceptor(),
                     Test2BitmapDecodeInterceptor(),
                     BitmapTransformationDecodeInterceptor(),
-                    BitmapEngineDecodeInterceptor()
+                    EngineBitmapDecodeInterceptor()
                 ),
                 getBitmapDecodeInterceptorList(notEmptyRequest)
             )
@@ -179,10 +179,10 @@ class ComponentsTest {
 
         Components(sketch, ComponentRegistry.Builder().apply {
             addDrawableDecodeInterceptor(Test3DrawableDecodeInterceptor())
-            addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
+            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
         }.build()).apply {
             Assert.assertEquals(
-                listOf(Test3DrawableDecodeInterceptor(), DrawableEngineDecodeInterceptor()),
+                listOf(Test3DrawableDecodeInterceptor(), EngineDrawableDecodeInterceptor()),
                 getDrawableDecodeInterceptorList(emptyRequest)
             )
             Assert.assertEquals(
@@ -190,7 +190,7 @@ class ComponentsTest {
                     TestDrawableDecodeInterceptor(),
                     Test2DrawableDecodeInterceptor(),
                     Test3DrawableDecodeInterceptor(),
-                    DrawableEngineDecodeInterceptor()
+                    EngineDrawableDecodeInterceptor()
                 ),
                 getDrawableDecodeInterceptorList(notEmptyRequest)
             )
@@ -398,7 +398,7 @@ class ComponentsTest {
                     newDrawableDecoder(request, requestContext, fetchResult)
                 }
             }
-            assertNoThrow() {
+            assertNoThrow {
                 val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
                     components {
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
@@ -465,9 +465,9 @@ class ComponentsTest {
             addBitmapDecoder(DefaultBitmapDecoder.Factory())
             addDrawableDecoder(DefaultDrawableDecoder.Factory())
             addRequestInterceptor(EngineRequestInterceptor())
-            addBitmapDecodeInterceptor(BitmapEngineDecodeInterceptor())
+            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
             addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-            addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
+            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
         }.build()).apply {
             Assert.assertEquals(
                 "Components(ComponentRegistry(" +
@@ -475,8 +475,8 @@ class ComponentsTest {
                         "bitmapDecoderFactoryList=[XmlDrawableBitmapDecoder,DefaultBitmapDecoder]," +
                         "drawableDecoderFactoryList=[DefaultDrawableDecoder]," +
                         "requestInterceptorList=[EngineRequestInterceptor]," +
-                        "bitmapDecodeInterceptorList=[BitmapEngineDecodeInterceptor,BitmapTransformationDecodeInterceptor]," +
-                        "drawableDecodeInterceptorList=[DrawableEngineDecodeInterceptor]" +
+                        "bitmapDecodeInterceptorList=[EngineBitmapDecodeInterceptor,BitmapTransformationDecodeInterceptor]," +
+                        "drawableDecodeInterceptorList=[EngineDrawableDecodeInterceptor]" +
                         "))",
                 toString()
             )
@@ -503,10 +503,10 @@ class ComponentsTest {
             addRequestInterceptor(EngineRequestInterceptor())
         }.build())
         val components5 = Components(sketch, ComponentRegistry.Builder().apply {
-            addBitmapDecodeInterceptor(BitmapEngineDecodeInterceptor())
+            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
         }.build())
         val components6 = Components(sketch, ComponentRegistry.Builder().apply {
-            addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
+            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
         }.build())
 
         Assert.assertEquals(components0, components0)
@@ -553,10 +553,10 @@ class ComponentsTest {
             addRequestInterceptor(EngineRequestInterceptor())
         }.build())
         val components5 = Components(sketch, ComponentRegistry.Builder().apply {
-            addBitmapDecodeInterceptor(BitmapEngineDecodeInterceptor())
+            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
         }.build())
         val components6 = Components(sketch, ComponentRegistry.Builder().apply {
-            addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
+            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
         }.build())
 
         Assert.assertNotEquals(components0.hashCode(), components1.hashCode())

@@ -31,7 +31,6 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.ComponentRegistry.Builder
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
@@ -255,7 +254,6 @@ interface ImageRequest {
         private var viewTargetOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
         private var resizeSizeResolver: SizeResolver? = null
-        private var componentRegistry: ComponentRegistry? = null
 
         protected constructor(context: Context, uriString: String?) {
             this.context = context
@@ -279,7 +277,6 @@ interface ImageRequest {
             this.defaultOptions = request.defaultOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
             this.resizeSizeResolver = request.resizeSizeResolver
-            this.componentRegistry = request.componentRegistry
         }
 
         /**
@@ -769,14 +766,15 @@ interface ImageRequest {
          * Set the [ComponentRegistry]
          */
         open fun components(components: ComponentRegistry?): Builder = apply {
-            this.componentRegistry = components
+            definedOptionsBuilder.components(components)
         }
 
         /**
          * Build and set the [ComponentRegistry]
          */
-        open fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
-            components(Builder().apply(configBlock).build())
+        open fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
+            definedOptionsBuilder.components(configBlock)
+        }
 
 
         @SuppressLint("NewApi")
@@ -820,6 +818,7 @@ interface ImageRequest {
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: ENABLED
+            val componentRegistry = finalOptions.componentRegistry
 
             return when (this@Builder) {
                 is DisplayRequest.Builder -> {

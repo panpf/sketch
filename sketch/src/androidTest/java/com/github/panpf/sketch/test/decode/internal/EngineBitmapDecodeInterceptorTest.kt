@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,12 +16,11 @@
 package com.github.panpf.sketch.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
+import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.runBlocking
@@ -30,29 +29,21 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class DrawableEngineDecodeInterceptorTest {
+class EngineBitmapDecodeInterceptorTest {
 
     @Test
     fun testIntercept() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val interceptors = listOf(DrawableEngineDecodeInterceptor())
-        val loadRequest = DisplayRequest(context, newAssetUri("sample.jpeg")) {
-            resultCachePolicy(DISABLED)
-        }
+        val interceptors = listOf(EngineBitmapDecodeInterceptor())
+        val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg"))
         val requestContext = RequestContext(loadRequest)
-        val chain = DrawableDecodeInterceptorChain(
-            sketch = sketch,
-            request = loadRequest,
-            requestContext = requestContext,
-            fetchResult = null,
-            interceptors = interceptors,
-            index = 0
-        )
+        val chain =
+            BitmapDecodeInterceptorChain(sketch, loadRequest, requestContext, null, interceptors, 0)
         val result = runBlocking {
             chain.proceed()
         }
-        Assert.assertEquals(1291, result.drawable.intrinsicWidth)
-        Assert.assertEquals(1936, result.drawable.intrinsicHeight)
+        Assert.assertEquals(1291, result.bitmap.width)
+        Assert.assertEquals(1936, result.bitmap.height)
         Assert.assertEquals(
             "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
             result.imageInfo.toString()
@@ -63,9 +54,9 @@ class DrawableEngineDecodeInterceptorTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = DrawableEngineDecodeInterceptor()
-        val element11 = DrawableEngineDecodeInterceptor()
-        val element2 = DrawableEngineDecodeInterceptor()
+        val element1 = EngineBitmapDecodeInterceptor()
+        val element11 = EngineBitmapDecodeInterceptor()
+        val element2 = EngineBitmapDecodeInterceptor()
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -87,8 +78,8 @@ class DrawableEngineDecodeInterceptorTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "DrawableEngineDecodeInterceptor",
-            DrawableEngineDecodeInterceptor().toString()
+            "EngineBitmapDecodeInterceptor",
+            EngineBitmapDecodeInterceptor().toString()
         )
     }
 }

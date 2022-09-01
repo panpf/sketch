@@ -50,7 +50,7 @@ class TestBitmapDecoder : BitmapDecoder {
         }
 
         override fun toString(): String {
-            return "TestFetcher"
+            return "TestBitmapDecoder"
         }
     }
 }

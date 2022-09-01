@@ -25,6 +25,7 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.BitmapDecoder
@@ -35,6 +36,7 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.isNotEmpty
 import com.github.panpf.sketch.http.merged
+import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.PrecisionDecider
@@ -204,6 +206,12 @@ interface ImageOptions {
 
 
     /**
+     * Components that are only valid for the current request
+     */
+    val componentRegistry: ComponentRegistry?
+
+
+    /**
      * Create a new [ImageOptions.Builder] based on the current [ImageOptions].
      *
      * You can extend it with a trailing lambda function [configBlock]
@@ -238,26 +246,28 @@ interface ImageOptions {
      * Returns true if all properties are empty
      */
     @Suppress("DEPRECATION")
-    fun isEmpty(): Boolean = depth == null
-            && parameters?.isEmpty() != false
-            && httpHeaders?.isEmpty() != false
-            && downloadCachePolicy == null
-            && bitmapConfig == null
-            && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
-            && preferQualityOverSpeed == null
-            && resizeSize == null
-            && resizePrecisionDecider == null
-            && resizeScaleDecider == null
-            && transformations == null
-            && disallowReuseBitmap == null
-            && ignoreExifOrientation == null
-            && resultCachePolicy == null
-            && placeholder == null
-            && error == null
-            && transitionFactory == null
-            && disallowAnimatedImage == null
-            && resizeApplyToDrawable == null
-            && memoryCachePolicy == null
+    fun isEmpty(): Boolean =
+        depth == null
+                && parameters?.isEmpty() != false
+                && httpHeaders?.isEmpty() != false
+                && downloadCachePolicy == null
+                && bitmapConfig == null
+                && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
+                && preferQualityOverSpeed == null
+                && resizeSize == null
+                && resizePrecisionDecider == null
+                && resizeScaleDecider == null
+                && transformations == null
+                && disallowReuseBitmap == null
+                && ignoreExifOrientation == null
+                && resultCachePolicy == null
+                && placeholder == null
+                && error == null
+                && transitionFactory == null
+                && disallowAnimatedImage == null
+                && resizeApplyToDrawable == null
+                && memoryCachePolicy == null
+                && componentRegistry == null
 
     class Builder {
 
@@ -284,6 +294,8 @@ interface ImageOptions {
         private var disallowAnimatedImage: Boolean? = null
         private var resizeApplyToDrawable: Boolean? = null
         private var memoryCachePolicy: CachePolicy? = null
+
+        private var componentRegistry: ComponentRegistry? = null
 
         constructor()
 
@@ -314,6 +326,8 @@ interface ImageOptions {
             this.disallowAnimatedImage = request.disallowAnimatedImage
             this.resizeApplyToDrawable = request.resizeApplyToDrawable
             this.memoryCachePolicy = request.memoryCachePolicy
+
+            this.componentRegistry = request.componentRegistry
         }
 
 
@@ -737,6 +751,19 @@ interface ImageOptions {
             this.memoryCachePolicy = cachePolicy
         }
 
+        /**
+         * Set the [ComponentRegistry]
+         */
+        fun components(components: ComponentRegistry?): Builder = apply {
+            this.componentRegistry = components
+        }
+
+        /**
+         * Build and set the [ComponentRegistry]
+         */
+        fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            components(ComponentRegistry.Builder().apply(configBlock).build())
+
 
         /**
          * Merge the specified [ImageOptions] into the current [Builder]. Currently [Builder] takes precedence
@@ -808,6 +835,8 @@ interface ImageOptions {
             if (this.memoryCachePolicy == null) {
                 this.memoryCachePolicy = options.memoryCachePolicy
             }
+
+            componentRegistry = componentRegistry?.merged(options.componentRegistry)
         }
 
 
@@ -833,6 +862,7 @@ interface ImageOptions {
             disallowAnimatedImage = disallowAnimatedImage,
             resizeApplyToDrawable = resizeApplyToDrawable,
             memoryCachePolicy = memoryCachePolicy,
+            componentRegistry = componentRegistry,
         )
     }
 
@@ -861,6 +891,7 @@ interface ImageOptions {
         override val disallowAnimatedImage: Boolean?,
         override val resizeApplyToDrawable: Boolean?,
         override val memoryCachePolicy: CachePolicy?,
+        override val componentRegistry: ComponentRegistry?,
     ) : ImageOptions {
 
         override fun equals(other: Any?): Boolean {
@@ -887,6 +918,7 @@ interface ImageOptions {
             if (disallowAnimatedImage != other.disallowAnimatedImage) return false
             if (resizeApplyToDrawable != other.resizeApplyToDrawable) return false
             if (memoryCachePolicy != other.memoryCachePolicy) return false
+            if (componentRegistry != other.componentRegistry) return false
 
             return true
         }
@@ -915,6 +947,7 @@ interface ImageOptions {
             result = 31 * result + (disallowAnimatedImage?.hashCode() ?: 0)
             result = 31 * result + (resizeApplyToDrawable?.hashCode() ?: 0)
             result = 31 * result + (memoryCachePolicy?.hashCode() ?: 0)
+            result = 31 * result + (componentRegistry?.hashCode() ?: 0)
             return result
         }
 
@@ -944,6 +977,7 @@ interface ImageOptions {
                 append("disallowAnimatedImage=$disallowAnimatedImage, ")
                 append("resizeApplyToDrawable=$resizeApplyToDrawable")
                 append("memoryCachePolicy=$memoryCachePolicy, ")
+                append("componentRegistry=$componentRegistry, ")
                 append(")")
             }
         }

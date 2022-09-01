@@ -26,11 +26,15 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
+import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
+import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
@@ -38,6 +42,7 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.get
+import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
@@ -57,6 +62,14 @@ import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
+import com.github.panpf.sketch.test.utils.Test2BitmapDecodeInterceptor
+import com.github.panpf.sketch.test.utils.Test2DrawableDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestBitmapDecoder
+import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDrawableDecoder
+import com.github.panpf.sketch.test.utils.TestFetcher
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -112,6 +125,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.disallowAnimatedImage)
             Assert.assertNull(this.resizeApplyToDrawable)
             Assert.assertNull(this.memoryCachePolicy)
+            Assert.assertNull(this.componentRegistry)
         }
 
         ImageOptions {
@@ -276,6 +290,16 @@ class ImageOptionsTest {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.memoryCachePolicy)
+        }
+
+        ImageOptions {
+            components {
+                addFetcher(HttpUriFetcher.Factory())
+            }
+        }.apply {
+            Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
+            Assert.assertNotNull(this.componentRegistry)
         }
     }
 
@@ -626,6 +650,44 @@ class ImageOptionsTest {
         }).apply {
             Assert.assertEquals(DISABLED, this.memoryCachePolicy)
         }
+
+        ImageOptions {
+            components {
+                addFetcher(TestFetcher.Factory())
+                addBitmapDecoder(TestBitmapDecoder.Factory())
+                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+            }
+        }.merged(ImageOptions {
+            components {
+                addFetcher(HttpUriFetcher.Factory())
+                addBitmapDecoder(DefaultBitmapDecoder.Factory())
+                addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                addRequestInterceptor(EngineRequestInterceptor())
+                addBitmapDecodeInterceptor(Test2BitmapDecodeInterceptor())
+                addDrawableDecodeInterceptor(Test2DrawableDecodeInterceptor())
+            }
+        }).apply {
+            Assert.assertEquals(
+                ComponentRegistry.Builder().apply {
+                    addFetcher(TestFetcher.Factory())
+                    addBitmapDecoder(TestBitmapDecoder.Factory())
+                    addDrawableDecoder(TestDrawableDecoder.Factory())
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                    addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                    addFetcher(HttpUriFetcher.Factory())
+                    addBitmapDecoder(DefaultBitmapDecoder.Factory())
+                    addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                    addRequestInterceptor(EngineRequestInterceptor())
+                    addBitmapDecodeInterceptor(Test2BitmapDecodeInterceptor())
+                    addDrawableDecodeInterceptor(Test2DrawableDecodeInterceptor())
+                }.build(),
+                componentRegistry
+            )
+        }
     }
 
     @Test
@@ -681,6 +743,10 @@ class ImageOptionsTest {
                     resizeApplyToDrawable(true)
                 }.apply { add(this) }.newOptions {
                     memoryCachePolicy(ENABLED)
+                }.apply { add(this) }.newOptions {
+                    components {
+                        addFetcher(HttpUriFetcher.Factory())
+                    }
                 }.apply { add(this) }
         }
 
@@ -1559,6 +1625,40 @@ class ImageOptionsTest {
             memoryCachePolicy(null)
             build().apply {
                 Assert.assertNull(memoryCachePolicy)
+            }
+        }
+    }
+
+    @Test
+    fun testComponentRegistry() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                Assert.assertNull(componentRegistry)
+            }
+
+            components {
+                addFetcher(HttpUriFetcher.Factory())
+            }
+            val options1 = build().apply {
+                Assert.assertEquals(ComponentRegistry.Builder().apply {
+                    addFetcher(HttpUriFetcher.Factory())
+                }.build(), componentRegistry)
+            }
+
+            components {
+                addBitmapDecoder(TestBitmapDecoder.Factory())
+            }
+            val options2 = build().apply {
+                Assert.assertEquals(ComponentRegistry.Builder().apply {
+                    addBitmapDecoder(TestBitmapDecoder.Factory())
+                }.build(), componentRegistry)
+            }
+
+            Assert.assertNotEquals(options1, options2)
+
+            components(null)
+            build().apply {
+                Assert.assertNull(componentRegistry)
             }
         }
     }

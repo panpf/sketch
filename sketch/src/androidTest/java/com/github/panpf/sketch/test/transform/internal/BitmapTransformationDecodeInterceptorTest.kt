@@ -20,7 +20,7 @@ import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
@@ -48,7 +48,7 @@ class BitmapTransformationDecodeInterceptorTest {
     fun testIntercept() {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors =
-            listOf(BitmapEngineDecodeInterceptor())
+            listOf(EngineBitmapDecodeInterceptor())
 
         runBlocking {
             val request = LoadRequest(context, newAssetUri("sample.jpeg"))

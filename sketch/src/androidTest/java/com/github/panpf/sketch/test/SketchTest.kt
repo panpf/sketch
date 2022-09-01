@@ -24,11 +24,11 @@ import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
-import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.DrawableEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -198,8 +198,8 @@ class SketchTest {
                         addRequestInterceptor(EngineRequestInterceptor())
                         addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
                         addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-                        addBitmapDecodeInterceptor(BitmapEngineDecodeInterceptor())
-                        addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
+                        addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
+                        addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
                     }.build(),
                     components.registry
                 )
@@ -228,8 +228,8 @@ class SketchTest {
                         addRequestInterceptor(EngineRequestInterceptor())
                         addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
                         addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-                        addBitmapDecodeInterceptor(BitmapEngineDecodeInterceptor())
-                        addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
+                        addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
+                        addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
                     }.build(),
                     components.registry
                 )
@@ -247,8 +247,8 @@ class SketchTest {
                         addRequestInterceptor(EngineRequestInterceptor())
                         addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
                         addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-                        addBitmapDecodeInterceptor(BitmapEngineDecodeInterceptor())
-                        addDrawableDecodeInterceptor(DrawableEngineDecodeInterceptor())
+                        addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
+                        addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
                     }.build(),
                     components.registry
                 )
@@ -292,7 +292,7 @@ class SketchTest {
                     listOf(
                         BitmapResultCacheDecodeInterceptor(),
                         BitmapTransformationDecodeInterceptor(),
-                        BitmapEngineDecodeInterceptor()
+                        EngineBitmapDecodeInterceptor()
                     ),
                     components.getBitmapDecodeInterceptorList(DisplayRequest(context, ""))
                 )
@@ -306,7 +306,7 @@ class SketchTest {
                         TestBitmapDecodeInterceptor(),
                         BitmapResultCacheDecodeInterceptor(),
                         BitmapTransformationDecodeInterceptor(),
-                        BitmapEngineDecodeInterceptor()
+                        EngineBitmapDecodeInterceptor()
                     ),
                     components.getBitmapDecodeInterceptorList(DisplayRequest(context, ""))
                 )
@@ -314,7 +314,7 @@ class SketchTest {
                     listOf(
                         BitmapResultCacheDecodeInterceptor(),
                         BitmapTransformationDecodeInterceptor(),
-                        BitmapEngineDecodeInterceptor()
+                        EngineBitmapDecodeInterceptor()
                     ),
                     components.getBitmapDecodeInterceptorList(DisplayRequest(context, ""))
                 )
@@ -322,7 +322,7 @@ class SketchTest {
 
             build().apply {
                 Assert.assertEquals(
-                    listOf(DrawableEngineDecodeInterceptor()),
+                    listOf(EngineDrawableDecodeInterceptor()),
                     components.getDrawableDecodeInterceptorList(DisplayRequest(context, ""))
                 )
             }
@@ -331,11 +331,11 @@ class SketchTest {
             }
             build().apply {
                 Assert.assertEquals(
-                    listOf(TestDrawableDecodeInterceptor(), DrawableEngineDecodeInterceptor()),
+                    listOf(TestDrawableDecodeInterceptor(), EngineDrawableDecodeInterceptor()),
                     components.getDrawableDecodeInterceptorList(DisplayRequest(context, ""))
                 )
                 Assert.assertNotEquals(
-                    listOf(DrawableEngineDecodeInterceptor()),
+                    listOf(EngineDrawableDecodeInterceptor()),
                     components.getDrawableDecodeInterceptorList(DisplayRequest(context, ""))
                 )
             }

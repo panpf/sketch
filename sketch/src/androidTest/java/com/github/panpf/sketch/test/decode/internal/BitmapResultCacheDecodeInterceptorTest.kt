@@ -24,7 +24,7 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.BitmapEngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.resultCacheDataKey
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -50,7 +50,7 @@ class BitmapResultCacheDecodeInterceptorTest {
             listOf(
                 BitmapResultCacheDecodeInterceptor(),
                 ExtrasTestBitmapDecodeInterceptor(),
-                BitmapEngineDecodeInterceptor()
+                EngineBitmapDecodeInterceptor()
             )
         val executeRequest: (ImageRequest) -> BitmapDecodeResult = { request ->
             runBlocking {

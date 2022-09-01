@@ -50,7 +50,7 @@ class TestDrawableDecoder : DrawableDecoder {
         }
 
         override fun toString(): String {
-            return "TestFetcher"
+            return "TestDrawableDecoder"
         }
     }
 }

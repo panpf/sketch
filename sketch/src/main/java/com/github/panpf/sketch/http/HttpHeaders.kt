@@ -130,22 +130,18 @@ class HttpHeaders(
 /** Return true when the set contains elements. */
 fun HttpHeaders.isNotEmpty(): Boolean = !isEmpty()
 
-fun HttpHeaders?.merged(other: HttpHeaders?): HttpHeaders? =
-    if (this != null) {
-        if (other != null) {
-            this.newBuilder().apply {
-                other.setList.forEach {
-                    if (this@merged.getSet(it.first) == null) {
-                        set(it.first, it.second)
-                    }
-                }
-                other.addList.forEach {
-                    add(it.first, it.second)
-                }
-            }.build()
-        } else {
-            this
-        }
-    } else {
-        other
+fun HttpHeaders?.merged(other: HttpHeaders?): HttpHeaders? {
+    if (this == null || other == null) {
+        return this ?: other
     }
+    return this.newBuilder().apply {
+        other.setList.forEach {
+            if (this@merged.getSet(it.first) == null) {
+                set(it.first, it.second)
+            }
+        }
+        other.addList.forEach {
+            add(it.first, it.second)
+        }
+    }.build()
+}

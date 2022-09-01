@@ -19,7 +19,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 
-class BitmapEngineDecodeInterceptor : BitmapDecodeInterceptor {
+class EngineBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
     override val key: String? = null
 
@@ -36,7 +36,7 @@ class BitmapEngineDecodeInterceptor : BitmapDecodeInterceptor {
             .decode()
     }
 
-    override fun toString(): String = "BitmapEngineDecodeInterceptor"
+    override fun toString(): String = "EngineBitmapDecodeInterceptor"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -59,7 +59,7 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
             appendQueryParameter(
                 "_decodeInterceptors",
                 list.joinToString(prefix = "[", postfix = "]", separator = ",") {
-                    it.replace("BitmapDecodeInterceptor", "")
+                    it.replace("BitmapDecodeInterceptor", "")   // todo cannot be replaced
                         .replace("DrawableDecodeInterceptor", "")
                 }
             )
@@ -118,7 +118,7 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
                 appendQueryParameter(
                     "_decodeInterceptors",
                     list.joinToString(prefix = "[", postfix = "]", separator = ",") {
-                        it.replace("BitmapDecodeInterceptor", "")
+                        it.replace("BitmapDecodeInterceptor", "")   // todo cannot be replaced
                             .replace("DrawableDecodeInterceptor", "")
                     }
                 )
