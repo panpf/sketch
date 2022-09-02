@@ -58,7 +58,7 @@ fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Bo
         ) {
             items(
                 count = items.itemCount,
-                key = { items[it]?.diffKey ?: "" },
+//                key = { items[it]?.diffKey ?: "" },
                 contentType = { 1 }
             ) { index ->
                 val item = items[index]
