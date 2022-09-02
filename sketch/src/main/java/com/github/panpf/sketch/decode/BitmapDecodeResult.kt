@@ -27,7 +27,14 @@ data class BitmapDecodeResult constructor(
     val bitmap: Bitmap,
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
+    /**
+     * Store the transformation history of the Bitmap
+     */
     val transformedList: List<String>?,
+    /**
+     * Store some additional information for consumer use,
+     * You can add information here during decoding, transformation, interceptor, etc.
+     */
     val extras: Map<String, String>?,
 ) {
 

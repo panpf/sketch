@@ -115,7 +115,7 @@ fun calculateSampleSize(
             sampleSize *= 2
         }
     }
-    return limitedSampleSizeByMaxBitmapSize(imageSize, sampleSize, mimeType)
+    return limitedSampleSizeByMaxBitmapSize(sampleSize, imageSize, mimeType)
 }
 
 /**
@@ -146,7 +146,7 @@ fun calculateSampleSizeForRegion(
  * The width and height limit cannot be greater than the maximum size allowed by OpenGL, support for BitmapFactory or ImageDecoder
  */
 fun limitedSampleSizeByMaxBitmapSize(
-    imageSize: Size, sampleSize: Int, mimeType: String? = null
+    sampleSize: Int, imageSize: Size, mimeType: String? = null
 ): Int {
     val maxBitmapSize = maxBitmapSize
     var finalSampleSize = sampleSize.coerceAtLeast(1)
@@ -233,34 +233,30 @@ fun realDecode(
             precision = precision,
             resizeScale = scale,
         )
-        decodeConfig.inSampleSize = calculateSampleSizeForRegion(
+        val sampleSize = calculateSampleSizeForRegion(
             regionSize = Size(resizeMapping.srcRect.width(), resizeMapping.srcRect.height()),
             targetSize = Size(resizeMapping.destRect.width(), resizeMapping.destRect.height()),
             mimeType = imageInfo.mimeType,
             imageSize = imageSize
         )
-        transformedList.add(createResizeTransformed(resize))
+        if (sampleSize > 1) {
+            transformedList.add(createInSampledTransformed(sampleSize))
+        }
+        transformedList.add(createSubsamplingTransformed(resizeMapping.srcRect))
+        decodeConfig.inSampleSize = sampleSize
         decodeRegion(resizeMapping.srcRect, decodeConfig)
     } else {
-        @Suppress("IfThenToElvis")
-        decodeConfig.inSampleSize = if (addedResize != null) {
-            calculateSampleSize(
-                imageSize = imageSize,
-                targetSize = Size(addedResize.width, addedResize.height),
-                mimeType = imageInfo.mimeType
-            )
+        val sampleSize = if (addedResize != null) {
+            val targetSize = Size(addedResize.width, addedResize.height)
+            calculateSampleSize(imageSize, targetSize, imageInfo.mimeType)
         } else {
-            limitedSampleSizeByMaxBitmapSize(
-                imageSize = imageSize,
-                sampleSize = 1,
-                mimeType = imageInfo.mimeType
-            )
+            limitedSampleSizeByMaxBitmapSize(1, imageSize, imageInfo.mimeType)
         }
+        if (sampleSize > 1) {
+            transformedList.add(0, createInSampledTransformed(sampleSize))
+        }
+        decodeConfig.inSampleSize = sampleSize
         decodeFull(decodeConfig)
-    }
-    val inSampleSize = decodeConfig.inSampleSize ?: 0
-    if (inSampleSize > 1 && (bitmap.width < imageInfo.width || bitmap.height < imageInfo.height)) {
-        transformedList.add(0, createInSampledTransformed(inSampleSize))
     }
     return BitmapDecodeResult(
         bitmap = bitmap,

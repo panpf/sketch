@@ -23,6 +23,12 @@ data class LoadData constructor(
     val bitmap: Bitmap,
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
+    /**
+     * Store the transformation history of the Bitmap
+     */
     val transformedList: List<String>?,
+    /**
+     * Store some additional information for consumer use
+     */
     val extras: Map<String, String>?,
 ) : ImageData

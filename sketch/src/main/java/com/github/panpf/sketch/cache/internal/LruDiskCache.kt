@@ -280,6 +280,15 @@ class LruDiskCache private constructor(
 
     class ForDownloadBuilder(private val context: Context) {
 
+        companion object {
+            /**
+             * Range from 1 to Short.MAX_VALUE
+             *
+             * 1: initial
+             */
+            const val INTERNAL_VERSION = 1
+        }
+
         private var maxSize: Long? = null
         private var directory: File? = null
         private var appVersion: Int? = null
@@ -316,12 +325,24 @@ class LruDiskCache private constructor(
                 maxSize = finalMaxSize,
                 directory = directory,
                 appVersion = appVersion,
-                internalVersion = 1 // Range from 1 to Short.MAX_VALUE
+                internalVersion = INTERNAL_VERSION
             )
         }
     }
 
     class ForResultBuilder(private val context: Context) {
+
+        companion object {
+            /**
+             * Range from 1 to Short.MAX_VALUE
+             *
+             * 1: initial
+             * 2: change. BitmapDecodeResult.transformedList change to List<String>
+             * 3: added. BitmapDecodeResult.extras
+             * 4: change. DecodeUtils.realDecode(): transformedList.add(createSubsamplingTransformed(resizeMapping.srcRect, decodeConfig.inSampleSize))
+             */
+            const val INTERNAL_VERSION = 4
+        }
 
         private var maxSize: Long? = null
         private var directory: File? = null
@@ -359,7 +380,7 @@ class LruDiskCache private constructor(
                 maxSize = finalMaxSize,
                 directory = directory,
                 appVersion = appVersion,
-                internalVersion = 3 // Range from 1 to Short.MAX_VALUE
+                internalVersion = INTERNAL_VERSION
             )
         }
     }

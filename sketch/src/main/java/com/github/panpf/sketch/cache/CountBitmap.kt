@@ -34,7 +34,13 @@ class CountBitmap constructor(
     val requestKey: String,
     val requestCacheKey: String,
     val imageInfo: ImageInfo,
+    /**
+     * Store the transformation history of the Bitmap
+     */
     val transformedList: List<String>?,
+    /**
+     * Store some additional information for consumer use
+     */
     val extras: Map<String, String>?,
 ) {
 

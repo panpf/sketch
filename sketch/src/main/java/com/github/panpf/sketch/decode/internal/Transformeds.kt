@@ -15,21 +15,32 @@
  */
 package com.github.panpf.sketch.decode.internal
 
+import android.graphics.Rect
 import com.github.panpf.sketch.resize.Resize
 
-fun createInSampledTransformed(inSampleSize: Int) = "InSampledTransformed($inSampleSize)"
+fun createInSampledTransformed(inSampleSize: Int): String = "InSampledTransformed($inSampleSize)"
 
 fun List<String>.getInSampledTransformed(): String? =
     find { it.startsWith("InSampledTransformed(") }
 
-fun createExifOrientationTransformed(exifOrientation: Int) =
+
+fun createSubsamplingTransformed(rect: Rect): String {
+    return "SubsamplingTransformed(${rect.left},${rect.top},${rect.right},${rect.bottom})"
+}
+
+fun List<String>.getSubsamplingTransformed(): String? =
+    find { it.startsWith("SubsamplingTransformed(") }
+
+
+fun createExifOrientationTransformed(exifOrientation: Int): String =
     "ExifOrientationTransformed(${exifOrientationName(exifOrientation)})"
 
 fun List<String>.getExifOrientationTransformed(): String? =
     find { it.startsWith("ExifOrientationTransformed(") }
 
-fun createResizeTransformed(resize: Resize) =
-    "ResizeTransformed(${resize.key})"
+
+fun createResizeTransformed(resize: Resize): String =
+    "ResizeTransformed(${resize.width}x${resize.height},${resize.precisionDecider.key},${resize.scaleDecider.key})"
 
 fun List<String>.getResizeTransformed(): String? =
     find { it.startsWith("ResizeTransformed(") }

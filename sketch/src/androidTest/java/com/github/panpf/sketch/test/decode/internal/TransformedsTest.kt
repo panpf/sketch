@@ -15,15 +15,17 @@
  */
 package com.github.panpf.sketch.test.decode.internal
 
+import android.graphics.Rect
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.createExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
-import com.github.panpf.sketch.decode.internal.exifOrientationName
+import com.github.panpf.sketch.decode.internal.createSubsamplingTransformed
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
+import com.github.panpf.sketch.decode.internal.getSubsamplingTransformed
 import com.github.panpf.sketch.resize.Resize
 import org.junit.Assert
 import org.junit.Test
@@ -31,6 +33,40 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class TransformedsTest {
+
+    @Test
+    fun testSubsamplingTransformed() {
+        Assert.assertEquals(
+            "SubsamplingTransformed(1,2,3,4)",
+            createSubsamplingTransformed(Rect(1, 2, 3, 4))
+        )
+        Assert.assertEquals(
+            "SubsamplingTransformed(2,3,4,5)",
+            createSubsamplingTransformed(Rect(2, 3, 4, 5))
+        )
+        Assert.assertEquals(
+            "SubsamplingTransformed(3,4,5,6)",
+            createSubsamplingTransformed(Rect(3, 4, 5, 6))
+        )
+        Assert.assertEquals(
+            "SubsamplingTransformed(4,5,6,7)",
+            createSubsamplingTransformed(Rect(4, 5, 6, 7))
+        )
+
+        Assert.assertEquals(null, listOf<String>().getSubsamplingTransformed())
+        Assert.assertEquals(
+            "SubsamplingTransformed(1,2,3,4)",
+            listOf(createSubsamplingTransformed(Rect(1, 2, 3, 4))).getSubsamplingTransformed()
+        )
+        Assert.assertEquals(
+            "SubsamplingTransformed(1,2,3,4)",
+            listOf(
+                "disruptive1",
+                createSubsamplingTransformed(Rect(1, 2, 3, 4)),
+                "disruptive2"
+            ).getSubsamplingTransformed()
+        )
+    }
 
     @Test
     fun testInSampledTransformed() {
@@ -57,29 +93,29 @@ class TransformedsTest {
     @Test
     fun testExifOrientationTransformed() {
         Assert.assertEquals(
-            "ExifOrientationTransformed(${exifOrientationName(ExifInterface.ORIENTATION_NORMAL)})",
+            "ExifOrientationTransformed(NORMAL)",
             createExifOrientationTransformed(ExifInterface.ORIENTATION_NORMAL)
         )
         Assert.assertEquals(
-            "ExifOrientationTransformed(${exifOrientationName(ExifInterface.ORIENTATION_ROTATE_90)})",
+            "ExifOrientationTransformed(ROTATE_90)",
             createExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_90)
         )
         Assert.assertEquals(
-            "ExifOrientationTransformed(${exifOrientationName(ExifInterface.ORIENTATION_ROTATE_180)})",
+            "ExifOrientationTransformed(ROTATE_180)",
             createExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_180)
         )
         Assert.assertEquals(
-            "ExifOrientationTransformed(${exifOrientationName(ExifInterface.ORIENTATION_TRANSVERSE)})",
+            "ExifOrientationTransformed(TRANSVERSE)",
             createExifOrientationTransformed(ExifInterface.ORIENTATION_TRANSVERSE)
         )
 
         Assert.assertEquals(null, listOf<String>().getExifOrientationTransformed())
         Assert.assertEquals(
-            "ExifOrientationTransformed(${exifOrientationName(ExifInterface.ORIENTATION_NORMAL)})",
+            "ExifOrientationTransformed(NORMAL)",
             listOf(createExifOrientationTransformed(ExifInterface.ORIENTATION_NORMAL)).getExifOrientationTransformed()
         )
         Assert.assertEquals(
-            "ExifOrientationTransformed(${exifOrientationName(ExifInterface.ORIENTATION_ROTATE_180)})",
+            "ExifOrientationTransformed(ROTATE_180)",
             listOf(
                 "disruptive1",
                 createExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_180),
@@ -91,29 +127,29 @@ class TransformedsTest {
     @Test
     fun testResizeTransformed() {
         Assert.assertEquals(
-            "ResizeTransformed(${Resize(100, 100).key})",
+            "ResizeTransformed(100x100,Fixed(EXACTLY),Fixed(CENTER_CROP))",
             createResizeTransformed(Resize(100, 100))
         )
         Assert.assertEquals(
-            "ResizeTransformed(${Resize(200, 200).key})",
+            "ResizeTransformed(200x200,Fixed(EXACTLY),Fixed(CENTER_CROP))",
             createResizeTransformed(Resize(200, 200))
         )
         Assert.assertEquals(
-            "ResizeTransformed(${Resize(300, 300).key})",
+            "ResizeTransformed(300x300,Fixed(EXACTLY),Fixed(CENTER_CROP))",
             createResizeTransformed(Resize(300, 300))
         )
         Assert.assertEquals(
-            "ResizeTransformed(${Resize(400, 400).key})",
+            "ResizeTransformed(400x400,Fixed(EXACTLY),Fixed(CENTER_CROP))",
             createResizeTransformed(Resize(400, 400))
         )
 
         Assert.assertEquals(null, listOf<String>().getResizeTransformed())
         Assert.assertEquals(
-            "ResizeTransformed(${Resize(200, 200).key})",
+            "ResizeTransformed(200x200,Fixed(EXACTLY),Fixed(CENTER_CROP))",
             listOf(createResizeTransformed(Resize(200, 200))).getResizeTransformed()
         )
         Assert.assertEquals(
-            "ResizeTransformed(${Resize(500, 500).key})",
+            "ResizeTransformed(500x500,Fixed(EXACTLY),Fixed(CENTER_CROP))",
             listOf(
                 "disruptive1",
                 createResizeTransformed(Resize(500, 500)),

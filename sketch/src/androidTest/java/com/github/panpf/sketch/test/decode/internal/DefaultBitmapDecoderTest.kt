@@ -37,6 +37,7 @@ import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
+import com.github.panpf.sketch.decode.internal.getSubsamplingTransformed
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -254,6 +255,8 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, newAssetUri("sample.jpeg")) {
             resize(500, 500, LESS_PIXELS)
@@ -276,6 +279,8 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -300,7 +305,8 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, newAssetUri("sample.jpeg")) {
             resize(300, 500, SAME_ASPECT_RATIO)
@@ -323,7 +329,8 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
         // precision = EXACTLY
@@ -344,6 +351,7 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, newAssetUri("sample.jpeg")) {
@@ -363,6 +371,7 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
 
@@ -638,6 +647,9 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
             resize(500, 500, LESS_PIXELS)
@@ -660,6 +672,9 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -684,7 +699,9 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
             resize(300, 500, SAME_ASPECT_RATIO)
@@ -707,7 +724,9 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
         // precision = EXACTLY
@@ -728,6 +747,8 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
@@ -747,6 +768,8 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
 
@@ -832,6 +855,9 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getExifOrientationTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
             resize(500, 500, LESS_PIXELS)
@@ -855,6 +881,9 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getExifOrientationTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -880,7 +909,9 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getExifOrientationTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
             resize(300, 500, SAME_ASPECT_RATIO)
@@ -904,7 +935,9 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getExifOrientationTransformed())
+            Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
         // precision = EXACTLY
@@ -926,6 +959,8 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
@@ -946,6 +981,8 @@ class DefaultBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
+            Assert.assertNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
 

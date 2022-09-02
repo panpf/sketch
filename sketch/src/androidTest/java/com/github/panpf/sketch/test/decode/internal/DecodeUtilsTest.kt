@@ -41,7 +41,7 @@ import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
-import com.github.panpf.sketch.decode.internal.createResizeTransformed
+import com.github.panpf.sketch.decode.internal.createSubsamplingTransformed
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
@@ -406,48 +406,48 @@ class DecodeUtilsTest {
         val maxSize = maxBitmapSize.width
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize - 1, maxSize), 1)
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize - 1, maxSize))
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize - 1), 1)
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize - 1))
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize - 1, maxSize - 1), 1)
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize - 1, maxSize - 1))
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize), 1)
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize))
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize + 1, maxSize), 1)
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize + 1, maxSize))
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize + 1), 1)
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize + 1))
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize + 1, maxSize + 1), 1)
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize + 1, maxSize + 1))
         )
 
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize), 0)
+            limitedSampleSizeByMaxBitmapSize(0, Size(maxSize, maxSize))
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize, maxSize), -1)
+            limitedSampleSizeByMaxBitmapSize(-1, Size(maxSize, maxSize))
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize + 1, maxSize + 1), -1)
+            limitedSampleSizeByMaxBitmapSize(-1, Size(maxSize + 1, maxSize + 1))
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(Size(maxSize + 1, maxSize + 1), 0)
+            limitedSampleSizeByMaxBitmapSize(0, Size(maxSize + 1, maxSize + 1))
         )
     }
 
@@ -612,7 +612,7 @@ class DecodeUtilsTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
-                listOf(createInSampledTransformed(16), createResizeTransformed(Resize(100, 200))),
+                listOf(createInSampledTransformed(16), createSubsamplingTransformed(Rect(0,161,1936,1129))),
                 transformedList
             )
         }
@@ -641,7 +641,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(
                 listOf(
                     createInSampledTransformed(8),
-                    createResizeTransformed(Resize(100, 200))
+                    createSubsamplingTransformed(Rect(645,0,1290,1291))
                 ),
                 transformedList
             )
@@ -679,7 +679,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(
                 listOf(
                     createInSampledTransformed(16),
-                    createResizeTransformed(Resize(100, 200, SAME_ASPECT_RATIO))
+                    createSubsamplingTransformed(Rect(0,161,1936,1129))
                 ),
                 transformedList
             )
@@ -709,7 +709,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(
                 listOf(
                     createInSampledTransformed(8),
-                    createResizeTransformed(Resize(100, 200, SAME_ASPECT_RATIO))
+                    createSubsamplingTransformed(Rect(645,0,1290,1291))
                 ),
                 transformedList
             )

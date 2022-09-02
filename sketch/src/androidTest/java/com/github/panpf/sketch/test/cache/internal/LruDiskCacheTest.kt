@@ -93,13 +93,13 @@ class LruDiskCacheTest {
 
         LruDiskCache.ForDownloadBuilder(context).build().apply {
             Assert.assertEquals(1, appVersion)
-            Assert.assertEquals(1, internalVersion)
+            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, internalVersion)
         }
         LruDiskCache.ForDownloadBuilder(context).apply {
             appVersion(2)
         }.build().apply {
             Assert.assertEquals(2, appVersion)
-            Assert.assertEquals(1, internalVersion)
+            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, internalVersion)
         }
 
         assertThrow(IllegalArgumentException::class) {
@@ -115,13 +115,13 @@ class LruDiskCacheTest {
 
         LruDiskCache.ForResultBuilder(context).build().apply {
             Assert.assertEquals(1, appVersion)
-            Assert.assertEquals(3, internalVersion)
+            Assert.assertEquals(LruDiskCache.ForResultBuilder.INTERNAL_VERSION, internalVersion)
         }
         LruDiskCache.ForResultBuilder(context).apply {
             appVersion(2)
         }.build().apply {
             Assert.assertEquals(2, appVersion)
-            Assert.assertEquals(3, internalVersion)
+            Assert.assertEquals(LruDiskCache.ForResultBuilder.INTERNAL_VERSION, internalVersion)
         }
 
         assertThrow(IllegalArgumentException::class) {
@@ -147,7 +147,7 @@ class LruDiskCacheTest {
             directory(directory)
         }.build().use {
             Assert.assertEquals(1, it.appVersion)
-            Assert.assertEquals(1, it.internalVersion)
+            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, it.internalVersion)
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
             it.putFile("file1", 1)
@@ -160,7 +160,7 @@ class LruDiskCacheTest {
             directory(directory)
         }.build().use {
             Assert.assertEquals(1, it.appVersion)
-            Assert.assertEquals(1, it.internalVersion)
+            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, it.internalVersion)
             Assert.assertNotNull(it["file1"])
             Assert.assertNotNull(it["file2"])
         }
@@ -170,7 +170,7 @@ class LruDiskCacheTest {
             appVersion(2)
         }.build().use {
             Assert.assertEquals(2, it.appVersion)
-            Assert.assertEquals(1, it.internalVersion)
+            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, it.internalVersion)
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
         }
@@ -180,7 +180,7 @@ class LruDiskCacheTest {
             appVersion(2)
         }.build().use {
             Assert.assertEquals(2, it.appVersion)
-            Assert.assertEquals(1, it.internalVersion)
+            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, it.internalVersion)
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
             it.putFile("file1", 1)
@@ -385,7 +385,7 @@ class LruDiskCacheTest {
             directory(defaultCacheDir)
         }.build().use {
             Assert.assertEquals(
-                "LruDiskCache(maxSize=300MB,appVersion=1,internalVersion=1,directory='${defaultCacheDir.path}')",
+                "LruDiskCache(maxSize=300MB,appVersion=1,internalVersion=${LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION},directory='${defaultCacheDir.path}')",
                 it.toString()
             )
         }
@@ -393,7 +393,7 @@ class LruDiskCacheTest {
             directory(defaultCacheDir)
         }.build().use {
             Assert.assertEquals(
-                "LruDiskCache(maxSize=200MB,appVersion=1,internalVersion=3,directory='${defaultCacheDir.path}')",
+                "LruDiskCache(maxSize=200MB,appVersion=1,internalVersion=${LruDiskCache.ForResultBuilder.INTERNAL_VERSION},directory='${defaultCacheDir.path}')",
                 it.toString()
             )
         }
@@ -405,7 +405,7 @@ class LruDiskCacheTest {
             appVersion(2)
         }.build().use {
             Assert.assertEquals(
-                "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=1,directory='${cacheDir.path}')",
+                "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=${LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION},directory='${cacheDir.path}')",
                 it.toString()
             )
         }
@@ -415,7 +415,7 @@ class LruDiskCacheTest {
             appVersion(2)
         }.build().use {
             Assert.assertEquals(
-                "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=3,directory='${cacheDir.path}')",
+                "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=${LruDiskCache.ForResultBuilder.INTERNAL_VERSION},directory='${cacheDir.path}')",
                 it.toString()
             )
         }
