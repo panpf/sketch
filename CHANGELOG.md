@@ -517,9 +517,9 @@ other:
 * fix: Fixed a crash bug in Zoomer's rotateTo() method
 * fix: Fixed the bug that SketchZoomImageView always intercepts touch events when no Drawable is
   set, causing ViewPager to fail to slide left and right
-* change: ZoomAbility 的 zoomScale, baseZoomScale, supportZoomScale, fullZoomScale, fillZoomScale,
-  originZoomScale, minZoomScale, maxZoomScale 和 doubleClickZoomScales 属性重命名为 scale, baseScale,
-  supportScale, fullScale, fillScale, originScale, minScale, maxScale 和 stepScales
+* change: ZoomAbility 's zoomScale, baseZoomScale, supportZoomScale, fullZoomScale, fillZoomScale,
+   originZoomScale, minZoomScale, maxZoomScale and doubleClickZoomScales properties renamed to scale, baseScale,
+   supportScale, fullScale, fillScale, originScale, minScale, maxScale and stepScales
 * improve: Tiles are now not enabled when the current zoom is less than or equal to the minimum zoom
 * improve: Improve Zoomer's code
 * improve: ZoomAbility now listens to Lifecycle's ON_START and ON_STOP events instead to pause and
