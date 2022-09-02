@@ -1,3 +1,30 @@
+# v3.0.0 stable
+
+New version, new beginning
+
+* change: maven groupId changed to `io.github.panpf.sketch3`, so version 2.\* will not prompt to
+  upgrade
+* change: Changed the package name to `com.github.panpf.sketch` so it won't conflict with the 2.\*
+  version
+* change: Based on kotlin coroutine rewrite, API and function implementation are all changed, just
+  use a new library
+* improve: It is no longer required to use SketchImageView, any ImageView and its subclasses can,
+  combined with custom Target can support any View
+* improve: The Zoom function is split into independent modules that can be independently relied on,
+  and the large image sampling function is refactored and multi-threaded decoding is faster.
+* improve: The gif module now directly depends on the [android-gif-drawable] library and no longer
+  needs to be modified twice, and can be upgraded by itself
+* new: Added support for SVG
+* new: Added support for Jetpack Compose
+* new: Support for request and decode interceptors
+* new: Refer to [coil] v2.2.0 version and combine it with the original functions of sketch. Compared
+  with [coil], there are the following differences:
+    * Sketch supports minimum API 16, while [coil] only supports API 21 minimum
+    * Sketch supports bitmap multiplexing, but [coil] does not
+    * Sketch supports finer adjustment of image size
+    * Sketch clearly distinguishes between display, load, and download requests
+    * Sketch provides a picture zoom display component and supports large picture sampling
+
 # v3.0.0-rc10
 
 ### sketch
