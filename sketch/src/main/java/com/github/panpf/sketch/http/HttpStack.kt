@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.http
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.IOException
 import java.io.InputStream
@@ -28,8 +29,9 @@ interface HttpStack {
         const val DEFAULT_TIMEOUT = 7 * 1000
     }
 
+    @WorkerThread
     @Throws(IOException::class)
-    fun getResponse(request: ImageRequest, url: String): Response
+    suspend fun getResponse(request: ImageRequest, url: String): Response
 
     interface Response {
         @get:Throws(IOException::class)

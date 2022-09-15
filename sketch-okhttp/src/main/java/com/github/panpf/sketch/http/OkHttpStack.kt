@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
-    override fun getResponse(request: ImageRequest, url: String): Response {
+    override suspend fun getResponse(request: ImageRequest, url: String): Response {
         val httpRequest = Request.Builder().apply {
             url(url)
             request.httpHeaders?.apply {
@@ -158,7 +158,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
                 val userAgent = userAgent
                 val extraHeaders = extraHeaders?.toMap()?.takeIf { it.isNotEmpty() }
                 val addExtraHeaders = addExtraHeaders?.toList()?.takeIf { it.isNotEmpty() }
-                if (userAgent != null || extraHeaders?.isNotEmpty() == true || addExtraHeaders?.isNotEmpty() == true) {
+                if (userAgent != null || extraHeaders != null || addExtraHeaders != null) {
                     addInterceptor(MyInterceptor(userAgent, extraHeaders, addExtraHeaders))
                 }
                 interceptors?.forEach { interceptor ->

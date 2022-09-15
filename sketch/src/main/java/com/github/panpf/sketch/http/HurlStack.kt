@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.http
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.IOException
 import java.io.InputStream
@@ -56,10 +57,13 @@ class HurlStack private constructor(
     val onBeforeConnect: ((url: String, connection: HttpURLConnection) -> Unit)?
 ) : HttpStack {
 
+    @WorkerThread
     @Throws(IOException::class)
-    override fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
+    override suspend fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
         var newUri = url
         while (newUri.isNotEmpty()) {
+            // Currently running on a limited number of IO contexts, so this warning can be ignored
+            @Suppress("BlockingMethodInNonBlockingContext")
             val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
                 this@apply.connectTimeout = this@HurlStack.connectTimeoutMillis
                 this@apply.readTimeout = this@HurlStack.readTimeoutMillis
@@ -87,6 +91,8 @@ class HurlStack private constructor(
                 }
             }
             onBeforeConnect?.invoke(url, connection)
+            // Currently running on a limited number of IO contexts, so this warning can be ignored
+            @Suppress("BlockingMethodInNonBlockingContext")
             connection.connect()
             val code = connection.responseCode
             if (code == 301 || code == 302 || code == 307) {
