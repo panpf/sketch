@@ -16,10 +16,10 @@
 package com.github.panpf.sketch.cache.internal
 
 import android.content.ComponentCallbacks2
-import androidx.collection.LruCache
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
@@ -137,6 +137,10 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
             MODULE,
             "trim. level '${getTrimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
         )
+    }
+
+    override fun keys(): Set<String> {
+        return cache.keys()
     }
 
     override fun clear() {

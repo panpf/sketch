@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.cache.internal
 
-import androidx.collection.LruCache
+import com.github.panpf.sketch.util.LruCache
 
 class KeyMapperCache(val maxSize: Int = 100, val mapper: (key: String) -> String) {
 

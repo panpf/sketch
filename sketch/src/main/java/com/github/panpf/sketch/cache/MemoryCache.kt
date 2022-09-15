@@ -64,6 +64,11 @@ interface MemoryCache {
     fun trim(level: Int)
 
     /**
+     * Get all cached keys
+     */
+    fun keys(): Set<String>
+
+    /**
      * Clear all cached bitmaps
      */
     fun clear()
