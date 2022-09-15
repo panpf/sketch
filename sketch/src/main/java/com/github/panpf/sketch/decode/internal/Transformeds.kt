@@ -20,27 +20,39 @@ import com.github.panpf.sketch.resize.Resize
 
 fun createInSampledTransformed(inSampleSize: Int): String = "InSampledTransformed($inSampleSize)"
 
+fun isInSampledTransformed(transformed: String): Boolean =
+    transformed.startsWith("InSampledTransformed(")
+
 fun List<String>.getInSampledTransformed(): String? =
-    find { it.startsWith("InSampledTransformed(") }
+    find { isInSampledTransformed(it) }
 
 
 fun createSubsamplingTransformed(rect: Rect): String {
     return "SubsamplingTransformed(${rect.left},${rect.top},${rect.right},${rect.bottom})"
 }
 
+fun isSubsamplingTransformed(transformed: String): Boolean =
+    transformed.startsWith("SubsamplingTransformed(")
+
 fun List<String>.getSubsamplingTransformed(): String? =
-    find { it.startsWith("SubsamplingTransformed(") }
+    find { isSubsamplingTransformed(it) }
 
 
 fun createExifOrientationTransformed(exifOrientation: Int): String =
     "ExifOrientationTransformed(${exifOrientationName(exifOrientation)})"
 
+fun isExifOrientationTransformed(transformed: String): Boolean =
+    transformed.startsWith("ExifOrientationTransformed(")
+
 fun List<String>.getExifOrientationTransformed(): String? =
-    find { it.startsWith("ExifOrientationTransformed(") }
+    find { isExifOrientationTransformed(it) }
 
 
 fun createResizeTransformed(resize: Resize): String =
     "ResizeTransformed(${resize.width}x${resize.height},${resize.precisionDecider.key},${resize.scaleDecider.key})"
 
+fun isResizeTransformed(transformed: String): Boolean =
+    transformed.startsWith("ResizeTransformed(")
+
 fun List<String>.getResizeTransformed(): String? =
-    find { it.startsWith("ResizeTransformed(") }
+    find { isResizeTransformed(it) }

@@ -102,5 +102,8 @@ class MaskTransformation(
 fun createMaskTransformed(@ColorInt maskColor: Int) =
     "MaskTransformed(${maskColor})"
 
+fun isMaskTransformed(transformed: String): Boolean =
+    transformed.startsWith("MaskTransformed(")
+
 fun List<String>.getMaskTransformed(): String? =
-    find { it.startsWith("MaskTransformed(") }
+    find { isMaskTransformed(it) }

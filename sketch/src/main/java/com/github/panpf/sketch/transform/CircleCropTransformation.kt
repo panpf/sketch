@@ -102,5 +102,8 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
 fun createCircleCropTransformed(scale: Scale) =
     "CircleCropTransformed(${scale})"
 
+fun isCircleCropTransformed(transformed: String): Boolean =
+    transformed.startsWith("CircleCropTransformed(")
+
 fun List<String>.getCircleCropTransformed(): String? =
-    find { it.startsWith("CircleCropTransformed(") }
+    find { isCircleCropTransformed(it) }

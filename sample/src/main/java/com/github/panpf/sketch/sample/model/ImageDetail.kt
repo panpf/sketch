@@ -26,6 +26,5 @@ data class ImageDetail constructor(
     @SerialName("position") val position: Int,
     @SerialName("originUrl") val originUrl: String,
     @SerialName("previewUrl") val previewUrl: String?,
-    @SerialName("bgUrl") val bgUrl: String?,
-    @SerialName("placeholderImageMemoryCacheKey") val placeholderImageMemoryCacheKey: String?,
+    @SerialName("thumbnailUrl") val thumbnailUrl: String?,
 ) : Parcelable

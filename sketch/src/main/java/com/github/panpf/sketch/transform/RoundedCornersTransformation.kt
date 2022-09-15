@@ -126,5 +126,8 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
 fun createRoundedCornersTransformed(radiusArray: FloatArray) =
     "RoundedCornersTransformed(${radiusArray.contentToString()})"
 
+fun isRoundedCornersTransformed(transformed: String): Boolean =
+    transformed.startsWith("RoundedCornersTransformed(")
+
 fun List<String>.getRoundedCornersTransformed(): String? =
-    find { it.startsWith("RoundedCornersTransformed(") }
+    find { isRoundedCornersTransformed(it) }

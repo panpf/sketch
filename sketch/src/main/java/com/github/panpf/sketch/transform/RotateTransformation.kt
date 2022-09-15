@@ -74,5 +74,8 @@ class RotateTransformation(val degrees: Int) : Transformation {
 fun createRotateTransformed(degrees: Int) =
     "RotateTransformed($degrees)"
 
+fun isRotateTransformed(transformed: String): Boolean =
+    transformed.startsWith("RotateTransformed(")
+
 fun List<String>.getRotateTransformed(): String? =
-    find { it.startsWith("RotateTransformed(") }
+    find { isRotateTransformed(it) }

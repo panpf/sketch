@@ -34,9 +34,10 @@ import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
+import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
-import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
+import com.github.panpf.tools4a.toast.ktx.showLongToast
 import kotlinx.coroutines.launch
 
 class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
@@ -46,8 +47,11 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     private val pagerViewModel by parentViewModels<ImageViewerPagerViewModel>()
     private val requestPermissionResult = registerForActivityResult(RequestPermission()) {
         lifecycleScope.launch {
-            val imageUri =
-                if (prefsService.showOriginImage.value) args.originImageUri else args.previewImageUri
+            val imageUri = if (prefsService.showOriginImage.value) {
+                args.originImageUri
+            } else {
+                args.previewImageUri ?: args.originImageUri
+            }
             handleActionResult(viewModel.save(imageUri))
         }
     }
@@ -72,11 +76,12 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
                 viewLifecycleOwner.repeatOnLifecycle(State.STARTED) {
                     prefsService.showOriginImage.stateFlow.collect {
                         displayImage(if (it) args.originImageUri else args.previewImageUri) {
-                            args.placeholderImageMemoryCacheKey?.let { key ->
-                                placeholder(MemoryCacheStateImage(key))
-                            }
+                            placeholder(InexactlyMemoryCacheStateImage(uri = args.thumbnailImageUrl))
                             crossfade(fadeStart = false)
                             lifecycle(viewLifecycleOwner.lifecycle)
+                            listener(onError = { _, _ ->
+                                showLongToast("Image display failure")
+                            })
                         }
                     }
                 }
@@ -87,8 +92,11 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             shareEvent.listen(viewLifecycleOwner) {
                 if (isResumed) {
                     lifecycleScope.launch {
-                        val imageUri =
-                            if (prefsService.showOriginImage.value) args.originImageUri else args.previewImageUri
+                        val imageUri = if (prefsService.showOriginImage.value) {
+                            args.originImageUri
+                        } else {
+                            args.previewImageUri ?: args.originImageUri
+                        }
                         handleActionResult(viewModel.share(imageUri))
                     }
                 }
@@ -131,8 +139,8 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             arguments = ImageViewerFragmentArgs(
                 position = data.position,
                 originImageUri = data.originUrl,
-                previewImageUri = data.previewUrl ?: data.originUrl,
-                placeholderImageMemoryCacheKey = data.placeholderImageMemoryCacheKey
+                previewImageUri = data.previewUrl,
+                thumbnailImageUrl = data.thumbnailUrl,
             ).toBundle()
         }
     }

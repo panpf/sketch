@@ -124,5 +124,8 @@ fun createBlurTransformed(
     radius: Int, hasAlphaBitmapBgColor: Int?, maskColor: Int?
 ) = "BlurTransformed($radius,$hasAlphaBitmapBgColor,$maskColor)"
 
+fun isBlurTransformed(transformed: String): Boolean =
+    transformed.startsWith("BlurTransformed(")
+
 fun List<String>.getBlurTransformed(): String? =
-    find { it.startsWith("BlurTransformed(") }
+    find { isBlurTransformed(it) }

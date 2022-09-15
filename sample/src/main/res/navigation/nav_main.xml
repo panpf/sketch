@@ -235,9 +235,9 @@
         <argument
             android:name="previewImageUri"
             app:argType="string"
-            app:nullable="false" />
+            app:nullable="true" />
         <argument
-            android:name="placeholderImageMemoryCacheKey"
+            android:name="thumbnailImageUrl"
             app:argType="string"
             app:nullable="true" />
     </fragment>

@@ -55,7 +55,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                     )
                 )
             ).mapIndexed { index, s ->
-                ImageDetail(index, s, s, s, null)
+                ImageDetail(index, s, s, s)
             }
             val titles = AssetImages.STATICS.plus(AssetImages.ANIMATEDS).map { uri ->
                 uri.substring(uri.lastIndexOf(".") + 1).uppercase().let { suffix ->
