@@ -20,10 +20,7 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.test.utils.newSketch
-import com.github.panpf.sketch.transform.createRotateTransformed
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -36,77 +33,15 @@ import org.junit.runner.RunWith
 class CountBitmapTest {
 
     @Test
-    fun testRequestKey() {
-        val sketch = newSketch()
-
-        createCountBitmap(sketch, "image1", 100, 100, requestKey = "requestKey1").apply {
-            Assert.assertEquals("requestKey1", requestKey)
-            Assert.assertEquals("requestKey1", requestCacheKey)
-        }
-
-        createCountBitmap(sketch, "image2", 100, 100, requestKey = "requestKey2").apply {
-            Assert.assertEquals("requestKey2", requestKey)
-            Assert.assertEquals("requestKey2", requestCacheKey)
-        }
-    }
-
-    @Test
-    fun testImageUri() {
+    fun testCacheKey() {
         val sketch = newSketch()
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
-            Assert.assertEquals("image1", imageUri)
+            Assert.assertEquals("image1", cacheKey)
         }
 
         createCountBitmap(sketch, "image2", 100, 100).apply {
-            Assert.assertEquals("image2", imageUri)
-        }
-    }
-
-    @Test
-    fun testImageInfo() {
-        val sketch = newSketch()
-
-        createCountBitmap(
-            sketch,
-            "image1",
-            100,
-            100,
-            imageInfo = ImageInfo(100, 100, "image/png", 0)
-        ).apply {
-            Assert.assertEquals(ImageInfo(100, 100, "image/png", 0), imageInfo)
-        }
-
-        createCountBitmap(
-            sketch,
-            "image2",
-            100,
-            150,
-            imageInfo = ImageInfo(100, 150, "image/gif", 0)
-        ).apply {
-            Assert.assertEquals(ImageInfo(100, 150, "image/gif", 0), imageInfo)
-        }
-    }
-
-    @Test
-    fun testTransformedList() {
-        val sketch = newSketch()
-
-        createCountBitmap(sketch, "image1", 100, 100).apply {
-            Assert.assertNull(transformedList)
-        }
-
-        createCountBitmap(
-            sketch,
-            "image2",
-            100,
-            150,
-            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(40))
-        ).apply {
-            Assert.assertEquals(
-                listOf(createInSampledTransformed(4), createRotateTransformed(40)).toString(),
-                transformedList.toString()
-            )
+            Assert.assertEquals("image2", cacheKey)
         }
     }
 
@@ -169,21 +104,65 @@ class CountBitmapTest {
     }
 
     @Test
-    fun testInfo() {
+    fun testToString() {
         val sketch = newSketch()
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
-            Assert.assertEquals(
-                "CountBitmap(Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()}),ImageInfo(100x100,'image/jpeg',UNDEFINED))",
-                info
-            )
+            val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,image1)", toString())
         }
 
         createCountBitmap(sketch, "image1", 200, 100).apply {
-            Assert.assertEquals(
-                "CountBitmap(Bitmap(200x100,ARGB_8888,@${this.bitmap!!.toHexString()}),ImageInfo(200x100,'image/jpeg',UNDEFINED))",
-                info
-            )
+            val bitmapLogString = "Bitmap(200x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,image1)", toString())
+        }
+
+        createCountBitmap(sketch, "image2", 100, 100).apply {
+            val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,image2)", toString())
+        }
+
+        createCountBitmap(sketch, "image2", 100, 100).apply {
+            runBlocking(Dispatchers.Main) {
+                setIsPending(true)
+            }
+            val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
+            Assert.assertEquals("CountBitmap($bitmapLogString,1/0/0,image2)", toString())
+        }
+
+        createCountBitmap(sketch, "image2", 100, 100).apply {
+            setIsCached(true)
+            val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/1/0,image2)", toString())
+        }
+
+        createCountBitmap(sketch, "image2", 100, 100).apply {
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed(true)
+            }
+            val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/1,image2)", toString())
+        }
+
+        createCountBitmap(sketch, "image2", 100, 100).apply {
+            runBlocking(Dispatchers.Main) {
+                setIsPending(true)
+            }
+            setIsCached(true)
+            val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
+            Assert.assertEquals("CountBitmap($bitmapLogString,1/1/0,image2)", toString())
+        }
+
+        createCountBitmap(sketch, "image2", 100, 100).apply {
+            runBlocking(Dispatchers.Main) {
+                setIsPending(true)
+            }
+            setIsCached(true)
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed(true)
+            }
+            val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
+            Assert.assertEquals("CountBitmap($bitmapLogString,1/1/1,image2)", toString())
         }
     }
 
@@ -310,20 +289,13 @@ class CountBitmapTest {
 
     private fun createCountBitmap(
         sketch: Sketch,
-        imageUri: String,
+        cacheKey: String,
         width: Int,
         height: Int,
-        requestKey: String = imageUri,
-        imageInfo: ImageInfo = ImageInfo(width, height, "image/jpeg", 0),
-        transformedList: List<String>? = null
     ): CountBitmap = CountBitmap(
-        sketch = sketch,
+        cacheKey = cacheKey,
         bitmap = Bitmap.createBitmap(width, height, ARGB_8888),
-        imageUri = imageUri,
-        requestKey = requestKey,
-        requestCacheKey = requestKey,
-        imageInfo = imageInfo,
-        transformedList = transformedList,
-        extras = null,
+        logger = sketch.logger,
+        bitmapPool = sketch.bitmapPool,
     )
 }

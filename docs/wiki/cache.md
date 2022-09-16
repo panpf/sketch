@@ -195,10 +195,11 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 val memoryCacheKey = "http://sample.com/sample.jpeg"
 
 // put
-context.sketch.memoryCache.put(memoryCacheKey, CountBitmap())
+val newBitmap: Bitmap = Bitmap.create(100, 100, Bitmap.Config.ARGB_8888)
+context.sketch.memoryCache.put(memoryCacheKey, MemoryCache.Value(CountBitmap(newBitmap)))
 
 // get
-val countBitmap: CountBimtap? = context.sketch.memoryCache.get(memoryCacheKey)
+val cachedBitmap: Bitmap? = context.sketch.memoryCache.get(memoryCacheKey)?.countBitmap?.bitmap
 
 // exist
 val exist: Boolean = context.sketch.memoryCache.exist(memoryCacheKey)

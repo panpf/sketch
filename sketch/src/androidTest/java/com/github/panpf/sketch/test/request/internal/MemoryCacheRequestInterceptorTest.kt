@@ -24,6 +24,7 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -100,14 +101,14 @@ class MemoryCacheRequestInterceptorTest {
 
         /* DisplayRequest - ENABLED */
         val displayRequest = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
-        val countBitmap: CountBitmap
+        val countBitmapDrawable: SketchCountBitmapDrawable
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
         executeRequest(displayRequest.newDisplayRequest {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<DisplayData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-            countBitmap = drawable.asOrThrow<SketchCountBitmapDrawable>().countBitmap
+            countBitmapDrawable = drawable.asOrThrow()
         }
         Assert.assertEquals(40000, memoryCache.size)
 
@@ -128,7 +129,18 @@ class MemoryCacheRequestInterceptorTest {
         }
         Assert.assertEquals(0, memoryCache.size)
 
-        memoryCache.put(displayRequest.cacheKey, countBitmap)
+        memoryCache.put(
+            displayRequest.cacheKey,
+            MemoryCache.Value(
+                countBitmapDrawable.countBitmap,
+                imageUri = countBitmapDrawable.imageUri,
+                requestKey = countBitmapDrawable.requestKey,
+                requestCacheKey = countBitmapDrawable.requestCacheKey,
+                imageInfo = countBitmapDrawable.imageInfo,
+                transformedList = countBitmapDrawable.transformedList,
+                extras = countBitmapDrawable.extras,
+            )
+        )
         Assert.assertEquals(40000, memoryCache.size)
         executeRequest(displayRequest.newDisplayRequest {
             memoryCachePolicy(DISABLED)
@@ -147,7 +159,18 @@ class MemoryCacheRequestInterceptorTest {
         }
         Assert.assertEquals(0, memoryCache.size)
 
-        memoryCache.put(displayRequest.cacheKey, countBitmap)
+        memoryCache.put(
+            displayRequest.cacheKey,
+            MemoryCache.Value(
+                countBitmapDrawable.countBitmap,
+                imageUri = countBitmapDrawable.imageUri,
+                requestKey = countBitmapDrawable.requestKey,
+                requestCacheKey = countBitmapDrawable.requestCacheKey,
+                imageInfo = countBitmapDrawable.imageInfo,
+                transformedList = countBitmapDrawable.transformedList,
+                extras = countBitmapDrawable.extras,
+            )
+        )
         Assert.assertEquals(40000, memoryCache.size)
         executeRequest(displayRequest.newDisplayRequest {
             memoryCachePolicy(READ_ONLY)
@@ -245,19 +268,21 @@ class MemoryCacheRequestInterceptorTest {
                     val drawable = if (chain.request.uriString.contains(".jpeg")) {
                         imageInfo = ImageInfo(100, 100, "image/jpeg", 0)
                         val countBitmap = CountBitmap(
-                            sketch = chain.sketch,
+                            cacheKey = chain.request.cacheKey,
                             bitmap = bitmap,
+                            logger = chain.sketch.logger,
+                            bitmapPool = chain.sketch.bitmapPool,
+                        )
+                        SketchCountBitmapDrawable(
+                            resources = chain.sketch.context.resources,
+                            countBitmap = countBitmap,
                             imageUri = chain.request.uriString,
                             requestKey = chain.request.key,
                             requestCacheKey = chain.request.cacheKey,
                             imageInfo = imageInfo,
                             transformedList = null,
                             extras = null,
-                        )
-                        SketchCountBitmapDrawable(
-                            chain.sketch.context.resources,
-                            countBitmap,
-                            DataFrom.LOCAL
+                            dataFrom = DataFrom.LOCAL
                         )
                     } else {
                         imageInfo = ImageInfo(100, 100, "image/png", 0)

@@ -27,26 +27,20 @@ import com.github.panpf.sketch.util.toBitmapInfo
 class SketchCountBitmapDrawable constructor(
     resources: Resources,
     val countBitmap: CountBitmap,
+    override val imageUri: String,
+    override val requestKey: String,
+    override val requestCacheKey: String,
+    override val imageInfo: ImageInfo,
+    /**
+     * Store the transformation history of the Bitmap
+     */
+    override val transformedList: List<String>?,
+    /**
+     * Store some additional information for consumer use
+     */
+    override val extras: Map<String, String>?,
     override val dataFrom: DataFrom,
 ) : BitmapDrawable(resources, countBitmap.bitmap!!), SketchDrawable {
-
-    override val imageUri: String
-        get() = countBitmap.imageUri
-
-    override val requestKey: String
-        get() = countBitmap.requestKey
-
-    override val requestCacheKey: String
-        get() = countBitmap.requestCacheKey
-
-    override val imageInfo: ImageInfo
-        get() = countBitmap.imageInfo
-
-    override val transformedList: List<String>?
-        get() = countBitmap.transformedList
-
-    override val extras: Map<String, String>?
-        get() = countBitmap.extras
 
     override val bitmapInfo: BitmapInfo by lazy {
         bitmap.toBitmapInfo()

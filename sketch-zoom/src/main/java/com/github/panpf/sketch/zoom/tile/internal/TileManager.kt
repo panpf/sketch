@@ -240,9 +240,9 @@ class TileManager constructor(
         }
 
         val memoryCacheKey = "${imageUri}_tile_${tile.srcRect}_${tile.inSampleSize}"
-        val countBitmap = memoryCache[memoryCacheKey]
-        if (countBitmap != null) {
-            tile.countBitmap = countBitmap
+        val cachedValue = memoryCache[memoryCacheKey]
+        if (cachedValue != null) {
+            tile.countBitmap = cachedValue.countBitmap
             logger.d(Tiles.MODULE) {
                 "loadTile. successful. fromMemory. $tile. $imageUri"
             }
@@ -262,8 +262,13 @@ class TileManager constructor(
                 isActive -> {
                     withContext(Dispatchers.Main) {
                         val newCountBitmap = CountBitmap(
-                            sketch = sketch,
+                            cacheKey = memoryCacheKey,
                             bitmap = bitmap,
+                            logger = sketch.logger,
+                            bitmapPool = sketch.bitmapPool,
+                        )
+                        val newCacheValue = MemoryCache.Value(
+                            countBitmap = newCountBitmap,
                             imageUri = imageUri,
                             requestKey = memoryCacheKey,
                             requestCacheKey = memoryCacheKey,
@@ -271,7 +276,7 @@ class TileManager constructor(
                             transformedList = null,
                             extras = null,
                         )
-                        memoryCache.put(memoryCacheKey, newCountBitmap)
+                        memoryCache.put(memoryCacheKey, newCacheValue)
                         tile.countBitmap = newCountBitmap
                         logger.d(Tiles.MODULE) {
                             "loadTile. successful. $tile. $imageUri"

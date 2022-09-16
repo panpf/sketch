@@ -17,10 +17,9 @@ package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.logString
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.requiredMainThread
 
@@ -28,26 +27,17 @@ import com.github.panpf.sketch.util.requiredMainThread
  * Reference counts [Bitmap] and, when the count is 0, puts it into the BitmapPool
  */
 class CountBitmap constructor(
-    private val sketch: Sketch,
+    val cacheKey: String,
     bitmap: Bitmap,
-    val imageUri: String,
-    val requestKey: String,
-    val requestCacheKey: String,
-    val imageInfo: ImageInfo,
-    /**
-     * Store the transformation history of the Bitmap
-     */
-    val transformedList: List<String>?,
-    /**
-     * Store some additional information for consumer use
-     */
-    val extras: Map<String, String>?,
+    private val logger: Logger,
+    private val bitmapPool: BitmapPool,
 ) {
 
     companion object {
         private const val MODULE = "CountBitmap"
     }
 
+    private val bitmapLogString = bitmap.logString
     private var _bitmap: Bitmap? = bitmap
     private var cachedCount = 0
     private var displayedCount = 0
@@ -62,24 +52,18 @@ class CountBitmap constructor(
     val byteCount: Int
         get() = bitmap?.allocationByteCountCompat ?: 0
 
-    val info: String by lazy {
-        "CountBitmap(${bitmap.logString},${imageInfo.toShortString()})"
-    }
-
-    private val counts: String
-        get() = "$pendingCount/$cachedCount/$displayedCount"
-
     @MainThread
-    fun setIsDisplayed(displayed: Boolean, caller: String? = null) {
+    fun setIsPending(pending: Boolean, caller: String? = null) {
+        // Pending is to prevent the Drawable from being recycled before it is not used by the target, so it does not need to trigger tryFree
         requiredMainThread()
-        if (displayed) {
-            displayedCount++
-            tryFree(caller = "$caller:displayed:true", pending = false)
+        if (pending) {
+            pendingCount++
+            tryFree(caller = "$caller:pending:true", pending = true)
         } else {
-            if (displayedCount > 0) {
-                displayedCount--
+            if (pendingCount > 0) {
+                pendingCount--
             }
-            tryFree(caller = "$caller:displayed:false", pending = false)
+            tryFree(caller = "$caller:pending:false", pending = true)
         }
     }
 
@@ -97,17 +81,16 @@ class CountBitmap constructor(
     }
 
     @MainThread
-    fun setIsPending(pending: Boolean, caller: String? = null) {
-        // Pending is to prevent the Drawable from being recycled before it is not used by the target, so it does not need to trigger tryFree
+    fun setIsDisplayed(displayed: Boolean, caller: String? = null) {
         requiredMainThread()
-        if (pending) {
-            pendingCount++
-            tryFree(caller = "$caller:pending:true", pending = true)
+        if (displayed) {
+            displayedCount++
+            tryFree(caller = "$caller:displayed:true", pending = false)
         } else {
-            if (pendingCount > 0) {
-                pendingCount--
+            if (displayedCount > 0) {
+                displayedCount--
             }
-            tryFree(caller = "$caller:pending:false", pending = true)
+            tryFree(caller = "$caller:displayed:false", pending = false)
         }
     }
 
@@ -117,33 +100,33 @@ class CountBitmap constructor(
         return pendingCount
     }
 
+    @Synchronized
+    fun getCachedCount(): Int {
+        return cachedCount
+    }
+
     @MainThread
     fun getDisplayedCount(): Int {
         requiredMainThread()
         return displayedCount
     }
 
-    @Synchronized
-    fun getCachedCount(): Int {
-        return cachedCount
+    override fun toString(): String {
+        return "CountBitmap(${bitmapLogString},$pendingCount/$cachedCount/$displayedCount,$cacheKey)"
     }
 
     private fun tryFree(caller: String, pending: Boolean) {
         val bitmap = this._bitmap
         if (bitmap == null) {
-            sketch.logger.w(MODULE, "Bitmap freed. $caller. $counts. $requestKey")
+            logger.w(MODULE, "Bitmap freed. $caller. ${toString()}")
         } else if (isRecycled) {
-            throw IllegalStateException("Bitmap recycled. $caller. $counts. ${info}. $requestKey")
+            throw IllegalStateException("Bitmap recycled. $caller. ${toString()}")
         } else if (!pending && cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
             this._bitmap = null
-            freeBitmap(sketch.bitmapPool, sketch.logger, bitmap, caller)
-            sketch.logger.d(MODULE) {
-                "freeBitmap. $caller. ${info}. $requestKey"
-            }
+            freeBitmap(bitmapPool, logger, bitmap, caller)
+            logger.d(MODULE) { "freeBitmap. $caller. ${toString()}" }
         } else {
-            sketch.logger.d(MODULE) {
-                "keep. $caller. $counts. ${info}. $requestKey"
-            }
+            logger.d(MODULE) { "keep. $caller. ${toString()}" }
         }
     }
 }

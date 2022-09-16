@@ -51,29 +51,39 @@ class ImageViewDisplayTargetTest {
         Assert.assertNull(imageViewTarget.drawable)
 
         val countBitmap = CountBitmap(
-            sketch = sketch,
+            cacheKey = request.cacheKey,
             bitmap = Bitmap.createBitmap(100, 100, RGB_565),
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
+        )
+        val sketchCountBitmapDrawable = SketchCountBitmapDrawable(
+            resources = context.resources,
+            countBitmap = countBitmap,
             imageUri = request.uriString,
             requestKey = request.key,
             requestCacheKey = request.cacheKey,
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
             extras = null,
+            dataFrom = LOCAL
         )
-        val sketchCountBitmapDrawable =
-            SketchCountBitmapDrawable(context.resources, countBitmap, LOCAL)
         val countBitmap2 = CountBitmap(
-            sketch = sketch,
+            cacheKey = request.cacheKey,
             bitmap = Bitmap.createBitmap(100, 100, RGB_565),
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
+        )
+        val sketchCountBitmapDrawable2 = SketchCountBitmapDrawable(
+            resources = context.resources,
+            countBitmap = countBitmap2,
             imageUri = request.uriString,
             requestKey = request.key,
             requestCacheKey = request.cacheKey,
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
             extras = null,
+            dataFrom = LOCAL
         )
-        val sketchCountBitmapDrawable2 =
-            SketchCountBitmapDrawable(context.resources, countBitmap2, LOCAL)
 
         runBlocking(Dispatchers.Main) {
             Assert.assertEquals(0, countBitmap.getDisplayedCount())

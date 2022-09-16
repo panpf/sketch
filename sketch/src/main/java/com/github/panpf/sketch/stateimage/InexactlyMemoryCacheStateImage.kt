@@ -2,8 +2,8 @@ package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.isExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.isInSampledTransformed
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -28,7 +28,7 @@ class InexactlyMemoryCacheStateImage(
     ): Drawable? {
         val uri = uri ?: request.uriString
         val keys = sketch.memoryCache.keys()
-        var cachedCountBitmap: CountBitmap? = null
+        var targetCachedValue: MemoryCache.Value? = null
         var count = 0
         for (key in keys) {
             // The key is spliced by uri and options. The options start with '_'. See RequestUtils.newKey() for details.
@@ -42,8 +42,8 @@ class InexactlyMemoryCacheStateImage(
                 key
             }
             if (uri == uriFromKey) {
-                val cached = sketch.memoryCache[key]?.takeIf {
-                    val bitmap = it.bitmap ?: return@takeIf false
+                val cachedValue = sketch.memoryCache[key]?.takeIf {
+                    val bitmap = it.countBitmap.bitmap ?: return@takeIf false
 
                     val bitmapAspectRatio = (bitmap.width.toFloat() / bitmap.height).format(1)
                     val imageAspectRatio =
@@ -60,17 +60,26 @@ class InexactlyMemoryCacheStateImage(
 
                     sizeSame && noOtherTransformed
                 }
-                if (cached != null) {
-                    cachedCountBitmap = cached
+                if (cachedValue != null) {
+                    targetCachedValue = cachedValue
                     break
                 } else if (++count >= 3) {
                     break
                 }
             }
         }
-        return if (cachedCountBitmap != null) {
-            val resources = request.context.resources
-            SketchCountBitmapDrawable(resources, cachedCountBitmap, MEMORY_CACHE)
+        return if (targetCachedValue != null) {
+            SketchCountBitmapDrawable(
+                resources = request.context.resources,
+                countBitmap = targetCachedValue.countBitmap,
+                imageUri = targetCachedValue.imageUri,
+                requestKey = targetCachedValue.requestKey,
+                requestCacheKey = targetCachedValue.requestCacheKey,
+                imageInfo = targetCachedValue.imageInfo,
+                transformedList = targetCachedValue.transformedList,
+                extras = targetCachedValue.extras,
+                dataFrom = DataFrom.MEMORY_CACHE
+            )
         } else {
             defaultImage?.getDrawable(sketch, request, exception)
         }

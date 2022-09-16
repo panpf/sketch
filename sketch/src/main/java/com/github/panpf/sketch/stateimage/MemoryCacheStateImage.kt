@@ -33,10 +33,19 @@ class MemoryCacheStateImage(
         exception: SketchException?
     ): Drawable? {
         val memoryCache = sketch.memoryCache
-        val cachedCountBitmap = memoryCacheKey?.let { memoryCache[it] }
-        return if (cachedCountBitmap != null) {
-            val resources = request.context.resources
-            SketchCountBitmapDrawable(resources, cachedCountBitmap, DataFrom.MEMORY_CACHE)
+        val cachedValue = memoryCacheKey?.let { memoryCache[it] }
+        return if (cachedValue != null) {
+            SketchCountBitmapDrawable(
+                resources = request.context.resources,
+                countBitmap = cachedValue.countBitmap,
+                imageUri = cachedValue.imageUri,
+                requestKey = cachedValue.requestKey,
+                requestCacheKey = cachedValue.requestCacheKey,
+                imageInfo = cachedValue.imageInfo,
+                transformedList = cachedValue.transformedList,
+                extras = cachedValue.extras,
+                dataFrom = DataFrom.MEMORY_CACHE
+            )
         } else {
             defaultImage?.getDrawable(sketch, request, exception)
         }

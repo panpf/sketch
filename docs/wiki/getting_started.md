@@ -2,15 +2,15 @@
 
 ## 支持的 URI
 
-|协议|描述|创建函数|
-|:---|:---|:---|
-|http://, https:// |File in network|_|
-|/, file:// |File in SDCard|newFileUri()|
-|content://|Content Resolver|_|
-|asset:// |Asset Resource|newAssetUri()|
-|android.resource:// |Android Resource|newResourceUri()|
-|data:image/, data:img/ |Base64|newBase64Uri()|
-|app.icon:// |App Icon|newAppIconUri()|
+| 协议                     | 描述               | 创建函数             |
+|:-----------------------|:-----------------|:-----------------|
+| http://, https://      | File in network  | _                |
+| /, file://             | File in SDCard   | newFileUri()     |
+| content://             | Content Resolver | _                |
+| asset://               | Asset Resource   | newAssetUri()    |
+| android.resource://    | Android Resource | newResourceUri() |
+| data:image/, data:img/ | Base64           | newBase64Uri()   |
+| app.icon://            | App Icon         | newAppIconUri()  |
 
 > 上表中的 `创建函数` 列展示了 Sketch 对部分 URI 提供的便捷创建函数
 
@@ -18,18 +18,18 @@
 
 ## 支持的图片类型
 
-|类型|API 限制|依赖模块|
-|:---|:---|:---|
-|jpeg|_|_|
-|png|_|_|
-|bmp|_|_|
-|webp|_|_|
-|svg|_|sketch-svg|
-|heif|Android 9+|_|
-|gif|_|sketch-gif-movie<br>sketch-gif-koral|
-|webp Animated|Android 9+|_|
-|heif Animated|Android 11+|_|
-|video frames|_|sketch-video<br>sketch-video-ffmpeg|
+| 类型            | API 限制      | 依赖模块                                 |
+|:--------------|:------------|:-------------------------------------|
+| jpeg          | _           | _                                    |
+| png           | _           | _                                    |
+| bmp           | _           | _                                    |
+| webp          | _           | _                                    |
+| svg           | _           | sketch-svg                           |
+| heif          | Android 9+  | _                                    |
+| gif           | _           | sketch-gif-movie<br>sketch-gif-koral |
+| webp Animated | Android 9+  | _                                    |
+| heif Animated | Android 11+ | _                                    |
+| video frames  | _           | sketch-video<br>sketch-video-ffmpeg  |
 
 每一种图片类型都有对应的 Decoder 对其提供支持，[点击查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
 

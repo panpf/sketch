@@ -21,6 +21,7 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.test.utils.newSketch
@@ -261,17 +262,21 @@ class LruMemoryCacheTest {
         val width = 10
         val height = pixelCount / width
         val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
-        return put(
-            imageUri, CountBitmap(
-                sketch = sketch,
-                bitmap = bitmap,
-                imageUri = imageUri,
-                requestKey = imageUri,
-                requestCacheKey = imageUri,
-                imageInfo = ImageInfo(width, height, "image/jpeg", 0),
-                transformedList = null,
-                extras = null,
-            )
+        val countBitmap = CountBitmap(
+            cacheKey = imageUri,
+            bitmap = bitmap,
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
         )
+        val newCacheValue = MemoryCache.Value(
+            countBitmap = countBitmap,
+            imageUri = imageUri,
+            requestKey = imageUri,
+            requestCacheKey = imageUri,
+            imageInfo = ImageInfo(width, height, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
+        )
+        return put(imageUri, newCacheValue)
     }
 }

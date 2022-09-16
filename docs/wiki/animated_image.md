@@ -2,13 +2,13 @@
 
 Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [DrawableDecoder] 提供支持，如下：
 
-|Type|Decoder|APi Limit|Additional Module|
-|:---|:---|:---|:---|
-|GIF|[GifAnimatedDrawableDecoder]|Android 9+|_|
-|GIF|[GifMovieDrawableDecoder]|Android 4.4+|sketch-gif-movie|
-|GIF|[GifDrawableDrawableDecoder]|Android 4.1+|sketch-gif-koral|
-|WEBP Animated|[WebPAnimatedDrawableDecoder]|Android 9+|_|
-|HEIF Animated|[HeifAnimatedDrawableDecoder]|Android 11+|_|
+| Type          | Decoder                       | APi Limit    | Additional Module |
+|:--------------|:------------------------------|:-------------|:------------------|
+| GIF           | [GifAnimatedDrawableDecoder]  | Android 9+   | _                 |
+| GIF           | [GifMovieDrawableDecoder]     | Android 4.4+ | sketch-gif-movie  |
+| GIF           | [GifDrawableDrawableDecoder]  | Android 4.1+ | sketch-gif-koral  |
+| WEBP Animated | [WebPAnimatedDrawableDecoder] | Android 9+   | _                 |
+| HEIF Animated | [HeifAnimatedDrawableDecoder] | Android 11+  | _                 |
 
 > 注意：
 > 1. [GifMovieDrawableDecoder] 和 [GifDrawableDrawableDecoder] 需要依赖额外的模块
@@ -20,7 +20,8 @@ Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [D
 
 Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你主动将 [DrawableDecoder] 注册到 Sketch 才能播放动图
 
-通过在 Application 类实现 [SketchFactory] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，这样所有的 ImageRequest 都可以使用，如下：
+通过在 Application 类实现 [SketchFactory] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，这样所有的
+ImageRequest 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {

@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.cache
 
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.Logger
 
 /**
@@ -35,20 +36,20 @@ interface MemoryCache {
     val size: Long
 
     /**
-     * Caches [countBitmap] for [key]
+     * Caches [value] for [key]
      */
-    fun put(key: String, countBitmap: CountBitmap): Boolean
+    fun put(key: String, value: Value): Boolean
 
     /**
      * Deletes the cache of the [key]
      * @return If null is returned, there is no cache
      */
-    fun remove(key: String): CountBitmap?
+    fun remove(key: String): Value?
 
     /**
      * Get the cache of the key
      */
-    operator fun get(key: String): CountBitmap?
+    operator fun get(key: String): Value?
 
     /**
      * Returns exist of the entry named [key]
@@ -72,4 +73,20 @@ interface MemoryCache {
      * Clear all cached bitmaps
      */
     fun clear()
+
+    class Value constructor(
+        val countBitmap: CountBitmap,
+        val imageUri: String,
+        val requestKey: String,
+        val requestCacheKey: String,
+        val imageInfo: ImageInfo,
+        /**
+         * Store the transformation history of the Bitmap
+         */
+        val transformedList: List<String>?,
+        /**
+         * Store some additional information for consumer use
+         */
+        val extras: Map<String, String>?,
+    )
 }

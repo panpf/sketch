@@ -24,8 +24,6 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class DefaultDrawableDecoder(
     private val sketch: Sketch,
@@ -45,25 +43,25 @@ class DefaultDrawableDecoder(
             index = 0,
         ).proceed()
         val countBitmap = CountBitmap(
-            sketch = sketch,
+            cacheKey = request.cacheKey,
             bitmap = decodeResult.bitmap,
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
+        )
+        val countDrawable = SketchCountBitmapDrawable(
+            resources = request.context.resources,
+            countBitmap = countBitmap,
             imageUri = request.uriString,
             requestKey = request.key,
             requestCacheKey = request.cacheKey,
             imageInfo = decodeResult.imageInfo,
             transformedList = decodeResult.transformedList,
             extras = decodeResult.extras,
+            dataFrom = decodeResult.dataFrom
         )
-        val countDrawable = SketchCountBitmapDrawable(
-            request.context.resources, countBitmap, decodeResult.dataFrom
-        ).apply {
-            withContext(Dispatchers.Main) {
-                requestContext.pendingCountDrawable(this@apply, "newDecode")
-            }
-        }
         return DrawableDecodeResult(
             drawable = countDrawable,
-            imageInfo = countBitmap.imageInfo,
+            imageInfo = decodeResult.imageInfo,
             dataFrom = decodeResult.dataFrom,
             transformedList = decodeResult.transformedList,
             extras = decodeResult.extras,

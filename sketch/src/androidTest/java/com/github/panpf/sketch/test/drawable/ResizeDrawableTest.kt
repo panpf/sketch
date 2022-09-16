@@ -184,15 +184,17 @@ class ResizeDrawableTest {
         val sketchDrawable = SketchCountBitmapDrawable(
             resources = resources,
             countBitmap = CountBitmap(
-                sketch = sketch,
+                cacheKey = imageUri,
                 bitmap = Bitmap.createBitmap(100, 200, RGB_565),
-                imageUri = imageUri,
-                requestKey = imageUri,
-                requestCacheKey = imageUri,
-                imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
-                transformedList = null,
-                extras = null,
+                logger = sketch.logger,
+                bitmapPool = sketch.bitmapPool,
             ),
+            imageUri = imageUri,
+            requestKey = imageUri,
+            requestCacheKey = imageUri,
+            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
             dataFrom = LOCAL,
         )
         ResizeDrawable(sketchDrawable, Resize(500, 300, CENTER_CROP)).apply {

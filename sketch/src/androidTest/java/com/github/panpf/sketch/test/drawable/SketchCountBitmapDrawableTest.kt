@@ -39,16 +39,20 @@ class SketchCountBitmapDrawableTest {
 
         val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
         SketchCountBitmapDrawable(
-            context.resources, CountBitmap(
-                sketch = sketch,
+            resources = context.resources,
+            countBitmap = CountBitmap(
+                cacheKey = "requestCacheKey1",
                 bitmap = bitmap,
-                imageUri = "imageUri1",
-                requestKey = "requestKey1",
-                requestCacheKey = "requestCacheKey1",
-                imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-                transformedList = null,
-                extras = null,
-            ), MEMORY
+                logger = sketch.logger,
+                bitmapPool = sketch.bitmapPool,
+            ),
+            imageUri = "imageUri1",
+            requestKey = "requestKey1",
+            requestCacheKey = "requestCacheKey1",
+            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
+            dataFrom = MEMORY
         ).apply {
             Assert.assertEquals("imageUri1", imageUri)
             Assert.assertEquals("requestKey1", requestKey)
@@ -63,29 +67,61 @@ class SketchCountBitmapDrawableTest {
     fun testEqualsAndHashCode() {
         val (context, sketch) = getTestContextAndNewSketch()
         val countBitmap = CountBitmap(
-            sketch = sketch,
+            cacheKey = "requestCacheKey1",
             bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
+        )
+        val countBitmap2 = CountBitmap(
+            cacheKey = "requestCacheKey2",
+            bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
+        )
+        val element1 = SketchCountBitmapDrawable(
+            resources = context.resources,
+            countBitmap = countBitmap,
             imageUri = "imageUri1",
             requestKey = "requestKey1",
             requestCacheKey = "requestCacheKey1",
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
             extras = null,
+            dataFrom = MEMORY
         )
-        val countBitmap2 = CountBitmap(
-            sketch = sketch,
-            bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+        val element11 = SketchCountBitmapDrawable(
+            resources = context.resources,
+            countBitmap = countBitmap,
+            imageUri = "imageUri1",
+            requestKey = "requestKey1",
+            requestCacheKey = "requestCacheKey1",
+            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
+            dataFrom = MEMORY
+        )
+        val element2 = SketchCountBitmapDrawable(
+            resources = context.resources,
+            countBitmap = countBitmap2,
             imageUri = "imageUri2",
             requestKey = "requestKey2",
             requestCacheKey = "requestCacheKey2",
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
             extras = null,
+            dataFrom = MEMORY
         )
-        val element1 = SketchCountBitmapDrawable(context.resources, countBitmap, MEMORY)
-        val element11 = SketchCountBitmapDrawable(context.resources, countBitmap, MEMORY)
-        val element2 = SketchCountBitmapDrawable(context.resources, countBitmap2, MEMORY)
-        val element3 = SketchCountBitmapDrawable(context.resources, countBitmap, LOCAL)
+        val element3 = SketchCountBitmapDrawable(
+            resources = context.resources,
+            countBitmap = countBitmap,
+            imageUri = "imageUri1",
+            requestKey = "requestKey1",
+            requestCacheKey = "requestCacheKey1",
+            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
+            dataFrom = LOCAL
+        )
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -115,18 +151,26 @@ class SketchCountBitmapDrawableTest {
         val (context, sketch) = getTestContextAndNewSketch()
 
         val countBitmap = CountBitmap(
-            sketch = sketch,
+            cacheKey = "requestCacheKey1",
             bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
+        )
+        SketchCountBitmapDrawable(
+            resources = context.resources,
+            countBitmap = countBitmap,
             imageUri = "imageUri1",
             requestKey = "requestKey1",
             requestCacheKey = "requestCacheKey1",
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
             extras = null,
-        )
-        Assert.assertEquals(
-            "SketchCountBitmapDrawable(${countBitmap.bitmap!!.logString},${countBitmap.imageInfo.toShortString()},$MEMORY,null,null,requestKey1)",
-            SketchCountBitmapDrawable(context.resources, countBitmap, MEMORY).toString()
-        )
+            dataFrom = MEMORY
+        ).apply {
+            Assert.assertEquals(
+                "SketchCountBitmapDrawable(${countBitmap.bitmap!!.logString},${imageInfo.toShortString()},$MEMORY,null,null,requestKey1)",
+                toString()
+            )
+        }
     }
 }

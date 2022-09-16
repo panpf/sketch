@@ -62,15 +62,17 @@ class SketchUtilsTest {
         val sketchDrawable = SketchCountBitmapDrawable(
             resources = resources,
             countBitmap = CountBitmap(
-                sketch = sketch,
+                cacheKey = "cacheKey",
                 bitmap = bitmap,
-                imageUri = "uri",
-                requestKey = "key",
-                requestCacheKey = "cacheKey",
-                imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg", 0),
-                transformedList = null,
-                extras = null,
+                logger = sketch.logger,
+                bitmapPool = sketch.bitmapPool,
             ),
+            imageUri = "uri",
+            requestKey = "key",
+            requestCacheKey = "cacheKey",
+            imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
             dataFrom = LOCAL,
         )
         val colorDrawable = ColorDrawable(Color.BLUE)
@@ -140,20 +142,22 @@ class SketchUtilsTest {
         val sketch = context.sketch
         val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
         val countBitmap = CountBitmap(
-            sketch = sketch,
+            cacheKey = "cacheKey",
             bitmap = bitmap,
+            logger = sketch.logger,
+            bitmapPool = sketch.bitmapPool,
+        )
+        val resources = context.resources
+        val countDrawable = SketchCountBitmapDrawable(
+            resources = resources,
+            countBitmap = countBitmap,
             imageUri = "uri",
             requestKey = "key",
             requestCacheKey = "cacheKey",
             imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg", 0),
             transformedList = null,
             extras = null,
-        )
-        val resources = context.resources
-        val countDrawable = SketchCountBitmapDrawable(
-            countBitmap = countBitmap,
             dataFrom = LOCAL,
-            resources = resources,
         )
         val colorDrawable = ColorDrawable(Color.BLUE)
         val colorDrawable2 = ColorDrawable(Color.GREEN)

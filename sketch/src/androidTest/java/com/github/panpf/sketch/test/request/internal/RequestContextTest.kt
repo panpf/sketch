@@ -74,30 +74,36 @@ class RequestContextTest {
     fun testPendingCountDrawable() {
         val (context, sketch) = getTestContextAndNewSketch()
         val countDrawable = SketchCountBitmapDrawable(
-            context.resources,
-            CountBitmap(
-                sketch = sketch,
+            resources = context.resources,
+            countBitmap = CountBitmap(
+                cacheKey = "requestCacheKey",
                 bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-                imageUri = "imageUri",
-                requestKey = "requestKey",
-                requestCacheKey = "requestCacheKey",
-                imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-                transformedList = null,
-                extras = null,
-            ), NETWORK
+                logger = sketch.logger,
+                bitmapPool = sketch.bitmapPool,
+            ),
+            imageUri = "imageUri",
+            requestKey = "requestKey",
+            requestCacheKey = "requestCacheKey",
+            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
+            dataFrom = NETWORK
         )
         val countDrawable1 = SketchCountBitmapDrawable(
-            context.resources,
-            CountBitmap(
-                sketch = sketch,
+            resources = context.resources,
+            countBitmap = CountBitmap(
+                cacheKey = "requestCacheKey1",
                 bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-                imageUri = "imageUri1",
-                requestKey = "requestKey1",
-                requestCacheKey = "requestCacheKey1",
-                imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-                transformedList = null,
-                extras = null,
-            ), NETWORK
+                logger = sketch.logger,
+                bitmapPool = sketch.bitmapPool,
+            ),
+            imageUri = "imageUri1",
+            requestKey = "requestKey1",
+            requestCacheKey = "requestCacheKey1",
+            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
+            dataFrom = NETWORK
         )
         val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
 

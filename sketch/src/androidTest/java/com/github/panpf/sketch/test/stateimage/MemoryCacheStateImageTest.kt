@@ -22,6 +22,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -59,9 +60,13 @@ class MemoryCacheStateImageTest {
 
         memoryCache.put(
             memoryCacheKey,
-            CountBitmap(
-                sketch = sketch,
-                bitmap = Bitmap.createBitmap(100, 100, RGB_565),
+            MemoryCache.Value(
+                countBitmap = CountBitmap(
+                    cacheKey = request.cacheKey,
+                    bitmap = Bitmap.createBitmap(100, 100, RGB_565),
+                    logger = sketch.logger,
+                    bitmapPool = sketch.bitmapPool,
+                ),
                 imageUri = request.uriString,
                 requestKey = request.key,
                 requestCacheKey = request.cacheKey,
