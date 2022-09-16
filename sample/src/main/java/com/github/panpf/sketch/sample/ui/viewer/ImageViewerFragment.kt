@@ -19,6 +19,7 @@ import android.Manifest
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
@@ -34,10 +35,9 @@ import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
-import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
+import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
-import com.github.panpf.tools4a.toast.ktx.showLongToast
 import kotlinx.coroutines.launch
 
 class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
@@ -75,17 +75,14 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(State.STARTED) {
                     prefsService.showOriginImage.stateFlow.collect {
-                        displayImage(if (it) args.originImageUri else args.previewImageUri) {
-                            placeholder(InexactlyMemoryCacheStateImage(uri = args.thumbnailImageUrl))
-                            crossfade(fadeStart = false)
-                            lifecycle(viewLifecycleOwner.lifecycle)
-                            listener(onError = { _, _ ->
-                                showLongToast("Image display failure")
-                            })
-                        }
+                        displayImage(binding, it)
                     }
                 }
             }
+        }
+
+        binding.imageViewerRetryButton.setOnClickListener {
+            displayImage(binding, prefsService.showOriginImage.stateFlow.value)
         }
 
         pagerViewModel.apply {
@@ -119,6 +116,23 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
         }
     }
 
+    private fun displayImage(binding: ImageViewerFragmentBinding, showOriginImage: Boolean) {
+        val uri = if (showOriginImage) args.originImageUri else args.previewImageUri
+        binding.imageViewerZoomImage.displayImage(uri) {
+            placeholder(InexactlyMemoryCacheStateImage(uri = args.thumbnailImageUrl))
+            crossfade(fadeStart = false)
+            lifecycle(viewLifecycleOwner.lifecycle)
+            listener(
+                onStart = {
+                    binding.imageViewerErrorLayout.isVisible = false
+                },
+                onError = { _, _ ->
+                    binding.imageViewerErrorLayout.isVisible = true
+                }
+            )
+        }
+    }
+
     private fun startImageInfoDialog(imageView: ImageView) {
         val arguments1 =
             ImageInfoDialogFragment.createDirectionsFromImageView(imageView, null).arguments
@@ -139,7 +153,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             arguments = ImageViewerFragmentArgs(
                 position = data.position,
                 originImageUri = data.originUrl,
-                previewImageUri = data.previewUrl,
+                previewImageUri = data.mediumUrl,
                 thumbnailImageUrl = data.thumbnailUrl,
             ).toBundle()
         }

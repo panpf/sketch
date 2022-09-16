@@ -48,7 +48,7 @@ class ImageFragment : BindingFragment<ImageFragmentBinding>() {
             data: ImageDetail
         ): Fragment = ImageFragment().apply {
             arguments = ImageFragmentArgs(
-                data.previewUrl,
+                data.mediumUrl,
             ).toBundle()
         }
     }

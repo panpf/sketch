@@ -106,7 +106,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
                     exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
                 Photo(
                     originalUrl = uri,
-                    previewUrl = null,
+                    mediumUrl = null,
                     thumbnailUrl = null,
                     width = size.width,
                     height = size.height,
@@ -115,7 +115,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
             } else {
                 Photo(
                     originalUrl = uri,
-                    previewUrl = null,
+                    mediumUrl = null,
                     thumbnailUrl = null,
                     width = null,
                     height = null,

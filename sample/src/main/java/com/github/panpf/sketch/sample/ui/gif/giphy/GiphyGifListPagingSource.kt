@@ -40,7 +40,7 @@ class GiphyGifListPagingSource(private val context: Context) :
             val dataList = response.body()?.dataList?.map {
                 Photo(
                     originalUrl = it.images.original.url,
-                    previewUrl = it.images.original.url,
+                    mediumUrl = it.images.original.url,
                     thumbnailUrl = it.images.fixedWidth.url,
                     width = it.images.original.width.toInt(),
                     height = it.images.original.height.toInt(),

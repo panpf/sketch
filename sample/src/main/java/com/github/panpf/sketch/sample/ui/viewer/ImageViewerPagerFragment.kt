@@ -74,7 +74,7 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     val imageUrl =
-                        imageList[position].let { it.thumbnailUrl ?: it.previewUrl ?: it.originUrl }
+                        imageList[position].let { it.thumbnailUrl ?: it.mediumUrl ?: it.originUrl }
                     binding.imageViewerBgImage.displayImage(imageUrl) {
                         resize(
                             requireContext().getScreenWidth() / 4,

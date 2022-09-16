@@ -5,6 +5,7 @@
     <color name="colorAccent">#bf5660</color>
     <color name="windowBackground">#121212</color>
     <color name="dialogBackground">#2E2E2E</color>
+    <color name="dialogBackground_translucent">#EE2E2E2E</color>
 
     <color name="text_normal">#DDFFFFFF</color>
     <color name="text_title">#DDFFFFFF</color>

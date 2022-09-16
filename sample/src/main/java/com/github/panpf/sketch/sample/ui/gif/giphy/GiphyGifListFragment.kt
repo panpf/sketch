@@ -197,7 +197,7 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
                     ImageDetail(
                         position = index,
                         originUrl = photo!!.originalUrl,
-                        previewUrl = photo.detailPreviewUrl,
+                        mediumUrl = photo.detailPreviewUrl,
                         thumbnailUrl = photo.listThumbnailUrl,
                     )
                 } else {
