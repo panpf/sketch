@@ -12,7 +12,7 @@ versionCode = "3021"
 versionName = "3.0.0"
 
 # android
-android-buildtools = "7.2.2"
+android-buildtools = "7.3.0"
 
 # maven
 maven-publishpluginx = "0.18.0"

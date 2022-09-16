@@ -7,6 +7,7 @@ plugins {
 }
 
 android {
+    namespace = "com.github.panpf.sketch.sample"
     compileSdk = libs.versions.composeCompileSdk.get().toInt()
 
     defaultConfig {

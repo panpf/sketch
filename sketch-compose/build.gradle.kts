@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace = "com.github.panpf.sketch.compose"
     compileSdk = libs.versions.composeCompileSdk.get().toInt()
 
     defaultConfig {
@@ -20,7 +21,8 @@ android {
 
     buildTypes {
         getByName("debug") {
-            isTestCoverageEnabled = true
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
         getByName("release") {
             isMinifyEnabled = false
