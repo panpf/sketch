@@ -37,6 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:textColor="@android:color/white"
             app:backgroundTint="@color/colorAccent"
             tools:text="重新加载" />
     </LinearLayout>
