@@ -8,6 +8,8 @@ StateImage 用来为加载中状态和错误状态提供图片，有以下几种
 * [ErrorStateImage]：专门用于错误状态，会根据错误类型选择不同的状态图片
 * [IconStateImage]：使用给定的图标 Drawable 和背景 Drawable 创建一个状态图片，无论目标 Bounds 多大，图标始终居中且大小不变
 * [MemoryCacheStateImage]：使用给定的内存缓存 key，尝试从内存缓存中获取 bitmap 作为状态图片
+* [InexactlyMemoryCacheStateImage]：使用给定的或当前请求的 uri 匹配内存缓存中宽高比和原图一致，并且没有被 Transformation 修改的 bitmap
+  作为状态图片
 
 ### 配置
 
@@ -83,6 +85,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 [IconStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/IconStateImage.kt
 
 [MemoryCacheStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/MemoryCacheStateImage.kt
+
+[InexactlyMemoryCacheStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/InexactlyMemoryCacheStateImage.kt
 
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
