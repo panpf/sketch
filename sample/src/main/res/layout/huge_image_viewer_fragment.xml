@@ -8,7 +8,8 @@
         android:id="@+id/hugeImageViewerZoomImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/app_name" />
+        android:contentDescription="@string/app_name"
+        tools:src="@mipmap/ic_launcher" />
 
     <com.github.panpf.sketch.sample.widget.TilesMapImageView
         android:id="@+id/hugeImageViewerTileMap"

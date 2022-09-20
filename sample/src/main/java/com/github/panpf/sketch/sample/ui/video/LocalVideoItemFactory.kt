@@ -41,6 +41,7 @@ class LocalVideoItemFactory :
                 saveCellularTrafficError(R.drawable.im_save_cellular_traffic)
                 pauseLoadWhenScrollingError()
             }
+            crossfade()
             videoFramePercent(0.5f)
         }
     }
