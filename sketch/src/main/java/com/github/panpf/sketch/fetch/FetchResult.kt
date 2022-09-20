@@ -51,13 +51,17 @@ open class DefaultFetchResult constructor(
             val readLength = dataSource.newInputStream().use {
                 it.read(byteArray)
             }
-            Bytes(
-                if (readLength == byteArray.size) {
-                    byteArray
-                } else {
-                    byteArray.copyOf(readLength)
-                }
-            )
+            if (readLength != -1) {
+                Bytes(
+                    if (readLength == byteArray.size) {
+                        byteArray
+                    } else {
+                        byteArray.copyOf(readLength)
+                    }
+                )
+            } else {
+                Bytes(ByteArray(0))
+            }
         } else {
             Bytes(ByteArray(0))
         }

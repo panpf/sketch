@@ -187,27 +187,18 @@ class Sketch private constructor(
 
         logger.d("Configuration") {
             buildString {
-                val fetchers = componentRegistry.fetcherFactoryList.joinToString(",")
-                val bitmapDecoders = componentRegistry.bitmapDecoderFactoryList.joinToString(",")
-                val drawableDecoders =
-                    componentRegistry.drawableDecoderFactoryList.joinToString(",")
-                val bitmapDecodeInterceptors =
-                    componentRegistry.bitmapDecodeInterceptorList.joinToString(",")
-                val drawableDecodeInterceptors =
-                    componentRegistry.drawableDecodeInterceptorList.joinToString(",")
-                val requestInterceptors = componentRegistry.requestInterceptorList.joinToString(",")
                 append("\n").append("logger: $logger")
                 append("\n").append("httpStack: $httpStack")
                 append("\n").append("memoryCache: $memoryCache")
                 append("\n").append("bitmapPool: $bitmapPool")
                 append("\n").append("downloadCache: $downloadCache")
                 append("\n").append("resultCache: $resultCache")
-                append("\n").append("fetchers: $fetchers")
-                append("\n").append("bitmapDecoders: $bitmapDecoders")
-                append("\n").append("drawableDecoders: $drawableDecoders")
-                append("\n").append("requestInterceptors: $requestInterceptors")
-                append("\n").append("bitmapDecodeInterceptors: $bitmapDecodeInterceptors")
-                append("\n").append("drawableDecodeInterceptors: $drawableDecodeInterceptors")
+                append("\n").append("fetchers: ${componentRegistry.fetcherFactoryList}")
+                append("\n").append("bitmapDecoders: ${componentRegistry.bitmapDecoderFactoryList}")
+                append("\n").append("drawableDecoders: ${componentRegistry.drawableDecoderFactoryList}")
+                append("\n").append("requestInterceptors: ${componentRegistry.requestInterceptorList}")
+                append("\n").append("bitmapDecodeInterceptors: ${componentRegistry.bitmapDecodeInterceptorList}")
+                append("\n").append("drawableDecodeInterceptors: ${componentRegistry.drawableDecodeInterceptorList}")
             }
         }
     }
