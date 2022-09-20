@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.tile
+package com.github.panpf.sketch.zoom
 
 import android.content.Context
 import android.graphics.Canvas
@@ -21,14 +21,14 @@ import android.graphics.Matrix
 import android.graphics.Rect
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.OnMatrixChangeListener
-import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.internal.TileDecoder
+import com.github.panpf.sketch.zoom.internal.TileManager
 import com.github.panpf.sketch.zoom.internal.format
 import com.github.panpf.sketch.zoom.internal.requiredMainThread
-import com.github.panpf.sketch.zoom.tile.internal.TileManager
-import com.github.panpf.sketch.zoom.tile.internal.createTileDecoder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -36,17 +36,17 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class Tiles constructor(
+class SubsamplingHelper(
     private val context: Context,
     private val sketch: Sketch,
-    private val zoomer: Zoomer,
+    private val zoomerHelper: ZoomerHelper,
     private val imageUri: String,
+    private val imageInfo: ImageInfo,
     viewSize: Size,
-    private val disabledExifOrientation: Boolean = false,
 ) {
 
     companion object {
-        internal const val MODULE = "Tiles"
+        internal const val MODULE = "SubsamplingHelper"
     }
 
     private val tempDrawMatrix = Matrix()
@@ -68,8 +68,6 @@ class Tiles constructor(
         get() = _destroyed
     val tileList: List<Tile>?
         get() = tileManager?.tileList
-    val imageSize: Size?
-        get() = tileManager?.imageSize
 
     var showTileBounds = false
         set(value) {
@@ -92,14 +90,22 @@ class Tiles constructor(
 
     init {
         scope.launch(Dispatchers.Main) {
-            val tileDecoder = withContext(Dispatchers.IO) {
-                createTileDecoder(context, sketch, imageUri, disabledExifOrientation)
-            } ?: return@launch
-            tileManager = TileManager(sketch, imageUri, viewSize, tileDecoder, this@Tiles)
+            val dataSource = withContext(Dispatchers.IO) {
+                sketch.components.newFetcher(LoadRequest(context, imageUri)).fetch()
+            }.dataSource
+            val tileDecoder = TileDecoder(sketch, imageUri, imageInfo, dataSource)
+            tileManager = TileManager(
+                sketch = sketch,
+                imageUri = imageUri,
+                imageSize = Size(imageInfo.width, imageInfo.height),
+                viewSize = viewSize,
+                decoder = tileDecoder,
+                subsamplingHelper = this@SubsamplingHelper
+            )
             refreshTiles()
         }
 
-        zoomer.addOnMatrixChangeListener(onMatrixChangeListener)
+        zoomerHelper.addOnMatrixChangeListener(onMatrixChangeListener)
     }
 
     @MainThread
@@ -119,7 +125,7 @@ class Tiles constructor(
             logger.d(MODULE) { "refreshTiles. interrupted. initializing. $imageUri" }
             return
         }
-        if (zoomer.rotateDegrees % 90 != 0) {
+        if (zoomerHelper.rotateDegrees % 90 != 0) {
             logger.w(
                 MODULE,
                 "refreshTiles. interrupted. rotate degrees must be in multiples of 90. $imageUri"
@@ -127,13 +133,13 @@ class Tiles constructor(
             return
         }
 
-        val previewSize = zoomer.drawableSize
-        val scaling = zoomer.isScaling
+        val previewSize = zoomerHelper.drawableSize
+        val scaling = zoomerHelper.isScaling
         val drawMatrix = tempDrawMatrix.apply {
-            zoomer.getDrawMatrix(this)
+            zoomerHelper.getDrawMatrix(this)
         }
         val previewVisibleRect = tempPreviewVisibleRect.apply {
-            zoomer.getVisibleRect(this)
+            zoomerHelper.getVisibleRect(this)
         }
 
         if (previewVisibleRect.isEmpty) {
@@ -151,7 +157,7 @@ class Tiles constructor(
             return
         }
 
-        if (zoomer.scale.format(2) <= zoomer.minScale.format(2)) {
+        if (zoomerHelper.scale.format(2) <= zoomerHelper.minScale.format(2)) {
             logger.d(MODULE) {
                 "refreshTiles. interrupted. minScale. $imageUri"
             }
@@ -167,7 +173,7 @@ class Tiles constructor(
         requiredMainThread()
 
         if (destroyed) return
-        val previewSize = zoomer.drawableSize
+        val previewSize = zoomerHelper.drawableSize
         val drawMatrix = tempDrawMatrix
         val previewVisibleRect = tempPreviewVisibleRect
         tileManager?.onDraw(canvas, previewSize, previewVisibleRect, drawMatrix)
@@ -177,7 +183,7 @@ class Tiles constructor(
     internal fun invalidateView() {
         requiredMainThread()
 
-        zoomer.view.invalidate()
+        zoomerHelper.view.invalidate()
     }
 
     fun addOnTileChangedListener(listener: OnTileChangedListener) {
@@ -191,9 +197,9 @@ class Tiles constructor(
     }
 
     fun eachTileList(action: (tile: Tile, load: Boolean) -> Unit) {
-        val previewSize = zoomer.drawableSize.takeIf { !it.isEmpty } ?: return
+        val previewSize = zoomerHelper.drawableSize.takeIf { !it.isEmpty } ?: return
         val previewVisibleRect = tempPreviewVisibleRect.apply {
-            zoomer.getVisibleRect(this)
+            zoomerHelper.getVisibleRect(this)
         }.takeIf { !it.isEmpty } ?: return
         tileManager?.eachTileList(previewSize, previewVisibleRect, action)
     }
@@ -205,7 +211,7 @@ class Tiles constructor(
         if (_destroyed) return
         logger.w(MODULE, "destroy")
         _destroyed = true
-        zoomer.removeOnMatrixChangeListener(onMatrixChangeListener)
+        zoomerHelper.removeOnMatrixChangeListener(onMatrixChangeListener)
         scope.cancel()
         tileManager?.destroy()
         tileManager = null

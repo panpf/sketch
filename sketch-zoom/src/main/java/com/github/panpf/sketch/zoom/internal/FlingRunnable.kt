@@ -18,17 +18,17 @@ package com.github.panpf.sketch.zoom.internal
 import android.graphics.RectF
 import android.widget.OverScroller
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.ZoomerHelper
 import kotlin.math.roundToInt
 
 internal class FlingRunnable(
-    private val zoomer: Zoomer,
+    private val zoomerHelper: ZoomerHelper,
     private val scaleDragHelper: ScaleDragHelper,
     private val velocityX: Int,
     private val velocityY: Int,
 ) : Runnable {
 
-    private val scroller: OverScroller = OverScroller(zoomer.context)
+    private val scroller: OverScroller = OverScroller(zoomerHelper.context)
     private var currentX: Int = 0
     private var currentY: Int = 0
 
@@ -43,7 +43,7 @@ internal class FlingRunnable(
             .apply { scaleDragHelper.getDrawRect(this) }
             .takeIf { !it.isEmpty }
             ?: return
-        val (viewWidth, viewHeight) = zoomer.viewSize
+        val (viewWidth, viewHeight) = zoomerHelper.viewSize
 
         val minX: Int
         val maxX: Int
@@ -71,12 +71,12 @@ internal class FlingRunnable(
         currentY = startY
         if (startX != maxX || startY != maxY) {
             scroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY, 0, 0)
-            zoomer.view.post(this)
+            zoomerHelper.view.post(this)
         }
     }
 
     fun cancel() {
-        zoomer.view.removeCallbacks(this)
+        zoomerHelper.view.removeCallbacks(this)
         scroller.forceFinished(true)
     }
 
@@ -94,7 +94,7 @@ internal class FlingRunnable(
             currentX = newX
             currentY = newY
             // Post On animation
-            ViewCompat.postOnAnimation(zoomer.view, this)
+            ViewCompat.postOnAnimation(zoomerHelper.view, this)
         }
     }
 }

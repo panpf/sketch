@@ -18,10 +18,10 @@ package com.github.panpf.sketch.zoom.internal
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Scroller
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.ZoomerHelper
 
 internal class LocationRunnable(
-    private val zoomer: Zoomer,
+    private val zoomerHelper: ZoomerHelper,
     private val scaleDragHelper: ScaleDragHelper,
     private val startX: Int,
     private val startY: Int,
@@ -29,7 +29,7 @@ internal class LocationRunnable(
     private val endY: Int
 ) : Runnable {
 
-    private val scroller = Scroller(zoomer.context, AccelerateDecelerateInterpolator())
+    private val scroller = Scroller(zoomerHelper.context, AccelerateDecelerateInterpolator())
     private var currentX = 0
     private var currentY = 0
 
@@ -42,11 +42,11 @@ internal class LocationRunnable(
         currentX = startX
         currentY = startY
         scroller.startScroll(startX, startY, endX - startX, endY - startY, 300)
-        zoomer.view.post(this)
+        zoomerHelper.view.post(this)
     }
 
     fun cancel() {
-        zoomer.view.removeCallbacks(this)
+        zoomerHelper.view.removeCallbacks(this)
         scroller.forceFinished(true)
     }
 
@@ -63,7 +63,7 @@ internal class LocationRunnable(
             scaleDragHelper.translateBy(dx, dy)
             currentX = newX
             currentY = newY
-            ViewCompat.postOnAnimation(zoomer.view, this)
+            ViewCompat.postOnAnimation(zoomerHelper.view, this)
         }
     }
 }

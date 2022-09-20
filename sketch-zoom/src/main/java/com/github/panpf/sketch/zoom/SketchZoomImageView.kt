@@ -30,8 +30,6 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 import com.github.panpf.sketch.zoom.internal.Edge
-import com.github.panpf.sketch.zoom.tile.OnTileChangedListener
-import com.github.panpf.sketch.zoom.tile.Tile
 
 open class SketchZoomImageView @JvmOverloads constructor(
     context: Context,
@@ -68,7 +66,7 @@ open class SketchZoomImageView @JvmOverloads constructor(
         set(value) {
             zoomAbility.zoomAnimationDuration = value
         }
-    var zoomInterpolator: Interpolator
+    var zoomInterpolator: Interpolator?
         get() = zoomAbility.zoomInterpolator
         set(value) {
             zoomAbility.zoomInterpolator = value

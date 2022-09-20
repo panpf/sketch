@@ -27,13 +27,13 @@ class DefaultLongImageDeciderTest {
     @Test
     fun testConstructor() {
         DefaultLongImageDecider().apply {
-            Assert.assertEquals(2.5f, smallRatioMultiple, 0.0f)
-            Assert.assertEquals(5.0f, bigRatioMultiple, 0.0f)
+            Assert.assertEquals(2.5f, sameDirectionMultiple, 0.0f)
+            Assert.assertEquals(5.0f, notSameDirectionMultiple, 0.0f)
         }
 
-        DefaultLongImageDecider(smallRatioMultiple = 3.2f, bigRatioMultiple = 6.1f).apply {
-            Assert.assertEquals(3.2f, smallRatioMultiple, 0.0f)
-            Assert.assertEquals(6.1f, bigRatioMultiple, 0.0f)
+        DefaultLongImageDecider(sameDirectionMultiple = 3.2f, notSameDirectionMultiple = 6.1f).apply {
+            Assert.assertEquals(3.2f, sameDirectionMultiple, 0.0f)
+            Assert.assertEquals(6.1f, notSameDirectionMultiple, 0.0f)
         }
     }
 
@@ -95,8 +95,8 @@ class DefaultLongImageDeciderTest {
     fun testEqualsAndHashCode() {
         val element1 = DefaultLongImageDecider()
         val element11 = DefaultLongImageDecider()
-        val element2 = DefaultLongImageDecider(smallRatioMultiple = 3f)
-        val element3 = DefaultLongImageDecider(bigRatioMultiple = 6f)
+        val element2 = DefaultLongImageDecider(sameDirectionMultiple = 3f)
+        val element3 = DefaultLongImageDecider(notSameDirectionMultiple = 6f)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -125,13 +125,13 @@ class DefaultLongImageDeciderTest {
     fun testToString() {
         DefaultLongImageDecider().apply {
             Assert.assertEquals(
-                "DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0)",
+                "DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0)",
                 toString()
             )
         }
         DefaultLongImageDecider(4f, 10f).apply {
             Assert.assertEquals(
-                "DefaultLongImageDecider(smallRatioMultiple=4.0, bigRatioMultiple=10.0)",
+                "DefaultLongImageDecider(sameDirectionMultiple=4.0, notSameDirectionMultiple=10.0)",
                 toString()
             )
         }

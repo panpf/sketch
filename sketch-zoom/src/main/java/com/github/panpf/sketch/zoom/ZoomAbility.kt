@@ -28,7 +28,6 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
-import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_START
 import androidx.lifecycle.Lifecycle.Event.ON_STOP
@@ -54,15 +53,12 @@ import com.github.panpf.sketch.viewability.SizeChangeObserver
 import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
+import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
 import com.github.panpf.sketch.zoom.internal.Edge
-import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
+import com.github.panpf.sketch.zoom.internal.canUseSubsampling
+import com.github.panpf.sketch.zoom.internal.contentSize
 import com.github.panpf.sketch.zoom.internal.getLifecycle
 import com.github.panpf.sketch.zoom.internal.isAttachedToWindowCompat
-import com.github.panpf.sketch.zoom.internal.sizeWithoutPaddingOrNull
-import com.github.panpf.sketch.zoom.tile.OnTileChangedListener
-import com.github.panpf.sketch.zoom.tile.Tile
-import com.github.panpf.sketch.zoom.tile.Tiles
-import com.github.panpf.sketch.zoom.tile.internal.shouldUseTiles
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -79,15 +75,15 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         private const val MODULE = "ZoomAbility"
     }
 
-    private var zoomer: Zoomer? = null
-    private var tiles: Tiles? = null
+    private var zoomerHelper: ZoomerHelper? = null
+    private var subsamplingHelper: SubsamplingHelper? = null
     private val lifecycleObserver = LifecycleEventObserver { _, event ->
         when (event) {
             ON_START -> {
-                tiles?.paused = true
+                subsamplingHelper?.paused = true
             }
             ON_STOP -> {
-                tiles?.paused = false
+                subsamplingHelper?.paused = false
             }
             else -> {}
         }
@@ -102,7 +98,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
     )
-    private var lastPostResetTilesJob: Job? = null
+    private var lastPostResetSubsamplingHelperJob: Job? = null
 
     private var lifecycle: Lifecycle? = null
         set(value) {
@@ -115,15 +111,15 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override var host: Host? = null
         set(value) {
-            val oldZoomer = zoomer
+            val oldZoomer = zoomerHelper
             if (oldZoomer != null) {
                 field?.container?.superSetScaleType(oldZoomer.scaleType)
-                oldZoomer.recycle()
             }
 
             field = value
-            val newZoomer = if (value != null) newZoomer(value) else null
-            zoomer = newZoomer
+            val newZoomer = if (value != null) newZoomerHelper(value) else null
+            zoomerHelper = newZoomer
+            resetDrawableSize()
             if (newZoomer != null) {
                 field?.container?.superSetScaleType(ScaleType.MATRIX)
             }
@@ -137,76 +133,68 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     var scrollBarEnabled: Boolean = true
         set(value) {
             field = value
-            zoomer?.scrollBarEnabled = value
+            zoomerHelper?.scrollBarEnabled = value
         }
     var readModeEnabled: Boolean = false
         set(value) {
-            if (field != value) {
-                field = value
-                zoomer?.readModeDecider =
-                    if (value) readModeDecider ?: longImageReadMode() else null
-            }
+            field = value
+            zoomerHelper?.readModeEnabled = value
         }
     var readModeDecider: ReadModeDecider? = null
         set(value) {
-            if (field != value) {
-                field = value
-                zoomer?.readModeDecider = value
-            }
+            field = value
+            zoomerHelper?.readModeDecider = value
         }
     var scalesFactory: ScalesFactory? = null
         set(value) {
             if (field != value) {
                 field = value
-                zoomer?.scalesFactory = value ?: ScalesFactoryImpl()
+                zoomerHelper?.scalesFactory = value ?: DefaultScalesFactory()
             }
         }
     var zoomAnimationDuration: Int = 200
         set(value) {
-            if (value > 0 && field != value) {
+            if (value > 0) {
                 field = value
-                zoomer?.zoomAnimationDuration = value
+                zoomerHelper?.zoomAnimationDuration = value
             }
         }
-    var zoomInterpolator: Interpolator = AccelerateDecelerateInterpolator()
+    var zoomInterpolator: Interpolator? = null
         set(value) {
             if (field != value) {
                 field = value
-                zoomer?.zoomInterpolator = value
+                zoomerHelper?.zoomInterpolator = value ?: AccelerateDecelerateInterpolator()
             }
         }
     var allowParentInterceptOnEdge: Boolean = true
         set(value) {
-            if (field != value) {
-                field = value
-                zoomer?.allowParentInterceptOnEdge = value
-            }
+            field = value
+            zoomerHelper?.allowParentInterceptOnEdge = value
         }
     var onViewLongPressListener: OnViewLongPressListener? = null
         set(value) {
-            if (field != value) {
-                field = value
-                zoomer?.onViewLongPressListener = value
-            }
+            field = value
+            zoomerHelper?.onViewLongPressListener = value
         }
     var onViewTapListener: OnViewTapListener? = null
         set(value) {
-            if (field != value) {
-                field = value
-                zoomer?.onViewTapListener = value
-            }
+            field = value
+            zoomerHelper?.onViewTapListener = value
         }
     var showTileBounds: Boolean = false
         set(value) {
-            if (field != value) {
-                field = value
-                tiles?.showTileBounds = value
-            }
+            field = value
+            subsamplingHelper?.showTileBounds = value
         }
 
     init {
-        addOnMatrixChangeListener { zoomer ->
-            host?.container?.superSetImageMatrix(imageMatrix.apply { zoomer.getDrawMatrix(this) })
+        addOnMatrixChangeListener {
+            val container = host?.container
+            val zoomer = zoomerHelper
+            if (container != null && zoomer != null) {
+                val matrix = imageMatrix.apply { zoomer.getDrawMatrix(this) }
+                container.superSetImageMatrix(matrix)
+            }
         }
     }
 
@@ -220,7 +208,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
      * @param y Preview the y-coordinate on the diagram
      */
     fun location(x: Float, y: Float, animate: Boolean = false) {
-        zoomer?.location(x, y, animate)
+        zoomerHelper?.location(x, y, animate)
     }
 
     /**
@@ -230,14 +218,14 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
      * @param focalY  Scale the y coordinate of the center point on the preview image
      */
     fun scale(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
-        zoomer?.scale(scale, focalX, focalY, animate)
+        zoomerHelper?.scale(scale, focalX, focalY, animate)
     }
 
     /**
      * Scale to the specified scale. You don't have to worry about rotation degrees
      */
     fun scale(scale: Float, animate: Boolean = false) {
-        zoomer?.scale(scale, animate)
+        zoomerHelper?.scale(scale, animate)
     }
 
     /**
@@ -246,7 +234,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
      * @param degrees Rotation degrees, can only be 90°, 180°, 270°, 360°
      */
     fun rotateTo(degrees: Int) {
-        zoomer?.rotateTo(degrees)
+        zoomerHelper?.rotateTo(degrees)
     }
 
     /**
@@ -255,93 +243,93 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
      * @param addDegrees Rotation degrees, can only be 90°, 180°, 270°, 360°
      */
     fun rotateBy(addDegrees: Int) {
-        zoomer?.rotateBy(addDegrees)
+        zoomerHelper?.rotateBy(addDegrees)
     }
 
 
     /***************************************** Information ****************************************/
 
     val rotateDegrees: Int
-        get() = zoomer?.rotateDegrees ?: 0
+        get() = zoomerHelper?.rotateDegrees ?: 0
 
     fun canScrollHorizontally(direction: Int): Boolean =
-        zoomer?.canScrollHorizontally(direction) == true
+        zoomerHelper?.canScrollHorizontally(direction) == true
 
     fun canScrollVertically(direction: Int): Boolean =
-        zoomer?.canScrollVertically(direction) == true
+        zoomerHelper?.canScrollVertically(direction) == true
 
     val horScrollEdge: Edge
-        get() = zoomer?.horScrollEdge ?: Edge.NONE
+        get() = zoomerHelper?.horScrollEdge ?: Edge.NONE
 
     val verScrollEdge: Edge
-        get() = zoomer?.verScrollEdge ?: Edge.NONE
+        get() = zoomerHelper?.verScrollEdge ?: Edge.NONE
 
     val scale: Float
-        get() = zoomer?.scale ?: 1f
+        get() = zoomerHelper?.scale ?: 1f
 
     val baseScale: Float
-        get() = zoomer?.baseScale ?: 1f
+        get() = zoomerHelper?.baseScale ?: 1f
 
     val supportScale: Float
-        get() = zoomer?.supportScale ?: 1f
+        get() = zoomerHelper?.supportScale ?: 1f
 
     /** Zoom ratio that makes the image fully visible */
     val fullScale: Float
-        get() = zoomer?.fullScale ?: 1f
+        get() = zoomerHelper?.fullScale ?: 1f
 
     /** Gets the zoom that fills the image with the ImageView display */
     val fillScale: Float
-        get() = zoomer?.fillScale ?: 1f
+        get() = zoomerHelper?.fillScale ?: 1f
 
     /** Gets the scale that allows the image to be displayed at scale to scale */
     val originScale: Float
-        get() = zoomer?.originScale ?: 1f
+        get() = zoomerHelper?.originScale ?: 1f
 
     val minScale: Float
-        get() = zoomer?.minScale ?: 1f
+        get() = zoomerHelper?.minScale ?: 1f
 
     val maxScale: Float
-        get() = zoomer?.maxScale ?: 1f
+        get() = zoomerHelper?.maxScale ?: 1f
 
     val stepScales: FloatArray?
-        get() = zoomer?.stepScales
+        get() = zoomerHelper?.stepScales
 
     val isScaling: Boolean
-        get() = zoomer?.isScaling == true
+        get() = zoomerHelper?.isScaling == true
 
     val tileList: List<Tile>?
-        get() = tiles?.tileList
+        get() = subsamplingHelper?.tileList
 
     val imageSize: Size?
-        get() = zoomer?.imageSize ?: tiles?.imageSize
+        get() = zoomerHelper?.imageSize
 
     val previewSize: Size?
-        get() = zoomer?.drawableSize
+        get() = zoomerHelper?.drawableSize
 
-    fun getDrawMatrix(matrix: Matrix) = zoomer?.getDrawMatrix(matrix)
+    fun getDrawMatrix(matrix: Matrix) = zoomerHelper?.getDrawMatrix(matrix)
 
-    fun getDrawRect(rectF: RectF) = zoomer?.getDrawRect(rectF)
+    fun getDrawRect(rectF: RectF) = zoomerHelper?.getDrawRect(rectF)
 
     /** Gets the area that the user can see on the preview (not affected by rotation) */
-    fun getVisibleRect(rect: Rect) = zoomer?.getVisibleRect(rect)
+    fun getVisibleRect(rect: Rect) = zoomerHelper?.getVisibleRect(rect)
 
     fun touchPointToDrawablePoint(touchPoint: PointF): Point? {
-        return zoomer?.touchPointToDrawablePoint(touchPoint)
+        return zoomerHelper?.touchPointToDrawablePoint(touchPoint)
     }
 
     fun eachTileList(action: (tile: Tile, load: Boolean) -> Unit) {
-        tiles?.eachTileList(action)
+        subsamplingHelper?.eachTileList(action)
     }
 
     fun addOnMatrixChangeListener(listener: OnMatrixChangeListener) {
         this.onMatrixChangeListenerList = (onMatrixChangeListenerList ?: LinkedHashSet()).apply {
             add(listener)
         }
-        zoomer?.addOnMatrixChangeListener(listener)
+        zoomerHelper?.addOnMatrixChangeListener(listener)
     }
 
     fun removeOnMatrixChangeListener(listener: OnMatrixChangeListener): Boolean {
-        zoomer?.removeOnMatrixChangeListener(listener)
+        zoomerHelper?.removeOnMatrixChangeListener(listener)
         return onMatrixChangeListenerList?.remove(listener) == true
     }
 
@@ -349,11 +337,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         this.onRotateChangeListenerList = (onRotateChangeListenerList ?: LinkedHashSet()).apply {
             add(listener)
         }
-        zoomer?.addOnRotateChangeListener(listener)
+        zoomerHelper?.addOnRotateChangeListener(listener)
     }
 
     fun removeOnRotateChangeListener(listener: OnRotateChangeListener): Boolean {
-        zoomer?.removeOnRotateChangeListener(listener)
+        zoomerHelper?.removeOnRotateChangeListener(listener)
         return onRotateChangeListenerList?.remove(listener) == true
     }
 
@@ -361,11 +349,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         this.onDragFlingListenerList = (onDragFlingListenerList ?: LinkedHashSet()).apply {
             add(listener)
         }
-        zoomer?.addOnDragFlingListener(listener)
+        zoomerHelper?.addOnDragFlingListener(listener)
     }
 
     fun removeOnDragFlingListener(listener: OnDragFlingListener): Boolean {
-        zoomer?.removeOnDragFlingListener(listener)
+        zoomerHelper?.removeOnDragFlingListener(listener)
         return onDragFlingListenerList?.remove(listener) == true
     }
 
@@ -373,11 +361,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         this.onScaleChangeListenerList = (onScaleChangeListenerList ?: LinkedHashSet()).apply {
             add(listener)
         }
-        zoomer?.addOnScaleChangeListener(listener)
+        zoomerHelper?.addOnScaleChangeListener(listener)
     }
 
     fun removeOnScaleChangeListener(listener: OnScaleChangeListener): Boolean {
-        zoomer?.removeOnScaleChangeListener(listener)
+        zoomerHelper?.removeOnScaleChangeListener(listener)
         return onScaleChangeListenerList?.remove(listener) == true
     }
 
@@ -385,11 +373,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         this.onOnViewDragListenerList = (onOnViewDragListenerList ?: LinkedHashSet()).apply {
             add(listener)
         }
-        zoomer?.addOnViewDragListener(listener)
+        zoomerHelper?.addOnViewDragListener(listener)
     }
 
     fun removeOnViewDragListener(listener: OnViewDragListener): Boolean {
-        zoomer?.removeOnViewDragListener(listener)
+        zoomerHelper?.removeOnViewDragListener(listener)
         return onOnViewDragListenerList?.remove(listener) == true
     }
 
@@ -397,11 +385,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         this.onTileChangedListenerList = (onTileChangedListenerList ?: LinkedHashSet()).apply {
             add(listener)
         }
-        tiles?.addOnTileChangedListener(listener)
+        subsamplingHelper?.addOnTileChangedListener(listener)
     }
 
     fun removeOnTileChangedListener(listener: OnTileChangedListener): Boolean {
-        tiles?.removeOnTileChangedListener(listener)
+        subsamplingHelper?.removeOnTileChangedListener(listener)
         return onTileChangedListenerList?.remove(listener) == true
     }
 
@@ -429,13 +417,13 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private fun registerLifecycleObserver() {
         if (host?.view?.isAttachedToWindowCompat == true) {
             lifecycle?.addObserver(lifecycleObserver)
-            tiles?.paused = lifecycle?.currentState?.isAtLeast(STARTED) == false
+            subsamplingHelper?.paused = lifecycle?.currentState?.isAtLeast(STARTED) == false
         }
     }
 
     private fun unregisterLifecycleObserver() {
         lifecycle?.removeObserver(lifecycleObserver)
-        tiles?.paused = false
+        subsamplingHelper?.paused = false
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
@@ -443,21 +431,18 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val view = host.view
         val viewWidth = view.width - view.paddingLeft - view.paddingRight
         val viewHeight = view.height - view.paddingTop - view.paddingBottom
-        zoomer?.viewSize = Size(viewWidth, viewHeight)
-        postResetTiles()
+        zoomerHelper?.viewSize = Size(viewWidth, viewHeight)
+        postDelayResetSubsamplingHelper()
     }
 
-    private fun postResetTiles() {
-        // Triggering the reset tiles frequently (such as changing the view size in shared element animations)
+    private fun postDelayResetSubsamplingHelper() {
+        // Triggering the reset SubsamplingHelper frequently (such as changing the view size in shared element animations)
         // can cause large fluctuations in memory, so delayed resets can avoid this problem
-        lastPostResetTilesJob?.cancel()
-        lastPostResetTilesJob = scope.launch(Dispatchers.Main) {
+        lastPostResetSubsamplingHelperJob?.cancel()
+        lastPostResetSubsamplingHelperJob = scope.launch(Dispatchers.Main) {
             delay(60)
-            tiles?.destroy()
-            tiles = newTiles(zoomer)?.apply {
-                showTileBounds = this@ZoomAbility.showTileBounds
-                paused = this@ZoomAbility.lifecycle?.currentState?.isAtLeast(STARTED) == false
-            }
+            subsamplingHelper?.destroy()
+            subsamplingHelper = newSubsamplingHelper(zoomerHelper)
         }
     }
 
@@ -466,97 +451,99 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     }
 
     override fun onDraw(canvas: Canvas) {
-        tiles?.onDraw(canvas)
-        zoomer?.onDraw(canvas)
+        subsamplingHelper?.onDraw(canvas)
+        zoomerHelper?.onDraw(canvas)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean =
-        zoomer?.onTouchEvent(event) ?: false
+        zoomerHelper?.onTouchEvent(event) ?: false
 
     override fun setScaleType(scaleType: ScaleType): Boolean {
-        val zoomer = zoomer
-        zoomer?.scaleType = scaleType
-        return zoomer != null
+        val zoomerHelper = zoomerHelper
+        zoomerHelper?.scaleType = scaleType
+        return zoomerHelper != null
     }
 
-    override fun getScaleType(): ScaleType? = zoomer?.scaleType
+    override fun getScaleType(): ScaleType? = zoomerHelper?.scaleType
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
-        tiles?.paused = visibility != View.VISIBLE
+        subsamplingHelper?.paused = visibility != View.VISIBLE
     }
 
     private fun initialize() {
-        setZoomerDrawable()
-        postResetTiles()
+        resetDrawableSize()
+        postDelayResetSubsamplingHelper()
     }
 
     private fun destroy() {
-        zoomer?.recycle()
-        tiles?.destroy()
-        tiles = null
+        subsamplingHelper?.destroy()
+        subsamplingHelper = null
     }
 
-    private fun newZoomer(host: Host): Zoomer {
+    private fun newZoomerHelper(host: Host): ZoomerHelper {
         val scaleType = host.container.superGetScaleType()
         require(scaleType != ScaleType.MATRIX) {
             "ScaleType cannot be MATRIX"
         }
-        return Zoomer(
+        return ZoomerHelper(
             context = host.context,
             sketch = host.context.sketch,
             view = host.view,
             scaleType = scaleType,
         ).apply {
-            readModeDecider = if (readModeEnabled) readModeDecider else null
-            scrollBarEnabled = this@ZoomAbility.scrollBarEnabled
-            zoomAnimationDuration = this@ZoomAbility.zoomAnimationDuration
-            zoomInterpolator = this@ZoomAbility.zoomInterpolator
-            allowParentInterceptOnEdge = this@ZoomAbility.allowParentInterceptOnEdge
-            onViewLongPressListener = this@ZoomAbility.onViewLongPressListener
-            onViewTapListener = this@ZoomAbility.onViewTapListener
-            onMatrixChangeListenerList?.forEach {
-                addOnMatrixChangeListener(it)
-            }
-            onScaleChangeListenerList?.forEach {
-                addOnScaleChangeListener(it)
-            }
-            onRotateChangeListenerList?.forEach {
-                addOnRotateChangeListener(it)
-            }
-            onDragFlingListenerList?.forEach {
-                addOnDragFlingListener(it)
+            this@apply.readModeEnabled = this@ZoomAbility.readModeEnabled
+            this@apply.readModeDecider = this@ZoomAbility.readModeDecider
+            this@apply.scrollBarEnabled = this@ZoomAbility.scrollBarEnabled
+            this@apply.zoomAnimationDuration = this@ZoomAbility.zoomAnimationDuration
+            this@apply.allowParentInterceptOnEdge = this@ZoomAbility.allowParentInterceptOnEdge
+            this@apply.onViewLongPressListener = this@ZoomAbility.onViewLongPressListener
+            this@apply.onViewTapListener = this@ZoomAbility.onViewTapListener
+            this@ZoomAbility.zoomInterpolator?.let {
+                this@apply.zoomInterpolator = it
             }
             this@ZoomAbility.scalesFactory?.let {
                 this@apply.scalesFactory = it
             }
+            this@ZoomAbility.onMatrixChangeListenerList?.forEach {
+                this@apply.addOnMatrixChangeListener(it)
+            }
+            this@ZoomAbility.onScaleChangeListenerList?.forEach {
+                this@apply.addOnScaleChangeListener(it)
+            }
+            this@ZoomAbility.onRotateChangeListenerList?.forEach {
+                this@apply.addOnRotateChangeListener(it)
+            }
+            this@ZoomAbility.onDragFlingListenerList?.forEach {
+                this@apply.addOnDragFlingListener(it)
+            }
         }
     }
 
-    private fun setZoomerDrawable() {
+    private fun resetDrawableSize() {
         val host = host ?: return
-        val zoomer = zoomer ?: return
+        val zoomerHelper = zoomerHelper ?: return
         val previewDrawable = host.container.getDrawable()
-        zoomer.drawableSize =
+        zoomerHelper.drawableSize =
             Size(previewDrawable?.intrinsicWidth ?: 0, previewDrawable?.intrinsicHeight ?: 0)
         val sketchDrawable = previewDrawable?.findLastSketchDrawable()
-        zoomer.imageSize =
+        zoomerHelper.imageSize =
             Size(sketchDrawable?.imageInfo?.width ?: 0, sketchDrawable?.imageInfo?.height ?: 0)
     }
 
-    private fun newTiles(zoomer: Zoomer?): Tiles? {
-        zoomer ?: return null
+    private fun newSubsamplingHelper(zoomerHelper: ZoomerHelper?): SubsamplingHelper? {
+        zoomerHelper ?: return null
         val host = host ?: return null
         val sketch = host.context.sketch
         val logger = sketch.logger
-        val viewSize = host.view.sizeWithoutPaddingOrNull
-        if (viewSize == null) {
-            logger.d(MODULE) { "Can't use Tiles. View size error" }
+        val viewContentSize = host.view.contentSize
+        if (viewContentSize == null) {
+            logger.d(MODULE) { "Can't use Subsampling. View size error" }
             return null
         }
         val previewDrawable = host.container.getDrawable()
         val sketchDrawable = previewDrawable?.findLastSketchDrawable()?.takeIf { it !is Animatable }
         if (sketchDrawable == null) {
-            logger.d(MODULE) { "Can't use Tiles. Drawable error" }
+            logger.d(MODULE) { "Can't use Subsampling. Drawable error" }
             return null
         }
 
@@ -569,42 +556,44 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
         if (previewWidth >= imageWidth && previewHeight >= imageHeight) {
             logger.d(MODULE) {
-                "Don't need to use Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                "Don't need to use Subsampling. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                     .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
-        if (!shouldUseTiles(imageWidth, imageHeight, previewWidth, previewHeight)) {
+        if (!canUseSubsampling(imageWidth, imageHeight, previewWidth, previewHeight)) {
             logger.d(MODULE) {
-                "Can't use Tiles. previewSize error. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                "Can't use Subsampling. previewSize error. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                     .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
         if (ImageFormat.parseMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
-                "MimeType does not support Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                "MimeType does not support Subsampling. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                     .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
 
         logger.d(MODULE) {
-            "Use Tiles. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+            "Use Subsampling. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                 .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
         }
-        val exifOrientation: Int = sketchDrawable.imageInfo.exifOrientation
-        val imageUri = sketchDrawable.imageUri
-        return Tiles(
+        return SubsamplingHelper(
             context = host.context,
             sketch = sketch,
-            zoomer = zoomer,
-            imageUri = imageUri,
-            viewSize = viewSize,
-            disabledExifOrientation = exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
+            zoomerHelper = zoomerHelper,
+            imageUri = sketchDrawable.imageUri,
+            imageInfo = sketchDrawable.imageInfo,
+            viewSize = viewContentSize
         ).apply {
+            this@apply.showTileBounds = this@ZoomAbility.showTileBounds
+            this@apply.showTileBounds = this@ZoomAbility.showTileBounds
+            this@apply.paused =
+                this@ZoomAbility.lifecycle?.currentState?.isAtLeast(STARTED) == false
             this@ZoomAbility.onTileChangedListenerList?.forEach {
-                addOnTileChangedListener(it)
+                this@apply.addOnTileChangedListener(it)
             }
         }
     }

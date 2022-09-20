@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.test.tile.internal
+package com.github.panpf.sketch.zoom.test.internal
 
 import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.tile.Tile
-import com.github.panpf.sketch.zoom.tile.internal.crossWith
-import com.github.panpf.sketch.zoom.tile.internal.findSampleSize
-import com.github.panpf.sketch.zoom.tile.internal.initializeTileMap
+import com.github.panpf.sketch.zoom.Tile
+import com.github.panpf.sketch.zoom.internal.crossWith
+import com.github.panpf.sketch.zoom.internal.findSampleSize
+import com.github.panpf.sketch.zoom.internal.initializeTileMap
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert

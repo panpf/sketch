@@ -29,16 +29,16 @@ import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
 import com.github.panpf.sketch.zoom.internal.Edge
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
-import com.github.panpf.sketch.zoom.internal.ScalesFactoryImpl
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
 import com.github.panpf.sketch.zoom.internal.TapHelper
 
 /**
  * Based https://github.com/Baseflow/PhotoView git 565505d5 20210120
  */
-class Zoomer constructor(
+class ZoomerHelper constructor(
     val context: Context,
     val sketch: Sketch,
     val view: View,
@@ -46,7 +46,7 @@ class Zoomer constructor(
 ) {
 
     companion object {
-        const val MODULE = "Zoomer"
+        const val MODULE = "ZoomerHelper"
     }
 
     private val logger = sketch.logger
@@ -58,7 +58,7 @@ class Zoomer constructor(
         onUpdateMatrix = {
             scrollBarHelper?.onMatrixChanged()
             onMatrixChangeListenerList?.forEach { listener ->
-                listener.onMatrixChanged(this)
+                listener.onMatrixChanged()
             }
         },
         onViewDrag = { dx: Float, dy: Float ->
@@ -119,6 +119,13 @@ class Zoomer constructor(
                 reset()
             }
         }
+    var readModeEnabled: Boolean = false
+        internal set(value) {
+            if (field != value) {
+                field = value
+                reset()
+            }
+        }
     var readModeDecider: ReadModeDecider? = null
         internal set(value) {
             if (field != value) {
@@ -126,7 +133,9 @@ class Zoomer constructor(
                 reset()
             }
         }
-    var scalesFactory: ScalesFactory = ScalesFactoryImpl()
+    internal val finalReadModeDecider: ReadModeDecider?
+        get() = if (readModeEnabled) readModeDecider ?: LongImageReadModeDecider() else null
+    var scalesFactory: ScalesFactory = DefaultScalesFactory()
         internal set(value) {
             if (field != value) {
                 field = value
@@ -169,23 +178,14 @@ class Zoomer constructor(
             drawableSize = drawableSize,
             rotateDegrees = _rotateDegrees,
             scaleType = scaleType,
-            readModeDecider = readModeDecider
+            readModeDecider = finalReadModeDecider
         )
         scaleDragHelper.reset()
         logger.d(MODULE) {
-            "reset. viewSize=$viewSize, imageSize=$imageSize, drawableSize=$drawableSize, rotateDegrees=$rotateDegrees, scaleType=$scaleType, readModeDecider=$readModeDecider, scales=$scales"
+            "reset. viewSize=$viewSize, imageSize=$imageSize, drawableSize=$drawableSize, " +
+                    "rotateDegrees=$rotateDegrees, scaleType=$scaleType, readModeEnabled=$readModeEnabled, " +
+                    "readModeDecider=$readModeDecider, scales=$scales"
         }
-    }
-
-    internal fun recycle() {
-//        zoomScales.clean()
-        scaleDragHelper.recycle()
-//        onViewLongPressListener = null
-//        onViewTapListener = null
-//        onMatrixChangeListenerList = null
-//        onScaleChangeListenerList = null
-//        onRotateChangeListenerList = null
-//        onDragFlingListenerList = null
     }
 
     internal fun onDraw(canvas: Canvas) {
@@ -248,7 +248,7 @@ class Zoomer constructor(
         _rotateDegrees = newDegrees
         reset()
         onRotateChangeListenerList?.forEach {
-            it.onRotateChanged(this)
+            it.onRotateChanged(newDegrees)
         }
     }
 

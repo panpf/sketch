@@ -24,11 +24,11 @@ import android.graphics.RectF
 import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.ZoomerHelper
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-internal class ScrollBarHelper(context: Context, private val zoomer: Zoomer) {
+internal class ScrollBarHelper(context: Context, private val zoomerHelper: ZoomerHelper) {
 
     private val scrollBarSize: Float = 3f * Resources.getSystem().displayMetrics.density
     private val scrollBarMargin: Float = 3f * Resources.getSystem().displayMetrics.density
@@ -38,17 +38,18 @@ internal class ScrollBarHelper(context: Context, private val zoomer: Zoomer) {
         color = Color.parseColor("#000000")
         alpha = scrollBarAlpha
     }
-    private val view = zoomer.view
+    private val view = zoomerHelper.view
     private val drawRectF = RectF()
     private val scrollBarRectF = RectF()
     private val fadeRunnable: FadeRunnable = FadeRunnable(context, this)
     private val delayFadeRunnable: DelayFadeRunnable = DelayFadeRunnable(this, fadeRunnable)
 
     fun onDraw(canvas: Canvas) {
-        val drawRectF = drawRectF.apply {
-            zoomer.getDrawRect(this)
-        }.takeIf { !it.isEmpty } ?: return
-        val (viewWidth, viewHeight) = zoomer.viewSize.takeIf { !it.isEmpty } ?: return
+        val drawRectF = drawRectF
+            .apply { zoomerHelper.getDrawRect(this) }
+            .takeIf { !it.isEmpty }
+            ?: return
+        val (viewWidth, viewHeight) = zoomerHelper.viewSize.takeIf { !it.isEmpty } ?: return
         val drawWidth = drawRectF.width()
         val drawHeight = drawRectF.height()
         val viewAvailableWidth =

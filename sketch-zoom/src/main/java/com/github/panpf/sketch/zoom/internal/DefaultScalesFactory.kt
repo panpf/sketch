@@ -24,7 +24,7 @@ import com.github.panpf.sketch.zoom.ScalesFactory
 import kotlin.math.max
 import kotlin.math.min
 
-class ScalesFactoryImpl : ScalesFactory {
+class DefaultScalesFactory : ScalesFactory {
 
     override fun create(
         sketch: Sketch,
@@ -57,6 +57,12 @@ class ScalesFactoryImpl : ScalesFactory {
         val heightScale = viewSize.height.toFloat() / drawableHeight
         val drawableThanViewLarge =
             drawableWidth > viewSize.width || drawableHeight > viewSize.height
+        val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(2)
+        val targetAspectRatio = viewSize.width.toFloat().div(viewSize.height).format(2)
+        val sameDirection = imageAspectRatio == 1.0f
+                || targetAspectRatio == 1.0f
+                || (imageAspectRatio > 1.0f && targetAspectRatio > 1.0f)
+                || (imageAspectRatio < 1.0f && targetAspectRatio < 1.0f)
 
         // The width or height of the drawable fills the view
         val fullScale = min(widthScale, heightScale)
@@ -77,19 +83,19 @@ class ScalesFactoryImpl : ScalesFactory {
             ) == true -> {
                 initScale = fillScale
                 minScale = fullScale
-                stepsBigScale = max(originScale, initScale)
+                stepsBigScale = max(originScale, fillScale)
             }
             scaleType == ScaleType.CENTER
                     || (scaleType == ScaleType.CENTER_INSIDE && !drawableThanViewLarge) -> {
                 initScale = keepScale
                 minScale = keepScale
                 stepsBigScale =
-                    floatArrayOf(originScale, fullScale, initScale * 2f).maxOrNull()!!
+                    floatArrayOf(originScale, fullScale, keepScale * 2f).maxOrNull()!!
             }
             scaleType == ScaleType.CENTER_CROP -> {
                 initScale = fillScale
                 minScale = fillScale
-                stepsBigScale = max(originScale, initScale * 2f)
+                stepsBigScale = max(originScale, fillScale * 2f)
             }
             scaleType == ScaleType.FIT_START
                     || scaleType == ScaleType.FIT_CENTER
@@ -97,12 +103,16 @@ class ScalesFactoryImpl : ScalesFactory {
                     || (scaleType == ScaleType.CENTER_INSIDE && drawableThanViewLarge) -> {
                 initScale = fullScale
                 minScale = fullScale
-                stepsBigScale = max(originScale, initScale * 2f)
+                stepsBigScale = if (sameDirection) {
+                    max(originScale, fullScale * 2f)
+                } else {
+                    floatArrayOf(originScale, fullScale * 2f, fillScale).maxOrNull()!!
+                }
             }
             else -> {
                 initScale = keepScale
                 minScale = keepScale
-                stepsBigScale = max(originScale, initScale * 2f)
+                stepsBigScale = max(originScale, keepScale * 2f)
             }
         }
         val steps = floatArrayOf(minScale, stepsBigScale)

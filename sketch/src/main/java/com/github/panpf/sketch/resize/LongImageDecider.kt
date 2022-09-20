@@ -35,55 +35,54 @@ interface LongImageDecider {
 /**
  * Default [LongImageDecider] implementation
  */
-open class DefaultLongImageDecider(
-    val smallRatioMultiple: Float = 2.5f,
-    val bigRatioMultiple: Float = 5.0f,
+open class DefaultLongImageDecider constructor(
+    val sameDirectionMultiple: Float = 2.5f,
+    val notSameDirectionMultiple: Float = 5.0f,
 ) : LongImageDecider {
 
-    override val key: String by lazy { "Default($smallRatioMultiple,$bigRatioMultiple)" }
+    override val key: String by lazy { "Default($sameDirectionMultiple,$notSameDirectionMultiple)" }
 
     /**
      * Determine whether it is a long image given the image size and target size
      *
      * If the directions of image and target are the same, then the aspect ratio of
-     * the two is considered as a long image when the aspect ratio reaches [smallRatioMultiple] times,
-     * otherwise it is considered as a long image when it reaches [bigRatioMultiple] times
+     * the two is considered as a long image when the aspect ratio reaches [sameDirectionMultiple] times,
+     * otherwise it is considered as a long image when it reaches [notSameDirectionMultiple] times
      */
     override fun isLongImage(
         imageWidth: Int, imageHeight: Int, targetWidth: Int, targetHeight: Int
     ): Boolean {
         val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(2)
         val targetAspectRatio = targetWidth.toFloat().div(targetHeight).format(2)
-        val maxAspectRatio = targetAspectRatio.coerceAtLeast(imageAspectRatio)
-        val minAspectRatio = targetAspectRatio.coerceAtMost(imageAspectRatio)
-        val ratioMultiple = if (imageAspectRatio == 1.0f || targetAspectRatio == 1.0f) {
-            // Either one is a square
-            smallRatioMultiple
-        } else if (imageAspectRatio > 1.0f && targetAspectRatio > 1.0f || (imageAspectRatio < 1.0f && targetAspectRatio < 1.0f)) {
-            // They go in the same direction
-            smallRatioMultiple
+        val sameDirection = imageAspectRatio == 1.0f
+                || targetAspectRatio == 1.0f
+                || (imageAspectRatio > 1.0f && targetAspectRatio > 1.0f)
+                || (imageAspectRatio < 1.0f && targetAspectRatio < 1.0f)
+        val ratioMultiple = if (sameDirection) sameDirectionMultiple else notSameDirectionMultiple
+        return if (ratioMultiple > 0) {
+            val maxAspectRatio = targetAspectRatio.coerceAtLeast(imageAspectRatio)
+            val minAspectRatio = targetAspectRatio.coerceAtMost(imageAspectRatio)
+            maxAspectRatio >= (minAspectRatio * ratioMultiple)
         } else {
-            // They don't go in the same direction
-            bigRatioMultiple
+            false
         }
-        return maxAspectRatio >= (minAspectRatio * ratioMultiple)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is DefaultLongImageDecider) return false
-        if (smallRatioMultiple != other.smallRatioMultiple) return false
-        if (bigRatioMultiple != other.bigRatioMultiple) return false
+        if (sameDirectionMultiple != other.sameDirectionMultiple) return false
+        if (notSameDirectionMultiple != other.notSameDirectionMultiple) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = smallRatioMultiple.hashCode()
-        result = 31 * result + bigRatioMultiple.hashCode()
+        var result = sameDirectionMultiple.hashCode()
+        result = 31 * result + notSameDirectionMultiple.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "DefaultLongImageDecider(smallRatioMultiple=$smallRatioMultiple, bigRatioMultiple=$bigRatioMultiple)"
+        return "DefaultLongImageDecider(sameDirectionMultiple=$sameDirectionMultiple, notSameDirectionMultiple=$notSameDirectionMultiple)"
     }
 }

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.tile.internal
+package com.github.panpf.sketch.zoom.internal
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
@@ -29,82 +28,34 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
-import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
 import com.github.panpf.sketch.decode.internal.logString
-import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.setInBitmapForRegion
-import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.internal.requiredMainThread
-import com.github.panpf.sketch.zoom.internal.requiredWorkThread
-import com.github.panpf.sketch.zoom.tile.Tile
-import com.github.panpf.sketch.zoom.tile.Tiles
-import kotlinx.coroutines.runBlocking
+import com.github.panpf.sketch.zoom.SubsamplingHelper
+import com.github.panpf.sketch.zoom.Tile
 import java.util.LinkedList
-
-@WorkerThread
-fun createTileDecoder(
-    context: Context,
-    sketch: Sketch,
-    imageUri: String,
-    ignoreExifOrientation: Boolean
-): TileDecoder? {
-    requiredWorkThread()
-
-    val request = LoadRequest(context, imageUri)
-    val fetch = sketch.components.newFetcher(request)
-    val fetchResult = runBlocking {
-        fetch.fetch()
-    }
-
-    val imageInfo =
-        fetchResult.dataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrientation)
-            ?: throw Exception("Unsupported image format.  $imageUri")
-    val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
-    val imageSize =
-        exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
-    val imageFormat = ImageFormat.parseMimeType(imageInfo.mimeType)
-    if (imageFormat?.supportBitmapRegionDecoder() != true) {
-        return null
-    }
-
-    return TileDecoder(
-        sketch = sketch,
-        imageUri = imageUri,
-        imageInfo = ImageInfo(
-            imageSize.width,
-            imageSize.height,
-            imageInfo.mimeType,
-            imageInfo.exifOrientation
-        ),
-        exifOrientationHelper = exifOrientationHelper,
-        dataSource = fetchResult.dataSource,
-    )
-}
 
 class TileDecoder internal constructor(
     sketch: Sketch,
     val imageUri: String,
     val imageInfo: ImageInfo,
-    val exifOrientationHelper: ExifOrientationHelper,
-    val dataSource: DataSource,
+    private val dataSource: DataSource,
 ) {
 
     private val logger: Logger = sketch.logger
     private val bitmapPool: BitmapPool = sketch.bitmapPool
     private val decoderPool = LinkedList<BitmapRegionDecoder>()
+    private val exifOrientationHelper: ExifOrientationHelper =
+        ExifOrientationHelper(imageInfo.exifOrientation)
     private var _destroyed: Boolean = false
     private var disableInBitmap: Boolean = false
+    private val imageSize: Size = Size(imageInfo.width, imageInfo.height)
     private val addedImageSize: Size by lazy { exifOrientationHelper.addToSize(imageSize) }
 
-    val imageSize: Size by lazy {
-        Size(imageInfo.width, imageInfo.height)
-    }
 
     @Suppress("MemberVisibilityCanBePrivate")
     val destroyed: Boolean
@@ -145,7 +96,7 @@ class TileDecoder internal constructor(
                 imageSize = addedImageSize
             )
         }
-        logger.d(Tiles.MODULE) {
+        logger.d(SubsamplingHelper.MODULE) {
             "decodeRegion. inBitmap=${decodeOptions.inBitmap?.logString} $imageUri}"
         }
 
@@ -156,12 +107,12 @@ class TileDecoder internal constructor(
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
                 disableInBitmap = true
-                logger.e(Tiles.MODULE, throwable) {
+                logger.e(SubsamplingHelper.MODULE, throwable) {
                     "decodeRegion. Bitmap region decode inBitmap error. $imageUri"
                 }
 
                 freeBitmap(bitmapPool, logger, inBitmap, "tile:decodeRegion:error")
-                logger.d(Tiles.MODULE) {
+                logger.d(SubsamplingHelper.MODULE) {
                     "decodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. $imageUri"
                 }
 
@@ -170,13 +121,13 @@ class TileDecoder internal constructor(
                     regionDecoder.decodeRegion(newSrcRect, decodeOptions)
                 } catch (throwable1: Throwable) {
                     throwable1.printStackTrace()
-                    logger.e(Tiles.MODULE, throwable) {
+                    logger.e(SubsamplingHelper.MODULE, throwable) {
                         "decodeRegion. Bitmap region decode error. srcRect=${newSrcRect}. $imageUri"
                     }
                     null
                 }
             } else if (isSrcRectError(throwable)) {
-                logger.e(Tiles.MODULE, throwable) {
+                logger.e(SubsamplingHelper.MODULE, throwable) {
                     "decodeRegion. Bitmap region decode srcRect error. imageSize=$imageSize, srcRect=$newSrcRect, inSampleSize=${decodeOptions.inSampleSize}. $imageUri"
                 }
                 null
@@ -193,7 +144,7 @@ class TileDecoder internal constructor(
         val newBitmap = exifOrientationHelper.applyToBitmap(bitmap, bitmapPool)
         return if (newBitmap != null && newBitmap != bitmap) {
             freeBitmap(bitmapPool, logger, bitmap, "tile:applyExifOrientation")
-            logger.d(Tiles.MODULE) {
+            logger.d(SubsamplingHelper.MODULE) {
                 "applyExifOrientation. freeBitmap. bitmap=${bitmap.logString}. $imageUri"
             }
             newBitmap

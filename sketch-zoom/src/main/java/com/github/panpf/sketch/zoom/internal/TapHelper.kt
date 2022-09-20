@@ -19,13 +19,13 @@ import android.content.Context
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
-import com.github.panpf.sketch.zoom.Zoomer
+import com.github.panpf.sketch.zoom.ZoomerHelper
 
 internal class TapHelper constructor(
-    context: Context, private val zoomer: Zoomer
+    context: Context, private val zoomerHelper: ZoomerHelper
 ) : SimpleOnGestureListener() {
 
-    private val view = zoomer.view
+    private val view = zoomerHelper.view
     private val tapGestureDetector: GestureDetector = GestureDetector(context, this)
 
     fun onTouchEvent(event: MotionEvent): Boolean = tapGestureDetector.onTouchEvent(event)
@@ -33,19 +33,19 @@ internal class TapHelper constructor(
     override fun onDown(e: MotionEvent): Boolean = true
 
     override fun onSingleTapConfirmed(e: MotionEvent): Boolean =
-        zoomer.onViewTapListener?.onViewTap(view, e.x, e.y) != null || view.performClick()
+        zoomerHelper.onViewTapListener?.onViewTap(view, e.x, e.y) != null || view.performClick()
 
     override fun onLongPress(e: MotionEvent) {
         super.onLongPress(e)
-        zoomer.onViewLongPressListener?.onViewLongPress(view, e.x, e.y)
+        zoomerHelper.onViewLongPressListener?.onViewLongPress(view, e.x, e.y)
             ?: view.performLongClick()
     }
 
     override fun onDoubleTap(ev: MotionEvent): Boolean {
         try {
-            val currentScaleFormat = zoomer.scale.format(2)
+            val currentScaleFormat = zoomerHelper.scale.format(2)
             var finalScale = -1f
-            for (scale in zoomer.scales.steps) {
+            for (scale in zoomerHelper.scales.steps) {
                 if (finalScale == -1f) {
                     finalScale = scale
                 } else if (currentScaleFormat < scale.format(2)) {
@@ -54,9 +54,9 @@ internal class TapHelper constructor(
                 }
             }
             if (finalScale > currentScaleFormat) {
-                zoomer.scale(finalScale, ev.x, ev.y, true)
+                zoomerHelper.scale(finalScale, ev.x, ev.y, true)
             } else {
-                zoomer.scale(finalScale, true)
+                zoomerHelper.scale(finalScale, true)
             }
         } catch (e: ArrayIndexOutOfBoundsException) {
             // Can sometimes happen when getX() and getY() is called
