@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.ui.viewer
 import android.Manifest
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -61,9 +62,20 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
         binding.imageViewerZoomImage.apply {
             showSectorProgressIndicator()
+
+            prefsService.scaleType.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
+                scaleType = ScaleType.valueOf(it)
+            }
+            prefsService.scrollBarEnabled.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
+                scrollBarEnabled = it
+            }
             prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
                 readModeEnabled = it
             }
+            prefsService.showTileBoundsInHugeImagePage.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
+                showTileBounds = it
+            }
+
             setOnClickListener {
                 findNavController().popBackStack()
             }

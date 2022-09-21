@@ -262,6 +262,16 @@
         android:name="com.github.panpf.sketch.sample.ui.setting.SettingsFragment"
         android:label="SettingsFragment" />
 
+    <dialog
+        android:id="@+id/settingsDialogFragment"
+        android:name="com.github.panpf.sketch.sample.ui.setting.SettingsDialogFragment"
+        android:label="SettingsDialogFragment" >
+        <argument
+            android:name="page"
+            app:argType="string"
+            app:nullable="false" />
+    </dialog>
+
     <fragment
         android:id="@+id/giphyGifListComposeFragment"
         android:name="com.github.panpf.sketch.sample.ui.gif.giphy.compose.GiphyGifListComposeFragment"
@@ -349,4 +359,8 @@
     <action
         android:id="@+id/action_global_imageInfoDialogFragment"
         app:destination="@id/imageInfoDialogFragment"/>
+
+    <action
+        android:id="@+id/action_global_settingsDialogFragment"
+        app:destination="@id/settingsDialogFragment"/>
 </navigation>

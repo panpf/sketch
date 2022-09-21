@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.sample.ui.huge
 
 import android.os.Bundle
+import android.widget.ImageView.ScaleType
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
@@ -38,20 +39,29 @@ class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>(
     ) {
         binding.hugeImageViewerZoomImage.apply {
             showRingProgressIndicator()
+
+            prefsService.scrollBarEnabled.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
+                scrollBarEnabled = it
+            }
             prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
                 readModeEnabled = it
             }
             prefsService.showTileBoundsInHugeImagePage.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
                 showTileBounds = it
             }
-            displayImage(args.imageUri) {
-                lifecycle(viewLifecycleOwner.lifecycle)
+            prefsService.scaleType.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
+                scaleType = ScaleType.valueOf(it)
             }
+
             setOnLongClickListener {
                 findNavController().navigate(
                     ImageInfoDialogFragment.createDirectionsFromImageView(this, null)
                 )
                 true
+            }
+
+            displayImage(args.imageUri) {
+                lifecycle(viewLifecycleOwner.lifecycle)
             }
         }
 

@@ -25,6 +25,16 @@
         android:layout_marginRight="16dp">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewerPagerSettings"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_circle_accent"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_settings"
+            app:tint="@color/text_normal" />
+
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageViewerPagerOrigin"
             android:layout_width="34dp"
             android:layout_height="34dp"

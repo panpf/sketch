@@ -17,6 +17,7 @@ package com.github.panpf.sketch.sample
 
 import android.content.Context
 import android.os.Build
+import android.widget.ImageView.ScaleType
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
@@ -53,7 +54,7 @@ class PrefsService(val context: Context) {
     }
 
     val resizePrecision by lazy {
-        StringMmkvData(mmkv, "resizePrecision", "LongImageMode")
+        StringMmkvData(mmkv, "resizePrecision", "LongImageClipMode")
     }
     val resizeScale by lazy {
         StringMmkvData(mmkv, "resizeScale", "LongImageMode")
@@ -92,12 +93,19 @@ class PrefsService(val context: Context) {
         BooleanMmkvData(mmkv, "disallowReuseBitmap", false)
     }
 
-    val showTileBoundsInHugeImagePage by lazy {
-        BooleanMmkvData(mmkv, "showTileBoundsInHugeImagePage", false)
+    val scaleType by lazy {
+        StringMmkvData(mmkv, "scaleType", ScaleType.FIT_CENTER.name)
+    }
+    val scrollBarEnabled by lazy {
+        BooleanMmkvData(mmkv, "scrollBarEnabled", true)
     }
     val readModeEnabled by lazy {
         BooleanMmkvData(mmkv, "readModeEnabled", true)
     }
+    val showTileBoundsInHugeImagePage by lazy {
+        BooleanMmkvData(mmkv, "showTileBoundsInHugeImagePage", false)
+    }
+
     val logLevel by lazy {
         StringMmkvData(mmkv, "logLevel", Logger.Level.DEBUG.name)
     }

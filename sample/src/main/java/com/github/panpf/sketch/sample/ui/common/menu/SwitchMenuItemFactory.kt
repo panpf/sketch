@@ -17,6 +17,7 @@ package com.github.panpf.sketch.sample.ui.common.menu
 
 import android.content.Context
 import android.util.TypedValue
+import androidx.core.view.isVisible
 import com.github.panpf.sketch.sample.databinding.SwitchMenuItemBinding
 import com.github.panpf.sketch.sample.model.SwitchMenu
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
@@ -62,5 +63,6 @@ class SwitchMenuItemFactory(
         binding.switchMenuItemTitleText.text = data.title
         binding.switchMenuItemSwitch.isChecked = data.isChecked
         binding.switchMenuItemDescText.text = data.desc
+        binding.switchMenuItemDescText.isVisible = data.desc?.isNotEmpty() == true
     }
 }

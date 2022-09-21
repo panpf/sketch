@@ -19,8 +19,13 @@ import android.app.Application
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.widget.ImageView.ScaleType
+import android.widget.ImageView.ScaleType.MATRIX
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.model.ListSeparator
@@ -28,13 +33,24 @@ import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import com.github.panpf.sketch.sample.ui.setting.Page.LIST
+import com.github.panpf.sketch.sample.ui.setting.Page.NONE
+import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.tools4j.io.ktx.formatFileSize
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
+class SettingsViewModel(application1: Application, val page: Page) :
+    LifecycleAndroidViewModel(application1) {
+
+    class Factory(val application: Application, val page: Page) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+            @Suppress("UNCHECKED_CAST")
+            return SettingsViewModel(application, page) as T
+        }
+    }
 
     val menuListData = MutableLiveData<List<Any>>()
     private val prefsService = application1.prefsService
@@ -72,8 +88,14 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
 
     private fun updateList() {
         menuListData.postValue(buildList {
-            add(ListSeparator("List"))
-            addAll(makeListMenuList())
+            if (page == LIST || page == NONE) {
+                add(ListSeparator("List"))
+                addAll(makeListMenuList())
+            }
+            if (page == ZOOM || page == NONE) {
+                add(ListSeparator("Zoom"))
+                addAll(makeZoomMenuList())
+            }
             add(ListSeparator("Decode"))
             addAll(makeDecodeMenuList())
             add(ListSeparator("Cache"))
@@ -119,14 +141,11 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                 desc = "No image is loaded during list scrolling to improve the smoothness"
             )
         )
-    }
-
-    private fun makeDecodeMenuList(): List<Any> = buildList {
         add(
             MultiSelectMenu(
                 title = "Resize Precision",
                 desc = null,
-                values = listOf("LongImageMode").plus(Precision.values().map { it.name }),
+                values = listOf("LongImageClipMode").plus(Precision.values().map { it.name }),
                 getValue = { prefsService.resizePrecision.value },
                 onSelect = { _, value -> prefsService.resizePrecision.value = value }
             )
@@ -135,7 +154,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             MultiSelectMenu(
                 title = "Resize Scale",
                 desc = null,
-                values = listOf("LongImageMode").plus(Scale.values().map { it.name }),
+                values = listOf("LongImageClipMode").plus(Scale.values().map { it.name }),
                 getValue = { prefsService.resizeScale.value },
                 onSelect = { _, value -> prefsService.resizeScale.value = value }
             )
@@ -162,6 +181,44 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                 )
             )
         }
+    }
+
+    private fun makeZoomMenuList(): List<Any> = buildList {
+        add(
+            MultiSelectMenu(
+                title = "Scale Type",
+                desc = null,
+                values = ScaleType.values().filter { it != MATRIX }.map { it.name },
+                getValue = { prefsService.scaleType.value },
+                onSelect = { _, value ->
+                    prefsService.scaleType.value = value
+                }
+            )
+        )
+        add(
+            SwitchMenuFlow(
+                title = "Scroll Bar",
+                desc = null,
+                data = prefsService.scrollBarEnabled,
+            )
+        )
+        add(
+            SwitchMenuFlow(
+                title = "Read Mode",
+                data = prefsService.readModeEnabled,
+                desc = "Long images are displayed in full screen by default"
+            )
+        )
+        add(
+            SwitchMenuFlow(
+                title = "Show Tile Bounds",
+                desc = "Overlay the state and area of the tile on the View",
+                data = prefsService.showTileBoundsInHugeImagePage,
+            )
+        )
+    }
+
+    private fun makeDecodeMenuList(): List<Any> = buildList {
         add(
             MultiSelectMenu(
                 title = "Bitmap Quality",
@@ -271,20 +328,6 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
     }
 
     private fun makeOtherMenuList(): List<Any> = buildList {
-        add(
-            SwitchMenuFlow(
-                title = "Show Tile Bounds",
-                data = prefsService.showTileBoundsInHugeImagePage,
-                desc = "Only huge image page"
-            )
-        )
-        add(
-            SwitchMenuFlow(
-                title = "Read Mode",
-                data = prefsService.readModeEnabled,
-                desc = null
-            )
-        )
         add(
             MultiSelectMenu(
                 title = "Logger Level",

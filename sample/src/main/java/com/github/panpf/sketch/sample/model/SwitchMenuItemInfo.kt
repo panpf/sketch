@@ -15,6 +15,8 @@
  */
 package com.github.panpf.sketch.sample.model
 
+import androidx.fragment.app.Fragment
+
 class SwitchMenuItemInfo<T>(
     private val values: Array<T>,
     initValue: T,
@@ -33,7 +35,7 @@ class SwitchMenuItemInfo<T>(
     override val iconResId: Int?
         get() = iconResIds?.get(nextIndex)
 
-    fun click() {
+    override fun onClick(fragment: Fragment) {
         val nextIndex = nextIndex
         val oldValue = values[currentIndex]
         val newValue = values[nextIndex]

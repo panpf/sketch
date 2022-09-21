@@ -15,11 +15,18 @@
  */
 package com.github.panpf.sketch.sample.model
 
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 
 class NavMenuItemInfo(
     override val title: String,
     override val iconResId: Int?,
     override val showAsAction: Int,
     val navDirections: NavDirections,
-) : MenuItemInfo
+) : MenuItemInfo {
+
+    override fun onClick(fragment: Fragment) {
+        fragment.findNavController().navigate(navDirections)
+    }
+}

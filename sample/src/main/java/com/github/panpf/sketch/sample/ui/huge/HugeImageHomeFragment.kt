@@ -19,10 +19,13 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ContainerFragmentBinding
+import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.huge.Layout.COLUMN
+import com.github.panpf.sketch.sample.ui.setting.Page
 
 class HugeImageHomeFragment : ToolbarBindingFragment<ContainerFragmentBinding>() {
 
@@ -64,6 +67,17 @@ class HugeImageHomeFragment : ToolbarBindingFragment<ContainerFragmentBinding>()
             childFragmentManager.beginTransaction()
                 .replace(binding.containerFragmentContainer.id, fragment)
                 .commit()
+        }
+
+        toolbar.menu.add("Settings").apply {
+            setIcon(R.drawable.ic_settings)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            setOnMenuItemClickListener {
+                findNavController().navigate(
+                    MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.ZOOM.name)
+                )
+                true
+            }
         }
     }
 }

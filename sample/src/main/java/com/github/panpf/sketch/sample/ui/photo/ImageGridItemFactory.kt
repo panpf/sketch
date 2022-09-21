@@ -152,7 +152,7 @@ class ImageGridItemFactory(val disabledCache: Boolean = false) :
                 )
                 resizePrecision(
                     when (val value = prefsService.resizePrecision.value) {
-                        "LongImageMode" -> longImageClipPrecision(precision = SAME_ASPECT_RATIO)
+                        "LongImageClipMode" -> longImageClipPrecision(precision = SAME_ASPECT_RATIO)
                         else -> fixedPrecision(Precision.valueOf(value))
                     }
                 )

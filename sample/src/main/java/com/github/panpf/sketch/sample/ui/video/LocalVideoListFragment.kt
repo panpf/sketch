@@ -21,14 +21,10 @@ import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
-import com.github.panpf.sketch.sample.model.DialogFragmentItemInfo
-import com.github.panpf.sketch.sample.model.NavMenuItemInfo
-import com.github.panpf.sketch.sample.model.SwitchMenuItemInfo
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
@@ -64,14 +60,7 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                                 setIcon(iconResId)
                             }
                             setOnMenuItemClickListener {
-                                when (menuItemInfo) {
-                                    is SwitchMenuItemInfo<*> -> menuItemInfo.click()
-                                    is NavMenuItemInfo -> findNavController().navigate(menuItemInfo.navDirections)
-                                    is DialogFragmentItemInfo -> menuItemInfo.fragment
-                                        .javaClass.newInstance().apply {
-                                            arguments = menuItemInfo.fragment.arguments
-                                        }.show(childFragmentManager, null)
-                                }
+                                menuItemInfo.onClick(this@LocalVideoListFragment)
                                 true
                             }
                             setShowAsAction(menuItemInfo.showAsAction)

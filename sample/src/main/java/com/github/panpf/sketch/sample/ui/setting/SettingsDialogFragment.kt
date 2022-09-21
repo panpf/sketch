@@ -17,6 +17,7 @@ package com.github.panpf.sketch.sample.ui.setting
 
 import android.os.Bundle
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
@@ -28,7 +29,10 @@ import com.github.panpf.sketch.sample.ui.common.menu.SwitchMenuItemFactory
 
 class SettingsDialogFragment : BindingDialogFragment<RecyclerFragmentBinding>() {
 
-    private val viewModel by viewModels<SettingsViewModel>()
+    private val args by navArgs<SettingsDialogFragmentArgs>()
+    private val viewModel by viewModels<SettingsViewModel> {
+        SettingsViewModel.Factory(requireActivity().application, Page.valueOf(args.page))
+    }
 
     init {
         dialogHeightRatio = 0.7f

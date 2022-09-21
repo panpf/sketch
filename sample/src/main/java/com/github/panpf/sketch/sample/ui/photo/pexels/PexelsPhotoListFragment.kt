@@ -34,14 +34,11 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
-import com.github.panpf.sketch.sample.model.DialogFragmentItemInfo
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
-import com.github.panpf.sketch.sample.model.NavMenuItemInfo
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.model.SwitchMenuItemInfo
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
@@ -81,14 +78,7 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
                                 setIcon(iconResId)
                             }
                             setOnMenuItemClickListener {
-                                when (menuItemInfo) {
-                                    is SwitchMenuItemInfo<*> -> menuItemInfo.click()
-                                    is NavMenuItemInfo -> findNavController().navigate(menuItemInfo.navDirections)
-                                    is DialogFragmentItemInfo -> menuItemInfo.fragment
-                                        .javaClass.newInstance().apply {
-                                            arguments = menuItemInfo.fragment.arguments
-                                        }.show(childFragmentManager, null)
-                                }
+                                menuItemInfo.onClick(this@PexelsPhotoListFragment)
                                 true
                             }
                             setShowAsAction(menuItemInfo.showAsAction)

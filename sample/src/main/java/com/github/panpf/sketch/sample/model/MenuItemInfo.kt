@@ -15,8 +15,12 @@
  */
 package com.github.panpf.sketch.sample.model
 
+import androidx.fragment.app.Fragment
+
 interface MenuItemInfo {
     val title: String
     val iconResId: Int?
     val showAsAction: Int
+
+    fun onClick(fragment: Fragment)
 }

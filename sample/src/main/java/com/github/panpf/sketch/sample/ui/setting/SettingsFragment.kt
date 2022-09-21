@@ -29,7 +29,9 @@ import com.github.panpf.sketch.sample.ui.common.menu.SwitchMenuItemFactory
 
 class SettingsFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
-    private val viewModel by viewModels<SettingsViewModel>()
+    private val viewModel by viewModels<SettingsViewModel> {
+        SettingsViewModel.Factory(requireActivity().application, Page.NONE)
+    }
 
     override fun onViewCreated(
         toolbar: Toolbar,

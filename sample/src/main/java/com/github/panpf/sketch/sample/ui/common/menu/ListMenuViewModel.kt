@@ -21,18 +21,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.model.DialogFragmentItemInfo
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.MenuItemInfoGroup
+import com.github.panpf.sketch.sample.model.NavMenuItemInfo
 import com.github.panpf.sketch.sample.model.SwitchMenuItemInfo
 import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
-import com.github.panpf.sketch.sample.ui.setting.SettingsDialogFragment
+import com.github.panpf.sketch.sample.ui.setting.Page
 
 class ListMenuViewModel(
     application1: Application,
-    val showLayoutModeMenu: Boolean,
-    val showPlayMenu: Boolean
+    private val showLayoutModeMenu: Boolean,
+    private val showPlayMenu: Boolean
 ) : LifecycleAndroidViewModel(application1) {
 
     class Factory(
@@ -41,6 +42,7 @@ class ListMenuViewModel(
         val showPlayMenu: Boolean
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            @Suppress("UNCHECKED_CAST")
             return ListMenuViewModel(application1, showLayoutModeMenu, showPlayMenu) as T
         }
     }
@@ -89,11 +91,11 @@ class ListMenuViewModel(
             }
 
             add(
-                DialogFragmentItemInfo(
+                NavMenuItemInfo(
                     title = "Settings",
                     iconResId = R.drawable.ic_settings,
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS,
-                    fragment = SettingsDialogFragment()
+                    navDirections = MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.LIST.name)
                 )
             )
         }))

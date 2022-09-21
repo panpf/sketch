@@ -26,6 +26,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
@@ -34,7 +35,9 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.databinding.ImageViewerPagerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.util.PaletteBitmapDecoderInterceptor
 import com.github.panpf.sketch.sample.util.simplePalette
 import com.github.panpf.sketch.stateimage.CurrentStateImage
@@ -182,11 +185,18 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
                 }
             }
         }
+
+        binding.imageViewerPagerSettings.setOnClickListener {
+            findNavController().navigate(
+                MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.ZOOM.name)
+            )
+        }
     }
 
     private fun changeButtonBg(binding: ImageViewerPagerFragmentBinding, color: Int) {
         val finalInt = ColorUtils.setAlphaComponent(color, 160)
         listOf(
+            binding.imageViewerPagerSettings,
             binding.imageViewerPagerOrigin,
             binding.imageViewerPagerShare,
             binding.imageViewerPagerSave,
