@@ -112,6 +112,15 @@ internal class ScaleDragHelper constructor(
         checkAndApplyMatrix()
     }
 
+    fun clean() {
+        animatedScaleRunnable?.cancel()
+        animatedScaleRunnable = null
+        locationRunnable?.cancel()
+        locationRunnable = null
+        flingRunnable?.cancel()
+        flingRunnable = null
+    }
+
     fun onTouchEvent(event: MotionEvent): Boolean {
         /* Location operations cannot be interrupted */
         if (this.locationRunnable?.isRunning == true) {
@@ -135,6 +144,7 @@ internal class ScaleDragHelper constructor(
             drawableWidth > viewSize.width || drawableHeight > viewSize.height
         val initZoomScale = zoomerHelper.scales.init
         val scaleType = zoomerHelper.scaleType
+        @Suppress("KotlinConstantConditions")
         when {
             zoomerHelper.finalReadModeDecider?.should(
                 sketch, drawableWidth, drawableHeight, viewSize.width, viewSize.height

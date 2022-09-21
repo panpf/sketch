@@ -188,6 +188,10 @@ class ZoomerHelper constructor(
         }
     }
 
+    internal fun clean() {
+        scaleDragHelper.clean()
+    }
+
     internal fun onDraw(canvas: Canvas) {
         scrollBarHelper?.onDraw(canvas)
     }

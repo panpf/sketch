@@ -111,16 +111,17 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override var host: Host? = null
         set(value) {
-            val oldZoomer = zoomerHelper
-            if (oldZoomer != null) {
-                field?.container?.superSetScaleType(oldZoomer.scaleType)
+            val oldZoomerHelper = zoomerHelper
+            if (oldZoomerHelper != null) {
+                oldZoomerHelper.clean()
+                field?.container?.superSetScaleType(oldZoomerHelper.scaleType)
             }
 
             field = value
-            val newZoomer = if (value != null) newZoomerHelper(value) else null
-            zoomerHelper = newZoomer
+            val newZoomerHelper = if (value != null) newZoomerHelper(value) else null
+            zoomerHelper = newZoomerHelper
             resetDrawableSize()
-            if (newZoomer != null) {
+            if (newZoomerHelper != null) {
                 field?.container?.superSetScaleType(ScaleType.MATRIX)
             }
 
@@ -476,6 +477,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     }
 
     private fun destroy() {
+        zoomerHelper?.clean()
         subsamplingHelper?.destroy()
         subsamplingHelper = null
     }
