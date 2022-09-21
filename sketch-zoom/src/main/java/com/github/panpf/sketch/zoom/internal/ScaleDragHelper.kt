@@ -440,7 +440,7 @@ internal class ScaleDragHelper constructor(
             }
             true
         } else {
-            val slop = zoomerHelper.view.resources.displayMetrics.density * 5
+            val slop = zoomerHelper.view.resources.displayMetrics.density * 3
             val result = (horScrollEdge == Edge.NONE && (dx >= slop || dx <= -slop))
                     || (horScrollEdge == Edge.START && dx <= -slop)
                     || (horScrollEdge == Edge.END && dx >= slop)

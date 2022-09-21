@@ -61,6 +61,11 @@ open class SketchZoomImageView @JvmOverloads constructor(
         set(value) {
             zoomAbility.scalesFactory = value
         }
+    var showTileBounds: Boolean
+        get() = zoomAbility.showTileBounds
+        set(value) {
+            zoomAbility.showTileBounds = value
+        }
     var zoomAnimationDuration: Int
         get() = zoomAbility.zoomAnimationDuration
         set(value) {
@@ -85,11 +90,6 @@ open class SketchZoomImageView @JvmOverloads constructor(
         get() = zoomAbility.onViewTapListener
         set(value) {
             zoomAbility.onViewTapListener = value
-        }
-    var showTileBounds: Boolean
-        get() = zoomAbility.showTileBounds
-        set(value) {
-            zoomAbility.showTileBounds = value
         }
 
     init {
