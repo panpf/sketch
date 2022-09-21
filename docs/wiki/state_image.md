@@ -74,6 +74,33 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 针对这样的情况使用 [IconStateImage] 可以完美解决问题，[IconStateImage] 由一个图标和一个背景组成，且没有固定的大小，不论 bounds
 多大图标都会保持固定大小不变，这样页面上看起来所有 placeholder 都是一样的大小
 
+### 使用 InexactlyMemoryCacheStateImage 在图片详情页面寻找内存缓存中的采样图作为占位图
+
+从图片列表页面跳到图片详情页时我们希望能用列表页面已加载的采样图片作为详情页加载大图时的占位图
+
+这样在配合上 `crossfade(fadeStart = false)` 在大图加载完成时页面上看起来会从较模糊的图片逐渐变为一张清晰的图片，这样的效果会比较好
+
+[InexactlyMemoryCacheStateImage] 就可以帮助我们非常方便的从内存缓存中寻找的采样图，如下：
+
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    placeholder(InexactlyMemoryCacheStateImage())
+    crossfade(fadeStart = false)
+}
+```
+
+[InexactlyMemoryCacheStateImage] 默认会用当前 [ImageRequest] 的 uri 去内存中寻找采样图，但如果列表页面和详情页面用的是不同的 uri
+就需要主动指定列表页面的 uri，如下：
+
+```kotlin
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    placeholder(InexactlyMemoryCacheStateImage("https://www.sample.com/image.jpg?widht=300"))
+    crossfade(fadeStart = false)
+}
+```
+
+> 采样图的标准为宽高比一致并且没有被任何 Transformation 修改的图片
+
 [StateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/StateImage.kt
 
 [ColorStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ColorStateImage.kt

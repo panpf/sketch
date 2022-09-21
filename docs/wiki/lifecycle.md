@@ -2,9 +2,9 @@
 
 Sketch 依赖 Lifecycle 监控页面的生命周期，用于以下功能：
 
-1. [ViewTargetRequestDelegate].onDestroy() 在 onDestroy 时停止请求
-2. [GenericViewDisplayTarget].onStart()/onStop() 在 onStart 和 onStop 时控制动图播放
-3. [ZoomAbility].lifecycleObserver 在 onStart 和 onStop 时控制释放碎片
+1. [ViewTargetRequestDelegate] 在 onDestroy 时自动停止请求
+2. [GenericViewDisplayTarget] 在 在 onStart 和 onStop 时自动控制动图播放
+3. [SketchZoomImageView] 在 onStop 和 onStart 时自动释放或恢复碎片
 
 ### 配置
 
@@ -51,4 +51,4 @@ class ImageZoomFragment : Fragment() {
 
 [GenericViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/GenericViewDisplayTarget.kt
 
-[ZoomAbility]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ZoomAbility.kt
+[SketchZoomImageView]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/SketchZoomImageView.kt

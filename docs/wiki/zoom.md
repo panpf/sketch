@@ -30,13 +30,13 @@ sketchZoomImageView.displayImage("https://www.sample.com/image.jpg")
 
 ```kotlin
 // 放大 3 倍（不使用动画）
-sketchZoomImageView.zoomAbility.zoom(3f)
+sketchZoomImageView.zoom(3f)
 
 // 放大 3 倍并使用动画
-sketchZoomImageView.zoomAbility.zoom(3f, true)
+sketchZoomImageView.zoom(3f, true)
 
 // 以 100x200 为中心点放大 3 倍并使用动画
-sketchZoomImageView.zoomAbility.zoom(3f, 100f, 200f, true)
+sketchZoomImageView.zoom(3f, 100f, 200f, true)
 ```
 
 > 注意：
@@ -47,10 +47,10 @@ sketchZoomImageView.zoomAbility.zoom(3f, 100f, 200f, true)
 
 ```kotlin
 // 旋转到 180°
-sketchZoomImageView.zoomAbility.rotateTo(180)
+sketchZoomImageView.rotateTo(180)
 
 // 顺时针再旋转 90°
-sketchZoomImageView.zoomAbility.rotateBy(90)
+sketchZoomImageView.rotateBy(90)
 ```
 
 > 注意：
@@ -61,10 +61,10 @@ sketchZoomImageView.zoomAbility.rotateBy(90)
 
 ```kotlin
 // 定位到 100x200（不用考虑旋转角度）
-sketchZoomImageView.zoomAbility.location(100f, 200f)
+sketchZoomImageView.location(100f, 200f)
 
 // 定位到 100x200 并使用动画（不用考虑旋转角度）
-sketchZoomImageView.zoomAbility.location(100f, 200f, true)
+sketchZoomImageView.location(100f, 200f, true)
 ```
 
 > 注意：通过 location 方法设置的位置只是临时性的并不会一直保持，其它任何位移行为和更新行为都会覆盖此位置
@@ -74,7 +74,7 @@ sketchZoomImageView.zoomAbility.location(100f, 200f, true)
 滑动条可以让你在查看长图时清楚的知道当前的位置，[SketchZoomImageView] 默认开启滑动条功能，你也可以关闭它，如下：
 
 ```kotlin
-sketchZoomImageView.zoomAbility.scrollBarEnabled = false
+sketchZoomImageView.scrollBarEnabled = false
 ```
 
 > 滑动时显示，无操作 800 毫秒后自动隐藏
@@ -88,14 +88,14 @@ sketchZoomImageView.zoomAbility.scrollBarEnabled = false
 开启阅读模式：
 
 ```kotlin
-sketchZoomImageView.zoomAbility.readModeEnabled = true
+sketchZoomImageView.readModeEnabled = true
 ```
 
 [SketchZoomImageView] 通过 [ReadModeDecider] 来判定是否需要使用阅读模式，默认实现是 [LongImageReadModeDecider]，仅对长图使用阅读模式
 
 > 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageReadModeDecider] 时使用自定义的规则
 
-如果你想修改阅读模式判定规则可以实现 [ReadModeDecider] 接口，然后通过 [ZoomAbility] 的 readModeDecider 属性应用，如下：
+如果你想修改阅读模式判定规则可以实现 [ReadModeDecider] 接口，然后通过 [SketchZoomImageView] 的 readModeDecider 属性应用，如下：
 
 ```kotlin
 class MyReadModeDecider : ReadModeDecider {
@@ -105,28 +105,26 @@ class MyReadModeDecider : ReadModeDecider {
     }
 }
 
-sketchZoomImageView.zoomAbility.readModeDecider = MyReadModeDecider()
+sketchZoomImageView.readModeDecider = MyReadModeDecider()
 ```
 
 ### 缩放信息
 
-一些缩放相关信息您可以通过 [ZoomAbility] 获取，如下：
-
 ```kotlin
 // 获取当前缩放比例
-sketchZoomImageView.zoomAbility.scale
+sketchZoomImageView.scale
 
 // 获取当前旋转角度（顺时针）
-sketchZoomImageView.zoomAbility.rotateDegrees
+sketchZoomImageView.rotateDegrees
 
 // 获取最小缩放比例
-sketchZoomImageView.zoomAbility.minScale
+sketchZoomImageView.minScale
 
 // 获取最大缩放比例
-sketchZoomImageView.zoomAbility.maxScale
+sketchZoomImageView.maxScale
 
 // 获取当前预览图上用户能看到的区域（不受旋转影响）
-sketchZoomImageView.zoomAbility.getVisibleRect(Rect())
+sketchZoomImageView.getVisibleRect(Rect())
 
 // more ...
 ```
@@ -135,17 +133,17 @@ sketchZoomImageView.zoomAbility.getVisibleRect(Rect())
 
 ```kotlin
 // 监听缩放变化
-sketchZoomImageView.zoomAbility.addOnScaleChangeListener { scaleFactor: Float, focusX: Float, focusY: Float ->
+sketchZoomImageView.addOnScaleChangeListener { scaleFactor: Float, focusX: Float, focusY: Float ->
 
 }
 
 // 监听单击
-sketchZoomImageView.zoomAbility.onViewTapListener = { view: View, x: Float, y: Float ->
+sketchZoomImageView.onViewTapListener = { view: View, x: Float, y: Float ->
 
 }
 
 // 监听长按
-sketchZoomImageView.zoomAbility.onViewLongPressListener = { view: View, x: Float, y: Float ->
+sketchZoomImageView.onViewLongPressListener = { view: View, x: Float, y: Float ->
 
 }
 
@@ -212,7 +210,7 @@ class MyFragment : Fragment() {
 
 ```kotlin
 // 监听碎片变化
-sketchZoomImageView.zoomAbility.addOnTileChangedListener { tiles: Tiles ->
+sketchZoomImageView.addOnTileChangedListener {
 
 }
 ```
@@ -224,8 +222,6 @@ sketchZoomImageView.zoomAbility.addOnTileChangedListener { tiles: Tiles ->
 [PhotoView]: https://github.com/chrisbanes/PhotoView
 
 [SketchZoomImageView]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/SketchZoomImageView.kt
-
-[ZoomAbility]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ZoomAbility.kt
 
 [ReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt
 
