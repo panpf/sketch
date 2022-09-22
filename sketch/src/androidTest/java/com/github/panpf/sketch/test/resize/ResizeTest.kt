@@ -249,7 +249,7 @@ class ResizeTest {
         }
         Resize(100, 100, longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(
-                "Resize(width=100, height=100, precision=LongImageClipPrecisionDecider(precision=EXACTLY, longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0)), scale=FixedScaleDecider(CENTER_CROP))",
+                "Resize(width=100, height=100, precision=LongImageClipPrecisionDecider(precision=EXACTLY, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0)), scale=FixedScaleDecider(CENTER_CROP))",
                 toString()
             )
         }

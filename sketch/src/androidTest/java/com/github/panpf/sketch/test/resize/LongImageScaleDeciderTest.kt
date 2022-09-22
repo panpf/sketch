@@ -104,13 +104,13 @@ class LongImageScaleDeciderTest {
     fun testToString() {
         LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
-                "LongImageScaleDecider(longImage=START_CROP, otherImage=CENTER_CROP, longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0))",
+                "LongImageScaleDecider(longImage=START_CROP, otherImage=CENTER_CROP, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
                 toString()
             )
         }
         LongImageScaleDecider(END_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
-                "LongImageScaleDecider(longImage=END_CROP, otherImage=CENTER_CROP, longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0))",
+                "LongImageScaleDecider(longImage=END_CROP, otherImage=CENTER_CROP, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
                 toString()
             )
         }

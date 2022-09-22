@@ -120,11 +120,11 @@ class LongImageClipPrecisionDeciderTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(precision=EXACTLY, longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0))",
+            "LongImageClipPrecisionDecider(precision=EXACTLY, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
             LongImageClipPrecisionDecider(EXACTLY).toString()
         )
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO, longImageDecider=DefaultLongImageDecider(smallRatioMultiple=2.5, bigRatioMultiple=5.0))",
+            "LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
             LongImageClipPrecisionDecider(SAME_ASPECT_RATIO).toString()
         )
     }
