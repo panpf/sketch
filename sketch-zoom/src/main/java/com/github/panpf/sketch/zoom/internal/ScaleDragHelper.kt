@@ -23,8 +23,10 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.view.MotionEvent
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.zoom.Edge
+import com.github.panpf.sketch.zoom.ScaleState.Initial
 import com.github.panpf.sketch.zoom.ZoomerHelper
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnActionListener
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnGestureListener
@@ -32,8 +34,8 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 internal class ScaleDragHelper constructor(
-    context: Context,
-    private val sketch: Sketch,
+    private val context: Context,
+    private val logger: Logger,
     private val zoomerHelper: ZoomerHelper,
     val onUpdateMatrix: () -> Unit,
     val onViewDrag: (dx: Float, dy: Float) -> Unit,
@@ -42,7 +44,6 @@ internal class ScaleDragHelper constructor(
 ) {
 
     private val view = zoomerHelper.view
-    private val logger = sketch.logger
 
     /* Stores default scale and translate information */
     private val baseMatrix = Matrix()
@@ -135,60 +136,24 @@ internal class ScaleDragHelper constructor(
 
     private fun resetBaseMatrix() {
         baseMatrix.reset()
-        val viewSize = zoomerHelper.viewSize.takeIf { !it.isEmpty } ?: return
-        val (drawableWidth, drawableHeight) = zoomerHelper.drawableSize
-            .takeIf { !it.isEmpty }
-            ?.let { if (zoomerHelper.rotateDegrees % 180 == 0) it else Size(it.height, it.width) }
-            ?: return
-        val drawableGreaterThanView =
-            drawableWidth > viewSize.width || drawableHeight > viewSize.height
-        val initZoomScale = zoomerHelper.scales.init
-        val scaleType = zoomerHelper.scaleType
-        @Suppress("KotlinConstantConditions")
-        when {
-            zoomerHelper.finalReadModeDecider?.should(
-                sketch, drawableWidth, drawableHeight, viewSize.width, viewSize.height
-            ) == true -> {
-                baseMatrix.postScale(initZoomScale, initZoomScale)
+        when (val initState = zoomerHelper.scaleState.initial) {
+            is Initial.Normal -> {
+                baseMatrix.postScale(initState.scale, initState.scale)
+                baseMatrix.postTranslate(initState.translateX, initState.translateY)
             }
-            scaleType == ScaleType.CENTER
-                    || (scaleType == ScaleType.CENTER_INSIDE && !drawableGreaterThanView) -> {
-                baseMatrix.postScale(initZoomScale, initZoomScale)
-                val dx = (viewSize.width - drawableWidth) / 2f
-                val dy = (viewSize.height - drawableHeight) / 2f
-                baseMatrix.postTranslate(dx, dy)
-            }
-            scaleType == ScaleType.CENTER_CROP -> {
-                baseMatrix.postScale(initZoomScale, initZoomScale)
-                val dx = (viewSize.width - drawableWidth * initZoomScale) / 2f
-                val dy = (viewSize.height - drawableHeight * initZoomScale) / 2f
-                baseMatrix.postTranslate(dx, dy)
-            }
-            scaleType == ScaleType.FIT_START -> {
-                baseMatrix.postScale(initZoomScale, initZoomScale)
-                baseMatrix.postTranslate(0f, 0f)
-            }
-            scaleType == ScaleType.FIT_END -> {
-                baseMatrix.postScale(initZoomScale, initZoomScale)
-                baseMatrix.postTranslate(0f, viewSize.height - drawableHeight * initZoomScale)
-            }
-            scaleType == ScaleType.FIT_CENTER
-                    || (scaleType == ScaleType.CENTER_INSIDE && drawableGreaterThanView) -> {
-                baseMatrix.postScale(initZoomScale, initZoomScale)
-                val dy = (viewSize.height - drawableHeight * initZoomScale) / 2f
-                baseMatrix.postTranslate(0f, dy)
-            }
-            scaleType == ScaleType.FIT_XY -> {
-                val srcRectF = RectF(0f, 0f, drawableWidth.toFloat(), drawableHeight.toFloat())
-                val dstRectF = RectF(0f, 0f, viewSize.width.toFloat(), viewSize.height.toFloat())
-                baseMatrix.setRectToRect(srcRectF, dstRectF, Matrix.ScaleToFit.FILL)
+            is Initial.FitXy -> {
+                baseMatrix.setRectToRect(
+                    initState.srcRectF,
+                    initState.dstRectF,
+                    Matrix.ScaleToFit.FILL
+                )
             }
         }
+        baseMatrix.postRotate(zoomerHelper.rotateDegrees.toFloat())
     }
 
     private fun resetSupportMatrix() {
         supportMatrix.reset()
-        supportMatrix.postRotate(zoomerHelper.rotateDegrees.toFloat())
     }
 
     private fun checkAndApplyMatrix() {
@@ -306,6 +271,7 @@ internal class ScaleDragHelper constructor(
         if (animate) {
             locationRunnable?.cancel()
             locationRunnable = LocationRunnable(
+                context = context,
                 zoomerHelper = zoomerHelper,
                 scaleDragHelper = this@ScaleDragHelper,
                 startX = startX,
@@ -481,6 +447,7 @@ internal class ScaleDragHelper constructor(
 
         flingRunnable?.cancel()
         flingRunnable = FlingRunnable(
+            context = context,
             zoomerHelper = zoomerHelper,
             scaleDragHelper = this@ScaleDragHelper,
             velocityX = velocityX.toInt(),

@@ -45,7 +45,7 @@ internal class TapHelper constructor(
         try {
             val currentScaleFormat = zoomerHelper.scale.format(2)
             var finalScale = -1f
-            for (scale in zoomerHelper.scales.steps) {
+            for (scale in zoomerHelper.scaleState.doubleClickSteps) {
                 if (finalScale == -1f) {
                     finalScale = scale
                 } else if (currentScaleFormat < scale.format(2)) {

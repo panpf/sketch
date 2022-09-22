@@ -27,7 +27,10 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
-class ScaleDragGestureDetector(context: Context, val onGestureListener: OnGestureListener) {
+internal class ScaleDragGestureDetector(
+    context: Context,
+    val onGestureListener: OnGestureListener
+) {
 
     companion object {
         private const val INVALID_POINTER_ID = -1

@@ -39,7 +39,7 @@ import com.github.panpf.sketch.zoom.SubsamplingHelper
 import com.github.panpf.sketch.zoom.Tile
 import java.util.LinkedList
 
-class TileDecoder internal constructor(
+internal class TileDecoder internal constructor(
     sketch: Sketch,
     val imageUri: String,
     val imageInfo: ImageInfo,

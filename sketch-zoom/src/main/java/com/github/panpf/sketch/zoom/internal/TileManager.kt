@@ -46,7 +46,7 @@ import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
 
-class TileManager constructor(
+internal class TileManager constructor(
     private val sketch: Sketch,
     private val imageUri: String,
     private val imageSize: Size,

@@ -29,7 +29,6 @@ import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
-import com.github.panpf.sketch.zoom.internal.Edge
 
 open class SketchZoomImageView @JvmOverloads constructor(
     context: Context,
@@ -56,10 +55,10 @@ open class SketchZoomImageView @JvmOverloads constructor(
         set(value) {
             zoomAbility.readModeDecider = value
         }
-    var scalesFactory: ScalesFactory?
-        get() = zoomAbility.scalesFactory
+    var scaleStateFactory: ScaleState.Factory?
+        get() = zoomAbility.scaleStateFactory
         set(value) {
-            zoomAbility.scalesFactory = value
+            zoomAbility.scaleStateFactory = value
         }
     var showTileBounds: Boolean
         get() = zoomAbility.showTileBounds

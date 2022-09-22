@@ -53,8 +53,6 @@ import com.github.panpf.sketch.viewability.SizeChangeObserver
 import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
-import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
-import com.github.panpf.sketch.zoom.internal.Edge
 import com.github.panpf.sketch.zoom.internal.canUseSubsampling
 import com.github.panpf.sketch.zoom.internal.contentSize
 import com.github.panpf.sketch.zoom.internal.getLifecycle
@@ -146,11 +144,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             field = value
             zoomerHelper?.readModeDecider = value
         }
-    var scalesFactory: ScalesFactory? = null
+    var scaleStateFactory: ScaleState.Factory? = null
         set(value) {
             if (field != value) {
                 field = value
-                zoomerHelper?.scalesFactory = value ?: DefaultScalesFactory()
+                zoomerHelper?.scaleStateFactory = value ?: DefaultScaleStateFactory()
             }
         }
     var zoomAnimationDuration: Int = 200
@@ -489,7 +487,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         }
         return ZoomerHelper(
             context = host.context,
-            sketch = host.context.sketch,
+            logger = host.context.sketch.logger,
             view = host.view,
             scaleType = scaleType,
         ).apply {
@@ -503,8 +501,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             this@ZoomAbility.zoomInterpolator?.let {
                 this@apply.zoomInterpolator = it
             }
-            this@ZoomAbility.scalesFactory?.let {
-                this@apply.scalesFactory = it
+            this@ZoomAbility.scaleStateFactory?.let {
+                this@apply.scaleStateFactory = it
             }
             this@ZoomAbility.onMatrixChangeListenerList?.forEach {
                 this@apply.addOnMatrixChangeListener(it)

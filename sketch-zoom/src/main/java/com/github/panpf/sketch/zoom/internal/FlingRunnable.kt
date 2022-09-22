@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.zoom.internal
 
+import android.content.Context
 import android.graphics.RectF
 import android.widget.OverScroller
 import androidx.core.view.ViewCompat
@@ -22,13 +23,14 @@ import com.github.panpf.sketch.zoom.ZoomerHelper
 import kotlin.math.roundToInt
 
 internal class FlingRunnable(
+    context: Context,
     private val zoomerHelper: ZoomerHelper,
     private val scaleDragHelper: ScaleDragHelper,
     private val velocityX: Int,
     private val velocityY: Int,
 ) : Runnable {
 
-    private val scroller: OverScroller = OverScroller(zoomerHelper.context)
+    private val scroller: OverScroller = OverScroller(context)
     private var currentX: Int = 0
     private var currentY: Int = 0
 

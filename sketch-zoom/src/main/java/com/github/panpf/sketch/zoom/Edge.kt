@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal
+package com.github.panpf.sketch.zoom
 
 enum class Edge {
     NONE, START, END, BOTH

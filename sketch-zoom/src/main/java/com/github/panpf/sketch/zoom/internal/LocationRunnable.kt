@@ -15,12 +15,14 @@
  */
 package com.github.panpf.sketch.zoom.internal
 
+import android.content.Context
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Scroller
 import androidx.core.view.ViewCompat
 import com.github.panpf.sketch.zoom.ZoomerHelper
 
 internal class LocationRunnable(
+    context: Context,
     private val zoomerHelper: ZoomerHelper,
     private val scaleDragHelper: ScaleDragHelper,
     private val startX: Int,
@@ -29,7 +31,7 @@ internal class LocationRunnable(
     private val endY: Int
 ) : Runnable {
 
-    private val scroller = Scroller(zoomerHelper.context, AccelerateDecelerateInterpolator())
+    private val scroller = Scroller(context, AccelerateDecelerateInterpolator())
     private var currentX = 0
     private var currentY = 0
 

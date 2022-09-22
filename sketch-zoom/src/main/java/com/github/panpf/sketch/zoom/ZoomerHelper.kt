@@ -27,10 +27,8 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.internal.DefaultScalesFactory
-import com.github.panpf.sketch.zoom.internal.Edge
 import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
 import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
 import com.github.panpf.sketch.zoom.internal.TapHelper
@@ -39,8 +37,8 @@ import com.github.panpf.sketch.zoom.internal.TapHelper
  * Based https://github.com/Baseflow/PhotoView git 565505d5 20210120
  */
 class ZoomerHelper constructor(
-    val context: Context,
-    val sketch: Sketch,
+    private val context: Context,
+    private val logger: Logger,
     val view: View,
     scaleType: ScaleType,
 ) {
@@ -49,12 +47,11 @@ class ZoomerHelper constructor(
         const val MODULE = "ZoomerHelper"
     }
 
-    private val logger = sketch.logger
     private val tapHelper = TapHelper(context, this)
     private val scaleDragHelper = ScaleDragHelper(
-        context,
-        sketch,
-        this,
+        context = context,
+        logger = logger,
+        zoomerHelper = this,
         onUpdateMatrix = {
             scrollBarHelper?.onMatrixChanged()
             onMatrixChangeListenerList?.forEach { listener ->
@@ -133,9 +130,9 @@ class ZoomerHelper constructor(
                 reset()
             }
         }
-    internal val finalReadModeDecider: ReadModeDecider?
+    private val finalReadModeDecider: ReadModeDecider?
         get() = if (readModeEnabled) readModeDecider ?: LongImageReadModeDecider() else null
-    var scalesFactory: ScalesFactory = DefaultScalesFactory()
+    var scaleStateFactory: ScaleState.Factory = DefaultScaleStateFactory()
         internal set(value) {
             if (field != value) {
                 field = value
@@ -160,7 +157,7 @@ class ZoomerHelper constructor(
                 field = value
             }
         }
-    var scales: Scales = Scales.EMPTY
+    var scaleState: ScaleState = ScaleState.EMPTY
         private set
 
 
@@ -171,8 +168,7 @@ class ZoomerHelper constructor(
     }
 
     private fun reset() {
-        scales = scalesFactory.create(
-            sketch = sketch,
+        scaleState = scaleStateFactory.create(
             viewSize = viewSize,
             imageSize = imageSize,
             drawableSize = drawableSize,
@@ -182,9 +178,13 @@ class ZoomerHelper constructor(
         )
         scaleDragHelper.reset()
         logger.d(MODULE) {
-            "reset. viewSize=$viewSize, imageSize=$imageSize, drawableSize=$drawableSize, " +
-                    "rotateDegrees=$rotateDegrees, scaleType=$scaleType, readModeEnabled=$readModeEnabled, " +
-                    "readModeDecider=$readModeDecider, scales=$scales"
+            "reset. viewSize=$viewSize, " +
+                    "imageSize=$imageSize, " +
+                    "drawableSize=$drawableSize, " +
+                    "rotateDegrees=$rotateDegrees, " +
+                    "scaleType=$scaleType, " +
+                    "finalReadModeDecider=$finalReadModeDecider, " +
+                    "scaleState=$scaleState"
         }
     }
 
@@ -224,8 +224,8 @@ class ZoomerHelper constructor(
      */
     fun scale(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
         val finalScale = scale
-            .coerceAtLeast(scales.min)
-            .coerceAtMost(scales.max)
+            .coerceAtLeast(scaleState.min)
+            .coerceAtMost(scaleState.max)
         scaleDragHelper.scale(finalScale, focalX, focalY, animate)
     }
 
@@ -294,24 +294,24 @@ class ZoomerHelper constructor(
 
     /** Zoom ratio that makes the image fully visible */
     val fullScale: Float
-        get() = scales.full
+        get() = scaleState.full
 
     /** Gets the zoom that fills the image with the ImageView display */
     val fillScale: Float
-        get() = scales.fill
+        get() = scaleState.fill
 
     /** Gets the scale that allows the image to be displayed at scale to scale */
     val originScale: Float
-        get() = scales.origin
+        get() = scaleState.origin
 
     val minScale: Float
-        get() = scales.min
+        get() = scaleState.min
 
     val maxScale: Float
-        get() = scales.max
+        get() = scaleState.max
 
     val stepScales: FloatArray
-        get() = scales.steps
+        get() = scaleState.doubleClickSteps
 
     val isScaling: Boolean
         get() = scaleDragHelper.isScaling

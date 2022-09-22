@@ -28,7 +28,10 @@ import com.github.panpf.sketch.zoom.ZoomerHelper
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-internal class ScrollBarHelper(context: Context, private val zoomerHelper: ZoomerHelper) {
+internal class ScrollBarHelper(
+    context: Context,
+    private val zoomerHelper: ZoomerHelper
+) {
 
     private val scrollBarSize: Float = 3f * Resources.getSystem().displayMetrics.density
     private val scrollBarMargin: Float = 3f * Resources.getSystem().displayMetrics.density
