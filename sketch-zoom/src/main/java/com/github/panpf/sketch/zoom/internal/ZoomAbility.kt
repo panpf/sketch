@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom
+package com.github.panpf.sketch.zoom.internal
 
 import android.graphics.Canvas
 import android.graphics.Matrix
@@ -53,12 +53,20 @@ import com.github.panpf.sketch.viewability.SizeChangeObserver
 import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
-import com.github.panpf.sketch.zoom.internal.SubsamplingHelper
-import com.github.panpf.sketch.zoom.internal.ZoomerHelper
-import com.github.panpf.sketch.zoom.internal.canUseSubsampling
-import com.github.panpf.sketch.zoom.internal.contentSize
-import com.github.panpf.sketch.zoom.internal.getLifecycle
-import com.github.panpf.sketch.zoom.internal.isAttachedToWindowCompat
+import com.github.panpf.sketch.zoom.DefaultScaleStateFactory
+import com.github.panpf.sketch.zoom.Edge
+import com.github.panpf.sketch.zoom.Edge.NONE
+import com.github.panpf.sketch.zoom.OnDragFlingListener
+import com.github.panpf.sketch.zoom.OnMatrixChangeListener
+import com.github.panpf.sketch.zoom.OnRotateChangeListener
+import com.github.panpf.sketch.zoom.OnScaleChangeListener
+import com.github.panpf.sketch.zoom.OnTileChangedListener
+import com.github.panpf.sketch.zoom.OnViewDragListener
+import com.github.panpf.sketch.zoom.OnViewLongPressListener
+import com.github.panpf.sketch.zoom.OnViewTapListener
+import com.github.panpf.sketch.zoom.ReadModeDecider
+import com.github.panpf.sketch.zoom.ScaleState.Factory
+import com.github.panpf.sketch.zoom.Tile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -146,7 +154,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             field = value
             zoomerHelper?.readModeDecider = value
         }
-    var scaleStateFactory: ScaleState.Factory? = null
+    var scaleStateFactory: Factory? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -261,10 +269,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         zoomerHelper?.canScrollVertically(direction) == true
 
     val horScrollEdge: Edge
-        get() = zoomerHelper?.horScrollEdge ?: Edge.NONE
+        get() = zoomerHelper?.horScrollEdge ?: NONE
 
     val verScrollEdge: Edge
-        get() = zoomerHelper?.verScrollEdge ?: Edge.NONE
+        get() = zoomerHelper?.verScrollEdge ?: NONE
 
     val scale: Float
         get() = zoomerHelper?.scale ?: 1f

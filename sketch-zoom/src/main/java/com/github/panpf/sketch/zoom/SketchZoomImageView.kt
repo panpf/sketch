@@ -29,6 +29,7 @@ import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
+import com.github.panpf.sketch.zoom.internal.ZoomAbility
 
 open class SketchZoomImageView @JvmOverloads constructor(
     context: Context,
