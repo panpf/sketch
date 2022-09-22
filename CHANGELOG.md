@@ -1,10 +1,32 @@
+# v3.1.0-beta02
+
+### sketch
+
+* improve: Improve LruBitmapPool
+* fix: Fixed the bug that the put method of LruBitmapPool failed to put the second bitmap when
+  encountering a bitmap with the same size and config but not the same instance
+
+### sketch-zoom
+
+* bug: Fixed a bug where SketchZoomImageView might sometimes sample tiles not loading
+* bug: Fix the bug that when SketchZoomImageView is nested in ViewPager, it cannot return the swipe
+  event to ViewPager when it reaches the edge and then swipes
+* change: Refactor Scales. Scales rename to ScaleState，SketchImageView's scalesFactory property
+  rename to scaleStateFactory
+* improve: Improve zoom
+
 # v3.1.0-beta01
 
-* improve: Improve zoom
+### sketch
+
 * change: MemoryCache now stores MemoryCache.Value
-* new: Added InexactlyMemoryCacheStateImage #166
 * change: MemoryCache adds keys() method
 * change: Add the suspend keyword to the getResponse() method of HttpStack #167
+* new: Added InexactlyMemoryCacheStateImage #166
+
+### sketch-zoom
+
+* improve: Improve zoom
 
 # v3.0.0 stable
 
