@@ -90,12 +90,6 @@ class LruBitmapPool constructor(
             }
             return false
         }
-        if (strategy.exist(bitmap)) {
-            logger?.d(MODULE) {
-                "put. successful. bitmap exist. $caller. ${bitmap.logString}. $bitmapKey"
-            }
-            return true
-        }
 
         synchronized(this) {
             trimToSize(maxSize - bitmapSize, "$caller:putBefore")

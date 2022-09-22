@@ -48,12 +48,6 @@ public class AttributeStrategy implements LruPoolStrategy {
         return groupedMap.exist(key);
     }
 
-    @Override
-    public boolean exist(Bitmap bitmap) {
-        final Key key = keyPool.get(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
-        return groupedMap.exist(key, bitmap);
-    }
-
     @Nullable
     @Override
     public Bitmap removeLast() {

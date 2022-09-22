@@ -137,7 +137,7 @@ class LruBitmapPoolTest {
             Assert.assertTrue(put(bitmap))
             Assert.assertTrue(put(bitmap))
             Assert.assertSame(bitmap, get(10, 10, ARGB_8888))
-            Assert.assertNull(get(10, 10, ARGB_8888))
+            Assert.assertSame(bitmap, get(10, 10, ARGB_8888))
         }
     }
 
