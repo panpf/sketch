@@ -22,12 +22,13 @@ import kotlinx.coroutines.Job
 
 class Tile constructor(val srcRect: Rect, val inSampleSize: Int) {
 
-    var countBitmap: CountBitmap? = null
+    internal var countBitmap: CountBitmap? = null
         set(value) {
             field?.setIsDisplayed(false, "Tile")
             field = value
             value?.setIsDisplayed(true, "Tile")
         }
+
     val bitmap: Bitmap?
         get() = countBitmap?.bitmap
     var loadJob: Job? = null

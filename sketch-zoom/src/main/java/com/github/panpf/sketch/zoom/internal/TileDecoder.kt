@@ -35,7 +35,6 @@ import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.setInBitmapForRegion
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.SubsamplingHelper
 import com.github.panpf.sketch.zoom.Tile
 import java.util.LinkedList
 

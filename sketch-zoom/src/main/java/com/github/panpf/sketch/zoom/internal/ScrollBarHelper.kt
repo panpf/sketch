@@ -24,7 +24,6 @@ import android.graphics.RectF
 import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.zoom.ZoomerHelper
 import kotlin.math.abs
 import kotlin.math.roundToInt
 

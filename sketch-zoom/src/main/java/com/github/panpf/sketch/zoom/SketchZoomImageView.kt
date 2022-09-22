@@ -65,15 +65,37 @@ open class SketchZoomImageView @JvmOverloads constructor(
         set(value) {
             zoomAbility.showTileBounds = value
         }
-    var zoomAnimationDuration: Int
-        get() = zoomAbility.zoomAnimationDuration
+
+    var scaleAnimationDuration: Int
+        get() = zoomAbility.scaleAnimationDuration
         set(value) {
-            zoomAbility.zoomAnimationDuration = value
+            zoomAbility.scaleAnimationDuration = value
         }
-    var zoomInterpolator: Interpolator?
-        get() = zoomAbility.zoomInterpolator
+
+    @Deprecated(
+        message = "Please use scaleAnimationDuration instead",
+        replaceWith = ReplaceWith("scaleAnimationDuration")
+    )
+    var zoomAnimationDuration: Int
+        get() = scaleAnimationDuration
         set(value) {
-            zoomAbility.zoomInterpolator = value
+            scaleAnimationDuration = value
+        }
+
+    var scaleAnimationInterpolator: Interpolator?
+        get() = zoomAbility.scaleAnimationInterpolator
+        set(value) {
+            zoomAbility.scaleAnimationInterpolator = value
+        }
+
+    @Deprecated(
+        message = "Please use scaleAnimationInterpolator instead",
+        replaceWith = ReplaceWith("scaleAnimationInterpolator")
+    )
+    var zoomInterpolator: Interpolator?
+        get() = scaleAnimationInterpolator
+        set(value) {
+            scaleAnimationInterpolator = value
         }
     var allowParentInterceptOnEdge: Boolean
         get() = zoomAbility.allowParentInterceptOnEdge

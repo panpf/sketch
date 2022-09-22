@@ -19,7 +19,6 @@ import android.content.Context
 import android.graphics.RectF
 import android.widget.OverScroller
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.zoom.ZoomerHelper
 import kotlin.math.roundToInt
 
 internal class FlingRunnable(

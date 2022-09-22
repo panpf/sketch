@@ -19,7 +19,6 @@ import android.content.Context
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Scroller
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.zoom.ZoomerHelper
 
 internal class LocationRunnable(
     context: Context,

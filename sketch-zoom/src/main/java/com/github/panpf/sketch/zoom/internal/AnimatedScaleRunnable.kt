@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.zoom.internal
 
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.zoom.ZoomerHelper
 
 internal class AnimatedScaleRunnable(
     private val zoomerHelper: ZoomerHelper,
@@ -55,9 +54,9 @@ internal class AnimatedScaleRunnable(
     }
 
     private fun interpolate(): Float {
-        var t = 1f * (System.currentTimeMillis() - startTime) / zoomerHelper.zoomAnimationDuration
+        var t = 1f * (System.currentTimeMillis() - startTime) / zoomerHelper.scaleAnimationDuration
         t = 1f.coerceAtMost(t)
-        t = zoomerHelper.zoomInterpolator.getInterpolation(t)
+        t = zoomerHelper.scaleAnimationInterpolator.getInterpolation(t)
         return t
     }
 }

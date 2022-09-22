@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom
+package com.github.panpf.sketch.zoom.internal
 
 import android.content.Context
 import android.graphics.Canvas
@@ -25,10 +25,9 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.internal.TileDecoder
-import com.github.panpf.sketch.zoom.internal.TileManager
-import com.github.panpf.sketch.zoom.internal.format
-import com.github.panpf.sketch.zoom.internal.requiredMainThread
+import com.github.panpf.sketch.zoom.OnMatrixChangeListener
+import com.github.panpf.sketch.zoom.OnTileChangedListener
+import com.github.panpf.sketch.zoom.Tile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -36,7 +35,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SubsamplingHelper(
+internal class SubsamplingHelper(
     private val context: Context,
     private val sketch: Sketch,
     private val zoomerHelper: ZoomerHelper,

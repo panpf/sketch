@@ -32,7 +32,6 @@ import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.SubsamplingHelper
 import com.github.panpf.sketch.zoom.Tile
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

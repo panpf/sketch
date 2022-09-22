@@ -27,7 +27,6 @@ import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.Edge
 import com.github.panpf.sketch.zoom.ScaleState.Initial
-import com.github.panpf.sketch.zoom.ZoomerHelper
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnActionListener
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnGestureListener
 import kotlin.math.abs

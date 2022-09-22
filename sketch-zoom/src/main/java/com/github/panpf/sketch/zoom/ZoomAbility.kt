@@ -53,6 +53,8 @@ import com.github.panpf.sketch.viewability.SizeChangeObserver
 import com.github.panpf.sketch.viewability.TouchEventObserver
 import com.github.panpf.sketch.viewability.ViewAbility
 import com.github.panpf.sketch.viewability.VisibilityChangedObserver
+import com.github.panpf.sketch.zoom.internal.SubsamplingHelper
+import com.github.panpf.sketch.zoom.internal.ZoomerHelper
 import com.github.panpf.sketch.zoom.internal.canUseSubsampling
 import com.github.panpf.sketch.zoom.internal.contentSize
 import com.github.panpf.sketch.zoom.internal.getLifecycle
@@ -151,18 +153,19 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
                 zoomerHelper?.scaleStateFactory = value ?: DefaultScaleStateFactory()
             }
         }
-    var zoomAnimationDuration: Int = 200
+    var scaleAnimationDuration: Int = 200
         set(value) {
             if (value > 0) {
                 field = value
-                zoomerHelper?.zoomAnimationDuration = value
+                zoomerHelper?.scaleAnimationDuration = value
             }
         }
-    var zoomInterpolator: Interpolator? = null
+    var scaleAnimationInterpolator: Interpolator? = null
         set(value) {
             if (field != value) {
                 field = value
-                zoomerHelper?.zoomInterpolator = value ?: AccelerateDecelerateInterpolator()
+                zoomerHelper?.scaleAnimationInterpolator =
+                    value ?: AccelerateDecelerateInterpolator()
             }
         }
     var allowParentInterceptOnEdge: Boolean = true
@@ -494,12 +497,12 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             this@apply.readModeEnabled = this@ZoomAbility.readModeEnabled
             this@apply.readModeDecider = this@ZoomAbility.readModeDecider
             this@apply.scrollBarEnabled = this@ZoomAbility.scrollBarEnabled
-            this@apply.zoomAnimationDuration = this@ZoomAbility.zoomAnimationDuration
+            this@apply.scaleAnimationDuration = this@ZoomAbility.scaleAnimationDuration
             this@apply.allowParentInterceptOnEdge = this@ZoomAbility.allowParentInterceptOnEdge
             this@apply.onViewLongPressListener = this@ZoomAbility.onViewLongPressListener
             this@apply.onViewTapListener = this@ZoomAbility.onViewTapListener
-            this@ZoomAbility.zoomInterpolator?.let {
-                this@apply.zoomInterpolator = it
+            this@ZoomAbility.scaleAnimationInterpolator?.let {
+                this@apply.scaleAnimationInterpolator = it
             }
             this@ZoomAbility.scaleStateFactory?.let {
                 this@apply.scaleStateFactory = it

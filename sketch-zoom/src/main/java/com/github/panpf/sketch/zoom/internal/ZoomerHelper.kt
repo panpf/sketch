@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom
+package com.github.panpf.sketch.zoom.internal
 
 import android.content.Context
 import android.graphics.Canvas
@@ -29,14 +29,24 @@ import android.view.animation.Interpolator
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.zoom.internal.ScaleDragHelper
-import com.github.panpf.sketch.zoom.internal.ScrollBarHelper
-import com.github.panpf.sketch.zoom.internal.TapHelper
+import com.github.panpf.sketch.zoom.DefaultScaleStateFactory
+import com.github.panpf.sketch.zoom.Edge
+import com.github.panpf.sketch.zoom.LongImageReadModeDecider
+import com.github.panpf.sketch.zoom.OnDragFlingListener
+import com.github.panpf.sketch.zoom.OnMatrixChangeListener
+import com.github.panpf.sketch.zoom.OnRotateChangeListener
+import com.github.panpf.sketch.zoom.OnScaleChangeListener
+import com.github.panpf.sketch.zoom.OnViewDragListener
+import com.github.panpf.sketch.zoom.OnViewLongPressListener
+import com.github.panpf.sketch.zoom.OnViewTapListener
+import com.github.panpf.sketch.zoom.ReadModeDecider
+import com.github.panpf.sketch.zoom.ScaleState
+import com.github.panpf.sketch.zoom.ScaleState.Factory
 
 /**
  * Based https://github.com/Baseflow/PhotoView git 565505d5 20210120
  */
-class ZoomerHelper constructor(
+internal class ZoomerHelper constructor(
     private val context: Context,
     private val logger: Logger,
     val view: View,
@@ -85,7 +95,7 @@ class ZoomerHelper constructor(
 
     /** Allows the parent ViewGroup to intercept events while sliding to an edge */
     var allowParentInterceptOnEdge: Boolean = true
-    var zoomInterpolator: Interpolator = AccelerateDecelerateInterpolator()
+    var scaleAnimationInterpolator: Interpolator = AccelerateDecelerateInterpolator()
     var onViewLongPressListener: OnViewLongPressListener? = null
     var onViewTapListener: OnViewTapListener? = null
     var viewSize = Size(0, 0)
@@ -132,7 +142,7 @@ class ZoomerHelper constructor(
         }
     private val finalReadModeDecider: ReadModeDecider?
         get() = if (readModeEnabled) readModeDecider ?: LongImageReadModeDecider() else null
-    var scaleStateFactory: ScaleState.Factory = DefaultScaleStateFactory()
+    var scaleStateFactory: Factory = DefaultScaleStateFactory()
         internal set(value) {
             if (field != value) {
                 field = value
@@ -151,7 +161,7 @@ class ZoomerHelper constructor(
                 }
             }
         }
-    var zoomAnimationDuration: Int = 200
+    var scaleAnimationDuration: Int = 200
         internal set(value) {
             if (value > 0 && field != value) {
                 field = value
