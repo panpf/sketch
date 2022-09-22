@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.github.panpf.sketch.decode.internal.DecodeUtilsKt;
 import com.github.panpf.sketch.util.BitmapUtilsKt;
 
 import java.util.Arrays;
@@ -108,6 +109,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
         sizes.put(key.size, current == null ? 1 : current + 1);
     }
 
+    @Nullable
     @Override
     public Bitmap get(int width, int height, @Nullable Bitmap.Config config) {
         int size = BitmapUtilsKt.getBitmapByteSize(width, height, config);
@@ -121,8 +123,13 @@ public class SizeConfigStrategy implements LruPoolStrategy {
                 result.reconfigure(width, height, config);
             } catch (IllegalArgumentException e) {
                 // Bitmap.cpp Bitmap_reconfigure method may throw "IllegalArgumentException: Bitmap not large enough to support new configuration" exception
-                e.printStackTrace();
+                String message = String.format(Locale.getDefault(),
+                        "Bitmap reconfigure error. size=%dx%d, config=%s, bitmap=%s",
+                        width, height, config, DecodeUtilsKt.getLogString(result)
+                );
+                new IllegalArgumentException(message, e).printStackTrace();
                 put(result);
+                result = null;
             }
         }
         return result;
