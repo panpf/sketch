@@ -31,10 +31,10 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
+import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
-import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
@@ -45,7 +45,6 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
     private val viewModel by viewModels<ImageViewerViewModel>()
-    private val pagerViewModel by parentViewModels<ImageViewerPagerViewModel>()
     private val requestPermissionResult = registerForActivityResult(RequestPermission()) {
         lifecycleScope.launch {
             val imageUri = if (prefsService.showOriginImage.value) {
@@ -97,33 +96,31 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             displayImage(binding, prefsService.showOriginImage.stateFlow.value)
         }
 
-        pagerViewModel.apply {
-            shareEvent.listen(viewLifecycleOwner) {
-                if (isResumed) {
-                    lifecycleScope.launch {
-                        val imageUri = if (prefsService.showOriginImage.value) {
-                            args.originImageUri
-                        } else {
-                            args.previewImageUri ?: args.originImageUri
-                        }
-                        handleActionResult(viewModel.share(imageUri))
+        eventService.viewerPagerShareEvent.listen(viewLifecycleOwner) {
+            if (isResumed) {
+                lifecycleScope.launch {
+                    val imageUri = if (prefsService.showOriginImage.value) {
+                        args.originImageUri
+                    } else {
+                        args.previewImageUri ?: args.originImageUri
                     }
+                    handleActionResult(viewModel.share(imageUri))
                 }
             }
-            saveEvent.listen(viewLifecycleOwner) {
-                if (isResumed) {
-                    requestPermissionResult.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }
+        }
+        eventService.viewerPagerSaveEvent.listen(viewLifecycleOwner) {
+            if (isResumed) {
+                requestPermissionResult.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
-            rotateEvent.listen(viewLifecycleOwner) {
-                if (isResumed) {
-                    binding.imageViewerZoomImage.rotateBy(90)
-                }
+        }
+        eventService.viewerPagerRotateEvent.listen(viewLifecycleOwner) {
+            if (isResumed) {
+                binding.imageViewerZoomImage.rotateBy(90)
             }
-            infoEvent.listen(viewLifecycleOwner) {
-                if (isResumed) {
-                    startImageInfoDialog(binding.imageViewerZoomImage)
-                }
+        }
+        eventService.viewerPagerInfoEvent.listen(viewLifecycleOwner) {
+            if (isResumed) {
+                startImageInfoDialog(binding.imageViewerZoomImage)
             }
         }
     }

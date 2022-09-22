@@ -24,6 +24,7 @@ import com.github.panpf.sketch.sample.util.ParamLazy
 object MyServices {
     val apiServiceLazy = ParamLazy<Context, ApiServices> { ApiServices(it) }
     val prefsServiceLazy = ParamLazy<Context, PrefsService> { PrefsService(it) }
+    val eventServiceLazy = ParamLazy<Context, EventService> { EventService() }
 }
 
 val Context.apiService: ApiServices
@@ -39,3 +40,10 @@ val Fragment.prefsService: PrefsService
     get() = MyServices.prefsServiceLazy.get(this.requireContext().applicationContext)
 val View.prefsService: PrefsService
     get() = MyServices.prefsServiceLazy.get(this.context.applicationContext)
+
+val Context.eventService: EventService
+    get() = MyServices.eventServiceLazy.get(this.applicationContext)
+val Fragment.eventService: EventService
+    get() = MyServices.eventServiceLazy.get(this.requireContext().applicationContext)
+val View.eventService: EventService
+    get() = MyServices.eventServiceLazy.get(this.context.applicationContext)

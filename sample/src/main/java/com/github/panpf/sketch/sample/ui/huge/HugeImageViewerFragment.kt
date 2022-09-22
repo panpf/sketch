@@ -23,6 +23,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.HugeImageViewerFragmentBinding
+import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
@@ -51,6 +52,12 @@ class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>(
             }
             prefsService.scaleType.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
                 scaleType = ScaleType.valueOf(it)
+            }
+
+            eventService.hugeViewerPageRotateEvent.listen(viewLifecycleOwner) {
+                if (isResumed) {
+                    rotateBy(90)
+                }
             }
 
             setOnLongClickListener {

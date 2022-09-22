@@ -22,6 +22,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ContainerFragmentBinding
+import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.huge.Layout.COLUMN
@@ -37,6 +38,15 @@ class HugeImageHomeFragment : ToolbarBindingFragment<ContainerFragmentBinding>()
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Huge Image"
+
+        toolbar.menu.add("Rotate").apply {
+            setIcon(R.drawable.ic_rotate_right)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            setOnMenuItemClickListener {
+                eventService.hugeViewerPageRotateEvent.value = 0
+                true
+            }
+        }
 
         val menu = toolbar.menu.add("Layout").apply {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)

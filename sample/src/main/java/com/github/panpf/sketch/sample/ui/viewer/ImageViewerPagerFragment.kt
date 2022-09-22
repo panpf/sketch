@@ -22,7 +22,6 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -33,6 +32,7 @@ import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.databinding.ImageViewerPagerFragmentBinding
+import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
@@ -54,7 +54,6 @@ import kotlinx.serialization.json.Json
 class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerPagerFragmentArgs>()
-    private val viewModel by viewModels<ImageViewerPagerViewModel>()
 
     override fun onViewCreated(
         binding: ImageViewerPagerFragmentBinding,
@@ -152,19 +151,19 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
         }
 
         binding.imageViewerPagerShare.setOnClickListener {
-            viewModel.shareEvent.value = 0
+            eventService.viewerPagerShareEvent.value = 0
         }
 
         binding.imageViewerPagerSave.setOnClickListener {
-            viewModel.saveEvent.value = 0
+            eventService.viewerPagerSaveEvent.value = 0
         }
 
         binding.imageViewerPagerRotate.setOnClickListener {
-            viewModel.rotateEvent.value = 0
+            eventService.viewerPagerRotateEvent.value = 0
         }
 
         binding.imageViewerPagerInfo.setOnClickListener {
-            viewModel.infoEvent.value = 0
+            eventService.viewerPagerInfoEvent.value = 0
         }
 
         binding.imageViewerPagerOrigin.apply {
