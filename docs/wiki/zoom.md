@@ -30,18 +30,18 @@ sketchZoomImageView.displayImage("https://www.sample.com/image.jpg")
 
 ```kotlin
 // 放大 3 倍（不使用动画）
-sketchZoomImageView.zoom(3f)
+sketchZoomImageView.scale(3f)
 
 // 放大 3 倍并使用动画
-sketchZoomImageView.zoom(3f, true)
+sketchZoomImageView.scale(3f, true)
 
 // 以 100x200 为中心点放大 3 倍并使用动画
-sketchZoomImageView.zoom(3f, 100f, 200f, true)
+sketchZoomImageView.scale(3f, 100f, 200f, true)
 ```
 
 > 注意：
 > * 设置的缩放比例不能小于最小缩放比例也不能大于最大缩放比例
-> * 通过 zoom 方法设置的缩放比例只是临时性的并不会一直保持，其它任何缩放行为和更新行为都会覆盖此缩放比例
+> * 通过 scale 方法设置的缩放比例只是临时性的并不会一直保持，其它任何缩放行为和更新行为都会覆盖此缩放比例
 
 ## 旋转
 
@@ -54,7 +54,7 @@ sketchZoomImageView.rotateBy(90)
 ```
 
 > 注意：
-> * 只支持 90、180、270、360等能整除 90 的旋转角度
+> * 只支持 90、180、270、360 等能整除 90 的旋转角度
 > * 旋转角度是会一直存在的
 
 ### 定位
@@ -93,19 +93,61 @@ sketchZoomImageView.readModeEnabled = true
 
 [SketchZoomImageView] 通过 [ReadModeDecider] 来判定是否需要使用阅读模式，默认实现是 [LongImageReadModeDecider]，仅对长图使用阅读模式
 
-> 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageReadModeDecider] 时使用自定义的规则
+> 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageReadModeDecider] 时使用自定义的长图判定规则
 
-如果你想修改阅读模式判定规则可以实现 [ReadModeDecider] 接口，然后通过 [SketchZoomImageView] 的 readModeDecider 属性应用，如下：
+如果你想修改阅读模式判定规则可以实现 [ReadModeDecider] 接口，然后通过 [SketchZoomImageView] 的 `readModeDecider` 属性应用，如下：
 
 ```kotlin
 class MyReadModeDecider : ReadModeDecider {
 
-    override fun should(imageWidth: Int, imageHeight: Int): Boolean {
+    override fun should(
+        imageWidth: Int,
+        imageHeight: Int,
+        viewWidth: Int,
+        viewHeight: Int
+    ): Boolean {
         // 实现你的判定规则
     }
 }
 
 sketchZoomImageView.readModeDecider = MyReadModeDecider()
+```
+
+### 自定义缩放比例
+
+通过 ScaleState 你可以修改最小、最大、双击、初始等缩放比例，如下自定义你的 ScaleState 并应用即可：
+
+```kotlin
+class MyScaleStateFactory : ScaleState.Factory {
+
+    override fun create(
+        viewSize: Size,
+        imageSize: Size,
+        drawableSize: Size,
+        rotateDegrees: Int,
+        scaleType: ScaleType,
+        readModeDecider: ReadModeDecider?,
+    ): ScaleState {
+        val minScale = ...
+        val maxScale = ...
+        val fullScale = ...
+        val fillScale = ...
+        val originScale = ...
+        val initial = ...
+        val steps = ...
+        return ScaleState(
+            min = minScale,
+            max = maxScale,
+            full = fullScale,
+            fill = fillScale,
+            origin = originScale,
+            initial = initial,
+            doubleClickSteps = steps,
+        )
+    }
+}
+
+sketchZoomImageView.scaleStateFactory = MyScaleStateFactory()
 ```
 
 ### 缩放信息
