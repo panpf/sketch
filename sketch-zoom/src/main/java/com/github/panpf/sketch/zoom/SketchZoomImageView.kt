@@ -121,10 +121,10 @@ open class SketchZoomImageView @JvmOverloads constructor(
     /*************************************** Interaction ******************************************/
 
     /**
-     * Locate to the location specified on the preview image. You don't have to worry about scaling and rotation
+     * Locate to the location specified on the drawable image. You don't have to worry about scaling and rotation
      *
-     * @param x Preview the x coordinate on the diagram
-     * @param y Preview the y-coordinate on the diagram
+     * @param x Drawable the x coordinate on the diagram
+     * @param y Drawable the y-coordinate on the diagram
      */
     fun location(x: Float, y: Float, animate: Boolean = false) {
         zoomAbility.location(x, y, animate)
@@ -133,8 +133,8 @@ open class SketchZoomImageView @JvmOverloads constructor(
     /**
      * Scale to the specified scale. You don't have to worry about rotation degrees
      *
-     * @param focalX  Scale the x coordinate of the center point on the preview image
-     * @param focalY  Scale the y coordinate of the center point on the preview image
+     * @param focalX  Scale the x coordinate of the center point on the drawable image
+     * @param focalY  Scale the y coordinate of the center point on the drawable image
      */
     fun scale(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
         zoomAbility.scale(scale, focalX, focalY, animate)
@@ -216,15 +216,15 @@ open class SketchZoomImageView @JvmOverloads constructor(
     val imageSize: Size?
         get() = zoomAbility.imageSize ?: zoomAbility.imageSize
 
-    val previewSize: Size?
-        get() = zoomAbility.previewSize
+    val drawableSize: Size?
+        get() = zoomAbility.drawableSize
 
     fun getDrawMatrix(matrix: Matrix) = zoomAbility.getDrawMatrix(matrix)
 
     fun getDrawRect(rectF: RectF) = zoomAbility.getDrawRect(rectF)
 
     /**
-     * Gets the area that the user can see on the preview (not affected by rotation)
+     * Gets the area that the user can see on the drawable (not affected by rotation)
      */
     fun getVisibleRect(rect: Rect) = zoomAbility.getVisibleRect(rect)
 

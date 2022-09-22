@@ -204,10 +204,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     /*************************************** Interaction ******************************************/
 
     /**
-     * Locate to the location specified on the preview image. You don't have to worry about scaling and rotation
+     * Locate to the location specified on the drawable image. You don't have to worry about scaling and rotation
      *
-     * @param x Preview the x coordinate on the diagram
-     * @param y Preview the y-coordinate on the diagram
+     * @param x Drawable the x coordinate on the diagram
+     * @param y Drawable the y-coordinate on the diagram
      */
     fun location(x: Float, y: Float, animate: Boolean = false) {
         zoomerHelper?.location(x, y, animate)
@@ -216,8 +216,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     /**
      * Scale to the specified scale. You don't have to worry about rotation degrees
      *
-     * @param focalX  Scale the x coordinate of the center point on the preview image
-     * @param focalY  Scale the y coordinate of the center point on the preview image
+     * @param focalX  Scale the x coordinate of the center point on the drawable image
+     * @param focalY  Scale the y coordinate of the center point on the drawable image
      */
     fun scale(scale: Float, focalX: Float, focalY: Float, animate: Boolean) {
         zoomerHelper?.scale(scale, focalX, focalY, animate)
@@ -305,14 +305,14 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     val imageSize: Size?
         get() = zoomerHelper?.imageSize
 
-    val previewSize: Size?
+    val drawableSize: Size?
         get() = zoomerHelper?.drawableSize
 
     fun getDrawMatrix(matrix: Matrix) = zoomerHelper?.getDrawMatrix(matrix)
 
     fun getDrawRect(rectF: RectF) = zoomerHelper?.getDrawRect(rectF)
 
-    /** Gets the area that the user can see on the preview (not affected by rotation) */
+    /** Gets the area that the user can see on the drawable (not affected by rotation) */
     fun getVisibleRect(rect: Rect) = zoomerHelper?.getVisibleRect(rect)
 
     fun touchPointToDrawablePoint(touchPoint: PointF): Point? {
@@ -525,10 +525,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private fun resetDrawableSize() {
         val host = host ?: return
         val zoomerHelper = zoomerHelper ?: return
-        val previewDrawable = host.container.getDrawable()
+        val drawable = host.container.getDrawable()
         zoomerHelper.drawableSize =
-            Size(previewDrawable?.intrinsicWidth ?: 0, previewDrawable?.intrinsicHeight ?: 0)
-        val sketchDrawable = previewDrawable?.findLastSketchDrawable()
+            Size(drawable?.intrinsicWidth ?: 0, drawable?.intrinsicHeight ?: 0)
+        val sketchDrawable = drawable?.findLastSketchDrawable()
         zoomerHelper.imageSize =
             Size(sketchDrawable?.imageInfo?.width ?: 0, sketchDrawable?.imageInfo?.height ?: 0)
     }
@@ -543,45 +543,45 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             logger.d(MODULE) { "Can't use Subsampling. View size error" }
             return null
         }
-        val previewDrawable = host.container.getDrawable()
-        val sketchDrawable = previewDrawable?.findLastSketchDrawable()?.takeIf { it !is Animatable }
+        val drawable = host.container.getDrawable()
+        val sketchDrawable = drawable?.findLastSketchDrawable()?.takeIf { it !is Animatable }
         if (sketchDrawable == null) {
             logger.d(MODULE) { "Can't use Subsampling. Drawable error" }
             return null
         }
 
-        val previewWidth = sketchDrawable.bitmapInfo.width
-        val previewHeight = sketchDrawable.bitmapInfo.height
+        val bitmapWidth = sketchDrawable.bitmapInfo.width
+        val bitmapHeight = sketchDrawable.bitmapInfo.height
         val imageWidth = sketchDrawable.imageInfo.width
         val imageHeight = sketchDrawable.imageInfo.height
         val mimeType = sketchDrawable.imageInfo.mimeType
         val key = sketchDrawable.requestKey
 
-        if (previewWidth >= imageWidth && previewHeight >= imageHeight) {
+        if (bitmapWidth >= imageWidth && bitmapHeight >= imageHeight) {
             logger.d(MODULE) {
-                "Don't need to use Subsampling. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+                "Don't need to use Subsampling. bitmapSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
-        if (!canUseSubsampling(imageWidth, imageHeight, previewWidth, previewHeight)) {
+        if (!canUseSubsampling(imageWidth, imageHeight, bitmapWidth, bitmapHeight)) {
             logger.d(MODULE) {
-                "Can't use Subsampling. previewSize error. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+                "Can't use Subsampling. bitmapSize error. bitmapSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
         if (ImageFormat.parseMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
-                "MimeType does not support Subsampling. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                    .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+                "MimeType does not support Subsampling. bitmapSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
 
         logger.d(MODULE) {
-            "Use Subsampling. previewSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                .format(previewWidth, previewHeight, imageWidth, imageHeight, mimeType, key)
+            "Use Subsampling. bitmapSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
         }
         return SubsamplingHelper(
             context = host.context,

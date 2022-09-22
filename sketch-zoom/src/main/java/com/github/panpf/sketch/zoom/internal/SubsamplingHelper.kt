@@ -49,7 +49,7 @@ internal class SubsamplingHelper(
     }
 
     private val tempDrawMatrix = Matrix()
-    private val tempPreviewVisibleRect = Rect()
+    private val tempDrawableVisibleRect = Rect()
     private val logger: Logger = sketch.logger
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate
@@ -132,18 +132,18 @@ internal class SubsamplingHelper(
             return
         }
 
-        val previewSize = zoomerHelper.drawableSize
+        val drawableSize = zoomerHelper.drawableSize
         val scaling = zoomerHelper.isScaling
         val drawMatrix = tempDrawMatrix.apply {
             zoomerHelper.getDrawMatrix(this)
         }
-        val previewVisibleRect = tempPreviewVisibleRect.apply {
+        val drawableVisibleRect = tempDrawableVisibleRect.apply {
             zoomerHelper.getVisibleRect(this)
         }
 
-        if (previewVisibleRect.isEmpty) {
+        if (drawableVisibleRect.isEmpty) {
             logger.w(MODULE) {
-                "refreshTiles. interrupted. previewVisibleRect is empty. previewVisibleRect=${previewVisibleRect}. $imageUri"
+                "refreshTiles. interrupted. drawableVisibleRect is empty. drawableVisibleRect=${drawableVisibleRect}. $imageUri"
             }
             tileManager?.clean()
             return
@@ -164,7 +164,7 @@ internal class SubsamplingHelper(
             return
         }
 
-        tileManager?.refreshTiles(previewSize, previewVisibleRect, drawMatrix)
+        tileManager?.refreshTiles(drawableSize, drawableVisibleRect, drawMatrix)
     }
 
     @MainThread
@@ -172,10 +172,10 @@ internal class SubsamplingHelper(
         requiredMainThread()
 
         if (destroyed) return
-        val previewSize = zoomerHelper.drawableSize
+        val drawableSize = zoomerHelper.drawableSize
         val drawMatrix = tempDrawMatrix
-        val previewVisibleRect = tempPreviewVisibleRect
-        tileManager?.onDraw(canvas, previewSize, previewVisibleRect, drawMatrix)
+        val drawableVisibleRect = tempDrawableVisibleRect
+        tileManager?.onDraw(canvas, drawableSize, drawableVisibleRect, drawMatrix)
     }
 
     @MainThread
@@ -196,11 +196,11 @@ internal class SubsamplingHelper(
     }
 
     fun eachTileList(action: (tile: Tile, load: Boolean) -> Unit) {
-        val previewSize = zoomerHelper.drawableSize.takeIf { !it.isEmpty } ?: return
-        val previewVisibleRect = tempPreviewVisibleRect.apply {
+        val drawableSize = zoomerHelper.drawableSize.takeIf { !it.isEmpty } ?: return
+        val drawableVisibleRect = tempDrawableVisibleRect.apply {
             zoomerHelper.getVisibleRect(this)
         }.takeIf { !it.isEmpty } ?: return
-        tileManager?.eachTileList(previewSize, previewVisibleRect, action)
+        tileManager?.eachTileList(drawableSize, drawableVisibleRect, action)
     }
 
     @MainThread

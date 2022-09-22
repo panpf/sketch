@@ -160,9 +160,9 @@ class TileUtilsTest {
     fun testFindSampleSize() {
         val imageSize = Size(9798, 6988)
 
-        val findSampleSize1: (Size, Size, Float) -> Int = { imageSize1, previewSize, scale ->
+        val findSampleSize1: (Size, Size, Float) -> Int = { imageSize1, drawableSize, scale ->
             findSampleSize(
-                imageSize1.width, imageSize1.height, previewSize.width, previewSize.height, scale
+                imageSize1.width, imageSize1.height, drawableSize.width, drawableSize.height, scale
             )
         }
 

@@ -95,15 +95,15 @@ internal class TileManager constructor(
     }
 
     @MainThread
-    fun refreshTiles(previewSize: Size, previewVisibleRect: Rect, drawMatrix: Matrix) {
+    fun refreshTiles(drawableSize: Size, drawableVisibleRect: Rect, drawMatrix: Matrix) {
         requiredMainThread()
 
         val zoomScale = drawMatrix.getScale().format(2)
         val sampleSize = findSampleSize(
             imageWidth = imageSize.width,
             imageHeight = imageSize.height,
-            previewWidth = previewSize.width,
-            previewHeight = previewSize.height,
+            drawableWidth = drawableSize.width,
+            drawableHeight = drawableSize.height,
             scale = zoomScale
         )
         if (sampleSize != lastSampleSize) {
@@ -121,23 +121,23 @@ internal class TileManager constructor(
             logger.w(SubsamplingHelper.MODULE) {
                 "refreshTiles. no tileList. " +
                         "imageSize=${imageSize}, " +
-                        "previewSize=$previewSize, " +
-                        "previewVisibleRect=${previewVisibleRect}, " +
+                        "drawableSize=$drawableSize, " +
+                        "drawableVisibleRect=${drawableVisibleRect}, " +
                         "zoomScale=$zoomScale, " +
                         "sampleSize=$lastSampleSize. " +
                         imageUri
             }
             return
         }
-        resetVisibleAndLoadRect(previewSize, previewVisibleRect)
+        resetVisibleAndLoadRect(drawableSize, drawableVisibleRect)
 
         logger.d(SubsamplingHelper.MODULE) {
             "refreshTiles. started. " +
                     "imageSize=${imageSize}, " +
                     "imageVisibleRect=$imageVisibleRect, " +
                     "imageLoadRect=$imageLoadRect, " +
-                    "previewSize=$previewSize, " +
-                    "previewVisibleRect=${previewVisibleRect}, " +
+                    "drawableSize=$drawableSize, " +
+                    "drawableVisibleRect=${drawableVisibleRect}, " +
                     "zoomScale=$zoomScale, " +
                     "sampleSize=$lastSampleSize. " +
                     imageUri
@@ -153,7 +153,7 @@ internal class TileManager constructor(
     }
 
     @MainThread
-    fun onDraw(canvas: Canvas, previewSize: Size, previewVisibleRect: Rect, drawMatrix: Matrix) {
+    fun onDraw(canvas: Canvas, drawableSize: Size, drawableVisibleRect: Rect, drawMatrix: Matrix) {
         requiredMainThread()
 
         val tileList = lastTileList
@@ -165,10 +165,10 @@ internal class TileManager constructor(
             }
             return
         }
-        resetVisibleAndLoadRect(previewSize, previewVisibleRect)
+        resetVisibleAndLoadRect(drawableSize, drawableVisibleRect)
         val targetScale = max(
-            (imageSize.width / previewSize.width.toFloat()),
-            (imageSize.height / previewSize.height.toFloat())
+            (imageSize.width / drawableSize.width.toFloat()),
+            (imageSize.height / drawableSize.height.toFloat())
         )
         canvas.withSave {
             canvas.concat(drawMatrix)
@@ -313,25 +313,25 @@ internal class TileManager constructor(
     }
 
     fun eachTileList(
-        previewSize: Size,
-        previewVisibleRect: Rect,
+        drawableSize: Size,
+        drawableVisibleRect: Rect,
         action: (tile: Tile, load: Boolean) -> Unit
     ) {
         val tileList = lastTileList ?: return
-        resetVisibleAndLoadRect(previewSize, previewVisibleRect)
+        resetVisibleAndLoadRect(drawableSize, drawableVisibleRect)
         tileList.forEach {
             action(it, it.srcRect.crossWith(imageLoadRect))
         }
     }
 
-    private fun resetVisibleAndLoadRect(previewSize: Size, previewVisibleRect: Rect) {
-        val previewScaled = imageSize.width / previewSize.width.toFloat()
+    private fun resetVisibleAndLoadRect(drawableSize: Size, drawableVisibleRect: Rect) {
+        val drawableScaled = imageSize.width / drawableSize.width.toFloat()
         imageVisibleRect.apply {
             set(
-                floor(previewVisibleRect.left * previewScaled).toInt(),
-                floor(previewVisibleRect.top * previewScaled).toInt(),
-                ceil(previewVisibleRect.right * previewScaled).toInt(),
-                ceil(previewVisibleRect.bottom * previewScaled).toInt()
+                floor(drawableVisibleRect.left * drawableScaled).toInt(),
+                floor(drawableVisibleRect.top * drawableScaled).toInt(),
+                ceil(drawableVisibleRect.right * drawableScaled).toInt(),
+                ceil(drawableVisibleRect.bottom * drawableScaled).toInt()
             )
         }
         // Increase the visible area as the loading area,

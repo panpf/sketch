@@ -79,15 +79,15 @@ internal fun initializeTileMap(imageSize: Size, tileMaxSize: Size): Map<Int, Lis
 internal fun findSampleSize(
     imageWidth: Int,
     imageHeight: Int,
-    previewWidth: Int,
-    previewHeight: Int,
+    drawableWidth: Int,
+    drawableHeight: Int,
     scale: Float
 ): Int {
-    require(canUseSubsampling(imageWidth, imageHeight, previewWidth, previewHeight)) {
-        "imageSize(${imageWidth}x${imageHeight}} and previewSize(${previewWidth}x${previewHeight}) must have the same aspect ratio)"
+    require(canUseSubsampling(imageWidth, imageHeight, drawableWidth, drawableHeight)) {
+        "imageSize(${imageWidth}x${imageHeight}} and drawableSize(${drawableWidth}x${drawableHeight}) must have the same aspect ratio)"
     }
 
-    val scaledWidthRatio = (imageWidth / (previewWidth * scale))
+    val scaledWidthRatio = (imageWidth / (drawableWidth * scale))
     var sampleSize = 1
     while (scaledWidthRatio >= sampleSize * 2) {
         sampleSize *= 2
@@ -103,9 +103,9 @@ internal fun Rect.crossWith(other: Rect): Boolean {
 }
 
 internal fun canUseSubsampling(
-    imageWidth: Int, imageHeight: Int, previewWidth: Int, previewHeight: Int
+    imageWidth: Int, imageHeight: Int, drawableWidth: Int, drawableHeight: Int
 ): Boolean {
     val imageRatio = (imageWidth / imageHeight.toFloat()).format(1)
-    val previewRatio = (previewWidth / previewHeight.toFloat()).format(1)
-    return abs(imageRatio - previewRatio).format(1) <= 0.1f
+    val drawableRatio = (drawableWidth / drawableHeight.toFloat()).format(1)
+    return abs(imageRatio - drawableRatio).format(1) <= 0.1f
 }

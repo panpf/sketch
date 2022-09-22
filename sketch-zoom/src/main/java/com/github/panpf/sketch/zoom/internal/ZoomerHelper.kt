@@ -217,10 +217,10 @@ internal class ZoomerHelper constructor(
     /*************************************** Interaction ******************************************/
 
     /**
-     * Locate to the location specified on the preview image. You don't have to worry about scaling and rotation
+     * Locate to the location specified on the drawable image. You don't have to worry about scaling and rotation
      *
-     * @param x Preview the x coordinate on the diagram
-     * @param y Preview the y-coordinate on the diagram
+     * @param x Drawable the x coordinate on the diagram
+     * @param y Drawable the y-coordinate on the diagram
      */
     fun location(x: Float, y: Float, animate: Boolean = false) {
         scaleDragHelper.location(x, y, animate)
@@ -330,7 +330,7 @@ internal class ZoomerHelper constructor(
 
     fun getDrawRect(rectF: RectF) = scaleDragHelper.getDrawRect(rectF)
 
-    /** Gets the area that the user can see on the preview (not affected by rotation) */
+    /** Gets the area that the user can see on the drawable (not affected by rotation) */
     fun getVisibleRect(rect: Rect) = scaleDragHelper.getVisibleRect(rect)
 
     fun touchPointToDrawablePoint(touchPoint: PointF): Point? {
