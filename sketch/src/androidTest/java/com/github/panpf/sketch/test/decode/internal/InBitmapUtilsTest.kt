@@ -376,25 +376,27 @@ class InBitmapUtilsTest {
         val bitmapPool = LruBitmapPool(10L * 1024 * 1024)
         val logger = Logger()
 
-        Assert.assertFalse(freeBitmap(bitmapPool, logger, null))
+        Assert.assertEquals(0, bitmapPool.size)
 
-        Assert.assertFalse(
-            freeBitmap(
-                bitmapPool,
-                logger,
-                Bitmap.createBitmap(100, 100, ARGB_8888).apply { recycle() }
-            )
+        freeBitmap(bitmapPool, logger, null)
+        Assert.assertEquals(0, bitmapPool.size)
+
+        freeBitmap(
+            bitmapPool,
+            logger,
+            Bitmap.createBitmap(100, 100, ARGB_8888).apply { recycle() }
         )
+        Assert.assertEquals(0, bitmapPool.size)
 
         val resources = getTestContext().resources
-        Assert.assertFalse(
-            freeBitmap(
-                bitmapPool,
-                logger,
-                BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)
-            )
+        freeBitmap(
+            bitmapPool,
+            logger,
+            BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)
         )
+        Assert.assertEquals(0, bitmapPool.size)
 
-        Assert.assertTrue(freeBitmap(bitmapPool, logger, Bitmap.createBitmap(100, 100, ARGB_8888)))
+        freeBitmap(bitmapPool, logger, Bitmap.createBitmap(100, 100, ARGB_8888))
+        Assert.assertTrue(bitmapPool.size > 0)
     }
 }

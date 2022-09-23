@@ -153,7 +153,9 @@ class LruBitmapPool constructor(
     }
 
     override fun exist(width: Int, height: Int, config: Bitmap.Config): Boolean {
-        return strategy.exist(width, height, config)
+        return synchronized(this) {
+            strategy.exist(width, height, config)
+        }
     }
 
     override fun trim(level: Int) {

@@ -21,6 +21,10 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.isAndSupportHardware
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 private const val MODULE = "InBitmapUtils"
 
@@ -128,24 +132,26 @@ fun setInBitmapForRegion(
     return true
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 fun freeBitmap(
     bitmapPool: BitmapPool,
     logger: Logger,
     bitmap: Bitmap?,
     caller: String? = null,
-): Boolean {
-    if (bitmap == null || bitmap.isRecycled) return false
-
-    val success = bitmapPool.put(bitmap, caller)
-    if (success) {
-        logger.d(MODULE) {
-            "freeBitmap. successful. $caller. ${bitmap.logString}"
-        }
-    } else {
-        bitmap.recycle()
-        logger.w(MODULE) {
-            "freeBitmap. failed. execute recycle. $caller. ${bitmap.logString}"
+) {
+    if (bitmap != null && !bitmap.isRecycled) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val success = bitmapPool.put(bitmap, caller)
+            if (success) {
+                logger.d(MODULE) {
+                    "freeBitmap. successful. $caller. ${bitmap.logString}"
+                }
+            } else {
+                bitmap.recycle()
+                logger.w(MODULE) {
+                    "freeBitmap. failed. execute recycle. $caller. ${bitmap.logString}"
+                }
+            }
         }
     }
-    return success
 }
