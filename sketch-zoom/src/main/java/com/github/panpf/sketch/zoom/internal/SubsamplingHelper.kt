@@ -21,6 +21,7 @@ import android.graphics.Matrix
 import android.graphics.Rect
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.Logger
@@ -41,7 +42,7 @@ internal class SubsamplingHelper constructor(
     private val zoomerHelper: ZoomerHelper,
     private val imageUri: String,
     private val imageInfo: ImageInfo,
-//    private val memoryCachePolicy: CachePolicy, todo memoryCachePolicy
+    private val memoryCachePolicy: CachePolicy,
     private val disallowReuseBitmap: Boolean,
     viewSize: Size,
 ) {
@@ -105,6 +106,7 @@ internal class SubsamplingHelper constructor(
                 sketch = sketch,
                 imageUri = imageUri,
                 imageSize = Size(imageInfo.width, imageInfo.height),
+                memoryCachePolicy = memoryCachePolicy,
                 disallowReuseBitmap = disallowReuseBitmap,
                 viewSize = viewSize,
                 decoder = tileDecoder,

@@ -34,7 +34,6 @@ import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleEventObserver
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.DisplayRequest
@@ -594,14 +593,14 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
                 .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
         }
 
-//        val memoryCachePolicy: CachePolicy
+        val memoryCachePolicy: CachePolicy
         val disallowReuseBitmap: Boolean
         val displayResult = SketchUtils.getResult(host.view)
         if (displayResult != null && displayResult is DisplayResult.Success && displayResult.request.key == key) {
-//            memoryCachePolicy = displayResult.request.memoryCachePolicy
+            memoryCachePolicy = displayResult.request.memoryCachePolicy
             disallowReuseBitmap = displayResult.request.disallowReuseBitmap
         } else {
-//            memoryCachePolicy = ENABLED
+            memoryCachePolicy = CachePolicy.ENABLED
             disallowReuseBitmap = false
         }
         return SubsamplingHelper(
@@ -611,7 +610,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             imageUri = sketchDrawable.imageUri,
             imageInfo = sketchDrawable.imageInfo,
             viewSize = viewContentSize,
-//            memoryCachePolicy = memoryCachePolicy,
+            memoryCachePolicy = memoryCachePolicy,
             disallowReuseBitmap = disallowReuseBitmap,
         ).apply {
             this@apply.showTileBounds = this@ZoomAbility.showTileBounds

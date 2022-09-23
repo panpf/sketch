@@ -27,6 +27,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.withSave
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.decode.internal.freeBitmap
@@ -49,6 +50,7 @@ internal class TileManager constructor(
     private val sketch: Sketch,
     private val imageUri: String,
     private val imageSize: Size,
+    private val memoryCachePolicy: CachePolicy,
     private val disallowReuseBitmap: Boolean,
     viewSize: Size,
     private val decoder: TileDecoder,
@@ -237,7 +239,11 @@ internal class TileManager constructor(
         }
 
         val memoryCacheKey = "${imageUri}_tile_${tile.srcRect}_${tile.inSampleSize}"
-        val cachedValue = memoryCache[memoryCacheKey]
+        val cachedValue = if (memoryCachePolicy.readEnabled) {
+            memoryCache[memoryCacheKey]
+        } else {
+            null
+        }
         if (cachedValue != null) {
             tile.countBitmap = cachedValue.countBitmap
             logger.d(SubsamplingHelper.MODULE) {
@@ -264,16 +270,18 @@ internal class TileManager constructor(
                             bitmapPool = sketch.bitmapPool,
                             disallowReuseBitmap = disallowReuseBitmap,
                         )
-                        val newCacheValue = MemoryCache.Value(
-                            countBitmap = newCountBitmap,
-                            imageUri = imageUri,
-                            requestKey = memoryCacheKey,
-                            requestCacheKey = memoryCacheKey,
-                            imageInfo = decoder.imageInfo,
-                            transformedList = null,
-                            extras = null,
-                        )
-                        memoryCache.put(memoryCacheKey, newCacheValue)
+                        if (memoryCachePolicy.writeEnabled) {
+                            val newCacheValue = MemoryCache.Value(
+                                countBitmap = newCountBitmap,
+                                imageUri = imageUri,
+                                requestKey = memoryCacheKey,
+                                requestCacheKey = memoryCacheKey,
+                                imageInfo = decoder.imageInfo,
+                                transformedList = null,
+                                extras = null,
+                            )
+                            memoryCache.put(memoryCacheKey, newCacheValue)
+                        }
                         tile.countBitmap = newCountBitmap
                         logger.d(SubsamplingHelper.MODULE) {
                             "loadTile. successful. $tile. $imageUri"
