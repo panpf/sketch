@@ -78,8 +78,8 @@ class RequestContextTest {
             countBitmap = CountBitmap(
                 cacheKey = "requestCacheKey",
                 bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-                logger = sketch.logger,
                 bitmapPool = sketch.bitmapPool,
+                disallowReuseBitmap = false,
             ),
             imageUri = "imageUri",
             requestKey = "requestKey",
@@ -94,8 +94,8 @@ class RequestContextTest {
             countBitmap = CountBitmap(
                 cacheKey = "requestCacheKey1",
                 bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-                logger = sketch.logger,
                 bitmapPool = sketch.bitmapPool,
+                disallowReuseBitmap = false,
             ),
             imageUri = "imageUri1",
             requestKey = "requestKey1",

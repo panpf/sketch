@@ -997,6 +997,30 @@ class DisplayRequestExecuteTest {
         } else {
             Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
         }
+
+        bitmapPool.clear()
+        Assert.assertTrue(bitmapPool.size == 0L)
+        request.newDisplayRequest {
+            disallowReuseBitmap(false)
+            transformations(
+                RoundedCornersTransformation(30f),
+                CircleCropTransformation(),
+                RotateTransformation(90),
+            )
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertTrue(bitmapPool.size > 0L)
+
+        bitmapPool.clear()
+        Assert.assertTrue(bitmapPool.size == 0L)
+        request.newDisplayRequest {
+            disallowReuseBitmap(true)
+            transformations(
+                RoundedCornersTransformation(30f),
+                CircleCropTransformation(),
+                RotateTransformation(90),
+            )
+        }.let { runBlocking { sketch.execute(it) } }
+        Assert.assertTrue(bitmapPool.size == 0L)
     }
 
     @Test

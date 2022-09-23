@@ -41,7 +41,11 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
             val transformResult = next.transform(sketch, request, inputBitmap)
             if (transformResult != null) {
                 if (transformResult.bitmap !== inputBitmap) {
-                    freeBitmap(sketch.bitmapPool, sketch.logger, inputBitmap, "transform:${next}")
+                    sketch.bitmapPool.freeBitmap(
+                        bitmap = inputBitmap,
+                        disallowReuseBitmap = request.disallowReuseBitmap,
+                        caller = "transform:${next}"
+                    )
                     sketch.logger.d("BitmapTransformationDecodeInterceptor") {
                         "transform. freeBitmap. bitmap=${inputBitmap.logString}. ${request.key}"
                     }

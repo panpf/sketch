@@ -22,6 +22,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.freeBitmap
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.fastGaussianBlur
@@ -64,7 +65,7 @@ class BlurTransformation constructor(
     ): TransformResult {
         // Transparent pixels cannot be blurred
         val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && input.hasAlpha()) {
-            val bitmap = sketch.bitmapPool.getOrCreate(input.width, input.height, input.safeConfig)
+            val bitmap = sketch.bitmapPool.getOrCreate(input.width, input.height, input.safeConfig, request.disallowReuseBitmap, "BlurTransformation")
             val canvas = Canvas(bitmap)
             canvas.drawColor(hasAlphaBitmapBgColor)
             canvas.drawBitmap(input, 0f, 0f, null)
@@ -79,10 +80,9 @@ class BlurTransformation constructor(
                 "transform. newBitmap. ${outBitmap.logString}. ${request.key}"
             }
             if (compatAlphaBitmap !== input) {
-                freeBitmap(
-                    bitmapPool = sketch.bitmapPool,
-                    logger = sketch.logger,
+                sketch.bitmapPool.freeBitmap(
                     bitmap = compatAlphaBitmap,
+                    disallowReuseBitmap = request.disallowReuseBitmap,
                     caller = "BlurTransformation"
                 )
                 sketch.logger.d(MODULE) {

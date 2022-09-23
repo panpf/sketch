@@ -25,6 +25,7 @@ import androidx.core.graphics.component2
 import androidx.core.graphics.component3
 import androidx.core.graphics.component4
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.internal.getOrCreate
 
 
 /**
@@ -40,13 +41,20 @@ internal fun LayerDrawable.getLastChildDrawable(): Drawable? {
  */
 internal fun Drawable.toNewBitmap(
     bitmapPool: BitmapPool,
+    disallowReuseBitmap: Boolean,
     preferredConfig: Bitmap.Config? = null
 ): Bitmap {
     val (oldLeft, oldTop, oldRight, oldBottom) = bounds
     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
 
     val config = preferredConfig ?: ARGB_8888
-    val bitmap: Bitmap = bitmapPool.getOrCreate(intrinsicWidth, intrinsicHeight, config)
+    val bitmap: Bitmap = bitmapPool.getOrCreate(
+        width = intrinsicWidth,
+        height = intrinsicHeight,
+        config = config,
+        disallowReuseBitmap = disallowReuseBitmap,
+        caller = "toNewBitmap"
+    )
     val canvas = Canvas(bitmap)
     draw(canvas)
 

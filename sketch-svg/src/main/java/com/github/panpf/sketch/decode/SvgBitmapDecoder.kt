@@ -27,6 +27,7 @@ import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedResize
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.realDecode
@@ -117,8 +118,13 @@ class SvgBitmapDecoder constructor(
         svg.setDocumentWidth("100%")
         svg.setDocumentHeight("100%")
 
-        val bitmap = sketch.bitmapPool
-            .getOrCreate(dstWidth, dstHeight, decodeConfig.inPreferredConfig.toSoftware())
+        val bitmap = sketch.bitmapPool.getOrCreate(
+            width = dstWidth,
+            height = dstHeight,
+            config = decodeConfig.inPreferredConfig.toSoftware(),
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            caller = "SvgBitmapDecoder"
+        )
         val canvas = Canvas(bitmap).apply {
             backgroundColor?.let {
                 drawColor(it)

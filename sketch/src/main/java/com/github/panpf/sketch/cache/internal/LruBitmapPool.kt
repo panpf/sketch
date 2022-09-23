@@ -144,14 +144,6 @@ class LruBitmapPool constructor(
             eraseColor(Color.TRANSPARENT)
         }
 
-    override fun getOrCreate(width: Int, height: Int, config: Bitmap.Config): Bitmap {
-        return get(width, height, config) ?: Bitmap.createBitmap(width, height, config).apply {
-            logger?.d(MODULE) {
-                "getOrCreate. new. ${this.logString}. ${strategy.logBitmap(width, height, config)}"
-            }
-        }
-    }
-
     override fun exist(width: Int, height: Int, config: Bitmap.Config): Boolean {
         return synchronized(this) {
             strategy.exist(width, height, config)

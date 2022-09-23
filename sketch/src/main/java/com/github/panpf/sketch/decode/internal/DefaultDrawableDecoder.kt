@@ -45,8 +45,8 @@ class DefaultDrawableDecoder(
         val countBitmap = CountBitmap(
             cacheKey = request.cacheKey,
             bitmap = decodeResult.bitmap,
-            logger = sketch.logger,
             bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = request.disallowReuseBitmap,
         )
         val countDrawable = SketchCountBitmapDrawable(
             resources = request.context.resources,

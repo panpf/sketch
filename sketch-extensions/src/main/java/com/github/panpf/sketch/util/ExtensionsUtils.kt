@@ -28,6 +28,7 @@ import androidx.core.graphics.component4
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import java.math.BigDecimal
 
 internal fun Float.format(newScale: Int): Float =
@@ -39,13 +40,19 @@ internal fun Float.format(newScale: Int): Float =
  */
 internal fun Drawable.toNewBitmap(
     bitmapPool: BitmapPool,
+    disallowReuseBitmap: Boolean,
     preferredConfig: Bitmap.Config? = null
 ): Bitmap {
     val (oldLeft, oldTop, oldRight, oldBottom) = bounds
     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
 
     val config = preferredConfig ?: ARGB_8888
-    val bitmap: Bitmap = bitmapPool.getOrCreate(intrinsicWidth, intrinsicHeight, config)
+    val bitmap: Bitmap = bitmapPool.getOrCreate(
+        width = intrinsicWidth,
+        height = intrinsicHeight,
+        config = config,
+        disallowReuseBitmap = disallowReuseBitmap
+    )
     val canvas = Canvas(bitmap)
     draw(canvas)
 

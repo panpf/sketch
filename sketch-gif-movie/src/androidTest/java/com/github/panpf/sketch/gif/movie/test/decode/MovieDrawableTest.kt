@@ -33,6 +33,8 @@ import androidx.fragment.app.Fragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.decode.internal.freeBitmap
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transform.PixelOpacity.TRANSLUCENT
@@ -61,13 +63,12 @@ class MovieDrawableTest {
         val movieDrawable =
             MovieDrawable(movie, bitmapCreator = object : MovieDrawable.BitmapCreator {
                 override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
-                    sketch.bitmapPool.getOrCreate(width, height, config)
+                    sketch.bitmapPool.getOrCreate(width, height, config, false)
 
                 override fun freeBitmap(bitmap: Bitmap) {
-                    com.github.panpf.sketch.decode.internal.freeBitmap(
-                        bitmapPool = sketch.bitmapPool,
-                        logger = sketch.logger,
+                    sketch.bitmapPool.freeBitmap(
                         bitmap = bitmap,
+                        disallowReuseBitmap = false,
                         caller = "MovieDrawable:recycle"
                     )
                 }
@@ -140,13 +141,12 @@ class MovieDrawableTest {
         val movieDrawable =
             MovieDrawable(movie, bitmapCreator = object : MovieDrawable.BitmapCreator {
                 override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
-                    sketch.bitmapPool.getOrCreate(width, height, config)
+                    sketch.bitmapPool.getOrCreate(width, height, config, false)
 
                 override fun freeBitmap(bitmap: Bitmap) {
-                    com.github.panpf.sketch.decode.internal.freeBitmap(
-                        bitmapPool = sketch.bitmapPool,
-                        logger = sketch.logger,
+                    sketch.bitmapPool.freeBitmap(
                         bitmap = bitmap,
+                        disallowReuseBitmap = false,
                         caller = "MovieDrawable:recycle"
                     )
                 }

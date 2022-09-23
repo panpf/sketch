@@ -21,6 +21,7 @@ import android.graphics.Paint
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
@@ -63,7 +64,11 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
         )
         val config = input.safeConfig
         val outBitmap = sketch.bitmapPool.getOrCreate(
-            resizeMapping.newWidth, resizeMapping.newHeight, config
+            width = resizeMapping.newWidth,
+            height = resizeMapping.newHeight,
+            config = config,
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            caller = "CircleCropTransformation"
         )
         val paint = Paint().apply {
             isAntiAlias = true

@@ -122,10 +122,10 @@ class BitmapUtilsTest {
         val bitmap = Bitmap.createBitmap(300, 200, Bitmap.Config.ARGB_8888).apply {
             Assert.assertEquals("Bitmap(300x200,ARGB_8888)", toShortInfoString())
         }
-        bitmap.scaled(1.5, bitmapPool).apply {
+        bitmap.scaled(1.5, bitmapPool, false).apply {
             Assert.assertEquals("Bitmap(450x300,ARGB_8888)", toShortInfoString())
         }
-        bitmap.scaled(0.5, bitmapPool).apply {
+        bitmap.scaled(0.5, bitmapPool, false).apply {
             Assert.assertEquals("Bitmap(150x100,ARGB_8888)", toShortInfoString())
         }
     }
@@ -143,7 +143,7 @@ class BitmapUtilsTest {
             Assert.assertNotSame(bitmap, this)
         }
 
-        val scaledBitmap = bitmap.scaled(0.5, bitmapPool)
+        val scaledBitmap = bitmap.scaled(0.5, bitmapPool, false)
         val scaledBitmapCorners = scaledBitmap.corners()
         fastGaussianBlur(scaledBitmap, 15).apply {
             Assert.assertSame(scaledBitmap, this)

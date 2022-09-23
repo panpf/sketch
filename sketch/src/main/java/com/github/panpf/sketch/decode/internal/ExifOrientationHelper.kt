@@ -113,12 +113,34 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
 //            else -> 1
 //        }
 
-    fun applyToBitmap(inBitmap: Bitmap, bitmapPool: BitmapPool? = null): Bitmap? {
-        return applyFlipAndRotation(inBitmap, isFlipped, rotationDegrees, bitmapPool, true)
+    fun applyToBitmap(
+        inBitmap: Bitmap,
+        bitmapPool: BitmapPool,
+        disallowReuseBitmap: Boolean
+    ): Bitmap? {
+        return applyFlipAndRotation(
+            inBitmap = inBitmap,
+            isFlipped = isFlipped,
+            rotationDegrees = rotationDegrees,
+            bitmapPool = bitmapPool,
+            disallowReuseBitmap = disallowReuseBitmap,
+            apply = true
+        )
     }
 
-    fun addToBitmap(inBitmap: Bitmap, bitmapPool: BitmapPool? = null): Bitmap? {
-        return applyFlipAndRotation(inBitmap, isFlipped, -rotationDegrees, bitmapPool, false)
+    fun addToBitmap(
+        inBitmap: Bitmap,
+        bitmapPool: BitmapPool,
+        disallowReuseBitmap: Boolean
+    ): Bitmap? {
+        return applyFlipAndRotation(
+            inBitmap = inBitmap,
+            isFlipped = isFlipped,
+            rotationDegrees = -rotationDegrees,
+            bitmapPool = bitmapPool,
+            disallowReuseBitmap = disallowReuseBitmap,
+            apply = false
+        )
     }
 
     fun applyToSize(size: Size): Size {
@@ -226,7 +248,8 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
         inBitmap: Bitmap,
         isFlipped: Boolean,
         rotationDegrees: Int,
-        bitmapPool: BitmapPool?,
+        bitmapPool: BitmapPool,
+        disallowReuseBitmap: Boolean,
         apply: Boolean,
     ): Bitmap? {
         val isRotated = abs(rotationDegrees % 360) != 0
@@ -244,8 +267,13 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
         val config = inBitmap.safeConfig
         val newWidth = newRect.width().toInt()
         val newHeight = newRect.height().toInt()
-        val outBitmap = bitmapPool?.getOrCreate(newWidth, newHeight, config)
-            ?: Bitmap.createBitmap(newWidth, newHeight, config)
+        val outBitmap = bitmapPool.getOrCreate(
+            width = newWidth,
+            height = newHeight,
+            config = config,
+            disallowReuseBitmap = disallowReuseBitmap,
+            caller = "applyFlipAndRotation"
+        )
 
         val canvas = Canvas(outBitmap)
         val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)

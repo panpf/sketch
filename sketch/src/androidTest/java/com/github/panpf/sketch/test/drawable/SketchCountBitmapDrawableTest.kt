@@ -43,8 +43,8 @@ class SketchCountBitmapDrawableTest {
             countBitmap = CountBitmap(
                 cacheKey = "requestCacheKey1",
                 bitmap = bitmap,
-                logger = sketch.logger,
                 bitmapPool = sketch.bitmapPool,
+                disallowReuseBitmap = false,
             ),
             imageUri = "imageUri1",
             requestKey = "requestKey1",
@@ -69,14 +69,14 @@ class SketchCountBitmapDrawableTest {
         val countBitmap = CountBitmap(
             cacheKey = "requestCacheKey1",
             bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-            logger = sketch.logger,
             bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = false,
         )
         val countBitmap2 = CountBitmap(
             cacheKey = "requestCacheKey2",
             bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-            logger = sketch.logger,
             bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = false,
         )
         val element1 = SketchCountBitmapDrawable(
             resources = context.resources,
@@ -153,8 +153,8 @@ class SketchCountBitmapDrawableTest {
         val countBitmap = CountBitmap(
             cacheKey = "requestCacheKey1",
             bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-            logger = sketch.logger,
             bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = false,
         )
         SketchCountBitmapDrawable(
             resources = context.resources,

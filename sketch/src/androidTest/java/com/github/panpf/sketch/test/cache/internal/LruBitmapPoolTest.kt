@@ -184,28 +184,6 @@ class LruBitmapPoolTest {
     }
 
     @Test
-    fun testGetOrCreate() {
-        LruBitmapPool(10L * 1024 * 1024).apply {
-            logger = Logger()
-
-            Assert.assertEquals("0B", size.formatFileSize())
-            Assert.assertFalse(exist(100, 100, ARGB_8888))
-            Assert.assertNotNull(getOrCreate(100, 100, ARGB_8888))
-            Assert.assertEquals("0B", size.formatFileSize())
-
-            put(Bitmap.createBitmap(100, 100, ARGB_8888).apply {
-                setPixel(50, 50, Color.RED)
-            })
-            Assert.assertTrue(exist(100, 100, ARGB_8888))
-            Assert.assertEquals("39.06KB", size.formatFileSize())
-            getOrCreate(100, 100, ARGB_8888).apply {
-                Assert.assertEquals(0, this.getPixel(50, 50))
-            }
-            Assert.assertEquals("0B", size.formatFileSize())
-        }
-    }
-
-    @Test
     fun testTrim() {
         LruBitmapPool(10L * 1024 * 1024).apply {
             logger = Logger()

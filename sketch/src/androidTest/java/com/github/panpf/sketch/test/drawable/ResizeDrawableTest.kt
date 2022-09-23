@@ -186,8 +186,8 @@ class ResizeDrawableTest {
             countBitmap = CountBitmap(
                 cacheKey = imageUri,
                 bitmap = Bitmap.createBitmap(100, 200, RGB_565),
-                logger = sketch.logger,
                 bitmapPool = sketch.bitmapPool,
+                disallowReuseBitmap = false,
             ),
             imageUri = imageUri,
             requestKey = imageUri,

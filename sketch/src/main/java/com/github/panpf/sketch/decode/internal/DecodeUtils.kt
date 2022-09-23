@@ -279,8 +279,16 @@ fun BitmapDecodeResult.appliedExifOrientation(
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val inputBitmap = bitmap
     val newBitmap =
-        exifOrientationHelper.applyToBitmap(inputBitmap, sketch.bitmapPool) ?: return this
-    freeBitmap(sketch.bitmapPool, sketch.logger, inputBitmap, "appliedExifOrientation")
+        exifOrientationHelper.applyToBitmap(
+            inBitmap = inputBitmap,
+            bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = request.disallowReuseBitmap
+        ) ?: return this
+    sketch.bitmapPool.freeBitmap(
+        bitmap = inputBitmap,
+        disallowReuseBitmap = request.disallowReuseBitmap,
+        caller = "appliedExifOrientation"
+    )
     sketch.logger.d("appliedExifOrientation") {
         "appliedExifOrientation. freeBitmap. bitmap=${inputBitmap.logString}. ${request.key}"
     }
@@ -313,7 +321,11 @@ fun BitmapDecodeResult.appliedResize(
             targetSize = Size(resize.width, resize.height)
         )
         if (sampleSize != 1) {
-            inputBitmap.scaled(1 / sampleSize.toDouble(), sketch.bitmapPool)
+            inputBitmap.scaled(
+                scale = 1 / sampleSize.toDouble(),
+                bitmapPool = sketch.bitmapPool,
+                disallowReuseBitmap = request.disallowReuseBitmap
+            )
         } else {
             null
         }
@@ -328,7 +340,13 @@ fun BitmapDecodeResult.appliedResize(
             resizeScale = scale,
         )
         val config = inputBitmap.safeConfig
-        sketch.bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config).apply {
+        sketch.bitmapPool.getOrCreate(
+            width = mapping.newWidth,
+            height = mapping.newHeight,
+            config = config,
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            caller = "appliedResize"
+        ).apply {
             Canvas(this).drawBitmap(inputBitmap, mapping.srcRect, mapping.destRect, null)
         }
     } else {
@@ -338,7 +356,11 @@ fun BitmapDecodeResult.appliedResize(
         sketch.logger.d("appliedResize") {
             "appliedResize. successful. ${newBitmap.logString}. ${imageInfo}. ${request.key}"
         }
-        freeBitmap(sketch.bitmapPool, sketch.logger, inputBitmap, "appliedResize")
+        sketch.bitmapPool.freeBitmap(
+            bitmap = inputBitmap,
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            caller = "appliedResize"
+        )
         sketch.logger.d("appliedResize") {
             "appliedResize. freeBitmap. bitmap=${inputBitmap.logString}. ${request.key}"
         }

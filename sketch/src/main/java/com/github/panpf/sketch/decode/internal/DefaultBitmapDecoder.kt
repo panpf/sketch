@@ -70,15 +70,13 @@ open class DefaultBitmapDecoder(
         val decodeOptions = decodeConfig.toBitmapOptions()
 
         // Set inBitmap from bitmap pool
-        if (!request.disallowReuseBitmap) {
-            setInBitmap(
-                bitmapPool = sketch.bitmapPool,
-                logger = sketch.logger,
-                options = decodeOptions,
-                imageSize = Size(imageInfo.width, imageInfo.height),
-                imageMimeType = imageInfo.mimeType
-            )
-        }
+        sketch.bitmapPool.setInBitmap(
+            options = decodeOptions,
+            imageSize = Size(imageInfo.width, imageInfo.height),
+            imageMimeType = imageInfo.mimeType,
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            caller = "DefaultBitmapDecoder:realDecodeFull"
+        )
         sketch.logger.d(MODULE) {
             "realDecodeFull. inBitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
         }
@@ -91,7 +89,11 @@ open class DefaultBitmapDecoder(
                 val message = "Bitmap decode error. Because inBitmap. ${request.key}"
                 sketch.logger.e(MODULE, throwable, message)
 
-                freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decode:error")
+                sketch.bitmapPool.freeBitmap(
+                    bitmap = inBitmap,
+                    disallowReuseBitmap = request.disallowReuseBitmap,
+                    caller = "decode:error"
+                )
                 sketch.logger.d(MODULE) {
                     "realDecodeFull. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. ${request.key}"
                 }
@@ -124,16 +126,14 @@ open class DefaultBitmapDecoder(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
     ): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
-        if (!request.disallowReuseBitmap) {
-            setInBitmapForRegion(
-                bitmapPool = sketch.bitmapPool,
-                logger = sketch.logger,
-                options = decodeOptions,
-                regionSize = Size(srcRect.width(), srcRect.height()),
-                imageMimeType = imageInfo.mimeType,
-                imageSize = Size(imageInfo.width, imageInfo.height)
-            )
-        }
+        sketch.bitmapPool.setInBitmapForRegion(
+            options = decodeOptions,
+            regionSize = Size(srcRect.width(), srcRect.height()),
+            imageMimeType = imageInfo.mimeType,
+            imageSize = Size(imageInfo.width, imageInfo.height),
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            caller = "DefaultBitmapDecoder:realDecodeRegion"
+        )
         sketch.logger.d(MODULE) {
             "realDecodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
         }
@@ -147,7 +147,11 @@ open class DefaultBitmapDecoder(
                     val message = "Bitmap decode region error. Because inBitmap. ${request.key}"
                     sketch.logger.e(MODULE, throwable, message)
 
-                    freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decodeRegion:error")
+                    sketch.bitmapPool.freeBitmap(
+                        bitmap = inBitmap,
+                        disallowReuseBitmap = request.disallowReuseBitmap,
+                        caller = "decodeRegion:error"
+                    )
                     sketch.logger.d(MODULE) {
                         "realDecodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. ${request.key}"
                     }

@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapFactory.Options
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
+import com.github.panpf.sketch.sketch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -78,8 +79,8 @@ class ExifOrientationTestFileHelper(
         sourceBitmap: Bitmap,
         orientation: Int
     ) {
-        val newBitmap =
-            ExifOrientationHelper(orientation).addToBitmap(sourceBitmap) ?: sourceBitmap
+        val newBitmap = ExifOrientationHelper(orientation)
+            .addToBitmap(sourceBitmap, context.sketch.bitmapPool, false) ?: sourceBitmap
         file.parentFile?.mkdirs()
         file.createNewFile()
         FileOutputStream(file).use {

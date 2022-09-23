@@ -24,32 +24,30 @@ import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.decode.internal.freeBitmap
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.setInBitmap
 import com.github.panpf.sketch.decode.internal.setInBitmapForRegion
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class InBitmapUtilsTest {
+class BitmapPoolUtilsTest {
 
     @Test
     fun testSetInBitmap() {
         val bitmapPool = LruBitmapPool(10L * 1024 * 1024)
-        val logger = Logger()
 
         bitmapPool.clear()
         BitmapFactory.Options().apply {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertFalse(
-                setInBitmap(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmap(
                     options = this,
                     imageSize = Size(0, 100),
                     imageMimeType = "image/jpeg"
@@ -64,9 +62,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertFalse(
-                setInBitmap(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmap(
                     options = this,
                     imageSize = Size(100, 0),
                     imageMimeType = "image/jpeg"
@@ -81,9 +77,7 @@ class InBitmapUtilsTest {
             BitmapFactory.Options().apply {
                 inPreferredConfig = HARDWARE
                 Assert.assertFalse(
-                    setInBitmap(
-                        bitmapPool = bitmapPool,
-                        logger = logger,
+                    bitmapPool.setInBitmap(
                         options = this,
                         imageSize = Size(100, 100),
                         imageMimeType = "image/jpeg"
@@ -98,9 +92,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertTrue(
-                setInBitmap(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmap(
                     options = this,
                     imageSize = Size(100, 100),
                     imageMimeType = "image/jpeg"
@@ -118,9 +110,7 @@ class InBitmapUtilsTest {
             Assert.assertFalse(inMutable)
             if (VERSION.SDK_INT >= 19) {
                 Assert.assertTrue(
-                    setInBitmap(
-                        bitmapPool = bitmapPool,
-                        logger = logger,
+                    bitmapPool.setInBitmap(
                         options = this,
                         imageSize = Size(200, 200),
                         imageMimeType = "image/jpeg"
@@ -130,9 +120,7 @@ class InBitmapUtilsTest {
                 Assert.assertTrue(inMutable)
             } else {
                 Assert.assertFalse(
-                    setInBitmap(
-                        bitmapPool = bitmapPool,
-                        logger = logger,
+                    bitmapPool.setInBitmap(
                         options = this,
                         imageSize = Size(200, 200),
                         imageMimeType = "image/jpeg"
@@ -148,9 +136,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertFalse(
-                setInBitmap(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmap(
                     options = this,
                     imageSize = Size(100, 100),
                     imageMimeType = "image/jpeg"
@@ -166,9 +152,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertTrue(
-                setInBitmap(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmap(
                     options = this,
                     imageSize = Size(100, 100),
                     imageMimeType = "image/jpeg"
@@ -186,9 +170,7 @@ class InBitmapUtilsTest {
             Assert.assertFalse(inMutable)
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 Assert.assertTrue(
-                    setInBitmap(
-                        bitmapPool = bitmapPool,
-                        logger = logger,
+                    bitmapPool.setInBitmap(
                         options = this,
                         imageSize = Size(200, 200),
                         imageMimeType = "image/jpeg"
@@ -198,9 +180,7 @@ class InBitmapUtilsTest {
                 Assert.assertTrue(inMutable)
             } else {
                 Assert.assertFalse(
-                    setInBitmap(
-                        bitmapPool = bitmapPool,
-                        logger = logger,
+                    bitmapPool.setInBitmap(
                         options = this,
                         imageSize = Size(200, 200),
                         imageMimeType = "image/jpeg"
@@ -218,9 +198,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertFalse(
-                setInBitmap(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmap(
                     options = this,
                     imageSize = Size(300, 300),
                     imageMimeType = "image/jpeg"
@@ -234,16 +212,13 @@ class InBitmapUtilsTest {
     @Test
     fun testSetInBitmapForRegion() {
         val bitmapPool = LruBitmapPool(10L * 1024 * 1024)
-        val logger = Logger()
 
         bitmapPool.clear()
         BitmapFactory.Options().apply {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertFalse(
-                setInBitmapForRegion(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmapForRegion(
                     options = this,
                     regionSize = Size(0, 100),
                     imageMimeType = "image/jpeg",
@@ -259,9 +234,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertFalse(
-                setInBitmapForRegion(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmapForRegion(
                     options = this,
                     regionSize = Size(100, 0),
                     imageMimeType = "image/jpeg",
@@ -279,9 +252,7 @@ class InBitmapUtilsTest {
                 Assert.assertNull(inBitmap)
                 Assert.assertFalse(inMutable)
                 Assert.assertFalse(
-                    setInBitmapForRegion(
-                        bitmapPool = bitmapPool,
-                        logger = logger,
+                    bitmapPool.setInBitmapForRegion(
                         options = this,
                         regionSize = Size(100, 100),
                         imageMimeType = "image/jpeg",
@@ -298,9 +269,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertTrue(
-                setInBitmapForRegion(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmapForRegion(
                     options = this,
                     regionSize = Size(100, 100),
                     imageMimeType = "image/jpeg",
@@ -317,9 +286,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertTrue(
-                setInBitmapForRegion(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmapForRegion(
                     options = this,
                     regionSize = Size(100, 100),
                     imageMimeType = "image/jpeg",
@@ -337,9 +304,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertTrue(
-                setInBitmapForRegion(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmapForRegion(
                     options = this,
                     regionSize = Size(200, 200),
                     imageMimeType = "image/jpeg",
@@ -357,9 +322,7 @@ class InBitmapUtilsTest {
             Assert.assertNull(inBitmap)
             Assert.assertFalse(inMutable)
             Assert.assertTrue(
-                setInBitmapForRegion(
-                    bitmapPool = bitmapPool,
-                    logger = logger,
+                bitmapPool.setInBitmapForRegion(
                     options = this,
                     regionSize = Size(300, 300),
                     imageMimeType = "image/jpeg",
@@ -372,31 +335,46 @@ class InBitmapUtilsTest {
     }
 
     @Test
+    fun testGetOrCreate() {
+        val bitmapPool = LruBitmapPool(10L * 1024 * 1024)
+
+        Assert.assertEquals("0B", bitmapPool.size.formatFileSize())
+        Assert.assertFalse(bitmapPool.exist(100, 100, ARGB_8888))
+        Assert.assertNotNull(bitmapPool.getOrCreate(100, 100, ARGB_8888))
+        Assert.assertEquals("0B", bitmapPool.size.formatFileSize())
+
+        val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
+        bitmapPool.put(bitmap)
+        Assert.assertTrue(bitmapPool.exist(100, 100, ARGB_8888))
+        Assert.assertEquals("39.06KB", bitmapPool.size.formatFileSize())
+        Assert.assertSame(bitmap, bitmapPool.getOrCreate(100, 100, ARGB_8888))
+        Assert.assertEquals("0B", bitmapPool.size.formatFileSize())
+
+        bitmapPool.put(bitmap)
+        Assert.assertTrue(bitmapPool.exist(100, 100, ARGB_8888))
+        Assert.assertEquals("39.06KB", bitmapPool.size.formatFileSize())
+        Assert.assertNotSame(bitmap, bitmapPool.getOrCreate(100, 100, ARGB_8888, disallowReuseBitmap = true))
+        Assert.assertEquals("39.06KB", bitmapPool.size.formatFileSize())
+    }
+
+    @Test
     fun testFree() {
         val bitmapPool = LruBitmapPool(10L * 1024 * 1024)
-        val logger = Logger()
 
         Assert.assertEquals(0, bitmapPool.size)
 
-        freeBitmap(bitmapPool, logger, null)
+        bitmapPool.freeBitmap(null)
         Assert.assertEquals(0, bitmapPool.size)
 
-        freeBitmap(
-            bitmapPool,
-            logger,
-            Bitmap.createBitmap(100, 100, ARGB_8888).apply { recycle() }
-        )
+        bitmapPool.freeBitmap(Bitmap.createBitmap(100, 100, ARGB_8888).apply { recycle() })
         Assert.assertEquals(0, bitmapPool.size)
 
         val resources = getTestContext().resources
-        freeBitmap(
-            bitmapPool,
-            logger,
-            BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)
-        )
+        bitmapPool.freeBitmap(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher))
+        Thread.sleep(100)
         Assert.assertEquals(0, bitmapPool.size)
 
-        freeBitmap(bitmapPool, logger, Bitmap.createBitmap(100, 100, ARGB_8888))
+        bitmapPool.freeBitmap(Bitmap.createBitmap(100, 100, ARGB_8888))
         Assert.assertTrue(bitmapPool.size > 0)
     }
 }

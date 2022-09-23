@@ -63,8 +63,11 @@ class XmlDrawableBitmapDecoder(
                 "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
             )
         }
-        val bitmap =
-            drawable.toNewBitmap(sketch.bitmapPool, request.bitmapConfig?.getConfig(MIME_TYPE))
+        val bitmap = drawable.toNewBitmap(
+            bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            preferredConfig = request.bitmapConfig?.getConfig(MIME_TYPE)
+        )
         val imageInfo =
             ImageInfo(bitmap.width, bitmap.height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
         sketch.logger.d(MODULE) {

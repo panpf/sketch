@@ -54,8 +54,11 @@ class ApkIconBitmapDecoder(
         packageInfo.applicationInfo.sourceDir = file.path
         packageInfo.applicationInfo.publicSourceDir = file.path
         val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
-        val bitmap =
-            drawable.toNewBitmap(sketch.bitmapPool, request.bitmapConfig?.getConfig(MIME_TYPE))
+        val bitmap = drawable.toNewBitmap(
+            bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            preferredConfig = request.bitmapConfig?.getConfig(MIME_TYPE)
+        )
         val imageInfo =
             ImageInfo(bitmap.width, bitmap.height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
         sketch.logger.d(MODULE) {

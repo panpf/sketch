@@ -21,6 +21,7 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.safeConfig
 
@@ -47,7 +48,13 @@ class RotateTransformation(val degrees: Int) : Transformation {
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888
         }
-        val result = sketch.bitmapPool.getOrCreate(newWidth, newHeight, config)
+        val result = sketch.bitmapPool.getOrCreate(
+            width = newWidth,
+            height = newHeight,
+            config = config,
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            caller = "RotateTransformation"
+        )
         matrix.postTranslate(-newRect.left, -newRect.top)
         val canvas = Canvas(result)
         val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)

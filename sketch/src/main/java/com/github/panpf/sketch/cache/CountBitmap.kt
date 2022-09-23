@@ -19,7 +19,6 @@ import android.graphics.Bitmap
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.logString
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.requiredMainThread
 
@@ -29,8 +28,8 @@ import com.github.panpf.sketch.util.requiredMainThread
 class CountBitmap constructor(
     val cacheKey: String,
     bitmap: Bitmap,
-    private val logger: Logger,
     private val bitmapPool: BitmapPool,
+    private val disallowReuseBitmap: Boolean,
 ) {
 
     companion object {
@@ -118,15 +117,15 @@ class CountBitmap constructor(
     private fun tryFree(caller: String, pending: Boolean) {
         val bitmap = this._bitmap
         if (bitmap == null) {
-            logger.w(MODULE, "Bitmap freed. $caller. ${toString()}")
+            bitmapPool.logger?.w(MODULE, "Bitmap freed. $caller. ${toString()}")
         } else if (isRecycled) {
             throw IllegalStateException("Bitmap recycled. $caller. ${toString()}")
         } else if (!pending && cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
             this._bitmap = null
-            freeBitmap(bitmapPool, logger, bitmap, caller)
-            logger.d(MODULE) { "freeBitmap. $caller. ${toString()}" }
+            bitmapPool.freeBitmap(bitmap, disallowReuseBitmap, caller)
+            bitmapPool.logger?.d(MODULE) { "freeBitmap. $caller. ${toString()}" }
         } else {
-            logger.d(MODULE) { "keep. $caller. ${toString()}" }
+            bitmapPool.logger?.d(MODULE) { "keep. $caller. ${toString()}" }
         }
     }
 }

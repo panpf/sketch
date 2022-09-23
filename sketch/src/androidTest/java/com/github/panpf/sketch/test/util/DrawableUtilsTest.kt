@@ -73,7 +73,7 @@ class DrawableUtilsTest {
         )
 
         Assert.assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
-        drawable.toNewBitmap(bitmapPool).apply {
+        drawable.toNewBitmap(bitmapPool, false).apply {
             Assert.assertEquals(Bitmap.Config.ARGB_8888, config)
             Assert.assertEquals("Bitmap(100x100,ARGB_8888)", toShortInfoString())
         }
@@ -81,7 +81,7 @@ class DrawableUtilsTest {
 
         drawable.setBounds(100, 100, 200, 200)
         Assert.assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
-        drawable.toNewBitmap(bitmapPool, Bitmap.Config.RGB_565).apply {
+        drawable.toNewBitmap(bitmapPool, false, Bitmap.Config.RGB_565).apply {
             Assert.assertEquals(Bitmap.Config.RGB_565, config)
             Assert.assertEquals("Bitmap(100x100,RGB_565)", toShortInfoString())
         }

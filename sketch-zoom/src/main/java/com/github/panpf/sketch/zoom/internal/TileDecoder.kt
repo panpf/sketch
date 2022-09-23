@@ -42,6 +42,7 @@ internal class TileDecoder internal constructor(
     sketch: Sketch,
     val imageUri: String,
     val imageInfo: ImageInfo,
+    private val disallowReuseBitmap: Boolean,
     private val dataSource: DataSource,
 ) {
 
@@ -51,7 +52,7 @@ internal class TileDecoder internal constructor(
     private val exifOrientationHelper: ExifOrientationHelper =
         ExifOrientationHelper(imageInfo.exifOrientation)
     private var _destroyed: Boolean = false
-    private var disableInBitmap: Boolean = false
+    private var inBitmapError: Boolean = false
     private val imageSize: Size = Size(imageInfo.width, imageInfo.height)
     private val addedImageSize: Size by lazy { exifOrientationHelper.addToSize(imageSize) }
 
@@ -85,14 +86,14 @@ internal class TileDecoder internal constructor(
         val decodeOptions = BitmapFactory.Options().apply {
             this.inSampleSize = inSampleSize
         }
-        if (!disableInBitmap) {
-            setInBitmapForRegion(
-                bitmapPool = bitmapPool,
-                logger = logger,
+        if (!inBitmapError) {
+            bitmapPool.setInBitmapForRegion(
                 options = decodeOptions,
                 regionSize = Size(newSrcRect.width(), newSrcRect.height()),
                 imageMimeType = imageInfo.mimeType,
-                imageSize = addedImageSize
+                imageSize = addedImageSize,
+                disallowReuseBitmap = disallowReuseBitmap,
+                caller = "tile:decodeRegion"
             )
         }
         logger.d(SubsamplingHelper.MODULE) {
@@ -105,12 +106,16 @@ internal class TileDecoder internal constructor(
             throwable.printStackTrace()
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
-                disableInBitmap = true
+                inBitmapError = true
                 logger.e(SubsamplingHelper.MODULE, throwable) {
                     "decodeRegion. Bitmap region decode inBitmap error. $imageUri"
                 }
 
-                freeBitmap(bitmapPool, logger, inBitmap, "tile:decodeRegion:error")
+                bitmapPool.freeBitmap(
+                    bitmap = inBitmap,
+                    disallowReuseBitmap = disallowReuseBitmap,
+                    caller = "tile:decodeRegion:error"
+                )
                 logger.d(SubsamplingHelper.MODULE) {
                     "decodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. $imageUri"
                 }
@@ -140,9 +145,9 @@ internal class TileDecoder internal constructor(
     private fun applyExifOrientation(bitmap: Bitmap): Bitmap {
         requiredWorkThread()
 
-        val newBitmap = exifOrientationHelper.applyToBitmap(bitmap, bitmapPool)
+        val newBitmap = exifOrientationHelper.applyToBitmap(bitmap, bitmapPool, disallowReuseBitmap)
         return if (newBitmap != null && newBitmap != bitmap) {
-            freeBitmap(bitmapPool, logger, bitmap, "tile:applyExifOrientation")
+            bitmapPool.freeBitmap(bitmap, disallowReuseBitmap, "tile:applyExifOrientation")
             logger.d(SubsamplingHelper.MODULE) {
                 "applyExifOrientation. freeBitmap. bitmap=${bitmap.logString}. $imageUri"
             }

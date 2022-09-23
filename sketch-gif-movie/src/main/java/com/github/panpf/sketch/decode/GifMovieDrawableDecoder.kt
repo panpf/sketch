@@ -29,6 +29,8 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.freeBitmap
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.drawable.MovieDrawable
@@ -82,13 +84,12 @@ class GifMovieDrawableDecoder constructor(
         val bitmapCreator = if (!request.disallowReuseBitmap) {
             object : MovieDrawable.BitmapCreator {
                 override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
-                    sketch.bitmapPool.getOrCreate(width, height, config)
+                    sketch.bitmapPool.getOrCreate(width, height, config, false)
 
                 override fun freeBitmap(bitmap: Bitmap) {
-                    com.github.panpf.sketch.decode.internal.freeBitmap(
-                        bitmapPool = sketch.bitmapPool,
-                        logger = sketch.logger,
+                    sketch.bitmapPool.freeBitmap(
                         bitmap = bitmap,
+                        disallowReuseBitmap = false,
                         caller = "MovieDrawable:recycle"
                     )
                     sketch.logger.d("GifMovieDrawableDecoder") {

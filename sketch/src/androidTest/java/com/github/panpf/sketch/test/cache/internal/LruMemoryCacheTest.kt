@@ -265,8 +265,8 @@ class LruMemoryCacheTest {
         val countBitmap = CountBitmap(
             cacheKey = imageUri,
             bitmap = bitmap,
-            logger = sketch.logger,
             bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = false,
         )
         val newCacheValue = MemoryCache.Value(
             countBitmap = countBitmap,

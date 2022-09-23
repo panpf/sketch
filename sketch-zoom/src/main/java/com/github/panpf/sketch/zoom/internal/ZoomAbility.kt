@@ -33,14 +33,16 @@ import androidx.lifecycle.Lifecycle.Event.ON_START
 import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleEventObserver
+import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.isSketchGlobalLifecycle
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.util.findLastSketchDrawable
 import com.github.panpf.sketch.viewability.AttachObserver
 import com.github.panpf.sketch.viewability.DrawObserver
@@ -591,13 +593,26 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             "Use Subsampling. bitmapSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
                 .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
         }
+
+//        val memoryCachePolicy: CachePolicy
+        val disallowReuseBitmap: Boolean
+        val displayResult = SketchUtils.getResult(host.view)
+        if (displayResult != null && displayResult is DisplayResult.Success && displayResult.request.key == key) {
+//            memoryCachePolicy = displayResult.request.memoryCachePolicy
+            disallowReuseBitmap = displayResult.request.disallowReuseBitmap
+        } else {
+//            memoryCachePolicy = ENABLED
+            disallowReuseBitmap = false
+        }
         return SubsamplingHelper(
             context = host.context,
             sketch = sketch,
             zoomerHelper = zoomerHelper,
             imageUri = sketchDrawable.imageUri,
             imageInfo = sketchDrawable.imageInfo,
-            viewSize = viewContentSize
+            viewSize = viewContentSize,
+//            memoryCachePolicy = memoryCachePolicy,
+            disallowReuseBitmap = disallowReuseBitmap,
         ).apply {
             this@apply.showTileBounds = this@ZoomAbility.showTileBounds
             this@apply.showTileBounds = this@ZoomAbility.showTileBounds
@@ -614,10 +629,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             ?: host?.context.getLifecycle()
     }
 
-    override fun onRequestError(request: DisplayRequest, result: Error) {
+    override fun onRequestError(request: DisplayRequest, result: DisplayResult.Error) {
     }
 
-    override fun onRequestSuccess(request: DisplayRequest, result: Success) {
+    override fun onRequestSuccess(request: DisplayRequest, result: DisplayResult.Success) {
     }
 
     override fun setImageMatrix(imageMatrix: Matrix?): Boolean {

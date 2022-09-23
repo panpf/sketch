@@ -116,15 +116,13 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory(true)
             val decodeOptions = request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
                 .toBitmapOptions()
-            if (!request.disallowReuseBitmap) {
-                setInBitmap(
-                    bitmapPool = sketch.bitmapPool,
-                    logger = sketch.logger,
-                    options = decodeOptions,
-                    imageSize = Size(cacheImageInfo.width, cacheImageInfo.height),
-                    imageMimeType = ImageFormat.PNG.mimeType
-                )
-            }
+            sketch.bitmapPool.setInBitmap(
+                options = decodeOptions,
+                imageSize = Size(cacheImageInfo.width, cacheImageInfo.height),
+                imageMimeType = ImageFormat.PNG.mimeType,
+                disallowReuseBitmap = request.disallowReuseBitmap,
+                caller = "BitmapResultCacheDecodeInterceptor:readCache"
+            )
             sketch.logger.d(MODULE) {
                 "read. inBitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
             }
@@ -136,7 +134,11 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                     val message = "Bitmap decode error. Because inBitmap. ${request.key}"
                     sketch.logger.e(MODULE, throwable, message)
 
-                    freeBitmap(sketch.bitmapPool, sketch.logger, inBitmap, "decode:error")
+                    sketch.bitmapPool.freeBitmap(
+                        bitmap = inBitmap,
+                        disallowReuseBitmap = request.disallowReuseBitmap,
+                        caller = "decode:error"
+                    )
                     sketch.logger.d(MODULE) {
                         "read. freeBitmap. inBitmap error. bitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
                     }

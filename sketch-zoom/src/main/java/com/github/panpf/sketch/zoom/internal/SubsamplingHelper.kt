@@ -35,12 +35,14 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class SubsamplingHelper(
+internal class SubsamplingHelper constructor(
     private val context: Context,
     private val sketch: Sketch,
     private val zoomerHelper: ZoomerHelper,
     private val imageUri: String,
     private val imageInfo: ImageInfo,
+//    private val memoryCachePolicy: CachePolicy, todo memoryCachePolicy
+    private val disallowReuseBitmap: Boolean,
     viewSize: Size,
 ) {
 
@@ -92,11 +94,18 @@ internal class SubsamplingHelper(
             val dataSource = withContext(Dispatchers.IO) {
                 sketch.components.newFetcher(LoadRequest(context, imageUri)).fetch()
             }.dataSource
-            val tileDecoder = TileDecoder(sketch, imageUri, imageInfo, dataSource)
+            val tileDecoder = TileDecoder(
+                sketch = sketch,
+                imageUri = imageUri,
+                imageInfo = imageInfo,
+                disallowReuseBitmap = disallowReuseBitmap,
+                dataSource = dataSource
+            )
             tileManager = TileManager(
                 sketch = sketch,
                 imageUri = imageUri,
                 imageSize = Size(imageInfo.width, imageInfo.height),
+                disallowReuseBitmap = disallowReuseBitmap,
                 viewSize = viewSize,
                 decoder = tileDecoder,
                 subsamplingHelper = this@SubsamplingHelper

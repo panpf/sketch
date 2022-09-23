@@ -21,6 +21,7 @@ import android.graphics.Matrix
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import kotlin.math.ceil
 
 internal val Bitmap.allocationByteCountCompat: Int
@@ -64,11 +65,21 @@ internal fun getBitmapByteSize(width: Int, height: Int, config: Bitmap.Config?):
 internal fun Bitmap.Config.isAndSupportHardware(): Boolean =
     VERSION.SDK_INT >= VERSION_CODES.O && this == Bitmap.Config.HARDWARE
 
-internal fun Bitmap.scaled(scale: Double, bitmapPool: BitmapPool): Bitmap {
+internal fun Bitmap.scaled(
+    scale: Double,
+    bitmapPool: BitmapPool,
+    disallowReuseBitmap: Boolean
+): Bitmap {
     val config = this.safeConfig
     val scaledWidth = ceil(width * scale).toInt()
     val scaledHeight = ceil(height * scale).toInt()
-    val newBitmap = bitmapPool.getOrCreate(scaledWidth, scaledHeight, config)
+    val newBitmap = bitmapPool.getOrCreate(
+        width = scaledWidth,
+        height = scaledHeight,
+        config = config,
+        disallowReuseBitmap = disallowReuseBitmap,
+        caller = "scaled"
+    )
     val canvas = Canvas(newBitmap)
     val matrix = Matrix().apply {
         postScale(scale.toFloat(), scale.toFloat())

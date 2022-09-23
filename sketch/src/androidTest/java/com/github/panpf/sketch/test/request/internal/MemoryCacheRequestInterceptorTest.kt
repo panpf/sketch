@@ -270,8 +270,8 @@ class MemoryCacheRequestInterceptorTest {
                         val countBitmap = CountBitmap(
                             cacheKey = chain.request.cacheKey,
                             bitmap = bitmap,
-                            logger = chain.sketch.logger,
                             bitmapPool = chain.sketch.bitmapPool,
+                            disallowReuseBitmap = false,
                         )
                         SketchCountBitmapDrawable(
                             resources = chain.sketch.context.resources,

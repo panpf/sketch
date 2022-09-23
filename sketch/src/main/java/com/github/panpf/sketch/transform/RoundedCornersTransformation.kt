@@ -25,6 +25,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import androidx.annotation.Px
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.safeConfig
 
@@ -87,7 +88,13 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
     ): TransformResult {
         val config = input.safeConfig
         val bitmapPool = sketch.bitmapPool
-        val newBitmap = bitmapPool.getOrCreate(input.width, input.height, config)
+        val newBitmap = bitmapPool.getOrCreate(
+            width = input.width,
+            height = input.height,
+            config = config,
+            disallowReuseBitmap = request.disallowReuseBitmap,
+            caller = "RoundedCornersTransformation"
+        )
         val paint = Paint().apply {
             isAntiAlias = true
             color = -0x10000

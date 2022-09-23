@@ -49,6 +49,7 @@ internal class TileManager constructor(
     private val sketch: Sketch,
     private val imageUri: String,
     private val imageSize: Size,
+    private val disallowReuseBitmap: Boolean,
     viewSize: Size,
     private val decoder: TileDecoder,
     private val subsamplingHelper: SubsamplingHelper,
@@ -260,8 +261,8 @@ internal class TileManager constructor(
                         val newCountBitmap = CountBitmap(
                             cacheKey = memoryCacheKey,
                             bitmap = bitmap,
-                            logger = sketch.logger,
                             bitmapPool = sketch.bitmapPool,
+                            disallowReuseBitmap = disallowReuseBitmap,
                         )
                         val newCacheValue = MemoryCache.Value(
                             countBitmap = newCountBitmap,
@@ -285,7 +286,7 @@ internal class TileManager constructor(
                     logger.w(SubsamplingHelper.MODULE) {
                         "loadTile. canceled. $tile. $imageUri"
                     }
-                    freeBitmap(bitmapPool, logger, bitmap, "tile:jobCanceled")
+                    bitmapPool.freeBitmap(bitmap, disallowReuseBitmap, "tile:jobCanceled")
                     logger.d(SubsamplingHelper.MODULE) {
                         "loadTile. freeBitmap. tile job canceled. bitmap=${bitmap.logString}. $imageUri"
                     }

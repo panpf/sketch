@@ -25,6 +25,7 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.safeConfig
 
@@ -50,7 +51,13 @@ class MaskTransformation(
         if (input.isMutable) {
             maskBitmap = input
         } else {
-            maskBitmap = bitmapPool.getOrCreate(input.width, input.height, input.safeConfig)
+            maskBitmap = bitmapPool.getOrCreate(
+                width = input.width,
+                height = input.height,
+                config = input.safeConfig,
+                disallowReuseBitmap = request.disallowReuseBitmap,
+                caller = "MaskTransformation"
+            )
             isNewBitmap = true
         }
 
