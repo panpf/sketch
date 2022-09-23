@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.sample.ui.photo.pexels.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -44,7 +45,11 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Boolean = false) {
+fun PhotoListContent(
+    photoPagingFlow: Flow<PagingData<Photo>>,
+    disabledCache: Boolean = false,
+    onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit
+) {
     val items = photoPagingFlow.collectAsLazyPagingItems()
     SwipeRefresh(
         state = SwipeRefreshState(items.loadState.refresh is LoadState.Loading),
@@ -62,7 +67,11 @@ fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Bo
                 contentType = { 1 }
             ) { index ->
                 val item = items[index]
-                item?.let { PhotoContent(index, it, disabledCache) }
+                item?.let {
+                    PhotoContent(index, it, disabledCache) { photo, index ->
+                        onClick(items.itemSnapshotList.items, photo, index)
+                    }
+                }
             }
 
             if (items.itemCount > 0) {
@@ -81,14 +90,22 @@ fun PhotoListContent(photoPagingFlow: Flow<PagingData<Photo>>, disabledCache: Bo
 }
 
 @Composable
-fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
+fun PhotoContent(
+    index: Int,
+    photo: Photo,
+    disabledCache: Boolean = false,
+    onClick: (photo: Photo, index: Int) -> Unit
+) {
     when (index % 3) {
         0 -> {
             com.github.panpf.sketch.compose.AsyncImage(
                 imageUri = photo.listThumbnailUrl,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f),
+                    .aspectRatio(1f)
+                    .clickable {
+                        onClick(photo, index)
+                    },
                 contentScale = ContentScale.Crop,
                 contentDescription = ""
             ) {
@@ -112,7 +129,10 @@ fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
                 imageUri = photo.listThumbnailUrl,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f),
+                    .aspectRatio(1f)
+                    .clickable {
+                        onClick(photo, index)
+                    },
                 contentScale = ContentScale.Crop,
                 contentDescription = ""
             ) {
@@ -150,7 +170,10 @@ fun PhotoContent(index: Int, photo: Photo, disabledCache: Boolean = false) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f),
+                    .aspectRatio(1f)
+                    .clickable {
+                        onClick(photo, index)
+                    },
                 contentScale = ContentScale.Crop,
                 contentDescription = ""
             )

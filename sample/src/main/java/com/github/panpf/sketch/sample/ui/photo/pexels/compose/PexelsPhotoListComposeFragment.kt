@@ -21,8 +21,14 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.github.panpf.sketch.sample.NavMainDirections
+import com.github.panpf.sketch.sample.model.ImageDetail
+import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
 import com.github.panpf.sketch.sample.ui.photo.pexels.PexelsPhotoListViewModel
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class PexelsPhotoListComposeFragment : ToolbarFragment() {
 
@@ -32,8 +38,31 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
         toolbar.title = "Photos On Compose"
         return ComposeView(requireContext()).apply {
             setContent {
-                PhotoListContent(viewModel.pagingFlow)
+                PhotoListContent(viewModel.pagingFlow) { items, _, index ->
+                    startImageDetail(items, index)
+                }
             }
         }
+    }
+
+    private fun startImageDetail(items: List<Photo>, position: Int) {
+        val imageList = items.mapIndexedNotNull { index, photo ->
+            if (index >= position - 50 && index <= position + 50) {
+                ImageDetail(
+                    position = index,
+                    originUrl = photo.originalUrl,
+                    mediumUrl = photo.detailPreviewUrl,
+                    thumbnailUrl = photo.listThumbnailUrl,
+                )
+            } else {
+                null
+            }
+        }
+        findNavController().navigate(
+            NavMainDirections.actionGlobalImageViewerPagerFragment(
+                Json.encodeToString(imageList),
+                position,
+            ),
+        )
     }
 }
