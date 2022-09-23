@@ -99,11 +99,11 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
                             onSuccess = { _, result ->
                                 val simplePalette = result.simplePalette
                                 val accentColor =
-                                    simplePalette?.lightVibrantSwatch?.rgb
+                                    simplePalette?.dominantSwatch?.rgb
+                                        ?: simplePalette?.lightVibrantSwatch?.rgb
                                         ?: simplePalette?.vibrantSwatch?.rgb
                                         ?: simplePalette?.lightMutedSwatch?.rgb
                                         ?: simplePalette?.mutedSwatch?.rgb
-                                        ?: simplePalette?.dominantSwatch?.rgb
                                         ?: simplePalette?.darkVibrantSwatch?.rgb
                                         ?: simplePalette?.darkMutedSwatch?.rgb
                                 changeButtonBg(
