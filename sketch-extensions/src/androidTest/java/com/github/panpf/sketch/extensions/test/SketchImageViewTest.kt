@@ -68,7 +68,7 @@ class SketchImageViewTest {
             .inflate(R.layout.attrs_test, null, false) as SketchImageView).apply {
             Assert.assertEquals(ImageOptions {
                 bitmapConfig(RGB_565)
-                crossfade(3000, true)
+                crossfade(3000, preferExactIntrinsicSize=true)
                 depth(LOCAL)
                 disallowReuseBitmap()
                 downloadCachePolicy(WRITE_ONLY)
