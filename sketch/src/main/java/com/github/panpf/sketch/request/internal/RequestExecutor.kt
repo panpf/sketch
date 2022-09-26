@@ -36,6 +36,7 @@ import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.stateimage.internal.toSketchStateDrawable
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
@@ -152,9 +153,10 @@ class RequestExecutor {
                 val exception: SketchException = throwable.asOrNull<SketchException>()
                     ?: UnknownException(throwable.toString(), throwable)
                 val errorResult: ImageResult.Error = when (lastRequest) {
-                    is DisplayRequest -> DisplayResult.Error(
-                        lastRequest, getErrorDrawable(sketch, lastRequest, exception), exception
-                    )
+                    is DisplayRequest -> {
+                        val errorDrawable = getErrorDrawable(sketch, lastRequest, exception)
+                        DisplayResult.Error(lastRequest, errorDrawable, exception)
+                    }
                     is LoadRequest -> LoadResult.Error(lastRequest, exception)
                     is DownloadRequest -> DownloadResult.Error(lastRequest, exception)
                     else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${lastRequest::class.java}")
@@ -279,9 +281,9 @@ class RequestExecutor {
         sketch: Sketch,
         request: ImageRequest,
         exception: SketchException
-    ): Drawable? = request.error?.let {
-        it.getDrawable(sketch, request, exception)?.tryToResizeDrawable(request)
-    } ?: request.placeholder?.let {
-        it.getDrawable(sketch, request, exception)?.tryToResizeDrawable(request)
-    }
+    ): Drawable? =
+        (request.error?.getDrawable(sketch, request, exception)
+            ?: request.placeholder?.getDrawable(sketch, request, exception))
+            ?.tryToResizeDrawable(request)
+            ?.toSketchStateDrawable()
 }

@@ -23,6 +23,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.LayerDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
+import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.getLastChildDrawable
@@ -59,6 +60,33 @@ class DrawableUtilsTest {
 
         LayerDrawable(arrayOf()).getLastChildDrawable().apply {
             Assert.assertEquals(null, this)
+        }
+
+
+        CrossfadeDrawable(
+            ColorDrawable(Color.BLUE),
+            ColorDrawable(Color.RED),
+        ).getLastChildDrawable().apply {
+            Assert.assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
+        }
+
+        CrossfadeDrawable(
+            ColorDrawable(Color.RED),
+            ColorDrawable(Color.GREEN),
+        ).getLastChildDrawable().apply {
+            Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
+        }
+
+        CrossfadeDrawable(null, null).getLastChildDrawable().apply {
+            Assert.assertEquals(null, this)
+        }
+
+        ColorDrawable(Color.GREEN).getLastChildDrawable().apply {
+            Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
+        }
+
+        ColorDrawable(Color.RED).getLastChildDrawable().apply {
+            Assert.assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
         }
     }
 

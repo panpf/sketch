@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.util
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
@@ -26,14 +27,23 @@ import androidx.core.graphics.component3
 import androidx.core.graphics.component4
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.getOrCreate
-
+import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 
 /**
- * Gets the last child Drawable
+ * Find the last child [Drawable] from the specified Drawable
  */
-internal fun LayerDrawable.getLastChildDrawable(): Drawable? {
-    val layerCount = numberOfLayers.takeIf { it > 0 } ?: return null
-    return getDrawable(layerCount - 1)
+@SuppressLint("RestrictedApi")
+fun Drawable.getLastChildDrawable(): Drawable? {
+    return when (val drawable = this) {
+        is CrossfadeDrawable -> {
+            drawable.end?.getLastChildDrawable()
+        }
+        is LayerDrawable -> {
+            val layerCount = drawable.numberOfLayers.takeIf { it > 0 } ?: return null
+            drawable.getDrawable(layerCount - 1).getLastChildDrawable()
+        }
+        else -> drawable
+    }
 }
 
 /**

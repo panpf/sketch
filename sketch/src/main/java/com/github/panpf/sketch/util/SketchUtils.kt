@@ -60,10 +60,7 @@ fun Drawable.findLastSketchDrawable(): SketchDrawable? {
     val drawable = this
     return when {
         drawable is SketchDrawable -> drawable
-        drawable is CrossfadeDrawable -> {
-            drawable.end?.findLastSketchDrawable()
-        }
-        drawable is LayerDrawable -> {
+        drawable is CrossfadeDrawable || drawable is LayerDrawable -> {
             drawable.getLastChildDrawable()?.findLastSketchDrawable()
         }
         drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {

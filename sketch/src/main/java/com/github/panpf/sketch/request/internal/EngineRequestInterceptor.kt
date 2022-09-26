@@ -31,6 +31,7 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.stateimage.internal.toSketchStateDrawable
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
@@ -65,6 +66,7 @@ class EngineRequestInterceptor : RequestInterceptor {
             val placeholderDrawable = request.placeholder
                 ?.getDrawable(sketch, request, null)
                 ?.tryToResizeDrawable(request)
+                ?.toSketchStateDrawable()
             it.onStart(placeholderDrawable)
         }
         return withContext(sketch.decodeTaskDispatcher) {
