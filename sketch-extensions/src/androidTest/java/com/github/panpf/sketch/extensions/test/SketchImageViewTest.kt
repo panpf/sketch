@@ -30,9 +30,9 @@ import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.Listeners
+import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.ProgressListeners
+import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL

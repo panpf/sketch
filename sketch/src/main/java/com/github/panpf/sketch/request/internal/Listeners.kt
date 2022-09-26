@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.request
+package com.github.panpf.sketch.request.internal
 
-class Listeners<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult.Success, ERROR_RESULT : ImageResult.Error>(
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult.Error
+import com.github.panpf.sketch.request.ImageResult.Success
+import com.github.panpf.sketch.request.Listener
+
+class Listeners<REQUEST : ImageRequest, SUCCESS_RESULT : Success, ERROR_RESULT : Error>(
     val listenerList: List<Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>>
 ) : Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT> {
 

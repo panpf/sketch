@@ -45,6 +45,10 @@ open class DefaultFetchResult constructor(
     override val dataSource: DataSource, override val mimeType: String?
 ) : FetchResult {
 
+    companion object {
+        val EMPTY = Bytes(ByteArray(0))
+    }
+
     override val headerBytes: Bytes by lazy {
         if (dataSource !is UnavailableDataSource) {
             val byteArray = ByteArray(1024)
@@ -60,10 +64,10 @@ open class DefaultFetchResult constructor(
                     }
                 )
             } else {
-                Bytes(ByteArray(0))
+                EMPTY
             }
         } else {
-            Bytes(ByteArray(0))
+            EMPTY
         }
     }
 

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.test.request
+package com.github.panpf.sketch.test.request.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.ProgressListeners
+import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.test.utils.DownloadProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.Dispatchers
