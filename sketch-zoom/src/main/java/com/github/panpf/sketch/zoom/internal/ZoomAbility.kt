@@ -40,9 +40,11 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.isSketchGlobalLifecycle
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.util.findLastSketchDrawable
+import com.github.panpf.sketch.util.getLastChildDrawable
 import com.github.panpf.sketch.viewability.AttachObserver
 import com.github.panpf.sketch.viewability.DrawObserver
 import com.github.panpf.sketch.viewability.DrawableObserver
@@ -557,6 +559,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val drawable = host.container.getDrawable()
         if (drawable == null) {
             logger.d(MODULE) { "Can't use Subsampling. Drawable is null" }
+            return null
+        }
+        if (drawable.getLastChildDrawable() is SketchStateDrawable) {
+            logger.d(MODULE) { "Can't use Subsampling. Drawable is StateDrawable" }
             return null
         }
         val drawableWidth = drawable.intrinsicWidth
