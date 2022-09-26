@@ -1,3 +1,21 @@
+# v3.1.0-beta03
+
+### sketch
+
+* fix: Fix BitmapPool will still be accessed when disallowReuseBitmap is true
+* remove: Remove fixedPrecision(), longImageClipPrecision(), fixedScale(), longImageScale()
+  functions
+* remove: Remove BitmapInfo
+* improve: Improve freeBitmap performance and reduce main thread lag
+* new: Now the final state Drawable implements the SketchStateDrawable interface
+
+### sketch-zoom
+
+* fix: Fix the bug that SketchZoomImageView will still access MemoryCache when the read or write of
+  memoryCachePolicy is not ENABLED
+* fix: Fixed a bug where SketchZoomImageView would also trigger subsampling when encountering a
+  state image
+
 # v3.1.0-beta02
 
 ### sketch
