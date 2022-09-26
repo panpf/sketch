@@ -25,7 +25,7 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransf
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resize.DefaultSizeResolver
+import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first

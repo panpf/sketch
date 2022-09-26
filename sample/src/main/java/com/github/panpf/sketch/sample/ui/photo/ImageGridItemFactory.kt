@@ -27,13 +27,13 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateDisplayImageOptions
+import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
+import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.fixedPrecision
-import com.github.panpf.sketch.resize.fixedScale
-import com.github.panpf.sketch.resize.longImageClipPrecision
-import com.github.panpf.sketch.resize.longImageScale
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
 import com.github.panpf.sketch.sample.model.Photo
@@ -143,17 +143,17 @@ class ImageGridItemFactory(val disabledCache: Boolean = false) :
             displayImage(data.listThumbnailUrl) {
                 resizeScale(
                     when (val value = prefsService.resizeScale.value) {
-                        "LongImageMode" -> longImageScale(
-                            Scale.valueOf(prefsService.longImageResizeScale.value),
-                            Scale.valueOf(prefsService.otherImageResizeScale.value)
+                        "LongImageMode" -> LongImageScaleDecider(
+                            longImage = Scale.valueOf(prefsService.longImageResizeScale.value),
+                            otherImage = Scale.valueOf(prefsService.otherImageResizeScale.value)
                         )
-                        else -> fixedScale(Scale.valueOf(value))
+                        else -> FixedScaleDecider(Scale.valueOf(value))
                     }
                 )
                 resizePrecision(
                     when (val value = prefsService.resizePrecision.value) {
-                        "LongImageClipMode" -> longImageClipPrecision(precision = SAME_ASPECT_RATIO)
-                        else -> fixedPrecision(Precision.valueOf(value))
+                        "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
+                        else -> FixedPrecisionDecider(Precision.valueOf(value))
                     }
                 )
             }

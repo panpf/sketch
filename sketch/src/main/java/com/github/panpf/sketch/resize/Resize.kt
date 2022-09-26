@@ -52,33 +52,33 @@ data class Resize constructor(
         height: Int,
         precision: Precision = Precision.EXACTLY,
         scale: Scale = Scale.CENTER_CROP
-    ) : this(width, height, fixedPrecision(precision), fixedScale(scale))
+    ) : this(width, height, FixedPrecisionDecider(precision), FixedScaleDecider(scale))
 
     constructor(
         width: Int,
         height: Int,
         precision: Precision,
-    ) : this(width, height, fixedPrecision(precision), fixedScale(Scale.CENTER_CROP))
+    ) : this(width, height, FixedPrecisionDecider(precision), FixedScaleDecider(Scale.CENTER_CROP))
 
     constructor(
         width: Int,
         height: Int,
         scale: Scale
-    ) : this(width, height, fixedPrecision(Precision.EXACTLY), fixedScale(scale))
+    ) : this(width, height, FixedPrecisionDecider(Precision.EXACTLY), FixedScaleDecider(scale))
 
     constructor(
         width: Int,
         height: Int,
         precision: PrecisionDecider,
         scale: Scale = Scale.CENTER_CROP
-    ) : this(width, height, precision, fixedScale(scale))
+    ) : this(width, height, precision, FixedScaleDecider(scale))
 
     constructor(
         width: Int,
         height: Int,
         precision: Precision = Precision.EXACTLY,
         scale: ScaleDecider
-    ) : this(width, height, fixedPrecision(precision), scale)
+    ) : this(width, height, FixedPrecisionDecider(precision), scale)
 
 
     constructor(
@@ -91,29 +91,39 @@ data class Resize constructor(
         size: Size,
         precision: Precision = Precision.EXACTLY,
         scale: Scale = Scale.CENTER_CROP
-    ) : this(size.width, size.height, fixedPrecision(precision), fixedScale(scale))
+    ) : this(size.width, size.height, FixedPrecisionDecider(precision), FixedScaleDecider(scale))
 
     constructor(
         size: Size,
         precision: Precision,
-    ) : this(size.width, size.height, fixedPrecision(precision), fixedScale(Scale.CENTER_CROP))
+    ) : this(
+        size.width,
+        size.height,
+        FixedPrecisionDecider(precision),
+        FixedScaleDecider(Scale.CENTER_CROP)
+    )
 
     constructor(
         size: Size,
         scale: Scale
-    ) : this(size.width, size.height, fixedPrecision(Precision.EXACTLY), fixedScale(scale))
+    ) : this(
+        size.width,
+        size.height,
+        FixedPrecisionDecider(Precision.EXACTLY),
+        FixedScaleDecider(scale)
+    )
 
     constructor(
         size: Size,
         precision: PrecisionDecider,
         scale: Scale = Scale.CENTER_CROP
-    ) : this(size.width, size.height, precision, fixedScale(scale))
+    ) : this(size.width, size.height, precision, FixedScaleDecider(scale))
 
     constructor(
         size: Size,
         precision: Precision = Precision.EXACTLY,
         scale: ScaleDecider
-    ) : this(size.width, size.height, fixedPrecision(precision), scale)
+    ) : this(size.width, size.height, FixedPrecisionDecider(precision), scale)
 
     val key: String by lazy {
         "Resize(${width}x$height,${precisionDecider.key},${scaleDecider.key})"

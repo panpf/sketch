@@ -18,33 +18,161 @@ package com.github.panpf.sketch.test.resize
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
+import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.resize.longImageScale
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class LongImageScaleDeciderTest {
+class ScaleDeciderTest {
 
     @Test
-    fun testCreateFunction() {
+    fun testFixedScaleDeciderCreateFunction() {
+        Assert.assertEquals(FixedScaleDecider(START_CROP), FixedScaleDecider(START_CROP))
+        Assert.assertEquals(FixedScaleDecider(END_CROP), FixedScaleDecider(END_CROP))
+        Assert.assertEquals(FixedScaleDecider(CENTER_CROP), FixedScaleDecider(CENTER_CROP))
+        Assert.assertEquals(FixedScaleDecider(FILL), FixedScaleDecider(FILL))
+    }
+
+    @Test
+    fun testFixedScaleDeciderGet() {
+        FixedScaleDecider(START_CROP).apply {
+            Assert.assertEquals(START_CROP, get(100, 48, 50, 50))
+        }
+        FixedScaleDecider(END_CROP).apply {
+            Assert.assertEquals(END_CROP, get(100, 48, 50, 50))
+        }
+    }
+
+    @Test
+    fun testFixedScaleDeciderAddExifOrientation() {
+        val exifOriNormal =
+            ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
+        val exifOri90 =
+            ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90)
+        val exifOri180 =
+            ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180)
+
+        FixedScaleDecider(START_CROP).apply {
+            Assert.assertEquals(
+                FixedScaleDecider(START_CROP),
+                addExifOrientation(exifOriNormal, Size(100, 48))
+            )
+        }
+        FixedScaleDecider(START_CROP).apply {
+            Assert.assertEquals(
+                FixedScaleDecider(END_CROP),
+                addExifOrientation(exifOri90, Size(100, 48))
+            )
+        }
+        FixedScaleDecider(START_CROP).apply {
+            Assert.assertEquals(
+                FixedScaleDecider(END_CROP),
+                addExifOrientation(exifOri180, Size(100, 48))
+            )
+        }
+
+        FixedScaleDecider(CENTER_CROP).apply {
+            Assert.assertEquals(
+                FixedScaleDecider(CENTER_CROP),
+                addExifOrientation(exifOriNormal, Size(100, 48))
+            )
+        }
+        FixedScaleDecider(CENTER_CROP).apply {
+            Assert.assertEquals(
+                FixedScaleDecider(CENTER_CROP),
+                addExifOrientation(exifOri90, Size(100, 48))
+            )
+        }
+        FixedScaleDecider(CENTER_CROP).apply {
+            Assert.assertEquals(
+                FixedScaleDecider(CENTER_CROP),
+                addExifOrientation(exifOri180, Size(100, 48))
+            )
+        }
+
+        FixedScaleDecider(END_CROP).apply {
+            Assert.assertEquals(
+                FixedScaleDecider(END_CROP),
+                addExifOrientation(exifOriNormal, Size(100, 48))
+            )
+        }
+        FixedScaleDecider(END_CROP).apply {
+            Assert.assertEquals(
+                FixedScaleDecider(START_CROP),
+                addExifOrientation(exifOri90, Size(100, 48))
+            )
+        }
+        FixedScaleDecider(END_CROP).apply {
+            Assert.assertEquals(
+                FixedScaleDecider(START_CROP),
+                addExifOrientation(exifOri180, Size(100, 48))
+            )
+        }
+    }
+
+    @Test
+    fun testFixedScaleDeciderKey() {
+        FixedScaleDecider(START_CROP).apply {
+            Assert.assertEquals("Fixed(START_CROP)", key)
+        }
+        FixedScaleDecider(END_CROP).apply {
+            Assert.assertEquals("Fixed(END_CROP)", key)
+        }
+    }
+
+    @Test
+    fun testFixedScaleDeciderToString() {
+        FixedScaleDecider(START_CROP).apply {
+            Assert.assertEquals("FixedScaleDecider(START_CROP)", toString())
+        }
+        FixedScaleDecider(END_CROP).apply {
+            Assert.assertEquals("FixedScaleDecider(END_CROP)", toString())
+        }
+    }
+
+    @Test
+    fun testFixedScaleDeciderEquals() {
+        val element1 = FixedScaleDecider(START_CROP)
+        val element11 = FixedScaleDecider(START_CROP)
+        val element2 = FixedScaleDecider(END_CROP)
+        val other = LongImageScaleDecider(END_CROP, CENTER_CROP)
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, other)
+    }
+
+    @Test
+    fun testFixedScaleDeciderHashCode() {
+        val element1 = FixedScaleDecider(START_CROP)
+        val element11 = FixedScaleDecider(START_CROP)
+        val element2 = FixedScaleDecider(END_CROP)
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+    }
+
+    @Test
+    fun testLongImageScaleDeciderCreateFunction() {
         Assert.assertEquals(
             LongImageScaleDecider(START_CROP, CENTER_CROP),
-            longImageScale(START_CROP, CENTER_CROP)
+            LongImageScaleDecider(START_CROP, CENTER_CROP)
         )
         Assert.assertEquals(
             LongImageScaleDecider(END_CROP, START_CROP),
-            longImageScale(END_CROP, START_CROP)
+            LongImageScaleDecider(END_CROP, START_CROP)
         )
     }
 
     @Test
-    fun testGet() {
+    fun testLongImageScaleDeciderGet() {
         LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
             Assert.assertEquals(CENTER_CROP, get(100, 50, 50, 50))
             Assert.assertEquals(START_CROP, get(100, 40, 50, 50))
@@ -56,7 +184,7 @@ class LongImageScaleDeciderTest {
     }
 
     @Test
-    fun testAddExifOrientation() {
+    fun testLongImageScaleDeciderAddExifOrientation() {
         val exifOriNormal =
             ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
         val exifOri90 =
@@ -85,7 +213,7 @@ class LongImageScaleDeciderTest {
     }
 
     @Test
-    fun testKey() {
+    fun testLongImageScaleDeciderKey() {
         LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
                 "LongImage(START_CROP,CENTER_CROP),Default(2.5,5.0))",
@@ -101,7 +229,7 @@ class LongImageScaleDeciderTest {
     }
 
     @Test
-    fun testToString() {
+    fun testLongImageScaleDeciderToString() {
         LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
                 "LongImageScaleDecider(longImage=START_CROP, otherImage=CENTER_CROP, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
@@ -117,7 +245,7 @@ class LongImageScaleDeciderTest {
     }
 
     @Test
-    fun testEquals() {
+    fun testLongImageScaleDeciderEquals() {
         val element1 = LongImageScaleDecider(START_CROP, CENTER_CROP)
         val element11 = LongImageScaleDecider(START_CROP, CENTER_CROP)
         val element2 = LongImageScaleDecider(END_CROP, CENTER_CROP)
@@ -161,7 +289,7 @@ class LongImageScaleDeciderTest {
     }
 
     @Test
-    fun testHashCode() {
+    fun testLongImageScaleDeciderHashCode() {
         val element1 = LongImageScaleDecider(START_CROP, CENTER_CROP)
         val element11 = LongImageScaleDecider(START_CROP, CENTER_CROP)
         val element2 = LongImageScaleDecider(END_CROP, CENTER_CROP)

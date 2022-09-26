@@ -45,8 +45,8 @@ import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
-import com.github.panpf.sketch.resize.DefaultSizeResolver
-import com.github.panpf.sketch.resize.DisplaySizeResolver
+import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -58,9 +58,9 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.resize.ViewSizeResolver
-import com.github.panpf.sketch.resize.fixedPrecision
-import com.github.panpf.sketch.resize.fixedScale
+import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
+import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.Target
@@ -526,8 +526,8 @@ interface ImageRequest {
          */
         open fun resize(
             size: Size,
-            precision: PrecisionDecider = fixedPrecision(EXACTLY),
-            scale: ScaleDecider = fixedScale(CENTER_CROP)
+            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
+            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
         ): Builder = apply {
             definedOptionsBuilder.resize(size, precision, scale)
         }
@@ -950,12 +950,12 @@ interface ImageRequest {
             }
             val resizePrecisionDecider = finalOptions.resizePrecisionDecider
                 ?: if (resizeSize == null || resizeSizeResolver is DefaultSizeResolver) {
-                    fixedPrecision(LESS_PIXELS)
+                    FixedPrecisionDecider(LESS_PIXELS)
                 } else {
-                    fixedPrecision(EXACTLY)
+                    FixedPrecisionDecider(EXACTLY)
                 }
             val resizeScaleDecider =
-                finalOptions.resizeScaleDecider ?: fixedScale(resolveResizeScale())
+                finalOptions.resizeScaleDecider ?: FixedScaleDecider(resolveResizeScale())
             val transformations = finalOptions.transformations
             val disallowReuseBitmap = finalOptions.disallowReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false

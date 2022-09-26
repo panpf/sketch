@@ -22,7 +22,70 @@ interface PrecisionDecider {
 
     val key: String
 
-    fun get(
+    fun get(imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int): Precision
+}
+
+
+/**
+ * Always return specified precision
+ */
+data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDecider {
+
+    override val key: String by lazy { "Fixed($precision)" }
+
+    override fun get(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
-    ): Precision
+    ): Precision {
+        return precision
+    }
+
+    override fun toString(): String {
+        return "FixedPrecisionDecider($precision)"
+    }
+}
+
+
+/**
+ * The long image uses the specified precision, use the '[Precision.LESS_PIXELS]' for others.
+ *
+ * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO].
+ */
+class LongImageClipPrecisionDecider constructor(
+    val precision: Precision = Precision.SAME_ASPECT_RATIO,
+    val longImageDecider: LongImageDecider = DefaultLongImageDecider(),
+) : PrecisionDecider {
+
+    init {
+        require(precision == Precision.EXACTLY || precision == Precision.SAME_ASPECT_RATIO) {
+            "precision must be EXACTLY or SAME_ASPECT_RATIO"
+        }
+    }
+
+    override val key: String by lazy { "LongImageClip($precision,${longImageDecider.key})" }
+
+    override fun get(
+        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+    ): Precision {
+        val isLongImage = longImageDecider
+            .isLongImage(imageWidth, imageHeight, resizeWidth, resizeHeight)
+        return if (isLongImage) precision else Precision.LESS_PIXELS
+    }
+
+    override fun toString(): String {
+        return "LongImageClipPrecisionDecider(precision=$precision, longImageDecider=$longImageDecider)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is LongImageClipPrecisionDecider) return false
+        if (precision != other.precision) return false
+        if (longImageDecider != other.longImageDecider) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = precision.hashCode()
+        result = 31 * result + longImageDecider.hashCode()
+        return result
+    }
 }

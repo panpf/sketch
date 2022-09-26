@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.test.resize
+package com.github.panpf.sketch.test.resize.internal
 
 import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
-import com.github.panpf.sketch.resize.ResizeMapping
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.resize.calculateResizeMapping
+import com.github.panpf.sketch.resize.internal.ResizeMapping
+import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

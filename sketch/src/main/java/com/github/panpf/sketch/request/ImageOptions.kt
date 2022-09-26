@@ -37,6 +37,8 @@ import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.isNotEmpty
 import com.github.panpf.sketch.http.merged
 import com.github.panpf.sketch.merged
+import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.PrecisionDecider
@@ -44,8 +46,6 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.resize.fixedPrecision
-import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
@@ -502,8 +502,8 @@ interface ImageOptions {
          */
         fun resize(
             size: Size,
-            precision: PrecisionDecider = fixedPrecision(EXACTLY),
-            scale: ScaleDecider = fixedScale(CENTER_CROP)
+            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
+            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
         ): Builder = apply {
             this.resizeSize = size
             this.resizePrecisionDecider = precision
@@ -522,13 +522,13 @@ interface ImageOptions {
             size: Size,
             precision: Precision = EXACTLY,
             scale: Scale = CENTER_CROP
-        ): Builder = resize(size, fixedPrecision(precision), fixedScale(scale))
+        ): Builder = resize(size, FixedPrecisionDecider(precision), FixedScaleDecider(scale))
 
         /**
          * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
          */
         fun resize(size: Size): Builder =
-            resize(size, fixedPrecision(EXACTLY), fixedScale(CENTER_CROP))
+            resize(size, FixedPrecisionDecider(EXACTLY), FixedScaleDecider(CENTER_CROP))
 
         /**
          * Set how to resize image
@@ -542,8 +542,8 @@ interface ImageOptions {
         fun resize(
             @Px width: Int,
             @Px height: Int,
-            precision: PrecisionDecider = fixedPrecision(EXACTLY),
-            scale: ScaleDecider = fixedScale(CENTER_CROP)
+            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
+            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
         ): Builder = resize(Size(width, height), precision, scale)
 
         /**
@@ -560,7 +560,8 @@ interface ImageOptions {
             @Px height: Int,
             precision: Precision = EXACTLY,
             scale: Scale = CENTER_CROP
-        ): Builder = resize(Size(width, height), fixedPrecision(precision), fixedScale(scale))
+        ): Builder =
+            resize(Size(width, height), FixedPrecisionDecider(precision), FixedScaleDecider(scale))
 
         /**
          * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
@@ -569,7 +570,11 @@ interface ImageOptions {
          * @param height Expected Bitmap height
          */
         fun resize(@Px width: Int, @Px height: Int): Builder =
-            resize(Size(width, height), fixedPrecision(EXACTLY), fixedScale(CENTER_CROP))
+            resize(
+                Size(width, height),
+                FixedPrecisionDecider(EXACTLY),
+                FixedScaleDecider(CENTER_CROP)
+            )
 
         /**
          * Set the resize size
@@ -595,7 +600,7 @@ interface ImageOptions {
          * Set the resize precision
          */
         fun resizePrecision(precision: Precision): Builder =
-            resizePrecision(fixedPrecision(precision))
+            resizePrecision(FixedPrecisionDecider(precision))
 
         /**
          * Set the resize scale
@@ -607,7 +612,7 @@ interface ImageOptions {
         /**
          * Set the resize scale
          */
-        fun resizeScale(scale: Scale): Builder = resizeScale(fixedScale(scale))
+        fun resizeScale(scale: Scale): Builder = resizeScale(FixedScaleDecider(scale))
 
         /**
          * Set the list of [Transformation]s to be applied to this request.

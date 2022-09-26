@@ -35,7 +35,7 @@ import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.calculateResizeMapping
+import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.safeConfig

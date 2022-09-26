@@ -25,7 +25,7 @@ import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.calculateResizeMapping
+import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.util.safeConfig
 import java.lang.Integer.min
 

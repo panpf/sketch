@@ -35,13 +35,13 @@ import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.resize.fixedPrecision
-import com.github.panpf.sketch.resize.fixedScale
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.Target
@@ -103,8 +103,8 @@ class TestRequest(
         preferQualityOverSpeed = true,
         resizeSize = null,
         resizeSizeResolver = null,
-        resizePrecisionDecider = fixedPrecision(EXACTLY),
-        resizeScaleDecider = fixedScale(FILL),
+        resizePrecisionDecider = FixedPrecisionDecider(EXACTLY),
+        resizeScaleDecider = FixedScaleDecider(FILL),
         transformations = null,
         disallowReuseBitmap = true,
         ignoreExifOrientation = true,

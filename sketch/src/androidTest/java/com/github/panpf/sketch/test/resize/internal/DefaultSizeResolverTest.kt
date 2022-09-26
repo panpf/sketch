@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.test.resize
+package com.github.panpf.sketch.test.resize.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.resize.DefaultSizeResolver
-import com.github.panpf.sketch.resize.DisplaySizeResolver
+import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking

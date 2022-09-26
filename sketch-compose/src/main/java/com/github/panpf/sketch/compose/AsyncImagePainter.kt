@@ -38,7 +38,7 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.resize.DefaultSizeResolver
+import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionDisplayTarget

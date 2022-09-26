@@ -15,12 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.resize
+package com.github.panpf.sketch.resize.internal
 
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
+import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume

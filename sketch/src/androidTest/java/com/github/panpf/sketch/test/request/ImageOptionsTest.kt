@@ -56,8 +56,6 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.resize.longImageClipPrecision
-import com.github.panpf.sketch.resize.longImageScale
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -1075,8 +1073,8 @@ class ImageOptionsTest {
 
             resize(
                 Size(100, 100),
-                longImageClipPrecision(SAME_ASPECT_RATIO),
-                longImageScale(START_CROP, END_CROP)
+                LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
+                LongImageScaleDecider(START_CROP, END_CROP)
             )
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
@@ -1087,7 +1085,7 @@ class ImageOptionsTest {
                 Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
             }
 
-            resize(Size(100, 100), precision = longImageClipPrecision(SAME_ASPECT_RATIO))
+            resize(Size(100, 100), precision = LongImageClipPrecisionDecider(SAME_ASPECT_RATIO))
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
                 Assert.assertEquals(
@@ -1097,7 +1095,7 @@ class ImageOptionsTest {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
             }
 
-            resize(Size(100, 100), scale = longImageScale(START_CROP, END_CROP))
+            resize(Size(100, 100), scale = LongImageScaleDecider(START_CROP, END_CROP))
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -1136,8 +1134,8 @@ class ImageOptionsTest {
             resize(
                 100,
                 100,
-                longImageClipPrecision(SAME_ASPECT_RATIO),
-                longImageScale(START_CROP, END_CROP)
+                LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
+                LongImageScaleDecider(START_CROP, END_CROP)
             )
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
@@ -1148,7 +1146,7 @@ class ImageOptionsTest {
                 Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
             }
 
-            resize(100, 100, precision = longImageClipPrecision(SAME_ASPECT_RATIO))
+            resize(100, 100, precision = LongImageClipPrecisionDecider(SAME_ASPECT_RATIO))
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
                 Assert.assertEquals(
@@ -1158,7 +1156,7 @@ class ImageOptionsTest {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
             }
 
-            resize(100, 100, scale = longImageScale(START_CROP, END_CROP))
+            resize(100, 100, scale = LongImageScaleDecider(START_CROP, END_CROP))
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -1251,7 +1249,7 @@ class ImageOptionsTest {
                 Assert.assertNull(resizePrecisionDecider)
             }
 
-            resizePrecision(longImageClipPrecision(EXACTLY))
+            resizePrecision(LongImageClipPrecisionDecider(EXACTLY))
             build().apply {
                 Assert.assertEquals(LongImageClipPrecisionDecider(EXACTLY), resizePrecisionDecider)
             }
@@ -1278,7 +1276,7 @@ class ImageOptionsTest {
                 Assert.assertNull(resizeScaleDecider)
             }
 
-            resizeScale(longImageScale(START_CROP, END_CROP))
+            resizeScale(LongImageScaleDecider(START_CROP, END_CROP))
             build().apply {
                 Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
             }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.test.resize
+package com.github.panpf.sketch.test.resize.internal
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,8 +26,8 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.resize.RealViewSizeResolver
-import com.github.panpf.sketch.resize.ViewSizeResolver
+import com.github.panpf.sketch.resize.internal.RealViewSizeResolver
+import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.test.ktx.getFragmentSync

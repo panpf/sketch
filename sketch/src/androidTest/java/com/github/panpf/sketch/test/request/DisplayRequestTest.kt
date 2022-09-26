@@ -59,8 +59,8 @@ import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.request.updateDisplayImageOptions
-import com.github.panpf.sketch.resize.DefaultSizeResolver
-import com.github.panpf.sketch.resize.DisplaySizeResolver
+import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
@@ -73,9 +73,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.resize.ViewSizeResolver
-import com.github.panpf.sketch.resize.longImageClipPrecision
-import com.github.panpf.sketch.resize.longImageScale
+import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -824,8 +822,8 @@ class DisplayRequestTest {
 
             resize(
                 Size(100, 100),
-                longImageClipPrecision(SAME_ASPECT_RATIO),
-                longImageScale(START_CROP, END_CROP)
+                LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
+                LongImageScaleDecider(START_CROP, END_CROP)
             )
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
@@ -836,7 +834,7 @@ class DisplayRequestTest {
                 Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
             }
 
-            resize(Size(100, 100), precision = longImageClipPrecision(SAME_ASPECT_RATIO))
+            resize(Size(100, 100), precision = LongImageClipPrecisionDecider(SAME_ASPECT_RATIO))
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
                 Assert.assertEquals(
@@ -846,7 +844,7 @@ class DisplayRequestTest {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
             }
 
-            resize(Size(100, 100), scale = longImageScale(START_CROP, END_CROP))
+            resize(Size(100, 100), scale = LongImageScaleDecider(START_CROP, END_CROP))
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -885,8 +883,8 @@ class DisplayRequestTest {
             resize(
                 100,
                 100,
-                longImageClipPrecision(SAME_ASPECT_RATIO),
-                longImageScale(START_CROP, END_CROP)
+                LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
+                LongImageScaleDecider(START_CROP, END_CROP)
             )
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
@@ -897,7 +895,7 @@ class DisplayRequestTest {
                 Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
             }
 
-            resize(100, 100, precision = longImageClipPrecision(SAME_ASPECT_RATIO))
+            resize(100, 100, precision = LongImageClipPrecisionDecider(SAME_ASPECT_RATIO))
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
                 Assert.assertEquals(
@@ -907,7 +905,7 @@ class DisplayRequestTest {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
             }
 
-            resize(100, 100, scale = longImageScale(START_CROP, END_CROP))
+            resize(100, 100, scale = LongImageScaleDecider(START_CROP, END_CROP))
             build().apply {
                 Assert.assertEquals(Size(100, 100), resizeSize)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -1079,7 +1077,7 @@ class DisplayRequestTest {
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
             }
 
-            resizePrecision(longImageClipPrecision(EXACTLY))
+            resizePrecision(LongImageClipPrecisionDecider(EXACTLY))
             build().apply {
                 Assert.assertEquals(LongImageClipPrecisionDecider(EXACTLY), resizePrecisionDecider)
             }
@@ -1138,7 +1136,7 @@ class DisplayRequestTest {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
             }
 
-            resizeScale(longImageScale(START_CROP, END_CROP))
+            resizeScale(LongImageScaleDecider(START_CROP, END_CROP))
             build().apply {
                 Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
             }
