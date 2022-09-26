@@ -112,7 +112,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
     @Nullable
     @Override
     public Bitmap get(int width, int height, @Nullable Bitmap.Config config) {
-        int size = BitmapUtilsKt.getBitmapByteSize(width, height, config);
+        int size = BitmapUtilsKt.calculateBitmapByteCount(width, height, config);
         Key bestKey = findBestKey(size, config);
 
         Bitmap result = groupedMap.get(bestKey);
@@ -137,7 +137,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     @Override
     public boolean exist(int width, int height, @Nullable Bitmap.Config config) {
-        int size = BitmapUtilsKt.getBitmapByteSize(width, height, config);
+        int size = BitmapUtilsKt.calculateBitmapByteCount(width, height, config);
         Key bestKey = findBestKey(size, config);
         return groupedMap.exist(bestKey);
     }
@@ -209,7 +209,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
     @NonNull
     @Override
     public String logBitmap(int width, int height, @Nullable Bitmap.Config config) {
-        int size = BitmapUtilsKt.getBitmapByteSize(width, height, config);
+        int size = BitmapUtilsKt.calculateBitmapByteCount(width, height, config);
         return getBitmapString(size, config);
     }
 

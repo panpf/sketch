@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.setting
 
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Bundle
@@ -27,11 +28,13 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.displayResult
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.ImageInfoDialogBinding
 import com.github.panpf.sketch.sample.ui.base.BindingDialogFragment
 import com.github.panpf.sketch.sample.util.format
+import com.github.panpf.sketch.util.calculateBitmapByteCount
 import com.github.panpf.sketch.util.findLastSketchDrawable
 import com.github.panpf.sketch.zoom.SketchZoomImageView
 import com.github.panpf.tools4j.io.ktx.formatFileSize
@@ -108,8 +111,19 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                     }
                 }.joinToString(separator = "\n")
 
-                drawableInfo = sketchDrawable.bitmapInfo.run {
-                    "${width}x${height}, ${config}, ${byteCount.toLong().formatFileSize()}"
+                val drawable = displayResult.drawable
+                drawableInfo = if (drawable is SketchCountBitmapDrawable) {
+                    "${drawable.bitmap.width}x${drawable.bitmap.height}, ${drawable.bitmap.config}, ${
+                        drawable.bitmap.byteCount.toLong().formatFileSize()
+                    }"
+                } else {
+                    "${drawable.intrinsicWidth}x${drawable.intrinsicHeight}, ${ARGB_8888}, ${
+                        calculateBitmapByteCount(
+                            drawable.intrinsicWidth,
+                            drawable.intrinsicHeight,
+                            ARGB_8888
+                        ).toLong().formatFileSize()
+                    }"
                 }
 
                 dataFromInfo = sketchDrawable.dataFrom.name

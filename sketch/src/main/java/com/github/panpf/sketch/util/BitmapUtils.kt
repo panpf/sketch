@@ -58,7 +58,7 @@ internal fun Bitmap.Config?.getBytesPerPixel(): Int {
 /**
  * The number of bytes required for calculation based on width, height, and configuration
  */
-internal fun getBitmapByteSize(width: Int, height: Int, config: Bitmap.Config?): Int {
+fun calculateBitmapByteCount(width: Int, height: Int, config: Bitmap.Config?): Int {
     return width * height * config.getBytesPerPixel()
 }
 
