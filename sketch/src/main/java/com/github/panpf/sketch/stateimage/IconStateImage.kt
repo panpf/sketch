@@ -23,6 +23,11 @@ import com.github.panpf.sketch.drawable.internal.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.
+ *
+ * Icons are centered and always the same size
+ */
 class IconStateImage private constructor(
     private val icon: DrawableFetcher,
     private val bg: Any?,

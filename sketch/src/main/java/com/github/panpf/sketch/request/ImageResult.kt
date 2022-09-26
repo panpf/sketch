@@ -17,6 +17,9 @@ package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Result of [ImageRequest]
+ */
 interface ImageResult {
 
     val request: ImageRequest

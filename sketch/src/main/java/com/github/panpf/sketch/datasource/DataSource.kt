@@ -24,6 +24,9 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
+/**
+ * Provides access to the image data.
+ */
 interface DataSource {
 
     val sketch: Sketch

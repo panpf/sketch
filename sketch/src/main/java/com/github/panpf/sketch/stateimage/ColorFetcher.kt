@@ -20,6 +20,9 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
 
+/**
+ * For getting the color
+ */
 interface ColorFetcher {
     fun getColor(context: Context): Int
 }
@@ -40,6 +43,9 @@ class IntColor(@ColorInt val color: Int) : ColorFetcher {
     override fun toString(): String = "IntColor($color)"
 }
 
+/**
+ * Get color from resource
+ */
 class ResColor(@ColorRes val resId: Int) : ColorFetcher {
 
     override fun getColor(context: Context): Int =

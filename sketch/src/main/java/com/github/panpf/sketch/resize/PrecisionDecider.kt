@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.resize
 
 /**
- * Decide which precision to use
+ * Determines which precision to use dynamically based on image size and resizing
  */
 interface PrecisionDecider {
 

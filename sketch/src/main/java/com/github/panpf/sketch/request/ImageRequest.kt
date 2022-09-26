@@ -102,17 +102,28 @@ interface ImageRequest {
     val parameters: Parameters?
 
 
-    /** Set headers for http requests */
+    /**
+     * Set headers for http requests
+     *
+     * @see com.github.panpf.sketch.http.HurlStack.getResponse
+     */
     val httpHeaders: HttpHeaders?
 
-    /** Http download cache policy */
+    /**
+     * Http download cache policy
+     *
+     * @see com.github.panpf.sketch.fetch.HttpUriFetcher
+     */
     val downloadCachePolicy: CachePolicy
+
 
     /**
      * Specify [Bitmap.Config] to use when creating the bitmap.
      * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val bitmapConfig: BitmapConfig?
 
@@ -120,6 +131,8 @@ interface ImageRequest {
      * [Bitmap]'s [ColorSpace]
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferredColorSpace]
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
      */
     @get:RequiresApi(VERSION_CODES.O)
     val colorSpace: ColorSpace?
@@ -135,37 +148,67 @@ interface ImageRequest {
      * IDCT method will be used instead.
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
      */
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val preferQualityOverSpeed: Boolean
 
-    /** The size of the desired bitmap */
+    /**
+     * The size of the desired bitmap
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
+     */
     val resize: Resize?
 
     /**
      * The size of the Bitmap expected to be finally loaded into memory is also affected by [resizePrecisionDecider] and [resizeScaleDecider]
      *
      * Applied to [android.graphics.BitmapFactory.Options.inSampleSize]
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val resizeSize: Size?
 
-    /** Lazy calculation of resize size. If resizeSize is null at runtime, size is calculated and assigned to resizeSize */
+    /**
+     * Lazy calculation of resize size. If resizeSize is null at runtime, size is calculated and assigned to resizeSize
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
+     */
     val resizeSizeResolver: SizeResolver?
 
-    /** Decide what Precision to use with [resizeSize] to calculate the size of the final Bitmap */
+    /**
+     * Decide what Precision to use with [resizeSize] to calculate the size of the final Bitmap
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
+     */
     val resizePrecisionDecider: PrecisionDecider
 
-    /** Which part of the original image to keep when [resizePrecisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO] */
+    /**
+     * Which part of the original image to keep when [resizePrecisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
+     */
     val resizeScaleDecider: ScaleDecider
 
-    /** The list of [Transformation]s to be applied to this request */
+    /**
+     * The list of [Transformation]s to be applied to this request
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
+     */
     val transformations: List<Transformation>?
 
-    /** Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap */
+    /**
+     * Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
+     */
     val disallowReuseBitmap: Boolean
 
     /**
      * Ignore Orientation property in file Exif info
+     *
+     * Only works on [LoadRequest] and [DisplayRequest]
      *
      * @see com.github.panpf.sketch.decode.internal.appliedExifOrientation
      */
@@ -174,28 +217,52 @@ interface ImageRequest {
     /**
      * Disk caching policy for Bitmaps affected by [resizeSize] or [transformations]
      *
+     * Only works on [LoadRequest] and [DisplayRequest]
+     *
      * @see com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
      */
     val resultCachePolicy: CachePolicy
 
 
-    /** Placeholder image when loading */
+    /**
+     * Placeholder image when loading
+     *
+     * Only works on [DisplayRequest]
+     */
     val placeholder: StateImage?
 
-    /** Image to display when loading fails */
+    /**
+     * Image to display when loading fails
+     *
+     * Only works on [DisplayRequest]
+     */
     val error: ErrorStateImage?
 
-    /** How the current image and the new image transition */
+    /**
+     * How the current image and the new image transition
+     *
+     * Only works on [DisplayRequest]
+     */
     val transitionFactory: Transition.Factory?
 
-    /** Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable */
+    /**
+     * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
+     *
+     * Only works on [DisplayRequest]
+     */
     val disallowAnimatedImage: Boolean
 
-    /** Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize] */
+    /**
+     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
+     *
+     * Only works on [DisplayRequest]
+     */
     val resizeApplyToDrawable: Boolean
 
     /**
      * Bitmap memory caching policy
+     *
+     * Only works on [DisplayRequest]
      *
      * @see com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
      */
@@ -390,6 +457,8 @@ interface ImageRequest {
         /**
          * Set [Bitmap.Config] to use when creating the bitmap.
          * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
             definedOptionsBuilder.bitmapConfig(bitmapConfig)
@@ -398,6 +467,8 @@ interface ImageRequest {
         /**
          * Set [Bitmap.Config] to use when creating the bitmap.
          * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun bitmapConfig(bitmapConfig: Bitmap.Config): Builder = apply {
             definedOptionsBuilder.bitmapConfig(bitmapConfig)
@@ -405,6 +476,8 @@ interface ImageRequest {
 
         /**
          * Set preferred [Bitmap]'s [ColorSpace]
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         @RequiresApi(VERSION_CODES.O)
         open fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
@@ -422,6 +495,8 @@ interface ImageRequest {
          * IDCT method will be used instead.
          *
          * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
         open fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): Builder =
@@ -432,6 +507,8 @@ interface ImageRequest {
 
         /**
          * Set how to resize image
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(resize: Resize?): Builder = apply {
             definedOptionsBuilder.resize(resize)
@@ -444,6 +521,8 @@ interface ImageRequest {
          * @param precision precision of size, default is [Precision.EXACTLY]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(
             size: Size,
@@ -460,6 +539,8 @@ interface ImageRequest {
          * @param precision precision of size, default is [Precision.EXACTLY]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(
             size: Size,
@@ -471,6 +552,8 @@ interface ImageRequest {
 
         /**
          * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(size: Size): Builder = apply {
             definedOptionsBuilder.resize(size)
@@ -484,12 +567,14 @@ interface ImageRequest {
          * @param precision precision of size, default is [Precision.EXACTLY]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(
             @Px width: Int,
             @Px height: Int,
-            precision: PrecisionDecider = fixedPrecision(EXACTLY),
-            scale: ScaleDecider = fixedScale(CENTER_CROP)
+            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
+            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
         ): Builder = apply {
             definedOptionsBuilder.resize(width, height, precision, scale)
         }
@@ -502,6 +587,8 @@ interface ImageRequest {
          * @param precision precision of size, default is [Precision.EXACTLY]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(
             @Px width: Int,
@@ -517,6 +604,8 @@ interface ImageRequest {
          *
          * @param width Expected Bitmap width
          * @param height Expected Bitmap height
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(@Px width: Int, @Px height: Int): Builder = apply {
             definedOptionsBuilder.resize(width, height)
@@ -524,6 +613,8 @@ interface ImageRequest {
 
         /**
          * Set the resize size
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resizeSize(size: Size?): Builder = apply {
             definedOptionsBuilder.resizeSize(size)
@@ -531,6 +622,8 @@ interface ImageRequest {
 
         /**
          * Set the resize size
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
             definedOptionsBuilder.resizeSize(width, height)
@@ -538,6 +631,8 @@ interface ImageRequest {
 
         /**
          * Set the [SizeResolver] to lazy resolve the requested size.
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
             this.resizeSizeResolver = sizeResolver
@@ -545,6 +640,8 @@ interface ImageRequest {
 
         /**
          * Set the resize precision
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
             definedOptionsBuilder.resizePrecision(precisionDecider)
@@ -559,6 +656,8 @@ interface ImageRequest {
 
         /**
          * Set the resize scale
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
             definedOptionsBuilder.resizeScale(scaleDecider)
@@ -566,6 +665,8 @@ interface ImageRequest {
 
         /**
          * Set the resize scale
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resizeScale(scale: Scale): Builder = apply {
             definedOptionsBuilder.resizeScale(scale)
@@ -573,6 +674,8 @@ interface ImageRequest {
 
         /**
          * Set the list of [Transformation]s to be applied to this request.
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun transformations(transformations: List<Transformation>?): Builder = apply {
             definedOptionsBuilder.transformations(transformations)
@@ -580,6 +683,8 @@ interface ImageRequest {
 
         /**
          * Set the list of [Transformation]s to be applied to this request.
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun transformations(vararg transformations: Transformation): Builder = apply {
             definedOptionsBuilder.transformations(transformations.toList())
@@ -587,6 +692,8 @@ interface ImageRequest {
 
         /**
          * Append the list of [Transformation]s to be applied to this request.
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun addTransformations(transformations: List<Transformation>): Builder = apply {
             definedOptionsBuilder.addTransformations(transformations)
@@ -594,6 +701,8 @@ interface ImageRequest {
 
         /**
          * Append the list of [Transformation]s to be applied to this request.
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun addTransformations(vararg transformations: Transformation): Builder = apply {
             definedOptionsBuilder.addTransformations(transformations.toList())
@@ -601,6 +710,8 @@ interface ImageRequest {
 
         /**
          * Bulk remove from current [Transformation] list
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun removeTransformations(transformations: List<Transformation>): Builder = apply {
             definedOptionsBuilder.removeTransformations(transformations)
@@ -608,6 +719,8 @@ interface ImageRequest {
 
         /**
          * Bulk remove from current [Transformation] list
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun removeTransformations(vararg transformations: Transformation): Builder = apply {
             definedOptionsBuilder.removeTransformations(transformations.toList())
@@ -615,6 +728,8 @@ interface ImageRequest {
 
         /**
          * Set disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun disallowReuseBitmap(disabled: Boolean? = true): Builder = apply {
             definedOptionsBuilder.disallowReuseBitmap(disabled)
@@ -622,6 +737,8 @@ interface ImageRequest {
 
         /**
          * Set ignore Orientation property in file Exif info
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun ignoreExifOrientation(ignore: Boolean? = true): Builder = apply {
             definedOptionsBuilder.ignoreExifOrientation(ignore)
@@ -629,6 +746,8 @@ interface ImageRequest {
 
         /**
          * Set disk caching policy for Bitmaps affected by [resizeSize] or [transformations]
+         *
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             definedOptionsBuilder.resultCachePolicy(cachePolicy)
@@ -637,6 +756,8 @@ interface ImageRequest {
 
         /**
          * Set placeholder image when loading
+         *
+         * Only works on [DisplayRequest]
          */
         open fun placeholder(stateImage: StateImage?): Builder = apply {
             definedOptionsBuilder.placeholder(stateImage)
@@ -644,6 +765,8 @@ interface ImageRequest {
 
         /**
          * Set Drawable placeholder image when loading
+         *
+         * Only works on [DisplayRequest]
          */
         open fun placeholder(drawable: Drawable): Builder = apply {
             definedOptionsBuilder.placeholder(drawable)
@@ -651,6 +774,8 @@ interface ImageRequest {
 
         /**
          * Set Drawable res placeholder image when loading
+         *
+         * Only works on [DisplayRequest]
          */
         open fun placeholder(@DrawableRes drawableResId: Int): Builder = apply {
             definedOptionsBuilder.placeholder(drawableResId)
@@ -660,6 +785,8 @@ interface ImageRequest {
          * Set image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
+         *
+         * Only works on [DisplayRequest]
          */
         open fun error(
             defaultStateImage: StateImage?,
@@ -672,6 +799,8 @@ interface ImageRequest {
          * Set Drawable image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
+         *
+         * Only works on [DisplayRequest]
          */
         open fun error(
             defaultDrawable: Drawable, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
@@ -683,6 +812,8 @@ interface ImageRequest {
          * Set Drawable res image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
+         *
+         * Only works on [DisplayRequest]
          */
         open fun error(
             defaultDrawableResId: Int, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
@@ -694,6 +825,8 @@ interface ImageRequest {
          * Set Drawable res image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
+         *
+         * Only works on [DisplayRequest]
          */
         open fun error(
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
@@ -703,6 +836,8 @@ interface ImageRequest {
 
         /**
          * Set the transition between the current image and the new image
+         *
+         * Only works on [DisplayRequest]
          */
         open fun transitionFactory(transitionFactory: Transition.Factory?): Builder = apply {
             definedOptionsBuilder.transitionFactory(transitionFactory)
@@ -710,6 +845,8 @@ interface ImageRequest {
 
         /**
          * Sets the transition that crossfade
+         *
+         * Only works on [DisplayRequest]
          */
         open fun crossfade(
             durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
@@ -727,6 +864,8 @@ interface ImageRequest {
 
         /**
          * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
+         *
+         * Only works on [DisplayRequest]
          */
         open fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
             definedOptionsBuilder.disallowAnimatedImage(disabled)
@@ -734,6 +873,8 @@ interface ImageRequest {
 
         /**
          * Set wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
+         *
+         * Only works on [DisplayRequest]
          */
         open fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder = apply {
             definedOptionsBuilder.resizeApplyToDrawable(resizeApplyToDrawable)
@@ -741,6 +882,8 @@ interface ImageRequest {
 
         /**
          * Set bitmap memory caching policy
+         *
+         * Only works on [DisplayRequest]
          */
         open fun memoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             definedOptionsBuilder.memoryCachePolicy(cachePolicy)
@@ -749,6 +892,8 @@ interface ImageRequest {
 
         /**
          * Merge the specified [ImageOptions] into the current [Builder]. Currently [Builder] takes precedence
+         *
+         * Only works on [DisplayRequest]
          */
         open fun merge(options: ImageOptions?): Builder = apply {
             definedOptionsBuilder.merge(options)
@@ -756,6 +901,8 @@ interface ImageRequest {
 
         /**
          * Set a final [ImageOptions] to complement properties not set
+         *
+         * Only works on [DisplayRequest]
          */
         open fun default(options: ImageOptions?): Builder = apply {
             this.defaultOptions = options

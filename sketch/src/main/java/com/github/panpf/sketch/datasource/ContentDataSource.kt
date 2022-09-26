@@ -23,6 +23,9 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
+/**
+ * Provides access to image data in content resources
+ */
 class ContentDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,

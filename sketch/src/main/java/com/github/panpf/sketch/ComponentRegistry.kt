@@ -346,10 +346,13 @@ fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
 }
 
 /**
- * Proxy [ComponentRegistry], no need to pass Sketch when using
+ * Use with [ImageRequest] and the global [ComponentRegistry]
  */
 class Components(private val sketch: Sketch, internal val registry: ComponentRegistry) {
 
+    /**
+     * Get the [ImageRequest] plus the global [RequestInterceptor] list
+     */
     fun getRequestInterceptorList(request: ImageRequest): List<RequestInterceptor> {
         val localRequestInterceptorList =
             request.componentRegistry?.requestInterceptorList?.takeIf { it.isNotEmpty() }
@@ -357,6 +360,9 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
             ?: registry.requestInterceptorList
     }
 
+    /**
+     * Get the [ImageRequest] plus the global [BitmapDecodeInterceptor] list
+     */
     fun getBitmapDecodeInterceptorList(request: ImageRequest): List<BitmapDecodeInterceptor> {
         val localBitmapDecodeInterceptorList =
             request.componentRegistry?.bitmapDecodeInterceptorList?.takeIf { it.isNotEmpty() }
@@ -364,6 +370,9 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
             ?: registry.bitmapDecodeInterceptorList
     }
 
+    /**
+     * Get the [ImageRequest] plus the global [DrawableDecodeInterceptor] list
+     */
     fun getDrawableDecodeInterceptorList(request: ImageRequest): List<DrawableDecodeInterceptor> {
         val localDrawableDecodeInterceptorList =
             request.componentRegistry?.drawableDecodeInterceptorList?.takeIf { it.isNotEmpty() }
@@ -372,7 +381,7 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     }
 
     /**
-     * Create a [Fetcher] with the registered [Fetcher.Factory]
+     * Create a [Fetcher] with [ImageRequest]'s (preferred) and global [Fetcher.Factory]
      */
     @WorkerThread
     fun newFetcher(request: ImageRequest): Fetcher =
@@ -380,7 +389,7 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
             ?: registry.newFetcher(sketch, request)
 
     /**
-     * Create a [BitmapDecoder] with the registered [BitmapDecoder.Factory]
+     * Create a [BitmapDecoder] with [ImageRequest]'s (preferred) and global [BitmapDecoder.Factory]
      */
     @WorkerThread
     fun newBitmapDecoder(
@@ -393,7 +402,7 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
             ?: registry.newBitmapDecoder(sketch, request, requestContext, fetchResult)
 
     /**
-     * Create a [DrawableDecoder] with the registered [DrawableDecoder.Factory]
+     * Create a [DrawableDecoder] with [ImageRequest]'s (preferred) and global [DrawableDecoder.Factory]
      */
     @WorkerThread
     fun newDrawableDecoder(

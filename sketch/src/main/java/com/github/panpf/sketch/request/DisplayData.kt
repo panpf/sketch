@@ -19,6 +19,9 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 
+/**
+ * Data of [DisplayRequest]
+ */
 data class DisplayData constructor(
     val drawable: Drawable,
     val imageInfo: ImageInfo,

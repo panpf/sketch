@@ -22,6 +22,9 @@ import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
 
+/**
+ * Provides access to byte array image data.
+ */
 class ByteArrayDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,

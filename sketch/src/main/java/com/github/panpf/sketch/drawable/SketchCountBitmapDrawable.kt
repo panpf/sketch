@@ -24,6 +24,9 @@ import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.toBitmapInfo
 
+/**
+ * BitmapDrawable with reference counting support
+ */
 class SketchCountBitmapDrawable constructor(
     resources: Resources,
     val countBitmap: CountBitmap,
@@ -31,13 +34,7 @@ class SketchCountBitmapDrawable constructor(
     override val requestKey: String,
     override val requestCacheKey: String,
     override val imageInfo: ImageInfo,
-    /**
-     * Store the transformation history of the Bitmap
-     */
     override val transformedList: List<String>?,
-    /**
-     * Store some additional information for consumer use
-     */
     override val extras: Map<String, String>?,
     override val dataFrom: DataFrom,
 ) : BitmapDrawable(resources, countBitmap.bitmap!!), SketchDrawable {

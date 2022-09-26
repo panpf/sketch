@@ -22,6 +22,9 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Use color as the state [Drawable]
+ */
 class ColorStateImage constructor(private val color: ColorFetcher) : StateImage {
 
     constructor(@ColorInt color: Int) : this(IntColor(color))

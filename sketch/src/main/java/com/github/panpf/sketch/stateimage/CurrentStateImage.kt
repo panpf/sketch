@@ -22,6 +22,9 @@ import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
 
+/**
+ * Use current [Drawable] as the state [Drawable]
+ */
 class CurrentStateImage(
     private val defaultImage: StateImage? = null
 ) : StateImage {

@@ -25,6 +25,9 @@ import com.github.panpf.sketch.util.useCompat
 import java.io.IOException
 import java.io.InputStream
 
+/**
+ * Provides access to image data in android resources
+ */
 class ResourceDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,

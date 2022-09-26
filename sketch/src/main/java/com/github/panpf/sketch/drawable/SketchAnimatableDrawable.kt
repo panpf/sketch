@@ -33,6 +33,9 @@ import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.getBitmapByteSize
 import com.github.panpf.sketch.util.requiredMainThread
 
+/**
+ * Provide unified Callback support for Animatable2, Animatable2Compat, Animatable
+ */
 @SuppressLint("RestrictedApi")
 class SketchAnimatableDrawable constructor(
     private val animatableDrawable: Drawable,

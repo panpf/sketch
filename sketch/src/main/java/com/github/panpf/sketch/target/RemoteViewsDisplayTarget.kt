@@ -20,6 +20,9 @@ import android.widget.RemoteViews
 import androidx.annotation.IdRes
 import androidx.core.graphics.drawable.toBitmap
 
+/**
+ * Set Drawable to RemoteViews
+ */
 class RemoteViewsDisplayTarget(
     private val remoteViews: RemoteViews,
     @IdRes private val imageViewId: Int,

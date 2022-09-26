@@ -18,6 +18,9 @@ package com.github.panpf.sketch.request
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Result of [DownloadRequest]
+ */
 sealed interface DownloadResult : ImageResult {
 
     data class Success constructor(

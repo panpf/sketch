@@ -29,6 +29,9 @@ import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.safeConfig
 
+/**
+ * Bitmap mask transformation, which attaches a layer of color to the surface of the bitmap, usually used to darken the bitmap used as the background
+ */
 class MaskTransformation(
     /** Overlay the blurred image with a layer of color, often useful when using images as a background */
     @ColorInt

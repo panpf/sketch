@@ -20,11 +20,17 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.util.getDrawableCompat
 
+/**
+ * For getting the Drawable
+ */
 interface DrawableFetcher {
 
     fun getDrawable(context: Context): Drawable
 }
 
+/**
+ * Get Drawable from resource
+ */
 class ResDrawable(@DrawableRes val resId: Int) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable = context.getDrawableCompat(resId)

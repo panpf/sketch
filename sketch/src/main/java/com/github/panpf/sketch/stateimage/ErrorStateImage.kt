@@ -20,9 +20,13 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.stateimage.ErrorStateImage.Builder
+import com.github.panpf.sketch.stateimage.ErrorStateImage.Matcher
 import com.github.panpf.sketch.util.SketchException
 import java.util.LinkedList
 
+/**
+ * Create an ErrorStateImage
+ */
 fun ErrorStateImage(
     defaultImage: StateImage? = null,
     configBlock: (Builder.() -> Unit)? = null
@@ -30,6 +34,9 @@ fun ErrorStateImage(
     configBlock?.invoke(this)
 }.build()
 
+/**
+ * Provide Drawable specifically for error status, support custom [Matcher] Provide different Drawable according to different error types
+ */
 interface ErrorStateImage : StateImage {
 
     val matcherList: List<Matcher>
@@ -46,18 +53,30 @@ interface ErrorStateImage : StateImage {
 
         private val matcherList = LinkedList<Matcher>()
 
+        /**
+         * Add a custom [Matcher]
+         */
         fun addMatcher(matcher: Matcher): Builder = apply {
             matcherList.add(matcher)
         }
 
+        /**
+         * Add a StateImage dedicated to the empty uri error
+         */
         fun uriEmptyError(emptyImage: StateImage): Builder = apply {
             addMatcher(UriEmptyMatcher(emptyImage))
         }
 
+        /**
+         * Add a StateImage dedicated to the empty uri error
+         */
         fun uriEmptyError(emptyDrawable: Drawable): Builder = apply {
             addMatcher(UriEmptyMatcher(DrawableStateImage(emptyDrawable)))
         }
 
+        /**
+         * Add a StateImage dedicated to the empty uri error
+         */
         fun uriEmptyError(emptyImageResId: Int): Builder = apply {
             addMatcher(UriEmptyMatcher(DrawableStateImage(emptyImageResId)))
         }
@@ -91,6 +110,9 @@ interface ErrorStateImage : StateImage {
         }
     }
 
+    /**
+     * Match the error and return a dedicated Drawable
+     */
     interface Matcher {
 
         fun match(request: ImageRequest, exception: SketchException?): Boolean

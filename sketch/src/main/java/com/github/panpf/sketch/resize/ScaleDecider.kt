@@ -19,7 +19,7 @@ import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.util.Size
 
 /**
- * Decide which scale to use
+ * Determines which scale to use dynamically based on image size and resizing
  */
 interface ScaleDecider {
 

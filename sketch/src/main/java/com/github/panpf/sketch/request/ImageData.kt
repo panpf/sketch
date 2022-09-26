@@ -15,4 +15,7 @@
  */
 package com.github.panpf.sketch.request
 
+/**
+ * Data of [ImageRequest]
+ */
 interface ImageData

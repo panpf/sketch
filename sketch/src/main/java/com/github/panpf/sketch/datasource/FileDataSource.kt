@@ -23,6 +23,9 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 
+/**
+ * Provides access to local file image data
+ */
 class FileDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,

@@ -15,6 +15,9 @@
  */
 package com.github.panpf.sketch.datasource
 
+/**
+ * Indicates the source of the data
+ */
 enum class DataFrom {
     NETWORK,
     DOWNLOAD_CACHE,

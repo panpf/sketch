@@ -21,6 +21,9 @@ import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
 
+/**
+ * Data of [DownloadRequest]
+ */
 data class DownloadData(val data: Data, val dataFrom: DataFrom) : ImageData {
 
     constructor(bytes: ByteArray, dataFrom: DataFrom)

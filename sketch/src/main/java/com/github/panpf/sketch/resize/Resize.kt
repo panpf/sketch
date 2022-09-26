@@ -33,6 +33,9 @@ package com.github.panpf.sketch.resize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 
+/**
+ * Define how to resize the image
+ */
 data class Resize constructor(
     val width: Int,
     val height: Int,
@@ -122,6 +125,9 @@ data class Resize constructor(
     fun getScale(imageWidth: Int, imageHeight: Int): Scale =
         scaleDecider.get(imageWidth, imageHeight, width, height)
 
+    /**
+     * Calculate the precision according to the original image, and then decide whether to crop the image according to the precision
+     */
     fun shouldClip(imageWidth: Int, imageHeight: Int): Boolean =
         when (getPrecision(imageWidth, imageHeight)) {
             Precision.EXACTLY -> imageWidth != width || imageHeight != height

@@ -20,6 +20,9 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Result of [DisplayRequest]
+ */
 sealed interface DisplayResult : ImageResult {
 
     val drawable: Drawable?

@@ -28,6 +28,9 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.fastGaussianBlur
 import com.github.panpf.sketch.util.safeConfig
 
+/**
+ * Bitmap blur transformation
+ */
 class BlurTransformation constructor(
     /** Blur radius */
     @IntRange(from = 0, to = 100)
@@ -65,7 +68,13 @@ class BlurTransformation constructor(
     ): TransformResult {
         // Transparent pixels cannot be blurred
         val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && input.hasAlpha()) {
-            val bitmap = sketch.bitmapPool.getOrCreate(input.width, input.height, input.safeConfig, request.disallowReuseBitmap, "BlurTransformation")
+            val bitmap = sketch.bitmapPool.getOrCreate(
+                input.width,
+                input.height,
+                input.safeConfig,
+                request.disallowReuseBitmap,
+                "BlurTransformation"
+            )
             val canvas = Canvas(bitmap)
             canvas.drawColor(hasAlphaBitmapBgColor)
             canvas.drawBitmap(input, 0f, 0f, null)

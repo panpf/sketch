@@ -21,6 +21,9 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Use [Drawable] as the state [Drawable]
+ */
 class DrawableStateImage : StateImage {
 
     private val drawableFetcher: DrawableFetcher
@@ -40,9 +43,7 @@ class DrawableStateImage : StateImage {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is DrawableStateImage) return false
-
         if (drawableFetcher != other.drawableFetcher) return false
-
         return true
     }
 

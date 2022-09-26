@@ -15,4 +15,7 @@
  */
 package com.github.panpf.sketch.datasource
 
+/**
+ * Unavailable data source
+ */
 interface UnavailableDataSource : DataSource
