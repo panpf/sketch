@@ -15,9 +15,7 @@
  */
 package com.github.panpf.sketch.drawable
 
-
 import android.annotation.SuppressLint
-import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.Drawable
@@ -29,8 +27,7 @@ import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.util.BitmapInfo
-import com.github.panpf.sketch.util.getBitmapByteSize
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredMainThread
 
 /**
@@ -57,19 +54,6 @@ class SketchAnimatableDrawable constructor(
         require(animatableDrawable is Animatable) {
             "animatableDrawable must implement the Animatable"
         }
-    }
-
-    override val bitmapInfo: BitmapInfo by lazy {
-        BitmapInfo(
-            animatableDrawable.intrinsicWidth,
-            animatableDrawable.intrinsicHeight,
-            getBitmapByteSize(
-                animatableDrawable.intrinsicWidth,
-                animatableDrawable.intrinsicHeight,
-                ARGB_8888
-            ),
-            ARGB_8888
-        )
     }
 
     override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
@@ -224,9 +208,9 @@ class SketchAnimatableDrawable constructor(
     override fun toString(): String =
         "SketchAnimatableDrawable(" +
                 animatableDrawable +
-                ", " + imageInfo.toShortString() +
+                "," + Size(intrinsicWidth, intrinsicHeight) +
+                "," + imageInfo.toShortString() +
                 "," + dataFrom +
-                "," + bitmapInfo.toShortString() +
                 "," + transformedList +
                 "," + requestKey +
                 ")"

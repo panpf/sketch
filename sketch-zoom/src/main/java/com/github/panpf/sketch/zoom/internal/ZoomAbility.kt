@@ -547,50 +547,60 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val host = host ?: return null
         val sketch = host.context.sketch
         val logger = sketch.logger
+
         val viewContentSize = host.view.contentSize
         if (viewContentSize == null) {
             logger.d(MODULE) { "Can't use Subsampling. View size error" }
             return null
         }
+
         val drawable = host.container.getDrawable()
-        val sketchDrawable = drawable?.findLastSketchDrawable()?.takeIf { it !is Animatable }
-        if (sketchDrawable == null) {
-            logger.d(MODULE) { "Can't use Subsampling. Drawable error" }
+        if (drawable == null) {
+            logger.d(MODULE) { "Can't use Subsampling. Drawable is null" }
             return null
         }
+        val drawableWidth = drawable.intrinsicWidth
+        val drawableHeight = drawable.intrinsicHeight
 
-        val bitmapWidth = sketchDrawable.bitmapInfo.width
-        val bitmapHeight = sketchDrawable.bitmapInfo.height
+        val sketchDrawable = drawable.findLastSketchDrawable()
+        if (sketchDrawable == null) {
+            logger.d(MODULE) { "Can't use Subsampling. Drawable is not SketchDrawable" }
+            return null
+        }
+        if (sketchDrawable is Animatable) {
+            logger.d(MODULE) { "Can't use Subsampling. Drawable is Animatable" }
+            return null
+        }
         val imageWidth = sketchDrawable.imageInfo.width
         val imageHeight = sketchDrawable.imageInfo.height
         val mimeType = sketchDrawable.imageInfo.mimeType
         val key = sketchDrawable.requestKey
 
-        if (bitmapWidth >= imageWidth && bitmapHeight >= imageHeight) {
+        if (drawableWidth >= imageWidth && drawableHeight >= imageHeight) {
             logger.d(MODULE) {
-                "Don't need to use Subsampling. bitmapSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                    .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
+                "Don't need to use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
-        if (!canUseSubsampling(imageWidth, imageHeight, bitmapWidth, bitmapHeight)) {
+        if (!canUseSubsampling(imageWidth, imageHeight, drawableWidth, drawableHeight)) {
             logger.d(MODULE) {
-                "Can't use Subsampling. bitmapSize error. bitmapSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                    .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
+                "Can't use Subsampling. drawableSize error. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
         if (ImageFormat.parseMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
-                "MimeType does not support Subsampling. bitmapSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                    .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
+                "MimeType does not support Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
 
         logger.d(MODULE) {
-            "Use Subsampling. bitmapSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
-                .format(bitmapWidth, bitmapHeight, imageWidth, imageHeight, mimeType, key)
+            "Use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
         }
 
         val memoryCachePolicy: CachePolicy

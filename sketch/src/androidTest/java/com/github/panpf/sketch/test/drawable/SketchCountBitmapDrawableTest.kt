@@ -25,7 +25,6 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.util.toBitmapInfo
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -59,7 +58,6 @@ class SketchCountBitmapDrawableTest {
             Assert.assertEquals("requestCacheKey1", requestCacheKey)
             Assert.assertEquals(ImageInfo(100, 100, "image/jpeg", 0), imageInfo)
             Assert.assertEquals(null, transformedList)
-            Assert.assertEquals(bitmap.toBitmapInfo(), bitmapInfo)
         }
     }
 

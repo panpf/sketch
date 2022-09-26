@@ -122,11 +122,6 @@ class MovieDrawableTest {
             }
             Assert.assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackList)
             Assert.assertFalse(movieDrawable.isRunning)
-
-            Assert.assertEquals(
-                "BitmapInfo(width=1080, height=1080, byteCount=4.45MB, config=ARGB_8888)",
-                movieDrawable.bitmapInfo.toString()
-            )
         }
     }
 

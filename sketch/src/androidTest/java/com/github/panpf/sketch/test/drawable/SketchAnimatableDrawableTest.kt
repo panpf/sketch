@@ -31,8 +31,7 @@ import com.github.panpf.sketch.test.utils.TestAnimatableDrawable2
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable3
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.BitmapInfo
-import com.github.panpf.sketch.util.getBitmapByteSize
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -509,14 +508,6 @@ class SketchAnimatableDrawableTest {
         )
         val imageInfo = ImageInfo(100, 100, "image/gif", 0)
         val dataFrom = LOCAL
-        val bitmapInfo = BitmapInfo(
-            width = drawable.intrinsicWidth,
-            height = drawable.intrinsicHeight,
-            byteCount = getBitmapByteSize(
-                drawable.intrinsicWidth, drawable.intrinsicHeight, ARGB_8888
-            ),
-            config = ARGB_8888
-        )
         val transformedList: List<String>? = null
         val imageUri = "imageUri1"
         val requestKey = "requestKey1"
@@ -534,9 +525,9 @@ class SketchAnimatableDrawableTest {
         Assert.assertEquals(
             "SketchAnimatableDrawable(" +
                     drawable +
-                    ", " + imageInfo.toShortString() +
+                    "," + Size(drawable.intrinsicWidth, drawable.intrinsicHeight) +
+                    "," + imageInfo.toShortString() +
                     "," + dataFrom +
-                    "," + bitmapInfo.toShortString() +
                     "," + transformedList +
                     "," + requestKey +
                     ")",

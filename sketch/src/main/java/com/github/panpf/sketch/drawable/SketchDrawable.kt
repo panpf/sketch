@@ -17,7 +17,6 @@ package com.github.panpf.sketch.drawable
 
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.util.BitmapInfo
 
 /**
  * The public interface of Sketch Drawable, which extends the relevant information of the picture
@@ -33,14 +32,14 @@ interface SketchDrawable {
     val imageInfo: ImageInfo
 
     val dataFrom: DataFrom
+
     /**
      * Store the transformation history of the Bitmap
      */
     val transformedList: List<String>?
+
     /**
      * Store some additional information for consumer use
      */
     val extras: Map<String, String>?
-
-    val bitmapInfo: BitmapInfo
 }

@@ -34,12 +34,10 @@ import android.os.Build.VERSION
 import android.os.SystemClock
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
-import com.github.panpf.sketch.gif.util.allocationByteCountCompat
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
-import com.github.panpf.sketch.util.BitmapInfo
 
 /**
  * A [Drawable] that supports rendering [Movie]s (i.e. GIFs).
@@ -50,11 +48,6 @@ class MovieDrawable constructor(
     bitmapCreator: BitmapCreator? = null
 ) : Drawable(), Animatable2Compat {
 
-    val bitmapInfo: BitmapInfo by lazy {
-        softwareBitmap?.let {
-            BitmapInfo(it.width, it.height, it.allocationByteCountCompat, it.config)
-        } ?: BitmapInfo(0, 0, 0, null)
-    }
     private val bitmapCreator = bitmapCreator ?: object : BitmapCreator {
         override fun createBitmap(width: Int, height: Int, config: Bitmap.Config): Bitmap =
             Bitmap.createBitmap(width, height, config)
