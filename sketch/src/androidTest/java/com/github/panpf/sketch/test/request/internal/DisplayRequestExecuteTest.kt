@@ -69,6 +69,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.stateimage.internal.SketchStateNormalDrawable
 import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
 import com.github.panpf.sketch.test.utils.DisplayProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
@@ -1715,10 +1716,10 @@ class DisplayRequestExecuteTest {
                 runBlocking { sketch.execute(request) }
             }
             Assert.assertNotNull(testTarget.startDrawable)
-            Assert.assertTrue(testTarget.startDrawable is ColorDrawable)
+            Assert.assertTrue(testTarget.startDrawable!!.asOrThrow<SketchStateNormalDrawable>().wrappedDrawable is ColorDrawable)
             Assert.assertNull(testTarget.successDrawable)
             Assert.assertNotNull(testTarget.errorDrawable)
-            Assert.assertTrue(testTarget.errorDrawable is StateListDrawable)
+            Assert.assertTrue(testTarget.errorDrawable!!.asOrThrow<SketchStateNormalDrawable>().wrappedDrawable is StateListDrawable)
         }
 
         TestDisplayTarget().let { testTarget ->
