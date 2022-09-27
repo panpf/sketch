@@ -34,7 +34,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
@@ -42,6 +41,7 @@ import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
+import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
 import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -336,14 +336,14 @@ class AsyncImagePainter internal constructor(
     private fun updateDisplayed(oldPainter: Painter?, newPainter: Painter?) {
         newPainter?.takeIf { it is DrawablePainter }
             ?.let { it as DrawablePainter }
-            ?.drawable.takeIf { it is SketchCountBitmapDrawable }
-            ?.let { it as SketchCountBitmapDrawable }
-            ?.countBitmap?.setIsDisplayed(true, "AsyncImagePainter")
+            ?.drawable?.iterateSketchCountBitmapDrawable {
+                it.countBitmap.setIsDisplayed(true, "AsyncImagePainter")
+            }
         oldPainter?.takeIf { it is DrawablePainter }
             ?.let { it as DrawablePainter }
-            ?.drawable.takeIf { it is SketchCountBitmapDrawable }
-            ?.let { it as SketchCountBitmapDrawable }
-            ?.countBitmap?.setIsDisplayed(false, "AsyncImagePainter")
+            ?.drawable?.iterateSketchCountBitmapDrawable {
+                it.countBitmap.setIsDisplayed(false, "AsyncImagePainter")
+            }
     }
 
     /** Create and return a [CrossfadePainter] if requested. */
