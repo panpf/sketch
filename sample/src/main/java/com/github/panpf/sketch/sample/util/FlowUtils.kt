@@ -25,6 +25,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.github.panpf.sketch.sample.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
@@ -35,8 +36,8 @@ fun <T> Flow<T>.observeWithLifecycle(
     owner: LifecycleOwner,
     minState: Lifecycle.State,
     collector: FlowCollector<T>
-) {
-    owner.lifecycleScope.launch {
+): Job {
+    return owner.lifecycleScope.launch {
         owner.repeatOnLifecycle(minState) {
             collect(collector)
         }
@@ -46,15 +47,15 @@ fun <T> Flow<T>.observeWithLifecycle(
 fun <T> Flow<T>.observeWithStartedLifecycle(
     owner: LifecycleOwner,
     collector: FlowCollector<T>
-) {
-    observeWithLifecycle(owner, Lifecycle.State.STARTED, collector)
+): Job {
+    return observeWithLifecycle(owner, Lifecycle.State.STARTED, collector)
 }
 
 fun <T> Flow<T>.observeWithFragmentView(
     fragment: Fragment,
     collector: FlowCollector<T>
-) {
-    observeWithLifecycle(fragment.viewLifecycleOwner, Lifecycle.State.STARTED, collector)
+): Job {
+    return observeWithLifecycle(fragment.viewLifecycleOwner, Lifecycle.State.CREATED, collector)
 }
 
 fun <T> Flow<T>.observeWithViewLifecycle(view: View, collector: FlowCollector<T>) {

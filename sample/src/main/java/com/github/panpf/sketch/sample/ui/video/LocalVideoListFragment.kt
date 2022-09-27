@@ -20,7 +20,6 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
@@ -29,8 +28,8 @@ import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
+import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.tools4a.toast.ktx.showLongToast
-import kotlinx.coroutines.launch
 import java.io.File
 
 class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
@@ -51,9 +50,9 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
     ) {
         toolbar.apply {
             title = "Local Video"
-            listMenuViewModel.menuList.observe(viewLifecycleOwner) { list ->
+            listMenuViewModel.menuFlow.observeWithFragmentView(this@LocalVideoListFragment) { list ->
                 menu.clear()
-                list?.forEachIndexed { groupIndex, group ->
+                list.forEachIndexed { groupIndex, group ->
                     group.items.forEachIndexed { index, menuItemInfo ->
                         menu.add(groupIndex, index, index, menuItemInfo.title).apply {
                             menuItemInfo.iconResId?.let { iconResId ->
@@ -82,10 +81,8 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                 }
             }
         )).apply {
-            viewLifecycleOwner.lifecycleScope.launch {
-                videoListViewModel.pagingFlow.collect {
-                    submitData(it)
-                }
+            videoListViewModel.pagingFlow.observeWithFragmentView(this@LocalVideoListFragment) {
+                submitData(it)
             }
         }
 
@@ -100,26 +97,24 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
             pagingAdapter.refresh()
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            pagingAdapter.loadStateFlow.collect {
-                when (val refreshState = it.refresh) {
-                    is LoadState.Loading -> {
+        pagingAdapter.loadStateFlow.observeWithFragmentView(this@LocalVideoListFragment) {
+            when (val refreshState = it.refresh) {
+                is LoadState.Loading -> {
+                    binding.recyclerState.gone()
+                    binding.recyclerRefresh.isRefreshing = true
+                }
+                is LoadState.Error -> {
+                    binding.recyclerRefresh.isRefreshing = false
+                    binding.recyclerState.errorWithRetry(refreshState.error) {
+                        pagingAdapter.refresh()
+                    }
+                }
+                is LoadState.NotLoading -> {
+                    binding.recyclerRefresh.isRefreshing = false
+                    if (pagingAdapter.itemCount <= 0) {
+                        binding.recyclerState.empty("No videos")
+                    } else {
                         binding.recyclerState.gone()
-                        binding.recyclerRefresh.isRefreshing = true
-                    }
-                    is LoadState.Error -> {
-                        binding.recyclerRefresh.isRefreshing = false
-                        binding.recyclerState.errorWithRetry(refreshState.error) {
-                            pagingAdapter.refresh()
-                        }
-                    }
-                    is LoadState.NotLoading -> {
-                        binding.recyclerRefresh.isRefreshing = false
-                        if (pagingAdapter.itemCount <= 0) {
-                            binding.recyclerState.empty("No videos")
-                        } else {
-                            binding.recyclerState.gone()
-                        }
                     }
                 }
             }

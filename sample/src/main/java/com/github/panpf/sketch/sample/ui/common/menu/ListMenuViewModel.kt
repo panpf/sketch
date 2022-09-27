@@ -17,7 +17,6 @@ package com.github.panpf.sketch.sample.ui.common.menu
 
 import android.app.Application
 import android.view.MenuItem
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.panpf.sketch.sample.R
@@ -29,6 +28,8 @@ import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.ui.setting.Page
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class ListMenuViewModel(
     application1: Application,
@@ -47,11 +48,8 @@ class ListMenuViewModel(
         }
     }
 
-    val menuList = MutableLiveData<List<MenuItemInfoGroup>>()
-
-    init {
-        menuList.postValue(assembleMenuList())
-    }
+    private val _menuFlow = MutableStateFlow(assembleMenuList())
+    val menuFlow: StateFlow<List<MenuItemInfoGroup>> = _menuFlow
 
     private fun assembleMenuList(): List<MenuItemInfoGroup> = buildList {
         add(MenuItemInfoGroup(buildList {
@@ -67,7 +65,7 @@ class ListMenuViewModel(
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
                 ) { _, newValue ->
                     application1.prefsService.disallowAnimatedImageInList.value = newValue
-                    menuList.postValue(menuList.value)
+                    _menuFlow.value = assembleMenuList()
                 })
             }
 
@@ -86,7 +84,7 @@ class ListMenuViewModel(
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
                 ) { _, newValue ->
                     application1.prefsService.photoListLayoutMode.value = newValue
-                    menuList.postValue(menuList.value)
+                    _menuFlow.value = assembleMenuList()
                 })
             }
 

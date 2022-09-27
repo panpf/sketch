@@ -18,16 +18,18 @@ package com.github.panpf.sketch.sample.ui.photo.local
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
-import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
-import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyStaggeredGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.divider.newAssemblyGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.divider.newAssemblyStaggeredGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.newAssemblyStaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
@@ -47,7 +49,7 @@ import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.tools4k.lang.asOrThrow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -61,6 +63,8 @@ class LocalPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
             showPlayMenu = true
         )
     }
+    private var pagingFlowCollectJob: Job? = null
+    private var loadStateFlowCollectJob: Job? = null
 
     override fun onViewCreated(
         toolbar: Toolbar,
@@ -70,9 +74,9 @@ class LocalPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
         toolbar.apply {
             title = "Local Photos"
 
-            listMenuViewModel.menuList.observe(viewLifecycleOwner) { list ->
+            listMenuViewModel.menuFlow.observeWithFragmentView(this@LocalPhotoListFragment) { list ->
                 menu.clear()
-                list?.forEachIndexed { groupIndex, group ->
+                list.forEachIndexed { groupIndex, group ->
                     group.items.forEachIndexed { index, menuItemInfo ->
                         menu.add(groupIndex, index, index, menuItemInfo.title).apply {
                             menuItemInfo.iconResId?.let { iconResId ->
@@ -94,88 +98,98 @@ class LocalPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                 (0 until itemDecorationCount).forEach { index ->
                     removeItemDecorationAt(index)
                 }
-                when (LayoutMode.valueOf(it)) {
-                    GRID -> {
-                        layoutManager =
-                            newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
-                                itemSpanByItemFactory(
-                                    LoadStateItemFactory::class,
-                                    ItemSpan.fullSpan()
-                                )
-                            }
-                        addAssemblyGridDividerItemDecoration {
-                            val gridDivider =
-                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
-                            divider(Divider.space(gridDivider))
-                            sideDivider(Divider.space(gridDivider))
-                            useDividerAsHeaderAndFooterDivider()
-                            useSideDividerAsSideHeaderAndFooterDivider()
-                        }
-                    }
-                    STAGGERED_GRID -> {
-                        layoutManager = newAssemblyStaggeredGridLayoutManager(
-                            2,
-                            StaggeredGridLayoutManager.VERTICAL
-                        ) {
-                            fullSpanByItemFactory(LoadStateItemFactory::class)
-                        }
-                        addAssemblyStaggeredGridDividerItemDecoration {
-                            val gridDivider =
-                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
-                            divider(Divider.space(gridDivider))
-                            sideDivider(Divider.space(gridDivider))
-                            useDividerAsHeaderAndFooterDivider()
-                            useSideDividerAsSideHeaderAndFooterDivider()
-                        }
-                    }
-                }
-
-                val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
-                    ImageGridItemFactory().setOnViewClickListener(R.id.imageGridItemImage) { _, _, _, absoluteAdapterPosition, _ ->
-                        startImageDetail(binding, absoluteAdapterPosition)
-                    }
-                )).apply {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        localPhotoListViewModel.pagingFlow.collect { pagingData ->
-                            submitData(pagingData)
-                        }
-                    }
-                }
-
-                binding.recyclerRefresh.setOnRefreshListener {
-                    pagingAdapter.refresh()
-                }
-
-                viewLifecycleOwner.lifecycleScope.launch {
-                    pagingAdapter.loadStateFlow.collect { loadStates ->
-                        when (val refreshState = loadStates.refresh) {
-                            is LoadState.Loading -> {
-                                binding.recyclerState.gone()
-                                binding.recyclerRefresh.isRefreshing = true
-                            }
-                            is LoadState.Error -> {
-                                binding.recyclerRefresh.isRefreshing = false
-                                binding.recyclerState.errorWithRetry(refreshState.error) {
-                                    pagingAdapter.refresh()
-                                }
-                            }
-                            is LoadState.NotLoading -> {
-                                binding.recyclerRefresh.isRefreshing = false
-                                if (pagingAdapter.itemCount <= 0) {
-                                    binding.recyclerState.empty("No Photos")
-                                } else {
-                                    binding.recyclerState.gone()
-                                }
-                            }
-                        }
-                    }
-                }
-
-                adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
-                    noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
-                })
+                val (layoutManager1, itemDecoration) =
+                    newLayoutManagerAndItemDecoration(LayoutMode.valueOf(it))
+                layoutManager = layoutManager1
+                addItemDecoration(itemDecoration)
+                this.adapter = newAdapter(binding)
             }
         }
+    }
+
+    private fun newLayoutManagerAndItemDecoration(layoutMode: LayoutMode): Pair<LayoutManager, ItemDecoration> {
+        val layoutManager: LayoutManager
+        val itemDecoration: ItemDecoration
+        when (layoutMode) {
+            GRID -> {
+                layoutManager =
+                    requireContext().newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
+                        itemSpanByItemFactory(LoadStateItemFactory::class, ItemSpan.fullSpan())
+                    }
+                itemDecoration = requireContext().newAssemblyGridDividerItemDecoration {
+                    val gridDivider =
+                        requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+                    divider(Divider.space(gridDivider))
+                    sideDivider(Divider.space(gridDivider))
+                    useDividerAsHeaderAndFooterDivider()
+                    useSideDividerAsSideHeaderAndFooterDivider()
+                }
+            }
+            STAGGERED_GRID -> {
+                layoutManager = newAssemblyStaggeredGridLayoutManager(
+                    2,
+                    StaggeredGridLayoutManager.VERTICAL
+                ) {
+                    fullSpanByItemFactory(LoadStateItemFactory::class)
+                }
+                itemDecoration = requireContext().newAssemblyStaggeredGridDividerItemDecoration {
+                    val gridDivider =
+                        requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+                    divider(Divider.space(gridDivider))
+                    sideDivider(Divider.space(gridDivider))
+                    useDividerAsHeaderAndFooterDivider()
+                    useSideDividerAsSideHeaderAndFooterDivider()
+                }
+            }
+        }
+        return layoutManager to itemDecoration
+    }
+
+    private fun newAdapter(binding: RecyclerFragmentBinding): RecyclerView.Adapter<*> {
+        val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
+            ImageGridItemFactory().setOnViewClickListener(R.id.imageGridItemImage) { _, _, _, absoluteAdapterPosition, _ ->
+                startImageDetail(binding, absoluteAdapterPosition)
+            }
+        )).apply {
+            pagingFlowCollectJob?.cancel()
+            pagingFlowCollectJob = localPhotoListViewModel.pagingFlow
+                .observeWithFragmentView(this@LocalPhotoListFragment) {
+                    submitData(it)
+                }
+        }
+
+        binding.recyclerRefresh.setOnRefreshListener {
+            pagingAdapter.refresh()
+        }
+        loadStateFlowCollectJob?.cancel()
+        loadStateFlowCollectJob = pagingAdapter.loadStateFlow
+            .observeWithFragmentView(this@LocalPhotoListFragment) { loadStates ->
+                when (val refreshState = loadStates.refresh) {
+                    is LoadState.Loading -> {
+                        binding.recyclerState.gone()
+                        binding.recyclerRefresh.isRefreshing = true
+                    }
+                    is LoadState.Error -> {
+                        binding.recyclerRefresh.isRefreshing = false
+                        binding.recyclerState.errorWithRetry(refreshState.error) {
+                            pagingAdapter.refresh()
+                        }
+                    }
+                    is LoadState.NotLoading -> {
+                        binding.recyclerRefresh.isRefreshing = false
+                        if (pagingAdapter.itemCount <= 0) {
+                            binding.recyclerState.empty("No Photos")
+                        } else {
+                            binding.recyclerState.gone()
+                        }
+                    }
+                }
+            }
+
+        val loadStateAdapter = MyLoadStateAdapter().apply {
+            noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
+        }
+        return pagingAdapter.withLoadStateFooter(loadStateAdapter)
     }
 
     private fun startImageDetail(binding: RecyclerFragmentBinding, position: Int) {
