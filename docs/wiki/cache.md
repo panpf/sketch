@@ -13,11 +13,11 @@ Sketch 为了提高图片的加载速度引入了下载缓存、结果缓存、�
 * 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/download`，另外为了兼容多进程，当在非主进程使用 Sketch
   时缓存目录名称后会加上进程名，例如 "download:push"
 
-> 您可以在初始化 Sketch 时通过 [LruDiskCache].ForDownloadBuilder 创建并修改最大容量或缓存目录，然后通过 downloadCache() 方法注册
+> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForDownloadBuilder 创建并修改最大容量或缓存目录，然后通过 downloadCache() 方法注册
 
 ### 配置请求
 
-您可以通过 [ImageRequest] 或 [ImageOptions] 的 downloadCachePolicy 属性控制下载缓存:
+你可以通过 [ImageRequest] 或 [ImageOptions] 的 downloadCachePolicy 属性控制下载缓存:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -32,7 +32,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 #### 访问
 
-您可以通过 `sketch.downloadCache` 属性获取下载缓存实例来访问下载缓存。
+你可以通过 `sketch.downloadCache` 属性获取下载缓存实例来访问下载缓存。
 
 但要注意先获取编辑锁并且上锁再访问，这样能避免在多线程下出问题，如下：
 
@@ -89,7 +89,7 @@ try {
 * 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/result`，另外为了兼容多进程，当在非主进程使用 Sketch
   时缓存目录名称后会加上进程名，例如 "result:push"
 
-> 您可以在初始化 Sketch 时通过 [LruDiskCache].ForResultBuilder 创建并修改最大容量或缓存目录，然后通过 resultCache() 方法注册
+> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForResultBuilder 创建并修改最大容量或缓存目录，然后通过 resultCache() 方法注册
 
 ### 配置请求
 
@@ -98,7 +98,7 @@ Sketch 默认会在以下情况将 Bitmap 缓存到磁盘缓存中，避免重�
 * Resize 不为 null 且解码后的 Bitmap 与原图有缩小或尺寸调整
 * 经过 Transformation 转换
 
-您可以通过 [ImageRequest] 或 [ImageOptions] 的 resultCachePolicy 属性控制 Bitmap 结果缓存:
+你可以通过 [ImageRequest] 或 [ImageOptions] 的 resultCachePolicy 属性控制 Bitmap 结果缓存:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -113,7 +113,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 #### 访问
 
-您可以通过 `sketch.resultCache` 属性获取结果缓存实例来访问结果缓存。
+你可以通过 `sketch.resultCache` 属性获取结果缓存实例来访问结果缓存。
 
 但要注意先获取编辑锁并且上锁再访问，这样能避免在多线程下出问题，如下：
 
@@ -168,13 +168,13 @@ try {
 * 根据最少使用原则释放旧的 Bitmap
 * 最大容量是 6 个屏幕大小和最大可用内存的三分之一中的小者的三分之二
 
-> 您可以在初始化 Sketch 时创建 [LruMemoryCache] 并修改最大容量，然后通过 memoryCache() 方法注册
+> 你可以在初始化 Sketch 时创建 [LruMemoryCache] 并修改最大容量，然后通过 memoryCache() 方法注册
 
 ### 配置请求
 
 Sketch 默认会将最终得到的 Bitmap 缓存到内存缓存中，避免重复加载，以提高加载速度：
 
-您可以通过 [ImageRequest] 或 [ImageOptions] 的 memoryCachePolicy 属性控制 Bitmap 内存缓存:
+你可以通过 [ImageRequest] 或 [ImageOptions] 的 memoryCachePolicy 属性控制 Bitmap 内存缓存:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -189,7 +189,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 #### 访问
 
-您可以通过 `sketch.memoryCache` 属性获取内存缓存实例来访问内存缓存。
+你可以通过 `sketch.memoryCache` 属性获取内存缓存实例来访问内存缓存。
 
 ```kotlin
 val memoryCacheKey = "http://sample.com/sample.jpeg"

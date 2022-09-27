@@ -39,7 +39,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [ErrorStateImage] 支持根据不同的错误类型返回不同的状态图片
 
-默认 Sketch 仅提供了 uriEmptyError 一种类型，您可以实现 [ErrorStateImage].Matcher 接口来扩展新的类型，然后通过
+默认 Sketch 仅提供了 uriEmptyError 一种类型，你可以实现 [ErrorStateImage].Matcher 接口来扩展新的类型，然后通过
 [ErrorStateImage].Builder.addMatcher() 使用自定义的类型，如下：
 
 ```kotlin

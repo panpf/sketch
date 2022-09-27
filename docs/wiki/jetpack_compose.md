@@ -21,7 +21,7 @@ AsyncImage(
 }
 ```
 
-> 您可以通过 AsyncImage 函数提供的尾随 lambda 配置请求
+> 你可以通过 AsyncImage 函数提供的尾随 lambda 配置请求
 
 ### SubcomposeAsyncImage
 
@@ -40,7 +40,7 @@ SubcomposeAsyncImage(
 )
 ```
 
-此外，您可以使用其 content 参数和渲染当前状态的 SubcomposeAsyncImageContent 实现更复杂的逻辑：
+此外，你可以使用其 content 参数和渲染当前状态的 SubcomposeAsyncImageContent 实现更复杂的逻辑：
 
 ```kotlin
 SubcomposeAsyncImage(
@@ -59,11 +59,11 @@ SubcomposeAsyncImage(
 
 子组合的性能不如常规组合，因此这种组合可能不适合对高性能至关重要的 UI 部分（例如列表）。
 
-> 如果您使用 DisplayRequest.Builder.resizeSize 为 DisplayRequest 设置自定义大小（例如 resizeSize(100, 100)），SubcomposeAsyncImage 将不会使用子组合，因为它不需要解析可组合的约束。
+> 如果你使用 DisplayRequest.Builder.resizeSize 为 DisplayRequest 设置自定义大小（例如 resizeSize(100, 100)），SubcomposeAsyncImage 将不会使用子组合，因为它不需要解析可组合的约束。
 
 ### AsyncImagePainter
 
-AsyncImage 和 SubcomposeAsyncImage 使用 AsyncImagePainter 来加载图像。如果您需要 Painter 并且不能使用 AsyncImage，您可以使用
+AsyncImage 和 SubcomposeAsyncImage 使用 AsyncImagePainter 来加载图像。如果你需要 Painter 并且不能使用 AsyncImage，你可以使用
 rememberAsyncImagePainter() 加载图像：
 
 ```kotlin
@@ -82,7 +82,7 @@ rememberAsyncImagePainter 是一个较低级别的 API，可能无法在所有�
 
 这意味着 AsyncImagePainter.state 将为第一个合成加载 - 即使图像存在于内存缓存中并且它将在第一帧中绘制。
 
-如果您需要 AsyncImagePainter.state 在第一次合成期间保持最新，请使用 SubcomposeAsyncImage 或使用
+如果你需要 AsyncImagePainter.state 在第一次合成期间保持最新，请使用 SubcomposeAsyncImage 或使用
 DisplayRequest.Builder.resizeSize 为图像请求设置自定义大小。例如，在此示例中，AsyncImagePainter.state 在第一次合成期间将始终是最新的：
 
 ```kotlin
@@ -103,7 +103,7 @@ Image(
 
 ### Transitions
 
-您可以使用 DisplayRequest.Builder.crossfade 启用内置的交叉淡入淡出过渡：
+你可以使用 DisplayRequest.Builder.crossfade 启用内置的交叉淡入淡出过渡：
 
 ```kotlin
 AsyncImage(

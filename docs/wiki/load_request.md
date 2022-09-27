@@ -16,7 +16,7 @@ LoadRequest(context, "https://www.sample.com/image.jpg") {
 }.enqueue()
 ```
 
-当你需要同步获取加载结果时您可以使用 execute 方法，如下：
+当你需要同步获取加载结果时你可以使用 execute 方法，如下：
 
 ```kotlin
 coroutineScope.launch(Dispatchers.Main) {

@@ -71,7 +71,7 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-> 注意：由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app 最低版本较高，那么您可以使用较新版本的 OkHttp 自定一个 HttpStack
+> 注意：由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app 最低版本较高，那么你可以使用较新版本的 OkHttp 自定一个 HttpStack
 
 ### 自定义：
 
