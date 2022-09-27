@@ -123,23 +123,22 @@ internal class SubsamplingHelper constructor(
         requiredMainThread()
 
         if (destroyed) {
-            logger.d(MODULE) { "refreshTiles. interrupted. destroyed. $imageUri" }
+            logger.w(MODULE) { "refreshTiles. interrupted. destroyed. $imageUri" }
             return
         }
         if (paused) {
-            logger.d(MODULE) { "refreshTiles. interrupted. paused. $imageUri" }
+            logger.w(MODULE) { "refreshTiles. interrupted. paused. $imageUri" }
             return
         }
         val manager = tileManager
         if (manager == null) {
-            logger.d(MODULE) { "refreshTiles. interrupted. initializing. $imageUri" }
+            logger.w(MODULE) { "refreshTiles. interrupted. initializing. $imageUri" }
             return
         }
         if (zoomerHelper.rotateDegrees % 90 != 0) {
-            logger.w(
-                MODULE,
+            logger.w(MODULE) {
                 "refreshTiles. interrupted. rotate degrees must be in multiples of 90. $imageUri"
-            )
+            }
             return
         }
 

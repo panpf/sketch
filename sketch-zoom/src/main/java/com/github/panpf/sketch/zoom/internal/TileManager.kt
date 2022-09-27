@@ -291,9 +291,7 @@ internal class TileManager constructor(
                     }
                 }
                 else -> {
-                    logger.w(SubsamplingHelper.MODULE) {
-                        "loadTile. canceled. $tile. $imageUri"
-                    }
+                    logger.w(SubsamplingHelper.MODULE, "loadTile. canceled. $tile. $imageUri")
                     bitmapPool.freeBitmap(bitmap, disallowReuseBitmap, "tile:jobCanceled")
                     logger.d(SubsamplingHelper.MODULE) {
                         "loadTile. freeBitmap. tile job canceled. bitmap=${bitmap.logString}. $imageUri"
@@ -313,9 +311,7 @@ internal class TileManager constructor(
         }
 
         tile.countBitmap?.run {
-            logger.w(SubsamplingHelper.MODULE) {
-                "freeTile. $tile. $imageUri"
-            }
+            logger.w(SubsamplingHelper.MODULE, "freeTile. $tile. $imageUri")
             tile.countBitmap = null
             notifyTileChanged()
         }

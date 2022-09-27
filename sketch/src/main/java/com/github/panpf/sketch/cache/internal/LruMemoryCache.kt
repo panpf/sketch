@@ -43,12 +43,8 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
                 return if (bitmapSize == 0) 1 else bitmapSize
             }
 
-            override fun entryRemoved(
-                evicted: Boolean, key: String, old: Value, new: Value?
-            ) {
-                logger?.w(MODULE) {
-                    "removed. ${size.formatFileSize()}. ${old.countBitmap}"
-                }
+            override fun entryRemoved(evicted: Boolean, key: String, old: Value, new: Value?) {
+                logger?.w(MODULE, "removed. ${size.formatFileSize()}. ${old.countBitmap}")
                 old.countBitmap.setIsCached(false, MODULE)
             }
         }
@@ -70,7 +66,8 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         if (bitmap.allocationByteCountCompat >= maxSize * 0.7f) {
             logger?.w(MODULE) {
                 val bitmapSize = bitmap.allocationByteCountCompat.formatFileSize()
-                "put. reject. Bitmap too big ${bitmapSize}, maxSize is ${maxSize.formatFileSize()}, $countBitmap"
+                val maxSize = maxSize.formatFileSize()
+                "put. reject. Bitmap too big ${bitmapSize}, maxSize is $maxSize, $countBitmap"
             }
             return false
         }
