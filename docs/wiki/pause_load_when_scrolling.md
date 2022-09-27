@@ -24,11 +24,13 @@ listView.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
-        }
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
+            }
+        }.build()
+    }
 }
 ```
 

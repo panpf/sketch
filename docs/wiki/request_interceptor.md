@@ -30,11 +30,13 @@ class MyRequestInterceptor : RequestInterceptor {
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addRequestInterceptor(MyRequestInterceptor())
-        }
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addRequestInterceptor(MyRequestInterceptor())
+            }
+        }.build()
+    }
 }
 ```
 

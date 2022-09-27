@@ -77,11 +77,13 @@ class MyBitmapDecoder : BitmapDecoder {
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addBitmapDecoder(MyBitmapDecoder.Factory())
-        }
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addBitmapDecoder(MyBitmapDecoder.Factory())
+            }
+        }.build()
+    }
 }
 ```
 

@@ -9,29 +9,31 @@
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        httpStack(HurlStack.Builder().apply {
-            // 连接超时。默认 7000
-            connectTimeout(Int)
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            httpStack(HurlStack.Builder().apply {
+                // 连接超时。默认 7000
+                connectTimeout(Int)
 
-            // 读取超时。默认 7000
-            readTimeout(Int)
+                // 读取超时。默认 7000
+                readTimeout(Int)
 
-            // User-Agent。默认 null
-            userAgent(String)
+                // User-Agent。默认 null
+                userAgent(String)
 
-            // 添加一些不可重复的 header。默认 null
-            extraHeaders(Map<String, String>)
+                // 添加一些不可重复的 header。默认 null
+                extraHeaders(Map<String, String>)
 
-            // 添加一些可重复的 header。默认 null
-            addExtraHeaders(Map<String, String>)
+                // 添加一些可重复的 header。默认 null
+                addExtraHeaders(Map<String, String>)
 
-            // HttpURLConnection 在 执行 connect 之前交由此方法处理一下。默认 null
-            processRequest { url: String, connection: HttpURLConnection ->
+                // HttpURLConnection 在 执行 connect 之前交由此方法处理一下。默认 null
+                processRequest { url: String, connection: HttpURLConnection ->
 
-            }
-        }.build())
-    }.build()
+                }
+            }.build())
+        }.build()
+    }
 }
 ```
 
@@ -44,30 +46,32 @@ httpStack()
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        httpStack(OkHttpStack.Builder().apply {
-            // 连接超时。默认 7000
-            connectTimeout(Int)
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            httpStack(OkHttpStack.Builder().apply {
+                // 连接超时。默认 7000
+                connectTimeout(Int)
 
-            // 读取超时。默认 7000
-            readTimeout(Int)
+                // 读取超时。默认 7000
+                readTimeout(Int)
 
-            // User-Agent。默认 null
-            userAgent(String)
+                // User-Agent。默认 null
+                userAgent(String)
 
-            // 添加一些不可重复的 header。默认 null
-            extraHeaders(Map<String, String>)
+                // 添加一些不可重复的 header。默认 null
+                extraHeaders(Map<String, String>)
 
-            // 添加一些可重复的 header。默认 null
-            addExtraHeaders(Map<String, String>)
+                // 添加一些可重复的 header。默认 null
+                addExtraHeaders(Map<String, String>)
 
-            // 拦截器。默认 null
-            interceptors(Interceptor)
+                // 拦截器。默认 null
+                interceptors(Interceptor)
 
-            // 网络拦截器。默认 null
-            networkInterceptors(Interceptor)
-        }.build())
-    }.build()
+                // 网络拦截器。默认 null
+                networkInterceptors(Interceptor)
+            }.build())
+        }.build()
+    }
 }
 ```
 
@@ -80,9 +84,11 @@ class MyApplication : Application(), SketchFactory {
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        httpStack(MyHttpStack())
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            httpStack(MyHttpStack())
+        }.build()
+    }
 }
 ```
 

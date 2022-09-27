@@ -52,12 +52,14 @@ ImageRequest 都可以使用，如下：
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addBitmapDecodeInterceptor(MyBitmapDecodeInterceptor())
-            addDrawableDecodeInterceptor(MyDrawableDecodeInterceptor())
-        }
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addBitmapDecodeInterceptor(MyBitmapDecodeInterceptor())
+                addDrawableDecodeInterceptor(MyDrawableDecodeInterceptor())
+            }
+        }.build()
+    }
 }
 ```
 

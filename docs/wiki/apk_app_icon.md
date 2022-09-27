@@ -9,11 +9,13 @@
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addBitmapDecoder(ApkIconBitmapDecoder.Factory())
-        }
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addBitmapDecoder(ApkIconBitmapDecoder.Factory())
+            }
+        }.build()
+    }
 }
 ```
 
@@ -40,12 +42,14 @@ imageView.displayImage("/sdcard/sample.apk") {
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addFetcher(AppIconUriFetcher.Factory())
-            addBitmapDecoder(AppIconBitmapDecoder.Factory())
-        }
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addFetcher(AppIconUriFetcher.Factory())
+                addBitmapDecoder(AppIconBitmapDecoder.Factory())
+            }
+        }.build()
+    }
 }
 ```
 

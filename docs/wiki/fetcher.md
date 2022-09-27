@@ -49,11 +49,13 @@ class MyFetcher : Fetcher {
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addFetcher(MyFetcher.Factory())
-        }
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addFetcher(MyFetcher.Factory())
+            }
+        }.build()
+    }
 }
 ```
 

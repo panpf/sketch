@@ -17,11 +17,13 @@ Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+          components {
             addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
-        }
-    }.build()
+          }
+        }.build()
+    }
 }
 ```
 

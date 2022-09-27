@@ -13,11 +13,13 @@
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
-        }
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+            }
+        }.build()
+    }
 }
 ```
 

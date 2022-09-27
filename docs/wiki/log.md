@@ -2,8 +2,6 @@
 
 [Sketch] 的日志由 [Logger] 组件提供服务，默认使用 android.util.Log 输出，Tag 统一为 `Sketch`
 
-> Log 日志会影响 UI 性能，正式发布版请关闭日志输出
-
 ### 修改 Level
 
 和 android.util.Log 一样，[Logger] 也支持 Level，默认为 `INFO`
@@ -13,9 +11,11 @@
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        logger(Logger(Logger.Level.DEBUG))
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            logger(Logger(Logger.Level.DEBUG))
+        }.build()
+    }
 }
 ```
 
@@ -24,6 +24,8 @@ class MyApplication : Application(), SketchFactory {
 ```kotlin
 context.sktehc.logger.level = Logger.Level.DEBUG
 ```
+
+> 注意：过多的 Log 日志会影响 UI 流畅度，正式发布版本请将 level 设置为 INFO 及以上级别
 
 ### 修改输出
 
@@ -60,9 +62,11 @@ class MyProxy : Logger.Proxy {
 
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        logger(Logger(Logger.Level.DEBUG, MyProxy()))
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            logger(Logger(Logger.Level.DEBUG, MyProxy()))
+        }.build()
+    }
 }
 ```
 

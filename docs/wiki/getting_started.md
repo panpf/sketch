@@ -48,10 +48,12 @@ val sketch = context.sketch
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        logger(Logger(DEBUG))
-        httpStack(OkHttpStack.Builder().build())
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            logger(Logger(DEBUG))
+            httpStack(OkHttpStack.Builder().build())
+        }.build()
+    }
 }
 ```
 

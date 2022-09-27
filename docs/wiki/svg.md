@@ -11,11 +11,13 @@ Sketch 支持解码 SVG 静态图片，由 [SvgBitmapDecoder] 提供支持
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addBitmapDecoder(SvgBitmapDecoder.Factory())
-        }
-    }.build()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addBitmapDecoder(SvgBitmapDecoder.Factory())
+            }
+        }.build()
+    }
 }
 ```
 

@@ -26,23 +26,25 @@ ImageRequest 都可以使用，如下：
 ```kotlin
 class MyApplication : Application(), SketchFactory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        components {
-            addDrawableDecoder(
-                when {
-                    VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
-                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
-                    else -> GifDrawableDrawableDecoder.Factory()
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addDrawableDecoder(
+                    when {
+                        VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
+                        VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
+                        else -> GifDrawableDrawableDecoder.Factory()
+                    }
+                )
+                if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                    addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
                 }
-            )
-            if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+                if (VERSION.SDK_INT >= VERSION_CODES.R) {
+                    addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
+                }
             }
-            if (VERSION.SDK_INT >= VERSION_CODES.R) {
-                addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
-            }
-        }
-    }.build()
+        }.build()
+    }
 }
 ```
 
