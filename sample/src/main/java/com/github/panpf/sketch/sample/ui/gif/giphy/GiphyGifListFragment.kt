@@ -72,7 +72,7 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
         savedInstanceState: Bundle?
     ) {
         toolbar.apply {
-            title = "Giphy GIF"
+            title = "Giphy GIFs"
 
             listMenuViewModel.menuFlow.observeWithFragmentView(this@GiphyGifListFragment) { list ->
                 menu.clear()

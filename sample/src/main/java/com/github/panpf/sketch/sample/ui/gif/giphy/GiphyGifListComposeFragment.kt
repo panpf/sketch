@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.ui.test.insanity.compose
+package com.github.panpf.sketch.sample.ui.gif.giphy
 
 import android.view.LayoutInflater
 import android.view.View
@@ -26,20 +26,19 @@ import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
-import com.github.panpf.sketch.sample.ui.photo.pexels.compose.PhotoListContent
-import com.github.panpf.sketch.sample.ui.test.insanity.InsanityTestViewModel
+import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoListContent
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class InsanityTestComposeFragment : ToolbarFragment() {
+class GiphyGifListComposeFragment : ToolbarFragment() {
 
-    private val viewModel by viewModels<InsanityTestViewModel>()
+    private val viewModel by viewModels<GiphyGifListViewModel>()
 
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Insanity Test On Compose"
+        toolbar.title = "Giphy GIFs (Compose)"
         return ComposeView(requireContext()).apply {
             setContent {
-                PhotoListContent(viewModel.pagingFlow, disabledCache = true) { items, _, index ->
+                PhotoListContent(viewModel.pagingFlow) { items, _, index ->
                     startImageDetail(items, index)
                 }
             }

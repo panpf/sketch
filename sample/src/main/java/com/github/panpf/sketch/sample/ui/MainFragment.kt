@@ -66,20 +66,20 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                 listOf(
                     ListSeparator("Samples"),
                     Link(
-                        title = "Pexels Photos",
-                        navDirections = MainFragmentDirections.actionPexelsPhotoListFragment()
-                    ),
-                    Link(
-                        title = "Giphy GIF",
-                        navDirections = MainFragmentDirections.actionGiphyGifListFragment()
-                    ),
-                    Link(
                         title = "Local Photos",
                         navDirections = MainFragmentDirections.actionLocalPhotoListFragment(),
                         permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     ),
                     Link(
-                        title = "Local Video",
+                        title = "Pexels Photos",
+                        navDirections = MainFragmentDirections.actionPexelsPhotoListFragment()
+                    ),
+                    Link(
+                        title = "Giphy GIFs",
+                        navDirections = MainFragmentDirections.actionGiphyGifListFragment()
+                    ),
+                    Link(
+                        title = "Local Videos",
                         navDirections = MainFragmentDirections.actionLocalVideoListFragment(),
                         permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     ),
@@ -94,18 +94,18 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
 
                     ListSeparator("Jetpack Compose"),
                     Link(
-                        title = "Photos On Compose",
+                        title = "Local Photos (Compose)",
+                        navDirections = MainFragmentDirections.actionLocalPhotoListComposeFragment(),
+                        minSdk = Build.VERSION_CODES.LOLLIPOP
+                    ),
+                    Link(
+                        title = "Pexels Photos (Compose)",
                         navDirections = MainFragmentDirections.actionPexelsPhotoListComposeFragment(),
                         minSdk = Build.VERSION_CODES.LOLLIPOP
                     ),
                     Link(
-                        title = "GIF On Compose",
+                        title = "Giphy GIFs (Compose)",
                         navDirections = MainFragmentDirections.actionGiphyGifListComposeFragment(),
-                        minSdk = Build.VERSION_CODES.LOLLIPOP
-                    ),
-                    Link(
-                        title = "Insanity Test On Compose",
-                        navDirections = MainFragmentDirections.actionInsanityTestComposeFragment(),
                         minSdk = Build.VERSION_CODES.LOLLIPOP
                     ),
 
@@ -134,6 +134,11 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                     Link(
                         title = "Insanity Test",
                         navDirections = MainFragmentDirections.actionInsanityTestFragment()
+                    ),
+                    Link(
+                        title = "Insanity Test (Compose)",
+                        navDirections = MainFragmentDirections.actionInsanityTestComposeFragment(),
+                        minSdk = Build.VERSION_CODES.LOLLIPOP
                     ),
                     Link(
                         title = "Other Test",

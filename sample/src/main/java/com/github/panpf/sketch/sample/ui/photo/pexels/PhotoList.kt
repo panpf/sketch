@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.ui.photo.pexels.compose
+package com.github.panpf.sketch.sample.ui.photo.pexels
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

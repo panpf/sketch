@@ -23,6 +23,13 @@
             app:popEnterAnim="@anim/nav_pop_enter"
             app:popExitAnim="@anim/nav_pop_exit" />
         <action
+            android:id="@+id/action_localPhotoListComposeFragment"
+            app:destination="@id/localPhotoListComposeFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+        <action
             android:id="@+id/action_giphyGifListFragment"
             app:destination="@id/giphyGifListFragment"
             app:enterAnim="@anim/nav_enter"
@@ -274,13 +281,18 @@
 
     <fragment
         android:id="@+id/giphyGifListComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gif.giphy.compose.GiphyGifListComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gif.giphy.GiphyGifListComposeFragment"
         android:label="GiphyGifListComposeFragment" />
 
     <fragment
         android:id="@+id/pexelsPhotoListComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.photo.pexels.compose.PexelsPhotoListComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.photo.pexels.PexelsPhotoListComposeFragment"
         android:label="PexelsPhotoListComposeFragment" />
+
+    <fragment
+        android:id="@+id/localPhotoListComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.photo.local.LocalPhotoListComposeFragment"
+        android:label="LocalPhotoListComposeFragment" />
 
     <fragment
         android:id="@+id/insanityTestFragment"
@@ -289,7 +301,7 @@
 
     <fragment
         android:id="@+id/insanityTestComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.insanity.compose.InsanityTestComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.insanity.InsanityTestComposeFragment"
         android:label="InsanityTestComposeFragment" />
 
     <fragment
