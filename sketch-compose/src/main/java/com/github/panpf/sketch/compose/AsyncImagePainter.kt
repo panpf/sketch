@@ -367,8 +367,7 @@ class AsyncImagePainter internal constructor(
                 end = current.painter,
                 contentScale = contentScale,
                 durationMillis = transition.durationMillis,
-//                fadeStart = result !is SuccessResult || !result.isPlaceholderCached,
-                fadeStart = result !is DisplayResult.Success || result.dataFrom != MEMORY_CACHE,
+                fadeStart = transition.fadeStart,
                 preferExactIntrinsicSize = transition.preferExactIntrinsicSize
             )
         } else {
