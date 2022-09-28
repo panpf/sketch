@@ -25,7 +25,7 @@ import androidx.paging.cachedIn
 class PexelsPhotoListViewModel(application: Application) : AndroidViewModel(application) {
     val pagingFlow = Pager(
         config = PagingConfig(
-            pageSize = 80,
+            pageSize = 60,
             enablePlaceholders = false,
         ),
         initialKey = 0,

@@ -29,7 +29,7 @@ class PexelsPhotoListPagingSource(private val context: Context) :
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         val pageIndex = (params.key ?: 0).coerceAtLeast(1)
         val response = try {
-            context.apiService.pexels.curated(pageIndex)
+            context.apiService.pexels.curated(pageIndex, params.loadSize)
         } catch (e: Exception) {
             e.printStackTrace()
             return LoadResult.Error(e)

@@ -21,6 +21,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface PexelsService {
-    @GET("v1/curated?per_page=20")
-    suspend fun curated(@Query("page") pageIndex: Int): Response<PexelsCurated>
+    @GET("v1/curated")
+    suspend fun curated(@Query("page") pageIndex: Int, @Query("per_page") size: Int): Response<PexelsCurated>
 }

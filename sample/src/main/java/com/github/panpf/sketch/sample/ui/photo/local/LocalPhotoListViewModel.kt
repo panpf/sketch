@@ -26,7 +26,6 @@ class LocalPhotoListViewModel(application: Application) : AndroidViewModel(appli
     val pagingFlow = Pager(
         config = PagingConfig(
             pageSize = 60,
-            initialLoadSize = 120,
             enablePlaceholders = false,
         ),
         initialKey = 0,
