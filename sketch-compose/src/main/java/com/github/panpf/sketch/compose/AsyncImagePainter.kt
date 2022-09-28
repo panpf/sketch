@@ -33,12 +33,12 @@ import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
-import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
 import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
@@ -94,13 +94,12 @@ fun rememberAsyncImagePainter(
     contentScale: ContentScale = ContentScale.Fit,
     filterQuality: FilterQuality = DefaultFilterQuality,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-) = rememberAsyncImagePainter(
-    imageUri = imageUri,
+): AsyncImagePainter = rememberAsyncImagePainter(
+    request = DisplayRequest(LocalContext.current, imageUri, configBlock),
     transform = transformOf(placeholder, error, uriEmpty),
     onState = onStateOf(onLoading, onSuccess, onError),
     contentScale = contentScale,
     filterQuality = filterQuality,
-    configBlock = configBlock,
 )
 
 /**
@@ -134,8 +133,90 @@ internal fun rememberAsyncImagePainter(
     contentScale: ContentScale = ContentScale.Fit,
     filterQuality: FilterQuality = DefaultFilterQuality,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
+): AsyncImagePainter = rememberAsyncImagePainter(
+    request = DisplayRequest(LocalContext.current, imageUri, configBlock),
+    transform = transform,
+    onState = onState,
+    contentScale = contentScale,
+    filterQuality = filterQuality
+)
+
+/**
+ * Return an [AsyncImagePainter] that executes an [DisplayRequest] asynchronously and renders the result.
+ *
+ * **This is a lower-level API than [AsyncImage] and may not work as expected in all situations. **
+ *
+ * - [AsyncImagePainter] will not finish loading if [AsyncImagePainter.onDraw] is not called.
+ *   This can occur if a composable has an unbounded (i.e. [Constraints.Infinity]) width/height
+ *   constraint. For example, to use [AsyncImagePainter] with [LazyRow] or [LazyColumn], you must
+ *   set a bounded width or height respectively using `Modifier.width` or `Modifier.height`.
+ * - [AsyncImagePainter.state] will not transition to [State.Success] synchronously during the
+ *   composition phase. Use [SubcomposeAsyncImage] or set a custom [DisplayRequest.Builder.resizeSize] value
+ *   (e.g. `size(Size.ORIGINAL)`) if you need this.
+ *
+ * @param request [DisplayRequest].
+ * @param placeholder A [Painter] that is displayed while the image is loading.
+ * @param error A [Painter] that is displayed when the image request is unsuccessful.
+ * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uri] is null.
+ * @param onLoading Called when the image request begins loading.
+ * @param onSuccess Called when the image request completes successfully.
+ * @param onError Called when the image request completes unsuccessfully.
+ * @param contentScale Used to determine the aspect ratio scaling to be used if the canvas bounds
+ *  are a different size from the intrinsic size of the image loaded by [request]. This should be set
+ *  to the same value that's passed to [Image].
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ */
+@Composable
+fun rememberAsyncImagePainter(
+    request: DisplayRequest,
+    placeholder: Painter? = null,
+    error: Painter? = null,
+    uriEmpty: Painter? = error,
+    onLoading: ((State.Loading) -> Unit)? = null,
+    onSuccess: ((State.Success) -> Unit)? = null,
+    onError: ((State.Error) -> Unit)? = null,
+    contentScale: ContentScale = ContentScale.Fit,
+    filterQuality: FilterQuality = DefaultFilterQuality,
+): AsyncImagePainter = rememberAsyncImagePainter(
+    request = request,
+    transform = transformOf(placeholder, error, uriEmpty),
+    onState = onStateOf(onLoading, onSuccess, onError),
+    contentScale = contentScale,
+    filterQuality = filterQuality,
+)
+
+/**
+ * Return an [AsyncImagePainter] that executes an [DisplayRequest] asynchronously and renders the result.
+ *
+ * **This is a lower-level API than [AsyncImage] and may not work as expected in all situations. **
+ *
+ * - [AsyncImagePainter] will not finish loading if [AsyncImagePainter.onDraw] is not called.
+ *   This can occur if a composable has an unbounded (i.e. [Constraints.Infinity]) width/height
+ *   constraint. For example, to use [AsyncImagePainter] with [LazyRow] or [LazyColumn], you must
+ *   set a bounded width or height respectively using `Modifier.width` or `Modifier.height`.
+ * - [AsyncImagePainter.state] will not transition to [State.Success] synchronously during the
+ *   composition phase. Use [SubcomposeAsyncImage] or set a custom [DisplayRequest.Builder.resizeSize] value
+ *   (e.g. `size(Size.ORIGINAL)`) if you need this.
+ *
+ * @param request [DisplayRequest].
+ * @param transform A callback to transform a new [State] before it's applied to the
+ *  [AsyncImagePainter]. Typically this is used to overwrite the state's [Painter].
+ * @param onState Called when the state of this painter changes.
+ * @param contentScale Used to determine the aspect ratio scaling to be used if the canvas bounds
+ *  are a different size from the intrinsic size of the image loaded by [request]. This should be set
+ *  to the same value that's passed to [Image].
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ */
+@Composable
+internal fun rememberAsyncImagePainter(
+    request: DisplayRequest,
+    transform: (State) -> State = DefaultTransform,
+    onState: ((State) -> Unit)? = null,
+    contentScale: ContentScale = ContentScale.Fit,
+    filterQuality: FilterQuality = DefaultFilterQuality,
 ): AsyncImagePainter {
-    val request = DisplayRequest(LocalContext.current, imageUri, configBlock)
     validateRequest(request)
     val sketch = LocalContext.current.sketch
     val painter = remember { AsyncImagePainter(request, sketch) }
@@ -384,6 +465,7 @@ class AsyncImagePainter internal constructor(
     private fun Drawable.toPainter() = when (this) {
         // Very important, updateDisplayed() needs to set setDisplayed to keep SketchDrawable
         is SketchDrawable -> DrawablePainter(mutate())
+        is SketchStateDrawable -> DrawablePainter(mutate())
         is BitmapDrawable -> BitmapPainter(bitmap.asImageBitmap(), filterQuality = filterQuality)
         is ColorDrawable -> ColorPainter(Color(color))
         else -> DrawablePainter(mutate())

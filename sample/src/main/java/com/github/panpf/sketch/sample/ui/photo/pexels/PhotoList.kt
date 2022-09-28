@@ -50,10 +50,10 @@ fun PhotoListContent(
     disabledCache: Boolean = false,
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit
 ) {
-    val items = photoPagingFlow.collectAsLazyPagingItems()
+    val lazyPagingItems = photoPagingFlow.collectAsLazyPagingItems()
     SwipeRefresh(
-        state = SwipeRefreshState(items.loadState.refresh is LoadState.Loading),
-        onRefresh = { items.refresh() }
+        state = SwipeRefreshState(lazyPagingItems.loadState.refresh is LoadState.Loading),
+        onRefresh = { lazyPagingItems.refresh() }
     ) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 100.dp),
@@ -62,26 +62,26 @@ fun PhotoListContent(
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
         ) {
             items(
-                count = items.itemCount,
-//                key = { items[it]?.diffKey ?: "" },
+                count = lazyPagingItems.itemCount,
+//                key = { lazyPagingItems.peek(it)?.diffKey ?: "" },    // There will be duplicate content leading to key conflicts
                 contentType = { 1 }
             ) { index ->
-                val item = items[index]
+                val item = lazyPagingItems[index]
                 item?.let {
                     PhotoContent(index, it, disabledCache) { photo, index ->
-                        onClick(items.itemSnapshotList.items, photo, index)
+                        onClick(lazyPagingItems.itemSnapshotList.items, photo, index)
                     }
                 }
             }
 
-            if (items.itemCount > 0) {
+            if (lazyPagingItems.itemCount > 0) {
                 item(
                     key = "AppendState",
                     span = { GridItemSpan(this.maxLineSpan) },
                     contentType = 2
                 ) {
-                    AppendState(items.loadState.append) {
-                        items.retry()
+                    AppendState(lazyPagingItems.loadState.append) {
+                        lazyPagingItems.retry()
                     }
                 }
             }

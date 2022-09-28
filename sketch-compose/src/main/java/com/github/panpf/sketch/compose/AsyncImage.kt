@@ -2,6 +2,7 @@ package com.github.panpf.sketch.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -16,6 +17,7 @@ import androidx.compose.ui.layout.LayoutModifier
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -24,25 +26,25 @@ import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
+import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import com.github.panpf.sketch.util.Size as CoilSize
 
 /**
- * A composable that executes an [ImageRequest] asynchronously and renders the result.
+ * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *
- * @param imageUri [ImageRequest.uri] value.
+ * @param imageUri [DisplayRequest.uri] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [ImageRequest.uri] is null.
+ * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uri] is null.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -75,7 +77,7 @@ fun AsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
 ) = AsyncImage(
-    imageUri = imageUri,
+    request = DisplayRequest(LocalContext.current, imageUri, configBlock),
     contentDescription = contentDescription,
     modifier = modifier,
     transform = transformOf(placeholder, error, uriEmpty),
@@ -85,13 +87,12 @@ fun AsyncImage(
     alpha = alpha,
     colorFilter = colorFilter,
     filterQuality = filterQuality,
-    configBlock = configBlock
 )
 
 /**
- * A composable that executes an [ImageRequest] asynchronously and renders the result.
+ * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *
- * @param imageUri [ImageRequest.uri] value.
+ * @param imageUri [DisplayRequest.uri] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -123,28 +124,116 @@ fun AsyncImage(
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
+) = AsyncImage(
+    request = DisplayRequest(LocalContext.current, imageUri, configBlock),
+    contentDescription = contentDescription,
+    modifier = modifier,
+    transform = transform,
+    onState = onState,
+    alignment = alignment,
+    contentScale = contentScale,
+    alpha = alpha,
+    colorFilter = colorFilter,
+    filterQuality = filterQuality
+)
+
+/**
+ * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ *
+ * @param request [DisplayRequest].
+ * @param contentDescription Text used by accessibility services to describe what this image
+ *  represents. This should always be provided unless this image is used for decorative purposes,
+ *  and does not represent a meaningful action that a user can take.
+ * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
+ * @param placeholder A [Painter] that is displayed while the image is loading.
+ * @param error A [Painter] that is displayed when the image request is unsuccessful.
+ * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uri] is null.
+ * @param onLoading Called when the image request begins loading.
+ * @param onSuccess Called when the image request completes successfully.
+ * @param onError Called when the image request completes unsuccessfully.
+ * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
+ *  bounds defined by the width and height.
+ * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
+ *  used if the bounds are a different size from the intrinsic size of the [AsyncImagePainter].
+ * @param alpha Optional opacity to be applied to the [AsyncImagePainter] when it is rendered
+ *  onscreen.
+ * @param colorFilter Optional [ColorFilter] to apply for the [AsyncImagePainter] when it is
+ *  rendered onscreen.
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ */
+@Composable
+fun AsyncImage(
+    request: DisplayRequest,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    placeholder: Painter? = null,
+    error: Painter? = null,
+    uriEmpty: Painter? = error,
+    onLoading: ((State.Loading) -> Unit)? = null,
+    onSuccess: ((State.Success) -> Unit)? = null,
+    onError: ((State.Error) -> Unit)? = null,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    filterQuality: FilterQuality = DefaultFilterQuality,
+) = AsyncImage(
+    request = request,
+    contentDescription = contentDescription,
+    modifier = modifier,
+    transform = transformOf(placeholder, error, uriEmpty),
+    onState = onStateOf(onLoading, onSuccess, onError),
+    alignment = alignment,
+    contentScale = contentScale,
+    alpha = alpha,
+    colorFilter = colorFilter,
+    filterQuality = filterQuality,
+)
+
+/**
+ * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ *
+ * @param request [DisplayRequest].
+ * @param contentDescription Text used by accessibility services to describe what this image
+ *  represents. This should always be provided unless this image is used for decorative purposes,
+ *  and does not represent a meaningful action that a user can take.
+ * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
+ * @param transform A callback to transform a new [State] before it's applied to the
+ *  [AsyncImagePainter]. Typically this is used to modify the state's [Painter].
+ * @param onState Called when the state of this painter changes.
+ * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
+ *  bounds defined by the width and height.
+ * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
+ *  used if the bounds are a different size from the intrinsic size of the [AsyncImagePainter].
+ * @param alpha Optional opacity to be applied to the [AsyncImagePainter] when it is rendered
+ *  onscreen.
+ * @param colorFilter Optional [ColorFilter] to apply for the [AsyncImagePainter] when it is
+ *  rendered onscreen.
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ */
+@Composable
+fun AsyncImage(
+    request: DisplayRequest,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    transform: (State) -> State = DefaultTransform,
+    onState: ((State) -> Unit)? = null,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    filterQuality: FilterQuality = DefaultFilterQuality,
 ) {
     // Create and execute the image request.
+    val newRequest = updateRequest(request, contentScale)
     val painter = rememberAsyncImagePainter(
-        imageUri, transform, onState, contentScale, filterQuality
-    ) {
-        configBlock?.invoke(this)
-
-        val request = this.build()
-        val resetSizeResolver = request.resizeSize == null
-                && (request.resizeSizeResolver == null || request.resizeSizeResolver is DefaultSizeResolver)
-        if (resetSizeResolver) {
-            resizeSizeResolver(ConstraintsSizeResolver())
-        }
-
-        val resetScale = request.definedOptions.resizeScaleDecider == null
-        if (resetScale) {
-            resizeScale(contentScale.toScale())
-        }
-    }
+        newRequest, transform, onState, contentScale, filterQuality
+    )
 
     // Draw the content without a parent composable or subcomposition.
-    val sizeResolver = painter.request.resizeSizeResolver
+    val sizeResolver = newRequest.resizeSizeResolver
     Content(
         modifier = if (sizeResolver is ConstraintsSizeResolver) {
             modifier.then(sizeResolver)
@@ -188,8 +277,8 @@ internal fun Content(
     }
 )
 
-//@Composable
-//internal fun updateRequest(request: ImageRequest, contentScale: ContentScale): ImageRequest {
+@Composable
+internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale): DisplayRequest {
 //    return if (request.defined.sizeResolver == null) {
 //        val sizeResolver = if (contentScale == ContentScale.None) {
 //            SizeResolver(CoilSize.ORIGINAL)
@@ -200,7 +289,28 @@ internal fun Content(
 //    } else {
 //        request
 //    }
-//}
+    val resetSizeResolver = request.resizeSize == null
+            && (request.resizeSizeResolver == null || request.resizeSizeResolver is DefaultSizeResolver)
+    val resetScale = request.definedOptions.resizeScaleDecider == null
+    return if (resetSizeResolver || resetScale) {
+        val sizeResolver = ifOrNull(resetSizeResolver) {
+            remember { ConstraintsSizeResolver() }
+        }
+        val scale = ifOrNull(resetScale) {
+            contentScale.toScale()
+        }
+        request.newDisplayRequest {
+            if (sizeResolver != null) {
+                resizeSizeResolver(sizeResolver)
+            }
+            if (scale != null) {
+                resizeScale(scale)
+            }
+        }
+    } else {
+        request
+    }
+}
 
 /** A [SizeResolver] that computes the size from the constrains passed during the layout phase. */
 internal class ConstraintsSizeResolver : SizeResolver, LayoutModifier {
