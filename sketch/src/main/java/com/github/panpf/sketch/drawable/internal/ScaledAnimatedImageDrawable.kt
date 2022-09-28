@@ -165,4 +165,22 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     override fun unscheduleDrawable(who: Drawable, what: Runnable) {
         unscheduleSelf(what)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ScaledAnimatedImageDrawable) return false
+        if (child != other.child) return false
+        if (fitScale != other.fitScale) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = child.hashCode()
+        result = 31 * result + fitScale.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "ScaledAnimatedImageDrawable(child=$child, fitScale=$fitScale)"
+    }
 }
