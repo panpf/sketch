@@ -35,7 +35,8 @@ class InsanityTestComposeFragment : ToolbarFragment() {
     private val viewModel by viewModels<InsanityTestViewModel>()
 
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Insanity Test (Compose)"
+        toolbar.title = "Insanity Test"
+        toolbar.subtitle = "Compose"
         return ComposeView(requireContext()).apply {
             setContent {
                 PhotoListContent(viewModel.pagingFlow, disabledCache = true) { items, _, index ->

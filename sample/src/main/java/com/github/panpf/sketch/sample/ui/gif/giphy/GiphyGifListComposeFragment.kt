@@ -35,7 +35,8 @@ class GiphyGifListComposeFragment : ToolbarFragment() {
     private val viewModel by viewModels<GiphyGifListViewModel>()
 
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Giphy GIFs (Compose)"
+        toolbar.title = "Giphy GIFs"
+        toolbar.subtitle = "Compose"
         return ComposeView(requireContext()).apply {
             setContent {
                 PhotoListContent(viewModel.pagingFlow) { items, _, index ->

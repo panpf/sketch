@@ -34,7 +34,8 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
     private val viewModel by viewModels<PexelsPhotoListViewModel>()
 
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Pexels Photos (Compose)"
+        toolbar.title = "Pexels Photos"
+        toolbar.subtitle = "Compose"
         return ComposeView(requireContext()).apply {
             setContent {
                 PhotoListContent(viewModel.pagingFlow) { items, _, index ->

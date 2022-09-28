@@ -35,7 +35,8 @@ class LocalPhotoListComposeFragment : ToolbarFragment() {
     private val viewModel by viewModels<LocalPhotoListViewModel>()
 
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Local Photos (Compose)"
+        toolbar.title = "Local Photos"
+        toolbar.subtitle = "Compose"
         return ComposeView(requireContext()).apply {
             setContent {
                 PhotoListContent(viewModel.pagingFlow) { items, _, index ->
