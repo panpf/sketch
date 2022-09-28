@@ -44,7 +44,9 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
             }
 
             override fun entryRemoved(evicted: Boolean, key: String, old: Value, new: Value?) {
-                logger?.w(MODULE, "removed. ${size.formatFileSize()}. ${old.countBitmap}")
+                logger?.d(MODULE) {
+                    "removed. ${size.formatFileSize()}. ${old.countBitmap}"
+                }
                 old.countBitmap.setIsCached(false, MODULE)
             }
         }
@@ -63,25 +65,25 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
 //                throw IllegalArgumentException("Same Bitmap, different CountBitmap. ${countBitmap.info}")
 //            }
 //        }
+        if (cache[key] != null) {
+            logger?.w(MODULE, "put. exist. $countBitmap")
+            return false
+        }
         if (bitmap.allocationByteCountCompat >= maxSize * 0.7f) {
-            logger?.w(MODULE) {
+            logger?.d(MODULE) {
                 val bitmapSize = bitmap.allocationByteCountCompat.formatFileSize()
                 val maxSize = maxSize.formatFileSize()
-                "put. reject. Bitmap too big ${bitmapSize}, maxSize is $maxSize, $countBitmap"
+                "put. reject. Bitmap too big: ${bitmapSize}, maxSize is $maxSize, $countBitmap"
             }
             return false
         }
-        return if (cache[key] == null) {
-            countBitmap.setIsCached(true, MODULE)
-            cache.put(key, value)
-            logger?.d(MODULE) {
-                "put. successful. ${size.formatFileSize()}. $countBitmap"
-            }
-            true
-        } else {
-            logger?.w(MODULE, "put. exist. $countBitmap")
-            false
+
+        countBitmap.setIsCached(true, MODULE)
+        cache.put(key, value)
+        logger?.d(MODULE) {
+            "put. successful. ${size.formatFileSize()}. $countBitmap"
         }
+        return true
     }
 
     override fun remove(key: String): Value? = cache.remove(key)
@@ -135,11 +137,10 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
             cache.trimToSize(cache.maxSize() / 2)
         }
-        val releasedSize = oldSize - size
-        logger?.w(
-            MODULE,
+        logger?.d(MODULE) {
+            val releasedSize = oldSize - size
             "trim. level '${getTrimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
-        )
+        }
     }
 
     override fun keys(): Set<String> {
@@ -149,7 +150,9 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
     override fun clear() {
         val oldSize = size
         cache.evictAll()
-        logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
+        logger?.d(MODULE) {
+            "clear. cleared ${oldSize.formatFileSize()}"
+        }
     }
 
     override fun toString(): String = "$MODULE(maxSize=${maxSize.formatFileSize()})"

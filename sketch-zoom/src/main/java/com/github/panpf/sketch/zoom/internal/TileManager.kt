@@ -121,7 +121,7 @@ internal class TileManager constructor(
         }
         val tileList = lastTileList
         if (tileList == null) {
-            logger.w(SubsamplingHelper.MODULE) {
+            logger.d(SubsamplingHelper.MODULE) {
                 "refreshTiles. no tileList. " +
                         "imageSize=${imageSize}, " +
                         "drawableSize=$drawableSize, " +
@@ -162,7 +162,7 @@ internal class TileManager constructor(
         val tileList = lastTileList
         if (tileList == null) {
             if (lastSampleSize != null) {
-                logger.w(SubsamplingHelper.MODULE) {
+                logger.d(SubsamplingHelper.MODULE) {
                     "onDraw. no tileList sampleSize is $lastSampleSize. $imageUri"
                 }
             }
@@ -291,7 +291,9 @@ internal class TileManager constructor(
                     }
                 }
                 else -> {
-                    logger.w(SubsamplingHelper.MODULE, "loadTile. canceled. $tile. $imageUri")
+                    logger.d(SubsamplingHelper.MODULE) {
+                        "loadTile. canceled. $tile. $imageUri"
+                    }
                     bitmapPool.freeBitmap(bitmap, disallowReuseBitmap, "tile:jobCanceled")
                     logger.d(SubsamplingHelper.MODULE) {
                         "loadTile. freeBitmap. tile job canceled. bitmap=${bitmap.logString}. $imageUri"
@@ -311,7 +313,9 @@ internal class TileManager constructor(
         }
 
         tile.countBitmap?.run {
-            logger.w(SubsamplingHelper.MODULE, "freeTile. $tile. $imageUri")
+            logger.d(SubsamplingHelper.MODULE) {
+                "freeTile. $tile. $imageUri"
+            }
             tile.countBitmap = null
             notifyTileChanged()
         }

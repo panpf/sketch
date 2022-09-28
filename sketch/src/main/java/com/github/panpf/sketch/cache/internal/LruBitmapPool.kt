@@ -77,16 +77,16 @@ class LruBitmapPool constructor(
             logger?.w(MODULE, "put. reject. Immutable. $caller. ${bitmap.logString}. $bitmapKey")
             return false
         }
-        val bitmapSize = strategy.getSize(bitmap).toLong()
-        if (bitmapSize > maxSize * 0.7f) {
-            logger?.w(MODULE) {
-                "put. reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}. $caller. ${bitmap.logString}. $bitmapKey"
-            }
-            return false
-        }
         if (!allowedConfigs.contains(bitmap.config)) {
             logger?.w(MODULE) {
                 "put. reject. Disallowed config ${bitmap.config}. $caller. ${bitmap.logString}. $bitmapKey"
+            }
+            return false
+        }
+        val bitmapSize = strategy.getSize(bitmap).toLong()
+        if (bitmapSize > maxSize * 0.7f) {
+            logger?.d(MODULE) {
+                "put. reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}. $caller. ${bitmap.logString}. $bitmapKey"
             }
             return false
         }
@@ -158,8 +158,8 @@ class LruBitmapPool constructor(
             } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
                 trimToSize(maxSize / 2, "trim")
             }
-            val releasedSize = (oldSize - size)
-            logger?.w(MODULE) {
+            logger?.d(MODULE) {
+                val releasedSize = (oldSize - size)
                 "trim. level '${getTrimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
             }
         }
@@ -169,7 +169,9 @@ class LruBitmapPool constructor(
         synchronized(this) {
             val oldSize = size
             trimToSize(0, "clear")
-            logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
+            logger?.d(MODULE) {
+                "clear. cleared ${oldSize.formatFileSize()}"
+            }
         }
     }
 

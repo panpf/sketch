@@ -123,20 +123,20 @@ internal class SubsamplingHelper constructor(
         requiredMainThread()
 
         if (destroyed) {
-            logger.w(MODULE) { "refreshTiles. interrupted. destroyed. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. interrupted. destroyed. $imageUri" }
             return
         }
         if (paused) {
-            logger.w(MODULE) { "refreshTiles. interrupted. paused. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. interrupted. paused. $imageUri" }
             return
         }
         val manager = tileManager
         if (manager == null) {
-            logger.w(MODULE) { "refreshTiles. interrupted. initializing. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. interrupted. initializing. $imageUri" }
             return
         }
         if (zoomerHelper.rotateDegrees % 90 != 0) {
-            logger.w(MODULE) {
+            logger.d(MODULE) {
                 "refreshTiles. interrupted. rotate degrees must be in multiples of 90. $imageUri"
             }
             return
@@ -152,7 +152,7 @@ internal class SubsamplingHelper constructor(
         }
 
         if (drawableVisibleRect.isEmpty) {
-            logger.w(MODULE) {
+            logger.d(MODULE) {
                 "refreshTiles. interrupted. drawableVisibleRect is empty. drawableVisibleRect=${drawableVisibleRect}. $imageUri"
             }
             tileManager?.clean()
@@ -218,7 +218,9 @@ internal class SubsamplingHelper constructor(
         requiredMainThread()
 
         if (_destroyed) return
-        logger.w(MODULE, "destroy")
+        logger.d(MODULE) {
+            "destroy"
+        }
         _destroyed = true
         zoomerHelper.removeOnMatrixChangeListener(onMatrixChangeListener)
         scope.cancel()

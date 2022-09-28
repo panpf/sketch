@@ -38,7 +38,7 @@ fun BitmapPool.setInBitmap(
     caller: String? = null,
 ): Boolean {
     if (disallowReuseBitmap) {
-        logger?.w(MODULE) {
+        logger?.d(MODULE) {
             "setInBitmap. disallowReuseBitmap. imageSize=$imageSize, imageMimeType=$imageMimeType. $caller"
         }
         return false
@@ -48,17 +48,18 @@ fun BitmapPool.setInBitmap(
         return false
     }
     if (options.inPreferredConfig?.isAndSupportHardware() == true) {
-        logger?.e(MODULE) {
+        logger?.d(MODULE) {
             "setInBitmap. error. inPreferredConfig is HARDWARE does not support inBitmap. $caller"
         }
         return false
     }
 
+    // Going here can make the decoded Bitmap mutable so that it can be put into BitmapPool
     options.inMutable = true
 
     val inSampleSize = options.inSampleSize.coerceAtLeast(1)
     if (!isSupportInBitmap(imageMimeType, inSampleSize)) {
-        logger?.w(MODULE) {
+        logger?.d(MODULE) {
             "setInBitmap. error. " +
                     "The current configuration does not support the use of inBitmap in BitmapFactory. " +
                     "imageMimeType=$imageMimeType, inSampleSize=${options.inSampleSize}. " +
@@ -104,26 +105,23 @@ fun BitmapPool.setInBitmapForRegion(
     caller: String? = null,
 ): Boolean {
     if (disallowReuseBitmap) {
-        logger?.w(MODULE) {
+        logger?.d(MODULE) {
             "setInBitmapForRegion. disallowReuseBitmap. imageSize=$imageSize, imageMimeType=$imageMimeType. $caller"
         }
         return false
     }
     if (regionSize.isEmpty) {
-        logger?.e(
-            MODULE,
-            "setInBitmapForRegion. error. regionSize is empty: $regionSize. $caller"
-        )
+        logger?.e(MODULE, "setInBitmapForRegion. error. regionSize is empty: $regionSize. $caller")
         return false
     }
     if (options.inPreferredConfig?.isAndSupportHardware() == true) {
-        logger?.e(MODULE) {
+        logger?.d(MODULE) {
             "setInBitmapForRegion. error. inPreferredConfig is HARDWARE does not support inBitmap. $caller"
         }
         return false
     }
     if (!isSupportInBitmapForRegion(imageMimeType)) {
-        logger?.w(MODULE) {
+        logger?.d(MODULE) {
             "setInBitmapForRegion. error. " +
                     "The current configuration does not support the use of inBitmap in BitmapFactory. " +
                     "imageMimeType=$imageMimeType. " +
@@ -175,12 +173,11 @@ fun BitmapPool.getOrCreate(
         }
     }
     return get(width, height, config)
-        ?: Bitmap.createBitmap(width, height, config)
-            .apply {
-                logger?.d(MODULE) {
-                    "getOrCreate. new . ${this.logString}. $caller"
-                }
+        ?: Bitmap.createBitmap(width, height, config).apply {
+            logger?.d(MODULE) {
+                "getOrCreate. new . ${this.logString}. $caller"
             }
+        }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -204,14 +201,14 @@ fun BitmapPool.freeBitmap(
                     }
                 } else {
                     bitmap.recycle()
-                    logger?.w(MODULE) {
+                    logger?.d(MODULE) {
                         "freeBitmap. failed. execute recycle. $caller. ${bitmap.logString}"
                     }
                 }
             }
         } else {
             bitmap.recycle()
-            logger?.w(MODULE) {
+            logger?.d(MODULE) {
                 "freeBitmap. disallowReuseBitmap. execute recycle. $caller. ${bitmap.logString}"
             }
         }

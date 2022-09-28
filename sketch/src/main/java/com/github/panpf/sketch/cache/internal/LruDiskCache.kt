@@ -171,7 +171,9 @@ class LruDiskCache private constructor(
         } else {
             DiskLruCache.Util.deleteContents(directory)
         }
-        logger?.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
+        logger?.d(MODULE) {
+            "clear. cleared ${oldSize.formatFileSize()}"
+        }
     }
 
     override fun editLock(key: String): Mutex = synchronized(editLockLock) {
