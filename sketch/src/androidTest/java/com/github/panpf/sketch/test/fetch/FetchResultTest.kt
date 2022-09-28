@@ -76,7 +76,7 @@ class FetchResultTest {
             "image/jpeg"
         ).apply {
             Assert.assertEquals(
-                "FetchResult(source=FileDataSource(file='/sdcard/sample.jpeg'),mimeType='image/jpeg')",
+                "FetchResult(source=FileDataSource('/sdcard/sample.jpeg'),mimeType='image/jpeg')",
                 this.toString()
             )
         }

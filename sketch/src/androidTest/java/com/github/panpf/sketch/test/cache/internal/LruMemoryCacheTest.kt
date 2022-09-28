@@ -248,11 +248,11 @@ class LruMemoryCacheTest {
     @Test
     fun testToString() {
         LruMemoryCache(10L * 1024 * 1024).apply {
-            Assert.assertEquals("LruMemoryCache(maxSize=10MB)", toString())
+            Assert.assertEquals("LruMemoryCache(10MB)", toString())
         }
 
         LruMemoryCache(100L * 1024 * 1024).apply {
-            Assert.assertEquals("LruMemoryCache(maxSize=100MB)", toString())
+            Assert.assertEquals("LruMemoryCache(100MB)", toString())
         }
     }
 

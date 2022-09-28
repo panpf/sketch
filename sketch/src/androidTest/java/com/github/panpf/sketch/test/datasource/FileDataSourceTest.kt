@@ -139,7 +139,7 @@ class FileDataSourceTest {
             file = file
         ).apply {
             Assert.assertEquals(
-                "FileDataSource(file='${file.path}')",
+                "FileDataSource('${file.path}')",
                 toString()
             )
         }
@@ -149,7 +149,7 @@ class FileDataSourceTest {
             request = LoadRequest(context, newFileUri("/sdcard/not_found.jpeg")),
             file = File("/sdcard/not_found.jpeg")
         ).apply {
-            Assert.assertEquals("FileDataSource(file='/sdcard/not_found.jpeg')", toString())
+            Assert.assertEquals("FileDataSource('/sdcard/not_found.jpeg')", toString())
         }
     }
 }

@@ -178,7 +178,7 @@ class ContentDataSourceTest {
             contentUri = contentUri,
         ).apply {
             Assert.assertEquals(
-                "ContentDataSource(contentUri='$contentUri')",
+                "ContentDataSource('$contentUri')",
                 toString()
             )
         }
@@ -192,7 +192,7 @@ class ContentDataSourceTest {
             contentUri = errorContentUri,
         ).apply {
             Assert.assertEquals(
-                "ContentDataSource(contentUri='file:///sdcard/error.jpeg')",
+                "ContentDataSource('file:///sdcard/error.jpeg')",
                 toString()
             )
         }

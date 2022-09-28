@@ -128,7 +128,7 @@ class ResourceDataSourceTest {
             drawableId = R.drawable.ic_launcher
         ).apply {
             Assert.assertEquals(
-                "ResourceDataSource(drawableId=${R.drawable.ic_launcher})",
+                "ResourceDataSource(${R.drawable.ic_launcher})",
                 toString()
             )
         }
@@ -140,7 +140,7 @@ class ResourceDataSourceTest {
             resources = context.resources,
             drawableId = 42
         ).apply {
-            Assert.assertEquals("ResourceDataSource(drawableId=42)", toString())
+            Assert.assertEquals("ResourceDataSource(42)", toString())
         }
     }
 }

@@ -166,7 +166,7 @@ class SketchCountBitmapDrawableTest {
             dataFrom = MEMORY
         ).apply {
             Assert.assertEquals(
-                "SketchCountBitmapDrawable(${countBitmap.bitmap!!.logString},${imageInfo.toShortString()},$MEMORY,null,null,requestKey1)",
+                "SketchCountBitmapDrawable(${countBitmap.bitmap!!.logString},${imageInfo.toShortString()},$MEMORY,null,null,'requestKey1')",
                 toString()
             )
         }

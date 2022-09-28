@@ -529,10 +529,9 @@ class SketchAnimatableDrawableTest {
                     "," + imageInfo.toShortString() +
                     "," + dataFrom +
                     "," + transformedList +
-                    "," + requestKey +
+                    ",null,'" + requestKey + "'" +
                     ")",
             sketchAnimatableDrawable.toString()
         )
     }
-
 }

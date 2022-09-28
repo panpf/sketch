@@ -104,7 +104,7 @@ class AssetDataSourceTest {
             assetFileName = "sample.jpeg"
         ).apply {
             Assert.assertEquals(
-                "AssetDataSource(assetFileName='sample.jpeg')",
+                "AssetDataSource('sample.jpeg')",
                 toString()
             )
         }
@@ -114,7 +114,7 @@ class AssetDataSourceTest {
             request = LoadRequest(context, newAssetUri("not_found.jpeg")),
             assetFileName = "not_found.jpeg"
         ).apply {
-            Assert.assertEquals("AssetDataSource(assetFileName='not_found.jpeg')", toString())
+            Assert.assertEquals("AssetDataSource('not_found.jpeg')", toString())
         }
     }
 }

@@ -322,21 +322,21 @@ class DownloadRequestTest {
 
         DownloadRequest(context1, uriString1).apply {
             Assert.assertEquals(newKey(), key)
-            Assert.assertEquals("DownloadRequest($key)", toString())
+            Assert.assertEquals("DownloadRequest('$key')", toString())
         }
 
         DownloadRequest(context1, uriString1) {
             resize(100, 100)
         }.apply {
             Assert.assertEquals(newKey(), key)
-            Assert.assertEquals("DownloadRequest($key)", toString())
+            Assert.assertEquals("DownloadRequest('$key')", toString())
         }
 
         DownloadRequest(context1, uriString1) {
             memoryCachePolicy(WRITE_ONLY)
         }.apply {
             Assert.assertEquals(newKey(), key)
-            Assert.assertEquals("DownloadRequest($key)", toString())
+            Assert.assertEquals("DownloadRequest('$key')", toString())
         }
     }
 

@@ -322,21 +322,21 @@ class LoadRequestTest {
 
         LoadRequest(context1, uriString1).apply {
             Assert.assertEquals(newKey(), key)
-            Assert.assertEquals("LoadRequest($key)", toString())
+            Assert.assertEquals("LoadRequest('$key')", toString())
         }
 
         LoadRequest(context1, uriString1) {
             resize(100, 100)
         }.apply {
             Assert.assertEquals(newKey(), key)
-            Assert.assertEquals("LoadRequest($key)", toString())
+            Assert.assertEquals("LoadRequest('$key')", toString())
         }
 
         LoadRequest(context1, uriString1) {
             memoryCachePolicy(WRITE_ONLY)
         }.apply {
             Assert.assertEquals(newKey(), key)
-            Assert.assertEquals("LoadRequest($key)", toString())
+            Assert.assertEquals("LoadRequest('$key')", toString())
         }
     }
 

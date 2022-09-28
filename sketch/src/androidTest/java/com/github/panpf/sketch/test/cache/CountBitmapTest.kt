@@ -109,17 +109,17 @@ class CountBitmapTest {
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
-            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,image1)", toString())
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,'image1')", toString())
         }
 
         createCountBitmap(sketch, "image1", 200, 100).apply {
             val bitmapLogString = "Bitmap(200x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
-            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,image1)", toString())
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,'image1')", toString())
         }
 
         createCountBitmap(sketch, "image2", 100, 100).apply {
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
-            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,image2)", toString())
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,'image2')", toString())
         }
 
         createCountBitmap(sketch, "image2", 100, 100).apply {
@@ -127,13 +127,13 @@ class CountBitmapTest {
                 setIsPending(true)
             }
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
-            Assert.assertEquals("CountBitmap($bitmapLogString,1/0/0,image2)", toString())
+            Assert.assertEquals("CountBitmap($bitmapLogString,1/0/0,'image2')", toString())
         }
 
         createCountBitmap(sketch, "image2", 100, 100).apply {
             setIsCached(true)
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
-            Assert.assertEquals("CountBitmap($bitmapLogString,0/1/0,image2)", toString())
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/1/0,'image2')", toString())
         }
 
         createCountBitmap(sketch, "image2", 100, 100).apply {
@@ -141,7 +141,7 @@ class CountBitmapTest {
                 setIsDisplayed(true)
             }
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
-            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/1,image2)", toString())
+            Assert.assertEquals("CountBitmap($bitmapLogString,0/0/1,'image2')", toString())
         }
 
         createCountBitmap(sketch, "image2", 100, 100).apply {
@@ -150,7 +150,7 @@ class CountBitmapTest {
             }
             setIsCached(true)
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
-            Assert.assertEquals("CountBitmap($bitmapLogString,1/1/0,image2)", toString())
+            Assert.assertEquals("CountBitmap($bitmapLogString,1/1/0,'image2')", toString())
         }
 
         createCountBitmap(sketch, "image2", 100, 100).apply {
@@ -162,7 +162,7 @@ class CountBitmapTest {
                 setIsDisplayed(true)
             }
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
-            Assert.assertEquals("CountBitmap($bitmapLogString,1/1/1,image2)", toString())
+            Assert.assertEquals("CountBitmap($bitmapLogString,1/1/1,'image2')", toString())
         }
     }
 
