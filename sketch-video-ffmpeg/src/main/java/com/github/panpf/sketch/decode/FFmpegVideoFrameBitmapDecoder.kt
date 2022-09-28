@@ -153,7 +153,7 @@ class FFmpegVideoFrameBitmapDecoder(
                         )
                 )
         sketch.logger.d(MODULE) {
-            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
         }
         return bitmap
     }

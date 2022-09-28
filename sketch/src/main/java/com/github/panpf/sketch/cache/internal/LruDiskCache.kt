@@ -142,7 +142,7 @@ class LruDiskCache private constructor(
             logger?.d(MODULE) {
                 val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
                 val state = if (this != null) "hit" else "miss"
-                "get. $state. hitRate ${hitRatio}. $key"
+                "get. $state. hitRate ${hitRatio}. '$key'"
             }
         }
     }
@@ -239,7 +239,7 @@ class LruDiskCache private constructor(
             try {
                 cache.remove(encodedKey)
                 logger?.d(MODULE) {
-                    "delete. size ${cache.size().formatFileSize()}. $key"
+                    "delete. size ${cache.size().formatFileSize()}. '$key'"
                 }
                 true
             } catch (e: Exception) {
@@ -264,7 +264,7 @@ class LruDiskCache private constructor(
         override fun commit() {
             editor.commit()
             logger?.d(MODULE) {
-                "commit. size ${cache.size().formatFileSize()}. $key"
+                "commit. size ${cache.size().formatFileSize()}. '$key'"
             }
         }
 
@@ -275,7 +275,7 @@ class LruDiskCache private constructor(
                 e.printStackTrace()
             }
             logger?.d(MODULE) {
-                "abort. size ${cache.size().formatFileSize()}. $key"
+                "abort. size ${cache.size().formatFileSize()}. '$key'"
             }
         }
     }

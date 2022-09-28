@@ -472,7 +472,7 @@ interface DownloadRequest : ImageRequest {
     ) : BaseImageRequest(), DownloadRequest {
 
         override fun toString(): String {
-            return "DownloadRequest(${key})"
+            return "DownloadRequest('${key}')"
         }
     }
 }

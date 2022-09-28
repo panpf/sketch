@@ -80,13 +80,8 @@ class SketchAnimatableDrawable constructor(
         return result
     }
 
-    override fun toString(): String =
-        "SketchAnimatableDrawable(" +
-                animatableDrawable +
-                "," + Size(intrinsicWidth, intrinsicHeight) +
-                "," + imageInfo.toShortString() +
-                "," + dataFrom +
-                "," + transformedList +
-                "," + requestKey +
-                ")"
+    override fun toString(): String {
+        val size = Size(intrinsicWidth, intrinsicHeight)
+        return "SketchAnimatableDrawable($animatableDrawable,${size},${imageInfo.toShortString()},$dataFrom,$transformedList,$extras,'$requestKey')"
+    }
 }

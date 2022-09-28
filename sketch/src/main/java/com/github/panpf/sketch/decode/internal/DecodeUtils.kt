@@ -290,14 +290,14 @@ fun BitmapDecodeResult.appliedExifOrientation(
         caller = "appliedExifOrientation"
     )
     sketch.logger.d("appliedExifOrientation") {
-        "appliedExifOrientation. freeBitmap. bitmap=${inputBitmap.logString}. ${request.key}"
+        "appliedExifOrientation. freeBitmap. bitmap=${inputBitmap.logString}. '${request.key}'"
     }
 
     val newSize = exifOrientationHelper.applyToSize(
         Size(imageInfo.width, imageInfo.height)
     )
     sketch.logger.d("appliedExifOrientation") {
-        "appliedExifOrientation. successful. ${newBitmap.logString}. ${imageInfo}. ${request.key}"
+        "appliedExifOrientation. successful. ${newBitmap.logString}. ${imageInfo}. '${request.key}'"
     }
     return newResult(
         bitmap = newBitmap,
@@ -354,7 +354,7 @@ fun BitmapDecodeResult.appliedResize(
     }
     return if (newBitmap != null) {
         sketch.logger.d("appliedResize") {
-            "appliedResize. successful. ${newBitmap.logString}. ${imageInfo}. ${request.key}"
+            "appliedResize. successful. ${newBitmap.logString}. ${imageInfo}. '${request.key}'"
         }
         sketch.bitmapPool.freeBitmap(
             bitmap = inputBitmap,
@@ -362,7 +362,7 @@ fun BitmapDecodeResult.appliedResize(
             caller = "appliedResize"
         )
         sketch.logger.d("appliedResize") {
-            "appliedResize. freeBitmap. bitmap=${inputBitmap.logString}. ${request.key}"
+            "appliedResize. freeBitmap. bitmap=${inputBitmap.logString}. '${request.key}'"
         }
         newResult(bitmap = newBitmap) {
             addTransformed(createResizeTransformed(resize))

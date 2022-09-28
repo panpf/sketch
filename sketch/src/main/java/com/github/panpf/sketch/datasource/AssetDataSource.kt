@@ -51,6 +51,5 @@ class AssetDataSource constructor(
     override fun newInputStream(): InputStream = request.context.assets.open(assetFileName)
 
     override fun toString(): String =
-        "AssetDataSource(assetFileName='$assetFileName')"
+        "AssetDataSource('$assetFileName')"
 }
-

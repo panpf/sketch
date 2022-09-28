@@ -124,14 +124,14 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                 caller = "BitmapResultCacheDecodeInterceptor:readCache"
             )
             sketch.logger.d(MODULE) {
-                "read. inBitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
+                "read. inBitmap=${decodeOptions.inBitmap?.logString}. '${request.key}'"
             }
             try {
                 dataSource.decodeBitmap(decodeOptions)
             } catch (throwable: IllegalArgumentException) {
                 val inBitmap = decodeOptions.inBitmap
                 if (inBitmap != null && isInBitmapError(throwable)) {
-                    val message = "Bitmap decode error. Because inBitmap. ${request.key}"
+                    val message = "Bitmap decode error. Because inBitmap. '${request.key}'"
                     sketch.logger.e(MODULE, throwable, message)
 
                     sketch.bitmapPool.freeBitmap(
@@ -140,7 +140,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                         caller = "decode:error"
                     )
                     sketch.logger.d(MODULE) {
-                        "read. freeBitmap. inBitmap error. bitmap=${decodeOptions.inBitmap?.logString}. ${request.key}"
+                        "read. freeBitmap. inBitmap error. bitmap=${decodeOptions.inBitmap?.logString}. '${request.key}'"
                     }
 
                     decodeOptions.inBitmap = null
@@ -154,7 +154,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                 }
             }?.let { bitmap ->
                 sketch.logger.d(MODULE) {
-                    "read. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+                    "read. successful. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
                 }
                 BitmapDecodeResult(
                     bitmap = bitmap,

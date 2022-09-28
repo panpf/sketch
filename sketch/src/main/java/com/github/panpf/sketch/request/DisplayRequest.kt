@@ -497,7 +497,7 @@ interface DisplayRequest : ImageRequest {
     ) : BaseImageRequest(), DisplayRequest {
 
         override fun toString(): String {
-            return "DisplayRequest(${key})"
+            return "DisplayRequest('${key}')"
         }
     }
 }

@@ -175,7 +175,7 @@ class RequestExecutor {
     private fun onStart(sketch: Sketch, request: ImageRequest) {
         request.listener?.onStart(request)
         sketch.logger.d(MODULE) {
-            "Request started. ${request.key}"
+            "Request started. '${request.key}'"
         }
     }
 
@@ -199,16 +199,16 @@ class RequestExecutor {
         sketch.logger.d(MODULE) {
             when (result) {
                 is DisplayResult.Success -> {
-                    "Request Successful. ${result.drawable}. ${request.key}"
+                    "Request Successful. ${result.drawable}"
                 }
                 is LoadResult.Success -> {
-                    "Request Successful. ${result.bitmap.logString}. ${result.imageInfo}. ${result.transformedList}. ${request.key}"
+                    "Request Successful. ${result.bitmap.logString}. ${result.imageInfo}. ${result.transformedList}. '${request.key}'"
                 }
                 is DownloadResult.Success -> {
-                    "Request Successful. ${result.data}. ${request.key}"
+                    "Request Successful. ${result.data}. '${request.key}'"
                 }
                 else -> {
-                    "Request Successful. ${request.uriString}"
+                    "Request Successful. '${request.uriString}'"
                 }
             }
         }
@@ -233,11 +233,11 @@ class RequestExecutor {
         request.listener?.onError(request, result)
         if (result.exception is DepthException) {
             sketch.logger.d(MODULE) {
-                "Request failed. ${result.exception.message}. ${request.key}"
+                "Request failed. ${result.exception.message}. '${request.key}'"
             }
         } else {
             sketch.logger.e(MODULE, result.exception) {
-                "Request failed. ${result.exception.message}. ${request.key}"
+                "Request failed. ${result.exception.message}. '${request.key}'"
             }
         }
     }
@@ -245,7 +245,7 @@ class RequestExecutor {
     @MainThread
     private fun onCancel(sketch: Sketch, request: ImageRequest) {
         sketch.logger.d(MODULE) {
-            "Request canceled. ${request.key}"
+            "Request canceled. '${request.key}'"
         }
         request.listener?.onCancel(request)
     }

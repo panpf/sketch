@@ -52,5 +52,5 @@ class SketchCountBitmapDrawable constructor(
     }
 
     override fun toString(): String =
-        "SketchCountBitmapDrawable(${bitmap.logString},${imageInfo.toShortString()},$dataFrom,$transformedList,$extras,$requestKey)"
+        "SketchCountBitmapDrawable(${bitmap.logString},${imageInfo.toShortString()},$dataFrom,$transformedList,$extras,'$requestKey')"
 }

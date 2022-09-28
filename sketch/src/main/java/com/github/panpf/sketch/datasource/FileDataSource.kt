@@ -53,5 +53,5 @@ class FileDataSource constructor(
     @Throws(IOException::class)
     override fun file(): File = file
 
-    override fun toString(): String = "FileDataSource(file='${file.path}')"
+    override fun toString(): String = "FileDataSource('${file.path}')"
 }

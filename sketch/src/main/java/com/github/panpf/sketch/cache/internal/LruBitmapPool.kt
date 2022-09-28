@@ -68,7 +68,7 @@ class LruBitmapPool constructor(
         get() = _size
 
     override fun put(bitmap: Bitmap, caller: String?): Boolean {
-        val bitmapKey = "${strategy.logBitmap(bitmap)}}"
+        val bitmapKey = strategy.logBitmap(bitmap)
         if (bitmap.isRecycled) {
             logger?.w(MODULE, "put. reject. Recycled. $caller. ${bitmap.logString}. $bitmapKey")
             return false

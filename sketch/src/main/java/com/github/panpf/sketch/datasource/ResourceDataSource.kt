@@ -56,5 +56,5 @@ class ResourceDataSource constructor(
     override fun newInputStream(): InputStream =
         resources.openRawResource(drawableId)
 
-    override fun toString(): String = "ResourceDataSource(drawableId=$drawableId)"
+    override fun toString(): String = "ResourceDataSource($drawableId)"
 }

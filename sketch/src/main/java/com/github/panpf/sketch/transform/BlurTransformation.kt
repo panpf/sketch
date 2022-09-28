@@ -86,7 +86,7 @@ class BlurTransformation constructor(
         val outBitmap = fastGaussianBlur(compatAlphaBitmap, radius)
         if (outBitmap !== compatAlphaBitmap) {
             sketch.logger.d(MODULE) {
-                "transform. newBitmap. ${outBitmap.logString}. ${request.key}"
+                "transform. newBitmap. ${outBitmap.logString}. '${request.key}'"
             }
             if (compatAlphaBitmap !== input) {
                 sketch.bitmapPool.freeBitmap(
@@ -95,7 +95,7 @@ class BlurTransformation constructor(
                     caller = "BlurTransformation"
                 )
                 sketch.logger.d(MODULE) {
-                    "transform. freeBitmap. bitmap=${compatAlphaBitmap.logString}. ${request.key}"
+                    "transform. freeBitmap. bitmap=${compatAlphaBitmap.logString}. '${request.key}'"
                 }
             }
         }

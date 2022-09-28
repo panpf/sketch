@@ -474,7 +474,7 @@ interface LoadRequest : ImageRequest {
     ) : BaseImageRequest(), LoadRequest {
 
         override fun toString(): String {
-            return "LoadRequest(${key})"
+            return "LoadRequest('${key}')"
         }
     }
 }

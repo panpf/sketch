@@ -97,7 +97,7 @@ internal class TileDecoder internal constructor(
             )
         }
         logger.d(SubsamplingHelper.MODULE) {
-            "decodeRegion. inBitmap=${decodeOptions.inBitmap?.logString} $imageUri}"
+            "decodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. '$imageUri'"
         }
 
         return try {
@@ -108,7 +108,7 @@ internal class TileDecoder internal constructor(
             if (inBitmap != null && isInBitmapError(throwable)) {
                 inBitmapError = true
                 logger.e(SubsamplingHelper.MODULE, throwable) {
-                    "decodeRegion. Bitmap region decode inBitmap error. $imageUri"
+                    "decodeRegion. Bitmap region decode inBitmap error. '$imageUri'"
                 }
 
                 bitmapPool.freeBitmap(
@@ -117,7 +117,7 @@ internal class TileDecoder internal constructor(
                     caller = "tile:decodeRegion:error"
                 )
                 logger.d(SubsamplingHelper.MODULE) {
-                    "decodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. $imageUri"
+                    "decodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '$imageUri'"
                 }
 
                 decodeOptions.inBitmap = null
@@ -126,13 +126,13 @@ internal class TileDecoder internal constructor(
                 } catch (throwable1: Throwable) {
                     throwable1.printStackTrace()
                     logger.e(SubsamplingHelper.MODULE, throwable) {
-                        "decodeRegion. Bitmap region decode error. srcRect=${newSrcRect}. $imageUri"
+                        "decodeRegion. Bitmap region decode error. srcRect=${newSrcRect}. '$imageUri'"
                     }
                     null
                 }
             } else if (isSrcRectError(throwable)) {
                 logger.e(SubsamplingHelper.MODULE, throwable) {
-                    "decodeRegion. Bitmap region decode srcRect error. imageSize=$imageSize, srcRect=$newSrcRect, inSampleSize=${decodeOptions.inSampleSize}. $imageUri"
+                    "decodeRegion. Bitmap region decode srcRect error. imageSize=$imageSize, srcRect=$newSrcRect, inSampleSize=${decodeOptions.inSampleSize}. '$imageUri'"
                 }
                 null
             } else {
@@ -149,7 +149,7 @@ internal class TileDecoder internal constructor(
         return if (newBitmap != null && newBitmap != bitmap) {
             bitmapPool.freeBitmap(bitmap, disallowReuseBitmap, "tile:applyExifOrientation")
             logger.d(SubsamplingHelper.MODULE) {
-                "applyExifOrientation. freeBitmap. bitmap=${bitmap.logString}. $imageUri"
+                "applyExifOrientation. freeBitmap. bitmap=${bitmap.logString}. '$imageUri'"
             }
             newBitmap
         } else {

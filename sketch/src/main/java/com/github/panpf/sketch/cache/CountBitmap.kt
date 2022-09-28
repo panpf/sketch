@@ -111,7 +111,7 @@ class CountBitmap constructor(
     }
 
     override fun toString(): String {
-        return "CountBitmap(${bitmapLogString},$pendingCount/$cachedCount/$displayedCount,$cacheKey)"
+        return "CountBitmap(${bitmapLogString},$pendingCount/$cachedCount/$displayedCount,'$cacheKey')"
     }
 
     private fun tryFree(caller: String, pending: Boolean) {

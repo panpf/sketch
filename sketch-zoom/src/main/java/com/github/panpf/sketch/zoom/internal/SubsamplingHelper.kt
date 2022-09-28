@@ -81,10 +81,10 @@ internal class SubsamplingHelper constructor(
             if (field != value) {
                 field = value
                 if (value) {
-                    logger.d(MODULE) { "pause. $imageUri" }
+                    logger.d(MODULE) { "pause. '$imageUri'" }
                     tileManager?.clean()
                 } else {
-                    logger.d(MODULE) { "resume. $imageUri" }
+                    logger.d(MODULE) { "resume. '$imageUri'" }
                     refreshTiles()
                 }
             }
@@ -123,21 +123,21 @@ internal class SubsamplingHelper constructor(
         requiredMainThread()
 
         if (destroyed) {
-            logger.d(MODULE) { "refreshTiles. interrupted. destroyed. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. interrupted. destroyed. '$imageUri'" }
             return
         }
         if (paused) {
-            logger.d(MODULE) { "refreshTiles. interrupted. paused. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. interrupted. paused. '$imageUri'" }
             return
         }
         val manager = tileManager
         if (manager == null) {
-            logger.d(MODULE) { "refreshTiles. interrupted. initializing. $imageUri" }
+            logger.d(MODULE) { "refreshTiles. interrupted. initializing. '$imageUri'" }
             return
         }
         if (zoomerHelper.rotateDegrees % 90 != 0) {
             logger.d(MODULE) {
-                "refreshTiles. interrupted. rotate degrees must be in multiples of 90. $imageUri"
+                "refreshTiles. interrupted. rotate degrees must be in multiples of 90. '$imageUri'"
             }
             return
         }
@@ -153,7 +153,7 @@ internal class SubsamplingHelper constructor(
 
         if (drawableVisibleRect.isEmpty) {
             logger.d(MODULE) {
-                "refreshTiles. interrupted. drawableVisibleRect is empty. drawableVisibleRect=${drawableVisibleRect}. $imageUri"
+                "refreshTiles. interrupted. drawableVisibleRect is empty. drawableVisibleRect=${drawableVisibleRect}. '$imageUri'"
             }
             tileManager?.clean()
             return
@@ -161,14 +161,14 @@ internal class SubsamplingHelper constructor(
 
         if (scaling) {
             logger.d(MODULE) {
-                "refreshTiles. interrupted. scaling. $imageUri"
+                "refreshTiles. interrupted. scaling. '$imageUri'"
             }
             return
         }
 
         if (zoomerHelper.scale.format(2) <= zoomerHelper.minScale.format(2)) {
             logger.d(MODULE) {
-                "refreshTiles. interrupted. minScale. $imageUri"
+                "refreshTiles. interrupted. minScale. '$imageUri'"
             }
             tileManager?.clean()
             return

@@ -45,7 +45,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
 
             override fun entryRemoved(evicted: Boolean, key: String, old: Value, new: Value?) {
                 logger?.d(MODULE) {
-                    "removed. ${size.formatFileSize()}. ${old.countBitmap}"
+                    "removed. ${old.countBitmap}. ${size.formatFileSize()}"
                 }
                 old.countBitmap.setIsCached(false, MODULE)
             }
@@ -155,7 +155,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         }
     }
 
-    override fun toString(): String = "$MODULE(maxSize=${maxSize.formatFileSize()})"
+    override fun toString(): String = "$MODULE(${maxSize.formatFileSize()})"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

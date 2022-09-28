@@ -584,28 +584,28 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
         if (drawableWidth >= imageWidth && drawableHeight >= imageHeight) {
             logger.d(MODULE) {
-                "Don't need to use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                "Don't need to use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
                     .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
         if (!canUseSubsampling(imageWidth, imageHeight, drawableWidth, drawableHeight)) {
             logger.d(MODULE) {
-                "Can't use Subsampling. drawableSize error. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                "Can't use Subsampling. drawableSize error. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
                     .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
         if (ImageFormat.parseMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
-                "MimeType does not support Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+                "MimeType does not support Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
                     .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
             }
             return null
         }
 
         logger.d(MODULE) {
-            "Use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s"
+            "Use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
                 .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
         }
 

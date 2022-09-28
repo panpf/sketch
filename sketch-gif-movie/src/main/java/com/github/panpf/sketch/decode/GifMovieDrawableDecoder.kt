@@ -93,7 +93,7 @@ class GifMovieDrawableDecoder constructor(
                         caller = "MovieDrawable:recycle"
                     )
                     sketch.logger.d("GifMovieDrawableDecoder") {
-                        "freeBitmap. freeBitmap. bitmap=${bitmap.logString}. ${request.key}"
+                        "freeBitmap. freeBitmap. bitmap=${bitmap.logString}. '${request.key}'"
                     }
                 }
             }

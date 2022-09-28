@@ -70,7 +70,7 @@ class AppIconBitmapDecoder(
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
         )
         sketch.logger.d(MODULE) {
-            "decode. successful. ${bitmap.logString}. ${imageInfo}. ${request.key}"
+            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
         }
         return BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
             .appliedResize(sketch, request, request.resize)
