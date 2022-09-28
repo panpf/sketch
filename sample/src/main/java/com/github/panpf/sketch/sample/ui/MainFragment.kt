@@ -96,7 +96,8 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                     Link(
                         title = "Local Photos (Compose)",
                         navDirections = MainFragmentDirections.actionLocalPhotoListComposeFragment(),
-                        minSdk = Build.VERSION_CODES.LOLLIPOP
+                        minSdk = Build.VERSION_CODES.LOLLIPOP,
+                        permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     ),
                     Link(
                         title = "Pexels Photos (Compose)",

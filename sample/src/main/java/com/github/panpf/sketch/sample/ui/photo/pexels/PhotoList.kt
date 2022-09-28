@@ -33,6 +33,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
@@ -96,84 +97,54 @@ fun PhotoContent(
     disabledCache: Boolean = false,
     onClick: (photo: Photo, index: Int) -> Unit
 ) {
+    val modifier = Modifier
+        .fillMaxWidth()
+        .aspectRatio(1f)
+        .clickable {
+            onClick(photo, index)
+        }
+    val configBlock: (DisplayRequest.Builder.() -> Unit) = {
+        placeholder(
+            IconStateImage(
+                drawable.ic_image_outline,
+                ResColor(color.placeholder_bg)
+            )
+        )
+        error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
+        crossfade()
+        resizeApplyToDrawable()
+        if (disabledCache) {
+            downloadCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+        }
+    }
     when (index % 3) {
         0 -> {
             com.github.panpf.sketch.compose.AsyncImage(
                 imageUri = photo.listThumbnailUrl,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .clickable {
-                        onClick(photo, index)
-                    },
+                modifier = modifier,
                 contentScale = ContentScale.Crop,
-                contentDescription = ""
-            ) {
-                placeholder(
-                    IconStateImage(
-                        drawable.ic_image_outline,
-                        ResColor(color.placeholder_bg)
-                    )
-                )
-                error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
-                crossfade()
-                if (disabledCache) {
-                    downloadCachePolicy(DISABLED)
-                    resultCachePolicy(DISABLED)
-                    memoryCachePolicy(DISABLED)
-                }
-            }
+                contentDescription = "",
+                configBlock = configBlock
+            )
         }
         1 -> {
             com.github.panpf.sketch.compose.SubcomposeAsyncImage(
                 imageUri = photo.listThumbnailUrl,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .clickable {
-                        onClick(photo, index)
-                    },
+                modifier = modifier,
                 contentScale = ContentScale.Crop,
-                contentDescription = ""
-            ) {
-                placeholder(
-                    IconStateImage(
-                        drawable.ic_image_outline,
-                        ResColor(color.placeholder_bg)
-                    )
-                )
-                error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
-                crossfade()
-                if (disabledCache) {
-                    downloadCachePolicy(DISABLED)
-                    resultCachePolicy(DISABLED)
-                    memoryCachePolicy(DISABLED)
-                }
-            }
+                contentDescription = "",
+                configBlock = configBlock
+            )
         }
         else -> {
             Image(
-                painter = com.github.panpf.sketch.compose.rememberAsyncImagePainter(imageUri = photo.listThumbnailUrl) {
-                    placeholder(
-                        IconStateImage(
-                            drawable.ic_image_outline,
-                            ResColor(color.placeholder_bg)
-                        )
-                    )
-                    error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
-                    crossfade()
-                    if (disabledCache) {
-                        downloadCachePolicy(DISABLED)
-                        resultCachePolicy(DISABLED)
-                        memoryCachePolicy(DISABLED)
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .clickable {
-                        onClick(photo, index)
-                    },
+                painter = com.github.panpf.sketch.compose.rememberAsyncImagePainter(
+                    imageUri = photo.listThumbnailUrl,
+                    configBlock = configBlock
+                ),
+                modifier = modifier,
                 contentScale = ContentScale.Crop,
                 contentDescription = ""
             )
