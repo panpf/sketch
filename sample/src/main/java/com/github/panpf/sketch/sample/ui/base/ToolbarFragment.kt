@@ -66,6 +66,18 @@ abstract class ToolbarFragment : BaseFragment() {
         parent: ViewGroup?
     ): View
 
+    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        onViewCreated(this.toolbar!!, savedInstanceState)
+    }
+
+    protected open fun onViewCreated(
+        toolbar: Toolbar,
+        savedInstanceState: Bundle?
+    ) {
+
+    }
+
     override fun onDestroyView() {
         this.toolbar = null
         super.onDestroyView()

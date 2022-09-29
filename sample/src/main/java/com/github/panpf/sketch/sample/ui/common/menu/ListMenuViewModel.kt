@@ -34,17 +34,24 @@ import kotlinx.coroutines.flow.StateFlow
 class ListMenuViewModel(
     application1: Application,
     private val showLayoutModeMenu: Boolean,
-    private val showPlayMenu: Boolean
+    private val showPlayMenu: Boolean,
+    private val fromComposePage: Boolean = false,
 ) : LifecycleAndroidViewModel(application1) {
 
     class Factory(
         val application1: Application,
         val showLayoutModeMenu: Boolean,
-        val showPlayMenu: Boolean
+        val showPlayMenu: Boolean,
+        val fromComposePage: Boolean = false,
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")
-            return ListMenuViewModel(application1, showLayoutModeMenu, showPlayMenu) as T
+            return ListMenuViewModel(
+                application1,
+                showLayoutModeMenu,
+                showPlayMenu,
+                fromComposePage
+            ) as T
         }
     }
 
@@ -93,7 +100,7 @@ class ListMenuViewModel(
                     title = "Settings",
                     iconResId = R.drawable.ic_settings,
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS,
-                    navDirections = MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.LIST.name)
+                    navDirections = MainFragmentDirections.actionGlobalSettingsDialogFragment(if (fromComposePage) Page.COMPOSE_LIST.name else Page.LIST.name)
                 )
             )
         }))

@@ -32,13 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.compose.AppendState
+import com.github.panpf.sketch.sample.util.ImageType.IN_LIST
+import com.github.panpf.sketch.sample.util.setApplySettings
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -48,7 +49,6 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun PhotoListContent(
     photoPagingFlow: Flow<PagingData<Photo>>,
-    disabledCache: Boolean = false,
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit
 ) {
     val lazyPagingItems = photoPagingFlow.collectAsLazyPagingItems()
@@ -69,7 +69,7 @@ fun PhotoListContent(
             ) { index ->
                 val item = lazyPagingItems[index]
                 item?.let {
-                    PhotoContent(index, it, disabledCache) { photo, index ->
+                    PhotoContent(index, it) { photo, index ->
                         onClick(lazyPagingItems.itemSnapshotList.items, photo, index)
                     }
                 }
@@ -94,7 +94,6 @@ fun PhotoListContent(
 fun PhotoContent(
     index: Int,
     photo: Photo,
-    disabledCache: Boolean = false,
     onClick: (photo: Photo, index: Int) -> Unit
 ) {
     val modifier = Modifier
@@ -104,20 +103,11 @@ fun PhotoContent(
             onClick(photo, index)
         }
     val configBlock: (DisplayRequest.Builder.() -> Unit) = {
-        placeholder(
-            IconStateImage(
-                drawable.ic_image_outline,
-                ResColor(color.placeholder_bg)
-            )
-        )
+        setApplySettings(IN_LIST)
+        placeholder(IconStateImage(drawable.ic_image_outline, ResColor(color.placeholder_bg)))
         error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
         crossfade()
         resizeApplyToDrawable()
-        if (disabledCache) {
-            downloadCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            memoryCachePolicy(DISABLED)
-        }
     }
     when (index % 3) {
         0 -> {

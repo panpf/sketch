@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.photo.pexels
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,20 +27,55 @@ import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
+import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
+import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class PexelsPhotoListComposeFragment : ToolbarFragment() {
 
     private val viewModel by viewModels<PexelsPhotoListViewModel>()
+    private val listMenuViewModel by viewModels<ListMenuViewModel> {
+        ListMenuViewModel.Factory(
+            requireActivity().application,
+            showLayoutModeMenu = false,
+            showPlayMenu = false,
+            fromComposePage = true,
+        )
+    }
 
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Pexels Photos"
-        toolbar.subtitle = "Compose"
         return ComposeView(requireContext()).apply {
             setContent {
                 PhotoListContent(viewModel.pagingFlow) { items, _, index ->
                     startImageDetail(items, index)
+                }
+            }
+        }
+
+        // todo Listen to various global settings options and refresh the page
+    }
+
+    override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {
+        super.onViewCreated(toolbar, savedInstanceState)
+        toolbar.apply {
+            title = "Pexels Photos"
+            subtitle = "Compose"
+            listMenuViewModel.menuFlow.observeWithFragmentView(this@PexelsPhotoListComposeFragment) { list ->
+                menu.clear()
+                list.forEachIndexed { groupIndex, group ->
+                    group.items.forEachIndexed { index, menuItemInfo ->
+                        menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                            menuItemInfo.iconResId?.let { iconResId ->
+                                setIcon(iconResId)
+                            }
+                            setOnMenuItemClickListener {
+                                menuItemInfo.onClick(this@PexelsPhotoListComposeFragment)
+                                true
+                            }
+                            setShowAsAction(menuItemInfo.showAsAction)
+                        }
+                    }
                 }
             }
         }

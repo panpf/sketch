@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.test.insanity
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,21 +27,56 @@ import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
+import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoListContent
+import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class InsanityTestComposeFragment : ToolbarFragment() {
 
     private val viewModel by viewModels<InsanityTestViewModel>()
+    private val listMenuViewModel by viewModels<ListMenuViewModel> {
+        ListMenuViewModel.Factory(
+            requireActivity().application,
+            showLayoutModeMenu = false,
+            showPlayMenu = false,
+            fromComposePage = true,
+        )
+    }
 
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "Insanity Test"
-        toolbar.subtitle = "Compose"
         return ComposeView(requireContext()).apply {
             setContent {
-                PhotoListContent(viewModel.pagingFlow, disabledCache = true) { items, _, index ->
+                PhotoListContent(viewModel.pagingFlow) { items, _, index ->
                     startImageDetail(items, index)
+                }
+            }
+        }
+
+        // todo Listen to various global settings options and refresh the page
+    }
+
+    override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {
+        super.onViewCreated(toolbar, savedInstanceState)
+        toolbar.apply {
+            title = "Insanity Test"
+            subtitle = "Compose"
+            listMenuViewModel.menuFlow.observeWithFragmentView(this@InsanityTestComposeFragment) { list ->
+                menu.clear()
+                list.forEachIndexed { groupIndex, group ->
+                    group.items.forEachIndexed { index, menuItemInfo ->
+                        menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                            menuItemInfo.iconResId?.let { iconResId ->
+                                setIcon(iconResId)
+                            }
+                            setOnMenuItemClickListener {
+                                menuItemInfo.onClick(this@InsanityTestComposeFragment)
+                                true
+                            }
+                            setShowAsAction(menuItemInfo.showAsAction)
+                        }
+                    }
                 }
             }
         }

@@ -33,6 +33,7 @@ import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import com.github.panpf.sketch.sample.ui.setting.Page.COMPOSE_LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.NONE
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
@@ -96,8 +97,10 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 add(ListSeparator("Zoom"))
                 addAll(makeZoomMenuList())
             }
-            add(ListSeparator("Decode"))
-            addAll(makeDecodeMenuList())
+            if (page != COMPOSE_LIST) {
+                add(ListSeparator("Decode"))
+                addAll(makeDecodeMenuList())
+            }
             add(ListSeparator("Cache"))
             addAll(makeCacheMenuList())
             add(ListSeparator("Other"))

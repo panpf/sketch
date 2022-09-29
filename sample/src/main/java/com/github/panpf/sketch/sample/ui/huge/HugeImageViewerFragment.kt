@@ -27,7 +27,9 @@ import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
+import com.github.panpf.sketch.sample.util.ImageType.IN_DETAIL
 import com.github.panpf.sketch.sample.util.observeWithFragmentView
+import com.github.panpf.sketch.sample.util.setApplySettings
 import com.github.panpf.sketch.viewability.showRingProgressIndicator
 
 class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>() {
@@ -68,6 +70,7 @@ class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>(
             }
 
             displayImage(args.imageUri) {
+                setApplySettings(IN_DETAIL)
                 lifecycle(viewLifecycleOwner.lifecycle)
             }
         }

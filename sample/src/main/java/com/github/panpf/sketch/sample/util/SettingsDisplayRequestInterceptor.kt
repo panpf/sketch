@@ -26,11 +26,30 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
+import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
+import com.github.panpf.sketch.resize.LongImageScaleDecider
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.util.ImageType.IN_LIST
 import com.github.panpf.sketch.sample.widget.MyListImageView
 import com.github.panpf.sketch.target.ViewDisplayTarget
+
+private const val APPLY_SETTINGS_KEY = "app:applySettings:imageType"
+
+enum class ImageType {
+    IN_LIST, IN_DETAIL
+}
+
+fun DisplayRequest.Builder.setApplySettings(imageType: ImageType): DisplayRequest.Builder = apply {
+    setParameter(APPLY_SETTINGS_KEY, imageType.name)
+}
 
 class SettingsDisplayRequestInterceptor : RequestInterceptor {
 
@@ -42,9 +61,35 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
         if (request !is DisplayRequest) {
             return chain.proceed(request)
         }
+        val imageType =
+            request.parameters?.get(APPLY_SETTINGS_KEY)?.let { ImageType.valueOf(it.toString()) }
+                ?: return chain.proceed(request)
 
         val newRequest = request.newDisplayRequest {
             val prefsService = request.context.prefsService
+
+            if (imageType == IN_LIST) {
+                if (request.definedOptions.resizeScaleDecider == null) {
+                    resizeScale(
+                        when (val value = prefsService.resizeScale.value) {
+                            "LongImageMode" -> LongImageScaleDecider(
+                                longImage = Scale.valueOf(prefsService.longImageResizeScale.value),
+                                otherImage = Scale.valueOf(prefsService.otherImageResizeScale.value)
+                            )
+                            else -> FixedScaleDecider(Scale.valueOf(value))
+                        }
+                    )
+                }
+                if (request.definedOptions.resizePrecisionDecider == null) {
+                    resizePrecision(
+                        when (val value = prefsService.resizePrecision.value) {
+                            "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
+                            else -> FixedPrecisionDecider(Precision.valueOf(value))
+                        }
+                    )
+                }
+            }
+
             if (request.definedOptions.memoryCachePolicy == null) {
                 if (prefsService.disabledBitmapMemoryCache.value) {
                     memoryCachePolicy(DISABLED)

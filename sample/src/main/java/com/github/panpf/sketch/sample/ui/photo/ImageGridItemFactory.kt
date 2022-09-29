@@ -27,18 +27,12 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateDisplayImageOptions
-import com.github.panpf.sketch.resize.FixedPrecisionDecider
-import com.github.panpf.sketch.resize.FixedScaleDecider
-import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
-import com.github.panpf.sketch.resize.LongImageScaleDecider
-import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
-import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.sample.util.ImageType.IN_LIST
+import com.github.panpf.sketch.sample.util.setApplySettings
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
@@ -141,21 +135,7 @@ class ImageGridItemFactory(val disabledCache: Boolean = false) :
             }
 
             displayImage(data.listThumbnailUrl) {
-                resizeScale(
-                    when (val value = prefsService.resizeScale.value) {
-                        "LongImageMode" -> LongImageScaleDecider(
-                            longImage = Scale.valueOf(prefsService.longImageResizeScale.value),
-                            otherImage = Scale.valueOf(prefsService.otherImageResizeScale.value)
-                        )
-                        else -> FixedScaleDecider(Scale.valueOf(value))
-                    }
-                )
-                resizePrecision(
-                    when (val value = prefsService.resizePrecision.value) {
-                        "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
-                        else -> FixedPrecisionDecider(Precision.valueOf(value))
-                    }
-                )
+                setApplySettings(IN_LIST)
             }
         }
     }

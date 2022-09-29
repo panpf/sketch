@@ -23,6 +23,8 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.VideoItemBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.sample.util.ImageType.IN_LIST
+import com.github.panpf.sketch.sample.util.setApplySettings
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
@@ -54,7 +56,9 @@ class LocalVideoItemFactory :
         absoluteAdapterPosition: Int,
         data: VideoInfo
     ) {
-        binding.videoItemIconImage.displayImage(data.path)
+        binding.videoItemIconImage.displayImage(data.path) {
+            setApplySettings(IN_LIST)
+        }
         binding.videoItemNameText.text = data.title
         binding.videoItemSizeText.text = data.getTempFormattedSize(context)
         binding.videoItemDateText.text = data.tempFormattedDate
