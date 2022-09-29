@@ -56,7 +56,6 @@ import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.Target
@@ -151,7 +150,7 @@ interface ImageRequest {
      *
      * Only works on [LoadRequest] and [DisplayRequest]
      */
-    val resizeSizeResolver: SizeResolver?
+    val resizeSizeResolver: SizeResolver
 
     /**
      * Decide what Precision to use with [resizeSizeResolver] to calculate the size of the final Bitmap
@@ -247,8 +246,6 @@ interface ImageRequest {
 
     /** Components that are only valid for the current request */
     val componentRegistry: ComponentRegistry?
-
-    abstract class BaseImageRequest : ImageRequest
 
     /**
      * Create a new [ImageRequest.Builder] based on the current [ImageRequest].
@@ -463,100 +460,12 @@ interface ImageRequest {
             }
 
         /**
-         * Set how to resize image
-         *
-         * @param size Expected Bitmap size
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         * Set the [SizeResolver] to lazy resolve the requested size.
          *
          * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resize(
-            size: Size,
-            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
-            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
-        ): Builder = apply {
-            definedOptionsBuilder.resize(size, precision, scale)
-        }
-
-        /**
-         * Set how to resize image
-         *
-         * @param size Expected Bitmap size
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resize(
-            size: Size,
-            precision: Precision = EXACTLY,
-            scale: Scale = CENTER_CROP
-        ): Builder = apply {
-            definedOptionsBuilder.resize(size, precision, scale)
-        }
-
-        /**
-         * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resize(size: Size): Builder = apply {
-            definedOptionsBuilder.resize(size)
-        }
-
-        /**
-         * Set how to resize image
-         *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
-            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
-        ): Builder = apply {
-            definedOptionsBuilder.resize(width, height, precision, scale)
-        }
-
-        /**
-         * Set how to resize image
-         *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precision: Precision = EXACTLY,
-            scale: Scale = CENTER_CROP
-        ): Builder = apply {
-            definedOptionsBuilder.resize(width, height, precision, scale)
-        }
-
-        /**
-         * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
-         *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resize(@Px width: Int, @Px height: Int): Builder = apply {
-            definedOptionsBuilder.resize(width, height)
+        open fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+            definedOptionsBuilder.resizeSize(sizeResolver)
         }
 
         /**
@@ -564,7 +473,7 @@ interface ImageRequest {
          *
          * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resizeSize(size: Size?): Builder = apply {
+        open fun resizeSize(size: Size): Builder = apply {
             definedOptionsBuilder.resizeSize(size)
         }
 
@@ -575,15 +484,6 @@ interface ImageRequest {
          */
         open fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
             definedOptionsBuilder.resizeSize(width, height)
-        }
-
-        /**
-         * Set the [SizeResolver] to lazy resolve the requested size.
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
-            definedOptionsBuilder.resizeSizeResolver(sizeResolver)
         }
 
         /**
@@ -879,8 +779,7 @@ interface ImageRequest {
             val progressListener = combinationProgressListener()
             val lifecycle = lifecycle ?: resolveLifecycle() ?: GlobalLifecycle
             val definedOptions = definedOptionsBuilder.merge(viewTargetOptions).build()
-            val globalImageOptions = context.sketch.globalImageOptions
-            val finalOptions = definedOptions.merged(defaultOptions).merged(globalImageOptions)
+            val finalOptions = definedOptions.merged(defaultOptions)
             val depth = finalOptions.depth ?: NETWORK
             val parameters = finalOptions.parameters
             val httpHeaders = finalOptions.httpHeaders
@@ -894,7 +793,7 @@ interface ImageRequest {
             val resizeSizeResolver = finalOptions.resizeSizeResolver
                 ?: resolveResizeSizeResolver()
             val resizePrecisionDecider = finalOptions.resizePrecisionDecider
-                ?: if (finalOptions.resizeSizeResolver == null) {
+                ?: if (finalOptions.resizeSizeResolver == null) {   // todo default change to LESS_PIXELS
                     FixedPrecisionDecider(LESS_PIXELS)
                 } else {
                     FixedPrecisionDecider(EXACTLY)

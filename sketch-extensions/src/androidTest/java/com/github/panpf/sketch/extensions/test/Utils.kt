@@ -24,7 +24,10 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Size
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 fun getTestContextAndNewSketch(): Pair<Context, Sketch> {
@@ -59,4 +62,8 @@ val Drawable.intrinsicSize: Size
 fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null): Size {
     val sampleSize = calculateSampleSize(imageSize, targetSize)
     return calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
+}
+
+fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
+    return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size() })
 }

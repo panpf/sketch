@@ -383,11 +383,10 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
      */
     @WorkerThread
     fun newBitmapDecoder(
-        request: ImageRequest,
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): BitmapDecoder =
-        request.componentRegistry
+        requestContext.request.componentRegistry
             ?.newBitmapDecoderOrNull(sketch, requestContext, fetchResult)
             ?: registry.newBitmapDecoder(sketch, requestContext, fetchResult)
 
@@ -396,11 +395,10 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
      */
     @WorkerThread
     fun newDrawableDecoder(
-        request: ImageRequest,
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): DrawableDecoder =
-        request.componentRegistry
+        requestContext.request.componentRegistry
             ?.newDrawableDecoderOrNull(sketch, requestContext, fetchResult)
             ?: registry.newDrawableDecoder(sketch, requestContext, fetchResult)
 

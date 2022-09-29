@@ -26,7 +26,6 @@ import com.github.panpf.sketch.decode.BitmapDecodeException
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ifOrNull
@@ -45,31 +44,17 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
     @WorkerThread
     override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
         val sketch = chain.sketch
-        val request = chain.request
         val requestContext = chain.requestContext
         val resultCache = sketch.resultCache
-        val resultCachePolicy = request.resultCachePolicy
+        val resultCachePolicy = requestContext.request.resultCachePolicy
 
         return if (resultCachePolicy.isReadOrWrite) {
-            val resultCacheDataKey = "${requestContext.cacheKey}_result_data"
-            val resultCacheMetaKey = "${requestContext.cacheKey}_result_meta"
             resultCache.lockResultCache(requestContext) {
                 ifOrNull(resultCachePolicy.readEnabled) {
-                    readCache(
-                        sketch = sketch,
-                        request = request,
-                        requestContext = requestContext,
-                        resultCacheDataKey = resultCacheDataKey,
-                        resultCacheMetaKey = resultCacheMetaKey
-                    )
+                    readCache(sketch, requestContext)
                 } ?: chain.proceed().apply {
                     if (resultCachePolicy.writeEnabled) {
-                        writeCache(
-                            sketch = sketch,
-                            result = this,
-                            resultCacheDataKey = resultCacheDataKey,
-                            resultCacheMetaKey = resultCacheMetaKey
-                        )
+                        writeCache(sketch, requestContext, result = this)
                     }
                 }
             }
@@ -82,8 +67,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         requestContext: RequestContext,
         block: suspend () -> R
     ): R {
-        val resultCacheLockKey = "${requestContext.cacheKey}_result"
-        val lock: Mutex = editLock(resultCacheLockKey)
+        val lock: Mutex = editLock(requestContext.resultCacheLockKey)
         lock.lock()
         try {
             return block()
@@ -95,14 +79,11 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
     @WorkerThread
     private fun readCache(
         sketch: Sketch,
-        request: ImageRequest,
         requestContext: RequestContext,
-        resultCacheDataKey: String,
-        resultCacheMetaKey: String,
     ): BitmapDecodeResult? {
         val resultCache = sketch.resultCache
-        val bitmapDataDiskCacheSnapshot = resultCache[resultCacheDataKey]
-        val bitmapMetaDiskCacheSnapshot = resultCache[resultCacheMetaKey]
+        val bitmapDataDiskCacheSnapshot = resultCache[requestContext.resultCacheDataKey]
+        val bitmapMetaDiskCacheSnapshot = resultCache[requestContext.resultCacheMetaKey]
         if (bitmapDataDiskCacheSnapshot == null || bitmapMetaDiskCacheSnapshot == null) {
             kotlin.runCatching { bitmapDataDiskCacheSnapshot?.remove() }
             kotlin.runCatching { bitmapMetaDiskCacheSnapshot?.remove() }
@@ -134,15 +115,21 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             }
 
             val dataSource =
-                DiskCacheDataSource(sketch, request, RESULT_CACHE, bitmapDataDiskCacheSnapshot)
+                DiskCacheDataSource(
+                    sketch,
+                    requestContext.request,
+                    RESULT_CACHE,
+                    bitmapDataDiskCacheSnapshot
+                )
             val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory(true)
-            val decodeOptions = request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
-                .toBitmapOptions()
+            val decodeOptions =
+                requestContext.request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
+                    .toBitmapOptions()
             sketch.bitmapPool.setInBitmap(
                 options = decodeOptions,
                 imageSize = Size(cacheImageInfo.width, cacheImageInfo.height),
                 imageMimeType = ImageFormat.PNG.mimeType,
-                disallowReuseBitmap = request.disallowReuseBitmap,
+                disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
                 caller = "BitmapResultCacheDecodeInterceptor:readCache"
             )
             sketch.logger.d(MODULE) {
@@ -158,7 +145,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
 
                     sketch.bitmapPool.freeBitmap(
                         bitmap = inBitmap,
-                        disallowReuseBitmap = request.disallowReuseBitmap,
+                        disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
                         caller = "decode:error"
                     )
                     sketch.logger.d(MODULE) {
@@ -197,9 +184,8 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
     @WorkerThread
     private fun writeCache(
         sketch: Sketch,
+        requestContext: RequestContext,
         result: BitmapDecodeResult,
-        resultCacheDataKey: String,
-        resultCacheMetaKey: String,
     ): Boolean {
         val transformedList = result.transformedList
         if (transformedList.isNullOrEmpty()) {
@@ -207,8 +193,8 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         }
 
         val resultCache = sketch.resultCache
-        val bitmapDataEditor = resultCache.edit(resultCacheDataKey)
-        val metaDataEditor = resultCache.edit(resultCacheMetaKey)
+        val bitmapDataEditor = resultCache.edit(requestContext.resultCacheDataKey)
+        val metaDataEditor = resultCache.edit(requestContext.resultCacheMetaKey)
         if (bitmapDataEditor == null || metaDataEditor == null) {
             kotlin.runCatching { bitmapDataEditor?.abort() }
             kotlin.runCatching { metaDataEditor?.abort() }
@@ -249,8 +235,8 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             e.printStackTrace()
             bitmapDataEditor.abort()
             metaDataEditor.abort()
-            resultCache.remove(resultCacheDataKey)
-            resultCache.remove(resultCacheMetaKey)
+            resultCache.remove(requestContext.resultCacheDataKey)
+            resultCache.remove(requestContext.resultCacheMetaKey)
             false
         }
     }
@@ -267,3 +253,12 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         return javaClass.hashCode()
     }
 }
+
+val RequestContext.resultCacheDataKey: String
+    get() = "${cacheKey}_result_data"
+
+val RequestContext.resultCacheMetaKey: String
+    get() = "${cacheKey}_result_meta"
+
+val RequestContext.resultCacheLockKey: String
+    get() = "${cacheKey}_result"

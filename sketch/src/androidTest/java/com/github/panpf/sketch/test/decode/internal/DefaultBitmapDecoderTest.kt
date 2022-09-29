@@ -51,6 +51,7 @@ import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
@@ -68,9 +69,15 @@ class DefaultBitmapDecoderTest {
     fun testDefault() {
         val (context, sketch) = getTestContextAndNewSketch()
 
-        LoadRequest(context, newAssetUri("sample.jpeg")).run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
+        LoadRequest(context, newAssetUri("sample.jpeg")) {
+            resizeSize(3000, 3000)
+            resizePrecision(LESS_PIXELS)
+        }.run {
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
@@ -81,9 +88,15 @@ class DefaultBitmapDecoderTest {
             Assert.assertNull(transformedList)
         }
 
-        LoadRequest(context, newAssetUri("sample.webp")).run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.webp"))
-                .let { runBlocking { it.decode() } }
+        LoadRequest(context, newAssetUri("sample.webp")) {
+            resizeSize(3000, 3000)
+            resizePrecision(LESS_PIXELS)
+        }.run {
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.webp")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -100,9 +113,15 @@ class DefaultBitmapDecoderTest {
 
         // exif
         ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
-            LoadRequest(context, it.file.path).run {
-                DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, it.file))
-                    .let { runBlocking { it.decode() } }
+            LoadRequest(context, it.file.path) {
+                resizeSize(3000, 3000)
+                resizePrecision(LESS_PIXELS)
+            }.run {
+                DefaultBitmapDecoder(
+                    sketch,
+                    this.toRequestContext(),
+                    FileDataSource(sketch, this, it.file)
+                ).let { runBlocking { it.decode() } }
             }.apply {
                 Assert.assertEquals("Bitmap(1500x750,ARGB_8888)", bitmap.toShortInfoString())
                 Assert.assertEquals(
@@ -120,10 +139,15 @@ class DefaultBitmapDecoderTest {
         val (context, sketch) = getTestContextAndNewSketch()
 
         LoadRequest(context, newAssetUri("sample.jpeg")) {
+            resizeSize(3000, 3000)
+            resizePrecision(LESS_PIXELS)
             bitmapConfig(RGB_565)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
+            DefaultBitmapDecoder(
+                sketch = sketch,
+                requestContext = this.toRequestContext(),
+                dataSource = AssetDataSource(sketch, this, "sample.jpeg")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1291x1936,RGB_565)", bitmap.toShortInfoString())
             Assert.assertEquals(
@@ -135,10 +159,15 @@ class DefaultBitmapDecoderTest {
         }
 
         LoadRequest(context, newAssetUri("sample.webp")) {
+            resizeSize(3000, 3000)
+            resizePrecision(LESS_PIXELS)
             bitmapConfig(RGB_565)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.webp"))
-                .let { runBlocking { it.decode() } }
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.webp")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,RGB_565)", bitmap.toShortInfoString())
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -160,9 +189,15 @@ class DefaultBitmapDecoderTest {
 
         val (context, sketch) = getTestContextAndNewSketch()
 
-        LoadRequest(context, newAssetUri("sample.jpeg")).run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
+        LoadRequest(context, newAssetUri("sample.jpeg")) {
+            resizeSize(3000, 3000)
+            resizePrecision(LESS_PIXELS)
+        }.run {
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
@@ -174,9 +209,15 @@ class DefaultBitmapDecoderTest {
             Assert.assertEquals(ColorSpace.get(SRGB), bitmap.colorSpace)
         }
 
-        LoadRequest(context, newAssetUri("sample.webp")).run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.webp"))
-                .let { runBlocking { it.decode() } }
+        LoadRequest(context, newAssetUri("sample.webp")) {
+            resizeSize(3000, 3000)
+            resizePrecision(LESS_PIXELS)
+        }.run {
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.webp")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -193,10 +234,15 @@ class DefaultBitmapDecoderTest {
         }
 
         LoadRequest(context, newAssetUri("sample.jpeg")) {
+            resizeSize(3000, 3000)
+            resizePrecision(LESS_PIXELS)
             colorSpace(ColorSpace.get(ADOBE_RGB))
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
@@ -209,10 +255,15 @@ class DefaultBitmapDecoderTest {
         }
 
         LoadRequest(context, newAssetUri("sample.webp")) {
+            resizeSize(3000, 3000)
+            resizePrecision(LESS_PIXELS)
             colorSpace(ColorSpace.get(ADOBE_RGB))
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.webp"))
-                .let { runBlocking { it.decode() } }
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.webp")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -235,10 +286,14 @@ class DefaultBitmapDecoderTest {
 
         // precision = LESS_PIXELS
         LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(800, 800, LESS_PIXELS)
+            resizeSize(800, 800)
+            resizePrecision(LESS_PIXELS)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -259,10 +314,14 @@ class DefaultBitmapDecoderTest {
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(500, 500, LESS_PIXELS)
+            resizeSize(500, 500)
+            resizePrecision(LESS_PIXELS)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -285,10 +344,14 @@ class DefaultBitmapDecoderTest {
 
         // precision = SAME_ASPECT_RATIO
         LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(500, 300, SAME_ASPECT_RATIO)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -309,10 +372,14 @@ class DefaultBitmapDecoderTest {
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(300, 500, SAME_ASPECT_RATIO)
+            resizeSize(300, 500)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .let { runBlocking { it.decode() } }
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            ).let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -335,9 +402,14 @@ class DefaultBitmapDecoderTest {
 
         // precision = EXACTLY
         LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(500, 300, EXACTLY)
+            resizeSize(500, 300)
+            resizePrecision(EXACTLY)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -355,9 +427,14 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(300, 500, EXACTLY)
+            resizeSize(300, 500)
+            resizePrecision(EXACTLY)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -377,27 +454,51 @@ class DefaultBitmapDecoderTest {
 
         // scale
         val startCropBitmap = LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(500, 300, SAME_ASPECT_RATIO, START_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(START_CROP)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val centerCropBitmap = LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(500, 300, SAME_ASPECT_RATIO, CENTER_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(CENTER_CROP)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val endCropBitmap = LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(500, 300, SAME_ASPECT_RATIO, END_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(END_CROP)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val fillBitmap = LoadRequest(context, newAssetUri("sample.jpeg")) {
-            resize(500, 300, SAME_ASPECT_RATIO, FILL)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(FILL)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.jpeg")
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         Assert.assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
@@ -433,9 +534,14 @@ class DefaultBitmapDecoderTest {
 
         // precision = LESS_PIXELS
         LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(500, 500, LESS_PIXELS)
+            resizeSize(500, 500)
+            resizePrecision(LESS_PIXELS)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -456,9 +562,14 @@ class DefaultBitmapDecoderTest {
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(200, 200, LESS_PIXELS)
+            resizeSize(200, 200)
+            resizePrecision(LESS_PIXELS)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -481,9 +592,14 @@ class DefaultBitmapDecoderTest {
 
         // precision = SAME_ASPECT_RATIO
         LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(500, 300, SAME_ASPECT_RATIO)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -504,9 +620,14 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(300, 500, SAME_ASPECT_RATIO)
+            resizeSize(300, 500)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -528,9 +649,14 @@ class DefaultBitmapDecoderTest {
 
         // precision = EXACTLY
         LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(500, 300, EXACTLY)
+            resizeSize(500, 300)
+            resizePrecision(EXACTLY)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -547,9 +673,14 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(300, 500, EXACTLY)
+            resizeSize(300, 500)
+            resizePrecision(EXACTLY)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -568,27 +699,51 @@ class DefaultBitmapDecoderTest {
 
         // scale
         val startCropBitmap = LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(500, 300, SAME_ASPECT_RATIO, START_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(START_CROP)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val centerCropBitmap = LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(500, 300, SAME_ASPECT_RATIO, CENTER_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(CENTER_CROP)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val endCropBitmap = LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(500, 300, SAME_ASPECT_RATIO, END_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(END_CROP)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val fillBitmap = LoadRequest(context, newAssetUri("sample.bmp")) {
-            resize(500, 300, SAME_ASPECT_RATIO, FILL)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(FILL)
         }.run {
-            DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                AssetDataSource(sketch, this, "sample.bmp")
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         Assert.assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
@@ -627,9 +782,14 @@ class DefaultBitmapDecoderTest {
 
         // precision = LESS_PIXELS
         LoadRequest(context, testFile.file.path) {
-            resize(800, 800, LESS_PIXELS)
+            resizeSize(800, 800)
+            resizePrecision(LESS_PIXELS)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -652,9 +812,14 @@ class DefaultBitmapDecoderTest {
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
-            resize(500, 500, LESS_PIXELS)
+            resizeSize(500, 500)
+            resizePrecision(LESS_PIXELS)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -679,9 +844,14 @@ class DefaultBitmapDecoderTest {
 
         // precision = SAME_ASPECT_RATIO
         LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -704,9 +874,14 @@ class DefaultBitmapDecoderTest {
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
-            resize(300, 500, SAME_ASPECT_RATIO)
+            resizeSize(300, 500)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -731,9 +906,14 @@ class DefaultBitmapDecoderTest {
 
         // precision = EXACTLY
         LoadRequest(context, testFile.file.path) {
-            resize(500, 300, EXACTLY)
+            resizeSize(500, 300)
+            resizePrecision(EXACTLY)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -752,9 +932,14 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
-            resize(300, 500, EXACTLY)
+            resizeSize(300, 500)
+            resizePrecision(EXACTLY)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -775,27 +960,51 @@ class DefaultBitmapDecoderTest {
 
         // scale
         val startCropBitmap = LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO, START_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(START_CROP)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val centerCropBitmap = LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO, CENTER_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(CENTER_CROP)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val endCropBitmap = LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO, END_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(END_CROP)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val fillBitmap = LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO, FILL)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(FILL)
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         Assert.assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
@@ -834,10 +1043,15 @@ class DefaultBitmapDecoderTest {
 
         // precision = LESS_PIXELS
         LoadRequest(context, testFile.file.path) {
-            resize(800, 800, LESS_PIXELS)
+            resizeSize(800, 800)
+            resizePrecision(LESS_PIXELS)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -860,10 +1074,15 @@ class DefaultBitmapDecoderTest {
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
-            resize(500, 500, LESS_PIXELS)
+            resizeSize(500, 500)
+            resizePrecision(LESS_PIXELS)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -888,10 +1107,15 @@ class DefaultBitmapDecoderTest {
 
         // precision = SAME_ASPECT_RATIO
         LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -914,10 +1138,15 @@ class DefaultBitmapDecoderTest {
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
-            resize(300, 500, SAME_ASPECT_RATIO)
+            resizeSize(300, 500)
+            resizePrecision(SAME_ASPECT_RATIO)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -942,10 +1171,15 @@ class DefaultBitmapDecoderTest {
 
         // precision = EXACTLY
         LoadRequest(context, testFile.file.path) {
-            resize(500, 300, EXACTLY)
+            resizeSize(500, 300)
+            resizePrecision(EXACTLY)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -964,10 +1198,15 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
         LoadRequest(context, testFile.file.path) {
-            resize(300, 500, EXACTLY)
+            resizeSize(300, 500)
+            resizePrecision(EXACTLY)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
@@ -988,31 +1227,55 @@ class DefaultBitmapDecoderTest {
 
         // scale
         val startCropBitmap = LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO, START_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(START_CROP)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val centerCropBitmap = LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO, CENTER_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(CENTER_CROP)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val endCropBitmap = LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO, END_CROP)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(END_CROP)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         val fillBitmap = LoadRequest(context, testFile.file.path) {
-            resize(500, 300, SAME_ASPECT_RATIO, FILL)
+            resizeSize(500, 300)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(FILL)
             ignoreExifOrientation()
         }.run {
-            DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
+            DefaultBitmapDecoder(
+                sketch,
+                this.toRequestContext(),
+                FileDataSource(sketch, this, testFile.file)
+            )
                 .let { runBlocking { it.decode() } }
         }.bitmap
         Assert.assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
@@ -1079,7 +1342,7 @@ class DefaultBitmapDecoderTest {
             }
             sketch.bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
             DefaultBitmapDecoder(
-                sketch, request, FullTestDataSource(dataSource)
+                sketch, request.toRequestContext(), FullTestDataSource(dataSource)
             ).let { runBlocking { it.decode() } }
         }
 
@@ -1090,56 +1353,64 @@ class DefaultBitmapDecoderTest {
             }
             sketch.bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
             DefaultBitmapDecoder(
-                sketch, request, FullTestDataSource(dataSource, enabledCount = true)
+                sketch,
+                request.toRequestContext(),
+                FullTestDataSource(dataSource, enabledCount = true)
             ).let { runBlocking { it.decode() } }
         }
 
         /* region */
         assertThrow(BitmapDecodeException::class) {
             val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-                resize(500, 500)
+                resizeSize(500, 500)
+                resizePrecision(EXACTLY)
             }
             val dataSource1 = runBlocking {
                 sketch.components.newFetcher(request1).fetch().dataSource
             }
             DefaultBitmapDecoder(
-                sketch, request1, RegionTestDataSource(dataSource1, true)
+                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1, true)
             ).let { runBlocking { it.decode() } }
         }
 
         assertThrow(BitmapDecodeException::class) {
             val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-                resize(500, 500)
+                resizeSize(500, 500)
+                resizePrecision(EXACTLY)
             }
             val dataSource1 = runBlocking {
                 sketch.components.newFetcher(request1).fetch().dataSource
             }
             DefaultBitmapDecoder(
-                sketch, request1, RegionTestDataSource(dataSource1, false)
+                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1, false)
             ).let { runBlocking { it.decode() } }
         }
 
         assertNoThrow {
             val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-                resize(500, 500)
+                resizeSize(500, 500)
+                resizePrecision(EXACTLY)
             }
             val dataSource1 = runBlocking {
                 sketch.components.newFetcher(request1).fetch().dataSource
             }
             DefaultBitmapDecoder(
-                sketch, request1, RegionTestDataSource(dataSource1, false, enabledCount = true)
+                sketch,
+                request1.toRequestContext(),
+                RegionTestDataSource(dataSource1, false, enabledCount = true)
             ).let { runBlocking { it.decode() } }
         }
 
         assertThrow(BitmapDecodeException::class) {
             val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
-                resize(500, 500)
+                resizeSize(500, 500)
+                resizePrecision(EXACTLY)
             }
             val dataSource1 = runBlocking {
                 sketch.components.newFetcher(request1).fetch().dataSource
             }
             DefaultBitmapDecoder(
-                sketch, request1, RegionTestDataSource(dataSource1, null)
+                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1, null)
             ).let { runBlocking { it.decode() } }
         }
     }

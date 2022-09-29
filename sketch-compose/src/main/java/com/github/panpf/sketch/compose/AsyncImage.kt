@@ -32,7 +32,7 @@ import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
-import com.github.panpf.sketch.util.Size as CoilSize
+import com.github.panpf.sketch.util.Size as SketchSize
 
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
@@ -281,7 +281,7 @@ internal fun Content(
 internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale): DisplayRequest {
 //    return if (request.defined.sizeResolver == null) {
 //        val sizeResolver = if (contentScale == ContentScale.None) {
-//            SizeResolver(CoilSize.ORIGINAL)
+//            SizeResolver(SketchSize.ORIGINAL)
 //        } else {
 //            remember { ConstraintsSizeResolver() }
 //        }
@@ -300,7 +300,7 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
         }
         request.newDisplayRequest {
             if (sizeResolver != null) {
-                resizeSizeResolver(sizeResolver)
+                resizeSize(sizeResolver)
                 if (request.definedOptions.resizePrecisionDecider == null) {
                     resizePrecision(LESS_PIXELS)
                 }
@@ -319,7 +319,7 @@ internal class ConstraintsSizeResolver : SizeResolver, LayoutModifier {
 
     private val _constraints = MutableStateFlow(ZeroConstraints)
 
-    override suspend fun size() = _constraints.mapNotNull(Constraints::toSizeOrNull).first()
+    override suspend fun size(): SketchSize = _constraints.mapNotNull(Constraints::toSizeOrNull).first()
 
     override fun MeasureScope.measure(
         measurable: Measurable,
@@ -356,7 +356,7 @@ private fun Modifier.contentDescription(contentDescription: String?): Modifier {
 //@Stable
 //private fun Constraints.toSizeOrNull() = when {
 //    isZero -> null
-//    else -> CoilSize(
+//    else -> SketchSize(
 //        width = if (hasBoundedWidth) Dimension(maxWidth) else Dimension.Undefined,
 //        height = if (hasBoundedHeight) Dimension(maxHeight) else Dimension.Undefined
 //    )
@@ -365,6 +365,6 @@ private fun Modifier.contentDescription(contentDescription: String?): Modifier {
 @Stable
 private fun Constraints.toSizeOrNull() = when {
     isZero -> null
-    hasBoundedWidth && hasBoundedHeight -> CoilSize(maxWidth, maxHeight)
+    hasBoundedWidth && hasBoundedHeight -> SketchSize(maxWidth, maxHeight)
     else -> null
 }

@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.test.utils
 
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.FetchResult
@@ -33,14 +34,16 @@ class TestHttpUriFetcher(sketch: Sketch, request: ImageRequest, url: String) :
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? =
-            if (
-                SCHEME.equals(request.uri.scheme, ignoreCase = true)
-                || SCHEME1.equals(request.uri.scheme, ignoreCase = true)
+        override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? {
+            val scheme = request.uriString.toUri().scheme
+            return if (
+                SCHEME.equals(scheme, ignoreCase = true)
+                || SCHEME1.equals(scheme, ignoreCase = true)
             ) {
                 TestHttpUriFetcher(sketch, request, request.uriString)
             } else {
                 null
             }
+        }
     }
 }

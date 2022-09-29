@@ -25,6 +25,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transform.createMaskTransformed
 import com.github.panpf.sketch.transform.getMaskTransformed
@@ -81,7 +82,7 @@ class MaskTransformationTest {
 
         val maskColor = ColorUtils.setAlphaComponent(Color.GREEN, 100)
         runBlocking {
-            MaskTransformation(maskColor).transform(sketch, request, inBitmap)
+            MaskTransformation(maskColor).transform(sketch, request.toRequestContext(), inBitmap)
         }.apply {
             Assert.assertNotSame(inBitmap, this)
             Assert.assertNotEquals(inBitmapCorners, bitmap.corners())
@@ -98,7 +99,7 @@ class MaskTransformationTest {
         }
 
         runBlocking {
-            MaskTransformation(maskColor).transform(sketch, request, mutableInBitmap)
+            MaskTransformation(maskColor).transform(sketch, request.toRequestContext(), mutableInBitmap)
         }.apply {
             Assert.assertSame(mutableInBitmap, this.bitmap)
         }

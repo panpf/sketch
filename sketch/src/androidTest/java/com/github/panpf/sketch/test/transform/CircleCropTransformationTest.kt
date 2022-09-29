@@ -25,6 +25,7 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.getCircleCropTransformed
@@ -79,7 +80,7 @@ class CircleCropTransformationTest {
         }
 
         runBlocking {
-            CircleCropTransformation(Scale.START_CROP).transform(sketch, request, inBitmap)
+            CircleCropTransformation(Scale.START_CROP).transform(sketch, request.toRequestContext(), inBitmap)
         }.apply {
             Assert.assertNotSame(inBitmap, bitmap)
             Assert.assertEquals(

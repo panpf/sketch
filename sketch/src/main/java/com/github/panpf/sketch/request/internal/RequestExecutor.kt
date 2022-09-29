@@ -37,7 +37,6 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.stateimage.internal.toSketchStateDrawable
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
@@ -85,8 +84,7 @@ class RequestExecutor {
             }
 
             // resolve resize size
-            val resizeSize =
-                (request.resizeSizeResolver ?: DisplaySizeResolver(request.context)).size()!!
+            val resizeSize = request.resizeSizeResolver.size()
             requestContext = RequestContext(request, resizeSize)
 
             onStart(sketch, requestContext)

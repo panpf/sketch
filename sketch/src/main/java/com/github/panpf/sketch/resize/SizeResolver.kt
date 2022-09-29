@@ -21,11 +21,23 @@ import com.github.panpf.sketch.util.Size
 /**
  * An interface for measuring the target size for an image request.
  *
- * @see com.github.panpf.sketch.request.ImageRequest.Builder.resizeSizeResolver
+ * @see com.github.panpf.sketch.request.ImageRequest.Builder.resizeSize
  */
 fun interface SizeResolver {
 
     /** Return the [Size] that the image should be loaded at. */
     @MainThread
-    suspend fun size(): Size?
+    suspend fun size(): Size
+}
+
+/**
+ * Returns the fixed size
+ */
+data class FixedSizeResolver constructor(private val size: Size) : SizeResolver {
+
+    constructor(width: Int, height: Int) : this(Size(width, height))
+
+    override suspend fun size(): Size = size
+
+    override fun toString(): String = "FixedSizeResolver($size)"
 }

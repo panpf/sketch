@@ -31,6 +31,7 @@ import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
@@ -41,6 +42,7 @@ import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
@@ -58,30 +60,38 @@ class ResizeDrawableTest {
         val imageUri = newAssetUri("sample.jpeg")
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
 
+        val request = DisplayRequest(context, imageUri)
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri))
+            bitmapDrawable.tryToResizeDrawable(request, null)
         )
-        Assert.assertSame(
-            bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
-                resizeApplyToDrawable(true)
-            })
-        )
-        Assert.assertSame(
-            bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
-                resize(500, 300)
-            })
-        )
-        bitmapDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
+        val request1 = DisplayRequest(context, imageUri) {
             resizeApplyToDrawable(true)
-            resize(500, 300)
-        }).let { it as ResizeDrawable }.apply {
-            Assert.assertNotSame(bitmapDrawable, this)
-            Assert.assertSame(bitmapDrawable, wrappedDrawable)
-            Assert.assertEquals(Resize(500, 300), resize)
         }
+        Assert.assertSame(
+            bitmapDrawable,
+            bitmapDrawable.tryToResizeDrawable(request1, null)
+        )
+        val request2 = DisplayRequest(context, imageUri) {
+            resizeSize(500, 300)
+            resizePrecision(EXACTLY)
+        }
+        Assert.assertSame(
+            bitmapDrawable,
+            bitmapDrawable.tryToResizeDrawable(request2, request2.toRequestContext().resize)
+        )
+        val request3 = DisplayRequest(context, imageUri) {
+            resizeApplyToDrawable(true)
+            resizeSize(500, 300)
+            resizePrecision(EXACTLY)
+        }
+        bitmapDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resize)
+            .let { it as ResizeDrawable }
+            .apply {
+                Assert.assertNotSame(bitmapDrawable, this)
+                Assert.assertSame(bitmapDrawable, wrappedDrawable)
+                Assert.assertEquals(Resize(500, 300), resize)
+            }
 
         val animDrawable = SketchAnimatableDrawable(
             animatableDrawable = TestAnimatableDrawable1(bitmapDrawable),
@@ -93,14 +103,13 @@ class ResizeDrawableTest {
             transformedList = null,
             extras = null,
         )
-        animDrawable.tryToResizeDrawable(DisplayRequest(context, imageUri) {
-            resizeApplyToDrawable(true)
-            resize(500, 300)
-        }).let { it as ResizeAnimatableDrawable }.apply {
-            Assert.assertNotSame(animDrawable, this)
-            Assert.assertSame(animDrawable, wrappedDrawable)
-            Assert.assertEquals(Resize(500, 300), resize)
-        }
+        animDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resize)
+            .let { it as ResizeAnimatableDrawable }
+            .apply {
+                Assert.assertNotSame(animDrawable, this)
+                Assert.assertSame(animDrawable, wrappedDrawable)
+                Assert.assertEquals(Resize(500, 300), resize)
+            }
     }
 
     @Test

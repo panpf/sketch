@@ -252,48 +252,16 @@ interface DownloadRequest : ImageRequest {
             super.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
-        override fun resize(
-            size: Size, precision: PrecisionDecider, scale: ScaleDecider
-        ): Builder = apply {
-            super.resize(size, precision, scale)
+        override fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+            super.resizeSize(sizeResolver)
         }
 
-        override fun resize(
-            size: Size, precision: Precision, scale: Scale
-        ): Builder = apply {
-            super.resize(size, precision, scale)
-        }
-
-        override fun resize(size: Size): Builder = apply {
-            super.resize(size)
-        }
-
-        override fun resize(
-            width: Int, height: Int, precision: PrecisionDecider, scale: ScaleDecider
-        ): Builder = apply {
-            super.resize(width, height, precision, scale)
-        }
-
-        override fun resize(
-            width: Int, height: Int, precision: Precision, scale: Scale
-        ): Builder = apply {
-            super.resize(width, height, precision, scale)
-        }
-
-        override fun resize(width: Int, height: Int): Builder = apply {
-            super.resize(width, height)
-        }
-
-        override fun resizeSize(size: Size?): Builder = apply {
+        override fun resizeSize(size: Size): Builder = apply {
             super.resizeSize(size)
         }
 
         override fun resizeSize(width: Int, height: Int): Builder = apply {
             super.resizeSize(width, height)
-        }
-
-        override fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
-            super.resizeSizeResolver(sizeResolver)
         }
 
         override fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
@@ -448,7 +416,7 @@ interface DownloadRequest : ImageRequest {
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean,
-        override val resizeSizeResolver: SizeResolver?,
+        override val resizeSizeResolver: SizeResolver,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,

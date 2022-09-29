@@ -77,6 +77,7 @@ import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -549,7 +550,8 @@ class LoadRequestExecuteTest {
         // size: small, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
         val smallSize1 = Size(600, 500)
         LoadRequest(context, imageUri) {
-            resize(smallSize1, LESS_PIXELS)
+            resizeSize(smallSize1)
+            resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -557,7 +559,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(imageInfo.size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(smallSize1, SAME_ASPECT_RATIO)
+            resizeSize(smallSize1)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -565,7 +568,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(smallSize1.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(smallSize1, EXACTLY)
+            resizeSize(smallSize1)
+            resizePrecision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -574,7 +578,8 @@ class LoadRequestExecuteTest {
 
         val smallSize2 = Size(500, 600)
         LoadRequest(context, imageUri) {
-            resize(smallSize2, LESS_PIXELS)
+            resizeSize(smallSize2)
+            resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -582,7 +587,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(imageInfo.size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(smallSize2, SAME_ASPECT_RATIO)
+            resizeSize(smallSize2)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -590,7 +596,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(smallSize2.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(smallSize2, EXACTLY)
+            resizeSize(smallSize2)
+            resizePrecision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -600,21 +607,24 @@ class LoadRequestExecuteTest {
         // size: same, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
         val sameSize = Size(imageSize.width, imageSize.height)
         LoadRequest(context, imageUri) {
-            resize(sameSize, LESS_PIXELS)
+            resizeSize(sameSize)
+            resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(sameSize, bitmap.size)
             }
         LoadRequest(context, imageUri) {
-            resize(sameSize, SAME_ASPECT_RATIO)
+            resizeSize(sameSize)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(sameSize, bitmap.size)
             }
         LoadRequest(context, imageUri) {
-            resize(sameSize, EXACTLY)
+            resizeSize(sameSize)
+            resizePrecision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -624,7 +634,8 @@ class LoadRequestExecuteTest {
         // size: big, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
         val bigSize1 = Size(2500, 2100)
         LoadRequest(context, imageUri) {
-            resize(bigSize1, LESS_PIXELS)
+            resizeSize(bigSize1)
+            resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -632,7 +643,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(imageInfo.size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(bigSize1, SAME_ASPECT_RATIO)
+            resizeSize(bigSize1)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -640,7 +652,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(bigSize1.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(bigSize1, EXACTLY)
+            resizeSize(bigSize1)
+            resizePrecision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -649,7 +662,8 @@ class LoadRequestExecuteTest {
 
         val bigSize2 = Size(2100, 2500)
         LoadRequest(context, imageUri) {
-            resize(bigSize2, LESS_PIXELS)
+            resizeSize(bigSize2)
+            resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -657,7 +671,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(imageInfo.size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(bigSize2, SAME_ASPECT_RATIO)
+            resizeSize(bigSize2)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -665,7 +680,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(bigSize2.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(bigSize2, EXACTLY)
+            resizeSize(bigSize2)
+            resizePrecision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -674,7 +690,8 @@ class LoadRequestExecuteTest {
 
         val bigSize3 = Size(800, 2500)
         LoadRequest(context, imageUri) {
-            resize(bigSize3, LESS_PIXELS)
+            resizeSize(bigSize3)
+            resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -682,7 +699,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(imageInfo.size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(bigSize3, SAME_ASPECT_RATIO)
+            resizeSize(bigSize3)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -690,7 +708,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(bigSize3.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(bigSize3, EXACTLY)
+            resizeSize(bigSize3)
+            resizePrecision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -699,7 +718,8 @@ class LoadRequestExecuteTest {
 
         val bigSize4 = Size(2500, 800)
         LoadRequest(context, imageUri) {
-            resize(bigSize4, LESS_PIXELS)
+            resizeSize(bigSize4)
+            resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -707,7 +727,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(imageInfo.size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(bigSize4, SAME_ASPECT_RATIO)
+            resizeSize(bigSize4)
+            resizePrecision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -715,7 +736,8 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(bigSize4.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(bigSize4, EXACTLY)
+            resizeSize(bigSize4)
+            resizePrecision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
@@ -729,7 +751,9 @@ class LoadRequestExecuteTest {
         var sarEndCropBitmap: Bitmap?
         var sarFillCropBitmap: Bitmap?
         LoadRequest(context, imageUri) {
-            resize(size, SAME_ASPECT_RATIO, START_CROP)
+            resizeSize(size)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(START_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarStartCropBitmap = bitmap
@@ -738,7 +762,9 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(size, SAME_ASPECT_RATIO, CENTER_CROP)
+            resizeSize(size)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(CENTER_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarCenterCropBitmap = bitmap
@@ -747,7 +773,9 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(size, SAME_ASPECT_RATIO, END_CROP)
+            resizeSize(size)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(END_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarEndCropBitmap = bitmap
@@ -756,7 +784,9 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(size.ratio, bitmap.size.ratio)
             }
         LoadRequest(context, imageUri) {
-            resize(size, SAME_ASPECT_RATIO, FILL)
+            resizeSize(size)
+            resizePrecision(SAME_ASPECT_RATIO)
+            resizeScale(FILL)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 sarFillCropBitmap = bitmap
@@ -780,7 +810,9 @@ class LoadRequestExecuteTest {
         var exactlyEndCropBitmap: Bitmap?
         var exactlyFillCropBitmap: Bitmap?
         LoadRequest(context, imageUri) {
-            resize(size, EXACTLY, START_CROP)
+            resizeSize(size)
+            resizePrecision(EXACTLY)
+            resizeScale(START_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 exactlyStartCropBitmap = bitmap
@@ -788,7 +820,9 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(size, bitmap.size)
             }
         LoadRequest(context, imageUri) {
-            resize(size, EXACTLY, CENTER_CROP)
+            resizeSize(size)
+            resizePrecision(EXACTLY)
+            resizeScale(CENTER_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 exactlyCenterCropBitmap = bitmap
@@ -796,7 +830,9 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(size, bitmap.size)
             }
         LoadRequest(context, imageUri) {
-            resize(size, EXACTLY, END_CROP)
+            resizeSize(size)
+            resizePrecision(EXACTLY)
+            resizeScale(END_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 exactlyEndCropBitmap = bitmap
@@ -804,7 +840,9 @@ class LoadRequestExecuteTest {
                 Assert.assertEquals(size, bitmap.size)
             }
         LoadRequest(context, imageUri) {
-            resize(size, EXACTLY, FILL)
+            resizeSize(size)
+            resizePrecision(EXACTLY)
+            resizeScale(FILL)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!.apply {
                 exactlyFillCropBitmap = bitmap
@@ -865,7 +903,8 @@ class LoadRequestExecuteTest {
             }
 
         request.newLoadRequest {
-            resize(500, 500, LESS_PIXELS)
+            resizeSize(500, 500)
+            resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!
             .apply {
@@ -873,7 +912,8 @@ class LoadRequestExecuteTest {
                 Assert.assertNull(transformedList?.getRotateTransformed())
             }
         request.newLoadRequest {
-            resize(500, 500, LESS_PIXELS)
+            resizeSize(500, 500)
+            resizePrecision(LESS_PIXELS)
             addTransformations(RotateTransformation(90))
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!
@@ -883,7 +923,8 @@ class LoadRequestExecuteTest {
             }
 
         request.newLoadRequest {
-            resize(500, 500, LESS_PIXELS)
+            resizeSize(500, 500)
+            resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!
             .apply {
@@ -892,7 +933,8 @@ class LoadRequestExecuteTest {
                 Assert.assertNull(transformedList?.getCircleCropTransformed())
             }
         request.newLoadRequest {
-            resize(500, 500, LESS_PIXELS)
+            resizeSize(500, 500)
+            resizePrecision(LESS_PIXELS)
             addTransformations(CircleCropTransformation())
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<LoadResult.Success>()!!
@@ -912,7 +954,8 @@ class LoadRequestExecuteTest {
         val request = LoadRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            resize(500, 500, LESS_PIXELS)
+            resizeSize(500, 500)
+            resizePrecision(LESS_PIXELS)
         }
 
         bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
@@ -1008,9 +1051,9 @@ class LoadRequestExecuteTest {
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = LoadRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
-            resize(500, 500)
+            resizeSize(500, 500)
         }
-        val resultCacheDataKey = request.resultCacheDataKey
+        val resultCacheDataKey = request.toRequestContext().resultCacheDataKey
 
         /* ENABLED */
         diskCache.clear()
@@ -1116,9 +1159,9 @@ class LoadRequestExecuteTest {
         val imageUri = TestAssets.SAMPLE_JPEG_URI
         val request = LoadRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
-            resize(500, 500)
+            resizeSize(500, 500)
         }
-        val memoryCacheKey = request.memoryCacheKey
+        val memoryCacheKey = request.toRequestContext().memoryCacheKey
 
         /* ENABLED */
         memoryCache.clear()

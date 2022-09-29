@@ -28,7 +28,7 @@ open class Size(val width: Int, val height: Int) {
 
     operator fun component2(): Int = height
 
-    override fun toString(): String = width.toString() + "x" + height
+    override fun toString(): String = "${width}x$height"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

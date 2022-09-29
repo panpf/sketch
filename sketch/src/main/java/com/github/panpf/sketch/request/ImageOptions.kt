@@ -41,10 +41,8 @@ import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.stateimage.DrawableStateImage
@@ -486,111 +484,25 @@ interface ImageOptions {
         }
 
         /**
-         * Set how to resize image
+         * Set the [SizeResolver] to lazy resolve the requested size.
          *
-         * @param size Expected Bitmap size
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        fun resize(
-            size: Size,
-            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
-            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
-        ): Builder = apply {
-            this.resizeSizeResolver = FixedSizeResolver(size)
-            this.resizePrecisionDecider = precision
-            this.resizeScaleDecider = scale
+        fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+            this.resizeSizeResolver = sizeResolver
         }
-
-        /**
-         * Set how to resize image
-         *
-         * @param size Expected Bitmap size
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         */
-        fun resize(
-            size: Size,
-            precision: Precision = EXACTLY,
-            scale: Scale = CENTER_CROP
-        ): Builder = resize(size, FixedPrecisionDecider(precision), FixedScaleDecider(scale))
-
-        /**
-         * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
-         */
-        fun resize(size: Size): Builder =
-            resize(size, FixedPrecisionDecider(EXACTLY), FixedScaleDecider(CENTER_CROP))
-
-        /**
-         * Set how to resize image
-         *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         */
-        fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
-            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
-        ): Builder = resize(Size(width, height), precision, scale)
-
-        /**
-         * Set how to resize image
-         *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         */
-        fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precision: Precision = EXACTLY,
-            scale: Scale = CENTER_CROP
-        ): Builder =
-            resize(Size(width, height), FixedPrecisionDecider(precision), FixedScaleDecider(scale))
-
-        /**
-         * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
-         *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
-         */
-        fun resize(@Px width: Int, @Px height: Int): Builder =
-            resize(
-                Size(width, height),
-                FixedPrecisionDecider(EXACTLY),
-                FixedScaleDecider(CENTER_CROP)
-            )
 
         /**
          * Set the resize size
          */
-        fun resizeSize(resizeSize: Size?): Builder = apply {
-            this.resizeSizeResolver =
-                if (resizeSize != null) FixedSizeResolver(resizeSize) else null
-        }
+        fun resizeSize(resizeSize: Size): Builder =
+            resizeSize(FixedSizeResolver(resizeSize))
 
         /**
          * Set the resize size
          */
         fun resizeSize(@Px width: Int, @Px height: Int): Builder =
-            resizeSize(Size(width, height))
-
-        /**
-         * Set the [SizeResolver] to lazy resolve the requested size.
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
-            this.resizeSizeResolver = sizeResolver
-        }
+            resizeSize(FixedSizeResolver(width, height))
 
         /**
          * Set the resize precision

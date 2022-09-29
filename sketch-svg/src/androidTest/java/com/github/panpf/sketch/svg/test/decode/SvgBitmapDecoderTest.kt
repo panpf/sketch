@@ -26,10 +26,12 @@ import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -50,7 +52,7 @@ class SvgBitmapDecoderTest {
         // normal
         LoadRequest(context, newAssetUri("sample.svg")).let {
             val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.svg"), null)
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -58,7 +60,7 @@ class SvgBitmapDecoderTest {
         // data error
         LoadRequest(context, newAssetUri("sample.png")).let {
             val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), null)
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -66,7 +68,7 @@ class SvgBitmapDecoderTest {
         // mimeType error
         LoadRequest(context, newAssetUri("sample.svg")).let {
             val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.svg"), "image/svg")
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -108,7 +110,7 @@ class SvgBitmapDecoderTest {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking { fetcher.fetch() }
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals("Bitmap(841x595,ARGB_8888)", bitmap.toShortInfoString())
@@ -126,7 +128,7 @@ class SvgBitmapDecoderTest {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking { fetcher.fetch() }
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals("Bitmap(841x595,RGB_565)", bitmap.toShortInfoString())
@@ -144,7 +146,7 @@ class SvgBitmapDecoderTest {
             val fetcher = sketch.components.newFetcher(this)
             val fetchResult = runBlocking { fetcher.fetch() }
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals("Bitmap(421x298,ARGB_8888)", bitmap.toShortInfoString())
@@ -161,7 +163,7 @@ class SvgBitmapDecoderTest {
             val fetchResult = runBlocking { fetcher.fetch() }
             assertThrow(NullPointerException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!
+                    factory.create(sketch, this@run.toRequestContext(), fetchResult)!!
                         .decode()
                 }
             }
@@ -169,4 +171,8 @@ class SvgBitmapDecoderTest {
     }
 
     private fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"
+}
+
+fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
+    return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size() })
 }

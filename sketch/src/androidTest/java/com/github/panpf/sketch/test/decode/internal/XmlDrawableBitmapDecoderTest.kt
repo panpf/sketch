@@ -24,6 +24,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -45,7 +46,7 @@ class XmlDrawableBitmapDecoderTest {
         LoadRequest(context, newResourceUri(R.drawable.test)).let {
             val fetcher = sketch.components.newFetcher(it)
             val fetchResult = runBlocking { fetcher.fetch() }
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -53,7 +54,7 @@ class XmlDrawableBitmapDecoderTest {
         LoadRequest(context, newResourceUri(R.drawable.test_error)).let {
             val fetcher = sketch.components.newFetcher(it)
             val fetchResult = runBlocking { fetcher.fetch() }
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -61,7 +62,7 @@ class XmlDrawableBitmapDecoderTest {
         LoadRequest(context, newResourceUri(R.drawable.ic_launcher)).let {
             val fetcher = sketch.components.newFetcher(it)
             val fetchResult = runBlocking { fetcher.fetch() }
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -78,7 +79,7 @@ class XmlDrawableBitmapDecoderTest {
                 fetcher.fetch()
             }
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -100,8 +101,7 @@ class XmlDrawableBitmapDecoderTest {
             }
             assertThrow(ImageInvalidException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!
-                        .decode()
+                    factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
                 }
             }
         }

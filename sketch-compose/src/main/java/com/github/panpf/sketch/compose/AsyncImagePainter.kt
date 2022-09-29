@@ -387,7 +387,7 @@ class AsyncImagePainter internal constructor(
             .apply {
                 if (request.definedOptions.resizeSizeResolver == null) {
                     // If no other size resolver is set, suspend until the canvas size is positive.
-                    resizeSizeResolver { drawSize.mapNotNull { it.toSizeOrNull() }.first() }
+                    resizeSize { drawSize.mapNotNull { it.toSizeOrNull() }.first() }
                     if (request.definedOptions.resizePrecisionDecider == null) {
                         resizePrecision(LESS_PIXELS)
                     }

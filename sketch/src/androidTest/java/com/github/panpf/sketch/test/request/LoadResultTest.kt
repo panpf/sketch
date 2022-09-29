@@ -25,6 +25,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.sketch.util.toShortInfoString
@@ -42,6 +43,8 @@ class LoadResultTest {
 
         LoadResult.Success(
             request = request1,
+            requestKey = request1.toRequestContext().key,
+            requestCacheKey = request1.toRequestContext().cacheKey,
             bitmap = Bitmap.createBitmap(100, 100, RGB_565),
             imageInfo = ImageInfo(100, 100, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90),
             dataFrom = LOCAL,

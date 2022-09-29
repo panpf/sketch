@@ -42,9 +42,8 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val requestContext = chain.requestContext
 
         if (request is DisplayRequest) {
-            val memoryCacheKey = requestContext.cacheKey
             val cachedValue = ifOrNull(request.memoryCachePolicy.readEnabled) {
-                chain.sketch.memoryCache[memoryCacheKey]
+                chain.sketch.memoryCache[requestContext.memoryCacheKey]
             }
             if (cachedValue != null) {
                 val countDrawable = SketchCountBitmapDrawable(
@@ -91,7 +90,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                             transformedList = countDrawable.transformedList,
                             extras = countDrawable.extras,
                         )
-                        chain.sketch.memoryCache.put(memoryCacheKey, newCacheValue)
+                        chain.sketch.memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
                     }
                 }
             } else {
@@ -114,3 +113,6 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         return javaClass.hashCode()
     }
 }
+
+val RequestContext.memoryCacheKey: String
+    get() = cacheKey

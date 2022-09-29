@@ -41,10 +41,10 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -69,7 +69,7 @@ class MemoryCacheRequestInterceptorTest {
                     sketch = sketch,
                     initialRequest = request,
                     request = request,
-                    requestContext = RequestContext(request),
+                    requestContext = request.toRequestContext(),
                     interceptors = requestInterceptorList,
                     index = 0,
                 ).proceed(request)
@@ -130,7 +130,7 @@ class MemoryCacheRequestInterceptorTest {
         Assert.assertEquals(0, memoryCache.size)
 
         memoryCache.put(
-            displayRequest.cacheKey,
+            displayRequest.toRequestContext().cacheKey,
             MemoryCache.Value(
                 countBitmapDrawable.countBitmap,
                 imageUri = countBitmapDrawable.imageUri,
@@ -160,7 +160,7 @@ class MemoryCacheRequestInterceptorTest {
         Assert.assertEquals(0, memoryCache.size)
 
         memoryCache.put(
-            displayRequest.cacheKey,
+            displayRequest.toRequestContext().cacheKey,
             MemoryCache.Value(
                 countBitmapDrawable.countBitmap,
                 imageUri = countBitmapDrawable.imageUri,
@@ -268,7 +268,7 @@ class MemoryCacheRequestInterceptorTest {
                     val drawable = if (chain.request.uriString.contains(".jpeg")) {
                         imageInfo = ImageInfo(100, 100, "image/jpeg", 0)
                         val countBitmap = CountBitmap(
-                            cacheKey = chain.request.cacheKey,
+                            cacheKey = chain.request.toRequestContext().cacheKey,
                             bitmap = bitmap,
                             bitmapPool = chain.sketch.bitmapPool,
                             disallowReuseBitmap = false,
@@ -277,8 +277,8 @@ class MemoryCacheRequestInterceptorTest {
                             resources = chain.sketch.context.resources,
                             countBitmap = countBitmap,
                             imageUri = chain.request.uriString,
-                            requestKey = chain.request.key,
-                            requestCacheKey = chain.request.cacheKey,
+                            requestKey = chain.request.toRequestContext().key,
+                            requestCacheKey = chain.request.toRequestContext().cacheKey,
                             imageInfo = imageInfo,
                             transformedList = null,
                             extras = null,

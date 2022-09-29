@@ -22,8 +22,9 @@ import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -37,13 +38,14 @@ class EngineDrawableDecodeInterceptorTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors = listOf(EngineDrawableDecodeInterceptor())
         val loadRequest = DisplayRequest(context, newAssetUri("sample.jpeg")) {
+            resizeSize(3000, 3000)
+            resizePrecision(LESS_PIXELS)
             resultCachePolicy(DISABLED)
         }
-        val requestContext = RequestContext(loadRequest)
         val chain = DrawableDecodeInterceptorChain(
             sketch = sketch,
             request = loadRequest,
-            requestContext = requestContext,
+            requestContext = loadRequest.toRequestContext(),
             fetchResult = null,
             interceptors = interceptors,
             index = 0

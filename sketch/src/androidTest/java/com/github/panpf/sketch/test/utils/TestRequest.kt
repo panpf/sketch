@@ -28,7 +28,6 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageRequest.BaseImageRequest
 import com.github.panpf.sketch.request.ImageRequest.Builder
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
@@ -42,12 +41,12 @@ import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.util.Size
 
 class TestRequest(
     override val context: Context,
@@ -65,8 +64,7 @@ class TestRequest(
     override val bitmapConfig: BitmapConfig?,
     override val colorSpace: ColorSpace?,
     @Suppress("OVERRIDE_DEPRECATION") override val preferQualityOverSpeed: Boolean,
-    override val resizeSize: Size?,
-    override val resizeSizeResolver: SizeResolver?,
+    override val resizeSizeResolver: SizeResolver,
     override val resizePrecisionDecider: PrecisionDecider,
     override val resizeScaleDecider: ScaleDecider,
     override val transformations: List<Transformation>?,
@@ -80,7 +78,7 @@ class TestRequest(
     override val resizeApplyToDrawable: Boolean,
     override val memoryCachePolicy: CachePolicy,
     override val componentRegistry: ComponentRegistry?,
-) : BaseImageRequest() {
+) : ImageRequest {
 
     constructor(
         context: Context,
@@ -101,8 +99,7 @@ class TestRequest(
         bitmapConfig = null,
         colorSpace = null,
         preferQualityOverSpeed = true,
-        resizeSize = null,
-        resizeSizeResolver = null,
+        resizeSizeResolver = DisplaySizeResolver(context),
         resizePrecisionDecider = FixedPrecisionDecider(EXACTLY),
         resizeScaleDecider = FixedScaleDecider(FILL),
         transformations = null,

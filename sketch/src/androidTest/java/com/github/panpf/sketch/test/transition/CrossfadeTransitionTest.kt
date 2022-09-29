@@ -32,6 +32,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.target.ImageViewDisplayTarget
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
@@ -56,6 +57,8 @@ class CrossfadeTransitionTest {
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))
         val result = DisplayResult.Success(
             request = request,
+            requestKey = request.toRequestContext().key,
+            requestCacheKey = request.toRequestContext().cacheKey,
             drawable = resultDrawable,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
@@ -107,6 +110,8 @@ class CrossfadeTransitionTest {
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))
         val success = DisplayResult.Success(
             request = request,
+            requestKey = request.toRequestContext().key,
+            requestCacheKey = request.toRequestContext().cacheKey,
             drawable = resultDrawable,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
@@ -143,8 +148,11 @@ class CrossfadeTransitionTest {
         }
         Assert.assertTrue(imageViewTarget.drawable!! is ColorDrawable)
         CrossfadeTransition(
-            imageViewTarget, DisplayResult.Success(
+            imageViewTarget,
+            DisplayResult.Success(
                 request = request,
+                requestKey = request.toRequestContext().key,
+                requestCacheKey = request.toRequestContext().cacheKey,
                 drawable = imageViewTarget.drawable!!,
                 imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
                 dataFrom = LOCAL,
@@ -192,6 +200,8 @@ class CrossfadeTransitionTest {
 
         val successResult = DisplayResult.Success(
             request = request,
+            requestKey = request.toRequestContext().key,
+            requestCacheKey = request.toRequestContext().cacheKey,
             drawable = resultDrawable,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = LOCAL,
@@ -209,6 +219,8 @@ class CrossfadeTransitionTest {
 
         val fromMemoryCacheSuccessResult = DisplayResult.Success(
             request = request,
+            requestKey = request.toRequestContext().key,
+            requestCacheKey = request.toRequestContext().cacheKey,
             drawable = resultDrawable,
             imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
             dataFrom = MEMORY_CACHE,
