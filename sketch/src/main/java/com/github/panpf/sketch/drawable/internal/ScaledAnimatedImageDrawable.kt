@@ -32,17 +32,18 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.withSave
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.util.toHexString
 import kotlin.math.roundToInt
 
 /**
- * A [Drawable] that centers and scales its [child] to fill its bounds.
+ * A [Drawable] that centers and scales its [drawable] to fill its bounds.
  *
  * This allows drawables that only draw within their intrinsic dimensions
  * (e.g. [AnimatedImageDrawable]) to fill their entire bounds.
  */
 @RequiresApi(VERSION_CODES.P)
 class ScaledAnimatedImageDrawable @JvmOverloads constructor(
-    val child: AnimatedImageDrawable,
+    val drawable: AnimatedImageDrawable,
     val fitScale: Boolean = true
 ) : Drawable(), Animatable2, Callback {
 
@@ -51,38 +52,38 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     private var childScale = 1f
 
     init {
-        child.callback = this
+        drawable.callback = this
     }
 
     override fun draw(canvas: Canvas) {
         canvas.withSave {
             translate(childDx, childDy)
             scale(childScale, childScale)
-            child.draw(this)
+            drawable.draw(this)
         }
     }
 
-    override fun getAlpha() = DrawableCompat.getAlpha(child)
+    override fun getAlpha() = DrawableCompat.getAlpha(drawable)
 
     override fun setAlpha(alpha: Int) {
-        child.alpha = alpha
+        drawable.alpha = alpha
     }
 
     @Deprecated("Deprecated in Java", ReplaceWith("child.opacity"))
     @Suppress("DEPRECATION")
-    override fun getOpacity() = child.opacity
+    override fun getOpacity() = drawable.opacity
 
-    override fun getColorFilter(): ColorFilter? = DrawableCompat.getColorFilter(child)
+    override fun getColorFilter(): ColorFilter? = DrawableCompat.getColorFilter(drawable)
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
-        child.colorFilter = colorFilter
+        drawable.colorFilter = colorFilter
     }
 
     override fun onBoundsChange(bounds: Rect) {
-        val width = child.intrinsicWidth
-        val height = child.intrinsicHeight
+        val width = drawable.intrinsicWidth
+        val height = drawable.intrinsicHeight
         if (width <= 0 || height <= 0) {
-            child.bounds = bounds
+            drawable.bounds = bounds
             childDx = 0f
             childDy = 0f
             childScale = 1f
@@ -97,58 +98,58 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
         val top = ((targetHeight - multiplier * height) / 2).roundToInt()
         val right = left + width
         val bottom = top + height
-        child.setBounds(left, top, right, bottom)
+        drawable.setBounds(left, top, right, bottom)
 
         childDx = bounds.left.toFloat()
         childDy = bounds.top.toFloat()
         childScale = multiplier.toFloat()
     }
 
-    override fun onLevelChange(level: Int) = child.setLevel(level)
+    override fun onLevelChange(level: Int) = drawable.setLevel(level)
 
-    override fun onStateChange(state: IntArray) = child.setState(state)
+    override fun onStateChange(state: IntArray) = drawable.setState(state)
 
-    override fun getIntrinsicWidth() = child.intrinsicWidth
+    override fun getIntrinsicWidth() = drawable.intrinsicWidth
 
-    override fun getIntrinsicHeight() = child.intrinsicHeight
+    override fun getIntrinsicHeight() = drawable.intrinsicHeight
 
-    override fun setTint(tintColor: Int) = DrawableCompat.setTint(child, tintColor)
+    override fun setTint(tintColor: Int) = DrawableCompat.setTint(drawable, tintColor)
 
-    override fun setTintList(tint: ColorStateList?) = DrawableCompat.setTintList(child, tint)
+    override fun setTintList(tint: ColorStateList?) = DrawableCompat.setTintList(drawable, tint)
 
     override fun setTintMode(tintMode: PorterDuff.Mode?) =
-        DrawableCompat.setTintMode(child, tintMode ?: PorterDuff.Mode.SRC_IN)
+        DrawableCompat.setTintMode(drawable, tintMode ?: PorterDuff.Mode.SRC_IN)
 
     @RequiresApi(29)
-    override fun setTintBlendMode(blendMode: BlendMode?) = child.setTintBlendMode(blendMode)
+    override fun setTintBlendMode(blendMode: BlendMode?) = drawable.setTintBlendMode(blendMode)
 
-    override fun isRunning() = child.isRunning
+    override fun isRunning() = drawable.isRunning
 
     override fun registerAnimationCallback(callback: AnimationCallback) {
         requiredMainThread()    // Consistent with AnimatedImageDrawable
-        child.registerAnimationCallback(callback)
+        drawable.registerAnimationCallback(callback)
     }
 
     override fun unregisterAnimationCallback(callback: AnimationCallback): Boolean {
-        return child.unregisterAnimationCallback(callback)
+        return drawable.unregisterAnimationCallback(callback)
     }
 
     override fun clearAnimationCallbacks() {
-        child.clearAnimationCallbacks()
+        drawable.clearAnimationCallbacks()
     }
 
     override fun start() {
-        child.start()
+        drawable.start()
     }
 
     override fun stop() {
-        child.stop()
+        drawable.stop()
     }
 
     override fun mutate(): ScaledAnimatedImageDrawable {
-        val mutateDrawable = child.mutate()
-        return if (mutateDrawable !== child) {
-            ScaledAnimatedImageDrawable(child, fitScale)
+        val mutateDrawable = drawable.mutate()
+        return if (mutateDrawable !== drawable) {
+            ScaledAnimatedImageDrawable(drawable, fitScale)
         } else {
             this
         }
@@ -169,18 +170,18 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ScaledAnimatedImageDrawable) return false
-        if (child != other.child) return false
+        if (drawable != other.drawable) return false
         if (fitScale != other.fitScale) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = child.hashCode()
+        var result = drawable.hashCode()
         result = 31 * result + fitScale.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "ScaledAnimatedImageDrawable(child=$child, fitScale=$fitScale)"
+        return "ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(${drawable.intrinsicWidth}x${drawable.intrinsicHeight})@${drawable.toHexString()},fitScale=$fitScale)"
     }
 }

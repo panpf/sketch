@@ -279,4 +279,59 @@ class ScaledAnimatedImageDrawableTest {
             }
         }
     }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val animatedImageDrawable = ImageDecoder.decodeDrawable(
+            ImageDecoder.createSource(context.assets, "sample_anim.gif")
+        ) as AnimatedImageDrawable
+        val animatedImageDrawable2 = ImageDecoder.decodeDrawable(
+            ImageDecoder.createSource(context.assets, "sample_anim.gif")
+        ) as AnimatedImageDrawable
+        val element1 = ScaledAnimatedImageDrawable(animatedImageDrawable, true)
+        val element11 = ScaledAnimatedImageDrawable(animatedImageDrawable, true)
+        val element2 = ScaledAnimatedImageDrawable(animatedImageDrawable2, true)
+        val element3 = ScaledAnimatedImageDrawable(animatedImageDrawable, false)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val animatedImageDrawable = ImageDecoder.decodeDrawable(
+            ImageDecoder.createSource(context.assets, "sample_anim.gif")
+        ) as AnimatedImageDrawable
+        Assert.assertEquals(
+            "ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(480x480)@${
+                Integer.toHexString(animatedImageDrawable.hashCode())
+            },fitScale=true)",
+            ScaledAnimatedImageDrawable(animatedImageDrawable).toString()
+        )
+    }
 }
