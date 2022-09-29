@@ -322,7 +322,8 @@ class MovieDrawable constructor(
     }
 
     override fun toString(): String {
-        return "MovieDrawable(size=${movie.width()}x${movie.height()},config=$config)"
+        val toHexString = Integer.toHexString(movie.hashCode())
+        return "MovieDrawable(movie=Movie(${movie.width()}x${movie.height()})@${toHexString},config=$config)"
     }
 
     private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }

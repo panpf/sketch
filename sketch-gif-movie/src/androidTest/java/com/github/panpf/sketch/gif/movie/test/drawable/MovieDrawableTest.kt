@@ -190,7 +190,7 @@ class MovieDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val movie = context.assets.open("sample_anim.gif").use { Movie.decodeStream(it) }
         Assert.assertEquals(
-            "MovieDrawable(size=480x480,config=ARGB_8888)",
+            "MovieDrawable(movie=Movie(480x480)@${Integer.toHexString(movie.hashCode())},config=ARGB_8888)",
             MovieDrawable(movie, ARGB_8888).toString()
         )
     }
