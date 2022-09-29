@@ -27,6 +27,7 @@ import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.isGif
+import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
@@ -107,7 +108,7 @@ class GifDrawableDrawableDecoder(
             ExifInterface.ORIENTATION_UNDEFINED
         )
         val animatableDrawable = SketchAnimatableDrawable(
-            animatableDrawable = gifDrawable,
+            animatableDrawable = GifDrawableWrapperDrawable(gifDrawable),
             imageUri = this.request.uriString,
             requestKey = this.request.key,
             requestCacheKey = this.request.cacheKey,

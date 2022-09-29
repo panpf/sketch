@@ -23,6 +23,7 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
+import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -38,7 +39,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import pl.droidsonroids.gif.GifDrawable
 
 @RunWith(AndroidJUnit4::class)
 class GifDrawableDrawableDecoderTest {
@@ -140,7 +140,7 @@ class GifDrawableDrawableDecoderTest {
                     Assert.assertEquals(LOCAL, this.dataFrom)
                     Assert.assertNull(this.transformedList)
                     val gifDrawable =
-                        (this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawable
+                        ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawableWrapperDrawable).gifDrawable
                     Assert.assertEquals(0, gifDrawable.loopCount)
                     Assert.assertNull(gifDrawable.transform)
                 }
@@ -161,7 +161,7 @@ class GifDrawableDrawableDecoderTest {
                     Assert.assertEquals(LOCAL, this.dataFrom)
                     Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
                     val gifDrawable =
-                        (this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawable
+                        ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawableWrapperDrawable).gifDrawable
                     Assert.assertEquals(3, gifDrawable.loopCount)
                     Assert.assertNotNull(gifDrawable.transform)
                     gifDrawable.transform!!.onDraw(Canvas(), null, null)
