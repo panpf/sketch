@@ -28,7 +28,6 @@ import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
@@ -45,7 +44,7 @@ import kotlin.math.roundToInt
  */
 class FFmpegVideoFrameBitmapDecoder(
     private val sketch: Sketch,
-    private val request: ImageRequest,
+    private val requestContext: RequestContext,
     private val dataSource: DataSource,
     private val mimeType: String,
 ) : BitmapDecoder {
@@ -68,15 +67,15 @@ class FFmpegVideoFrameBitmapDecoder(
         try {
             val imageInfo = readImageInfo(mediaMetadataRetriever)
             return realDecode(
-                request = request,
+                requestContext = requestContext,
                 dataFrom = dataSource.dataFrom,
                 imageInfo = imageInfo,
                 decodeFull = {
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it)
                 },
                 decodeRegion = null
-            ).appliedExifOrientation(sketch, request)
-                .appliedResize(sketch, request, request.resize)
+            ).appliedExifOrientation(sketch, requestContext)
+                .appliedResize(sketch, requestContext, requestContext.resize)
         } finally {
             mediaMetadataRetriever.release()
         }
@@ -93,7 +92,7 @@ class FFmpegVideoFrameBitmapDecoder(
             val message = "Invalid video file. size=${srcWidth}x${srcHeight}"
             throw ImageInvalidException(message)
         }
-        val exifOrientation = if (!request.ignoreExifOrientation) {
+        val exifOrientation = if (!requestContext.request.ignoreExifOrientation) {
             readExifOrientation(mediaMetadataRetriever)
         } else {
             ExifInterface.ORIENTATION_UNDEFINED
@@ -121,6 +120,7 @@ class FFmpegVideoFrameBitmapDecoder(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig
     ): Bitmap {
+        val request = requestContext.request
         val option =
             request.videoFrameOption ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros
@@ -153,7 +153,7 @@ class FFmpegVideoFrameBitmapDecoder(
                         )
                 )
         sketch.logger.d(MODULE) {
-            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
+            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
         return bitmap
     }
@@ -172,7 +172,6 @@ class FFmpegVideoFrameBitmapDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): FFmpegVideoFrameBitmapDecoder? {
@@ -180,7 +179,7 @@ class FFmpegVideoFrameBitmapDecoder(
             if (mimeType?.startsWith("video/") == true) {
                 return FFmpegVideoFrameBitmapDecoder(
                     sketch = sketch,
-                    request = request,
+                    requestContext = requestContext,
                     dataSource = fetchResult.dataSource,
                     mimeType = mimeType
                 )

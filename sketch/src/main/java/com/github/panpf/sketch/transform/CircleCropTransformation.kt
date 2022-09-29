@@ -22,7 +22,7 @@ import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.getOrCreate
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
@@ -43,22 +43,17 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
 
     override suspend fun transform(
         sketch: Sketch,
-        request: ImageRequest,
+        requestContext: RequestContext,
         input: Bitmap
     ): TransformResult {
         val newSize = min(input.width, input.height)
-        val scale = if (scale != null) {
-            scale
-        } else {
-            val resize = request.resize
-            val scaleDecider = resize?.scaleDecider ?: request.resizeScaleDecider
-            scaleDecider.get(
+        val scale = scale
+            ?: requestContext.resize.scaleDecider.get(
                 imageWidth = input.width,
                 imageHeight = input.height,
                 resizeWidth = newSize,
                 resizeHeight = newSize
             )
-        }
         val resizeMapping = calculateResizeMapping(
             input.width, input.height, newSize, newSize, SAME_ASPECT_RATIO, scale
         )
@@ -67,7 +62,7 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
             width = resizeMapping.newWidth,
             height = resizeMapping.newHeight,
             config = config,
-            disallowReuseBitmap = request.disallowReuseBitmap,
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
             caller = "CircleCropTransformation"
         )
         val paint = Paint().apply {

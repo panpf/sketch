@@ -31,6 +31,7 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
         chain: BitmapDecodeInterceptor.Chain,
     ): BitmapDecodeResult {
         val request = chain.request
+        val requestContext = chain.requestContext
         val sketch = chain.sketch
         val result = chain.proceed()
         val transformations = request.transformations ?: return result
@@ -38,7 +39,7 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
         val oldBitmap = result.bitmap
         val transformedList = LinkedList<String>()
         val newBitmap = transformations.fold(oldBitmap) { inputBitmap, next ->
-            val transformResult = next.transform(sketch, request, inputBitmap)
+            val transformResult = next.transform(sketch, requestContext, inputBitmap)
             if (transformResult != null) {
                 if (transformResult.bitmap !== inputBitmap) {
                     sketch.bitmapPool.freeBitmap(
@@ -47,7 +48,7 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
                         caller = "transform:${next}"
                     )
                     sketch.logger.d("BitmapTransformationDecodeInterceptor") {
-                        "transform. freeBitmap. bitmap=${inputBitmap.logString}. '${request.key}'"
+                        "transform. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.key}'"
                     }
                 }
                 transformedList.add(transformResult.transformed)

@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
 import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -37,14 +37,14 @@ import com.github.panpf.sketch.util.Size as CoilSize
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uri] value.
+ * @param imageUri [DisplayRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uri] is null.
+ * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is empty.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -92,7 +92,7 @@ fun AsyncImage(
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uri] value.
+ * @param imageUri [DisplayRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -147,7 +147,7 @@ fun AsyncImage(
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uri] is null.
+ * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is null.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -289,8 +289,7 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
 //    } else {
 //        request
 //    }
-    val resetSizeResolver = request.resizeSize == null
-            && (request.resizeSizeResolver == null || request.resizeSizeResolver is DefaultSizeResolver)
+    val resetSizeResolver = request.definedOptions.resizeSizeResolver == null
     val resetScale = request.definedOptions.resizeScaleDecider == null
     return if (resetSizeResolver || resetScale) {
         val sizeResolver = ifOrNull(resetSizeResolver) {
@@ -302,6 +301,9 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
         request.newDisplayRequest {
             if (sizeResolver != null) {
                 resizeSizeResolver(sizeResolver)
+                if (request.definedOptions.resizePrecisionDecider == null) {
+                    resizePrecision(LESS_PIXELS)
+                }
             }
             if (scale != null) {
                 resizeScale(scale)

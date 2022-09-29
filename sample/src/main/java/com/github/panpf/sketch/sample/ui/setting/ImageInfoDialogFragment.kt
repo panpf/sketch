@@ -135,16 +135,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             } else if (displayResult is DisplayResult.Error) {
                 uri1 = displayResult.request.uriString
 
-                val keyUri = displayResult.request.key.toUri()
-                optionsInfo = keyUri.queryParameterNames.mapNotNull {
-                    if (it.startsWith("_")) {
-                        val value = keyUri.getQueryParameter(it)
-                        "$it=$value"
-                    } else {
-                        null
-                    }
-                }.joinToString(separator = "\n")
-
                 throwableString = displayResult.exception.toString()
             }
 

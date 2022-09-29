@@ -59,8 +59,6 @@ import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.request.updateDisplayImageOptions
-import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
-import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
@@ -73,6 +71,8 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
@@ -90,6 +90,7 @@ import com.github.panpf.sketch.test.utils.TestListenerImageView
 import com.github.panpf.sketch.test.utils.TestOptionsImageView
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -1070,9 +1071,9 @@ class DisplayRequestTest {
 
     @Test
     fun testResizePrecision() {
-        val context1 = getTestContext()
+        val (context, sketch) = getTestContextAndNewSketch()
         val uriString1 = newAssetUri("sample.jpeg")
-        DisplayRequest.Builder(context1, uriString1).apply {
+        DisplayRequest.Builder(context, uriString1).apply {
             build().apply {
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
             }
@@ -1096,34 +1097,38 @@ class DisplayRequestTest {
             }
         }
 
-        val request = DisplayRequest(context1, uriString1).apply {
+        val request = DisplayRequest(context, uriString1).apply {
             Assert.assertNull(resizeSize)
             Assert.assertEquals(
-                DefaultSizeResolver(DisplaySizeResolver(context1)),
+                DefaultSizeResolver(DisplaySizeResolver(context)),
                 resizeSizeResolver
             )
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
         }
         val size = runBlocking {
-            request.resizeSizeResolver!!.size()
+            DisplaySizeResolver(context).size()
         }
         val request1 = request.newDisplayRequest {
             resizeSize(size)
         }.apply {
             Assert.assertNotNull(resizeSize)
-            Assert.assertEquals(
-                DefaultSizeResolver(DisplaySizeResolver(context1)),
-                resizeSizeResolver
-            )
-            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+            Assert.assertNull(resizeSizeResolver)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
         }
         request1.newDisplayRequest().apply {
             Assert.assertNotNull(resizeSize)
-            Assert.assertEquals(
-                DefaultSizeResolver(DisplaySizeResolver(context1)),
-                resizeSizeResolver
-            )
+            Assert.assertNull(resizeSizeResolver)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
+        }
+
+        request.apply {
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+        }
+        runBlocking { sketch.execute(request) }.apply {
+            Assert.assertEquals(
+                FixedPrecisionDecider(LESS_PIXELS),
+                this.request.resizePrecisionDecider
+            )
         }
     }
 

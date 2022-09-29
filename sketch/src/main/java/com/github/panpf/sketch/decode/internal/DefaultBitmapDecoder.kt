@@ -27,7 +27,6 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Size
 
@@ -36,7 +35,7 @@ import com.github.panpf.sketch.util.Size
  */
 open class DefaultBitmapDecoder(
     private val sketch: Sketch,
-    private val request: ImageRequest,
+    private val requestContext: RequestContext,
     private val dataSource: DataSource,
 ) : BitmapDecoder {
 
@@ -46,6 +45,7 @@ open class DefaultBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
+        val request = requestContext.request
         // Currently running on a limited number of IO contexts, so this warning can be ignored
         @Suppress("BlockingMethodInNonBlockingContext")
         val imageInfo =
@@ -53,7 +53,7 @@ open class DefaultBitmapDecoder(
         val canDecodeRegion = ImageFormat.parseMimeType(imageInfo.mimeType)
             ?.supportBitmapRegionDecoder() == true
         return realDecode(
-            request = request,
+            requestContext = requestContext,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
             decodeFull = { decodeConfig ->
@@ -62,11 +62,12 @@ open class DefaultBitmapDecoder(
             decodeRegion = if (canDecodeRegion) { srcRect, decodeConfig ->
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
-        ).appliedExifOrientation(sketch, request)
-            .appliedResize(sketch, request, request.resize)
+        ).appliedExifOrientation(sketch, requestContext)
+            .appliedResize(sketch, requestContext, requestContext.resize)
     }
 
     private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+        val request = requestContext.request
         val decodeOptions = decodeConfig.toBitmapOptions()
 
         // Set inBitmap from bitmap pool
@@ -78,7 +79,7 @@ open class DefaultBitmapDecoder(
             caller = "DefaultBitmapDecoder:realDecodeFull"
         )
         sketch.logger.d(MODULE) {
-            "realDecodeFull. inBitmap=${decodeOptions.inBitmap?.logString}. '${request.key}'"
+            "realDecodeFull. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.key}'"
         }
 
         val bitmap: Bitmap = try {
@@ -86,7 +87,7 @@ open class DefaultBitmapDecoder(
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
-                val message = "Bitmap decode error. Because inBitmap. '${request.key}'"
+                val message = "Bitmap decode error. Because inBitmap. '${requestContext.key}'"
                 sketch.logger.e(MODULE, throwable, message)
 
                 sketch.bitmapPool.freeBitmap(
@@ -95,7 +96,7 @@ open class DefaultBitmapDecoder(
                     caller = "decode:error"
                 )
                 sketch.logger.d(MODULE) {
-                    "realDecodeFull. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${request.key}'"
+                    "realDecodeFull. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.key}'"
                 }
 
                 decodeOptions.inBitmap = null
@@ -110,13 +111,13 @@ open class DefaultBitmapDecoder(
         } ?: throw ImageInvalidException("Invalid image. decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             sketch.logger.e(MODULE) {
-                "realDecodeFull. Invalid image. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
+                "realDecodeFull. Invalid image. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
             }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         } else {
             sketch.logger.d(MODULE) {
-                "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
+                "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
             }
         }
         return bitmap
@@ -125,6 +126,7 @@ open class DefaultBitmapDecoder(
     private fun realDecodeRegion(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
     ): Bitmap {
+        val request = requestContext.request
         val decodeOptions = decodeConfig.toBitmapOptions()
         sketch.bitmapPool.setInBitmapForRegion(
             options = decodeOptions,
@@ -135,7 +137,7 @@ open class DefaultBitmapDecoder(
             caller = "DefaultBitmapDecoder:realDecodeRegion"
         )
         sketch.logger.d(MODULE) {
-            "realDecodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. '${request.key}'"
+            "realDecodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.key}'"
         }
 
         val bitmap = try {
@@ -144,7 +146,8 @@ open class DefaultBitmapDecoder(
             val inBitmap = decodeOptions.inBitmap
             when {
                 inBitmap != null && isInBitmapError(throwable) -> {
-                    val message = "Bitmap decode region error. Because inBitmap. '${request.key}'"
+                    val message =
+                        "Bitmap decode region error. Because inBitmap. '${requestContext.key}'"
                     sketch.logger.e(MODULE, throwable, message)
 
                     sketch.bitmapPool.freeBitmap(
@@ -153,7 +156,7 @@ open class DefaultBitmapDecoder(
                         caller = "decodeRegion:error"
                     )
                     sketch.logger.d(MODULE) {
-                        "realDecodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${request.key}'"
+                        "realDecodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.key}'"
                     }
 
                     decodeOptions.inBitmap = null
@@ -166,7 +169,7 @@ open class DefaultBitmapDecoder(
                 }
                 isSrcRectError(throwable) -> {
                     val message =
-                        "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, resize=${request.resize}, srcRect=${srcRect}"
+                        "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, resize=${requestContext.resize}, srcRect=${srcRect}"
                     throw BitmapDecodeException(message, throwable)
                 }
                 else -> {
@@ -176,13 +179,13 @@ open class DefaultBitmapDecoder(
         } ?: throw ImageInvalidException("Invalid image. region decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             sketch.logger.e(MODULE) {
-                "realDecodeRegion. Invalid image. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${request.key}'"
+                "realDecodeRegion. Invalid image. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.key}'"
             }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         } else {
             sketch.logger.d(MODULE) {
-                "realDecodeRegion. successful. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${request.key}'"
+                "realDecodeRegion. successful. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.key}'"
             }
         }
         return bitmap
@@ -192,10 +195,9 @@ open class DefaultBitmapDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, fetchResult.dataSource)
+        ): BitmapDecoder = DefaultBitmapDecoder(sketch, requestContext, fetchResult.dataSource)
 
         override fun toString(): String = "DefaultBitmapDecoder"
 

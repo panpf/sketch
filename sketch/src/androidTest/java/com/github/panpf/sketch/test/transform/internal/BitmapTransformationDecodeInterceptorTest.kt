@@ -90,7 +90,7 @@ class BitmapTransformationDecodeInterceptorTest {
 
                     override suspend fun transform(
                         sketch: Sketch,
-                        request: ImageRequest,
+                        requestContext: RequestContext,
                         input: Bitmap
                     ): TransformResult = TransformResult(input, "TestTransformation")
                 })
@@ -116,7 +116,7 @@ class BitmapTransformationDecodeInterceptorTest {
 
                     override suspend fun transform(
                         sketch: Sketch,
-                        request: ImageRequest,
+                        requestContext: RequestContext,
                         input: Bitmap
                     ): TransformResult? = null
                 })
@@ -143,7 +143,7 @@ class BitmapTransformationDecodeInterceptorTest {
 
                         override suspend fun transform(
                             sketch: Sketch,
-                            request: ImageRequest,
+                            requestContext: RequestContext,
                             input: Bitmap
                         ): TransformResult = TransformResult(
                             input.apply { input.recycle() },

@@ -21,6 +21,7 @@ import android.content.res.Resources
 import android.net.Uri
 import android.util.TypedValue
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
@@ -133,10 +134,12 @@ class ResourceUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? =
-            ifOrNull(SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
-                ResourceUriFetcher(sketch, request, request.uri)
+        override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? {
+            val uri = request.uriString.toUri()
+            return ifOrNull(SCHEME.equals(uri.scheme, ignoreCase = true)) {
+                ResourceUriFetcher(sketch, request, uri)
             }
+        }
 
         override fun toString(): String = "ResourceUriFetcher"
 

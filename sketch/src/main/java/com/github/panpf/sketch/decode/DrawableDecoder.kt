@@ -21,7 +21,6 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 
 /**
@@ -47,7 +46,6 @@ fun interface DrawableDecoder {
          */
         fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult,
         ): DrawableDecoder?

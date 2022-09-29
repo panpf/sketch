@@ -32,7 +32,6 @@ import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
@@ -43,7 +42,7 @@ import kotlin.math.roundToInt
  */
 class SvgBitmapDecoder constructor(
     private val sketch: Sketch,
-    private val request: ImageRequest,
+    private val requestContext: RequestContext,
     private val dataSource: DataSource,
     private val useViewBoundsAsIntrinsicSize: Boolean = true,
     private val backgroundColor: Int?,
@@ -62,14 +61,14 @@ class SvgBitmapDecoder constructor(
         val svg = dataSource.newInputStream().buffered().use { SVG.getFromInputStream(it) }
         val imageInfo = readImageInfo(svg)
         return realDecode(
-            request = request,
+            requestContext = requestContext,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
             decodeFull = { decodeConfig: DecodeConfig ->
                 realDecodeFull(imageInfo, decodeConfig, svg)
             },
             decodeRegion = null
-        ).appliedResize(sketch, request, request.resize)
+        ).appliedResize(sketch, requestContext, requestContext.resize)
     }
 
     private fun readImageInfo(svg: SVG): ImageInfo {
@@ -122,7 +121,7 @@ class SvgBitmapDecoder constructor(
             width = dstWidth,
             height = dstHeight,
             config = decodeConfig.inPreferredConfig.toSoftware(),
-            disallowReuseBitmap = request.disallowReuseBitmap,
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
             caller = "SvgBitmapDecoder"
         )
         val canvas = Canvas(bitmap).apply {
@@ -133,7 +132,7 @@ class SvgBitmapDecoder constructor(
         val renderOptions = css?.let { RenderOptions().css(it) }
         svg.renderToCanvas(canvas, renderOptions)
         sketch.logger.d(MODULE) {
-            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
+            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
         return bitmap
     }
@@ -149,7 +148,6 @@ class SvgBitmapDecoder constructor(
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): SvgBitmapDecoder? =
@@ -159,11 +157,11 @@ class SvgBitmapDecoder constructor(
             ) {
                 SvgBitmapDecoder(
                     sketch = sketch,
-                    request = request,
+                    requestContext = requestContext,
                     dataSource = fetchResult.dataSource,
                     useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
-                    backgroundColor = request.svgBackgroundColor,
-                    css = request.svgCss
+                    backgroundColor = requestContext.request.svgBackgroundColor,
+                    css = requestContext.request.svgCss
                 )
             } else {
                 null

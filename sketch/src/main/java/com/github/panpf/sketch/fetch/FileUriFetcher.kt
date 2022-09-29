@@ -17,6 +17,7 @@ package com.github.panpf.sketch.fetch
 
 import android.webkit.MimeTypeMap
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher.Companion.SCHEME
@@ -57,7 +58,7 @@ class FileUriFetcher(
         override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {
             val uriString = request.uriString
             val subStartIndex = when {
-                SCHEME.equals(request.uri.scheme, ignoreCase = true) -> SCHEME.length + 3
+                SCHEME.equals(uriString.toUri().scheme, ignoreCase = true) -> SCHEME.length + 3
                 uriString.startsWith("/") -> 0
                 else -> -1
             }

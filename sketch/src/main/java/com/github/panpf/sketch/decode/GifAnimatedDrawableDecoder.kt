@@ -23,7 +23,6 @@ import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 
 /**
@@ -45,24 +44,23 @@ import com.github.panpf.sketch.request.internal.RequestContext
  */
 @RequiresApi(Build.VERSION_CODES.P)
 class GifAnimatedDrawableDecoder(
-    request: ImageRequest,
+    requestContext: RequestContext,
     dataSource: DataSource,
-) : BaseAnimatedImageDrawableDecoder(request, dataSource) {
+) : BaseAnimatedImageDrawableDecoder(requestContext, dataSource) {
 
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): GifAnimatedDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !request.disallowAnimatedImage) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !requestContext.request.disallowAnimatedImage) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 val isGif =
                     if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF
                 if (isGif) {
-                    return GifAnimatedDrawableDecoder(request, fetchResult.dataSource)
+                    return GifAnimatedDrawableDecoder(requestContext, fetchResult.dataSource)
                 }
             }
             return null

@@ -30,7 +30,7 @@ class AllFetcher : Fetcher {
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): Fetcher? {
+        override fun create(sketch: Sketch, request: ImageRequest): Fetcher {
             return AllFetcher()
         }
 

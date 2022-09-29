@@ -26,7 +26,7 @@ import androidx.annotation.ColorInt
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.getOrCreate
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.safeConfig
 
 /**
@@ -44,7 +44,7 @@ class MaskTransformation(
 
     override suspend fun transform(
         sketch: Sketch,
-        request: ImageRequest,
+        requestContext: RequestContext,
         input: Bitmap
     ): TransformResult {
         val bitmapPool: BitmapPool = sketch.bitmapPool
@@ -58,7 +58,7 @@ class MaskTransformation(
                 width = input.width,
                 height = input.height,
                 config = input.safeConfig,
-                disallowReuseBitmap = request.disallowReuseBitmap,
+                disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
                 caller = "MaskTransformation"
             )
             isNewBitmap = true

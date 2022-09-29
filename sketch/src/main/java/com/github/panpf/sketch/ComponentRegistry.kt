@@ -118,13 +118,12 @@ open class ComponentRegistry private constructor(
     @WorkerThread
     internal fun newBitmapDecoderOrNull(
         sketch: Sketch,
-        request: ImageRequest,
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): BitmapDecoder? {
         requiredWorkThread()
         return bitmapDecoderFactoryList.firstNotNullOfOrNull {
-            it.create(sketch, request, requestContext, fetchResult)
+            it.create(sketch, requestContext, fetchResult)
         }
     }
 
@@ -134,13 +133,12 @@ open class ComponentRegistry private constructor(
     @WorkerThread
     internal fun newBitmapDecoder(
         sketch: Sketch,
-        request: ImageRequest,
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): BitmapDecoder {
-        return newBitmapDecoderOrNull(sketch, request, requestContext, fetchResult)
+        return newBitmapDecoderOrNull(sketch, requestContext, fetchResult)
             ?: throw IllegalArgumentException(
-                "No BitmapDecoder can handle this uri '${request.uriString}', " +
+                "No BitmapDecoder can handle this uri '${requestContext.request.uriString}', " +
                         "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
             )
     }
@@ -151,13 +149,12 @@ open class ComponentRegistry private constructor(
     @WorkerThread
     internal fun newDrawableDecoderOrNull(
         sketch: Sketch,
-        request: ImageRequest,
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): DrawableDecoder? {
         requiredWorkThread()
         return drawableDecoderFactoryList.firstNotNullOfOrNull {
-            it.create(sketch, request, requestContext, fetchResult)
+            it.create(sketch, requestContext, fetchResult)
         }
     }
 
@@ -167,13 +164,12 @@ open class ComponentRegistry private constructor(
     @WorkerThread
     internal fun newDrawableDecoder(
         sketch: Sketch,
-        request: ImageRequest,
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): DrawableDecoder {
-        return newDrawableDecoderOrNull(sketch, request, requestContext, fetchResult)
+        return newDrawableDecoderOrNull(sketch, requestContext, fetchResult)
             ?: throw IllegalArgumentException(
-                "No DrawableDecoder can handle this uri '${request.uriString}', " +
+                "No DrawableDecoder can handle this uri '${requestContext.request.uriString}', " +
                         "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"
             )
     }
@@ -392,8 +388,8 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
         fetchResult: FetchResult,
     ): BitmapDecoder =
         request.componentRegistry
-            ?.newBitmapDecoderOrNull(sketch, request, requestContext, fetchResult)
-            ?: registry.newBitmapDecoder(sketch, request, requestContext, fetchResult)
+            ?.newBitmapDecoderOrNull(sketch, requestContext, fetchResult)
+            ?: registry.newBitmapDecoder(sketch, requestContext, fetchResult)
 
     /**
      * Create a [DrawableDecoder] with [ImageRequest]'s (preferred) and global [DrawableDecoder.Factory]
@@ -405,8 +401,8 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
         fetchResult: FetchResult,
     ): DrawableDecoder =
         request.componentRegistry
-            ?.newDrawableDecoderOrNull(sketch, request, requestContext, fetchResult)
-            ?: registry.newDrawableDecoder(sketch, request, requestContext, fetchResult)
+            ?.newDrawableDecoderOrNull(sketch, requestContext, fetchResult)
+            ?: registry.newDrawableDecoder(sketch, requestContext, fetchResult)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

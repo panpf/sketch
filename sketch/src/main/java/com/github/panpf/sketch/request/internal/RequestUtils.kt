@@ -18,13 +18,16 @@ package com.github.panpf.sketch.request.internal
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.core.net.toUri
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.util.Size
 
-internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
+internal fun ImageRequest.newCacheKey(size: Size): String = uriString.toUri().buildUpon().apply {
     parameters?.cacheKey?.takeIf { it.isNotEmpty() }?.let {
         appendQueryParameter("_parameters", it)
     }
@@ -40,9 +43,7 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
     if (preferQualityOverSpeed) {
         appendQueryParameter("_preferQualityOverSpeed", true.toString())
     }
-    resize?.let {
-        appendQueryParameter("_resize", it.key)
-    }
+    appendQueryParameter("_resize", Resize(size, resizePrecisionDecider, resizeScaleDecider).key)
     transformations?.takeIf { it.isNotEmpty() }?.let { list ->
         appendQueryParameter(
             "_transformations",
@@ -69,7 +70,7 @@ internal fun ImageRequest.newCacheKey(): String = uri.buildUpon().apply {
     }
 }.build().toString().let { Uri.decode(it) }
 
-internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
+internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUpon().apply {
     depth.takeIf { it != NETWORK }?.let {
         appendQueryParameter("_depth", it.toString())
     }
@@ -96,9 +97,10 @@ internal fun ImageRequest.newKey(): String = uri.buildUpon().apply {
         if (preferQualityOverSpeed) {
             appendQueryParameter("_preferQualityOverSpeed", true.toString())
         }
-        resize?.let {
-            appendQueryParameter("_resize", it.key)
-        }
+        appendQueryParameter(
+            "_resize",
+            Resize(size, resizePrecisionDecider, resizeScaleDecider).key
+        )
         transformations?.takeIf { it.isNotEmpty() }?.let { list ->
             appendQueryParameter(
                 "_transformations",

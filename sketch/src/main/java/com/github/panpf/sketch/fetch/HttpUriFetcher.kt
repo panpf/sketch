@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.fetch
 
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
@@ -53,6 +54,10 @@ open class HttpUriFetcher(
         const val SCHEME1 = "https"
         const val MIME_TYPE_TEXT_PLAIN = "text/plain"
     }
+
+    private val dataKey = request.uriString
+    private val contentTypeKey = "${request.uriString}_contentType"
+    private val downloadCacheLockKey = request.uriString
 
     @WorkerThread
     override suspend fun fetch(): FetchResult {
@@ -139,7 +144,7 @@ open class HttpUriFetcher(
     private suspend fun <R> lockDownloadCache(
         block: suspend () -> R
     ): R {
-        val lock: Mutex = sketch.downloadCache.editLock(request.downloadCacheLockKey)
+        val lock: Mutex = sketch.downloadCache.editLock(downloadCacheLockKey)
         lock.lock()
         try {
             return block()
@@ -151,8 +156,6 @@ open class HttpUriFetcher(
     @WorkerThread
     private fun readCache(): FetchResult? {
         val downloadCache = sketch.downloadCache
-        val dataKey = request.downloadCacheDataKey
-        val contentTypeKey = request.downloadCacheContentTypeKey
 
         val dataDiskCacheSnapshot = downloadCache[dataKey] ?: return null
         val contentType = downloadCache[contentTypeKey]?.let { snapshot ->
@@ -186,8 +189,6 @@ open class HttpUriFetcher(
         coroutineScope: CoroutineScope
     ): DiskCache.Snapshot? {
         val downloadCache = sketch.downloadCache
-        val dataKey = request.downloadCacheDataKey
-        val contentTypeKey = request.downloadCacheContentTypeKey
 
         val diskCacheEditor = ifOrNull(request.downloadCachePolicy.writeEnabled) {
             downloadCache.edit(dataKey)
@@ -239,15 +240,17 @@ open class HttpUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? =
-            if (
-                SCHEME.equals(request.uri.scheme, ignoreCase = true)
-                || SCHEME1.equals(request.uri.scheme, ignoreCase = true)
+        override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? {
+            val scheme = request.uriString.toUri().scheme
+            return if (
+                SCHEME.equals(scheme, ignoreCase = true)
+                || SCHEME1.equals(scheme, ignoreCase = true)
             ) {
                 HttpUriFetcher(sketch, request, request.uriString)
             } else {
                 null
             }
+        }
 
         override fun toString(): String = "HttpUriFetcher"
 
@@ -262,12 +265,3 @@ open class HttpUriFetcher(
         }
     }
 }
-
-val ImageRequest.downloadCacheDataKey: String
-    get() = uriString
-
-val ImageRequest.downloadCacheContentTypeKey: String
-    get() = "${uriString}_contentType"
-
-val ImageRequest.downloadCacheLockKey: String
-    get() = uriString

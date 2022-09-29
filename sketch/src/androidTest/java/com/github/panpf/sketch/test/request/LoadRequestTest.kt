@@ -83,6 +83,7 @@ import com.github.panpf.sketch.test.utils.TestDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -989,9 +990,9 @@ class LoadRequestTest {
 
     @Test
     fun testResizePrecision() {
-        val context1 = getTestContext()
+        val (context, sketch) = getTestContextAndNewSketch()
         val uriString1 = newAssetUri("sample.jpeg")
-        LoadRequest.Builder(context1, uriString1).apply {
+        LoadRequest.Builder(context, uriString1).apply {
             build().apply {
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
             }
@@ -1015,34 +1016,38 @@ class LoadRequestTest {
             }
         }
 
-        val request = LoadRequest(context1, uriString1).apply {
+        val request = LoadRequest(context, uriString1).apply {
             Assert.assertNull(resizeSize)
             Assert.assertEquals(
-                DefaultSizeResolver(DisplaySizeResolver(context1)),
+                DefaultSizeResolver(DisplaySizeResolver(context)),
                 resizeSizeResolver
             )
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
         }
         val size = runBlocking {
-            request.resizeSizeResolver!!.size()
+            DisplaySizeResolver(context).size()
         }
         val request1 = request.newLoadRequest {
             resizeSize(size)
         }.apply {
             Assert.assertNotNull(resizeSize)
-            Assert.assertEquals(
-                DefaultSizeResolver(DisplaySizeResolver(context1)),
-                resizeSizeResolver
-            )
-            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+            Assert.assertNull(resizeSizeResolver)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
         }
         request1.newLoadRequest().apply {
             Assert.assertNotNull(resizeSize)
-            Assert.assertEquals(
-                DefaultSizeResolver(DisplaySizeResolver(context1)),
-                resizeSizeResolver
-            )
+            Assert.assertNull(resizeSizeResolver)
+            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
+        }
+
+        request.apply {
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+        }
+        runBlocking { sketch.execute(request) }.apply {
+            Assert.assertEquals(
+                FixedPrecisionDecider(LESS_PIXELS),
+                this.request.resizePrecisionDecider
+            )
         }
     }
 

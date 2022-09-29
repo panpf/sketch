@@ -22,12 +22,10 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 
 class DefaultDrawableDecoder(
     private val sketch: Sketch,
-    private val request: ImageRequest,
     private val requestContext: RequestContext,
     private val fetchResult: FetchResult
 ) : DrawableDecoder {
@@ -36,24 +34,24 @@ class DefaultDrawableDecoder(
     override suspend fun decode(): DrawableDecodeResult {
         val decodeResult = BitmapDecodeInterceptorChain(
             sketch = sketch,
-            request = request,
+            request = requestContext.request,
             requestContext = requestContext,
             fetchResult = fetchResult,
-            interceptors = sketch.components.getBitmapDecodeInterceptorList(request),
+            interceptors = sketch.components.getBitmapDecodeInterceptorList(requestContext.request),
             index = 0,
         ).proceed()
         val countBitmap = CountBitmap(
-            cacheKey = request.cacheKey,
+            cacheKey = requestContext.cacheKey,
             bitmap = decodeResult.bitmap,
             bitmapPool = sketch.bitmapPool,
-            disallowReuseBitmap = request.disallowReuseBitmap,
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
         )
         val countDrawable = SketchCountBitmapDrawable(
-            resources = request.context.resources,
+            resources = requestContext.request.context.resources,
             countBitmap = countBitmap,
-            imageUri = request.uriString,
-            requestKey = request.key,
-            requestCacheKey = request.cacheKey,
+            imageUri = requestContext.request.uriString,
+            requestKey = requestContext.key,
+            requestCacheKey = requestContext.cacheKey,
             imageInfo = decodeResult.imageInfo,
             transformedList = decodeResult.transformedList,
             extras = decodeResult.extras,
@@ -72,10 +70,9 @@ class DefaultDrawableDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): DrawableDecoder = DefaultDrawableDecoder(sketch, request, requestContext, fetchResult)
+        ): DrawableDecoder = DefaultDrawableDecoder(sketch, requestContext, fetchResult)
 
         override fun toString(): String = "DefaultDrawableDecoder"
 

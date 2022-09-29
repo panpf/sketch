@@ -29,10 +29,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.ImageRequest.BaseImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
@@ -256,10 +254,6 @@ interface LoadRequest : ImageRequest {
             super.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
-        override fun resize(resize: Resize?): Builder = apply {
-            super.resize(resize)
-        }
-
         override fun resize(
             size: Size, precision: PrecisionDecider, scale: ScaleDecider
         ): Builder = apply {
@@ -456,7 +450,6 @@ interface LoadRequest : ImageRequest {
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean,
-        override val resizeSize: Size?,
         override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
@@ -471,10 +464,5 @@ interface LoadRequest : ImageRequest {
         override val resizeApplyToDrawable: Boolean,
         override val memoryCachePolicy: CachePolicy,
         override val componentRegistry: ComponentRegistry?,
-    ) : BaseImageRequest(), LoadRequest {
-
-        override fun toString(): String {
-            return "LoadRequest('${key}')"
-        }
-    }
+    ) : LoadRequest
 }

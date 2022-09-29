@@ -30,10 +30,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.ImageRequest.BaseImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
@@ -279,10 +277,6 @@ interface DisplayRequest : ImageRequest {
             super.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
-        override fun resize(resize: Resize?): Builder = apply {
-            super.resize(resize)
-        }
-
         override fun resize(
             size: Size, precision: PrecisionDecider, scale: ScaleDecider
         ): Builder = apply {
@@ -461,7 +455,7 @@ interface DisplayRequest : ImageRequest {
             }
     }
 
-    class DisplayRequestImpl internal constructor(
+    data class DisplayRequestImpl internal constructor(
         override val context: Context,
         override val uriString: String,
         override val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?,
@@ -479,7 +473,6 @@ interface DisplayRequest : ImageRequest {
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean,
-        override val resizeSize: Size?,
         override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
@@ -494,10 +487,5 @@ interface DisplayRequest : ImageRequest {
         override val resizeApplyToDrawable: Boolean,
         override val memoryCachePolicy: CachePolicy,
         override val componentRegistry: ComponentRegistry?,
-    ) : BaseImageRequest(), DisplayRequest {
-
-        override fun toString(): String {
-            return "DisplayRequest('${key}')"
-        }
-    }
+    ) : DisplayRequest
 }

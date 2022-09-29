@@ -25,6 +25,7 @@ import android.graphics.ColorSpace.Named.BT709
 import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.widget.TextView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -56,6 +57,8 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
+import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -69,6 +72,7 @@ import com.github.panpf.sketch.test.utils.TestDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -97,6 +101,8 @@ class ImageOptionsTest {
 
     @Test
     fun testIsEmpty() {
+        val context = getTestContext()
+
         ImageOptions().apply {
             Assert.assertTrue(this.isEmpty())
             Assert.assertFalse(this.isNotEmpty())
@@ -111,6 +117,7 @@ class ImageOptionsTest {
             @Suppress("DEPRECATION")
             Assert.assertNull(this.preferQualityOverSpeed)
             Assert.assertNull(this.resizeSize)
+            Assert.assertNull(this.resizeSizeResolver)
             Assert.assertNull(this.resizePrecisionDecider)
             Assert.assertNull(this.resizeScaleDecider)
             Assert.assertNull(this.transformations)
@@ -192,6 +199,14 @@ class ImageOptionsTest {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.resizeSize)
+        }
+
+        ImageOptions {
+            resizeSizeResolver(DisplaySizeResolver(context))
+        }.apply {
+            Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
+            Assert.assertNotNull(this.resizeSizeResolver)
         }
 
         ImageOptions {
@@ -361,6 +376,8 @@ class ImageOptionsTest {
 
     @Test
     fun testMerged() {
+        val context = getTestContext()
+
         val options = ImageOptions()
         Assert.assertTrue(options == options.merged(ImageOptions()))
         Assert.assertTrue(options != options.merged(ImageOptions {
@@ -471,17 +488,17 @@ class ImageOptionsTest {
             Assert.assertEquals(Size(100, 100), this.resizeSize)
         }
 
-//        ImageOptions().apply {
-//            Assert.assertEquals(null, this.resizeSizeResolver)
-//        }.merged(ImageOptions {
-//            resizeSizeResolver(DisplaySizeResolver(context))
-//        }).apply {
-//            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
-//        }.merged(ImageOptions {
-//            resizeSizeResolver(ViewSizeResolver(TextView(context)))
-//        }).apply {
-//            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
-//        }
+        ImageOptions().apply {
+            Assert.assertEquals(null, this.resizeSizeResolver)
+        }.merged(ImageOptions {
+            resizeSizeResolver(DisplaySizeResolver(context))
+        }).apply {
+            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
+        }.merged(ImageOptions {
+            resizeSizeResolver(ViewSizeResolver(TextView(context)))
+        }).apply {
+            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
+        }
 
         ImageOptions().apply {
             Assert.assertEquals(null, this.resizePrecisionDecider)
@@ -690,6 +707,8 @@ class ImageOptionsTest {
 
     @Test
     fun testEqualsHashCodeToString() {
+        val context = getTestContext()
+
         val optionsList = buildList {
             ImageOptions()
                 .apply { add(this) }.newOptions {
@@ -715,8 +734,8 @@ class ImageOptionsTest {
                     preferQualityOverSpeed(true)
                 }.apply { add(this) }.newOptions {
                     resizeSize(100, 100)
-//                }.apply { add(this) }.newOptions {
-//                    resizeSizeResolver(DisplaySizeResolver(context))
+                }.apply { add(this) }.newOptions {
+                    resizeSizeResolver(DisplaySizeResolver(context))
                 }.apply { add(this) }.newOptions {
                     resizePrecision(SAME_ASPECT_RATIO)
                 }.apply { add(this) }.newOptions {
@@ -1221,26 +1240,26 @@ class ImageOptionsTest {
         }
     }
 
-//    @Test
-//    fun testResizeSizeResolver() {
-//        val context = getContext()
-//
-//        ImageOptions.Builder().apply {
-//            build().apply {
-//                Assert.assertNull(resizeSizeResolver)
-//            }
-//
-//            resizeSizeResolver(DisplaySizeResolver(context))
-//            build().apply {
-//                Assert.assertEquals(DisplaySizeResolver(context), resizeSizeResolver)
-//            }
-//
-//            resizeSizeResolver(null)
-//            build().apply {
-//                Assert.assertNull(resizeSizeResolver)
-//            }
-//        }
-//    }
+    @Test
+    fun testResizeSizeResolver() {
+        val context = getTestContext()
+
+        ImageOptions.Builder().apply {
+            build().apply {
+                Assert.assertNull(resizeSizeResolver)
+            }
+
+            resizeSizeResolver(DisplaySizeResolver(context))
+            build().apply {
+                Assert.assertEquals(DisplaySizeResolver(context), resizeSizeResolver)
+            }
+
+            resizeSizeResolver(null)
+            build().apply {
+                Assert.assertNull(resizeSizeResolver)
+            }
+        }
+    }
 
     @Test
     fun testResizePrecision() {

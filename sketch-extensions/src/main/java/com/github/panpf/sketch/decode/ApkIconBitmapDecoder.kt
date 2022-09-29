@@ -23,7 +23,6 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toNewBitmap
 import java.io.IOException
@@ -33,7 +32,7 @@ import java.io.IOException
  */
 class ApkIconBitmapDecoder(
     private val sketch: Sketch,
-    private val request: ImageRequest,
+    private val requestContext: RequestContext,
     private val fetchResult: FetchResult
 ) : BitmapDecoder {
 
@@ -44,6 +43,7 @@ class ApkIconBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
+        val request = requestContext.request
         // Currently running on a limited number of IO contexts, so this warning can be ignored
         @Suppress("BlockingMethodInNonBlockingContext")
         val file = fetchResult.dataSource.file()
@@ -62,21 +62,20 @@ class ApkIconBitmapDecoder(
         val imageInfo =
             ImageInfo(bitmap.width, bitmap.height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
         sketch.logger.d(MODULE) {
-            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
+            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
         return BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
-            .appliedResize(sketch, request, request.resize)
+            .appliedResize(sketch, requestContext, requestContext.resize)
     }
 
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): BitmapDecoder? = if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
-            ApkIconBitmapDecoder(sketch, request, fetchResult)
+            ApkIconBitmapDecoder(sketch, requestContext, fetchResult)
         } else {
             null
         }

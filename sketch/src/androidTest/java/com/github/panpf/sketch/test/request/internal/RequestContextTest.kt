@@ -50,23 +50,23 @@ class RequestContextTest {
 
         RequestContext(request1).apply {
             Assert.assertEquals(request1, firstRequest)
-            Assert.assertEquals(request1, lastRequest)
-            Assert.assertEquals(listOf(request1), requests)
+            Assert.assertEquals(request1, request)
+            Assert.assertEquals(listOf(request1), requestList)
 
             addRequest(request1)
             Assert.assertEquals(request1, firstRequest)
-            Assert.assertEquals(request1, lastRequest)
-            Assert.assertEquals(listOf(request1), requests)
+            Assert.assertEquals(request1, request)
+            Assert.assertEquals(listOf(request1), requestList)
 
             addRequest(request2)
             Assert.assertEquals(request1, firstRequest)
-            Assert.assertEquals(request2, lastRequest)
-            Assert.assertEquals(listOf(request1, request2), requests)
+            Assert.assertEquals(request2, request)
+            Assert.assertEquals(listOf(request1, request2), requestList)
 
             addRequest(request3)
             Assert.assertEquals(request1, firstRequest)
-            Assert.assertEquals(request3, lastRequest)
-            Assert.assertEquals(listOf(request1, request2, request3), requests)
+            Assert.assertEquals(request3, request)
+            Assert.assertEquals(listOf(request1, request2, request3), requestList)
         }
     }
 
