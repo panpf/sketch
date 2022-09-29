@@ -25,6 +25,6 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [Precision]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Precision.kt
 
-[LongImageClipPrecisionDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/LongImageClipPrecisionDecider.kt
+[LongImageClipPrecisionDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
-[DefaultLongImageDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/util/LongImageDecider.kt
+[DefaultLongImageDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/LongImageDecider.kt

@@ -4,9 +4,9 @@ Decoder 用于解码图片文件得到一个 Bitmap 或 Drawable，因此 Sketch
 
 * [BitmapDecoder]：用于解码图片文件并将其转成 Bitmap
     * [ApkIconBitmapDecoder][ApkIconBitmapDecoder]：解码 Apk
-      文件的图标，[点我了解如何使用](apk_app_icon.md#显示-apk-文件的图标)
+      文件的图标，[点我了解如何使用](apk_app_icon.md#显示-APK-文件的图标)
     * [AppIconBitmapDecoder][AppIconBitmapDecoder]：解码已安装 App
-      的图标，[点我了解如何使用](apk_app_icon.md#显示已安装-app-的图标)
+      的图标，[点我了解如何使用](apk_app_icon.md#显示已安装-APP-的图标)
     * [DefaultBitmapDecoder][DefaultBitmapDecoder]：最后的 Bitmap 解码器，采用 Android 内置的 [BitmapFactory]
       解码图片
     * [FFmpegVideoFrameBitmapDecoder][FFmpegVideoFrameBitmapDecoder]：使用 [wseemann]

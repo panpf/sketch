@@ -10,7 +10,7 @@ Sketch 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下
 * [FileUriFetcher][FileUriFetcher]：从本地文件加载图片
 * [HttpUriFetcher][HttpUriFetcher]：从 http uri 加载图片
 * [ResourceUriFetcher][ResourceUriFetcher]：从 Android Resource 中加载图片
-* [AppIconUriFetcher][AppIconUriFetcher]：从已安装 app 加载其图标，[点我了解如何使用](apk_app_icon.md#显示已安装-app-的图标)
+* [AppIconUriFetcher][AppIconUriFetcher]：从已安装 app 加载其图标，[点我了解如何使用](apk_app_icon.md#显示已安装-APP-的图标)
 
 ### 扩展新的 Fetcher
 
