@@ -30,8 +30,10 @@ import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Build.VERSION
 import android.os.SystemClock
+import androidx.annotation.RequiresApi
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
@@ -42,6 +44,7 @@ import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
 /**
  * A [Drawable] that supports rendering [Movie]s (i.e. GIFs).
  */
+@RequiresApi(Build.VERSION_CODES.KITKAT)
 class MovieDrawable constructor(
     private val movie: Movie,
     private val config: Bitmap.Config = Bitmap.Config.ARGB_8888,
@@ -303,6 +306,24 @@ class MovieDrawable constructor(
     }
 
     override fun clearAnimationCallbacks() = callbacks.clear()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MovieDrawable) return false
+        if (movie != other.movie) return false
+        if (config != other.config) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = movie.hashCode()
+        result = 31 * result + config.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "MovieDrawable(size=${movie.width()}x${movie.height()},config=$config)"
+    }
 
     private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }
 

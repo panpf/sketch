@@ -1,27 +1,13 @@
-@file:Suppress("DEPRECATION")
-
-/*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.github.panpf.sketch.gif.movie.test.decode
+package com.github.panpf.sketch.gif.movie.test.drawable
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
+import android.graphics.Bitmap.Config.ARGB_8888
+import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Movie
 import android.graphics.drawable.Drawable
-import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,10 +18,11 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.drawable.MovieDrawable
+import com.github.panpf.sketch.drawable.MovieDrawable.BitmapCreator
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transform.PixelOpacity.TRANSLUCENT
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
@@ -53,7 +40,7 @@ class MovieDrawableTest {
 
     @Test
     fun test() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
@@ -61,7 +48,7 @@ class MovieDrawableTest {
         val callbackList = mutableListOf<String>()
         val movie = context.assets.open("sample_anim.gif").use { Movie.decodeStream(it) }
         val movieDrawable =
-            MovieDrawable(movie, bitmapCreator = object : MovieDrawable.BitmapCreator {
+            MovieDrawable(movie, bitmapCreator = object : BitmapCreator {
                 override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
                     sketch.bitmapPool.getOrCreate(width, height, config, false)
 
@@ -74,7 +61,7 @@ class MovieDrawableTest {
                 }
             }).apply {
                 clearAnimationCallbacks()
-                val callback = object : Animatable2Compat.AnimationCallback() {
+                val callback = object : AnimationCallback() {
                     override fun onAnimationStart(drawable: Drawable?) {
                         super.onAnimationStart(drawable)
                         callbackList.add("onAnimationStart")
@@ -127,14 +114,14 @@ class MovieDrawableTest {
 
     @Test
     fun test2() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
 
         val movie = context.assets.open("sample_anim.gif").use { Movie.decodeStream(it) }
         val movieDrawable =
-            MovieDrawable(movie, bitmapCreator = object : MovieDrawable.BitmapCreator {
+            MovieDrawable(movie, bitmapCreator = object : BitmapCreator {
                 override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
                     sketch.bitmapPool.getOrCreate(width, height, config, false)
 
@@ -159,6 +146,53 @@ class MovieDrawableTest {
                 movieDrawable.stop()
             }
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
+
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val movie = context.assets.open("sample_anim.gif").use { Movie.decodeStream(it) }
+        val movie2 = context.assets.open("sample_anim.gif").use { Movie.decodeStream(it) }
+        val element1 = MovieDrawable(movie, ARGB_8888)
+        val element11 = MovieDrawable(movie, ARGB_8888)
+        val element2 = MovieDrawable(movie2, ARGB_8888)
+        val element3 = MovieDrawable(movie, RGB_565)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element1, element3)
+        Assert.assertNotSame(element2, element11)
+        Assert.assertNotSame(element2, element3)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, element3)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element2, element3)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
+
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val movie = context.assets.open("sample_anim.gif").use { Movie.decodeStream(it) }
+        Assert.assertEquals(
+            "MovieDrawable(size=480x480,config=ARGB_8888)",
+            MovieDrawable(movie, ARGB_8888).toString()
+        )
     }
 
     class MyTestFragment : Fragment() {

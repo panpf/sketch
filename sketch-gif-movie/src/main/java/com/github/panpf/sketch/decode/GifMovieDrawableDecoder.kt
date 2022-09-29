@@ -137,6 +137,7 @@ class GifMovieDrawableDecoder constructor(
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
