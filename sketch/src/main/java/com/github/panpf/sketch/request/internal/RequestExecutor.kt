@@ -68,6 +68,7 @@ class RequestExecutor {
         val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
         requestDelegate.assertActive()
         var requestContext: RequestContext? = null
+        var firstRequestKey: String? = null
 
         try {
             val uriString = request.uriString
@@ -86,8 +87,9 @@ class RequestExecutor {
             // resolve resize size
             val resizeSize = request.resizeSizeResolver.size()
             requestContext = RequestContext(request, resizeSize)
+            firstRequestKey = requestContext.key
 
-            onStart(sketch, requestContext)
+            onStart(sketch, requestContext, firstRequestKey)
 
             val imageData: ImageData = RequestInterceptorChain(
                 sketch = sketch,
@@ -128,12 +130,12 @@ class RequestExecutor {
                 )
                 else -> throw UnsupportedOperationException("Unsupported ImageData: ${imageData::class.java}")
             }
-            onSuccess(sketch, requestContext, successResult)
+            onSuccess(sketch, requestContext, firstRequestKey, successResult)
             return successResult
         } catch (throwable: Throwable) {
             val lastRequest = (requestContext?.request ?: request)
             if (throwable is CancellationException) {
-                onCancel(sketch, requestContext, request)
+                onCancel(sketch, requestContext, firstRequestKey, request)
                 throw throwable
             } else {
                 if (throwable !is DepthException) {
@@ -152,7 +154,7 @@ class RequestExecutor {
                     else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${lastRequest::class.java}")
                 }
 
-                onError(sketch, requestContext, request, errorResult)
+                onError(sketch, requestContext, firstRequestKey, request, errorResult)
                 return errorResult
             }
         } finally {
@@ -162,11 +164,11 @@ class RequestExecutor {
     }
 
     @MainThread
-    private fun onStart(sketch: Sketch, requestContext: RequestContext) {
+    private fun onStart(sketch: Sketch, requestContext: RequestContext, firstRequestKey: String) {
         val request = requestContext.request
         request.listener?.onStart(request)
         sketch.logger.d(MODULE) {
-            "Request started. '${requestContext.key}'"
+            "Request started. '${firstRequestKey}'"
         }
     }
 
@@ -174,6 +176,7 @@ class RequestExecutor {
     private fun onSuccess(
         sketch: Sketch,
         requestContext: RequestContext,
+        firstRequestKey: String,
         result: ImageResult.Success
     ) {
         val request = requestContext.request
@@ -193,18 +196,19 @@ class RequestExecutor {
         }
         request.listener?.onSuccess(request, result)
         sketch.logger.d(MODULE) {
+            val logKey = newLogKey(requestContext, firstRequestKey, request)
             when (result) {
                 is DisplayResult.Success -> {
-                    "Request Successful. ${result.drawable}"
+                    "Request Successful. ${result.drawable}. $logKey"
                 }
                 is LoadResult.Success -> {
-                    "Request Successful. ${result.bitmap.logString}. ${result.imageInfo}. ${result.transformedList}. '${requestContext.key}'"
+                    "Request Successful. ${result.bitmap.logString}. ${result.imageInfo}. ${result.transformedList}. $logKey"
                 }
                 is DownloadResult.Success -> {
-                    "Request Successful. ${result.data}. '${requestContext.key}'"
+                    "Request Successful. ${result.data}. '${requestContext.key}'. $logKey"
                 }
                 else -> {
-                    "Request Successful. '${request.uriString}'"
+                    "Request Successful. $logKey"
                 }
             }
         }
@@ -214,6 +218,7 @@ class RequestExecutor {
     private fun onError(
         sketch: Sketch,
         requestContext: RequestContext?,
+        firstRequestKey: String?,
         request: ImageRequest,
         result: ImageResult.Error
     ) {
@@ -235,20 +240,28 @@ class RequestExecutor {
         request1.listener?.onError(request1, result)
         if (result.exception is DepthException) {
             sketch.logger.d(MODULE) {
-                "Request failed. ${result.exception.message}. '${requestContext?.key ?: request1.uriString}'"
+                val logKey = newLogKey(requestContext, firstRequestKey, request)
+                "Request failed. ${result.exception.message}. $logKey"
             }
         } else {
             sketch.logger.e(MODULE, result.exception) {
-                "Request failed. ${result.exception.message}. '${requestContext?.key ?: request1.uriString}'"
+                val logKey = newLogKey(requestContext, firstRequestKey, request)
+                "Request failed. ${result.exception.message}. $logKey"
             }
         }
     }
 
     @MainThread
-    private fun onCancel(sketch: Sketch, requestContext: RequestContext?, request: ImageRequest) {
+    private fun onCancel(
+        sketch: Sketch,
+        requestContext: RequestContext?,
+        firstRequestKey: String?,
+        request: ImageRequest
+    ) {
         val request1 = requestContext?.request ?: request
         sketch.logger.d(MODULE) {
-            "Request canceled. '${requestContext?.key ?: request1.uriString}'"
+            val logKey = newLogKey(requestContext, firstRequestKey, request)
+            "Request canceled. $logKey"
         }
         request1.listener?.onCancel(request1)
     }
@@ -290,4 +303,19 @@ class RequestExecutor {
             ?: request.placeholder?.getDrawable(sketch, request, exception))
             ?.tryToResizeDrawable(request, resize)
             ?.toSketchStateDrawable()
+
+    private fun newLogKey(
+        requestContext: RequestContext?,
+        firstRequestKey: String?,
+        request: ImageRequest
+    ): String {
+        val request1 = requestContext?.request ?: request
+        val firstRequestKey1 = firstRequestKey ?: request1.uriString
+        val lastRequestKey = requestContext?.key ?: request1.uriString
+        return if (firstRequestKey1 != lastRequestKey) {
+            "'${firstRequestKey1}' --> '$lastRequestKey'"
+        } else {
+            "'${firstRequestKey1}'"
+        }
+    }
 }
