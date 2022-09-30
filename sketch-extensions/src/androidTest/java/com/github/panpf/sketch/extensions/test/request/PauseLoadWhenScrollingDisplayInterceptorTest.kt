@@ -23,6 +23,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.extensions.test.toRequestContext
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DisplayData
@@ -56,7 +57,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
         try {// default
             DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                    TestRequestInterceptorChain(
+                        sketch,
+                        request,
+                        request,
+                        request.toRequestContext()
+                    )
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertFalse(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -79,7 +85,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 pauseLoadWhenScrolling()
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                    TestRequestInterceptorChain(
+                        sketch,
+                        request,
+                        request,
+                        request.toRequestContext()
+                    )
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -102,7 +113,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 pauseLoadWhenScrolling()
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                    TestRequestInterceptorChain(
+                        sketch,
+                        request,
+                        request,
+                        request.toRequestContext()
+                    )
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -125,7 +141,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 pauseLoadWhenScrolling()
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                    TestRequestInterceptorChain(
+                        sketch,
+                        request,
+                        request,
+                        request.toRequestContext()
+                    )
 
                 Assert.assertFalse(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -147,8 +168,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
             DisplayRequest(context, "http://sample.com/sample.jpeg") {
                 pauseLoadWhenScrolling()
             }.let { request ->
-                val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                val chain = TestRequestInterceptorChain(
+                    sketch,
+                    request,
+                    request,
+                    request.toRequestContext()
+                )
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertFalse(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -169,7 +194,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
             PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
             DisplayRequest(context, "http://sample.com/sample.jpeg").let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                    TestRequestInterceptorChain(
+                        sketch,
+                        request,
+                        request,
+                        request.toRequestContext()
+                    )
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -193,7 +223,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 ignorePauseLoadWhenScrolling()
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                    TestRequestInterceptorChain(
+                        sketch,
+                        request,
+                        request,
+                        request.toRequestContext()
+                    )
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -217,7 +252,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 depth(MEMORY)
             }.let { request ->
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                    TestRequestInterceptorChain(
+                        sketch,
+                        request,
+                        request,
+                        request.toRequestContext()
+                    )
 
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDisplayInterceptor.scrolling)
@@ -247,7 +287,12 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                 Assert.assertFalse(request.isDepthFromPauseLoadWhenScrolling)
 
                 val chain =
-                    TestRequestInterceptorChain(sketch, request, request, RequestContext(request))
+                    TestRequestInterceptorChain(
+                        sketch,
+                        request,
+                        request,
+                        request.toRequestContext()
+                    )
                 runBlocking {
                     interceptor.intercept(chain)
                 }
@@ -260,7 +305,7 @@ class PauseLoadWhenScrollingDisplayInterceptorTest {
                         sketch,
                         chain.finalRequest,
                         chain.finalRequest,
-                        RequestContext(chain.finalRequest)
+                        chain.finalRequest.toRequestContext()
                     )
                 runBlocking {
                     interceptor.intercept(chain1)

@@ -27,24 +27,23 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransf
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
 import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
-import com.github.panpf.sketch.util.Size as CoilSize
+import com.github.panpf.sketch.util.Size as SketchSize
 
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uri] value.
+ * @param imageUri [DisplayRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uri] is null.
+ * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is empty.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -92,7 +91,7 @@ fun AsyncImage(
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uri] value.
+ * @param imageUri [DisplayRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -147,7 +146,7 @@ fun AsyncImage(
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uri] is null.
+ * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is null.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -281,7 +280,7 @@ internal fun Content(
 internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale): DisplayRequest {
 //    return if (request.defined.sizeResolver == null) {
 //        val sizeResolver = if (contentScale == ContentScale.None) {
-//            SizeResolver(CoilSize.ORIGINAL)
+//            SizeResolver(SketchSize.ORIGINAL)
 //        } else {
 //            remember { ConstraintsSizeResolver() }
 //        }
@@ -289,22 +288,18 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
 //    } else {
 //        request
 //    }
-    val resetSizeResolver = request.resizeSize == null
-            && (request.resizeSizeResolver == null || request.resizeSizeResolver is DefaultSizeResolver)
+    val resetSizeResolver = request.definedOptions.resizeSizeResolver == null
     val resetScale = request.definedOptions.resizeScaleDecider == null
     return if (resetSizeResolver || resetScale) {
         val sizeResolver = ifOrNull(resetSizeResolver) {
             remember { ConstraintsSizeResolver() }
         }
-        val scale = ifOrNull(resetScale) {
-            contentScale.toScale()
-        }
         request.newDisplayRequest {
             if (sizeResolver != null) {
-                resizeSizeResolver(sizeResolver)
+                resizeSize(sizeResolver)
             }
-            if (scale != null) {
-                resizeScale(scale)
+            if (resetScale) {
+                resizeScale(contentScale.toScale())
             }
         }
     } else {
@@ -317,7 +312,8 @@ internal class ConstraintsSizeResolver : SizeResolver, LayoutModifier {
 
     private val _constraints = MutableStateFlow(ZeroConstraints)
 
-    override suspend fun size() = _constraints.mapNotNull(Constraints::toSizeOrNull).first()
+    override suspend fun size(): SketchSize =
+        _constraints.mapNotNull(Constraints::toSizeOrNull).first()
 
     override fun MeasureScope.measure(
         measurable: Measurable,
@@ -354,7 +350,7 @@ private fun Modifier.contentDescription(contentDescription: String?): Modifier {
 //@Stable
 //private fun Constraints.toSizeOrNull() = when {
 //    isZero -> null
-//    else -> CoilSize(
+//    else -> SketchSize(
 //        width = if (hasBoundedWidth) Dimension(maxWidth) else Dimension.Undefined,
 //        height = if (hasBoundedHeight) Dimension(maxHeight) else Dimension.Undefined
 //    )
@@ -363,6 +359,6 @@ private fun Modifier.contentDescription(contentDescription: String?): Modifier {
 @Stable
 private fun Constraints.toSizeOrNull() = when {
     isZero -> null
-    hasBoundedWidth && hasBoundedHeight -> CoilSize(maxWidth, maxHeight)
+    hasBoundedWidth && hasBoundedHeight -> SketchSize(maxWidth, maxHeight)
     else -> null
 }

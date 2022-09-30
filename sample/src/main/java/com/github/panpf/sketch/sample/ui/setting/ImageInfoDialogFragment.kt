@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.setting
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Rect
 import android.graphics.RectF
@@ -29,6 +30,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.displayResult
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.ImageInfoDialogBinding
@@ -50,6 +52,7 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
 
         binding.imageInfoThrowableContent.text = args.throwableString
         binding.imageInfoImageContent.text = args.imageInfo
+        binding.imageInfoBitmapContent.text = args.bitmapInfo
         binding.imageInfoDrawableContent.text = args.drawableInfo
         binding.imageInfoDataFromContent.text = args.dataFromInfo
         binding.imageInfoTransformedContent.text = args.transformedInfo
@@ -59,6 +62,8 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
         binding.imageInfoThrowableContent.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString != null
         binding.imageInfoImageContent.parent.asOrThrow<ViewGroup>().isVisible =
+            args.throwableString == null
+        binding.imageInfoBitmapContent.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString == null
         binding.imageInfoDrawableContent.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString == null
@@ -80,14 +85,16 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
     }
 
     companion object {
+        @SuppressLint("RestrictedApi")
         fun createDirectionsFromImageView(
             imageView: ImageView,
             uri: String?,
         ): NavDirections {
             var uri1: String? = uri
-            var imageInfo: String? = null
-            var drawableInfo: String? = null
             var optionsInfo: String? = null
+            var imageInfo: String? = null
+            var bitmapInfo: String? = null
+            var drawableInfo: String? = null
             var dataFromInfo: String? = null
             var transformedInfo: String? = null
             var zoomInfo: String? = null
@@ -111,19 +118,26 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                     }
                 }.joinToString(separator = "\n")
 
-                val drawable = displayResult.drawable
-                drawableInfo = if (drawable is SketchCountBitmapDrawable) {
-                    "${drawable.bitmap.width}x${drawable.bitmap.height}, ${drawable.bitmap.config}, ${
-                        drawable.bitmap.byteCount.toLong().formatFileSize()
-                    }"
-                } else {
-                    "${drawable.intrinsicWidth}x${drawable.intrinsicHeight}, ${ARGB_8888}, ${
-                        calculateBitmapByteCount(
-                            drawable.intrinsicWidth,
-                            drawable.intrinsicHeight,
-                            ARGB_8888
-                        ).toLong().formatFileSize()
-                    }"
+                bitmapInfo = displayResult.drawable.let {
+                    if (it is ResizeDrawable) it.wrappedDrawable else it
+                }.let {
+                    if (it is SketchCountBitmapDrawable) {
+                        "${it.bitmap.width}x${it.bitmap.height}, ${it.bitmap.config}, ${
+                            it.bitmap.byteCount.toLong().formatFileSize()
+                        }"
+                    } else {
+                        "${it.intrinsicWidth}x${it.intrinsicHeight}, ${ARGB_8888}, ${
+                            calculateBitmapByteCount(
+                                it.intrinsicWidth,
+                                it.intrinsicHeight,
+                                ARGB_8888
+                            ).toLong().formatFileSize()
+                        }"
+                    }
+                }
+
+                drawableInfo = displayResult.drawable.let {
+                    "${it.intrinsicWidth}x${it.intrinsicHeight}"
                 }
 
                 dataFromInfo = sketchDrawable.dataFrom.name
@@ -134,16 +148,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                     }
             } else if (displayResult is DisplayResult.Error) {
                 uri1 = displayResult.request.uriString
-
-                val keyUri = displayResult.request.key.toUri()
-                optionsInfo = keyUri.queryParameterNames.mapNotNull {
-                    if (it.startsWith("_")) {
-                        val value = keyUri.getQueryParameter(it)
-                        "$it=$value"
-                    } else {
-                        null
-                    }
-                }.joinToString(separator = "\n")
 
                 throwableString = displayResult.exception.toString()
             }
@@ -191,6 +195,7 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             return NavMainDirections.actionGlobalImageInfoDialogFragment(
                 uri = uri1,
                 imageInfo = imageInfo,
+                bitmapInfo = bitmapInfo,
                 drawableInfo = drawableInfo,
                 optionsInfo = optionsInfo,
                 dataFromInfo = dataFromInfo,

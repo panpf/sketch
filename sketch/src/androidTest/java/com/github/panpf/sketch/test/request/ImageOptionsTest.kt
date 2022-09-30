@@ -25,6 +25,7 @@ import android.graphics.ColorSpace.Named.BT709
 import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.widget.TextView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -46,16 +47,18 @@ import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
+import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -69,6 +72,7 @@ import com.github.panpf.sketch.test.utils.TestDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -110,7 +114,7 @@ class ImageOptionsTest {
             }
             @Suppress("DEPRECATION")
             Assert.assertNull(this.preferQualityOverSpeed)
-            Assert.assertNull(this.resizeSize)
+            Assert.assertNull(this.resizeSizeResolver)
             Assert.assertNull(this.resizePrecisionDecider)
             Assert.assertNull(this.resizeScaleDecider)
             Assert.assertNull(this.transformations)
@@ -191,7 +195,7 @@ class ImageOptionsTest {
         }.apply {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
-            Assert.assertNotNull(this.resizeSize)
+            Assert.assertNotNull(this.resizeSizeResolver)
         }
 
         ImageOptions {
@@ -361,6 +365,8 @@ class ImageOptionsTest {
 
     @Test
     fun testMerged() {
+        val context = getTestContext()
+
         val options = ImageOptions()
         Assert.assertTrue(options == options.merged(ImageOptions()))
         Assert.assertTrue(options != options.merged(ImageOptions {
@@ -460,28 +466,16 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.resizeSize)
+            Assert.assertEquals(null, this.resizeSizeResolver)
         }.merged(ImageOptions {
-            resizeSize(100, 100)
+            resizeSize(DisplaySizeResolver(context))
         }).apply {
-            Assert.assertEquals(Size(100, 100), this.resizeSize)
+            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
         }.merged(ImageOptions {
-            resizeSize(200, 200)
+            resizeSize(ViewSizeResolver(TextView(context)))
         }).apply {
-            Assert.assertEquals(Size(100, 100), this.resizeSize)
+            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
         }
-
-//        ImageOptions().apply {
-//            Assert.assertEquals(null, this.resizeSizeResolver)
-//        }.merged(ImageOptions {
-//            resizeSizeResolver(DisplaySizeResolver(context))
-//        }).apply {
-//            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
-//        }.merged(ImageOptions {
-//            resizeSizeResolver(ViewSizeResolver(TextView(context)))
-//        }).apply {
-//            Assert.assertEquals(DisplaySizeResolver(context), this.resizeSizeResolver)
-//        }
 
         ImageOptions().apply {
             Assert.assertEquals(null, this.resizePrecisionDecider)
@@ -715,8 +709,6 @@ class ImageOptionsTest {
                     preferQualityOverSpeed(true)
                 }.apply { add(this) }.newOptions {
                     resizeSize(100, 100)
-//                }.apply { add(this) }.newOptions {
-//                    resizeSizeResolver(DisplaySizeResolver(context))
                 }.apply { add(this) }.newOptions {
                     resizePrecision(SAME_ASPECT_RATIO)
                 }.apply { add(this) }.newOptions {
@@ -1047,16 +1039,14 @@ class ImageOptionsTest {
     fun testResize() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(resizeSize)
+                Assert.assertNull(resizeSizeResolver)
                 Assert.assertNull(resizePrecisionDecider)
                 Assert.assertNull(resizeScaleDecider)
             }
 
-            resize(
-                Resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
-            )
+            resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
             build().apply {
-                Assert.assertEquals(Size(100, 100), resizeSize)
+                Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
                 Assert.assertEquals(
                     FixedPrecisionDecider(SAME_ASPECT_RATIO),
                     resizePrecisionDecider
@@ -1064,131 +1054,76 @@ class ImageOptionsTest {
                 Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
             }
 
-            resize(null)
+            resize(100, 100)
             build().apply {
-                Assert.assertNull(resizeSize)
+                Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
                 Assert.assertNull(resizePrecisionDecider)
                 Assert.assertNull(resizeScaleDecider)
             }
 
-            resize(
-                Size(100, 100),
-                LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
-                LongImageScaleDecider(START_CROP, END_CROP)
-            )
+            resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
+            resize(100, 100, EXACTLY)
             build().apply {
-                Assert.assertEquals(Size(100, 100), resizeSize)
-                Assert.assertEquals(
-                    LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
-                    resizePrecisionDecider
-                )
-                Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
-            }
-
-            resize(Size(100, 100), precision = LongImageClipPrecisionDecider(SAME_ASPECT_RATIO))
-            build().apply {
-                Assert.assertEquals(Size(100, 100), resizeSize)
-                Assert.assertEquals(
-                    LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
-                    resizePrecisionDecider
-                )
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
-            }
-
-            resize(Size(100, 100), scale = LongImageScaleDecider(START_CROP, END_CROP))
-            build().apply {
-                Assert.assertEquals(Size(100, 100), resizeSize)
+                Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
-                Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
+                Assert.assertNull(resizeScaleDecider)
             }
 
-            resize(Size(200, 200), LESS_PIXELS, START_CROP)
+            resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
+            resize(100, 100, scale = END_CROP)
             build().apply {
-                Assert.assertEquals(Size(200, 200), resizeSize)
-                Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+                Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
+                Assert.assertNull(resizePrecisionDecider)
+                Assert.assertEquals(FixedScaleDecider(END_CROP), resizeScaleDecider)
+            }
+
+            resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
+            resize(null)
+            build().apply {
+                Assert.assertNull(resizeSizeResolver)
+                Assert.assertNull(resizePrecisionDecider)
+                Assert.assertNull(resizeScaleDecider)
+            }
+
+            resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
+            build().apply {
+                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    resizePrecisionDecider
+                )
                 Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
             }
 
-            resize(Size(200, 200), precision = LESS_PIXELS)
+            resize(Size(100, 100))
             build().apply {
-                Assert.assertEquals(Size(200, 200), resizeSize)
-                Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
+                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
+                Assert.assertNull(resizePrecisionDecider)
+                Assert.assertNull(resizeScaleDecider)
             }
 
-            resize(Size(200, 200), scale = START_CROP)
+            resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
+            resize(Size(100, 100), EXACTLY)
             build().apply {
-                Assert.assertEquals(Size(200, 200), resizeSize)
+                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
+                Assert.assertNull(resizeScaleDecider)
             }
 
-            resize(Size(300, 300))
+            resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
+            resize(Size(100, 100), scale = END_CROP)
             build().apply {
-                Assert.assertEquals(Size(300, 300), resizeSize)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
+                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
+                Assert.assertNull(resizePrecisionDecider)
+                Assert.assertEquals(FixedScaleDecider(END_CROP), resizeScaleDecider)
             }
 
-
-            resize(
-                100,
-                100,
-                LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
-                LongImageScaleDecider(START_CROP, END_CROP)
-            )
+            resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
+            resize(null)
             build().apply {
-                Assert.assertEquals(Size(100, 100), resizeSize)
-                Assert.assertEquals(
-                    LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
-                    resizePrecisionDecider
-                )
-                Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
-            }
-
-            resize(100, 100, precision = LongImageClipPrecisionDecider(SAME_ASPECT_RATIO))
-            build().apply {
-                Assert.assertEquals(Size(100, 100), resizeSize)
-                Assert.assertEquals(
-                    LongImageClipPrecisionDecider(SAME_ASPECT_RATIO),
-                    resizePrecisionDecider
-                )
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
-            }
-
-            resize(100, 100, scale = LongImageScaleDecider(START_CROP, END_CROP))
-            build().apply {
-                Assert.assertEquals(Size(100, 100), resizeSize)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
-                Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), resizeScaleDecider)
-            }
-
-            resize(200, 200, LESS_PIXELS, START_CROP)
-            build().apply {
-                Assert.assertEquals(Size(200, 200), resizeSize)
-                Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
-            }
-
-            resize(200, 200, precision = LESS_PIXELS)
-            build().apply {
-                Assert.assertEquals(Size(200, 200), resizeSize)
-                Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
-            }
-
-            resize(200, 200, scale = START_CROP)
-            build().apply {
-                Assert.assertEquals(Size(200, 200), resizeSize)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
-            }
-
-            resize(300, 300)
-            build().apply {
-                Assert.assertEquals(Size(300, 300), resizeSize)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
+                Assert.assertNull(resizeSizeResolver)
+                Assert.assertNull(resizePrecisionDecider)
+                Assert.assertNull(resizeScaleDecider)
             }
         }
     }
@@ -1197,50 +1132,51 @@ class ImageOptionsTest {
     fun testResizeSize() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(resizeSize)
+                Assert.assertNull(resizeSizeResolver)
             }
 
             resizeSize(Size(100, 100))
             build().apply {
-                Assert.assertEquals(Size(100, 100), resizeSize)
+                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
             }
 
             resizeSize(200, 200)
             build().apply {
-                Assert.assertEquals(Size(200, 200), resizeSize)
+                Assert.assertEquals(FixedSizeResolver(Size(200, 200)), resizeSizeResolver)
             }
 
+            resizeSize(FixedSizeResolver(300, 200))
             build().apply {
-                Assert.assertEquals(Size(200, 200), resizeSize)
+                Assert.assertEquals(FixedSizeResolver(300, 200), resizeSizeResolver)
             }
 
             resizeSize(null)
             build().apply {
-                Assert.assertNull(resizeSize)
+                Assert.assertNull(resizeSizeResolver)
             }
         }
     }
 
-//    @Test
-//    fun testResizeSizeResolver() {
-//        val context = getContext()
-//
-//        ImageOptions.Builder().apply {
-//            build().apply {
-//                Assert.assertNull(resizeSizeResolver)
-//            }
-//
-//            resizeSizeResolver(DisplaySizeResolver(context))
-//            build().apply {
-//                Assert.assertEquals(DisplaySizeResolver(context), resizeSizeResolver)
-//            }
-//
-//            resizeSizeResolver(null)
-//            build().apply {
-//                Assert.assertNull(resizeSizeResolver)
-//            }
-//        }
-//    }
+    @Test
+    fun testResizeSizeResolver() {
+        val context = getTestContext()
+
+        ImageOptions.Builder().apply {
+            build().apply {
+                Assert.assertNull(resizeSizeResolver)
+            }
+
+            resizeSize(DisplaySizeResolver(context))
+            build().apply {
+                Assert.assertEquals(DisplaySizeResolver(context), resizeSizeResolver)
+            }
+
+            this.resizeSize(null)
+            build().apply {
+                Assert.assertNull(resizeSizeResolver)
+            }
+        }
+    }
 
     @Test
     fun testResizePrecision() {

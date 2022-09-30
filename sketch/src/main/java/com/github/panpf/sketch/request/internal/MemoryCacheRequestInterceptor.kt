@@ -24,7 +24,6 @@ import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.util.asOrNull
@@ -40,10 +39,11 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
+        val requestContext = chain.requestContext
 
         if (request is DisplayRequest) {
             val cachedValue = ifOrNull(request.memoryCachePolicy.readEnabled) {
-                chain.sketch.memoryCache[request.memoryCacheKey]
+                chain.sketch.memoryCache[requestContext.memoryCacheKey]
             }
             if (cachedValue != null) {
                 val countDrawable = SketchCountBitmapDrawable(
@@ -90,7 +90,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                             transformedList = countDrawable.transformedList,
                             extras = countDrawable.extras,
                         )
-                        chain.sketch.memoryCache.put(request.memoryCacheKey, newCacheValue)
+                        chain.sketch.memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
                     }
                 }
             } else {
@@ -114,5 +114,5 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     }
 }
 
-val ImageRequest.memoryCacheKey: String
+val RequestContext.memoryCacheKey: String
     get() = cacheKey

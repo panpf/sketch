@@ -33,6 +33,7 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
@@ -200,29 +201,26 @@ fun computeSizeMultiplier(
 }
 
 fun realDecode(
-    request: ImageRequest,
+    requestContext: RequestContext,
     dataFrom: DataFrom,
     imageInfo: ImageInfo,
     decodeFull: (decodeConfig: DecodeConfig) -> Bitmap,
     decodeRegion: ((srcRect: Rect, decodeConfig: DecodeConfig) -> Bitmap)?
 ): BitmapDecodeResult {
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
-    val resize = request.resize
+    val resize = requestContext.resize
     val imageSize = Size(imageInfo.width, imageInfo.height)
     val appliedImageSize = exifOrientationHelper.applyToSize(imageSize)
-    val addedResize = resize?.let { exifOrientationHelper.addToResize(it, appliedImageSize) }
-    val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+    val addedResize = resize.let { exifOrientationHelper.addToResize(it, appliedImageSize) }
+    val decodeConfig = requestContext.request.newDecodeConfigByQualityParams(imageInfo.mimeType)
     val transformedList = mutableListOf<String>()
-    val precision = if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
+    val precision = if (addedResize.shouldClip(imageInfo.width, imageInfo.height)) {
         addedResize.getPrecision(imageInfo.width, imageInfo.height)
     } else {
         null
     }
     val bitmap = if (
-        addedResize != null
-        && precision != null
-        && precision != LESS_PIXELS
-        && decodeRegion != null
+        precision != null && precision != LESS_PIXELS && decodeRegion != null
     ) {
         val scale = addedResize.getScale(imageInfo.width, imageInfo.height)
         val resizeMapping = calculateResizeMapping(
@@ -246,11 +244,9 @@ fun realDecode(
         decodeConfig.inSampleSize = sampleSize
         decodeRegion(resizeMapping.srcRect, decodeConfig)
     } else {
-        val sampleSize = if (addedResize != null) {
+        val sampleSize = run {
             val targetSize = Size(addedResize.width, addedResize.height)
             calculateSampleSize(imageSize, targetSize, imageInfo.mimeType)
-        } else {
-            limitedSampleSizeByMaxBitmapSize(1, imageSize, imageInfo.mimeType)
         }
         if (sampleSize > 1) {
             transformedList.add(0, createInSampledTransformed(sampleSize))
@@ -269,7 +265,7 @@ fun realDecode(
 
 fun BitmapDecodeResult.appliedExifOrientation(
     sketch: Sketch,
-    request: ImageRequest
+    requestContext: RequestContext
 ): BitmapDecodeResult {
     if (imageInfo.exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
         || imageInfo.exifOrientation == ExifInterface.ORIENTATION_NORMAL
@@ -282,22 +278,22 @@ fun BitmapDecodeResult.appliedExifOrientation(
         exifOrientationHelper.applyToBitmap(
             inBitmap = inputBitmap,
             bitmapPool = sketch.bitmapPool,
-            disallowReuseBitmap = request.disallowReuseBitmap
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap
         ) ?: return this
     sketch.bitmapPool.freeBitmap(
         bitmap = inputBitmap,
-        disallowReuseBitmap = request.disallowReuseBitmap,
+        disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
         caller = "appliedExifOrientation"
     )
     sketch.logger.d("appliedExifOrientation") {
-        "appliedExifOrientation. freeBitmap. bitmap=${inputBitmap.logString}. '${request.key}'"
+        "appliedExifOrientation. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.key}'"
     }
 
     val newSize = exifOrientationHelper.applyToSize(
         Size(imageInfo.width, imageInfo.height)
     )
     sketch.logger.d("appliedExifOrientation") {
-        "appliedExifOrientation. successful. ${newBitmap.logString}. ${imageInfo}. '${request.key}'"
+        "appliedExifOrientation. successful. ${newBitmap.logString}. ${imageInfo}. '${requestContext.key}'"
     }
     return newResult(
         bitmap = newBitmap,
@@ -309,7 +305,7 @@ fun BitmapDecodeResult.appliedExifOrientation(
 
 fun BitmapDecodeResult.appliedResize(
     sketch: Sketch,
-    request: ImageRequest,
+    requestContext: RequestContext,
     resize: Resize?
 ): BitmapDecodeResult {
     if (resize == null) return this
@@ -324,7 +320,7 @@ fun BitmapDecodeResult.appliedResize(
             inputBitmap.scaled(
                 scale = 1 / sampleSize.toDouble(),
                 bitmapPool = sketch.bitmapPool,
-                disallowReuseBitmap = request.disallowReuseBitmap
+                disallowReuseBitmap = requestContext.request.disallowReuseBitmap
             )
         } else {
             null
@@ -344,7 +340,7 @@ fun BitmapDecodeResult.appliedResize(
             width = mapping.newWidth,
             height = mapping.newHeight,
             config = config,
-            disallowReuseBitmap = request.disallowReuseBitmap,
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
             caller = "appliedResize"
         ).apply {
             Canvas(this).drawBitmap(inputBitmap, mapping.srcRect, mapping.destRect, null)
@@ -354,15 +350,15 @@ fun BitmapDecodeResult.appliedResize(
     }
     return if (newBitmap != null) {
         sketch.logger.d("appliedResize") {
-            "appliedResize. successful. ${newBitmap.logString}. ${imageInfo}. '${request.key}'"
+            "appliedResize. successful. ${newBitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
         sketch.bitmapPool.freeBitmap(
             bitmap = inputBitmap,
-            disallowReuseBitmap = request.disallowReuseBitmap,
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
             caller = "appliedResize"
         )
         sketch.logger.d("appliedResize") {
-            "appliedResize. freeBitmap. bitmap=${inputBitmap.logString}. '${request.key}'"
+            "appliedResize. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.key}'"
         }
         newResult(bitmap = newBitmap) {
             addTransformed(createResizeTransformed(resize))

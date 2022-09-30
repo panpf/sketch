@@ -22,7 +22,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.getOrCreate
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.safeConfig
 
 /**
@@ -34,7 +34,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
 
     override suspend fun transform(
         sketch: Sketch,
-        request: ImageRequest,
+        requestContext: RequestContext,
         input: Bitmap
     ): TransformResult {
         val matrix = Matrix().apply {
@@ -55,7 +55,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
             width = newWidth,
             height = newHeight,
             config = config,
-            disallowReuseBitmap = request.disallowReuseBitmap,
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
             caller = "RotateTransformation"
         )
         matrix.postTranslate(-newRect.left, -newRect.top)

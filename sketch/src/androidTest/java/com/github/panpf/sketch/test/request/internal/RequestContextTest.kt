@@ -23,10 +23,10 @@ import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -48,25 +48,21 @@ class RequestContextTest {
         Assert.assertNotEquals(request1, request3)
         Assert.assertNotEquals(request2, request3)
 
-        RequestContext(request1).apply {
-            Assert.assertEquals(request1, firstRequest)
-            Assert.assertEquals(request1, lastRequest)
-            Assert.assertEquals(listOf(request1), requests)
+        request1.toRequestContext().apply {
+            Assert.assertEquals(request1, request)
+            Assert.assertEquals(listOf(request1), requestList)
 
             addRequest(request1)
-            Assert.assertEquals(request1, firstRequest)
-            Assert.assertEquals(request1, lastRequest)
-            Assert.assertEquals(listOf(request1), requests)
+            Assert.assertEquals(request1, request)
+            Assert.assertEquals(listOf(request1), requestList)
 
             addRequest(request2)
-            Assert.assertEquals(request1, firstRequest)
-            Assert.assertEquals(request2, lastRequest)
-            Assert.assertEquals(listOf(request1, request2), requests)
+            Assert.assertEquals(request2, request)
+            Assert.assertEquals(listOf(request1, request2), requestList)
 
             addRequest(request3)
-            Assert.assertEquals(request1, firstRequest)
-            Assert.assertEquals(request3, lastRequest)
-            Assert.assertEquals(listOf(request1, request2, request3), requests)
+            Assert.assertEquals(request3, request)
+            Assert.assertEquals(listOf(request1, request2, request3), requestList)
         }
     }
 
@@ -107,7 +103,7 @@ class RequestContextTest {
         )
         val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
 
-        RequestContext(request).apply {
+        request.toRequestContext().apply {
             assertThrow(IllegalStateException::class) {
                 pendingCountDrawable(countDrawable, "test")
             }

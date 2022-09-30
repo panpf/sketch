@@ -319,12 +319,17 @@
             app:argType="string"
             app:nullable="true" />
         <argument
+            android:name="optionsInfo"
+            android:defaultValue="null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
             android:name="imageInfo"
             android:defaultValue="null"
             app:argType="string"
             app:nullable="true" />
         <argument
-            android:name="optionsInfo"
+            android:name="bitmapInfo"
             android:defaultValue="null"
             app:argType="string"
             app:nullable="true" />

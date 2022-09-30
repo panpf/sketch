@@ -37,7 +37,6 @@ import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
@@ -65,12 +64,13 @@ import kotlinx.coroutines.withContext
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifMovieDrawableDecoder constructor(
     private val sketch: Sketch,
-    private val request: ImageRequest,
+    private val requestContext: RequestContext,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
 
     @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
+        val request = requestContext.request
         // Currently running on a limited number of IO contexts, so this warning can be ignored
         @Suppress("BlockingMethodInNonBlockingContext")
         val movie: Movie? = dataSource.newInputStream().buffered().use { Movie.decodeStream(it) }
@@ -93,7 +93,7 @@ class GifMovieDrawableDecoder constructor(
                         caller = "MovieDrawable:recycle"
                     )
                     sketch.logger.d("GifMovieDrawableDecoder") {
-                        "freeBitmap. freeBitmap. bitmap=${bitmap.logString}. '${request.key}'"
+                        "freeBitmap. freeBitmap. bitmap=${bitmap.logString}. '${requestContext.key}'"
                     }
                 }
             }
@@ -111,8 +111,8 @@ class GifMovieDrawableDecoder constructor(
         val animatableDrawable = SketchAnimatableDrawable(
             animatableDrawable = movieDrawable,
             imageUri = request.uriString,
-            requestKey = request.key,
-            requestCacheKey = request.cacheKey,
+            requestKey = requestContext.key,
+            requestCacheKey = requestContext.cacheKey,
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
             transformedList = null,
@@ -142,16 +142,15 @@ class GifMovieDrawableDecoder constructor(
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): GifMovieDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !request.disallowAnimatedImage) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !requestContext.request.disallowAnimatedImage) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 val isGif =
                     if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF
                 if (isGif) {
-                    return GifMovieDrawableDecoder(sketch, request, fetchResult.dataSource)
+                    return GifMovieDrawableDecoder(sketch, requestContext, fetchResult.dataSource)
                 }
             }
             return null

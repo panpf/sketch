@@ -21,7 +21,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.ImageView
@@ -32,7 +31,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DrawableDecoder
@@ -40,25 +38,15 @@ import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
-import com.github.panpf.sketch.request.internal.newCacheKey
-import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -70,6 +58,7 @@ import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.getLifecycle
+import com.github.panpf.sketch.util.ifOrNull
 
 /**
  * An immutable image request that contains all the required parameters,
@@ -78,18 +67,13 @@ import com.github.panpf.sketch.util.getLifecycle
 interface ImageRequest {
 
     val context: Context
-    val uri: Uri    // todo Consider supporting bitmap, drawable, bytes
-    val uriString: String
-    val key: String
+    val uriString: String    // todo Consider supporting bitmap, drawable, bytes
     val lifecycle: Lifecycle
     val target: Target?
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
     val progressListener: ProgressListener<ImageRequest>?
     val definedOptions: ImageOptions
     val defaultOptions: ImageOptions?
-
-    /** Used to cache bitmaps in memory and on disk */
-    val cacheKey: String
 
     /** The processing depth of the request. */
     val depth: Depth
@@ -155,30 +139,14 @@ interface ImageRequest {
     val preferQualityOverSpeed: Boolean
 
     /**
-     * The size of the desired bitmap
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
-     */
-    val resize: Resize?
-
-    /**
-     * The size of the Bitmap expected to be finally loaded into memory is also affected by [resizePrecisionDecider] and [resizeScaleDecider]
-     *
-     * Applied to [android.graphics.BitmapFactory.Options.inSampleSize]
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
-     */
-    val resizeSize: Size?
-
-    /**
      * Lazy calculation of resize size. If resizeSize is null at runtime, size is calculated and assigned to resizeSize
      *
      * Only works on [LoadRequest] and [DisplayRequest]
      */
-    val resizeSizeResolver: SizeResolver?
+    val resizeSizeResolver: SizeResolver
 
     /**
-     * Decide what Precision to use with [resizeSize] to calculate the size of the final Bitmap
+     * Decide what Precision to use with [resizeSizeResolver] to calculate the size of the final Bitmap
      *
      * Only works on [LoadRequest] and [DisplayRequest]
      */
@@ -215,7 +183,7 @@ interface ImageRequest {
     val ignoreExifOrientation: Boolean
 
     /**
-     * Disk caching policy for Bitmaps affected by [resizeSize] or [transformations]
+     * Disk caching policy for Bitmaps affected by [resizeSizeResolver] or [transformations]
      *
      * Only works on [LoadRequest] and [DisplayRequest]
      *
@@ -253,7 +221,7 @@ interface ImageRequest {
     val disallowAnimatedImage: Boolean
 
     /**
-     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
+     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSizeResolver]
      *
      * Only works on [DisplayRequest]
      */
@@ -271,25 +239,6 @@ interface ImageRequest {
 
     /** Components that are only valid for the current request */
     val componentRegistry: ComponentRegistry?
-
-    abstract class BaseImageRequest : ImageRequest {
-        override val uri: Uri by lazy { Uri.parse(uriString) }
-
-        override val key: String by lazy { newKey() }
-
-        /** Used to cache bitmaps in memory and on disk */
-        override val cacheKey: String by lazy { newCacheKey() }
-
-        override val resize: Resize? by lazy {
-            resizeSize?.takeIf { it.width > 0 && it.height > 0 }?.let {
-                Resize(
-                    width = it.width, height = it.height,
-                    precisionDecider = resizePrecisionDecider,
-                    scaleDecider = resizeScaleDecider
-                )
-            }
-        }
-    }
 
     /**
      * Create a new [ImageRequest.Builder] based on the current [ImageRequest].
@@ -320,7 +269,6 @@ interface ImageRequest {
         private var defaultOptions: ImageOptions? = null
         private var viewTargetOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
-        private var resizeSizeResolver: SizeResolver? = null
 
         protected constructor(context: Context, uriString: String?) {
             this.context = context
@@ -343,7 +291,6 @@ interface ImageRequest {
             this.lifecycle = request.lifecycle
             this.defaultOptions = request.defaultOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
-            this.resizeSizeResolver = request.resizeSizeResolver
         }
 
         /**
@@ -508,26 +455,15 @@ interface ImageRequest {
         /**
          * Set how to resize image
          *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resize(resize: Resize?): Builder = apply {
-            definedOptionsBuilder.resize(resize)
-        }
-
-        /**
-         * Set how to resize image
-         *
-         * @param size Expected Bitmap size
-         * @param precision precision of size, default is [Precision.EXACTLY]
+         * @param size Expected Bitmap size Resolver
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(
-            size: Size,
-            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
-            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
+            size: SizeResolver?,
+            precision: PrecisionDecider? = null,
+            scale: ScaleDecider? = null
         ): Builder = apply {
             definedOptionsBuilder.resize(size, precision, scale)
         }
@@ -536,79 +472,43 @@ interface ImageRequest {
          * Set how to resize image
          *
          * @param size Expected Bitmap size
-         * @param precision precision of size, default is [Precision.EXACTLY]
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(
             size: Size,
-            precision: Precision = EXACTLY,
-            scale: Scale = CENTER_CROP
+            precision: Precision? = null,
+            scale: Scale? = null
         ): Builder = apply {
             definedOptionsBuilder.resize(size, precision, scale)
         }
 
         /**
-         * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resize(size: Size): Builder = apply {
-            definedOptionsBuilder.resize(size)
-        }
-
-        /**
          * Set how to resize image
          *
          * @param width Expected Bitmap width
          * @param height Expected Bitmap height
-         * @param precision precision of size, default is [Precision.EXACTLY]
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
         open fun resize(
             @Px width: Int,
             @Px height: Int,
-            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
-            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
+            precision: Precision? = null,
+            scale: Scale? = null
         ): Builder = apply {
             definedOptionsBuilder.resize(width, height, precision, scale)
         }
 
         /**
-         * Set how to resize image
-         *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         * Set the [SizeResolver] to lazy resolve the requested size.
          *
          * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precision: Precision = EXACTLY,
-            scale: Scale = CENTER_CROP
-        ): Builder = apply {
-            definedOptionsBuilder.resize(width, height, precision, scale)
-        }
-
-        /**
-         * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
-         *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resize(@Px width: Int, @Px height: Int): Builder = apply {
-            definedOptionsBuilder.resize(width, height)
+        open fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+            definedOptionsBuilder.resizeSize(sizeResolver)
         }
 
         /**
@@ -616,7 +516,7 @@ interface ImageRequest {
          *
          * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resizeSize(size: Size?): Builder = apply {
+        open fun resizeSize(size: Size): Builder = apply {
             definedOptionsBuilder.resizeSize(size)
         }
 
@@ -627,15 +527,6 @@ interface ImageRequest {
          */
         open fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
             definedOptionsBuilder.resizeSize(width, height)
-        }
-
-        /**
-         * Set the [SizeResolver] to lazy resolve the requested size.
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
-         */
-        open fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
-            this.resizeSizeResolver = sizeResolver
         }
 
         /**
@@ -924,36 +815,28 @@ interface ImageRequest {
         }
 
 
+        @Suppress("DEPRECATION")
         @SuppressLint("NewApi")
         open fun build(): ImageRequest {
             val listener = combinationListener()
             val progressListener = combinationProgressListener()
             val lifecycle = lifecycle ?: resolveLifecycle() ?: GlobalLifecycle
-            definedOptionsBuilder.merge(viewTargetOptions)
-            val definedOptions = definedOptionsBuilder.build()
-            val finalOptions = definedOptionsBuilder.merge(defaultOptions).build()
-            val depth = finalOptions.depth ?: NETWORK
+            val definedOptions = definedOptionsBuilder.merge(viewTargetOptions).build()
+            val finalOptions = definedOptions.merged(defaultOptions)
+            val depth = finalOptions.depth ?: Depth.NETWORK
             val parameters = finalOptions.parameters
             val httpHeaders = finalOptions.httpHeaders
-            val downloadCachePolicy = finalOptions.downloadCachePolicy ?: ENABLED
-            val resultCachePolicy = finalOptions.resultCachePolicy ?: ENABLED
+            val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
+            val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
             val bitmapConfig = finalOptions.bitmapConfig
-            val colorSpace =
-                if (VERSION.SDK_INT >= VERSION_CODES.O) finalOptions.colorSpace else null
-            @Suppress("DEPRECATION") val preferQualityOverSpeed =
-                finalOptions.preferQualityOverSpeed ?: false
-            val resizeSize = finalOptions.resizeSize
-            val resizeSizeResolver = resizeSizeResolver ?: if (resizeSize == null) {
-                DefaultSizeResolver(resolveResizeSizeResolver())
-            } else {
-                null
+            val colorSpace = ifOrNull(VERSION.SDK_INT >= VERSION_CODES.O) {
+                finalOptions.colorSpace
             }
+            val preferQualityOverSpeed = finalOptions.preferQualityOverSpeed ?: false
+            val resizeSizeResolver = finalOptions.resizeSizeResolver
+                ?: resolveResizeSizeResolver()
             val resizePrecisionDecider = finalOptions.resizePrecisionDecider
-                ?: if (resizeSize == null || resizeSizeResolver is DefaultSizeResolver) {
-                    FixedPrecisionDecider(LESS_PIXELS)
-                } else {
-                    FixedPrecisionDecider(EXACTLY)
-                }
+                ?: FixedPrecisionDecider(Precision.LESS_PIXELS)
             val resizeScaleDecider =
                 finalOptions.resizeScaleDecider ?: FixedScaleDecider(resolveResizeScale())
             val transformations = finalOptions.transformations
@@ -964,7 +847,7 @@ interface ImageRequest {
             val transitionFactory = finalOptions.transitionFactory
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
-            val memoryCachePolicy = finalOptions.memoryCachePolicy ?: ENABLED
+            val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val componentRegistry = finalOptions.componentRegistry
 
             return when (this@Builder) {
@@ -986,7 +869,6 @@ interface ImageRequest {
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
-                        resizeSize = resizeSize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
@@ -1020,7 +902,6 @@ interface ImageRequest {
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
-                        resizeSize = resizeSize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
@@ -1054,7 +935,6 @@ interface ImageRequest {
                         bitmapConfig = bitmapConfig,
                         colorSpace = colorSpace,
                         preferQualityOverSpeed = preferQualityOverSpeed,
-                        resizeSize = resizeSize,
                         resizeSizeResolver = resizeSizeResolver,
                         resizePrecisionDecider = resizePrecisionDecider,
                         resizeScaleDecider = resizeScaleDecider,
@@ -1092,15 +972,15 @@ interface ImageRequest {
                 ?.view?.asOrNull<ImageView>()
                 ?.scaleType?.let {
                     when (it) {
-                        ScaleType.FIT_START -> START_CROP
-                        ScaleType.FIT_CENTER -> CENTER_CROP
-                        ScaleType.FIT_END -> END_CROP
-                        ScaleType.CENTER_INSIDE -> CENTER_CROP
-                        ScaleType.CENTER -> CENTER_CROP
-                        ScaleType.CENTER_CROP -> CENTER_CROP
+                        ScaleType.FIT_START -> Scale.START_CROP
+                        ScaleType.FIT_CENTER -> Scale.CENTER_CROP
+                        ScaleType.FIT_END -> Scale.END_CROP
+                        ScaleType.CENTER_INSIDE -> Scale.CENTER_CROP
+                        ScaleType.CENTER -> Scale.CENTER_CROP
+                        ScaleType.CENTER_CROP -> Scale.CENTER_CROP
                         else -> Scale.FILL
                     }
-                } ?: CENTER_CROP
+                } ?: Scale.CENTER_CROP
 
         private fun combinationListener(): Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? {
             val target = target

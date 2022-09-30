@@ -26,7 +26,6 @@ import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.getXmlDrawableCompat
@@ -37,7 +36,7 @@ import com.github.panpf.sketch.util.toNewBitmap
  */
 class XmlDrawableBitmapDecoder(
     private val sketch: Sketch,
-    private val request: ImageRequest,
+    private val requestContext: RequestContext,
     private val packageName: String,
     private val resources: Resources,
     private val drawableResId: Int
@@ -50,6 +49,7 @@ class XmlDrawableBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
+        val request = requestContext.request
         val context = request.context
         val drawable = if (packageName == context.packageName) {
             // getDrawableCompat can only load vector resources that are in the current package.
@@ -71,17 +71,16 @@ class XmlDrawableBitmapDecoder(
         val imageInfo =
             ImageInfo(bitmap.width, bitmap.height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
         sketch.logger.d(MODULE) {
-            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
+            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
         return BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
-            .appliedResize(sketch, request, request.resize)
+            .appliedResize(sketch, requestContext, requestContext.resize)
     }
 
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): BitmapDecoder? {
@@ -90,7 +89,7 @@ class XmlDrawableBitmapDecoder(
                 // Be sure to use dataSource.resources
                 XmlDrawableBitmapDecoder(
                     sketch = sketch,
-                    request = request,
+                    requestContext = requestContext,
                     packageName = dataSource.packageName,
                     resources = dataSource.resources,
                     drawableResId = dataSource.drawableId

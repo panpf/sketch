@@ -24,6 +24,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.createRoundedCornersTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
@@ -122,7 +123,7 @@ class RoundedCornersTransformationTest {
         }
 
         runBlocking {
-            RoundedCornersTransformation(20f).transform(sketch, request, inBitmap)
+            RoundedCornersTransformation(20f).transform(sketch, request.toRequestContext(), inBitmap)
         }.apply {
             Assert.assertNotSame(inBitmap, bitmap)
             Assert.assertEquals(

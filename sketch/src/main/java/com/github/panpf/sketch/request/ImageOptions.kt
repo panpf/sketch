@@ -39,13 +39,12 @@ import com.github.panpf.sketch.http.merged
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
+import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
@@ -141,16 +140,14 @@ interface ImageOptions {
     val preferQualityOverSpeed: Boolean?
 
     /**
-     * The size of the Bitmap expected to be finally loaded into memory is also affected by [resizePrecisionDecider] and [resizeScaleDecider]
-     *
-     * Applied to [android.graphics.BitmapFactory.Options.inSampleSize]
+     * Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to resizeSize
      *
      * Only works on [LoadRequest] and [DisplayRequest]
      */
-    val resizeSize: Size?
+    val resizeSizeResolver: SizeResolver?
 
     /**
-     * Decide what Precision to use with [resizeSize] to calculate the size of the final Bitmap
+     * Decide what Precision to use with [resizeSizeResolver] to calculate the size of the final Bitmap
      */
     val resizePrecisionDecider: PrecisionDecider?
 
@@ -185,7 +182,7 @@ interface ImageOptions {
     val ignoreExifOrientation: Boolean?
 
     /**
-     * Disk caching policy for Bitmaps affected by [resizeSize] or [transformations]
+     * Disk caching policy for Bitmaps affected by [resizeSizeResolver] or [transformations]
      *
      * Only works on [LoadRequest] and [DisplayRequest]
      *
@@ -223,7 +220,7 @@ interface ImageOptions {
     val disallowAnimatedImage: Boolean?
 
     /**
-     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
+     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSizeResolver]
      *
      * Only works on [DisplayRequest]
      */
@@ -273,10 +270,13 @@ interface ImageOptions {
      * Merge the current [ImageOptions] and the new [ImageOptions] into a new [ImageOptions]. Currently [ImageOptions] takes precedence
      */
     fun merged(
-        options: ImageOptions
-    ): ImageOptions = Builder(this).apply {
-        merge(options)
-    }.build()
+        options: ImageOptions?
+    ): ImageOptions {
+        if (options == null) return this
+        return Builder(this).apply {
+            merge(options)
+        }.build()
+    }
 
     /**
      * Returns true if all properties are empty
@@ -290,7 +290,7 @@ interface ImageOptions {
                 && bitmapConfig == null
                 && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
                 && preferQualityOverSpeed == null
-                && resizeSize == null
+                && resizeSizeResolver == null
                 && resizePrecisionDecider == null
                 && resizeScaleDecider == null
                 && transformations == null
@@ -316,7 +316,7 @@ interface ImageOptions {
         private var bitmapConfig: BitmapConfig? = null
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
-        private var resizeSize: Size? = null
+        private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScaleDecider: ScaleDecider? = null
         private var transformations: MutableList<Transformation>? = null
@@ -348,7 +348,7 @@ interface ImageOptions {
             }
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
-            this.resizeSize = request.resizeSize
+            this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScaleDecider = request.resizeScaleDecider
             this.transformations = request.transformations?.toMutableList()
@@ -485,27 +485,18 @@ interface ImageOptions {
 
         /**
          * Set how to resize image
-         */
-        fun resize(resize: Resize?): Builder = apply {
-            this.resizeSize = resize?.let { Size(it.width, it.height) }
-            this.resizePrecisionDecider = resize?.precisionDecider
-            this.resizeScaleDecider = resize?.scaleDecider
-        }
-
-        /**
-         * Set how to resize image
          *
-         * @param size Expected Bitmap size
-         * @param precision precision of size, default is [Precision.EXACTLY]
+         * @param size Expected Bitmap size Resolver
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
          */
         fun resize(
-            size: Size,
-            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
-            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
+            size: SizeResolver?,
+            precision: PrecisionDecider? = null,
+            scale: ScaleDecider? = null
         ): Builder = apply {
-            this.resizeSize = size
+            this.resizeSizeResolver = size
             this.resizePrecisionDecider = precision
             this.resizeScaleDecider = scale
         }
@@ -514,103 +505,83 @@ interface ImageOptions {
          * Set how to resize image
          *
          * @param size Expected Bitmap size
-         * @param precision precision of size, default is [Precision.EXACTLY]
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
          */
         fun resize(
             size: Size,
-            precision: Precision = EXACTLY,
-            scale: Scale = CENTER_CROP
-        ): Builder = resize(size, FixedPrecisionDecider(precision), FixedScaleDecider(scale))
-
-        /**
-         * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
-         */
-        fun resize(size: Size): Builder =
-            resize(size, FixedPrecisionDecider(EXACTLY), FixedScaleDecider(CENTER_CROP))
-
-        /**
-         * Set how to resize image
-         *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
-         * @param precision precision of size, default is [Precision.EXACTLY]
-         * @param scale Which part of the original image to keep when [precision] is
-         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
-         */
-        fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precision: PrecisionDecider = FixedPrecisionDecider(EXACTLY),
-            scale: ScaleDecider = FixedScaleDecider(CENTER_CROP)
-        ): Builder = resize(Size(width, height), precision, scale)
+            precision: Precision? = null,
+            scale: Scale? = null
+        ): Builder = resize(
+            FixedSizeResolver(size),
+            precision?.let { FixedPrecisionDecider(it) },
+            scale?.let { FixedScaleDecider(it) }
+        )
 
         /**
          * Set how to resize image
          *
          * @param width Expected Bitmap width
          * @param height Expected Bitmap height
-         * @param precision precision of size, default is [Precision.EXACTLY]
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
          */
         fun resize(
             @Px width: Int,
             @Px height: Int,
-            precision: Precision = EXACTLY,
-            scale: Scale = CENTER_CROP
-        ): Builder =
-            resize(Size(width, height), FixedPrecisionDecider(precision), FixedScaleDecider(scale))
+            precision: Precision? = null,
+            scale: Scale? = null
+        ): Builder = resize(
+            FixedSizeResolver(width, height),
+            precision?.let { FixedPrecisionDecider(it) },
+            scale?.let { FixedScaleDecider(it) }
+        )
 
         /**
-         * Set how to resize image. precision is [Precision.EXACTLY], scale is [Scale.CENTER_CROP]
+         * Set the [SizeResolver] to lazy resolve the requested size.
          *
-         * @param width Expected Bitmap width
-         * @param height Expected Bitmap height
+         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        fun resize(@Px width: Int, @Px height: Int): Builder =
-            resize(
-                Size(width, height),
-                FixedPrecisionDecider(EXACTLY),
-                FixedScaleDecider(CENTER_CROP)
-            )
-
-        /**
-         * Set the resize size
-         */
-        fun resizeSize(resizeSize: Size?): Builder = apply {
-            this.resizeSize = resizeSize
+        fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+            this.resizeSizeResolver = sizeResolver
         }
 
         /**
          * Set the resize size
          */
-        fun resizeSize(@Px width: Int, @Px height: Int): Builder =
-            resizeSize(Size(width, height))
+        fun resizeSize(resizeSize: Size): Builder =
+            resizeSize(FixedSizeResolver(resizeSize))
 
         /**
-         * Set the resize precision
+         * Set the resize size
+         */
+        fun resizeSize(@Px width: Int, @Px height: Int): Builder =
+            resizeSize(FixedSizeResolver(width, height))
+
+        /**
+         * Set the resize precision, default is [Precision.LESS_PIXELS]
          */
         fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
             this.resizePrecisionDecider = precisionDecider
         }
 
         /**
-         * Set the resize precision
+         * Set the resize precision, default is [Precision.LESS_PIXELS]
          */
         fun resizePrecision(precision: Precision): Builder =
             resizePrecision(FixedPrecisionDecider(precision))
 
         /**
-         * Set the resize scale
+         * Set the resize scale, default is [Scale.CENTER_CROP]
          */
         fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
             this.resizeScaleDecider = scaleDecider
         }
 
         /**
-         * Set the resize scale
+         * Set the resize scale, default is [Scale.CENTER_CROP]
          */
         fun resizeScale(scale: Scale): Builder = resizeScale(FixedScaleDecider(scale))
 
@@ -836,8 +807,8 @@ interface ImageOptions {
                 @Suppress("DEPRECATION")
                 this.preferQualityOverSpeed = options.preferQualityOverSpeed
             }
-            if (this.resizeSize == null) {
-                this.resizeSize = options.resizeSize
+            if (this.resizeSizeResolver == null) {
+                this.resizeSizeResolver = options.resizeSizeResolver
             }
             if (this.resizePrecisionDecider == null) {
                 this.resizePrecisionDecider = options.resizePrecisionDecider
@@ -891,7 +862,7 @@ interface ImageOptions {
             bitmapConfig = bitmapConfig,
             colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
             preferQualityOverSpeed = preferQualityOverSpeed,
-            resizeSize = resizeSize,
+            resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScaleDecider = resizeScaleDecider,
             transformations = transformations?.takeIf { it.isNotEmpty() },
@@ -919,7 +890,7 @@ interface ImageOptions {
         override val colorSpace: ColorSpace?,
         @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
         override val preferQualityOverSpeed: Boolean?,
-        override val resizeSize: Size?,
+        override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider?,
         override val resizeScaleDecider: ScaleDecider?,
         override val transformations: List<Transformation>?,
@@ -946,7 +917,7 @@ interface ImageOptions {
             if (bitmapConfig != other.bitmapConfig) return false
             if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != other.colorSpace) return false
             @Suppress("DEPRECATION") if (preferQualityOverSpeed != other.preferQualityOverSpeed) return false
-            if (resizeSize != other.resizeSize) return false
+            if (resizeSizeResolver != other.resizeSizeResolver) return false
             if (resizePrecisionDecider != other.resizePrecisionDecider) return false
             if (resizeScaleDecider != other.resizeScaleDecider) return false
             if (transformations != other.transformations) return false
@@ -975,7 +946,7 @@ interface ImageOptions {
             }
             @Suppress("DEPRECATION")
             result = 31 * result + (preferQualityOverSpeed?.hashCode() ?: 0)
-            result = 31 * result + (resizeSize?.hashCode() ?: 0)
+            result = 31 * result + (resizeSizeResolver?.hashCode() ?: 0)
             result = 31 * result + (resizePrecisionDecider?.hashCode() ?: 0)
             result = 31 * result + (resizeScaleDecider?.hashCode() ?: 0)
             result = 31 * result + (transformations?.hashCode() ?: 0)
@@ -1005,7 +976,7 @@ interface ImageOptions {
                 }
                 @Suppress("DEPRECATION")
                 append("preferQualityOverSpeed=$preferQualityOverSpeed, ")
-                append("resizeSize=$resizeSize, ")
+                append("resizeSizeResolver=$resizeSizeResolver, ")
                 append("resizePrecisionDecider=$resizePrecisionDecider, ")
                 append("resizeScaleDecider=$resizeScaleDecider, ")
                 append("transformations=$transformations, ")

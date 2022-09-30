@@ -17,6 +17,7 @@ package com.github.panpf.sketch.fetch
 
 import android.util.Base64
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
@@ -56,7 +57,7 @@ class Base64UriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? =
-            ifOrNull(SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
+            ifOrNull(SCHEME.equals(request.uriString.toUri().scheme, ignoreCase = true)) {
                 val base64ImageString = request.uriString
                 val mimeTypeEndSymbolIndex = base64ImageString.indexOf(";")
                 val base64IdentifierIndex = base64ImageString.indexOf(BASE64_IDENTIFIER)

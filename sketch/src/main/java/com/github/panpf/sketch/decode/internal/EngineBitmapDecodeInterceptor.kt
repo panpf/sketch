@@ -32,7 +32,7 @@ class EngineBitmapDecodeInterceptor : BitmapDecodeInterceptor {
         val fetcher = components.newFetcher(request)
         val fetchResult = chain.fetchResult ?: fetcher.fetch()
         return components
-            .newBitmapDecoder(request, chain.requestContext, fetchResult)
+            .newBitmapDecoder(chain.requestContext, fetchResult)
             .decode()
     }
 

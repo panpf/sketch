@@ -25,6 +25,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.createBlurTransformed
 import com.github.panpf.sketch.transform.getBlurTransformed
@@ -100,7 +101,7 @@ class BlurTransformationTest {
             BlurTransformation(
                 30,
                 maskColor = ColorUtils.setAlphaComponent(Color.BLUE, 80)
-            ).transform(sketch, request, inBitmap)
+            ).transform(sketch, request.toRequestContext(), inBitmap)
         }.apply {
             Assert.assertNotSame(inBitmap, this)
             Assert.assertNotEquals(inBitmapCorners, bitmap.corners())
@@ -123,7 +124,7 @@ class BlurTransformationTest {
             Assert.assertTrue(this.isMutable)
         }
         runBlocking {
-            BlurTransformation(30).transform(sketch, request, mutableInBitmap)
+            BlurTransformation(30).transform(sketch, request.toRequestContext(), mutableInBitmap)
         }.apply {
             Assert.assertSame(mutableInBitmap, this.bitmap)
         }
@@ -135,7 +136,7 @@ class BlurTransformationTest {
             Assert.assertTrue(this.hasAlpha())
         }
         val hasAlphaBitmapBlurred1 = runBlocking {
-            BlurTransformation(30).transform(sketch, request, hasAlphaBitmap1)
+            BlurTransformation(30).transform(sketch, request.toRequestContext(), hasAlphaBitmap1)
         }.apply {
             Assert.assertTrue(this.bitmap.hasAlpha())
         }.bitmap
@@ -147,7 +148,7 @@ class BlurTransformationTest {
         }
         val hasAlphaBitmapBlurred2 = runBlocking {
             BlurTransformation(30, hasAlphaBitmapBgColor = null)
-                .transform(sketch, request, hasAlphaBitmap2)
+                .transform(sketch, request.toRequestContext(), hasAlphaBitmap2)
         }.apply {
             Assert.assertTrue(this.bitmap.hasAlpha())
         }.bitmap

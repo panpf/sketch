@@ -36,7 +36,7 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.resize.internal.DefaultSizeResolver
+import com.github.panpf.sketch.request.setFromCompose
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.transition.CrossfadeTransition
@@ -69,10 +69,10 @@ import com.github.panpf.sketch.util.Size as CoilSize
  *   composition phase. Use [SubcomposeAsyncImage] or set a custom [DisplayRequest.Builder.resizeSize] value
  *   (e.g. `size(Size.ORIGINAL)`) if you need this.
  *
- * @param imageUri [DisplayRequest.uri] value.
+ * @param imageUri [DisplayRequest.uriString] value.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uri] is null.
+ * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is empty.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -115,7 +115,7 @@ fun rememberAsyncImagePainter(
  *   composition phase. Use [SubcomposeAsyncImage] or set a custom [DisplayRequest.Builder.resizeSize] value
  *   (e.g. `size(Size.ORIGINAL)`) if you need this.
  *
- * @param imageUri [DisplayRequest.uri] value.
+ * @param imageUri [DisplayRequest.uriString] value.
  * @param transform A callback to transform a new [State] before it's applied to the
  *  [AsyncImagePainter]. Typically this is used to overwrite the state's [Painter].
  * @param onState Called when the state of this painter changes.
@@ -157,7 +157,7 @@ internal fun rememberAsyncImagePainter(
  * @param request [DisplayRequest].
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uri] is null.
+ * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is empty.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -380,21 +380,20 @@ class AsyncImagePainter internal constructor(
 //            .build()
 //    }
     private fun updateRequest(request: DisplayRequest): DisplayRequest {
-        return request.newBuilder()
-            .target(onStart = { placeholder ->
+        return request.newDisplayRequest {
+            setFromCompose(true)
+            target(onStart = { placeholder ->
                 updateState(State.Loading(placeholder?.toPainter()))
             })
-            .apply {
-                if (request.resizeSize == null && (request.resizeSizeResolver == null || request.resizeSizeResolver is DefaultSizeResolver)) {
-                    // If no other size resolver is set, suspend until the canvas size is positive.
-                    resizeSizeResolver { drawSize.mapNotNull { it.toSizeOrNull() }.first() }
-                }
-                if (request.definedOptions.resizeScaleDecider == null) {
-                    // If no other scale resolver is set, use the content scale.
-                    resizeScale(contentScale.toScale())
-                }
+            if (request.definedOptions.resizeSizeResolver == null) {
+                // If no other size resolver is set, suspend until the canvas size is positive.
+                resizeSize { drawSize.mapNotNull { it.toSizeOrNull() }.first() }
             }
-            .build()
+            if (request.definedOptions.resizeScaleDecider == null) {
+                // If no other scale resolver is set, use the content scale.
+                resizeScale(contentScale.toScale())
+            }
+        }
     }
 
     private fun updateState(input: State) {

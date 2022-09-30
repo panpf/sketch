@@ -65,7 +65,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         request.target?.asOrNull<DisplayTarget>()?.let {
             val placeholderDrawable = request.placeholder
                 ?.getDrawable(sketch, request, null)
-                ?.tryToResizeDrawable(request)
+                ?.tryToResizeDrawable(requestContext.request, requestContext.resize)
                 ?.toSketchStateDrawable()
             it.onStart(placeholderDrawable)
         }

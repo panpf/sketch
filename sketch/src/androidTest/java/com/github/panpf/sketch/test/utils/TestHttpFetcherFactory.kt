@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.test.utils
 
+import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
@@ -23,7 +24,7 @@ import com.github.panpf.sketch.request.ImageRequest
 class TestHttpFetcherFactory : Fetcher.Factory {
 
     override fun create(sketch: Sketch, request: ImageRequest): Fetcher? {
-        if (request.uri.scheme == "test") {
+        if (request.uriString.toUri().scheme == "test") {
             return HttpUriFetcher(sketch, request, request.uriString.replace("test://", "http://"))
         }
         return null

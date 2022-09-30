@@ -24,10 +24,10 @@ import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
-import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
+import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
@@ -46,6 +46,7 @@ import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
@@ -194,6 +195,7 @@ class SketchTest {
                         addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
                         addBitmapDecoder(DefaultBitmapDecoder.Factory())
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                        addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
@@ -224,6 +226,7 @@ class SketchTest {
                         addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
                         addBitmapDecoder(DefaultBitmapDecoder.Factory())
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                        addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
@@ -265,7 +268,11 @@ class SketchTest {
 
             build().apply {
                 Assert.assertEquals(
-                    listOf(MemoryCacheRequestInterceptor(), EngineRequestInterceptor()),
+                    listOf(
+                        GlobalImageOptionsRequestInterceptor(),
+                        MemoryCacheRequestInterceptor(),
+                        EngineRequestInterceptor()
+                    ),
                     components.getRequestInterceptorList(DisplayRequest(context, ""))
                 )
             }
@@ -276,13 +283,18 @@ class SketchTest {
                 Assert.assertEquals(
                     listOf(
                         TestRequestInterceptor(),
+                        GlobalImageOptionsRequestInterceptor(),
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
                     components.getRequestInterceptorList(DisplayRequest(context, ""))
                 )
                 Assert.assertNotEquals(
-                    listOf(MemoryCacheRequestInterceptor(), EngineRequestInterceptor()),
+                    listOf(
+                        GlobalImageOptionsRequestInterceptor(),
+                        MemoryCacheRequestInterceptor(),
+                        EngineRequestInterceptor()
+                    ),
                     components.getRequestInterceptorList(DisplayRequest(context, ""))
                 )
             }

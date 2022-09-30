@@ -23,7 +23,6 @@ import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isAnimatedHeif
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 
 /**
@@ -45,24 +44,23 @@ import com.github.panpf.sketch.request.internal.RequestContext
  */
 @RequiresApi(Build.VERSION_CODES.R)
 class HeifAnimatedDrawableDecoder(
-    request: ImageRequest,
+    requestContext: RequestContext,
     dataSource: DataSource,
-) : BaseAnimatedImageDrawableDecoder(request, dataSource) {
+) : BaseAnimatedImageDrawableDecoder(requestContext, dataSource) {
 
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): HeifAnimatedDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !request.disallowAnimatedImage) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !requestContext.request.disallowAnimatedImage) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 if ((imageFormat == null || imageFormat == ImageFormat.HEIC || imageFormat == ImageFormat.HEIF)
                     && fetchResult.headerBytes.isAnimatedHeif()
                 ) {
-                    return HeifAnimatedDrawableDecoder(request, fetchResult.dataSource)
+                    return HeifAnimatedDrawableDecoder(requestContext, fetchResult.dataSource)
                 }
             }
             return null

@@ -19,7 +19,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 
 class TestErrorDrawableDecoder : DrawableDecoder {
@@ -32,7 +31,6 @@ class TestErrorDrawableDecoder : DrawableDecoder {
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): DrawableDecoder {

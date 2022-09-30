@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.fetch
 
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.AssetUriFetcher.Companion.SCHEME
@@ -49,7 +50,7 @@ class AssetUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? =
-            if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
+            if (SCHEME.equals(request.uriString.toUri().scheme, ignoreCase = true)) {
                 val uriString = request.uriString
                 val subStartIndex = SCHEME.length + 3
                 val subEndIndex = uriString.indexOf("?").takeIf { it != -1 }

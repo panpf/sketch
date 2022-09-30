@@ -31,6 +31,7 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
+import com.github.panpf.sketch.test.utils.toRequestContext
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,8 +45,9 @@ class MemoryCacheStateImageTest {
         val sketch = context.sketch
         val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
         val memoryCache = sketch.memoryCache
-        val memoryCacheKey = request.cacheKey
+        val memoryCacheKey = request.toRequestContext().cacheKey
 
+        memoryCache.clear()
         Assert.assertFalse(memoryCache.exist(memoryCacheKey))
 
         MemoryCacheStateImage(null, null).apply {
@@ -62,14 +64,14 @@ class MemoryCacheStateImageTest {
             memoryCacheKey,
             MemoryCache.Value(
                 countBitmap = CountBitmap(
-                    cacheKey = request.cacheKey,
+                    cacheKey = request.toRequestContext().cacheKey,
                     bitmap = Bitmap.createBitmap(100, 100, RGB_565),
                     bitmapPool = sketch.bitmapPool,
                     disallowReuseBitmap = false,
                 ),
                 imageUri = request.uriString,
-                requestKey = request.key,
-                requestCacheKey = request.cacheKey,
+                requestKey = request.toRequestContext().key,
+                requestCacheKey = request.toRequestContext().cacheKey,
                 imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                 transformedList = null,
                 extras = null,
@@ -146,7 +148,7 @@ class MemoryCacheStateImageTest {
     fun testToString() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
-        val memoryCacheKey = request.cacheKey
+        val memoryCacheKey = request.toRequestContext().cacheKey
 
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
             Assert.assertEquals(

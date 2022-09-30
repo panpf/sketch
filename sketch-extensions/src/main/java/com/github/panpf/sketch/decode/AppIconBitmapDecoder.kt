@@ -26,7 +26,6 @@ import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toNewBitmap
 
@@ -35,7 +34,7 @@ import com.github.panpf.sketch.util.toNewBitmap
  */
 class AppIconBitmapDecoder(
     private val sketch: Sketch,
-    private val request: ImageRequest,
+    private val requestContext: RequestContext,
     private val packageName: String,
     private val versionCode: Int,
 ) : BitmapDecoder {
@@ -46,6 +45,7 @@ class AppIconBitmapDecoder(
 
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
+        val request = requestContext.request
         val packageManager = request.context.packageManager
         val packageInfo: PackageInfo = try {
             packageManager.getPackageInfo(packageName, 0)
@@ -70,17 +70,16 @@ class AppIconBitmapDecoder(
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
         )
         sketch.logger.d(MODULE) {
-            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${request.key}'"
+            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
         return BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
-            .appliedResize(sketch, request, request.resize)
+            .appliedResize(sketch, requestContext, requestContext.resize)
     }
 
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): BitmapDecoder? {
@@ -90,10 +89,10 @@ class AppIconBitmapDecoder(
                 && dataSource is AppIconDataSource
             ) {
                 AppIconBitmapDecoder(
-                    sketch,
-                    request,
-                    dataSource.packageName,
-                    dataSource.versionCode
+                    sketch = sketch,
+                    requestContext = requestContext,
+                    packageName = dataSource.packageName,
+                    versionCode = dataSource.versionCode
                 )
             } else {
                 null

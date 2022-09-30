@@ -580,39 +580,39 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val imageWidth = sketchDrawable.imageInfo.width
         val imageHeight = sketchDrawable.imageInfo.height
         val mimeType = sketchDrawable.imageInfo.mimeType
-        val key = sketchDrawable.requestKey
+        val requestKey = sketchDrawable.requestKey
 
         if (drawableWidth >= imageWidth && drawableHeight >= imageHeight) {
             logger.d(MODULE) {
                 "Don't need to use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
-                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
+                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, requestKey)
             }
             return null
         }
         if (!canUseSubsampling(imageWidth, imageHeight, drawableWidth, drawableHeight)) {
             logger.d(MODULE) {
                 "Can't use Subsampling. drawableSize error. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
-                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
+                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, requestKey)
             }
             return null
         }
         if (ImageFormat.parseMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
                 "MimeType does not support Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
-                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
+                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, requestKey)
             }
             return null
         }
 
         logger.d(MODULE) {
             "Use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
-                .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, key)
+                .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, requestKey)
         }
 
         val memoryCachePolicy: CachePolicy
         val disallowReuseBitmap: Boolean
         val displayResult = SketchUtils.getResult(host.view)
-        if (displayResult != null && displayResult is DisplayResult.Success && displayResult.request.key == key) {
+        if (displayResult != null && displayResult is DisplayResult.Success && displayResult.requestKey == requestKey) {
             memoryCachePolicy = displayResult.request.memoryCachePolicy
             disallowReuseBitmap = displayResult.request.disallowReuseBitmap
         } else {

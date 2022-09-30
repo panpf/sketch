@@ -22,13 +22,14 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.TransformResult
 import com.github.panpf.sketch.transform.Transformation
@@ -51,9 +52,17 @@ class BitmapTransformationDecodeInterceptorTest {
             listOf(EngineBitmapDecodeInterceptor())
 
         runBlocking {
-            val request = LoadRequest(context, newAssetUri("sample.jpeg"))
+            val request = LoadRequest(context, newAssetUri("sample.jpeg")) {
+                resizeSize(3000, 3000)
+                resizePrecision(LESS_PIXELS)
+            }
             val chain = BitmapDecodeInterceptorChain(
-                sketch, request, RequestContext(request), null, interceptors, 0
+                sketch,
+                request,
+                request.toRequestContext(),
+                null,
+                interceptors,
+                0
             )
             BitmapTransformationDecodeInterceptor().intercept(chain)
         }.apply {
@@ -67,10 +76,17 @@ class BitmapTransformationDecodeInterceptorTest {
 
         runBlocking {
             val request = LoadRequest(context, newAssetUri("sample.jpeg")) {
+                resizeSize(3000, 3000)
+                resizePrecision(LESS_PIXELS)
                 transformations(CircleCropTransformation())
             }
             val chain = BitmapDecodeInterceptorChain(
-                sketch, request, RequestContext(request), null, interceptors, 0
+                sketch,
+                request,
+                request.toRequestContext(),
+                null,
+                interceptors,
+                0
             )
             BitmapTransformationDecodeInterceptor().intercept(chain)
         }.apply {
@@ -84,19 +100,26 @@ class BitmapTransformationDecodeInterceptorTest {
 
         runBlocking {
             val request = LoadRequest(context, newAssetUri("sample.jpeg")) {
+                resizeSize(3000, 3000)
+                resizePrecision(LESS_PIXELS)
                 transformations(object : Transformation {
                     override val key: String
                         get() = "TestTransformation"
 
                     override suspend fun transform(
                         sketch: Sketch,
-                        request: ImageRequest,
+                        requestContext: RequestContext,
                         input: Bitmap
                     ): TransformResult = TransformResult(input, "TestTransformation")
                 })
             }
             val chain = BitmapDecodeInterceptorChain(
-                sketch, request, RequestContext(request), null, interceptors, 0
+                sketch,
+                request,
+                request.toRequestContext(),
+                null,
+                interceptors,
+                0
             )
             BitmapTransformationDecodeInterceptor().intercept(chain)
         }.apply {
@@ -110,19 +133,26 @@ class BitmapTransformationDecodeInterceptorTest {
 
         runBlocking {
             val request = LoadRequest(context, newAssetUri("sample.jpeg")) {
+                resizeSize(3000, 3000)
+                resizePrecision(LESS_PIXELS)
                 transformations(object : Transformation {
                     override val key: String
                         get() = "TestTransformation"
 
                     override suspend fun transform(
                         sketch: Sketch,
-                        request: ImageRequest,
+                        requestContext: RequestContext,
                         input: Bitmap
                     ): TransformResult? = null
                 })
             }
             val chain = BitmapDecodeInterceptorChain(
-                sketch, request, RequestContext(request), null, interceptors, 0
+                sketch,
+                request,
+                request.toRequestContext(),
+                null,
+                interceptors,
+                0
             )
             BitmapTransformationDecodeInterceptor().intercept(chain)
         }.apply {
@@ -143,7 +173,7 @@ class BitmapTransformationDecodeInterceptorTest {
 
                         override suspend fun transform(
                             sketch: Sketch,
-                            request: ImageRequest,
+                            requestContext: RequestContext,
                             input: Bitmap
                         ): TransformResult = TransformResult(
                             input.apply { input.recycle() },
@@ -152,7 +182,12 @@ class BitmapTransformationDecodeInterceptorTest {
                     })
                 }
                 val chain = BitmapDecodeInterceptorChain(
-                    sketch, request, RequestContext(request), null, interceptors, 0
+                    sketch,
+                    request,
+                    request.toRequestContext(),
+                    null,
+                    interceptors,
+                    0
                 )
                 BitmapTransformationDecodeInterceptor().intercept(chain)
             }

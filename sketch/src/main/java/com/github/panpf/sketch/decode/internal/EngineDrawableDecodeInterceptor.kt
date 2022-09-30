@@ -31,7 +31,7 @@ class EngineDrawableDecodeInterceptor : DrawableDecodeInterceptor {
         val components = chain.sketch.components
         val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch()
         return components
-            .newDrawableDecoder(request, chain.requestContext, fetchResult)
+            .newDrawableDecoder(chain.requestContext, fetchResult)
             .decode()
     }
 

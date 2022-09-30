@@ -29,6 +29,7 @@ import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -90,16 +91,17 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(5, repeatCount)
         }
 
-        val key1 = LoadRequest(context, newAssetUri("sample_anim.gif")).key
+        val key1 = LoadRequest(context, newAssetUri("sample_anim.gif")).toRequestContext().key
         val key2 = LoadRequest(context, newAssetUri("sample_anim.gif")) {
             repeatCount(5)
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, newAssetUri("sample_anim.gif")).cacheKey
+        val cacheKey1 =
+            LoadRequest(context, newAssetUri("sample_anim.gif")).toRequestContext().cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample_anim.gif")) {
             repeatCount(5)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -135,16 +137,17 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(myAnimationStartCallback, animationStartCallback)
         }
 
-        val key1 = LoadRequest(context, newAssetUri("sample_anim.gif")).key
+        val key1 = LoadRequest(context, newAssetUri("sample_anim.gif")).toRequestContext().key
         val key2 = LoadRequest(context, newAssetUri("sample_anim.gif")) {
             onAnimationStart(myAnimationStartCallback)
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, newAssetUri("sample_anim.gif")).cacheKey
+        val cacheKey1 =
+            LoadRequest(context, newAssetUri("sample_anim.gif")).toRequestContext().cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample_anim.gif")) {
             onAnimationStart(myAnimationStartCallback)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -180,16 +183,17 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(myAnimationEndCallback, animationEndCallback)
         }
 
-        val key1 = LoadRequest(context, newAssetUri("sample_anim.gif")).key
+        val key1 = LoadRequest(context, newAssetUri("sample_anim.gif")).toRequestContext().key
         val key2 = LoadRequest(context, newAssetUri("sample_anim.gif")) {
             onAnimationEnd(myAnimationEndCallback)
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, newAssetUri("sample_anim.gif")).cacheKey
+        val cacheKey1 =
+            LoadRequest(context, newAssetUri("sample_anim.gif")).toRequestContext().cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample_anim.gif")) {
             onAnimationEnd(myAnimationEndCallback)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -225,16 +229,17 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(myAnimatedTransformation, animatedTransformation)
         }
 
-        val key1 = LoadRequest(context, newAssetUri("sample_anim.gif")).key
+        val key1 = LoadRequest(context, newAssetUri("sample_anim.gif")).toRequestContext().key
         val key2 = LoadRequest(context, newAssetUri("sample_anim.gif")) {
             animatedTransformation(myAnimatedTransformation)
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, newAssetUri("sample_anim.gif")).cacheKey
+        val cacheKey1 =
+            LoadRequest(context, newAssetUri("sample_anim.gif")).toRequestContext().cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample_anim.gif")) {
             animatedTransformation(myAnimatedTransformation)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 

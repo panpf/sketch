@@ -25,11 +25,11 @@ import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.extensions.test.intrinsicSize
 import com.github.panpf.sketch.extensions.test.samplingByTarget
+import com.github.panpf.sketch.extensions.test.toRequestContext
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -61,7 +61,7 @@ class AppIconBitmapDecoderTest {
                 AppIconDataSource(sketch, it, LOCAL, packageName, versionCode),
                 "application/vnd.android.app-icon"
             )
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -72,7 +72,7 @@ class AppIconBitmapDecoderTest {
                 AppIconDataSource(sketch, it, LOCAL, packageName, versionCode),
                 null
             )
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -81,7 +81,7 @@ class AppIconBitmapDecoderTest {
                 AppIconDataSource(sketch, it, LOCAL, packageName, versionCode),
                 "application/vnd.android.package-archive"
             )
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -92,7 +92,7 @@ class AppIconBitmapDecoderTest {
                 AssetDataSource(sketch, it, "sample.jpeg"),
                 "application/vnd.android.app-icon"
             )
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -132,7 +132,7 @@ class AppIconBitmapDecoderTest {
                 "application/vnd.android.app-icon"
             )
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -155,7 +155,7 @@ class AppIconBitmapDecoderTest {
                 "application/vnd.android.app-icon"
             )
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -178,7 +178,7 @@ class AppIconBitmapDecoderTest {
                 "application/vnd.android.app-icon"
             )
             runBlocking {
-                factory.create(sketch, this@run, RequestContext(this@run), fetchResult)!!.decode()
+                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }
         }.apply {
             val bitmapSize = samplingByTarget(iconDrawable.intrinsicSize, Size(100, 100))

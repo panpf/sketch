@@ -32,11 +32,11 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.transform.asPostProcessor
 import com.github.panpf.sketch.util.Size
@@ -63,12 +63,13 @@ import java.nio.ByteBuffer
  */
 @RequiresApi(Build.VERSION_CODES.P)
 abstract class BaseAnimatedImageDrawableDecoder(
-    private val request: ImageRequest,
+    private val requestContext: RequestContext,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
 
     @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
+        val request = requestContext.request
         val source = when (dataSource) {
             is AssetDataSource -> {
                 ImageDecoder.createSource(request.context.assets, dataSource.assetFileName)
@@ -107,21 +108,19 @@ abstract class BaseAnimatedImageDrawableDecoder(
                     info.mimeType,
                     ExifInterface.ORIENTATION_UNDEFINED
                 )
-                val resize = request.resize
-                if (resize != null) {
-                    inSampleSize = calculateSampleSize(
-                        imageSize = Size(info.size.width, info.size.height),
-                        targetSize = Size(resize.width, resize.height)
-                    )
-                    decoder.setTargetSampleSize(inSampleSize)
+                val resize = requestContext.resize
+                inSampleSize = calculateSampleSize(
+                    imageSize = Size(info.size.width, info.size.height),
+                    targetSize = Size(resize.width, resize.height)
+                )
+                decoder.setTargetSampleSize(inSampleSize)
 
-                    request.colorSpace?.let {
-                        decoder.setTargetColorSpace(it)
-                    }
-
-                    // Set the animated transformation to be applied on each frame.
-                    decoder.postProcessor = request.animatedTransformation?.asPostProcessor()
+                request.colorSpace?.let {
+                    decoder.setTargetColorSpace(it)
                 }
+
+                // Set the animated transformation to be applied on each frame.
+                decoder.postProcessor = request.animatedTransformation?.asPostProcessor()
             }
         } finally {
             imageDecoder?.close()
@@ -140,8 +139,8 @@ abstract class BaseAnimatedImageDrawableDecoder(
             // Use ScaledAnimatedImageDrawable package solution to this it
             animatableDrawable = ScaledAnimatedImageDrawable(drawable),
             imageUri = request.uriString,
-            requestKey = request.key,
-            requestCacheKey = request.cacheKey,
+            requestKey = requestContext.key,
+            requestCacheKey = requestContext.cacheKey,
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,

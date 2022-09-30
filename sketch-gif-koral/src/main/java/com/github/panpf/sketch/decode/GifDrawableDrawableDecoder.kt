@@ -31,7 +31,6 @@ import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
@@ -61,26 +60,24 @@ import pl.droidsonroids.gif.transforms.Transform
  * onAnimationEnd
  */
 class GifDrawableDrawableDecoder(
-    private val request: ImageRequest,
+    private val requestContext: RequestContext,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
 
     @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
+        val request = requestContext.request
         val gifInfoHandleHelper = GifInfoHandleHelper(dataSource)
         val imageWidth = gifInfoHandleHelper.width
         val imageHeight = gifInfoHandleHelper.height
-        val resize = request.resize
-        var inSampleSize = 1
-        if (resize != null) {
-            inSampleSize = calculateSampleSize(
-                Size(imageWidth, imageHeight),
-                Size(resize.width, resize.height)
-            )
-            gifInfoHandleHelper.setOptions(GifOptions().apply {
-                setInSampleSize(inSampleSize)
-            })
-        }
+        val resize = requestContext.resize
+        val inSampleSize = calculateSampleSize(
+            Size(imageWidth, imageHeight),
+            Size(resize.width, resize.height)
+        )
+        gifInfoHandleHelper.setOptions(GifOptions().apply {
+            setInSampleSize(inSampleSize)
+        })
         val gifDrawable = gifInfoHandleHelper.createGifDrawable().apply {
             loopCount =
                 (request.repeatCount ?: ANIMATION_REPEAT_INFINITE).takeIf { it != -1 } ?: 0
@@ -109,9 +106,9 @@ class GifDrawableDrawableDecoder(
         )
         val animatableDrawable = SketchAnimatableDrawable(
             animatableDrawable = GifDrawableWrapperDrawable(gifDrawable),
-            imageUri = this.request.uriString,
-            requestKey = this.request.key,
-            requestCacheKey = this.request.cacheKey,
+            imageUri = request.uriString,
+            requestKey = requestContext.key,
+            requestCacheKey = requestContext.cacheKey,
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
@@ -140,17 +137,16 @@ class GifDrawableDrawableDecoder(
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): GifDrawableDrawableDecoder? {
-            if (!request.disallowAnimatedImage) {
+            if (!requestContext.request.disallowAnimatedImage) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
                 val isGif =
                     if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF
                 if (isGif) {
-                    return GifDrawableDrawableDecoder(request, fetchResult.dataSource)
+                    return GifDrawableDrawableDecoder(requestContext, fetchResult.dataSource)
                 }
             }
             return null

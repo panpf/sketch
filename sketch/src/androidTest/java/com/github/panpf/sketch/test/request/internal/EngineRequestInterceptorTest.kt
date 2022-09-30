@@ -33,6 +33,7 @@ import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestRequest
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +57,7 @@ class EngineRequestInterceptorTest {
                     sketch = sketch,
                     initialRequest = request,
                     request = request,
-                    requestContext = RequestContext(request),
+                    requestContext = request.toRequestContext(),
                     interceptors = listOf(EngineRequestInterceptor()),
                     index = 0,
                 ).proceed(request)
@@ -85,7 +86,7 @@ class EngineRequestInterceptorTest {
                     sketch = sketch1,
                     initialRequest = request,
                     request = request,
-                    requestContext = RequestContext(request),
+                    requestContext = request.toRequestContext(),
                     interceptors = listOf(EngineRequestInterceptor()),
                     index = 0,
                 ).proceed(request)

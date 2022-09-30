@@ -18,25 +18,57 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredMainThread
 
-class RequestContext constructor(val firstRequest: ImageRequest) {
+class RequestContext constructor(firstRequest: ImageRequest, val resizeSize: Size) {
 
-    private val _requests = mutableListOf(firstRequest)
-    private var _lastRequest: ImageRequest = firstRequest
     private var pendingCountDrawable: SketchCountBitmapDrawable? = null
 
-    val requests: List<ImageRequest>
-        get() = _requests.toList()
+    private val _requestList = mutableListOf(firstRequest)
+    val requestList: List<ImageRequest>
+        get() = _requestList.toList()
 
-    val lastRequest: ImageRequest
-        get() = _lastRequest
+    private var _request: ImageRequest = firstRequest
+    val request: ImageRequest
+        get() = _request
 
-    fun addRequest(request: ImageRequest) {
-        val lastRequest = lastRequest
+    // todo test
+    private var _resize: Resize? = null
+    val resize: Resize
+        get() = _resize ?: Resize(
+            size = resizeSize,
+            precision = request.resizePrecisionDecider,
+            scale = request.resizeScaleDecider
+        ).apply {
+            _resize = this
+        }
+
+    // todo test
+    private var _key: String? = null
+    val key: String
+        get() = _key ?: request.newKey(resizeSize).apply {
+            _key = this
+        }
+
+    // todo test
+    private var _cacheKey: String? = null
+
+    /** Used to cache bitmaps in memory and on disk */
+    val cacheKey: String
+        get() = _cacheKey ?: request.newCacheKey(resizeSize).apply {
+            _cacheKey = this
+        }
+
+    internal fun addRequest(request: ImageRequest) {
+        val lastRequest = this.request
         if (lastRequest != request) {
-            _requests.add(request)
-            _lastRequest = request
+            _requestList.add(request)
+            _request = request
+            _resize = null
+            _key = null
+            _cacheKey = null
         }
     }
 

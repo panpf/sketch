@@ -29,6 +29,8 @@ sealed interface DisplayResult : ImageResult {
 
     data class Success constructor(
         override val request: DisplayRequest,
+        val requestKey: String,
+        val requestCacheKey: String,
         override val drawable: Drawable,
         val imageInfo: ImageInfo,
         val dataFrom: DataFrom,

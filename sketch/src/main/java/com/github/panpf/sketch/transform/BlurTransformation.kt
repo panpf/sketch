@@ -24,7 +24,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.logString
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.fastGaussianBlur
 import com.github.panpf.sketch.util.safeConfig
 
@@ -63,7 +63,7 @@ class BlurTransformation constructor(
 
     override suspend fun transform(
         sketch: Sketch,
-        request: ImageRequest,
+        requestContext: RequestContext,
         input: Bitmap
     ): TransformResult {
         // Transparent pixels cannot be blurred
@@ -72,7 +72,7 @@ class BlurTransformation constructor(
                 input.width,
                 input.height,
                 input.safeConfig,
-                request.disallowReuseBitmap,
+                requestContext.request.disallowReuseBitmap,
                 "BlurTransformation"
             )
             val canvas = Canvas(bitmap)
@@ -86,16 +86,16 @@ class BlurTransformation constructor(
         val outBitmap = fastGaussianBlur(compatAlphaBitmap, radius)
         if (outBitmap !== compatAlphaBitmap) {
             sketch.logger.d(MODULE) {
-                "transform. newBitmap. ${outBitmap.logString}. '${request.key}'"
+                "transform. newBitmap. ${outBitmap.logString}. '${requestContext.key}'"
             }
             if (compatAlphaBitmap !== input) {
                 sketch.bitmapPool.freeBitmap(
                     bitmap = compatAlphaBitmap,
-                    disallowReuseBitmap = request.disallowReuseBitmap,
+                    disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
                     caller = "BlurTransformation"
                 )
                 sketch.logger.d(MODULE) {
-                    "transform. freeBitmap. bitmap=${compatAlphaBitmap.logString}. '${request.key}'"
+                    "transform. freeBitmap. bitmap=${compatAlphaBitmap.logString}. '${requestContext.key}'"
                 }
             }
         }

@@ -28,6 +28,7 @@ import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.onAnimationEnd
@@ -35,6 +36,7 @@ import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transform.PixelOpacity
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -55,7 +57,11 @@ class GifDrawableDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), "image/gif")
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(
+                sketch,
+                it.toRequestContext(),
+                fetchResult
+            )
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -63,7 +69,11 @@ class GifDrawableDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), null)
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(
+                sketch,
+                it.toRequestContext(),
+                fetchResult
+            )
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -74,7 +84,11 @@ class GifDrawableDrawableDecoderTest {
         }.let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), null)
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(
+                sketch,
+                it.toRequestContext(),
+                fetchResult
+            )
         }.apply {
             Assert.assertNull(this)
         }
@@ -82,7 +96,11 @@ class GifDrawableDrawableDecoderTest {
         // data error
         DisplayRequest(context, newAssetUri("sample.png")).let {
             val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), null)
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(
+                sketch,
+                it.toRequestContext(),
+                fetchResult
+            )
         }.apply {
             Assert.assertNull(this)
         }
@@ -93,7 +111,11 @@ class GifDrawableDrawableDecoderTest {
                 AssetDataSource(sketch, it, "sample_anim.gif"),
                 "image/jpeg",
             )
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(
+                sketch,
+                it.toRequestContext(),
+                fetchResult
+            )
         }.apply {
             Assert.assertNull(this)
         }
@@ -132,18 +154,21 @@ class GifDrawableDrawableDecoderTest {
             onAnimationStart { }
         }.apply {
             val fetchResult = sketch.components.newFetcher(this).let { runBlocking { it.fetch() } }
-            factory.create(sketch, this, RequestContext(this), fetchResult)!!
-                .let { runBlocking { it.decode() } }.apply {
-                    Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
-                    Assert.assertEquals(480, this.drawable.intrinsicWidth)
-                    Assert.assertEquals(480, this.drawable.intrinsicHeight)
-                    Assert.assertEquals(LOCAL, this.dataFrom)
-                    Assert.assertNull(this.transformedList)
-                    val gifDrawable =
-                        ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawableWrapperDrawable).gifDrawable
-                    Assert.assertEquals(0, gifDrawable.loopCount)
-                    Assert.assertNull(gifDrawable.transform)
-                }
+            factory.create(
+                sketch,
+                this@apply.toRequestContext(),
+                fetchResult
+            )!!.let { runBlocking { it.decode() } }.apply {
+                Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
+                Assert.assertEquals(480, this.drawable.intrinsicWidth)
+                Assert.assertEquals(480, this.drawable.intrinsicHeight)
+                Assert.assertEquals(LOCAL, this.dataFrom)
+                Assert.assertNull(this.transformedList)
+                val gifDrawable =
+                    ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawableWrapperDrawable).gifDrawable
+                Assert.assertEquals(0, gifDrawable.loopCount)
+                Assert.assertNull(gifDrawable.transform)
+            }
         }
 
         DisplayRequest(context, newAssetUri("sample_anim.gif")) {
@@ -153,19 +178,26 @@ class GifDrawableDrawableDecoderTest {
             resize(300, 300)
         }.apply {
             val fetchResult1 = sketch.components.newFetcher(this).let { runBlocking { it.fetch() } }
-            factory.create(sketch, this, RequestContext(this), fetchResult1)!!
-                .let { runBlocking { it.decode() } }.apply {
-                    Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
-                    Assert.assertEquals(240, this.drawable.intrinsicWidth)
-                    Assert.assertEquals(240, this.drawable.intrinsicHeight)
-                    Assert.assertEquals(LOCAL, this.dataFrom)
-                    Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
-                    val gifDrawable =
-                        ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawableWrapperDrawable).gifDrawable
-                    Assert.assertEquals(3, gifDrawable.loopCount)
-                    Assert.assertNotNull(gifDrawable.transform)
-                    gifDrawable.transform!!.onDraw(Canvas(), null, null)
-                }
+            factory.create(
+                sketch,
+                this@apply.toRequestContext(),
+                fetchResult1
+            )!!.let { runBlocking { it.decode() } }.apply {
+                Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
+                Assert.assertEquals(240, this.drawable.intrinsicWidth)
+                Assert.assertEquals(240, this.drawable.intrinsicHeight)
+                Assert.assertEquals(LOCAL, this.dataFrom)
+                Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
+                val gifDrawable =
+                    ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as GifDrawableWrapperDrawable).gifDrawable
+                Assert.assertEquals(3, gifDrawable.loopCount)
+                Assert.assertNotNull(gifDrawable.transform)
+                gifDrawable.transform!!.onDraw(Canvas(), null, null)
+            }
         }
     }
+}
+
+fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
+    return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size() })
 }

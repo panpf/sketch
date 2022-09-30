@@ -17,6 +17,7 @@ package com.github.panpf.sketch.fetch
 
 import android.net.Uri
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.request.ImageRequest
@@ -42,12 +43,14 @@ class ContentUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? =
-            if (SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
-                ContentUriFetcher(sketch, request, request.uri)
+        override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? {
+            val uri = request.uriString.toUri()
+            return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
+                ContentUriFetcher(sketch, request, uri)
             } else {
                 null
             }
+        }
 
         override fun toString(): String = "ContentUriFetcher"
 

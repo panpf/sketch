@@ -21,7 +21,6 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
@@ -29,6 +28,7 @@ import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -45,14 +45,15 @@ class DefaultDrawableDecoderTest {
         val resizeSize = Size(500, 400)
         val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             resultCachePolicy(DISABLED)
-            resize(resizeSize, LESS_PIXELS)
+            resizeSize(resizeSize)
+            resizePrecision(LESS_PIXELS)
         }
 
         request.let {
             runBlocking {
                 val fetchResult = sketch.components.newFetcher(it).fetch()
                 DefaultDrawableDecoder.Factory()
-                    .create(sketch, it, RequestContext(it), fetchResult)
+                    .create(sketch, it.toRequestContext(), fetchResult)
                     .decode()
             }
         }.apply {

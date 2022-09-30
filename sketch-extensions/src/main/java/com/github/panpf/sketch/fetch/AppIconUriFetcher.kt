@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.fetch
 
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
@@ -59,7 +60,7 @@ class AppIconUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
-            val uri = request.uri
+            val uri = request.uriString.toUri()
             return ifOrNull(SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val packageName = uri.authority
                     ?.takeIf { it.isNotEmpty() && it.isNotBlank() }

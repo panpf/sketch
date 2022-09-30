@@ -29,12 +29,12 @@ import com.github.panpf.sketch.drawable.internal.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -58,7 +58,7 @@ class WebpAnimatedDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.webp")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.webp"), "image/webp")
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -66,7 +66,7 @@ class WebpAnimatedDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.webp")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.webp"), null)
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
@@ -77,7 +77,7 @@ class WebpAnimatedDrawableDecoderTest {
         }.let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.webp"), null)
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -85,7 +85,7 @@ class WebpAnimatedDrawableDecoderTest {
         // data error
         DisplayRequest(context, newAssetUri("sample.png")).let {
             val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), null)
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -93,7 +93,7 @@ class WebpAnimatedDrawableDecoderTest {
         DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), "image/webp")
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -104,7 +104,7 @@ class WebpAnimatedDrawableDecoderTest {
                 AssetDataSource(sketch, it, "sample_anim.webp"),
                 "image/jpeg",
             )
-            factory.create(sketch, it, RequestContext(it), fetchResult)
+            factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -124,7 +124,7 @@ class WebpAnimatedDrawableDecoderTest {
             onAnimationStart { }
         }
         val fetchResult = sketch.components.newFetcher(request).let { runBlocking { it.fetch() } }
-        factory.create(sketch, request, RequestContext(request), fetchResult)!!
+        factory.create(sketch, request.toRequestContext(), fetchResult)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp", 0), this.imageInfo)
                 Assert.assertEquals(Size(480, 270), this.drawable.intrinsicSize)
@@ -137,10 +137,10 @@ class WebpAnimatedDrawableDecoderTest {
 
         val request1 = DisplayRequest(context, newAssetUri("sample_anim.webp")) {
             repeatCount(3)
-            resize(300, 300)
+            resizeSize(300, 300)
         }
         val fetchResult1 = sketch.components.newFetcher(request1).let { runBlocking { it.fetch() } }
-        factory.create(sketch, request1, RequestContext(request1), fetchResult1)!!
+        factory.create(sketch, request1.toRequestContext(), fetchResult1)!!
             .let { runBlocking { it.decode() } }.apply {
                 Assert.assertEquals(ImageInfo(480, 270, "image/webp", 0), this.imageInfo)
                 Assert.assertEquals(Size(240, 135), this.drawable.intrinsicSize)

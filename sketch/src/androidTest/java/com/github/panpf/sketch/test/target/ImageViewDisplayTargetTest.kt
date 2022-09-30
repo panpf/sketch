@@ -29,6 +29,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.target.ImageViewDisplayTarget
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -51,7 +52,7 @@ class ImageViewDisplayTargetTest {
         Assert.assertNull(imageViewTarget.drawable)
 
         val countBitmap = CountBitmap(
-            cacheKey = request.cacheKey,
+            cacheKey = request.toRequestContext().cacheKey,
             bitmap = Bitmap.createBitmap(100, 100, RGB_565),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
@@ -60,15 +61,15 @@ class ImageViewDisplayTargetTest {
             resources = context.resources,
             countBitmap = countBitmap,
             imageUri = request.uriString,
-            requestKey = request.key,
-            requestCacheKey = request.cacheKey,
+            requestKey = request.toRequestContext().key,
+            requestCacheKey = request.toRequestContext().cacheKey,
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
             extras = null,
             dataFrom = LOCAL
         )
         val countBitmap2 = CountBitmap(
-            cacheKey = request.cacheKey,
+            cacheKey = request.toRequestContext().cacheKey,
             bitmap = Bitmap.createBitmap(100, 100, RGB_565),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
@@ -77,8 +78,8 @@ class ImageViewDisplayTargetTest {
             resources = context.resources,
             countBitmap = countBitmap2,
             imageUri = request.uriString,
-            requestKey = request.key,
-            requestCacheKey = request.cacheKey,
+            requestKey = request.toRequestContext().key,
+            requestCacheKey = request.toRequestContext().cacheKey,
             imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
             transformedList = null,
             extras = null,

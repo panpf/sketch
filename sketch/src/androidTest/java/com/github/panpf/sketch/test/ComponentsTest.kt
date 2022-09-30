@@ -35,7 +35,6 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.utils.AllFetcher
 import com.github.panpf.sketch.test.utils.Test2BitmapDecodeInterceptor
 import com.github.panpf.sketch.test.utils.Test2DrawableDecodeInterceptor
@@ -50,6 +49,7 @@ import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -292,10 +292,10 @@ class ComponentsTest {
         }.build()).apply {
             assertThrow(IllegalStateException::class) {
                 val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
                 runBlocking(Dispatchers.Main) {
-                    newBitmapDecoder(request, requestContext, fetchResult)
+                    newBitmapDecoder(requestContext, fetchResult)
                 }
             }
         }
@@ -305,9 +305,9 @@ class ComponentsTest {
         }.build()).apply {
             assertThrow(IllegalArgumentException::class) {
                 val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
-                newBitmapDecoder(request, requestContext, fetchResult)
+                newBitmapDecoder(requestContext, fetchResult)
             }
             assertThrow(IllegalArgumentException::class) {
                 val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
@@ -315,9 +315,9 @@ class ComponentsTest {
                         addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
                     }
                 }
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
-                newBitmapDecoder(request, requestContext, fetchResult)
+                newBitmapDecoder(requestContext, fetchResult)
             }
             assertNoThrow {
                 val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
@@ -325,9 +325,9 @@ class ComponentsTest {
                         addBitmapDecoder(DefaultBitmapDecoder.Factory())
                     }
                 }
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
-                newBitmapDecoder(request, requestContext, fetchResult)
+                newBitmapDecoder(requestContext, fetchResult)
             }
         }
 
@@ -337,10 +337,10 @@ class ComponentsTest {
         }.build()).apply {
             assertNoThrow {
                 val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
                 Assert.assertTrue(
-                    newBitmapDecoder(request, requestContext, fetchResult) is DefaultBitmapDecoder
+                    newBitmapDecoder(requestContext, fetchResult) is DefaultBitmapDecoder
                 )
             }
 
@@ -350,10 +350,10 @@ class ComponentsTest {
                         addBitmapDecoder(TestBitmapDecoder.Factory())
                     }
                 }
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
                 Assert.assertTrue(
-                    newBitmapDecoder(request, requestContext, fetchResult) is TestBitmapDecoder
+                    newBitmapDecoder(requestContext, fetchResult) is TestBitmapDecoder
                 )
             }
         }
@@ -369,10 +369,10 @@ class ComponentsTest {
         }.build()).apply {
             assertThrow(IllegalStateException::class) {
                 val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
                 runBlocking(Dispatchers.Main) {
-                    newDrawableDecoder(request, requestContext, fetchResult)
+                    newDrawableDecoder(requestContext, fetchResult)
                 }
             }
         }
@@ -382,9 +382,9 @@ class ComponentsTest {
         }.build()).apply {
             assertThrow(IllegalArgumentException::class) {
                 val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
-                newDrawableDecoder(request, requestContext, fetchResult)
+                newDrawableDecoder(requestContext, fetchResult)
             }
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                 assertThrow(IllegalArgumentException::class) {
@@ -393,9 +393,9 @@ class ComponentsTest {
                             addDrawableDecoder(GifAnimatedDrawableDecoder.Factory())
                         }
                     }
-                    val requestContext = RequestContext(request)
+                    val requestContext = request.toRequestContext()
                     val fetchResult = runBlocking { newFetcher(request).fetch() }
-                    newDrawableDecoder(request, requestContext, fetchResult)
+                    newDrawableDecoder(requestContext, fetchResult)
                 }
             }
             assertNoThrow {
@@ -404,9 +404,9 @@ class ComponentsTest {
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
                     }
                 }
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
-                newDrawableDecoder(request, requestContext, fetchResult)
+                newDrawableDecoder(requestContext, fetchResult)
             }
         }
 
@@ -416,11 +416,10 @@ class ComponentsTest {
         }.build()).apply {
             assertNoThrow {
                 val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
                 Assert.assertTrue(
                     newDrawableDecoder(
-                        request,
                         requestContext,
                         fetchResult
                     ) is DefaultDrawableDecoder
@@ -432,10 +431,10 @@ class ComponentsTest {
                         addDrawableDecoder(TestDrawableDecoder.Factory())
                     }
                 }
-                val requestContext = RequestContext(request)
+                val requestContext = request.toRequestContext()
                 val fetchResult = runBlocking { newFetcher(request).fetch() }
                 Assert.assertTrue(
-                    newDrawableDecoder(request, requestContext, fetchResult) is TestDrawableDecoder
+                    newDrawableDecoder(requestContext, fetchResult) is TestDrawableDecoder
                 )
             }
         }

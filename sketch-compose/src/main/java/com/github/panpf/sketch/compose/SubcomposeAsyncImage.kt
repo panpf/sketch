@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uri] value.
+ * @param imageUri [DisplayRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -78,7 +78,7 @@ fun SubcomposeAsyncImage(
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uri] value.
+ * @param imageUri [DisplayRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
