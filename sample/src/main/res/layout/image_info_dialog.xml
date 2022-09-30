@@ -106,6 +106,28 @@
             android:layout_marginTop="8dp">
 
             <TextView
+                android:id="@+id/imageInfoBitmapTitle"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="Bitmap："
+                android:textColor="@color/text_subtitle"
+                android:textSize="11dp" />
+
+            <TextView
+                android:id="@+id/imageInfoBitmapContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_title"
+                tools:text="http://sample.com/sample.jpeg" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
                 android:id="@+id/imageInfoDrawableTitle"
                 android:layout_width="76dp"
                 android:layout_height="wrap_content"
