@@ -36,6 +36,7 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.setFromCompose
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.transition.CrossfadeTransition
