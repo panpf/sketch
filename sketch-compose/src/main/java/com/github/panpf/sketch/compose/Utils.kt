@@ -8,7 +8,10 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
+import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.roundToInt
 
@@ -22,6 +25,30 @@ import kotlin.math.roundToInt
 //        return ImageRequest.Builder(LocalContext.current).data(model).build()
 //    }
 //}
+
+private const val FROM_COMPOSE_KEY = "sketch:fromCompose"
+
+fun DisplayRequest.Builder.setFromCompose(enabled: Boolean): DisplayRequest.Builder = apply {
+    if (enabled) {
+        setParameter(key = FROM_COMPOSE_KEY, value = true, cacheKey = null)
+    } else {
+        removeParameter(key = FROM_COMPOSE_KEY)
+    }
+}
+
+fun ImageOptions.Builder.setFromCompose(enabled: Boolean): ImageOptions.Builder = apply {
+    if (enabled) {
+        setParameter(key = FROM_COMPOSE_KEY, value = true, cacheKey = null)
+    } else {
+        removeParameter(key = FROM_COMPOSE_KEY)
+    }
+}
+
+fun DisplayRequest.isFromCompose(): Boolean =
+    (parameters?.get(FROM_COMPOSE_KEY) as Boolean?) == true
+
+fun ImageOptions.isFromCompose(): Boolean =
+    (parameters?.get(FROM_COMPOSE_KEY) as Boolean?) == true
 
 @Stable
 internal fun transformOf(
