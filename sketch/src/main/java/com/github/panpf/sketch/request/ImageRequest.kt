@@ -453,6 +453,56 @@ interface ImageRequest {
             }
 
         /**
+         * Set how to resize image
+         *
+         * @param size Expected Bitmap size Resolver
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
+         * @param scale Which part of the original image to keep when [precision] is
+         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         */
+        open fun resize(
+            size: SizeResolver?,
+            precision: PrecisionDecider? = null,
+            scale: ScaleDecider? = null
+        ): Builder = apply {
+            definedOptionsBuilder.resize(size, precision, scale)
+        }
+
+        /**
+         * Set how to resize image
+         *
+         * @param size Expected Bitmap size
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
+         * @param scale Which part of the original image to keep when [precision] is
+         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         */
+        open fun resize(
+            size: Size,
+            precision: Precision? = null,
+            scale: Scale? = null
+        ): Builder = apply {
+            definedOptionsBuilder.resize(size, precision, scale)
+        }
+
+        /**
+         * Set how to resize image
+         *
+         * @param width Expected Bitmap width
+         * @param height Expected Bitmap height
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
+         * @param scale Which part of the original image to keep when [precision] is
+         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         */
+        open fun resize(
+            @Px width: Int,
+            @Px height: Int,
+            precision: Precision? = null,
+            scale: Scale? = null
+        ): Builder = apply {
+            definedOptionsBuilder.resize(width, height, precision, scale)
+        }
+
+        /**
          * Set the [SizeResolver] to lazy resolve the requested size.
          *
          * Only works on [LoadRequest] and [DisplayRequest]

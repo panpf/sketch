@@ -484,6 +484,62 @@ interface ImageOptions {
         }
 
         /**
+         * Set how to resize image
+         *
+         * @param size Expected Bitmap size Resolver
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
+         * @param scale Which part of the original image to keep when [precision] is
+         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         */
+        fun resize(
+            size: SizeResolver?,
+            precision: PrecisionDecider? = null,
+            scale: ScaleDecider? = null
+        ): Builder = apply {
+            this.resizeSizeResolver = size
+            this.resizePrecisionDecider = precision
+            this.resizeScaleDecider = scale
+        }
+
+        /**
+         * Set how to resize image
+         *
+         * @param size Expected Bitmap size
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
+         * @param scale Which part of the original image to keep when [precision] is
+         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         */
+        fun resize(
+            size: Size,
+            precision: Precision? = null,
+            scale: Scale? = null
+        ): Builder = resize(
+            FixedSizeResolver(size),
+            precision?.let { FixedPrecisionDecider(it) },
+            scale?.let { FixedScaleDecider(it) }
+        )
+
+        /**
+         * Set how to resize image
+         *
+         * @param width Expected Bitmap width
+         * @param height Expected Bitmap height
+         * @param precision precision of size, default is [Precision.LESS_PIXELS]
+         * @param scale Which part of the original image to keep when [precision] is
+         * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+         */
+        fun resize(
+            @Px width: Int,
+            @Px height: Int,
+            precision: Precision? = null,
+            scale: Scale? = null
+        ): Builder = resize(
+            FixedSizeResolver(width, height),
+            precision?.let { FixedPrecisionDecider(it) },
+            scale?.let { FixedScaleDecider(it) }
+        )
+
+        /**
          * Set the [SizeResolver] to lazy resolve the requested size.
          *
          * Only works on [LoadRequest] and [DisplayRequest]
@@ -505,27 +561,27 @@ interface ImageOptions {
             resizeSize(FixedSizeResolver(width, height))
 
         /**
-         * Set the resize precision
+         * Set the resize precision, default is [Precision.LESS_PIXELS]
          */
         fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
             this.resizePrecisionDecider = precisionDecider
         }
 
         /**
-         * Set the resize precision
+         * Set the resize precision, default is [Precision.LESS_PIXELS]
          */
         fun resizePrecision(precision: Precision): Builder =
             resizePrecision(FixedPrecisionDecider(precision))
 
         /**
-         * Set the resize scale
+         * Set the resize scale, default is [Scale.CENTER_CROP]
          */
         fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
             this.resizeScaleDecider = scaleDecider
         }
 
         /**
-         * Set the resize scale
+         * Set the resize scale, default is [Scale.CENTER_CROP]
          */
         fun resizeScale(scale: Scale): Builder = resizeScale(FixedScaleDecider(scale))
 

@@ -29,6 +29,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.request.DisplayRequest.Builder
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
@@ -252,6 +253,31 @@ interface LoadRequest : ImageRequest {
         override fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
             @Suppress("DEPRECATION")
             super.preferQualityOverSpeed(inPreferQualityOverSpeed)
+        }
+
+        override fun resize(
+            size: SizeResolver?,
+            precision: PrecisionDecider?,
+            scale: ScaleDecider?
+        ): Builder = apply {
+            super.resize(size, precision, scale)
+        }
+
+        override fun resize(
+            size: Size,
+            precision: Precision?,
+            scale: Scale?
+        ): Builder = apply {
+            super.resize(size, precision, scale)
+        }
+
+        override fun resize(
+            width: Int,
+            height: Int,
+            precision: Precision?,
+            scale: Scale?
+        ): Builder = apply {
+            super.resize(width, height, precision, scale)
         }
 
         override fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {

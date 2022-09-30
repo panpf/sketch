@@ -277,6 +277,31 @@ interface DisplayRequest : ImageRequest {
             super.preferQualityOverSpeed(inPreferQualityOverSpeed)
         }
 
+        override fun resize(
+            size: SizeResolver?,
+            precision: PrecisionDecider?,
+            scale: ScaleDecider?
+        ): Builder = apply {
+            super.resize(size, precision, scale)
+        }
+
+        override fun resize(
+            size: Size,
+            precision: Precision?,
+            scale: Scale?
+        ): Builder = apply {
+            super.resize(size, precision, scale)
+        }
+
+        override fun resize(
+            width: Int,
+            height: Int,
+            precision: Precision?,
+            scale: Scale?
+        ): Builder = apply {
+            super.resize(width, height, precision, scale)
+        }
+
         override fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
             super.resizeSize(sizeResolver)
         }
