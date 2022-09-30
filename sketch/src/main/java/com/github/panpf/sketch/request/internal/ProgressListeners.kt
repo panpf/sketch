@@ -29,4 +29,19 @@ class ProgressListeners<REQUEST : ImageRequest>(
             it.onUpdateProgress(request, totalLength, completedLength)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ProgressListeners<*>) return false
+        if (progressListenerList != other.progressListenerList) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return progressListenerList.hashCode()
+    }
+
+    override fun toString(): String {
+        return "ProgressListeners($progressListenerList)"
+    }
 }

@@ -49,4 +49,19 @@ class Listeners<REQUEST : ImageRequest, SUCCESS_RESULT : Success, ERROR_RESULT :
             it.onSuccess(request, result)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Listeners<*, *, *>) return false
+        if (listenerList != other.listenerList) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return listenerList.hashCode()
+    }
+
+    override fun toString(): String {
+        return "Listeners($listenerList)"
+    }
 }

@@ -279,14 +279,20 @@ interface ImageRequest {
         protected constructor(request: ImageRequest) {
             this.context = request.context
             this.uriString = request.uriString
-            this.listener = request.listener
-                .asOrNull<CombinedListener<ImageRequest, ImageResult.Success, ImageResult.Error>>()
-                ?.fromBuilderListener
-                ?: request.listener
-            this.progressListener = request.progressListener
-                .asOrNull<CombinedProgressListener<ImageRequest>>()
-                ?.fromBuilderProgressListener
-                ?: request.progressListener
+            val oldListener = request.listener
+            this.listener =
+                if (oldListener is CombinedListener<ImageRequest, ImageResult.Success, ImageResult.Error>) {
+                    oldListener.fromBuilderListener
+                } else {
+                    oldListener
+                }
+            val oldProgressListener = request.progressListener
+            this.progressListener =
+                if (oldProgressListener is CombinedProgressListener<ImageRequest>) {
+                    oldProgressListener.fromBuilderProgressListener
+                } else {
+                    oldProgressListener
+                }
             this.target = request.target
             this.lifecycle = request.lifecycle
             this.defaultOptions = request.defaultOptions
@@ -982,31 +988,31 @@ interface ImageRequest {
                     }
                 } ?: Scale.CENTER_CROP
 
+        @Suppress("UNCHECKED_CAST")
         private fun combinationListener(): Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? {
             val target = target
             val listener = listener
-            val viewDisplayListenerProvider =
-                target.asOrNull<ViewDisplayTarget<*>>()?.view?.asOrNull<DisplayListenerProvider>()
-            @Suppress("UNCHECKED_CAST") val viewListener =
-                viewDisplayListenerProvider?.getDisplayListener() as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
-            return if (listener != null && viewListener != null && listener !== viewListener) {
+            val viewListener = target.asOrNull<ViewDisplayTarget<*>>()
+                ?.view?.asOrNull<DisplayListenerProvider>()
+                ?.getDisplayListener() as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
+            return if (viewListener != null) {
                 CombinedListener(viewListener, listener)
             } else {
-                listener ?: viewListener
+                listener
             }
         }
 
+        @Suppress("UNCHECKED_CAST")
         private fun combinationProgressListener(): ProgressListener<ImageRequest>? {
             val target = target
             val progressListener = progressListener
-            val viewDisplayListenerProvider =
-                target.asOrNull<ViewDisplayTarget<*>>()?.view?.asOrNull<DisplayListenerProvider>()
-            @Suppress("UNCHECKED_CAST") val viewProgressListener =
-                viewDisplayListenerProvider?.getDisplayProgressListener() as ProgressListener<ImageRequest>?
-            return if (progressListener != null && viewProgressListener != null && progressListener != viewProgressListener) {
+            val viewProgressListener = target.asOrNull<ViewDisplayTarget<*>>()
+                ?.view?.asOrNull<DisplayListenerProvider>()
+                ?.getDisplayProgressListener() as ProgressListener<ImageRequest>?
+            return if (viewProgressListener != null) {
                 CombinedProgressListener(viewProgressListener, progressListener)
             } else {
-                progressListener ?: viewProgressListener
+                progressListener
             }
         }
     }

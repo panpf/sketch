@@ -49,6 +49,8 @@ import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.get
+import com.github.panpf.sketch.request.internal.CombinedListener
+import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -1277,31 +1279,35 @@ class LoadRequestTest {
             listener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
+            }
+            build().newLoadRequest().apply {
+                Assert.assertNotNull(listener)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onStart = {})
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onCancel = {})
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onError = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(null)
@@ -1323,7 +1329,11 @@ class LoadRequestTest {
             progressListener { _, _, _ -> }
             build().apply {
                 Assert.assertNotNull(progressListener)
-                Assert.assertTrue(progressListener is ProgressListener<*>)
+                Assert.assertTrue(progressListener !is CombinedProgressListener<*>)
+            }
+            build().newLoadRequest().apply {
+                Assert.assertNotNull(progressListener)
+                Assert.assertTrue(progressListener !is CombinedProgressListener<*>)
             }
 
             progressListener(null)

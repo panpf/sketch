@@ -45,10 +45,10 @@ import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
-import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.get
+import com.github.panpf.sketch.request.internal.CombinedListener
+import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -687,10 +687,19 @@ class DownloadRequestTest {
             resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
             build().apply {
                 Assert.assertEquals(FixedSizeResolver(100, 100), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), definedOptions.resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(START_CROP), definedOptions.resizeScaleDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    definedOptions.resizePrecisionDecider
+                )
+                Assert.assertEquals(
+                    FixedScaleDecider(START_CROP),
+                    definedOptions.resizeScaleDecider
+                )
                 Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    resizePrecisionDecider
+                )
                 Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
             }
 
@@ -708,7 +717,10 @@ class DownloadRequestTest {
             resize(100, 100, EXACTLY)
             build().apply {
                 Assert.assertEquals(FixedSizeResolver(100, 100), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), definedOptions.resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(EXACTLY),
+                    definedOptions.resizePrecisionDecider
+                )
                 Assert.assertNull(definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -739,17 +751,32 @@ class DownloadRequestTest {
 
             resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), definedOptions.resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(START_CROP), definedOptions.resizeScaleDecider)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    definedOptions.resizePrecisionDecider
+                )
+                Assert.assertEquals(
+                    FixedScaleDecider(START_CROP),
+                    definedOptions.resizeScaleDecider
+                )
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    resizePrecisionDecider
+                )
                 Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
             }
 
             resize(Size(100, 100))
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
                 Assert.assertNull(definedOptions.resizePrecisionDecider)
                 Assert.assertNull(definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
@@ -760,8 +787,14 @@ class DownloadRequestTest {
             resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
             resize(Size(100, 100), EXACTLY)
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), definedOptions.resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
+                Assert.assertEquals(
+                    FixedPrecisionDecider(EXACTLY),
+                    definedOptions.resizePrecisionDecider
+                )
                 Assert.assertNull(definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -771,7 +804,10 @@ class DownloadRequestTest {
             resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
             resize(Size(100, 100), scale = END_CROP)
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
                 Assert.assertNull(definedOptions.resizePrecisionDecider)
                 Assert.assertEquals(FixedScaleDecider(END_CROP), definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
@@ -1277,31 +1313,35 @@ class DownloadRequestTest {
             listener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
+            }
+            build().newDownloadRequest().apply {
+                Assert.assertNotNull(listener)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onStart = {})
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onCancel = {})
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onError = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(null)
@@ -1323,7 +1363,11 @@ class DownloadRequestTest {
             progressListener { _, _, _ -> }
             build().apply {
                 Assert.assertNotNull(progressListener)
-                Assert.assertTrue(progressListener is ProgressListener<*>)
+                Assert.assertTrue(progressListener !is CombinedProgressListener<*>)
+            }
+            build().newDownloadRequest().apply {
+                Assert.assertNotNull(progressListener)
+                Assert.assertTrue(progressListener !is CombinedProgressListener<*>)
             }
 
             progressListener(null)

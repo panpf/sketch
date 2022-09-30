@@ -92,6 +92,7 @@ import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
@@ -749,10 +750,19 @@ class DisplayRequestTest {
             resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
             build().apply {
                 Assert.assertEquals(FixedSizeResolver(100, 100), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), definedOptions.resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(START_CROP), definedOptions.resizeScaleDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    definedOptions.resizePrecisionDecider
+                )
+                Assert.assertEquals(
+                    FixedScaleDecider(START_CROP),
+                    definedOptions.resizeScaleDecider
+                )
                 Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    resizePrecisionDecider
+                )
                 Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
             }
 
@@ -770,7 +780,10 @@ class DisplayRequestTest {
             resize(100, 100, EXACTLY)
             build().apply {
                 Assert.assertEquals(FixedSizeResolver(100, 100), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), definedOptions.resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(EXACTLY),
+                    definedOptions.resizePrecisionDecider
+                )
                 Assert.assertNull(definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -801,17 +814,32 @@ class DisplayRequestTest {
 
             resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), definedOptions.resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(START_CROP), definedOptions.resizeScaleDecider)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    definedOptions.resizePrecisionDecider
+                )
+                Assert.assertEquals(
+                    FixedScaleDecider(START_CROP),
+                    definedOptions.resizeScaleDecider
+                )
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    resizePrecisionDecider
+                )
                 Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
             }
 
             resize(Size(100, 100))
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
                 Assert.assertNull(definedOptions.resizePrecisionDecider)
                 Assert.assertNull(definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
@@ -822,8 +850,14 @@ class DisplayRequestTest {
             resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
             resize(Size(100, 100), EXACTLY)
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), definedOptions.resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
+                Assert.assertEquals(
+                    FixedPrecisionDecider(EXACTLY),
+                    definedOptions.resizePrecisionDecider
+                )
                 Assert.assertNull(definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -833,7 +867,10 @@ class DisplayRequestTest {
             resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
             resize(Size(100, 100), scale = END_CROP)
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
                 Assert.assertNull(definedOptions.resizePrecisionDecider)
                 Assert.assertEquals(FixedScaleDecider(END_CROP), definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
@@ -1400,31 +1437,35 @@ class DisplayRequestTest {
             listener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
+            }
+            build().newDisplayRequest().apply {
+                Assert.assertNotNull(listener)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onStart = {})
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onCancel = {})
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onError = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(null)
@@ -1441,7 +1482,7 @@ class DisplayRequestTest {
             listener(onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+                Assert.assertTrue(listener !is CombinedListener<*, *, *>)
             }
 
             listener(null)
@@ -1451,15 +1492,29 @@ class DisplayRequestTest {
             }
 
             target(TestListenerImageView(context1))
-            build().apply {
-                Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is Listener<*, *, *>)
+            build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNull(fromBuilderListener)
+                Assert.assertNotNull(fromViewListener)
+                Assert.assertTrue(fromViewListener !is CombinedListener<*, *, *>)
+            }
+            build().newDisplayRequest().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNull(fromBuilderListener)
+                Assert.assertNotNull(fromViewListener)
+                Assert.assertTrue(fromViewListener !is CombinedListener<*, *, *>)
             }
 
             listener(onSuccess = { _, _ -> })
-            build().apply {
-                Assert.assertNotNull(listener)
-                Assert.assertTrue(listener is CombinedListener<*, *, *>)
+            build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNotNull(fromBuilderListener)
+                Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromViewListener)
+                Assert.assertTrue(fromViewListener !is CombinedListener<*, *, *>)
+            }
+            build().newDisplayRequest().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNotNull(fromBuilderListener)
+                Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromViewListener)
+                Assert.assertTrue(fromViewListener !is CombinedListener<*, *, *>)
             }
         }
     }
@@ -1476,7 +1531,11 @@ class DisplayRequestTest {
             progressListener { _, _, _ -> }
             build().apply {
                 Assert.assertNotNull(progressListener)
-                Assert.assertTrue(progressListener is ProgressListener<*>)
+                Assert.assertTrue(progressListener !is CombinedProgressListener<*>)
+            }
+            build().newDisplayRequest().apply {
+                Assert.assertNotNull(progressListener)
+                Assert.assertTrue(progressListener !is CombinedProgressListener<*>)
             }
 
             progressListener(null)
@@ -1493,7 +1552,7 @@ class DisplayRequestTest {
             progressListener { _, _, _ -> }
             build().apply {
                 Assert.assertNotNull(progressListener)
-                Assert.assertTrue(progressListener is ProgressListener<*>)
+                Assert.assertTrue(progressListener !is CombinedProgressListener<*>)
             }
 
             progressListener(null)
@@ -1503,15 +1562,29 @@ class DisplayRequestTest {
             }
 
             target(TestListenerImageView(context1))
-            build().apply {
-                Assert.assertNotNull(progressListener)
-                Assert.assertTrue(progressListener is ProgressListener<*>)
+            build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
+                Assert.assertNull(fromBuilderProgressListener)
+                Assert.assertNotNull(fromViewProgressListener)
+                Assert.assertTrue(fromViewProgressListener !is CombinedProgressListener<*>)
+            }
+            build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
+                Assert.assertNull(fromBuilderProgressListener)
+                Assert.assertNotNull(fromViewProgressListener)
+                Assert.assertTrue(fromViewProgressListener !is CombinedProgressListener<*>)
             }
 
             progressListener { _, _, _ -> }
-            build().apply {
-                Assert.assertNotNull(progressListener)
-                Assert.assertTrue(progressListener is CombinedProgressListener<*>)
+            build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
+                Assert.assertNotNull(fromBuilderProgressListener)
+                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
+                Assert.assertNotNull(fromViewProgressListener)
+                Assert.assertTrue(fromViewProgressListener !is CombinedProgressListener<*>)
+            }
+            build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
+                Assert.assertNotNull(fromBuilderProgressListener)
+                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
+                Assert.assertNotNull(fromViewProgressListener)
+                Assert.assertTrue(fromViewProgressListener !is CombinedProgressListener<*>)
             }
         }
     }
