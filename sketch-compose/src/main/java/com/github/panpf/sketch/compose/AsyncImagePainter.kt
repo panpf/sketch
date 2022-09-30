@@ -33,12 +33,16 @@ import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
+import com.github.panpf.sketch.compose.internal.AsyncImageDisplayTarget
+import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
+import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.setFromCompose
+import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
+import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
 import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
@@ -381,16 +385,20 @@ class AsyncImagePainter internal constructor(
 //    }
     private fun updateRequest(request: DisplayRequest): DisplayRequest {
         return request.newDisplayRequest {
-            target(onStart = { placeholder ->
-                updateState(State.Loading(placeholder?.toPainter()))
-            })
+            target(AsyncImageDisplayTarget(object : DisplayTarget {
+                override fun onStart(placeholder: Drawable?) {
+                    updateState(State.Loading(placeholder?.toPainter()))
+                }
+            }))
             if (request.definedOptions.resizeSizeResolver == null) {
                 // If no other size resolver is set, suspend until the canvas size is positive.
-                resizeSize { drawSize.mapNotNull { it.toSizeOrNull() }.first() }
+                resizeSize(AsyncImageSizeResolver {
+                    drawSize.mapNotNull { it.toSizeOrNull() }.first()
+                })
             }
             if (request.definedOptions.resizeScaleDecider == null) {
                 // If no other scale resolver is set, use the content scale.
-                resizeScale(contentScale.toScale())
+                resizeScale(AsyncImageScaleDecider(FixedScaleDecider(contentScale.toScale())))
             }
         }
     }

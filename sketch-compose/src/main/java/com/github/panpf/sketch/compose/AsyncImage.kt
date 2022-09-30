@@ -25,7 +25,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
+import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
+import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -234,8 +237,8 @@ fun AsyncImage(
     // Draw the content without a parent composable or subcomposition.
     val sizeResolver = newRequest.resizeSizeResolver
     Content(
-        modifier = if (sizeResolver is ConstraintsSizeResolver) {
-            modifier.then(sizeResolver)
+        modifier = if (sizeResolver is AsyncImageSizeResolver && sizeResolver.wrapped is ConstraintsSizeResolver) {
+            modifier.then(sizeResolver.wrapped)
         } else {
             modifier
         },
@@ -288,18 +291,20 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
 //    } else {
 //        request
 //    }
-    val resetSizeResolver = request.definedOptions.resizeSizeResolver == null
-    val resetScale = request.definedOptions.resizeScaleDecider == null
-    return if (resetSizeResolver || resetScale) {
-        val sizeResolver = ifOrNull(resetSizeResolver) {
-            remember { ConstraintsSizeResolver() }
+    val noSizeResolver = request.definedOptions.resizeSizeResolver == null
+    val noResetScale = request.definedOptions.resizeScaleDecider == null
+    return if (noSizeResolver || noResetScale) {
+        val sizeResolver = ifOrNull(noSizeResolver) {
+            remember { AsyncImageSizeResolver(ConstraintsSizeResolver()) }
         }
         request.newDisplayRequest {
-            if (sizeResolver != null) {
+            // If no other size resolver is set, pauses until the layout size is positive.
+            if (noSizeResolver && sizeResolver != null) {
                 resizeSize(sizeResolver)
             }
-            if (resetScale) {
-                resizeScale(contentScale.toScale())
+            // If no other scale resolver is set, use the content scale.
+            if (noResetScale) {
+                resizeScale(AsyncImageScaleDecider(FixedScaleDecider(contentScale.toScale())))
             }
         }
     } else {

@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
+import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.request.DisplayRequest
 
 /**
@@ -224,14 +225,19 @@ fun SubcomposeAsyncImage(
     )
 
     val sizeResolver = newRequest.resizeSizeResolver
-    if (sizeResolver !is ConstraintsSizeResolver) {
-        // Fast path: draw the content without subcomposition as we don't need to resolve the
-        // constraints.
-        Box(
+    if (sizeResolver is AsyncImageSizeResolver && sizeResolver.wrapped is ConstraintsSizeResolver) {
+        // Slow path: draw the content with subcomposition as we need to resolve the constraints
+        // before calling `content`.
+        BoxWithConstraints(
             modifier = modifier,
             contentAlignment = alignment,
             propagateMinConstraints = true
         ) {
+            // Ensure `painter.state` is up to date immediately. Resolving the constraints
+            // synchronously is necessary to ensure that images from the memory cache are resolved
+            // and `painter.state` is updated to `Success` before invoking `content`.
+            sizeResolver.wrapped.setConstraints(constraints)
+
             RealSubcomposeAsyncImageScope(
                 parentScope = this,
                 painter = painter,
@@ -243,18 +249,13 @@ fun SubcomposeAsyncImage(
             ).content()
         }
     } else {
-        // Slow path: draw the content with subcomposition as we need to resolve the constraints
-        // before calling `content`.
-        BoxWithConstraints(
+        // Fast path: draw the content without subcomposition as we don't need to resolve the
+        // constraints.
+        Box(
             modifier = modifier,
             contentAlignment = alignment,
             propagateMinConstraints = true
         ) {
-            // Ensure `painter.state` is up to date immediately. Resolving the constraints
-            // synchronously is necessary to ensure that images from the memory cache are resolved
-            // and `painter.state` is updated to `Success` before invoking `content`.
-            sizeResolver.setConstraints(constraints)
-
             RealSubcomposeAsyncImageScope(
                 parentScope = this,
                 painter = painter,
