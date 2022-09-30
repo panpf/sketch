@@ -145,7 +145,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             MultiSelectMenu(
                 title = "Resize Precision",
                 desc = null,
-                values = listOf("LongImageClipMode").plus(Precision.values().map { it.name }),
+                values = Precision.values().map { it.name }.plus(listOf("LongImageClipMode")),
                 getValue = { prefsService.resizePrecision.value },
                 onSelect = { _, value -> prefsService.resizePrecision.value = value }
             )
@@ -154,7 +154,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             MultiSelectMenu(
                 title = "Resize Scale",
                 desc = null,
-                values = listOf("LongImageClipMode").plus(Scale.values().map { it.name }),
+                values = Scale.values().map { it.name }.plus(listOf("LongImageMode")),
                 getValue = { prefsService.resizeScale.value },
                 onSelect = { _, value -> prefsService.resizeScale.value = value }
             )
