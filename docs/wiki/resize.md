@@ -53,7 +53,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
         1. 如果是使用的 AsyncImage 则取测量宽高
         2. 如果是直接使用的 AsyncImagePainter 则在绘制阶段取绘制宽高，同样到绘制阶段还是宽高还是 0，那么请求不会继续执行
     3. 取屏幕的宽高
-* [Precision]：主动设置任意 resizeSize 或 resizeSizeResolver 时是 EXACTLY，否则是 LESS_PIXELS
+* [Precision]：LESS_PIXELS
 * [Scale]：CENTER_CROP
 
 ### resizeApplyToDrawable

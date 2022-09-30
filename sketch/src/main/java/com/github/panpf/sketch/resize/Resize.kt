@@ -50,7 +50,7 @@ data class Resize constructor(
     constructor(
         width: Int,
         height: Int,
-        precision: Precision = Precision.EXACTLY,   // todo default change to LESS_PIXELS
+        precision: Precision = Precision.LESS_PIXELS,   // todo default change to LESS_PIXELS
         scale: Scale = Scale.CENTER_CROP
     ) : this(width, height, FixedPrecisionDecider(precision), FixedScaleDecider(scale))
 
@@ -64,7 +64,7 @@ data class Resize constructor(
         width: Int,
         height: Int,
         scale: Scale
-    ) : this(width, height, FixedPrecisionDecider(Precision.EXACTLY), FixedScaleDecider(scale))
+    ) : this(width, height, FixedPrecisionDecider(Precision.LESS_PIXELS), FixedScaleDecider(scale))
 
     constructor(
         width: Int,
@@ -76,7 +76,7 @@ data class Resize constructor(
     constructor(
         width: Int,
         height: Int,
-        precision: Precision = Precision.EXACTLY,
+        precision: Precision = Precision.LESS_PIXELS,
         scale: ScaleDecider
     ) : this(width, height, FixedPrecisionDecider(precision), scale)
 
@@ -89,7 +89,7 @@ data class Resize constructor(
 
     constructor(
         size: Size,
-        precision: Precision = Precision.EXACTLY,
+        precision: Precision = Precision.LESS_PIXELS,
         scale: Scale = Scale.CENTER_CROP
     ) : this(size.width, size.height, FixedPrecisionDecider(precision), FixedScaleDecider(scale))
 
@@ -109,7 +109,7 @@ data class Resize constructor(
     ) : this(
         size.width,
         size.height,
-        FixedPrecisionDecider(Precision.EXACTLY),
+        FixedPrecisionDecider(Precision.LESS_PIXELS),
         FixedScaleDecider(scale)
     )
 
@@ -121,7 +121,7 @@ data class Resize constructor(
 
     constructor(
         size: Size,
-        precision: Precision = Precision.EXACTLY,
+        precision: Precision = Precision.LESS_PIXELS,
         scale: ScaleDecider
     ) : this(size.width, size.height, FixedPrecisionDecider(precision), scale)
 

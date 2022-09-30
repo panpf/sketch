@@ -745,11 +745,11 @@ class DownloadRequestTest {
             resizeSize(size)
         }.apply {
             Assert.assertEquals(FixedSizeResolver(size), resizeSizeResolver)
-            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
         }
         request1.newDownloadRequest().apply {
             Assert.assertEquals(FixedSizeResolver(size), resizeSizeResolver)
-            Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
         }
 
         request.apply {

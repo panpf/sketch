@@ -31,7 +31,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DrawableDecoder
@@ -39,19 +38,13 @@ import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
@@ -780,11 +773,11 @@ interface ImageRequest {
             val lifecycle = lifecycle ?: resolveLifecycle() ?: GlobalLifecycle
             val definedOptions = definedOptionsBuilder.merge(viewTargetOptions).build()
             val finalOptions = definedOptions.merged(defaultOptions)
-            val depth = finalOptions.depth ?: NETWORK
+            val depth = finalOptions.depth ?: Depth.NETWORK
             val parameters = finalOptions.parameters
             val httpHeaders = finalOptions.httpHeaders
-            val downloadCachePolicy = finalOptions.downloadCachePolicy ?: ENABLED
-            val resultCachePolicy = finalOptions.resultCachePolicy ?: ENABLED
+            val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
+            val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
             val bitmapConfig = finalOptions.bitmapConfig
             val colorSpace = ifOrNull(VERSION.SDK_INT >= VERSION_CODES.O) {
                 finalOptions.colorSpace
@@ -793,11 +786,7 @@ interface ImageRequest {
             val resizeSizeResolver = finalOptions.resizeSizeResolver
                 ?: resolveResizeSizeResolver()
             val resizePrecisionDecider = finalOptions.resizePrecisionDecider
-                ?: if (finalOptions.resizeSizeResolver == null) {   // todo default change to LESS_PIXELS
-                    FixedPrecisionDecider(LESS_PIXELS)
-                } else {
-                    FixedPrecisionDecider(EXACTLY)
-                }
+                ?: FixedPrecisionDecider(Precision.LESS_PIXELS)
             val resizeScaleDecider =
                 finalOptions.resizeScaleDecider ?: FixedScaleDecider(resolveResizeScale())
             val transformations = finalOptions.transformations
@@ -808,7 +797,7 @@ interface ImageRequest {
             val transitionFactory = finalOptions.transitionFactory
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
-            val memoryCachePolicy = finalOptions.memoryCachePolicy ?: ENABLED
+            val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val componentRegistry = finalOptions.componentRegistry
 
             return when (this@Builder) {
@@ -933,15 +922,15 @@ interface ImageRequest {
                 ?.view?.asOrNull<ImageView>()
                 ?.scaleType?.let {
                     when (it) {
-                        ScaleType.FIT_START -> START_CROP
-                        ScaleType.FIT_CENTER -> CENTER_CROP
-                        ScaleType.FIT_END -> END_CROP
-                        ScaleType.CENTER_INSIDE -> CENTER_CROP
-                        ScaleType.CENTER -> CENTER_CROP
-                        ScaleType.CENTER_CROP -> CENTER_CROP
+                        ScaleType.FIT_START -> Scale.START_CROP
+                        ScaleType.FIT_CENTER -> Scale.CENTER_CROP
+                        ScaleType.FIT_END -> Scale.END_CROP
+                        ScaleType.CENTER_INSIDE -> Scale.CENTER_CROP
+                        ScaleType.CENTER -> Scale.CENTER_CROP
+                        ScaleType.CENTER_CROP -> Scale.CENTER_CROP
                         else -> Scale.FILL
                     }
-                } ?: CENTER_CROP
+                } ?: Scale.CENTER_CROP
 
         private fun combinationListener(): Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? {
             val target = target

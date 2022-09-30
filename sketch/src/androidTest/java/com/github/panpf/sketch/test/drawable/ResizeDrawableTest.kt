@@ -90,7 +90,7 @@ class ResizeDrawableTest {
             .apply {
                 Assert.assertNotSame(bitmapDrawable, this)
                 Assert.assertSame(bitmapDrawable, wrappedDrawable)
-                Assert.assertEquals(Resize(500, 300), resize)
+                Assert.assertEquals(Resize(500, 300, EXACTLY), resize)
             }
 
         val animDrawable = SketchAnimatableDrawable(
@@ -108,7 +108,7 @@ class ResizeDrawableTest {
             .apply {
                 Assert.assertNotSame(animDrawable, this)
                 Assert.assertSame(animDrawable, wrappedDrawable)
-                Assert.assertEquals(Resize(500, 300), resize)
+                Assert.assertEquals(Resize(500, 300, EXACTLY), resize)
             }
     }
 
