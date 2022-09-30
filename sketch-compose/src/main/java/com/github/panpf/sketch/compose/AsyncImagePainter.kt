@@ -36,7 +36,6 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.transition.CrossfadeTransition
@@ -380,24 +379,19 @@ class AsyncImagePainter internal constructor(
 //            .build()
 //    }
     private fun updateRequest(request: DisplayRequest): DisplayRequest {
-        return request.newBuilder()
-            .target(onStart = { placeholder ->
+        return request.newDisplayRequest {
+            target(onStart = { placeholder ->
                 updateState(State.Loading(placeholder?.toPainter()))
             })
-            .apply {
-                if (request.definedOptions.resizeSizeResolver == null) {
-                    // If no other size resolver is set, suspend until the canvas size is positive.
-                    resizeSize { drawSize.mapNotNull { it.toSizeOrNull() }.first() }
-                    if (request.definedOptions.resizePrecisionDecider == null) {
-                        resizePrecision(LESS_PIXELS)
-                    }
-                }
-                if (request.definedOptions.resizeScaleDecider == null) {
-                    // If no other scale resolver is set, use the content scale.
-                    resizeScale(contentScale.toScale())
-                }
+            if (request.definedOptions.resizeSizeResolver == null) {
+                // If no other size resolver is set, suspend until the canvas size is positive.
+                resizeSize { drawSize.mapNotNull { it.toSizeOrNull() }.first() }
             }
-            .build()
+            if (request.definedOptions.resizeScaleDecider == null) {
+                // If no other scale resolver is set, use the content scale.
+                resizeScale(contentScale.toScale())
+            }
+        }
     }
 
     private fun updateState(input: State) {

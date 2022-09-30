@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -295,18 +294,12 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
         val sizeResolver = ifOrNull(resetSizeResolver) {
             remember { ConstraintsSizeResolver() }
         }
-        val scale = ifOrNull(resetScale) {
-            contentScale.toScale()
-        }
         request.newDisplayRequest {
             if (sizeResolver != null) {
                 resizeSize(sizeResolver)
-                if (request.definedOptions.resizePrecisionDecider == null) {
-                    resizePrecision(LESS_PIXELS)
-                }
             }
-            if (scale != null) {
-                resizeScale(scale)
+            if (resetScale) {
+                resizeScale(contentScale.toScale())
             }
         }
     } else {
@@ -319,7 +312,8 @@ internal class ConstraintsSizeResolver : SizeResolver, LayoutModifier {
 
     private val _constraints = MutableStateFlow(ZeroConstraints)
 
-    override suspend fun size(): SketchSize = _constraints.mapNotNull(Constraints::toSizeOrNull).first()
+    override suspend fun size(): SketchSize =
+        _constraints.mapNotNull(Constraints::toSizeOrNull).first()
 
     override fun MeasureScope.measure(
         measurable: Measurable,
