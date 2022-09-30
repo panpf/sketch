@@ -381,7 +381,6 @@ class AsyncImagePainter internal constructor(
 //    }
     private fun updateRequest(request: DisplayRequest): DisplayRequest {
         return request.newDisplayRequest {
-            setFromCompose(true)
             target(onStart = { placeholder ->
                 updateState(State.Loading(placeholder?.toPainter()))
             })
