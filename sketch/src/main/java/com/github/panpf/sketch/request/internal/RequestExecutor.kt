@@ -183,7 +183,7 @@ class RequestExecutor {
         val target = request.target
         when {
             target is DisplayTarget && result is DisplayResult.Success -> {
-                transition(target, result) {
+                setDrawable(target, result) {
                     target.onSuccess(result.drawable)
                 }
             }
@@ -226,7 +226,7 @@ class RequestExecutor {
         val target = request1.target
         when {
             target is DisplayTarget && result is DisplayResult.Error -> {
-                transition(target, result) {
+                setDrawable(target, result) {
                     target.onError(result.drawable)
                 }
             }
@@ -267,30 +267,29 @@ class RequestExecutor {
     }
 
     @MainThread
-    private fun transition(
+    private fun setDrawable(
         target: Target?,
         result: DisplayResult,
         setDrawable: () -> Unit
     ) {
-        if (target !is TransitionDisplayTarget) {
-            setDrawable()
+        if (result.drawable == null) {
             return
         }
 
-        if (result.drawable == null) {
+        if (target !is TransitionDisplayTarget) {
             setDrawable()
             return
         }
 
         val fitScale =
             target.asOrNull<ViewDisplayTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
-        val transitionFactory = result.request.transitionFactory?.create(target, result, fitScale)
-        if (transitionFactory == null) {
+        val transition = result.request.transitionFactory?.create(target, result, fitScale)
+        if (transition == null) {
             setDrawable()
             return
         }
 
-        transitionFactory.transition()
+        transition.transition()
     }
 
     private fun getErrorDrawable(

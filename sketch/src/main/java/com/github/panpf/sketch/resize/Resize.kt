@@ -50,7 +50,7 @@ data class Resize constructor(
     constructor(
         width: Int,
         height: Int,
-        precision: Precision = Precision.LESS_PIXELS,   // todo default change to LESS_PIXELS
+        precision: Precision = Precision.LESS_PIXELS,
         scale: Scale = Scale.CENTER_CROP
     ) : this(width, height, FixedPrecisionDecider(precision), FixedScaleDecider(scale))
 
