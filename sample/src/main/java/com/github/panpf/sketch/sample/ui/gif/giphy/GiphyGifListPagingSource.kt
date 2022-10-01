@@ -24,6 +24,8 @@ import com.github.panpf.sketch.sample.model.Photo
 class GiphyGifListPagingSource(private val context: Context) :
     PagingSource<Int, Photo>() {
 
+    private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
+
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
@@ -52,7 +54,7 @@ class GiphyGifListPagingSource(private val context: Context) :
             } else {
                 null
             }
-            LoadResult.Page(dataList, null, nextKey)
+            LoadResult.Page(dataList.filter { keySet.add(it.diffKey) }, null, nextKey)
         } else {
             LoadResult.Error(Exception("Http coded error: code=${response.code()}. message=${response.message()}"))
         }

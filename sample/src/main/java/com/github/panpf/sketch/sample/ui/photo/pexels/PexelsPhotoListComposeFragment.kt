@@ -25,19 +25,21 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.NavMainDirections
+import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
-import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
+import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class PexelsPhotoListComposeFragment : ToolbarFragment() {
 
-    private val viewModel by viewModels<PexelsPhotoListViewModel>()
-    private val listMenuViewModel by viewModels<ListMenuViewModel> {
-        ListMenuViewModel.Factory(
+    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
+    private val pexelsPhotoListViewModel by viewModels<PexelsPhotoListViewModel>()
+    private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
+        ToolbarMenuViewModel.Factory(
             requireActivity().application,
             showLayoutModeMenu = false,
             showPlayMenu = false,
@@ -48,13 +50,15 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                PhotoListContent(viewModel.pagingFlow) { items, _, index ->
+                PhotoListContent(
+                    photoPagingFlow = pexelsPhotoListViewModel.pagingFlow,
+                    restartImageFlow = settingsEventViewModel.listRestartImageFlow,
+                    reloadFlow = settingsEventViewModel.listReloadFlow
+                ) { items, _, index ->
                     startImageDetail(items, index)
                 }
             }
         }
-
-        // todo Listen to various global settings options and refresh the page
     }
 
     override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {
@@ -63,7 +67,7 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
             title = "Pexels Photos"
             subtitle = "Compose"
             viewLifecycleOwner.lifecycleScope.launch {
-                listMenuViewModel.menuFlow.collect { list ->
+                toolbarMenuViewModel.menuFlow.collect { list ->
                     menu.clear()
                     list.forEachIndexed { groupIndex, group ->
                         group.items.forEachIndexed { index, menuItemInfo ->

@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.ImageView.ScaleType
 import androidx.core.view.descendants
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
@@ -14,6 +15,7 @@ import com.github.panpf.sketch.sample.widget.MyRecyclerView
 import com.github.panpf.sketch.sample.widget.MyZoomImageView
 import com.github.panpf.sketch.util.SketchUtils
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
@@ -21,7 +23,7 @@ class SettingsEventViewModel(application: Application) : AndroidViewModel(applic
 
     private val prefsService = application.prefsService
 
-    private val flow: Flow<Any> = merge(
+    val listRestartImageFlow: Flow<Any> = merge(
         prefsService.saveCellularTrafficInList.sharedFlow,
 
         prefsService.resizePrecision.sharedFlow,
@@ -41,9 +43,11 @@ class SettingsEventViewModel(application: Application) : AndroidViewModel(applic
         prefsService.disallowAnimatedImageInList.sharedFlow,
     )
 
+    val listReloadFlow: SharedFlow<Any> = prefsService.ignoreExifOrientation.sharedFlow
+
     fun observeListSettings(recyclerView: MyRecyclerView) {
         recyclerView.lifecycleOwner.lifecycleScope.launch {
-            flow.collect {
+            listRestartImageFlow.collect {
                 recyclerView.descendants.forEach {
                     SketchUtils.restart(it)
                 }
@@ -51,8 +55,26 @@ class SettingsEventViewModel(application: Application) : AndroidViewModel(applic
         }
 
         recyclerView.lifecycleOwner.lifecycleScope.launch {
-            prefsService.ignoreExifOrientation.sharedFlow.collect {
+            listReloadFlow.collect {
                 recyclerView.adapter?.findPagingAdapter()?.refresh()
+            }
+        }
+    }
+
+    fun observeComposeListSettings(
+        lifecycleOwner: LifecycleOwner,
+        restart: () -> Unit,
+        reload: () -> Unit
+    ) {
+        lifecycleOwner.lifecycleScope.launch {
+            listRestartImageFlow.collect {
+                restart()
+            }
+        }
+
+        lifecycleOwner.lifecycleScope.launch {
+            listReloadFlow.collect {
+                reload()
             }
         }
     }

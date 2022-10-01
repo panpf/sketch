@@ -31,13 +31,15 @@ import com.github.panpf.tools4k.coroutines.withToIO
 class InsanityTestPagingSource(private val context: Context) :
     PagingSource<Int, Photo>() {
 
+    private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
+
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         val startPosition = params.key ?: 0
         val assetPhotos = if (startPosition == 0) readAssetPhotos() else emptyList()
         val photos = urisToPhotos(assetPhotos)
-        return LoadResult.Page(photos, null, null)
+        return LoadResult.Page(photos.filter { keySet.add(it.diffKey) }, null, null)
     }
 
     private suspend fun readAssetPhotos(): List<String> = withToIO {

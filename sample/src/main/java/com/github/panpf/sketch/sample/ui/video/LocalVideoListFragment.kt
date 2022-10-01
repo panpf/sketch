@@ -29,7 +29,7 @@ import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
-import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
+import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import kotlinx.coroutines.launch
 import java.io.File
@@ -38,8 +38,8 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
 
     private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val videoListViewModel by viewModels<LocalVideoListViewModel>()
-    private val listMenuViewModel by viewModels<ListMenuViewModel> {
-        ListMenuViewModel.Factory(
+    private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
+        ToolbarMenuViewModel.Factory(
             requireActivity().application,
             showLayoutModeMenu = false,
             showPlayMenu = false
@@ -54,7 +54,7 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
         toolbar.apply {
             title = "Local Video"
             viewLifecycleOwner.lifecycleScope.launch {
-                listMenuViewModel.menuFlow.collect { list ->
+                toolbarMenuViewModel.menuFlow.collect { list ->
                     menu.clear()
                     list.forEachIndexed { groupIndex, group ->
                         group.items.forEachIndexed { index, menuItemInfo ->

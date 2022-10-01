@@ -47,7 +47,7 @@ import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
-import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
+import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.Job
@@ -59,8 +59,8 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
     private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val giphyGifListViewModel by viewModels<GiphyGifListViewModel>()
-    private val listMenuViewModel by viewModels<ListMenuViewModel> {
-        ListMenuViewModel.Factory(
+    private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
+        ToolbarMenuViewModel.Factory(
             requireActivity().application,
             showLayoutModeMenu = true,
             showPlayMenu = true
@@ -78,7 +78,7 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
             title = "Giphy GIFs"
 
             viewLifecycleOwner.lifecycleScope.launch {
-                listMenuViewModel.menuFlow.collect { list ->
+                toolbarMenuViewModel.menuFlow.collect { list ->
                     menu.clear()
                     list.forEachIndexed { groupIndex, group ->
                         group.items.forEachIndexed { index, menuItemInfo ->

@@ -31,7 +31,7 @@ import com.github.panpf.sketch.sample.ui.setting.Page
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class ListMenuViewModel(
+class ToolbarMenuViewModel(
     application1: Application,
     private val showLayoutModeMenu: Boolean,
     private val showPlayMenu: Boolean,
@@ -46,7 +46,7 @@ class ListMenuViewModel(
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")
-            return ListMenuViewModel(
+            return ToolbarMenuViewModel(
                 application1,
                 showLayoutModeMenu,
                 showPlayMenu,

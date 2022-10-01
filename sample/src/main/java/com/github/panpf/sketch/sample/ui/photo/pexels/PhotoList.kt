@@ -25,8 +25,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -36,22 +39,43 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
-import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.common.compose.AppendState
 import com.github.panpf.sketch.sample.image.ImageType.LIST
 import com.github.panpf.sketch.sample.image.setApplySettings
+import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.common.compose.AppendState
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
+import com.github.panpf.tools4a.toast.ktx.showLongToast
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 @Composable
 fun PhotoListContent(
     photoPagingFlow: Flow<PagingData<Photo>>,
+    restartImageFlow: Flow<Any>,
+    reloadFlow: Flow<Any>,
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit
 ) {
     val lazyPagingItems = photoPagingFlow.collectAsLazyPagingItems()
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = reloadFlow) {
+        scope.launch {
+            reloadFlow.collect {
+                lazyPagingItems.refresh()
+            }
+        }
+    }
+    val context = LocalContext.current
+    LaunchedEffect(key1 = reloadFlow) {
+        scope.launch {
+            restartImageFlow.collect {
+                // todo Look for ways to actively discard the old state redraw, and then listen for restartImageFlow to perform the redraw
+                context.showLongToast("You need to scroll through the list manually to see the changes")
+            }
+        }
+    }
     SwipeRefresh(
         state = SwipeRefreshState(lazyPagingItems.loadState.refresh is LoadState.Loading),
         onRefresh = { lazyPagingItems.refresh() }
@@ -64,7 +88,7 @@ fun PhotoListContent(
         ) {
             items(
                 count = lazyPagingItems.itemCount,
-//                key = { lazyPagingItems.peek(it)?.diffKey ?: "" },    // There will be duplicate content leading to key conflicts
+                key = { lazyPagingItems.peek(it)?.diffKey ?: "" },
                 contentType = { 1 }
             ) { index ->
                 val item = lazyPagingItems[index]

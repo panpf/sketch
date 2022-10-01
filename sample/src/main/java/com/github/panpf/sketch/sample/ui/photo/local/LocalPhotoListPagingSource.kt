@@ -33,6 +33,8 @@ import com.github.panpf.tools4k.coroutines.withToIO
 class LocalPhotoListPagingSource(private val context: Context) :
     PagingSource<Int, Photo>() {
 
+    private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
+
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
@@ -45,7 +47,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
 
         val photos = urisToPhotos(assetPhotos.plus(exifPhotos).plus(dataList))
         val nextKey = if (dataList.isNotEmpty()) startPosition + pageSize else null
-        return LoadResult.Page(photos, null, nextKey)
+        return LoadResult.Page(photos.filter { keySet.add(it.diffKey) }, null, nextKey)
     }
 
     private suspend fun readAssetPhotos(): List<String> = withToIO {

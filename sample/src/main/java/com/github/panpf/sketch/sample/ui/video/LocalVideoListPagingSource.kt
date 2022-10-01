@@ -27,6 +27,8 @@ import java.text.SimpleDateFormat
 class LocalVideoListPagingSource(private val context: Context) :
     PagingSource<Int, VideoInfo>() {
 
+    private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
+
     override fun getRefreshKey(state: PagingState<Int, VideoInfo>): Int = 0
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, VideoInfo> {
@@ -86,6 +88,6 @@ class LocalVideoListPagingSource(private val context: Context) :
         } else {
             null
         }
-        return LoadResult.Page(assetVideos.plus(dataList), null, nextKey)
+        return LoadResult.Page(assetVideos.plus(dataList).filter { keySet.add(it.diffKey) }, null, nextKey)
     }
 }

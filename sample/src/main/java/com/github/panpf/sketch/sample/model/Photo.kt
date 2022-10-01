@@ -31,11 +31,15 @@ data class Photo constructor(
     @SerialName("width") val width: Int?,
     @SerialName("height") val height: Int?,
     @SerialName("exifOrientation") val exifOrientation: Int,
-    @SerialName("index") val index: Int = 0,
+    @SerialName("index") val index: Int? = null,
 ) : Parcelable, DiffKey {
 
     @IgnoredOnParcel
-    override val diffKey: String by lazy { toString() }
+    override val diffKey: String by lazy {
+        toString().let {
+            if (index != null) "${it}_$index" else it
+        }
+    }
 
     @IgnoredOnParcel
     val listThumbnailUrl: String = thumbnailUrl ?: mediumUrl ?: originalUrl

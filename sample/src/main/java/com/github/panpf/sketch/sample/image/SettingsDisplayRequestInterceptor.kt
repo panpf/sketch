@@ -37,9 +37,8 @@ import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.image.ImageType.LIST
-import com.github.panpf.sketch.sample.widget.MyListImageView
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.target.ViewDisplayTarget
 
 private const val APPLY_SETTINGS_KEY = "app#imageType"
@@ -89,6 +88,13 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                         }
                     )
                 }
+                if (request.definedOptions.disallowAnimatedImage == null) {
+                    disallowAnimatedImage(prefsService.disallowAnimatedImageInList.value)
+                }
+                if (chain.request.target is ViewDisplayTarget<*>) {
+                    pauseLoadWhenScrolling(prefsService.pauseLoadWhenScrollInList.value)
+                    saveCellularTraffic(prefsService.saveCellularTrafficInList.value)
+                }
             }
 
             if (request.definedOptions.memoryCachePolicy == null) {
@@ -137,17 +143,6 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                     else -> {
                         colorSpace(ColorSpace.get(ColorSpace.Named.valueOf(value)))
                     }
-                }
-            }
-            val target = chain.request.target
-            if (target is ViewDisplayTarget<*>) {
-                val view = target.view
-                if (view is MyListImageView) {
-                    if (request.definedOptions.disallowAnimatedImage == null) {
-                        disallowAnimatedImage(prefsService.disallowAnimatedImageInList.value)
-                    }
-                    pauseLoadWhenScrolling(prefsService.pauseLoadWhenScrollInList.value)
-                    saveCellularTraffic(prefsService.saveCellularTrafficInList.value)
                 }
             }
         }

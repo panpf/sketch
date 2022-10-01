@@ -100,8 +100,8 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 COMPOSE_LIST -> {
                     add(ListSeparator("List"))
                     addAll(makeListMenuList())
-//                    add(ListSeparator("Decode"))
-//                    addAll(makeDecodeMenuList())
+                    add(ListSeparator("Decode"))
+                    addAll(makeDecodeMenuList())
                 }
                 ZOOM -> {
                     add(ListSeparator("Zoom"))
