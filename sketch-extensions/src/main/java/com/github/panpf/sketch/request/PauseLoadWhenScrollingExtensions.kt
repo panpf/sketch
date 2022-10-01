@@ -15,14 +15,11 @@
  */
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.util.SketchException
-
-const val PAUSE_LOAD_WHEN_SCROLLING_KEY = "sketch#pause_load_when_scrolling"
 private const val PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY = "sketch#pause_load_when_scrolling_enabled"
 private const val PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY = "sketch#pause_load_when_scrolling_ignored"
 
 /**
- * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDisplayInterceptor]
+ * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
  */
 fun ImageRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean = true): ImageRequest.Builder =
     apply {
@@ -34,7 +31,7 @@ fun ImageRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean = true): ImageR
     }
 
 /**
- * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDisplayInterceptor]
+ * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
  */
 fun DisplayRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean = true): DisplayRequest.Builder =
     apply {
@@ -52,7 +49,7 @@ val ImageRequest.isPauseLoadWhenScrolling: Boolean
     get() = parameters?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY) == true
 
 /**
- * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDisplayInterceptor]
+ * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
  */
 fun ImageOptions.Builder.pauseLoadWhenScrolling(enabled: Boolean = true): ImageOptions.Builder =
     apply {
@@ -71,7 +68,7 @@ val ImageOptions.isPauseLoadWhenScrolling: Boolean
 
 
 /**
- * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDisplayInterceptor]
+ * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
  */
 fun ImageRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): ImageRequest.Builder =
     apply {
@@ -83,7 +80,7 @@ fun ImageRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): I
     }
 
 /**
- * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDisplayInterceptor]
+ * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
  */
 fun DisplayRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): DisplayRequest.Builder =
     apply {
@@ -101,7 +98,7 @@ val ImageRequest.isIgnoredPauseLoadWhenScrolling: Boolean
     get() = parameters?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY) == true
 
 /**
- * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDisplayInterceptor]
+ * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
  */
 fun ImageOptions.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): ImageOptions.Builder =
     apply {
@@ -117,24 +114,3 @@ fun ImageOptions.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): I
  */
 val ImageOptions.isIgnoredPauseLoadWhenScrolling: Boolean
     get() = parameters?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY) == true
-
-
-/**
- * Returns true if Depth is from the pause load when scrolling feature
- */
-val ImageRequest.isDepthFromPauseLoadWhenScrolling: Boolean
-    get() = depthFrom == PAUSE_LOAD_WHEN_SCROLLING_KEY
-
-
-/**
- * Returns true if Depth is from the pause load when scrolling feature
- */
-val ImageOptions.isDepthFromPauseLoadWhenScrolling: Boolean
-    get() = depthFrom == PAUSE_LOAD_WHEN_SCROLLING_KEY
-
-
-/**
- * Returns true if the request is abnormal due to the pause load when scrolling feature
- */
-fun isCausedByPauseLoadWhenScrolling(request: ImageRequest, exception: SketchException?): Boolean =
-    exception is DepthException && request.depth == Depth.MEMORY && request.isDepthFromPauseLoadWhenScrolling

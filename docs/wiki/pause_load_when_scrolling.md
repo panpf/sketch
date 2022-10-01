@@ -19,7 +19,7 @@ listView.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
 
 第 2 步. 注册
 
-在初始化 [Sketch] 时添加 [PauseLoadWhenScrollingDisplayInterceptor] 请求拦截器，这样所有的 ImageRequest 都可以使用，如下：
+在初始化 [Sketch] 时添加 [PauseLoadWhenScrollingDrawableInterceptor] 请求拦截器，这样所有的 ImageRequest 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -27,7 +27,7 @@ class MyApplication : Application(), SketchFactory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             components {
-                addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
+                addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableInterceptor())
             }
         }.build()
     }
@@ -39,30 +39,18 @@ class MyApplication : Application(), SketchFactory {
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
     components {
-        addRequestInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
+        addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableInterceptor())
     }
 }
 ```
 
-> 注意：[PauseLoadWhenScrollingDisplayInterceptor] 仅对 [DisplayRequest] 有效
+> 注意：[PauseLoadWhenScrollingDrawableInterceptor] 仅对 [DisplayRequest] 有效
 
 第 3 步. 针对单个请求开启列表滑动中暂停加载功能，如下：
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    pauseLoadWhenScrolling()
-}
-```
-
-第 4 步. 可选. 配置使用 placeholder 图片作为列表滑动中暂停加载错误状态图片，如下：
-
-```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
-    saveCellularTraffic()
-
-    error(R.drawable.ic_error) {
-        pauseLoadWhenScrollingError()   // 不指定图片表示使用 placeholder
-    }
+    pauseLoadWhenScrolling(true)
 }
 ```
 
@@ -70,7 +58,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
 
-[PauseLoadWhenScrollingDisplayInterceptor]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/request/PauseLoadWhenScrollingDisplayInterceptor.kt
+[PauseLoadWhenScrollingDrawableInterceptor]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/request/PauseLoadWhenScrollingDrawableInterceptor.kt
 
 [ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 

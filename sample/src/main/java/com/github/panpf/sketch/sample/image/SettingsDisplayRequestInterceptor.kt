@@ -25,6 +25,7 @@ import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageData
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.get
@@ -39,7 +40,6 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.image.ImageType.LIST
 import com.github.panpf.sketch.sample.prefsService
-import com.github.panpf.sketch.target.ViewDisplayTarget
 
 private const val APPLY_SETTINGS_KEY = "app#imageType"
 
@@ -48,6 +48,10 @@ enum class ImageType {
 }
 
 fun DisplayRequest.Builder.setApplySettings(imageType: ImageType): DisplayRequest.Builder = apply {
+    setParameter(APPLY_SETTINGS_KEY, imageType.name)
+}
+
+fun ImageOptions.Builder.setApplySettings(imageType: ImageType): ImageOptions.Builder = apply {
     setParameter(APPLY_SETTINGS_KEY, imageType.name)
 }
 
@@ -91,10 +95,8 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                 if (request.definedOptions.disallowAnimatedImage == null) {
                     disallowAnimatedImage(prefsService.disallowAnimatedImageInList.value)
                 }
-                if (chain.request.target is ViewDisplayTarget<*>) {
-                    pauseLoadWhenScrolling(prefsService.pauseLoadWhenScrollInList.value)
-                    saveCellularTraffic(prefsService.saveCellularTrafficInList.value)
-                }
+                pauseLoadWhenScrolling(prefsService.pauseLoadWhenScrollInList.value)
+                saveCellularTraffic(prefsService.saveCellularTrafficInList.value)
             }
 
             if (request.definedOptions.memoryCachePolicy == null) {

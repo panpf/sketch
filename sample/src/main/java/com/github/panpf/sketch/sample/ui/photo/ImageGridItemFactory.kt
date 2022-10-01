@@ -34,7 +34,6 @@ import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
-import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
@@ -80,19 +79,17 @@ class ImageGridItemFactory : MyBindingItemFactory<Photo, ImageGridItemBinding>(P
         binding.imageGridItemImage.apply {
             setClickIgnoreSaveCellularTrafficEnabled(true)
             updateDisplayImageOptions {
+                setApplySettings(LIST)
                 placeholder(
                     IconStateImage(R.drawable.ic_image_outline, ResColor(R.color.placeholder_bg))
                 )
-                error(
-                    IconStateImage(R.drawable.ic_error, ResColor(R.color.placeholder_bg))
-                ) {
+                error(IconStateImage(R.drawable.ic_error, ResColor(R.color.placeholder_bg))) {
                     saveCellularTrafficError(
                         IconStateImage(
                             R.drawable.ic_signal_cellular,
                             ResColor(R.color.placeholder_bg)
                         )
                     )
-                    pauseLoadWhenScrollingError()
                 }
                 crossfade()
                 resizeApplyToDrawable()
@@ -127,9 +124,7 @@ class ImageGridItemFactory : MyBindingItemFactory<Photo, ImageGridItemBinding>(P
                 }
             }
 
-            displayImage(data.listThumbnailUrl) {
-                setApplySettings(LIST)
-            }
+            displayImage(data.listThumbnailUrl)
         }
     }
 }

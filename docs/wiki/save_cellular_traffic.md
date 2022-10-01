@@ -39,7 +39,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    saveCellularTraffic()
+    saveCellularTraffic(true)
 }
 ```
 
@@ -47,7 +47,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    saveCellularTraffic()
+    saveCellularTraffic(true)
 
     error(R.drawable.ic_error) {
         saveCellularTrafficError(R.drawable.ic_signal_cellular)

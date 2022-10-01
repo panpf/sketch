@@ -79,6 +79,5 @@ class ExtensionsUtilsTest {
         Assert.assertNotNull((activity as Context).getLifecycle())
     }
 
-    class TestActivity : FragmentActivity() {
-    }
+    class TestActivity : FragmentActivity()
 }

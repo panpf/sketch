@@ -24,7 +24,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -36,6 +38,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
@@ -45,6 +48,7 @@ import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.compose.AppendState
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
+import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -80,8 +84,19 @@ fun PhotoListContent(
         state = SwipeRefreshState(lazyPagingItems.loadState.refresh is LoadState.Loading),
         onRefresh = { lazyPagingItems.refresh() }
     ) {
+        val lazyGridState = rememberLazyGridState()
+        if (lazyGridState.isScrollInProgress) {
+            DisposableEffect(Unit) {
+                PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
+                onDispose {
+                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = false
+                }
+            }
+        }
+
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 100.dp),
+            state = lazyGridState,
             contentPadding = PaddingValues(dimensionResource(id = R.dimen.grid_divider)),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
@@ -129,7 +144,11 @@ fun PhotoContent(
     val configBlock: (DisplayRequest.Builder.() -> Unit) = {
         setApplySettings(LIST)
         placeholder(IconStateImage(drawable.ic_image_outline, ResColor(color.placeholder_bg)))
-        error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
+        error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg))) {
+            saveCellularTrafficError(
+                IconStateImage(drawable.ic_signal_cellular, ResColor(color.placeholder_bg))
+            )
+        }
         crossfade()
         resizeApplyToDrawable()
     }

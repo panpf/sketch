@@ -21,12 +21,11 @@ import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.VideoItemBinding
-import com.github.panpf.sketch.sample.model.VideoInfo
-import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 import com.github.panpf.sketch.sample.image.ImageType.LIST
 import com.github.panpf.sketch.sample.image.setApplySettings
+import com.github.panpf.sketch.sample.model.VideoInfo
+import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 
 class LocalVideoItemFactory :
@@ -41,7 +40,6 @@ class LocalVideoItemFactory :
             placeholder(IconStateImage(R.drawable.ic_image_outline, R.color.placeholder_bg))
             error(IconStateImage(R.drawable.ic_error, R.color.placeholder_bg)) {
                 saveCellularTrafficError(R.drawable.im_save_cellular_traffic)
-                pauseLoadWhenScrollingError()
             }
             crossfade()
             videoFramePercent(0.5f)

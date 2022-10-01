@@ -148,6 +148,9 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
             )
         )
+    }
+
+    private fun makeListMenuList(): List<Any> = buildList {
         add(
             SwitchMenuFlow(
                 title = "Save Cellular Traffic",
@@ -162,9 +165,6 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 desc = "No image is loaded during list scrolling to improve the smoothness"
             )
         )
-    }
-
-    private fun makeListMenuList(): List<Any> = buildList {
         add(
             MultiSelectMenu(
                 title = "Resize Precision",

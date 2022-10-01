@@ -15,16 +15,12 @@
  */
 package com.github.panpf.sketch.util
 
-import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.BaseAdapter
 import android.widget.ListAdapter
 import android.widget.WrapperListAdapter
-import androidx.core.view.descendants
 import androidx.recyclerview.widget.RecyclerView
-import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
-import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
 
 class PauseLoadWhenScrollingMixedScrollListener(
     var absListScrollListenerWrapper: AbsListView.OnScrollListener? = null
@@ -35,41 +31,27 @@ class PauseLoadWhenScrollingMixedScrollListener(
         val adapter = recyclerView.adapter
         if (adapter != null) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                if (!PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+                if (!PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
                 }
             } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDisplayInterceptor.scrolling = false
-                    restartAllChildViewRequest(recyclerView)
+                if (PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = false
                 }
             }
         }
     }
-
-    private fun restartAllChildViewRequest(view: ViewGroup) {
-        view.descendants.forEach {
-            val result = SketchUtils.getResult(it)
-            if (result is DisplayResult.Error
-                && isCausedByPauseLoadWhenScrolling(result.request, result.exception)
-            ) {
-                SketchUtils.restart(it)
-            }
-        }
-    }
-
 
     override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
         val listAdapter = view.adapter?.let { getFinalWrappedAdapter(it) }
         if (listAdapter is BaseAdapter) {
             if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                if (!PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
+                if (!PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
                 }
             } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                if (PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDisplayInterceptor.scrolling = false
-                    restartAllChildViewRequest(view)
+                if (PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = false
                 }
             }
         }

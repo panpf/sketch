@@ -17,6 +17,7 @@ package com.github.panpf.sketch.extensions.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.extensions.test.toRequestContext
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -84,16 +85,16 @@ class SaveCellularTrafficExtensionsTest {
             Assert.assertFalse(isSaveCellularTraffic)
         }
 
-        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
+        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().key
         val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
             saveCellularTraffic()
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).cacheKey
+        val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
         val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
             saveCellularTraffic(true)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -142,16 +143,16 @@ class SaveCellularTrafficExtensionsTest {
             Assert.assertFalse(isIgnoredSaveCellularTraffic)
         }
 
-        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
+        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().key
         val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
             ignoreSaveCellularTraffic()
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).cacheKey
+        val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
         val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
             ignoreSaveCellularTraffic(true)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -200,16 +201,16 @@ class SaveCellularTrafficExtensionsTest {
             Assert.assertFalse(isDepthFromSaveCellularTraffic)
         }
 
-        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).key
+        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().key
         val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).cacheKey
+        val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
         val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 
