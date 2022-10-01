@@ -18,7 +18,6 @@ package com.github.panpf.sketch.sample.ui.viewer
 import android.Manifest
 import android.os.Bundle
 import android.widget.ImageView
-import android.widget.ImageView.ScaleType
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -32,13 +31,13 @@ import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
+import com.github.panpf.sketch.sample.image.ImageType.DETAIL
+import com.github.panpf.sketch.sample.image.SettingsEventViewModel
+import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
-import com.github.panpf.sketch.sample.util.ImageType.IN_DETAIL
-import com.github.panpf.sketch.sample.util.observeWithFragmentView
-import com.github.panpf.sketch.sample.util.setApplySettings
 import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.launch
@@ -47,6 +46,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
     private val viewModel by viewModels<ImageViewerViewModel>()
+    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val requestPermissionResult = registerForActivityResult(RequestPermission()) {
         lifecycleScope.launch {
             val imageUri = if (prefsService.showOriginImage.value) {
@@ -62,20 +62,9 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
         binding.root.background = null
 
         binding.imageViewerZoomImage.apply {
-            showSectorProgressIndicator()
+            settingsEventViewModel.observeZoomSettings(this)
 
-            prefsService.scaleType.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
-                scaleType = ScaleType.valueOf(it)
-            }
-            prefsService.scrollBarEnabled.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
-                scrollBarEnabled = it
-            }
-            prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
-                readModeEnabled = it
-            }
-            prefsService.showTileBoundsInHugeImagePage.stateFlow.observeWithFragmentView(this@ImageViewerFragment) {
-                showTileBounds = it
-            }
+            showSectorProgressIndicator()
 
             setOnClickListener {
                 findNavController().popBackStack()
@@ -130,7 +119,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     private fun displayImage(binding: ImageViewerFragmentBinding, showOriginImage: Boolean) {
         val uri = if (showOriginImage) args.originImageUri else args.previewImageUri
         binding.imageViewerZoomImage.displayImage(uri) {
-            setApplySettings(IN_DETAIL)
+            setApplySettings(DETAIL)
             placeholder(InexactlyMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
             lifecycle(viewLifecycleOwner.lifecycle)

@@ -22,13 +22,14 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
 import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
-import com.github.panpf.sketch.sample.util.observeWithFragmentView
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -61,19 +62,21 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
         toolbar.apply {
             title = "Pexels Photos"
             subtitle = "Compose"
-            listMenuViewModel.menuFlow.observeWithFragmentView(this@PexelsPhotoListComposeFragment) { list ->
-                menu.clear()
-                list.forEachIndexed { groupIndex, group ->
-                    group.items.forEachIndexed { index, menuItemInfo ->
-                        menu.add(groupIndex, index, index, menuItemInfo.title).apply {
-                            menuItemInfo.iconResId?.let { iconResId ->
-                                setIcon(iconResId)
+            viewLifecycleOwner.lifecycleScope.launch {
+                listMenuViewModel.menuFlow.collect { list ->
+                    menu.clear()
+                    list.forEachIndexed { groupIndex, group ->
+                        group.items.forEachIndexed { index, menuItemInfo ->
+                            menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                                menuItemInfo.iconResId?.let { iconResId ->
+                                    setIcon(iconResId)
+                                }
+                                setOnMenuItemClickListener {
+                                    menuItemInfo.onClick(this@PexelsPhotoListComposeFragment)
+                                    true
+                                }
+                                setShowAsAction(menuItemInfo.showAsAction)
                             }
-                            setOnMenuItemClickListener {
-                                menuItemInfo.onClick(this@PexelsPhotoListComposeFragment)
-                                true
-                            }
-                            setShowAsAction(menuItemInfo.showAsAction)
                         }
                     }
                 }

@@ -38,8 +38,8 @@ import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.compose.AppendState
-import com.github.panpf.sketch.sample.util.ImageType.IN_LIST
-import com.github.panpf.sketch.sample.util.setApplySettings
+import com.github.panpf.sketch.sample.image.ImageType.LIST
+import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -103,7 +103,7 @@ fun PhotoContent(
             onClick(photo, index)
         }
     val configBlock: (DisplayRequest.Builder.() -> Unit) = {
-        setApplySettings(IN_LIST)
+        setApplySettings(LIST)
         placeholder(IconStateImage(drawable.ic_image_outline, ResColor(color.placeholder_bg)))
         error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg)))
         crossfade()

@@ -16,45 +16,34 @@
 package com.github.panpf.sketch.sample.ui.huge
 
 import android.os.Bundle
-import android.widget.ImageView.ScaleType
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.HugeImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.image.ImageType.DETAIL
+import com.github.panpf.sketch.sample.image.SettingsEventViewModel
+import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
-import com.github.panpf.sketch.sample.util.ImageType.IN_DETAIL
-import com.github.panpf.sketch.sample.util.observeWithFragmentView
-import com.github.panpf.sketch.sample.util.setApplySettings
 import com.github.panpf.sketch.viewability.showRingProgressIndicator
 
 class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>() {
 
     private val args by navArgs<HugeImageViewerFragmentArgs>()
+    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
 
     override fun onViewCreated(
         binding: HugeImageViewerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
         binding.hugeImageViewerZoomImage.apply {
-            showRingProgressIndicator()
+            settingsEventViewModel.observeZoomSettings(this)
 
-            prefsService.scrollBarEnabled.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
-                scrollBarEnabled = it
-            }
-            prefsService.readModeEnabled.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
-                readModeEnabled = it
-            }
-            prefsService.showTileBoundsInHugeImagePage.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
-                showTileBounds = it
-            }
-            prefsService.scaleType.stateFlow.observeWithFragmentView(this@HugeImageViewerFragment) {
-                scaleType = ScaleType.valueOf(it)
-            }
+            showRingProgressIndicator()
 
             eventService.hugeViewerPageRotateEvent.listen(viewLifecycleOwner) {
                 if (isResumed) {
@@ -70,7 +59,7 @@ class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>(
             }
 
             displayImage(args.imageUri) {
-                setApplySettings(IN_DETAIL)
+                setApplySettings(DETAIL)
                 lifecycle(viewLifecycleOwner.lifecycle)
             }
         }

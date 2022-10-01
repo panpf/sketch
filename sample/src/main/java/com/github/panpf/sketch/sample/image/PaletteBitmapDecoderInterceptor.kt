@@ -1,13 +1,14 @@
-package com.github.panpf.sketch.sample.util
+package com.github.panpf.sketch.sample.image
 
 import androidx.annotation.WorkerThread
 import androidx.palette.graphics.Palette
+import androidx.palette.graphics.Palette.Swatch
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.LoadResult
-import com.github.panpf.sketch.sample.util.PaletteBitmapDecoderInterceptor.Companion.simplePaletteFromJSONObject
+import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor.Companion.simplePaletteFromJSONObject
 import org.json.JSONObject
 
 class PaletteBitmapDecoderInterceptor : BitmapDecodeInterceptor {
@@ -49,25 +50,25 @@ class PaletteBitmapDecoderInterceptor : BitmapDecodeInterceptor {
         fun simplePaletteFromJSONObject(jsonObject: JSONObject): SimplePalette {
             return SimplePalette(
                 dominantSwatch = jsonObject.optJSONObject("dominantSwatch")?.let {
-                    Palette.Swatch(it.getInt("rgb"), it.getInt("population"))
+                    Swatch(it.getInt("rgb"), it.getInt("population"))
                 },
                 darkMutedSwatch = jsonObject.optJSONObject("darkMutedSwatch")?.let {
-                    Palette.Swatch(it.getInt("rgb"), it.getInt("population"))
+                    Swatch(it.getInt("rgb"), it.getInt("population"))
                 },
                 mutedSwatch = jsonObject.optJSONObject("mutedSwatch")?.let {
-                    Palette.Swatch(it.getInt("rgb"), it.getInt("population"))
+                    Swatch(it.getInt("rgb"), it.getInt("population"))
                 },
                 lightMutedSwatch = jsonObject.optJSONObject("lightMutedSwatch")?.let {
-                    Palette.Swatch(it.getInt("rgb"), it.getInt("population"))
+                    Swatch(it.getInt("rgb"), it.getInt("population"))
                 },
                 darkVibrantSwatch = jsonObject.optJSONObject("darkVibrantSwatch")?.let {
-                    Palette.Swatch(it.getInt("rgb"), it.getInt("population"))
+                    Swatch(it.getInt("rgb"), it.getInt("population"))
                 },
                 vibrantSwatch = jsonObject.optJSONObject("vibrantSwatch")?.let {
-                    Palette.Swatch(it.getInt("rgb"), it.getInt("population"))
+                    Swatch(it.getInt("rgb"), it.getInt("population"))
                 },
                 lightVibrantSwatch = jsonObject.optJSONObject("lightVibrantSwatch")?.let {
-                    Palette.Swatch(it.getInt("rgb"), it.getInt("population"))
+                    Swatch(it.getInt("rgb"), it.getInt("population"))
                 },
             )
         }

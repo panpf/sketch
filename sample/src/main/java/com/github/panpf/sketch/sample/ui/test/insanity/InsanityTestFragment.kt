@@ -29,6 +29,7 @@ import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
+import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
@@ -38,6 +39,7 @@ import kotlinx.coroutines.launch
 
 class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
+    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val localPhotoListViewModel by viewModels<InsanityTestViewModel>()
 
     @SuppressLint("NotifyDataSetChanged")
@@ -49,6 +51,7 @@ class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
         toolbar.title = "Insanity Test"
 
         binding.recyclerRecycler.apply {
+            settingsEventViewModel.observeListSettings(this)
             layoutManager =
                 newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
                     itemSpanByItemFactory(
@@ -66,7 +69,7 @@ class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
             }
 
             val pagingAdapter = AssemblyPagingDataAdapter<Photo>(
-                listOf(ImageGridItemFactory(disabledCache = true))
+                listOf(ImageGridItemFactory())
             ).apply {
                 viewLifecycleOwner.lifecycleScope.launch {
                     localPhotoListViewModel.pagingFlow.collect { pagingData ->

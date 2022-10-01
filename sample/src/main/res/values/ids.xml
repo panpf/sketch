@@ -3,4 +3,5 @@
     <item name="tagId_categoryPosition" type="id" />
     <item name="tagId_imagePosition" type="id" />
     <item name="tagId_viewCoroutineScope" type="id" />
+    <item name="tagId_viewLifecycle" type="id" />
 </resources>

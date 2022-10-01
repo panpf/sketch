@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.util
+package com.github.panpf.sketch.sample.image
 
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
@@ -21,6 +21,7 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
+import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageData
@@ -37,14 +38,14 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.prefsService
-import com.github.panpf.sketch.sample.util.ImageType.IN_LIST
+import com.github.panpf.sketch.sample.image.ImageType.LIST
 import com.github.panpf.sketch.sample.widget.MyListImageView
 import com.github.panpf.sketch.target.ViewDisplayTarget
 
-private const val APPLY_SETTINGS_KEY = "app:applySettings:imageType"
+private const val APPLY_SETTINGS_KEY = "app#imageType"
 
 enum class ImageType {
-    IN_LIST, IN_DETAIL
+    LIST, DETAIL
 }
 
 fun DisplayRequest.Builder.setApplySettings(imageType: ImageType): DisplayRequest.Builder = apply {
@@ -68,8 +69,16 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
         val newRequest = request.newDisplayRequest {
             val prefsService = request.context.prefsService
 
-            if (imageType == IN_LIST) {
-                if (request.definedOptions.resizeScaleDecider == null) {
+            if (imageType == LIST) {
+                if (request.definedOptions.resizePrecisionDecider == null) {
+                    resizePrecision(
+                        when (val value = prefsService.resizePrecision.value) {
+                            "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
+                            else -> FixedPrecisionDecider(Precision.valueOf(value))
+                        }
+                    )
+                }
+                if (request.definedOptions.resizeScaleDecider == null || request.definedOptions.resizeScaleDecider is AsyncImageScaleDecider) {
                     resizeScale(
                         when (val value = prefsService.resizeScale.value) {
                             "LongImageMode" -> LongImageScaleDecider(
@@ -80,18 +89,10 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                         }
                     )
                 }
-                if (request.definedOptions.resizePrecisionDecider == null) {
-                    resizePrecision(
-                        when (val value = prefsService.resizePrecision.value) {
-                            "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
-                            else -> FixedPrecisionDecider(Precision.valueOf(value))
-                        }
-                    )
-                }
             }
 
             if (request.definedOptions.memoryCachePolicy == null) {
-                if (prefsService.disabledBitmapMemoryCache.value) {
+                if (prefsService.disabledMemoryCache.value) {
                     memoryCachePolicy(DISABLED)
                 } else {
                     memoryCachePolicy(ENABLED)
@@ -105,7 +106,7 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                 }
             }
             if (request.definedOptions.resultCachePolicy == null) {
-                if (prefsService.disabledBitmapResultCache.value) {
+                if (prefsService.disabledResultCache.value) {
                     resultCachePolicy(DISABLED)
                 } else {
                     resultCachePolicy(ENABLED)

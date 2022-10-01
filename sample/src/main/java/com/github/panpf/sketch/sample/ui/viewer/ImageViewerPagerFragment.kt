@@ -38,8 +38,8 @@ import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
-import com.github.panpf.sketch.sample.util.PaletteBitmapDecoderInterceptor
-import com.github.panpf.sketch.sample.util.simplePalette
+import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
+import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenHeight

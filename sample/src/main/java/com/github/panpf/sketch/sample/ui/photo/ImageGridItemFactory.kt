@@ -24,15 +24,14 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
+import com.github.panpf.sketch.sample.image.ImageType.LIST
+import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
-import com.github.panpf.sketch.sample.util.ImageType.IN_LIST
-import com.github.panpf.sketch.sample.util.setApplySettings
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingError
@@ -41,8 +40,7 @@ import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnab
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
-class ImageGridItemFactory(val disabledCache: Boolean = false) :
-    MyBindingItemFactory<Photo, ImageGridItemBinding>(Photo::class) {
+class ImageGridItemFactory : MyBindingItemFactory<Photo, ImageGridItemBinding>(Photo::class) {
 
     private var itemSize: Point? = null
 
@@ -98,11 +96,6 @@ class ImageGridItemFactory(val disabledCache: Boolean = false) :
                 }
                 crossfade()
                 resizeApplyToDrawable()
-                if (disabledCache) {
-                    downloadCachePolicy(DISABLED)
-                    resultCachePolicy(DISABLED)
-                    memoryCachePolicy(DISABLED)
-                }
             }
         }
     }
@@ -135,7 +128,7 @@ class ImageGridItemFactory(val disabledCache: Boolean = false) :
             }
 
             displayImage(data.listThumbnailUrl) {
-                setApplySettings(IN_LIST)
+                setApplySettings(LIST)
             }
         }
     }

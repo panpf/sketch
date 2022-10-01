@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.ui.photo.pexels
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
@@ -36,6 +37,7 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
+import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
@@ -47,14 +49,15 @@ import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
-import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
+    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val pexelsImageListViewModel by viewModels<PexelsPhotoListViewModel>()
     private val listMenuViewModel by viewModels<ListMenuViewModel> {
         ListMenuViewModel.Factory(
@@ -74,19 +77,21 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
         toolbar.apply {
             title = "Pexels Photos"
 
-            listMenuViewModel.menuFlow.observeWithFragmentView(this@PexelsPhotoListFragment) { list ->
-                menu.clear()
-                list.forEachIndexed { groupIndex, group ->
-                    group.items.forEachIndexed { index, menuItemInfo ->
-                        menu.add(groupIndex, index, index, menuItemInfo.title).apply {
-                            menuItemInfo.iconResId?.let { iconResId ->
-                                setIcon(iconResId)
+            viewLifecycleOwner.lifecycleScope.launch {
+                listMenuViewModel.menuFlow.collect { list ->
+                    menu.clear()
+                    list.forEachIndexed { groupIndex, group ->
+                        group.items.forEachIndexed { index, menuItemInfo ->
+                            menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                                menuItemInfo.iconResId?.let { iconResId ->
+                                    setIcon(iconResId)
+                                }
+                                setOnMenuItemClickListener {
+                                    menuItemInfo.onClick(this@PexelsPhotoListFragment)
+                                    true
+                                }
+                                setShowAsAction(menuItemInfo.showAsAction)
                             }
-                            setOnMenuItemClickListener {
-                                menuItemInfo.onClick(this@PexelsPhotoListFragment)
-                                true
-                            }
-                            setShowAsAction(menuItemInfo.showAsAction)
                         }
                     }
                 }
@@ -94,15 +99,18 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
         }
 
         binding.recyclerRecycler.apply {
-            prefsService.photoListLayoutMode.stateFlow.observeWithFragmentView(this@PexelsPhotoListFragment) {
-                (0 until itemDecorationCount).forEach { index ->
-                    removeItemDecorationAt(index)
+            settingsEventViewModel.observeListSettings(this)
+            viewLifecycleOwner.lifecycleScope.launch {
+                prefsService.photoListLayoutMode.stateFlow.collect {
+                    (0 until itemDecorationCount).forEach { index ->
+                        removeItemDecorationAt(index)
+                    }
+                    val (layoutManager1, itemDecoration) =
+                        newLayoutManagerAndItemDecoration(LayoutMode.valueOf(it))
+                    layoutManager = layoutManager1
+                    addItemDecoration(itemDecoration)
+                    this@apply.adapter = newAdapter(binding)
                 }
-                val (layoutManager1, itemDecoration) =
-                    newLayoutManagerAndItemDecoration(LayoutMode.valueOf(it))
-                layoutManager = layoutManager1
-                addItemDecoration(itemDecoration)
-                this.adapter = newAdapter(binding)
             }
         }
     }
@@ -152,18 +160,19 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
             }
         )).apply {
             pagingFlowCollectJob?.cancel()
-            pagingFlowCollectJob = pexelsImageListViewModel.pagingFlow
-                .observeWithFragmentView(this@PexelsPhotoListFragment) {
+            pagingFlowCollectJob = viewLifecycleOwner.lifecycleScope.launch {
+                pexelsImageListViewModel.pagingFlow.collect {
                     submitData(it)
                 }
+            }
         }
 
         binding.recyclerRefresh.setOnRefreshListener {
             pagingAdapter.refresh()
         }
         loadStateFlowCollectJob?.cancel()
-        loadStateFlowCollectJob = pagingAdapter.loadStateFlow
-            .observeWithFragmentView(this@PexelsPhotoListFragment) { loadStates ->
+        loadStateFlowCollectJob = viewLifecycleOwner.lifecycleScope.launch {
+            pagingAdapter.loadStateFlow.collect { loadStates ->
                 when (val refreshState = loadStates.refresh) {
                     is LoadState.Loading -> {
                         binding.recyclerState.gone()
@@ -185,6 +194,7 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
                     }
                 }
             }
+        }
 
         val loadStateAdapter = MyLoadStateAdapter().apply {
             noDisplayLoadStateWhenPagingEmpty(pagingAdapter)

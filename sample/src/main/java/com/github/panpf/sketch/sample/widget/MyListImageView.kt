@@ -19,7 +19,9 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import androidx.lifecycle.lifecycleScope
 import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.util.lifecycleOwner
 import com.github.panpf.sketch.viewability.removeDataFromLogo
 import com.github.panpf.sketch.viewability.removeMimeTypeLogo
 import com.github.panpf.sketch.viewability.removeProgressIndicator
@@ -27,6 +29,7 @@ import com.github.panpf.sketch.viewability.showDataFromLogo
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
 import com.github.panpf.sketch.viewability.showMimeTypeLogoWithDrawable
 import com.github.panpf.tools4a.dimen.ktx.dp2px
+import kotlinx.coroutines.launch
 
 class MyListImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
@@ -56,13 +59,28 @@ class MyListImageView @JvmOverloads constructor(
         )
     }
 
-    init {
-        setShowProgressIndicator(prefsService.showProgressIndicatorInList.stateFlow.value)
-        setShowMimeTypeLogo(prefsService.showMimeTypeLogoInLIst.stateFlow.value)
-        setShowDataFromLogo(prefsService.showDataFromLogo.stateFlow.value)
+    override fun onAttachedToWindow() {
+        /* Must be in onAttachedToWindow */
+        /* Must be before super.onAttachedToWindow() */
+        lifecycleOwner.lifecycleScope.launch {
+            prefsService.showProgressIndicatorInList.stateFlow.collect {
+                setShowProgressIndicator(it)
+            }
+        }
+        lifecycleOwner.lifecycleScope.launch {
+            prefsService.showMimeTypeLogoInLIst.stateFlow.collect {
+                setShowMimeTypeLogo(it)
+            }
+        }
+        lifecycleOwner.lifecycleScope.launch {
+            prefsService.showDataFromLogo.stateFlow.collect {
+                setShowDataFromLogo(it)
+            }
+        }
+        super.onAttachedToWindow()
     }
 
-    fun setShowProgressIndicator(show: Boolean) {
+    private fun setShowProgressIndicator(show: Boolean) {
         if (show) {
             showMaskProgressIndicator()
         } else {
@@ -70,7 +88,7 @@ class MyListImageView @JvmOverloads constructor(
         }
     }
 
-    fun setShowMimeTypeLogo(show: Boolean) {
+    private fun setShowMimeTypeLogo(show: Boolean) {
         if (show) {
             showMimeTypeLogoWithDrawable(mimeTypeLogoMap, 4.dp2px)
         } else {
@@ -78,7 +96,7 @@ class MyListImageView @JvmOverloads constructor(
         }
     }
 
-    fun setShowDataFromLogo(show: Boolean) {
+    private fun setShowDataFromLogo(show: Boolean) {
         if (show) {
             showDataFromLogo()
         } else {

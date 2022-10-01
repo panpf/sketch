@@ -70,8 +70,8 @@ class SettingsViewModel(application1: Application, val page: Page) :
             prefsService.bitmapQuality.sharedFlow,
             if (VERSION.SDK_INT >= VERSION_CODES.O) prefsService.colorSpace.sharedFlow else null,
             prefsService.ignoreExifOrientation.sharedFlow,
-            prefsService.disabledBitmapMemoryCache.sharedFlow,
-            prefsService.disabledBitmapResultCache.sharedFlow,
+            prefsService.disabledMemoryCache.sharedFlow,
+            prefsService.disabledResultCache.sharedFlow,
             prefsService.disabledDownloadCache.sharedFlow,
             prefsService.disallowReuseBitmap.sharedFlow,
             prefsService.showDataFromLogo.sharedFlow,
@@ -89,17 +89,35 @@ class SettingsViewModel(application1: Application, val page: Page) :
 
     private fun updateList() {
         menuListData.postValue(buildList {
-            if (page == LIST || page == NONE) {
-                add(ListSeparator("List"))
-                addAll(makeListMenuList())
-            }
-            if (page == ZOOM || page == NONE) {
-                add(ListSeparator("Zoom"))
-                addAll(makeZoomMenuList())
-            }
-            if (page != COMPOSE_LIST) {
-                add(ListSeparator("Decode"))
-                addAll(makeDecodeMenuList())
+            when (page) {
+                LIST -> {
+                    add(ListSeparator("List"))
+                    addAll(makeRecyclerListMenuList())
+                    addAll(makeListMenuList())
+                    add(ListSeparator("Decode"))
+                    addAll(makeDecodeMenuList())
+                }
+                COMPOSE_LIST -> {
+                    add(ListSeparator("List"))
+                    addAll(makeListMenuList())
+//                    add(ListSeparator("Decode"))
+//                    addAll(makeDecodeMenuList())
+                }
+                ZOOM -> {
+                    add(ListSeparator("Zoom"))
+                    addAll(makeZoomMenuList())
+                    add(ListSeparator("Decode"))
+                    addAll(makeDecodeMenuList())
+                }
+                NONE -> {
+                    add(ListSeparator("List"))
+                    addAll(makeRecyclerListMenuList())
+                    addAll(makeListMenuList())
+                    add(ListSeparator("Decode"))
+                    addAll(makeDecodeMenuList())
+                    add(ListSeparator("Zoom"))
+                    addAll(makeZoomMenuList())
+                }
             }
             add(ListSeparator("Cache"))
             addAll(makeCacheMenuList())
@@ -108,7 +126,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
         })
     }
 
-    private fun makeListMenuList(): List<Any> = buildList {
+    private fun makeRecyclerListMenuList(): List<Any> = buildList {
         add(
             SwitchMenuFlow(
                 title = "MimeType Logo",
@@ -144,6 +162,9 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 desc = "No image is loaded during list scrolling to improve the smoothness"
             )
         )
+    }
+
+    private fun makeListMenuList(): List<Any> = buildList {
         add(
             MultiSelectMenu(
                 title = "Resize Precision",
@@ -272,7 +293,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     sketch.memoryCache.size.formatFileSize(0, false, true),
                     sketch.memoryCache.maxSize.formatFileSize(0, false, true)
                 ),
-                data = prefsService.disabledBitmapMemoryCache,
+                data = prefsService.disabledMemoryCache,
                 reverse = true,
                 onLongClick = {
                     sketch.memoryCache.clear()
@@ -288,7 +309,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     sketch.resultCache.size.formatFileSize(0, false, true),
                     sketch.resultCache.maxSize.formatFileSize(0, false, true)
                 ),
-                data = prefsService.disabledBitmapResultCache,
+                data = prefsService.disabledResultCache,
                 reverse = true,
                 onLongClick = {
                     sketch.resultCache.clear()

@@ -20,20 +20,23 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
+import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ListMenuViewModel
-import com.github.panpf.sketch.sample.util.observeWithFragmentView
 import com.github.panpf.tools4a.toast.ktx.showLongToast
+import kotlinx.coroutines.launch
 import java.io.File
 
 class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
+    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val videoListViewModel by viewModels<LocalVideoListViewModel>()
     private val listMenuViewModel by viewModels<ListMenuViewModel> {
         ListMenuViewModel.Factory(
@@ -50,19 +53,21 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
     ) {
         toolbar.apply {
             title = "Local Video"
-            listMenuViewModel.menuFlow.observeWithFragmentView(this@LocalVideoListFragment) { list ->
-                menu.clear()
-                list.forEachIndexed { groupIndex, group ->
-                    group.items.forEachIndexed { index, menuItemInfo ->
-                        menu.add(groupIndex, index, index, menuItemInfo.title).apply {
-                            menuItemInfo.iconResId?.let { iconResId ->
-                                setIcon(iconResId)
+            viewLifecycleOwner.lifecycleScope.launch {
+                listMenuViewModel.menuFlow.collect { list ->
+                    menu.clear()
+                    list.forEachIndexed { groupIndex, group ->
+                        group.items.forEachIndexed { index, menuItemInfo ->
+                            menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                                menuItemInfo.iconResId?.let { iconResId ->
+                                    setIcon(iconResId)
+                                }
+                                setOnMenuItemClickListener {
+                                    menuItemInfo.onClick(this@LocalVideoListFragment)
+                                    true
+                                }
+                                setShowAsAction(menuItemInfo.showAsAction)
                             }
-                            setOnMenuItemClickListener {
-                                menuItemInfo.onClick(this@LocalVideoListFragment)
-                                true
-                            }
-                            setShowAsAction(menuItemInfo.showAsAction)
                         }
                     }
                 }
@@ -81,12 +86,15 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                 }
             }
         )).apply {
-            videoListViewModel.pagingFlow.observeWithFragmentView(this@LocalVideoListFragment) {
-                submitData(it)
+            viewLifecycleOwner.lifecycleScope.launch {
+                videoListViewModel.pagingFlow.collect {
+                    submitData(it)
+                }
             }
         }
 
         binding.recyclerRecycler.apply {
+            settingsEventViewModel.observeListSettings(this)
             layoutManager = LinearLayoutManager(activity)
             adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
@@ -97,24 +105,26 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
             pagingAdapter.refresh()
         }
 
-        pagingAdapter.loadStateFlow.observeWithFragmentView(this@LocalVideoListFragment) {
-            when (val refreshState = it.refresh) {
-                is LoadState.Loading -> {
-                    binding.recyclerState.gone()
-                    binding.recyclerRefresh.isRefreshing = true
-                }
-                is LoadState.Error -> {
-                    binding.recyclerRefresh.isRefreshing = false
-                    binding.recyclerState.errorWithRetry(refreshState.error) {
-                        pagingAdapter.refresh()
-                    }
-                }
-                is LoadState.NotLoading -> {
-                    binding.recyclerRefresh.isRefreshing = false
-                    if (pagingAdapter.itemCount <= 0) {
-                        binding.recyclerState.empty("No videos")
-                    } else {
+        viewLifecycleOwner.lifecycleScope.launch {
+            pagingAdapter.loadStateFlow.collect {
+                when (val refreshState = it.refresh) {
+                    is LoadState.Loading -> {
                         binding.recyclerState.gone()
+                        binding.recyclerRefresh.isRefreshing = true
+                    }
+                    is LoadState.Error -> {
+                        binding.recyclerRefresh.isRefreshing = false
+                        binding.recyclerState.errorWithRetry(refreshState.error) {
+                            pagingAdapter.refresh()
+                        }
+                    }
+                    is LoadState.NotLoading -> {
+                        binding.recyclerRefresh.isRefreshing = false
+                        if (pagingAdapter.itemCount <= 0) {
+                            binding.recyclerState.empty("No videos")
+                        } else {
+                            binding.recyclerState.gone()
+                        }
                     }
                 }
             }

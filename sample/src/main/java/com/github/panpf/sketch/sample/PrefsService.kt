@@ -16,9 +16,7 @@
 package com.github.panpf.sketch.sample
 
 import android.content.Context
-import android.os.Build
 import android.widget.ImageView.ScaleType
-import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.util.BooleanMmkvData
@@ -69,7 +67,6 @@ class PrefsService(val context: Context) {
         StringMmkvData(mmkv, "bitmapQuality", "Default")
     }
 
-    @get:RequiresApi(Build.VERSION_CODES.O)
     val colorSpace by lazy {
         StringMmkvData(mmkv, "colorSpace", "Default")
     }
@@ -80,10 +77,10 @@ class PrefsService(val context: Context) {
         BooleanMmkvData(mmkv, "ignoreExifOrientation", false)
     }
 
-    val disabledBitmapMemoryCache by lazy {
+    val disabledMemoryCache by lazy {
         BooleanMmkvData(mmkv, "disabledBitmapMemoryCache", false)
     }
-    val disabledBitmapResultCache by lazy {
+    val disabledResultCache by lazy {
         BooleanMmkvData(mmkv, "disabledBitmapResultCache", false)
     }
     val disabledDownloadCache by lazy {
