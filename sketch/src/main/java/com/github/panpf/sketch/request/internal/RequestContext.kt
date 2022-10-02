@@ -25,17 +25,19 @@ import com.github.panpf.sketch.util.requiredMainThread
 class RequestContext constructor(firstRequest: ImageRequest, var resizeSize: Size) {
 
     private var pendingCountDrawable: SketchCountBitmapDrawable? = null
-
     private val _requestList = mutableListOf(firstRequest)
+    private var _request: ImageRequest = firstRequest
+    private var _resize: Resize? = null
+    private var _key: String? = null
+    private var _cacheKey: String? = null
+
     val requestList: List<ImageRequest>
         get() = _requestList.toList()
 
-    private var _request: ImageRequest = firstRequest
     val request: ImageRequest
         get() = _request
 
-    // todo test
-    private var _resize: Resize? = null
+    @get:Synchronized
     val resize: Resize
         get() = _resize ?: Resize(
             size = resizeSize,
@@ -45,17 +47,14 @@ class RequestContext constructor(firstRequest: ImageRequest, var resizeSize: Siz
             _resize = this
         }
 
-    // todo test
-    private var _key: String? = null
+    @get:Synchronized
     val key: String
         get() = _key ?: request.newKey(resizeSize).apply {
             _key = this
         }
 
-    // todo test
-    private var _cacheKey: String? = null
-
     /** Used to cache bitmaps in memory and on disk */
+    @get:Synchronized
     val cacheKey: String
         get() = _cacheKey ?: request.newCacheKey(resizeSize).apply {
             _cacheKey = this
