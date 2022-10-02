@@ -25,7 +25,6 @@ class GlobalImageOptionsRequestInterceptor : RequestInterceptor {
 
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
-        val requestContext = chain.requestContext
         val defaultImageOptions = request.defaultOptions
         val globalImageOptions = chain.sketch.globalImageOptions
         return if (globalImageOptions != null) {
@@ -35,9 +34,7 @@ class GlobalImageOptionsRequestInterceptor : RequestInterceptor {
                 } else {
                     globalImageOptions
                 }
-            val newRequest = request.newBuilder().default(newDefaultOptions).build()
-            requestContext.addRequest(newRequest)
-            chain.proceed(newRequest)
+            chain.proceed(request.newBuilder().default(newDefaultOptions).build())
         } else {
             chain.proceed(request)
         }

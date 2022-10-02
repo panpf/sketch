@@ -22,7 +22,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredMainThread
 
-class RequestContext constructor(firstRequest: ImageRequest, val resizeSize: Size) {
+class RequestContext constructor(firstRequest: ImageRequest, var resizeSize: Size) {
 
     private var pendingCountDrawable: SketchCountBitmapDrawable? = null
 
@@ -61,12 +61,20 @@ class RequestContext constructor(firstRequest: ImageRequest, val resizeSize: Siz
             _cacheKey = this
         }
 
-    internal fun addRequest(request: ImageRequest) {
+    internal suspend fun setNewRequest(request: ImageRequest) {
         val lastRequest = this.request
         if (lastRequest != request) {
             _requestList.add(request)
             _request = request
-            _resize = null
+            if (lastRequest.resizeSizeResolver != request.resizeSizeResolver) {
+                resizeSize = request.resizeSizeResolver.size()
+            }
+            if (lastRequest.resizeSizeResolver != request.resizeSizeResolver
+                || lastRequest.resizePrecisionDecider != request.resizePrecisionDecider
+                || lastRequest.resizeScaleDecider != request.resizeScaleDecider
+            ) {
+                _resize = null
+            }
             _key = null
             _cacheKey = null
         }

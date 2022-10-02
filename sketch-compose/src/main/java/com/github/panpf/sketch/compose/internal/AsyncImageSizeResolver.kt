@@ -21,7 +21,7 @@ import com.github.panpf.sketch.util.Size
 /**
  * Just to show that it's [SizeResolver] from AsyncImage
  */
-class AsyncImageSizeResolver(val wrapped: SizeResolver) : SizeResolver {
+class AsyncImageSizeResolver constructor(val wrapped: SizeResolver) : SizeResolver {
 
     override suspend fun size(): Size {
         return wrapped.size()

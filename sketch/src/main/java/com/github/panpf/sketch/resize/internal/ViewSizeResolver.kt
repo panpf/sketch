@@ -41,7 +41,11 @@ fun <T : View> ViewSizeResolver(view: T, subtractPadding: Boolean = true): ViewS
 internal data class RealViewSizeResolver<T : View>(
     override val view: T,
     override val subtractPadding: Boolean
-) : ViewSizeResolver<T>
+) : ViewSizeResolver<T> {
+    override fun toString(): String {
+        return "ViewSizeResolver(view=$view, subtractPadding=$subtractPadding)"
+    }
+}
 
 /**
  * A [SizeResolver] that measures the size of a [View].

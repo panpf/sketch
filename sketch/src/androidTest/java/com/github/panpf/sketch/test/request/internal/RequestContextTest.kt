@@ -23,6 +23,14 @@ import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.Precision.EXACTLY
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
@@ -38,7 +46,7 @@ import org.junit.runner.RunWith
 class RequestContextTest {
 
     @Test
-    fun testRequests() {
+    fun testRequest() {
         val context = getTestContext()
         val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
         val request2 = LoadRequest(context, TestAssets.SAMPLE_BMP_URI)
@@ -48,21 +56,23 @@ class RequestContextTest {
         Assert.assertNotEquals(request1, request3)
         Assert.assertNotEquals(request2, request3)
 
-        request1.toRequestContext().apply {
-            Assert.assertEquals(request1, request)
-            Assert.assertEquals(listOf(request1), requestList)
+        runBlocking {
+            request1.toRequestContext().apply {
+                Assert.assertEquals(request1, request)
+                Assert.assertEquals(listOf(request1), requestList)
 
-            addRequest(request1)
-            Assert.assertEquals(request1, request)
-            Assert.assertEquals(listOf(request1), requestList)
+                setNewRequest(request1)
+                Assert.assertEquals(request1, request)
+                Assert.assertEquals(listOf(request1), requestList)
 
-            addRequest(request2)
-            Assert.assertEquals(request2, request)
-            Assert.assertEquals(listOf(request1, request2), requestList)
+                setNewRequest(request2)
+                Assert.assertEquals(request2, request)
+                Assert.assertEquals(listOf(request1, request2), requestList)
 
-            addRequest(request3)
-            Assert.assertEquals(request3, request)
-            Assert.assertEquals(listOf(request1, request2, request3), requestList)
+                setNewRequest(request3)
+                Assert.assertEquals(request3, request)
+                Assert.assertEquals(listOf(request1, request2, request3), requestList)
+            }
         }
     }
 
