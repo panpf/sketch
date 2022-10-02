@@ -16,6 +16,8 @@
 package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.util.Size
 
 /**
@@ -64,8 +66,8 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
  * Use different Scales for long and non-long images
  */
 class LongImageScaleDecider constructor(
-    val longImage: Scale,
-    val otherImage: Scale,
+    val longImage: Scale = START_CROP,
+    val otherImage: Scale = CENTER_CROP,
     val longImageDecider: LongImageDecider = DefaultLongImageDecider(),
 ) : ScaleDecider {
 

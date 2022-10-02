@@ -163,6 +163,10 @@ class ScaleDeciderTest {
     fun testLongImageScaleDeciderCreateFunction() {
         Assert.assertEquals(
             LongImageScaleDecider(START_CROP, CENTER_CROP),
+            LongImageScaleDecider()
+        )
+        Assert.assertEquals(
+            LongImageScaleDecider(START_CROP, CENTER_CROP),
             LongImageScaleDecider(START_CROP, CENTER_CROP)
         )
         Assert.assertEquals(
