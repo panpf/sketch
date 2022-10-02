@@ -28,6 +28,7 @@ import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.md5
 import kotlinx.coroutines.sync.Mutex
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -124,7 +125,17 @@ class LruDiskCache private constructor(
         val encodedKey = keyMapperCache.mapKey(key)
         var snapshot: DiskLruCache.Snapshot? = null
         try {
-            snapshot = cache.get(encodedKey)
+            snapshot = cache.get(encodedKey).takeIf {
+                val exist = it.getFile(0).exists()
+                if (!exist) {
+                    remove(key)
+                    logger?.w(MODULE) {
+                        val currentSize = cache.size().formatFileSize()
+                        "get. Auto remove because file missing. size $currentSize. '$key'"
+                    }
+                }
+                exist
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -229,7 +240,18 @@ class LruDiskCache private constructor(
         override val file: File = snapshot.getFile(0)
 
         @Throws(IOException::class)
-        override fun newInputStream(): InputStream = snapshot.getInputStream(0)
+        override fun newInputStream(): InputStream {
+            try {
+                return snapshot.getInputStream(0)
+            } catch (e: FileNotFoundException) {
+                remove()
+                logger?.w(MODULE) {
+                    val currentSize = cache.size().formatFileSize()
+                    "newInputStream. Auto remove because FileNotFoundException. size $currentSize. '$key'"
+                }
+                throw e
+            }
+        }
 
         override fun edit(): Editor? = snapshot.edit()?.let {
             MyEditor(key, cache, it, logger)
@@ -239,7 +261,7 @@ class LruDiskCache private constructor(
             try {
                 cache.remove(encodedKey)
                 logger?.d(MODULE) {
-                    "delete. size ${cache.size().formatFileSize()}. '$key'"
+                    "remove. size ${cache.size().formatFileSize()}. '$key'"
                 }
                 true
             } catch (e: Exception) {
