@@ -15,11 +15,14 @@
  */
 package com.github.panpf.sketch.test.request
 
+import android.R.color
+import android.R.drawable
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.ACES
+import android.graphics.ColorSpace.Named.ADOBE_RGB
 import android.graphics.ColorSpace.Named.BT709
 import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
@@ -32,6 +35,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
+import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
@@ -43,11 +47,9 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.Parameters
-import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
@@ -65,9 +67,14 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.stateimage.ColorStateImage
+import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.stateimage.IconStateImage
+import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.IntColor
+import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
+import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -79,6 +86,7 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -689,10 +697,19 @@ class LoadRequestTest {
             resize(100, 100, SAME_ASPECT_RATIO, START_CROP)
             build().apply {
                 Assert.assertEquals(FixedSizeResolver(100, 100), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), definedOptions.resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(START_CROP), definedOptions.resizeScaleDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    definedOptions.resizePrecisionDecider
+                )
+                Assert.assertEquals(
+                    FixedScaleDecider(START_CROP),
+                    definedOptions.resizeScaleDecider
+                )
                 Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    resizePrecisionDecider
+                )
                 Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
             }
 
@@ -710,7 +727,10 @@ class LoadRequestTest {
             resize(100, 100, EXACTLY)
             build().apply {
                 Assert.assertEquals(FixedSizeResolver(100, 100), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), definedOptions.resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(EXACTLY),
+                    definedOptions.resizePrecisionDecider
+                )
                 Assert.assertNull(definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(100, 100), resizeSizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -741,17 +761,32 @@ class LoadRequestTest {
 
             resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), definedOptions.resizePrecisionDecider)
-                Assert.assertEquals(FixedScaleDecider(START_CROP), definedOptions.resizeScaleDecider)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    definedOptions.resizePrecisionDecider
+                )
+                Assert.assertEquals(
+                    FixedScaleDecider(START_CROP),
+                    definedOptions.resizeScaleDecider
+                )
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(SAME_ASPECT_RATIO), resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedPrecisionDecider(SAME_ASPECT_RATIO),
+                    resizePrecisionDecider
+                )
                 Assert.assertEquals(FixedScaleDecider(START_CROP), resizeScaleDecider)
             }
 
             resize(Size(100, 100))
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
                 Assert.assertNull(definedOptions.resizePrecisionDecider)
                 Assert.assertNull(definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
@@ -762,8 +797,14 @@ class LoadRequestTest {
             resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
             resize(Size(100, 100), EXACTLY)
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
-                Assert.assertEquals(FixedPrecisionDecider(EXACTLY), definedOptions.resizePrecisionDecider)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
+                Assert.assertEquals(
+                    FixedPrecisionDecider(EXACTLY),
+                    definedOptions.resizePrecisionDecider
+                )
                 Assert.assertNull(definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(EXACTLY), resizePrecisionDecider)
@@ -773,7 +814,10 @@ class LoadRequestTest {
             resize(Size(100, 100), SAME_ASPECT_RATIO, START_CROP)
             resize(Size(100, 100), scale = END_CROP)
             build().apply {
-                Assert.assertEquals(FixedSizeResolver(Size(100, 100)), definedOptions.resizeSizeResolver)
+                Assert.assertEquals(
+                    FixedSizeResolver(Size(100, 100)),
+                    definedOptions.resizeSizeResolver
+                )
                 Assert.assertNull(definedOptions.resizePrecisionDecider)
                 Assert.assertEquals(FixedScaleDecider(END_CROP), definedOptions.resizeScaleDecider)
                 Assert.assertEquals(FixedSizeResolver(Size(100, 100)), resizeSizeResolver)
@@ -1123,10 +1167,10 @@ class LoadRequestTest {
                 Assert.assertEquals(true, placeholder is DrawableStateImage)
             }
 
-            placeholder(android.R.drawable.bottom_bar)
+            placeholder(drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    DrawableStateImage(drawable.bottom_bar),
                     placeholder
                 )
             }
@@ -1160,21 +1204,21 @@ class LoadRequestTest {
                 Assert.assertEquals(true, error is ErrorStateImage)
             }
 
-            error(android.R.drawable.bottom_bar)
+            error(drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)),
                     error
                 )
             }
 
-            error(android.R.drawable.bottom_bar) {
-                uriEmptyError(android.R.drawable.alert_dark_frame)
+            error(drawable.bottom_bar) {
+                uriEmptyError(drawable.alert_dark_frame)
             }
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
-                        uriEmptyError(android.R.drawable.alert_dark_frame)
+                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)) {
+                        uriEmptyError(drawable.alert_dark_frame)
                     },
                     error
                 )
@@ -1186,7 +1230,7 @@ class LoadRequestTest {
             }
 
             error {
-                uriEmptyError(android.R.drawable.btn_dialog)
+                uriEmptyError(drawable.btn_dialog)
             }
             build().apply {
                 Assert.assertNotNull(error)
@@ -1377,6 +1421,195 @@ class LoadRequestTest {
                 }.build(),
                 componentRegistry
             )
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val context = getTestContext()
+        val element1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val element11 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val element2 = LoadRequest(context, TestAssets.SAMPLE_PNG_URI)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+
+        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI).apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            listener(onStart = {})
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            progressListener { _, _, _ -> }
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            target()
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            default(ImageOptions())
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            depth(LOCAL, "test")
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            setParameter("type", "list")
+            setParameter("big", "true")
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            setHttpHeader("from", "china")
+            setHttpHeader("job", "Programmer")
+            addHttpHeader("Host", "www.google.com")
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            downloadCachePolicy(READ_ONLY)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            bitmapConfig(RGB_565)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                colorSpace(ColorSpace.get(ADOBE_RGB))
+            }
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            @Suppress("DEPRECATION")
+            preferQualityOverSpeed(true)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            resizeSize(300, 200)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            resizePrecision(EXACTLY)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            resizePrecision(LongImageClipPrecisionDecider())
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            resizeScale(END_CROP)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            resizeScale(LongImageScaleDecider())
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            transformations(CircleCropTransformation(), BlurTransformation())
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            disallowReuseBitmap(true)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            ignoreExifOrientation(true)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            resultCachePolicy(WRITE_ONLY)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            placeholder(ColorStateImage(Color.BLUE))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            placeholder(ColorStateImage(ResColor(color.background_dark)))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            placeholder(DrawableStateImage(context.getDrawable(drawable.ic_delete)!!))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            placeholder(DrawableStateImage(drawable.ic_delete))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            placeholder(CurrentStateImage(drawable.ic_delete))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            placeholder(MemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            placeholder(InexactlyMemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            error(DrawableStateImage(drawable.ic_delete))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            error(DrawableStateImage(drawable.ic_delete)) {
+                uriEmptyError(ColorStateImage(Color.BLUE))
+            }
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            transitionFactory(CrossfadeTransition.Factory())
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            transitionFactory(CrossfadeTransition.Factory(fadeStart = false, alwaysUse = true))
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            disallowAnimatedImage(true)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            resizeApplyToDrawable(true)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            memoryCachePolicy(WRITE_ONLY)
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
+        }.newLoadRequest {
+            components {
+                addFetcher(TestFetcher.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addBitmapDecoder(TestBitmapDecoder.Factory())
+            }
+        }.apply {
+            Assert.assertEquals(this, this.newLoadRequest())
         }
     }
 }

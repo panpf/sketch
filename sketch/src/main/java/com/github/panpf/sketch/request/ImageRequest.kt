@@ -263,7 +263,10 @@ interface ImageRequest {
         private val context: Context
         private val uriString: String
         private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? = null
+        private var providerListener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? =
+            null
         private var progressListener: ProgressListener<ImageRequest>? = null
+        private var providerProgressListener: ProgressListener<ImageRequest>? = null
         private var target: Target? = null
         private var lifecycle: Lifecycle? = null
         private var defaultOptions: ImageOptions? = null
@@ -280,19 +283,21 @@ interface ImageRequest {
             this.context = request.context
             this.uriString = request.uriString
             val oldListener = request.listener
-            this.listener =
-                if (oldListener is CombinedListener<ImageRequest, ImageResult.Success, ImageResult.Error>) {
-                    oldListener.fromBuilderListener
-                } else {
-                    oldListener
-                }
+            if (oldListener is CombinedListener<ImageRequest, ImageResult.Success, ImageResult.Error>) {
+                this.listener = oldListener.fromBuilderListener
+                this.providerListener = oldListener.fromProviderListener
+            } else {
+                this.listener = oldListener
+                this.providerListener = null
+            }
             val oldProgressListener = request.progressListener
-            this.progressListener =
-                if (oldProgressListener is CombinedProgressListener<ImageRequest>) {
-                    oldProgressListener.fromBuilderProgressListener
-                } else {
-                    oldProgressListener
-                }
+            if (oldProgressListener is CombinedProgressListener<ImageRequest>) {
+                this.progressListener = oldProgressListener.fromBuilderProgressListener
+                this.providerProgressListener = oldProgressListener.fromProviderProgressListener
+            } else {
+                this.progressListener = oldProgressListener
+                this.providerProgressListener = null
+            }
             this.target = request.target
             this.lifecycle = request.lifecycle
             this.defaultOptions = request.defaultOptions
@@ -466,6 +471,7 @@ interface ImageRequest {
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
          */
+        // todo 增加重载方法 resize(size: Size, precision: PrecisionDecider? = null, scale: ScaleDecider? = null)
         open fun resize(
             size: SizeResolver?,
             precision: PrecisionDecider? = null,
@@ -992,11 +998,12 @@ interface ImageRequest {
         private fun combinationListener(): Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? {
             val target = target
             val listener = listener
-            val viewListener = target.asOrNull<ViewDisplayTarget<*>>()
-                ?.view?.asOrNull<DisplayListenerProvider>()
-                ?.getDisplayListener() as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
-            return if (viewListener != null) {
-                CombinedListener(viewListener, listener)
+            val providerListener = providerListener
+                ?: target.asOrNull<ViewDisplayTarget<*>>()
+                    ?.view?.asOrNull<DisplayListenerProvider>()
+                    ?.getDisplayListener() as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
+            return if (providerListener != null) {
+                CombinedListener(providerListener, listener)
             } else {
                 listener
             }
@@ -1006,11 +1013,12 @@ interface ImageRequest {
         private fun combinationProgressListener(): ProgressListener<ImageRequest>? {
             val target = target
             val progressListener = progressListener
-            val viewProgressListener = target.asOrNull<ViewDisplayTarget<*>>()
-                ?.view?.asOrNull<DisplayListenerProvider>()
-                ?.getDisplayProgressListener() as ProgressListener<ImageRequest>?
-            return if (viewProgressListener != null) {
-                CombinedProgressListener(viewProgressListener, progressListener)
+            val providerProgressListener = providerProgressListener
+                ?: target.asOrNull<ViewDisplayTarget<*>>()
+                    ?.view?.asOrNull<DisplayListenerProvider>()
+                    ?.getDisplayProgressListener() as ProgressListener<ImageRequest>?
+            return if (providerProgressListener != null) {
+                CombinedProgressListener(providerProgressListener, progressListener)
             } else {
                 progressListener
             }

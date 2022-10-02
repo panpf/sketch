@@ -15,11 +15,14 @@
  */
 package com.github.panpf.sketch.test.request
 
+import android.R.color
+import android.R.drawable
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.ACES
+import android.graphics.ColorSpace.Named.ADOBE_RGB
 import android.graphics.ColorSpace.Named.BT709
 import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
@@ -32,6 +35,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
+import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
@@ -40,8 +44,8 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
-import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
+import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -63,9 +67,14 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.stateimage.ColorStateImage
+import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.stateimage.IconStateImage
+import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.IntColor
+import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
+import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -77,6 +86,7 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -1157,10 +1167,10 @@ class DownloadRequestTest {
                 Assert.assertEquals(true, placeholder is DrawableStateImage)
             }
 
-            placeholder(android.R.drawable.bottom_bar)
+            placeholder(drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    DrawableStateImage(drawable.bottom_bar),
                     placeholder
                 )
             }
@@ -1194,21 +1204,21 @@ class DownloadRequestTest {
                 Assert.assertEquals(true, error is ErrorStateImage)
             }
 
-            error(android.R.drawable.bottom_bar)
+            error(drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)),
                     error
                 )
             }
 
-            error(android.R.drawable.bottom_bar) {
-                uriEmptyError(android.R.drawable.alert_dark_frame)
+            error(drawable.bottom_bar) {
+                uriEmptyError(drawable.alert_dark_frame)
             }
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
-                        uriEmptyError(android.R.drawable.alert_dark_frame)
+                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)) {
+                        uriEmptyError(drawable.alert_dark_frame)
                     },
                     error
                 )
@@ -1220,7 +1230,7 @@ class DownloadRequestTest {
             }
 
             error {
-                uriEmptyError(android.R.drawable.btn_dialog)
+                uriEmptyError(drawable.btn_dialog)
             }
             build().apply {
                 Assert.assertNotNull(error)
@@ -1411,6 +1421,195 @@ class DownloadRequestTest {
                 }.build(),
                 componentRegistry
             )
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val context = getTestContext()
+        val element1 = DownloadRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val element11 = DownloadRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val element2 = DownloadRequest(context, TestAssets.SAMPLE_PNG_URI)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+
+        DownloadRequest(context, TestAssets.SAMPLE_JPEG_URI).apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            listener(onStart = {})
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            progressListener { _, _, _ -> }
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            target()
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            default(ImageOptions())
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            depth(LOCAL, "test")
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            setParameter("type", "list")
+            setParameter("big", "true")
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            setHttpHeader("from", "china")
+            setHttpHeader("job", "Programmer")
+            addHttpHeader("Host", "www.google.com")
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            downloadCachePolicy(READ_ONLY)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            bitmapConfig(RGB_565)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                colorSpace(ColorSpace.get(ADOBE_RGB))
+            }
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            @Suppress("DEPRECATION")
+            preferQualityOverSpeed(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            resizeSize(300, 200)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            resizePrecision(EXACTLY)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            resizePrecision(LongImageClipPrecisionDecider())
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            resizeScale(END_CROP)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            resizeScale(LongImageScaleDecider())
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            transformations(CircleCropTransformation(), BlurTransformation())
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            disallowReuseBitmap(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            ignoreExifOrientation(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            resultCachePolicy(WRITE_ONLY)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            placeholder(ColorStateImage(Color.BLUE))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            placeholder(ColorStateImage(ResColor(color.background_dark)))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            placeholder(DrawableStateImage(context.getDrawable(drawable.ic_delete)!!))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            placeholder(DrawableStateImage(drawable.ic_delete))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            placeholder(CurrentStateImage(drawable.ic_delete))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            placeholder(MemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            placeholder(InexactlyMemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            error(DrawableStateImage(drawable.ic_delete))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            error(DrawableStateImage(drawable.ic_delete)) {
+                uriEmptyError(ColorStateImage(Color.BLUE))
+            }
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            transitionFactory(CrossfadeTransition.Factory())
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            transitionFactory(CrossfadeTransition.Factory(fadeStart = false, alwaysUse = true))
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            disallowAnimatedImage(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            resizeApplyToDrawable(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            memoryCachePolicy(WRITE_ONLY)
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
+        }.newDownloadRequest {
+            components {
+                addFetcher(TestFetcher.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addBitmapDecoder(TestBitmapDecoder.Factory())
+            }
+        }.apply {
+            Assert.assertEquals(this, this.newDownloadRequest())
         }
     }
 }

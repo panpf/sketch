@@ -15,12 +15,15 @@
  */
 package com.github.panpf.sketch.test.request
 
+import android.R.color
+import android.R.drawable
 import android.content.Context
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.ACES
+import android.graphics.ColorSpace.Named.ADOBE_RGB
 import android.graphics.ColorSpace.Named.BT709
 import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
@@ -49,9 +52,7 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
-import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
@@ -71,9 +72,14 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.stateimage.ColorStateImage
+import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.stateimage.IconStateImage
+import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.IntColor
+import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
+import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.target.ImageViewDisplayTarget
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -87,6 +93,7 @@ import com.github.panpf.sketch.test.utils.TestOptionsImageView
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -1281,10 +1288,10 @@ class DisplayRequestTest {
                 Assert.assertEquals(true, placeholder is DrawableStateImage)
             }
 
-            placeholder(android.R.drawable.bottom_bar)
+            placeholder(drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    DrawableStateImage(drawable.bottom_bar),
                     placeholder
                 )
             }
@@ -1318,21 +1325,21 @@ class DisplayRequestTest {
                 Assert.assertEquals(true, error is ErrorStateImage)
             }
 
-            error(android.R.drawable.bottom_bar)
+            error(drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)),
                     error
                 )
             }
 
-            error(android.R.drawable.bottom_bar) {
-                uriEmptyError(android.R.drawable.alert_dark_frame)
+            error(drawable.bottom_bar) {
+                uriEmptyError(drawable.alert_dark_frame)
             }
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
-                        uriEmptyError(android.R.drawable.alert_dark_frame)
+                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)) {
+                        uriEmptyError(drawable.alert_dark_frame)
                     },
                     error
                 )
@@ -1344,7 +1351,7 @@ class DisplayRequestTest {
             }
 
             error {
-                uriEmptyError(android.R.drawable.btn_dialog)
+                uriEmptyError(drawable.btn_dialog)
             }
             build().apply {
                 Assert.assertNotNull(error)
@@ -1494,27 +1501,27 @@ class DisplayRequestTest {
             target(TestListenerImageView(context1))
             build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
                 Assert.assertNull(fromBuilderListener)
-                Assert.assertNotNull(fromViewListener)
-                Assert.assertTrue(fromViewListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromProviderListener)
+                Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
             }
             build().newDisplayRequest().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
                 Assert.assertNull(fromBuilderListener)
-                Assert.assertNotNull(fromViewListener)
-                Assert.assertTrue(fromViewListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromProviderListener)
+                Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
             }
 
             listener(onSuccess = { _, _ -> })
             build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
                 Assert.assertNotNull(fromBuilderListener)
                 Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
-                Assert.assertNotNull(fromViewListener)
-                Assert.assertTrue(fromViewListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromProviderListener)
+                Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
             }
             build().newDisplayRequest().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
                 Assert.assertNotNull(fromBuilderListener)
                 Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
-                Assert.assertNotNull(fromViewListener)
-                Assert.assertTrue(fromViewListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromProviderListener)
+                Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
             }
         }
     }
@@ -1564,28 +1571,30 @@ class DisplayRequestTest {
             target(TestListenerImageView(context1))
             build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
                 Assert.assertNull(fromBuilderProgressListener)
-                Assert.assertNotNull(fromViewProgressListener)
-                Assert.assertTrue(fromViewProgressListener !is CombinedProgressListener<*>)
+                Assert.assertNotNull(fromProviderProgressListener)
+                Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
             }
-            build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
-                Assert.assertNull(fromBuilderProgressListener)
-                Assert.assertNotNull(fromViewProgressListener)
-                Assert.assertTrue(fromViewProgressListener !is CombinedProgressListener<*>)
-            }
+            build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>()
+                .apply {
+                    Assert.assertNull(fromBuilderProgressListener)
+                    Assert.assertNotNull(fromProviderProgressListener)
+                    Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
+                }
 
             progressListener { _, _, _ -> }
             build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
                 Assert.assertNotNull(fromBuilderProgressListener)
                 Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
-                Assert.assertNotNull(fromViewProgressListener)
-                Assert.assertTrue(fromViewProgressListener !is CombinedProgressListener<*>)
+                Assert.assertNotNull(fromProviderProgressListener)
+                Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
             }
-            build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
-                Assert.assertNotNull(fromBuilderProgressListener)
-                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
-                Assert.assertNotNull(fromViewProgressListener)
-                Assert.assertTrue(fromViewProgressListener !is CombinedProgressListener<*>)
-            }
+            build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>()
+                .apply {
+                    Assert.assertNotNull(fromBuilderProgressListener)
+                    Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
+                    Assert.assertNotNull(fromProviderProgressListener)
+                    Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
+                }
         }
     }
 
@@ -1631,6 +1640,198 @@ class DisplayRequestTest {
         val context = getTestContext()
         assertThrow(UnsupportedOperationException::class) {
             MyImageRequestBuilder(context, TestAssets.SAMPLE_JPEG_URI).build()
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val context = getTestContext()
+        val element1 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val element11 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val element2 = DisplayRequest(context, TestAssets.SAMPLE_PNG_URI)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+        Assert.assertNotSame(element2, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element2, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+
+        val imageView = TestListenerImageView(context)
+        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI).apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            listener(onStart = {})
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            progressListener { _, _, _ -> }
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            target(imageView)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            default(ImageOptions())
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            depth(LOCAL, "test")
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            setParameter("type", "list")
+            setParameter("big", "true")
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            setHttpHeader("from", "china")
+            setHttpHeader("job", "Programmer")
+            addHttpHeader("Host", "www.google.com")
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            downloadCachePolicy(READ_ONLY)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            bitmapConfig(RGB_565)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                colorSpace(ColorSpace.get(ADOBE_RGB))
+            }
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            @Suppress("DEPRECATION")
+            preferQualityOverSpeed(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            resizeSize(300, 200)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            resizeSize(ViewSizeResolver(imageView))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            resizePrecision(EXACTLY)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            resizePrecision(LongImageClipPrecisionDecider())
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            resizeScale(END_CROP)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            resizeScale(LongImageScaleDecider())
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            transformations(CircleCropTransformation(), BlurTransformation())
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            disallowReuseBitmap(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            ignoreExifOrientation(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            resultCachePolicy(WRITE_ONLY)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            placeholder(ColorStateImage(Color.BLUE))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            placeholder(ColorStateImage(ResColor(color.background_dark)))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            placeholder(DrawableStateImage(context.getDrawable(drawable.ic_delete)!!))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            placeholder(DrawableStateImage(drawable.ic_delete))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            placeholder(CurrentStateImage(drawable.ic_delete))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            placeholder(MemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            placeholder(InexactlyMemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            error(DrawableStateImage(drawable.ic_delete))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            error(DrawableStateImage(drawable.ic_delete)) {
+                uriEmptyError(ColorStateImage(Color.BLUE))
+            }
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            transitionFactory(CrossfadeTransition.Factory())
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            transitionFactory(CrossfadeTransition.Factory(fadeStart = false, alwaysUse = true))
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            disallowAnimatedImage(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            resizeApplyToDrawable(true)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            memoryCachePolicy(WRITE_ONLY)
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
+        }.newDisplayRequest {
+            components {
+                addFetcher(TestFetcher.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addBitmapDecoder(TestBitmapDecoder.Factory())
+            }
+        }.apply {
+            Assert.assertEquals(this, this.newDisplayRequest())
         }
     }
 
