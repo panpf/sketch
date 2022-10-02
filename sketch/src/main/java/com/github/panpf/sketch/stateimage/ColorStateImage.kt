@@ -40,9 +40,7 @@ class ColorStateImage constructor(private val color: ColorFetcher) : StateImage 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ColorStateImage) return false
-
         if (color != other.color) return false
-
         return true
     }
 

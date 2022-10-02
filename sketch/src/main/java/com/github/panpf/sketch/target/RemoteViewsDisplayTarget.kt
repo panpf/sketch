@@ -48,4 +48,26 @@ class RemoteViewsDisplayTarget(
         remoteViews.setImageViewBitmap(imageViewId, result?.toBitmap())
         onUpdated()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is RemoteViewsDisplayTarget) return false
+        if (remoteViews != other.remoteViews) return false
+        if (imageViewId != other.imageViewId) return false
+        if (ignoreNullDrawable != other.ignoreNullDrawable) return false
+        if (onUpdated != other.onUpdated) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = remoteViews.hashCode()
+        result = 31 * result + imageViewId
+        result = 31 * result + ignoreNullDrawable.hashCode()
+        result = 31 * result + onUpdated.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "RemoteViewsDisplayTarget(remoteViews=$remoteViews, imageViewId=$imageViewId, ignoreNullDrawable=$ignoreNullDrawable, onUpdated=$onUpdated)"
+    }
 }

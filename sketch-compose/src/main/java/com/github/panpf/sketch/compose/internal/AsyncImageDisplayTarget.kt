@@ -34,4 +34,19 @@ class AsyncImageDisplayTarget(val wrapped: DisplayTarget) : DisplayTarget {
     override fun onError(error: Drawable?) {
         wrapped.onError(error)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AsyncImageDisplayTarget) return false
+        if (wrapped != other.wrapped) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return wrapped.hashCode()
+    }
+
+    override fun toString(): String {
+        return "AsyncImageDisplayTarget($wrapped)"
+    }
 }

@@ -85,7 +85,7 @@ class CombinedListenerTest {
         val request = DownloadRequest(context, "http://sample.com/sample.jpeg")
 
         val combinedListener = CombinedListener(listener1, listener2)
-        Assert.assertSame(listener1, combinedListener.fromViewListener)
+        Assert.assertSame(listener1, combinedListener.fromProviderListener)
         Assert.assertSame(listener2, combinedListener.fromBuilderListener)
 
         combinedListener.onStart(request)

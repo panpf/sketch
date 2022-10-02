@@ -88,9 +88,7 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is CircleCropTransformation) return false
-
         if (scale != other.scale) return false
-
         return true
     }
 

@@ -66,8 +66,16 @@ open class ImageViewDisplayTarget(override val view: ImageView) :
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is ImageViewDisplayTarget && view == other.view
+        if (other !is ImageViewDisplayTarget) return false
+        if (view != other.view) return false
+        return true
     }
 
-    override fun hashCode() = view.hashCode()
+    override fun hashCode(): Int {
+        return view.hashCode()
+    }
+
+    override fun toString(): String {
+        return "ImageViewDisplayTarget($view)"
+    }
 }

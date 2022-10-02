@@ -28,7 +28,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.DisplayRequest.Builder
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
@@ -424,7 +423,7 @@ interface DownloadRequest : ImageRequest {
             }
     }
 
-    class DownloadRequestImpl internal constructor(
+    data class DownloadRequestImpl internal constructor(
         override val context: Context,
         override val uriString: String,
         override val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?,

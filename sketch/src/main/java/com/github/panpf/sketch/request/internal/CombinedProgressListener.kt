@@ -19,12 +19,30 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ProgressListener
 
 class CombinedProgressListener<REQUEST : ImageRequest>(
-    val fromViewProgressListener: ProgressListener<REQUEST>,
+    val fromProviderProgressListener: ProgressListener<REQUEST>,
     val fromBuilderProgressListener: ProgressListener<REQUEST>?,
 ) : ProgressListener<REQUEST> {
 
     override fun onUpdateProgress(request: REQUEST, totalLength: Long, completedLength: Long) {
-        fromViewProgressListener.onUpdateProgress(request, totalLength, completedLength)
+        fromProviderProgressListener.onUpdateProgress(request, totalLength, completedLength)
         fromBuilderProgressListener?.onUpdateProgress(request, totalLength, completedLength)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CombinedProgressListener<*>) return false
+        if (fromProviderProgressListener != other.fromProviderProgressListener) return false
+        if (fromBuilderProgressListener != other.fromBuilderProgressListener) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = fromProviderProgressListener.hashCode()
+        result = 31 * result + (fromBuilderProgressListener?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "CombinedProgressListener(fromProvider=$fromProviderProgressListener, fromBuilder=$fromBuilderProgressListener)"
     }
 }

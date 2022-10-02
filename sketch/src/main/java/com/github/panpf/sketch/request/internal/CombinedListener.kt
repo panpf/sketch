@@ -20,27 +20,45 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 
 class CombinedListener<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult.Success, ERROR_RESULT : ImageResult.Error>(
-    val fromViewListener: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>,
+    val fromProviderListener: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>,
     val fromBuilderListener: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>?,
 ) : Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT> {
 
     override fun onStart(request: REQUEST) {
-        fromViewListener.onStart(request)
+        fromProviderListener.onStart(request)
         fromBuilderListener?.onStart(request)
     }
 
     override fun onCancel(request: REQUEST) {
-        fromViewListener.onCancel(request)
+        fromProviderListener.onCancel(request)
         fromBuilderListener?.onCancel(request)
     }
 
     override fun onError(request: REQUEST, result: ERROR_RESULT) {
-        fromViewListener.onError(request, result)
+        fromProviderListener.onError(request, result)
         fromBuilderListener?.onError(request, result)
     }
 
     override fun onSuccess(request: REQUEST, result: SUCCESS_RESULT) {
-        fromViewListener.onSuccess(request, result)
+        fromProviderListener.onSuccess(request, result)
         fromBuilderListener?.onSuccess(request, result)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CombinedListener<*, *, *>) return false
+        if (fromProviderListener != other.fromProviderListener) return false
+        if (fromBuilderListener != other.fromBuilderListener) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = fromProviderListener.hashCode()
+        result = 31 * result + (fromBuilderListener?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "CombinedListener(fromProvider=$fromProviderListener, fromBuilder=$fromBuilderListener)"
     }
 }

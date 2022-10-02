@@ -174,6 +174,28 @@ open class ComponentRegistry private constructor(
             )
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ComponentRegistry) return false
+        if (fetcherFactoryList != other.fetcherFactoryList) return false
+        if (bitmapDecoderFactoryList != other.bitmapDecoderFactoryList) return false
+        if (drawableDecoderFactoryList != other.drawableDecoderFactoryList) return false
+        if (requestInterceptorList != other.requestInterceptorList) return false
+        if (bitmapDecodeInterceptorList != other.bitmapDecodeInterceptorList) return false
+        if (drawableDecodeInterceptorList != other.drawableDecodeInterceptorList) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = fetcherFactoryList.hashCode()
+        result = 31 * result + bitmapDecoderFactoryList.hashCode()
+        result = 31 * result + drawableDecoderFactoryList.hashCode()
+        result = 31 * result + requestInterceptorList.hashCode()
+        result = 31 * result + bitmapDecodeInterceptorList.hashCode()
+        result = 31 * result + drawableDecodeInterceptorList.hashCode()
+        return result
+    }
+
     override fun toString(): String {
         val fetchersString = fetcherFactoryList
             .joinToString(prefix = "[", postfix = "]", separator = ",")
@@ -195,30 +217,6 @@ open class ComponentRegistry private constructor(
                 "bitmapDecodeInterceptorList=${bitmapDecodeInterceptorsString}," +
                 "drawableDecodeInterceptorList=${drawableDecodeInterceptorsString}" +
                 ")"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ComponentRegistry) return false
-
-        if (fetcherFactoryList != other.fetcherFactoryList) return false
-        if (bitmapDecoderFactoryList != other.bitmapDecoderFactoryList) return false
-        if (drawableDecoderFactoryList != other.drawableDecoderFactoryList) return false
-        if (requestInterceptorList != other.requestInterceptorList) return false
-        if (bitmapDecodeInterceptorList != other.bitmapDecodeInterceptorList) return false
-        if (drawableDecodeInterceptorList != other.drawableDecodeInterceptorList) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = fetcherFactoryList.hashCode()
-        result = 31 * result + bitmapDecoderFactoryList.hashCode()
-        result = 31 * result + drawableDecoderFactoryList.hashCode()
-        result = 31 * result + requestInterceptorList.hashCode()
-        result = 31 * result + bitmapDecodeInterceptorList.hashCode()
-        result = 31 * result + drawableDecodeInterceptorList.hashCode()
-        return result
     }
 
     class Builder {

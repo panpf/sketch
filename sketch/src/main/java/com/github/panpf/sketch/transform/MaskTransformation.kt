@@ -98,9 +98,7 @@ class MaskTransformation(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is MaskTransformation) return false
-
         if (maskColor != other.maskColor) return false
-
         return true
     }
 

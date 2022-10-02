@@ -43,7 +43,7 @@ class CombinedProgressListenerTest {
         val request = DownloadRequest(context, "http://sample.com/sample.jpeg")
 
         val combinedProgressListener = CombinedProgressListener(listener1, listener2)
-        Assert.assertSame(listener1, combinedProgressListener.fromViewProgressListener)
+        Assert.assertSame(listener1, combinedProgressListener.fromProviderProgressListener)
         Assert.assertSame(listener2, combinedProgressListener.fromBuilderProgressListener)
 
         combinedProgressListener.onUpdateProgress(request, 10000, 2000)
