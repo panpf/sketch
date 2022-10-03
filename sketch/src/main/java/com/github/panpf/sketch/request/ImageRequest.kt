@@ -471,7 +471,6 @@ interface ImageRequest {
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
          */
-        // todo 增加重载方法 resize(size: Size, precision: PrecisionDecider? = null, scale: ScaleDecider? = null)
         open fun resize(
             size: SizeResolver?,
             precision: PrecisionDecider? = null,

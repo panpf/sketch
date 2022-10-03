@@ -21,7 +21,7 @@ import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
 class TestRequestInterceptor : RequestInterceptor {
 
-    override val key: String? = null
+    override val key: String = "TestRequestInterceptor"
 
     override suspend fun intercept(chain: Chain): ImageData {
         return chain.proceed(chain.request.newRequest {

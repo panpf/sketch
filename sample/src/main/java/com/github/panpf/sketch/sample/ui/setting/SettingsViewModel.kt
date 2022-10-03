@@ -264,7 +264,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 )
             )
         }
-        if (VERSION.SDK_INT < VERSION_CODES.N) {
+        if (VERSION.SDK_INT <= VERSION_CODES.M) {
             add(
                 SwitchMenuFlow(
                     title = "inPreferQualityOverSpeed",

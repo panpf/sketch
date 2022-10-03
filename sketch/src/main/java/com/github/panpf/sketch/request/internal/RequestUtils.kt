@@ -40,7 +40,7 @@ internal fun ImageRequest.newCacheKey(size: Size): String = uriString.toUri().bu
         }
     }
     @Suppress("DEPRECATION")
-    if (preferQualityOverSpeed) {
+    if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
         appendQueryParameter("_preferQualityOverSpeed", true.toString())
     }
     appendQueryParameter("_resize", Resize(size, resizePrecisionDecider, resizeScaleDecider).key)
@@ -52,22 +52,36 @@ internal fun ImageRequest.newCacheKey(size: Size): String = uriString.toUri().bu
             }
         )
     }
-    componentRegistry?.requestInterceptorList.orEmpty().mapNotNull { it.key }
-        .plus(componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key })
-        .plus(componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key })
-        .takeIf { it.isNotEmpty() }
-        ?.let { list ->
-            appendQueryParameter(
-                "_interceptors",
-                list.joinToString(prefix = "[", postfix = "]", separator = ",")
-            )
-        }
     if (ignoreExifOrientation) {
         appendQueryParameter("_ignoreExifOrientation", true.toString())
     }
+    componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key }
+        .takeIf { it.isNotEmpty() }
+        ?.let { list ->
+            appendQueryParameter(
+                "_bitmapDecodeInterceptors",
+                list.joinToString(prefix = "[", postfix = "]", separator = ",")
+            )
+        }
     if (disallowAnimatedImage) {
         appendQueryParameter("_disallowAnimatedImage", true.toString())
     }
+    componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key }
+        .takeIf { it.isNotEmpty() }
+        ?.let { list ->
+            appendQueryParameter(
+                "_drawableDecodeInterceptors",
+                list.joinToString(prefix = "[", postfix = "]", separator = ",")
+            )
+        }
+    componentRegistry?.requestInterceptorList.orEmpty().mapNotNull { it.key }
+        .takeIf { it.isNotEmpty() }
+        ?.let { list ->
+            appendQueryParameter(
+                "_requestInterceptors",
+                list.joinToString(prefix = "[", postfix = "]", separator = ",")
+            )
+        }
 }.build().toString().let { Uri.decode(it) }
 
 internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUpon().apply {
@@ -94,7 +108,7 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
             }
         }
         @Suppress("DEPRECATION")
-        if (preferQualityOverSpeed) {
+        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
             appendQueryParameter("_preferQualityOverSpeed", true.toString())
         }
         appendQueryParameter(
@@ -109,16 +123,6 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
                 }
             )
         }
-        componentRegistry?.requestInterceptorList.orEmpty().mapNotNull { it.key }
-            .plus(componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key })
-            .plus(componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key })
-            .takeIf { it.isNotEmpty() }
-            ?.let { list ->
-                appendQueryParameter(
-                    "_interceptors",
-                    list.joinToString(prefix = "[", postfix = "]", separator = ",")
-                )
-            }
         if (disallowReuseBitmap) {
             appendQueryParameter("_disallowReuseBitmap", true.toString())
         }
@@ -128,6 +132,14 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
         resultCachePolicy.takeIf { it != ENABLED }?.let {
             appendQueryParameter("_resultCachePolicy", it.name)
         }
+        componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key }
+            .takeIf { it.isNotEmpty() }
+            ?.let { list ->
+                appendQueryParameter(
+                    "_bitmapDecodeInterceptors",
+                    list.joinToString(prefix = "[", postfix = "]", separator = ",")
+                )
+            }
     }
 
     if (this@newKey is DisplayRequest) {
@@ -137,5 +149,22 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
         memoryCachePolicy.takeIf { it != ENABLED }?.let {
             appendQueryParameter("_memoryCachePolicy", it.name)
         }
+        componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key }
+            .takeIf { it.isNotEmpty() }
+            ?.let { list ->
+                appendQueryParameter(
+                    "_drawableDecodeInterceptors",
+                    list.joinToString(prefix = "[", postfix = "]", separator = ",")
+                )
+            }
     }
+
+    componentRegistry?.requestInterceptorList.orEmpty().mapNotNull { it.key }
+        .takeIf { it.isNotEmpty() }
+        ?.let { list ->
+            appendQueryParameter(
+                "_requestInterceptors",
+                list.joinToString(prefix = "[", postfix = "]", separator = ",")
+            )
+        }
 }.build().toString().let { Uri.decode(it) }

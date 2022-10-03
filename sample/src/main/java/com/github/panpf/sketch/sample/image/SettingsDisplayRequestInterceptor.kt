@@ -128,7 +128,7 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
             }
             @Suppress("DEPRECATION")
             if (request.definedOptions.preferQualityOverSpeed == null) {
-                preferQualityOverSpeed(VERSION.SDK_INT < VERSION_CODES.N && prefsService.inPreferQualityOverSpeed.value)
+                preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && prefsService.inPreferQualityOverSpeed.value)
             }
             if (request.definedOptions.bitmapConfig == null) {
                 when (prefsService.bitmapQuality.value) {

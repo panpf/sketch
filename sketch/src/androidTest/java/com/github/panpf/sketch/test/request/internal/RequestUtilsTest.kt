@@ -15,18 +15,18 @@
  */
 package com.github.panpf.sketch.test.request.internal
 
+import android.R.color
+import android.R.drawable
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.ColorSpace
-import android.graphics.ColorSpace.Named.SRGB
-import android.net.Uri
+import android.graphics.ColorSpace.Named.ADOBE_RGB
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.request.Depth.MEMORY
+import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
@@ -34,12 +34,22 @@ import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.test.utils.Test3BitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.Test3RequestInterceptor
-import com.github.panpf.sketch.test.utils.Test4DrawableDecodeInterceptor
+import com.github.panpf.sketch.stateimage.DrawableStateImage
+import com.github.panpf.sketch.stateimage.IconStateImage
+import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestBitmapDecoder
+import com.github.panpf.sketch.test.utils.TestDownloadTarget
+import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDrawableDecoder
+import com.github.panpf.sketch.test.utils.TestFetcher
+import com.github.panpf.sketch.test.utils.TestListenerImageView
+import com.github.panpf.sketch.test.utils.TestLoadTarget
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
+import com.github.panpf.sketch.transition.CrossfadeTransition
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,607 +58,1003 @@ import org.junit.runner.RunWith
 class RequestUtilsTest {
 
     @Test
-    fun newCacheKey() {
+    @Suppress("LocalVariableName")
+    fun newCacheKeyWithDisplayRequest() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val uriString = "http://sample.com/sample.jpeg?from=sketch"
 
+        val imageView = TestListenerImageView(context)
         var request = DisplayRequest(context, uriString)
-        val cacheKeyHistoryList = ArrayList<String>()
-        val defaultResizeKey = request.toRequestContext().resize.key
 
-        // default
-        request.newCacheKey(request.toRequestContext().resizeSize).apply {
-            Assert.assertEquals("${uriString}&_resize=$defaultResizeKey", this)
-            cacheKeyHistoryList.add(this)
+        val verifyCacheKey: (String) -> Unit = { expectCacheKey ->
+            val resizeSize = runBlocking { request.resizeSizeResolver.size() }
+            val cacheKey = request.newCacheKey(resizeSize)
+            Assert.assertEquals(expectCacheKey, cacheKey)
         }
 
-        // Parameter no cacheKey
+        var resize = request.toRequestContext().resize
+        var _resize = "&_resize=${resize.key}"
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
+
         request = request.newDisplayRequest {
-            setParameter("testKey1", "testValue1", null)
+            listener(onStart = {})
         }
-        request.newCacheKey(request.toRequestContext().resizeSize).apply {
-            // todo assert equals
-            cacheKeyHistoryList.add(this)
-        }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
 
-        // Parameter cacheKey
         request = request.newDisplayRequest {
-            setParameter("testKey2", "testValue2")
+            progressListener { _, _, _ -> }
         }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
 
-        // bitmapConfig
+        request = request.newDisplayRequest {
+            target(imageView)
+        }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            depth(LOCAL, "test")
+        }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            setParameter(key = "type", value = "list")
+        }
+        val _parameters = "&_parameters=${request.parameters!!.cacheKey}"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            setParameter(key = "big", value = "true", cacheKey = null)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            setHttpHeader("from", "china")
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            downloadCachePolicy(READ_ONLY)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
         request = request.newDisplayRequest {
             bitmapConfig(RGB_565)
         }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
+        val _bitmapConfig = "&_bitmapConfig=BitmapConfig(RGB_565)"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _resize
+        )
 
+        val _colorSpace: String
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            // colorSpace
             request = request.newDisplayRequest {
-                colorSpace(ColorSpace.get(SRGB))
+                colorSpace(ColorSpace.get(ADOBE_RGB))
             }
-            request.newCacheKey(request.toRequestContext().resizeSize)
-                .apply { cacheKeyHistoryList.add(this) }
+            _colorSpace = "&_colorSpace=Adobe_RGB_(1998)"
+            verifyCacheKey(
+                uriString + _parameters +
+                        _bitmapConfig + _colorSpace + _resize
+            )
+        } else {
+            _colorSpace = ""
         }
 
-        // preferQualityOverSpeed false
-        request = request.newDisplayRequest {
-            @Suppress("DEPRECATION")
-            preferQualityOverSpeed(false)
-        }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
-
-        // preferQualityOverSpeed true
-        request = request.newDisplayRequest {
-            @Suppress("DEPRECATION")
-            preferQualityOverSpeed(true)
-        }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
-
-        // resize
-        request = request.newDisplayRequest {
-            resizeSize(200, 300)
-            resizePrecision(EXACTLY)
-            resizeScale(END_CROP)
-        }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
-
-        // transformations
-        request = request.newDisplayRequest {
-            transformations(CircleCropTransformation(), RotateTransformation(40))
-        }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
-
-        // decodeInterceptors
-        request = request.newDisplayRequest {
-            components {
-                addRequestInterceptor(Test3RequestInterceptor())
-                addBitmapDecodeInterceptor(Test3BitmapDecodeInterceptor())
-                addDrawableDecodeInterceptor(Test4DrawableDecodeInterceptor())
+        val _preferQualityOverSpeed: String
+        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+            request = request.newDisplayRequest {
+                @Suppress("DEPRECATION")
+                preferQualityOverSpeed(true)
             }
+            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true)"
+            verifyCacheKey(
+                uriString + _parameters +
+                        _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
+            )
+        } else {
+            _preferQualityOverSpeed = ""
         }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
 
-        // ignoreExifOrientation false
         request = request.newDisplayRequest {
-            ignoreExifOrientation(false)
+            resize(300, 200, EXACTLY, END_CROP)
         }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
+        resize = request.toRequestContext().resize
+        _resize = "&_resize=${resize.key}"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
+        )
 
-        // ignoreExifOrientation true
+        request = request.newDisplayRequest {
+            transformations(CircleCropTransformation(), RotateTransformation(45))
+        }
+        val _transformations =
+            request.transformations!!.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                it.key.replace("Transformation", "")
+            }.let { "&_transformations=$it" }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations
+        )
+
+        request = request.newDisplayRequest {
+            disallowReuseBitmap(true)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations
+        )
+
         request = request.newDisplayRequest {
             ignoreExifOrientation(true)
         }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
+        val _ignoreExifOrientation = "&_ignoreExifOrientation=true"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
 
-        // disallowAnimatedImage false
         request = request.newDisplayRequest {
-            disallowAnimatedImage(false)
+            resultCachePolicy(WRITE_ONLY)
         }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
 
-        // disallowAnimatedImage true
+        request = request.newDisplayRequest {
+            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
+
+        request = request.newDisplayRequest {
+            error(DrawableStateImage(drawable.ic_delete))
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
+
+        request = request.newDisplayRequest {
+            transitionFactory(CrossfadeTransition.Factory())
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
+
         request = request.newDisplayRequest {
             disallowAnimatedImage(true)
         }
-        request.newCacheKey(request.toRequestContext().resizeSize)
-            .apply { cacheKeyHistoryList.add(this) }
+        val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _disallowAnimatedImage
+        )
 
-        Assert.assertEquals(cacheKeyHistoryList.size - 4, cacheKeyHistoryList.distinct().size)
-    }
-
-    @Test
-    fun newKeyWithDisplay() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val uriString = "http://sample.com/sample.jpeg?from=sketch"
-
-        var request = DisplayRequest(context, uriString)
-        val keyHistoryList = ArrayList<String>()
-
-        // default
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // depth
         request = request.newDisplayRequest {
-            depth(MEMORY)
+            resizeApplyToDrawable(true)
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _disallowAnimatedImage
+        )
 
-        // Parameter no cacheKey
         request = request.newDisplayRequest {
-            setParameter("testKey1", "testValue1", null)
+            memoryCachePolicy(WRITE_ONLY)
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _disallowAnimatedImage
+        )
 
-        // Parameter cacheKey
-        request = request.newDisplayRequest {
-            setParameter("testKey2", "testValue2")
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // httpHeaders true
-        request = request.newDisplayRequest {
-            addHttpHeader("httpKey", "httpValue")
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // downloadCachePolicy true
-        request = request.newDisplayRequest {
-            downloadCachePolicy(WRITE_ONLY)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // bitmapConfig
-        request = request.newDisplayRequest {
-            bitmapConfig(RGB_565)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            // colorSpace
-            request = request.newDisplayRequest {
-                colorSpace(ColorSpace.get(SRGB))
-            }
-            request.newKey(request.toRequestContext().resizeSize)
-                .apply { keyHistoryList.add(this) }
-        }
-
-        // preferQualityOverSpeed false
-        request = request.newDisplayRequest {
-            @Suppress("DEPRECATION")
-            preferQualityOverSpeed(false)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // preferQualityOverSpeed true
-        request = request.newDisplayRequest {
-            @Suppress("DEPRECATION")
-            preferQualityOverSpeed(true)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // resize
-        request = request.newDisplayRequest {
-            resizeSize(200, 300)
-            resizePrecision(EXACTLY)
-            resizeScale(END_CROP)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // transformations
-        request = request.newDisplayRequest {
-            transformations(CircleCropTransformation(), RotateTransformation(40))
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // bitmapDecodeInterceptors
         request = request.newDisplayRequest {
             components {
-                addRequestInterceptor(Test3RequestInterceptor())
-                addBitmapDecodeInterceptor(Test3BitmapDecodeInterceptor())
-                addDrawableDecodeInterceptor(Test4DrawableDecodeInterceptor())
+                addFetcher(TestFetcher.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addBitmapDecoder(TestBitmapDecoder.Factory())
             }
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // ignoreExifOrientation false
-        request = request.newDisplayRequest {
-            ignoreExifOrientation(false)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // ignoreExifOrientation true
-        request = request.newDisplayRequest {
-            ignoreExifOrientation(true)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // resultCachePolicy true
-        request = request.newDisplayRequest {
-            resultCachePolicy(READ_ONLY)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // disallowAnimatedImage false
-        request = request.newDisplayRequest {
-            disallowAnimatedImage(false)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // disallowAnimatedImage true
-        request = request.newDisplayRequest {
-            disallowAnimatedImage(true)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // memoryCachePolicy true
-        request = request.newDisplayRequest {
-            memoryCachePolicy(DISABLED)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        Assert.assertEquals(keyHistoryList.size - 3, keyHistoryList.distinct().size)
+        val _bitmapDecodeInterceptors = "&_bitmapDecodeInterceptors=[TestBitmapDecodeInterceptor]"
+        val _drawableDecodeInterceptors =
+            "&_drawableDecodeInterceptors=[TestDrawableDecodeInterceptor]"
+        val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _bitmapDecodeInterceptors + _disallowAnimatedImage + _drawableDecodeInterceptors + _requestInterceptors
+        )
     }
 
     @Test
-    fun newKeyWithLoad() {
+    @Suppress("LocalVariableName")
+    fun newCacheKeyWithLoadRequest() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val uriString = "http://sample.com/sample.jpeg?from=sketch"
 
         var request = LoadRequest(context, uriString)
-        val keyHistoryList = ArrayList<String>()
 
-        // default
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // depth
-        request = request.newLoadRequest {
-            depth(MEMORY)
+        val verifyCacheKey: (String) -> Unit = { expectCacheKey ->
+            val resizeSize = runBlocking { request.resizeSizeResolver.size() }
+            val cacheKey = request.newCacheKey(resizeSize)
+            Assert.assertEquals(expectCacheKey, cacheKey)
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
 
-        // Parameter no cacheKey
+        var resize = request.toRequestContext().resize
+        var _resize = "&_resize=${resize.key}"
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
+
         request = request.newLoadRequest {
-            setParameter("testKey1", "testValue1", null)
+            listener(onStart = {})
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
 
-        // Parameter cacheKey
         request = request.newLoadRequest {
-            setParameter("testKey2", "testValue2")
+            progressListener { _, _, _ -> }
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
 
-        // httpHeaders true
         request = request.newLoadRequest {
-            addHttpHeader("httpKey", "httpValue")
+            target(TestLoadTarget())
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
 
-        // downloadCachePolicy true
         request = request.newLoadRequest {
-            downloadCachePolicy(WRITE_ONLY)
+            depth(LOCAL, "test")
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
 
-        // bitmapConfig
+        request = request.newLoadRequest {
+            setParameter(key = "type", value = "list")
+        }
+        val _parameters = "&_parameters=${request.parameters!!.cacheKey}"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
+        request = request.newLoadRequest {
+            setParameter(key = "big", value = "true", cacheKey = null)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
+        request = request.newLoadRequest {
+            setHttpHeader("from", "china")
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
+        request = request.newLoadRequest {
+            downloadCachePolicy(READ_ONLY)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
         request = request.newLoadRequest {
             bitmapConfig(RGB_565)
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        val _bitmapConfig = "&_bitmapConfig=BitmapConfig(RGB_565)"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _resize
+        )
 
+        val _colorSpace: String
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            // colorSpace
             request = request.newLoadRequest {
-                colorSpace(ColorSpace.get(SRGB))
+                colorSpace(ColorSpace.get(ADOBE_RGB))
             }
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+            _colorSpace = "&_colorSpace=Adobe_RGB_(1998)"
+            verifyCacheKey(
+                uriString + _parameters +
+                        _bitmapConfig + _colorSpace + _resize
+            )
+        } else {
+            _colorSpace = ""
         }
 
-        // preferQualityOverSpeed false
-        request = request.newLoadRequest {
-            @Suppress("DEPRECATION")
-            preferQualityOverSpeed(false)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // preferQualityOverSpeed true
-        request = request.newLoadRequest {
-            @Suppress("DEPRECATION")
-            preferQualityOverSpeed(true)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // resize
-        request = request.newLoadRequest {
-            resizeSize(200, 300)
-            resizePrecision(EXACTLY)
-            resizeScale(END_CROP)
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // transformations
-        request = request.newLoadRequest {
-            transformations(CircleCropTransformation(), RotateTransformation(40))
-        }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-
-        // bitmapDecodeInterceptors
-        request = request.newLoadRequest {
-            components {
-                addRequestInterceptor(Test3RequestInterceptor())
-                addBitmapDecodeInterceptor(Test3BitmapDecodeInterceptor())
-                addDrawableDecodeInterceptor(Test4DrawableDecodeInterceptor())
+        val _preferQualityOverSpeed: String
+        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+            request = request.newLoadRequest {
+                @Suppress("DEPRECATION")
+                preferQualityOverSpeed(true)
             }
+            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true)"
+            verifyCacheKey(
+                uriString + _parameters +
+                        _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
+            )
+        } else {
+            _preferQualityOverSpeed = ""
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
 
-        // ignoreExifOrientation false
         request = request.newLoadRequest {
-            ignoreExifOrientation(false)
+            resize(300, 200, EXACTLY, END_CROP)
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        resize = request.toRequestContext().resize
+        _resize = "&_resize=${resize.key}"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
+        )
 
-        // ignoreExifOrientation true
+        request = request.newLoadRequest {
+            transformations(CircleCropTransformation(), RotateTransformation(45))
+        }
+        val _transformations =
+            request.transformations!!.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                it.key.replace("Transformation", "")
+            }.let { "&_transformations=$it" }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations
+        )
+
+        request = request.newLoadRequest {
+            disallowReuseBitmap(true)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations
+        )
+
         request = request.newLoadRequest {
             ignoreExifOrientation(true)
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        val _ignoreExifOrientation = "&_ignoreExifOrientation=true"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
 
-        // resultCachePolicy true
         request = request.newLoadRequest {
-            resultCachePolicy(READ_ONLY)
+            resultCachePolicy(WRITE_ONLY)
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
 
-        // disallowAnimatedImage false
         request = request.newLoadRequest {
-            disallowAnimatedImage(false)
+            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
 
-        // disallowAnimatedImage true
+        request = request.newLoadRequest {
+            error(DrawableStateImage(drawable.ic_delete))
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
+
+        request = request.newLoadRequest {
+            transitionFactory(CrossfadeTransition.Factory())
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
+
         request = request.newLoadRequest {
             disallowAnimatedImage(true)
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _disallowAnimatedImage
+        )
 
-        // memoryCachePolicy true
         request = request.newLoadRequest {
-            memoryCachePolicy(DISABLED)
+            resizeApplyToDrawable(true)
         }
-        request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _disallowAnimatedImage
+        )
 
-        Assert.assertEquals(keyHistoryList.size - 5, keyHistoryList.distinct().size)
+        request = request.newLoadRequest {
+            memoryCachePolicy(WRITE_ONLY)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _disallowAnimatedImage
+        )
+
+        request = request.newLoadRequest {
+            components {
+                addFetcher(TestFetcher.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addBitmapDecoder(TestBitmapDecoder.Factory())
+            }
+        }
+        val _bitmapDecodeInterceptors = "&_bitmapDecodeInterceptors=[TestBitmapDecodeInterceptor]"
+        val _drawableDecodeInterceptors =
+            "&_drawableDecodeInterceptors=[TestDrawableDecodeInterceptor]"
+        val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _bitmapDecodeInterceptors + _disallowAnimatedImage + _drawableDecodeInterceptors + _requestInterceptors
+        )
     }
 
     @Test
-    fun newKeyWithDownload() {
+    @Suppress("LocalVariableName")
+    fun newCacheKeyWithDownloadRequest() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val uriString = "http://sample.com/sample.jpeg?from=sketch"
-        val uri = Uri.parse(uriString)
 
         var request = DownloadRequest(context, uriString)
-        var keyUri = uri
-        val keyHistoryList = ArrayList<String>()
 
-        // default
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-        )
-
-        // depth
-        request = request.newDownloadRequest {
-            depth(MEMORY)
+        val verifyCacheKey: (String) -> Unit = { expectCacheKey ->
+            val resizeSize = runBlocking { request.resizeSizeResolver.size() }
+            val cacheKey = request.newCacheKey(resizeSize)
+            Assert.assertEquals(expectCacheKey, cacheKey)
         }
-        keyUri = keyUri.buildUpon().apply {
-            appendQueryParameter("_depth", request.depth.toString())
-        }.build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+
+        var resize = request.toRequestContext().resize
+        var _resize = "&_resize=${resize.key}"
+        verifyCacheKey(
+            uriString +
+                    _resize
         )
 
-        // Parameter no cacheKey
         request = request.newDownloadRequest {
-            setParameter("testKey1", "testValue1", null)
+            listener(onStart = {})
         }
-        val keyUri1 = keyUri.buildUpon().apply {
-            appendQueryParameter("_parameters", request.parameters!!.key)
-        }.build()
-        Assert.assertEquals(
-            keyUri1.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString +
+                    _resize
         )
 
-        // Parameter cacheKey
         request = request.newDownloadRequest {
-            setParameter("testKey2", "testValue2")
+            progressListener { _, _, _ -> }
         }
-        keyUri = keyUri.buildUpon().apply {
-            appendQueryParameter("_parameters", request.parameters!!.key)
-        }.build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString +
+                    _resize
         )
 
-        // httpHeaders true
         request = request.newDownloadRequest {
-            addHttpHeader("httpKey", "httpValue")
+            target(TestDownloadTarget())
         }
-        keyUri = keyUri.buildUpon().apply {
-            appendQueryParameter("_httpHeaders", request.httpHeaders!!.toString())
-        }.build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString +
+                    _resize
         )
 
-        // downloadCachePolicy true
         request = request.newDownloadRequest {
-            downloadCachePolicy(WRITE_ONLY)
+            depth(LOCAL, "test")
         }
-        keyUri = keyUri.buildUpon().apply {
-            appendQueryParameter("_downloadCachePolicy", request.downloadCachePolicy.toString())
-        }.build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString +
+                    _resize
         )
 
-        // bitmapConfig
+        request = request.newDownloadRequest {
+            setParameter(key = "type", value = "list")
+        }
+        val _parameters = "&_parameters=${request.parameters!!.cacheKey}"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
+        request = request.newDownloadRequest {
+            setParameter(key = "big", value = "true", cacheKey = null)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
+        request = request.newDownloadRequest {
+            setHttpHeader("from", "china")
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
+        request = request.newDownloadRequest {
+            downloadCachePolicy(READ_ONLY)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _resize
+        )
+
         request = request.newDownloadRequest {
             bitmapConfig(RGB_565)
         }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        val _bitmapConfig = "&_bitmapConfig=BitmapConfig(RGB_565)"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _resize
         )
 
+        val _colorSpace: String
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            // colorSpace
             request = request.newDownloadRequest {
-                colorSpace(ColorSpace.get(SRGB))
+                colorSpace(ColorSpace.get(ADOBE_RGB))
             }
-            keyUri = keyUri.buildUpon().build()
-            Assert.assertEquals(
-                keyUri.toString().let { Uri.decode(it) },
-                request.newKey(request.toRequestContext().resizeSize)
-                    .apply { keyHistoryList.add(this) }
+            _colorSpace = "&_colorSpace=Adobe_RGB_(1998)"
+            verifyCacheKey(
+                uriString + _parameters +
+                        _bitmapConfig + _colorSpace + _resize
             )
+        } else {
+            _colorSpace = ""
         }
 
-        // preferQualityOverSpeed false
-        request = request.newDownloadRequest {
-            @Suppress("DEPRECATION")
-            preferQualityOverSpeed(false)
-        }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-        )
-
-        // preferQualityOverSpeed true
-        request = request.newDownloadRequest {
-            @Suppress("DEPRECATION")
-            preferQualityOverSpeed(true)
-        }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-        )
-
-        // resize
-        request = request.newDownloadRequest {
-            resizeSize(200, 300)
-            resizePrecision(EXACTLY)
-            resizeScale(END_CROP)
-        }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-        )
-
-        // transformations
-        request = request.newDownloadRequest {
-            transformations(CircleCropTransformation(), RotateTransformation(40))
-        }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-        )
-
-        // bitmapDecodeInterceptors
-        request = request.newDownloadRequest {
-            components {
-                addBitmapDecodeInterceptor(Test3BitmapDecodeInterceptor())
-                addDrawableDecodeInterceptor(Test4DrawableDecodeInterceptor())
+        val _preferQualityOverSpeed: String
+        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+            request = request.newDownloadRequest {
+                @Suppress("DEPRECATION")
+                preferQualityOverSpeed(true)
             }
+            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true)"
+            verifyCacheKey(
+                uriString + _parameters +
+                        _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
+            )
+        } else {
+            _preferQualityOverSpeed = ""
         }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
-        )
 
-        // ignoreExifOrientation false
         request = request.newDownloadRequest {
-            ignoreExifOrientation(false)
+            resize(300, 200, EXACTLY, END_CROP)
         }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        resize = request.toRequestContext().resize
+        _resize = "&_resize=${resize.key}"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
         )
 
-        // ignoreExifOrientation true
+        request = request.newDownloadRequest {
+            transformations(CircleCropTransformation(), RotateTransformation(45))
+        }
+        val _transformations =
+            request.transformations!!.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                it.key.replace("Transformation", "")
+            }.let { "&_transformations=$it" }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations
+        )
+
+        request = request.newDownloadRequest {
+            disallowReuseBitmap(true)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations
+        )
+
         request = request.newDownloadRequest {
             ignoreExifOrientation(true)
         }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        val _ignoreExifOrientation = "&_ignoreExifOrientation=true"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
         )
 
-        // resultCachePolicy true
         request = request.newDownloadRequest {
-            resultCachePolicy(READ_ONLY)
+            resultCachePolicy(WRITE_ONLY)
         }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
         )
 
-        // disallowAnimatedImage false
         request = request.newDownloadRequest {
-            disallowAnimatedImage(false)
+            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
         }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
         )
 
-        // disallowAnimatedImage true
+        request = request.newDownloadRequest {
+            error(DrawableStateImage(drawable.ic_delete))
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
+
+        request = request.newDownloadRequest {
+            transitionFactory(CrossfadeTransition.Factory())
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation
+        )
+
         request = request.newDownloadRequest {
             disallowAnimatedImage(true)
         }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _disallowAnimatedImage
         )
 
-        // memoryCachePolicy true
         request = request.newDownloadRequest {
-            memoryCachePolicy(DISABLED)
+            resizeApplyToDrawable(true)
         }
-        keyUri = keyUri.buildUpon().build()
-        Assert.assertEquals(
-            keyUri.toString().let { Uri.decode(it) },
-            request.newKey(request.toRequestContext().resizeSize).apply { keyHistoryList.add(this) }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _disallowAnimatedImage
         )
 
-        Assert.assertEquals(6, keyHistoryList.distinct().size)
+        request = request.newDownloadRequest {
+            memoryCachePolicy(WRITE_ONLY)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _disallowAnimatedImage
+        )
+
+        request = request.newDownloadRequest {
+            components {
+                addFetcher(TestFetcher.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addBitmapDecoder(TestBitmapDecoder.Factory())
+            }
+        }
+        val _bitmapDecodeInterceptors = "&_bitmapDecodeInterceptors=[TestBitmapDecodeInterceptor]"
+        val _drawableDecodeInterceptors =
+            "&_drawableDecodeInterceptors=[TestDrawableDecodeInterceptor]"
+        val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
+        verifyCacheKey(
+            uriString + _parameters +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
+                    _bitmapDecodeInterceptors + _disallowAnimatedImage + _drawableDecodeInterceptors + _requestInterceptors
+        )
+    }
+
+    @Test
+    @Suppress("LocalVariableName")
+    fun newKeyWithDisplayRequest() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val uriString = "http://sample.com/sample.jpeg?from=sketch"
+
+        val imageView = TestListenerImageView(context)
+        var request = DisplayRequest(context, uriString)
+
+        val verifyCacheKey: (String) -> Unit = { expectKey ->
+            val resizeSize = runBlocking { request.resizeSizeResolver.size() }
+            val key = request.newKey(resizeSize)
+            Assert.assertEquals(expectKey, key)
+        }
+
+        var resize = request.toRequestContext().resize
+        var _resize = "&_resize=${resize.key}"
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            listener(onStart = {})
+        }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            progressListener { _, _, _ -> }
+        }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            target(imageView)
+        }
+        verifyCacheKey(
+            uriString +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            depth(LOCAL, "test")
+        }
+        val _depth = "&_depth=LOCAL"
+        var _parameters = "&_parameters=${request.parameters!!.key}"
+        verifyCacheKey(
+            uriString + _depth + _parameters +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            setParameter(key = "type", value = "list")
+        }
+        _parameters = "&_parameters=${request.parameters!!.key}"
+        verifyCacheKey(
+            uriString + _depth + _parameters +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            setParameter(key = "big", value = "true", cacheKey = null)
+        }
+        _parameters = "&_parameters=${request.parameters!!.key}"
+        verifyCacheKey(
+            uriString + _depth + _parameters +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            setHttpHeader("from", "china")
+        }
+        val _httpHeaders = "&_httpHeaders=${request.httpHeaders!!}"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            downloadCachePolicy(READ_ONLY)
+        }
+        val _downloadCachePolicy = "&_downloadCachePolicy=READ_ONLY"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _resize
+        )
+
+        request = request.newDisplayRequest {
+            bitmapConfig(RGB_565)
+        }
+        val _bitmapConfig = "&_bitmapConfig=BitmapConfig(RGB_565)"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _resize
+        )
+
+        val _colorSpace: String
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            request = request.newDisplayRequest {
+                colorSpace(ColorSpace.get(ADOBE_RGB))
+            }
+            _colorSpace = "&_colorSpace=Adobe_RGB_(1998)"
+            verifyCacheKey(
+                uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                        _bitmapConfig + _colorSpace + _resize
+            )
+        } else {
+            _colorSpace = ""
+        }
+
+        val _preferQualityOverSpeed: String
+        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+            request = request.newDisplayRequest {
+                @Suppress("DEPRECATION")
+                preferQualityOverSpeed(true)
+            }
+            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true)"
+            verifyCacheKey(
+                uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                        _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
+            )
+        } else {
+            _preferQualityOverSpeed = ""
+        }
+
+        request = request.newDisplayRequest {
+            resize(300, 200, EXACTLY, END_CROP)
+        }
+        resize = request.toRequestContext().resize
+        _resize = "&_resize=${resize.key}"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
+        )
+
+        request = request.newDisplayRequest {
+            transformations(CircleCropTransformation(), RotateTransformation(45))
+        }
+        val _transformations =
+            request.transformations!!.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                it.key.replace("Transformation", "")
+            }.let { "&_transformations=$it" }
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations
+        )
+
+        request = request.newDisplayRequest {
+            disallowReuseBitmap(true)
+        }
+        val _disallowReuseBitmap = "&_disallowReuseBitmap=true"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap
+        )
+
+        request = request.newDisplayRequest {
+            ignoreExifOrientation(true)
+        }
+        val _ignoreExifOrientation = "&_ignoreExifOrientation=true"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap + _ignoreExifOrientation
+        )
+
+        request = request.newDisplayRequest {
+            resultCachePolicy(WRITE_ONLY)
+        }
+        val _resultCachePolicy = "&_resultCachePolicy=WRITE_ONLY"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
+                    _resultCachePolicy
+        )
+
+        request = request.newDisplayRequest {
+            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+        }
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
+                    _resultCachePolicy
+        )
+
+        request = request.newDisplayRequest {
+            error(DrawableStateImage(drawable.ic_delete))
+        }
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
+                    _resultCachePolicy
+        )
+
+        request = request.newDisplayRequest {
+            transitionFactory(CrossfadeTransition.Factory())
+        }
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
+                    _resultCachePolicy
+        )
+
+        request = request.newDisplayRequest {
+            disallowAnimatedImage(true)
+        }
+        val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
+                    _resultCachePolicy + _disallowAnimatedImage
+        )
+
+        request = request.newDisplayRequest {
+            resizeApplyToDrawable(true)
+        }
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
+                    _resultCachePolicy + _disallowAnimatedImage
+        )
+
+        request = request.newDisplayRequest {
+            memoryCachePolicy(WRITE_ONLY)
+        }
+        val _memoryCachePolicy = "&_memoryCachePolicy=WRITE_ONLY"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
+                    _resultCachePolicy + _disallowAnimatedImage + _memoryCachePolicy
+        )
+
+        request = request.newDisplayRequest {
+            components {
+                addFetcher(TestFetcher.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addBitmapDecoder(TestBitmapDecoder.Factory())
+            }
+        }
+        val _bitmapDecodeInterceptors = "&_bitmapDecodeInterceptors=[TestBitmapDecodeInterceptor]"
+        val _drawableDecodeInterceptors =
+            "&_drawableDecodeInterceptors=[TestDrawableDecodeInterceptor]"
+        val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
+        verifyCacheKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
+                    _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
+                    _resultCachePolicy + _bitmapDecodeInterceptors + _disallowAnimatedImage +
+                    _memoryCachePolicy + _drawableDecodeInterceptors + _requestInterceptors
+        )
     }
 }
