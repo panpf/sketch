@@ -1,3 +1,60 @@
+# v3.1.0-beta04
+
+### sketch
+
+Request:
+
+* fix: Fixed a bug where equals to ImageRequest and their newRequest() result in false
+* fix: Fix a bug in RequestInterceptor where modifying SizeResolver does not take effect
+* fix: Fixed the bug that the newRequest method of ImageRequest would nest one more layer of
+  listener and progressListener every time it called
+* improve: Improve the request key and cacheKey
+
+Resize:
+
+* change: Simplification resize() overloading method of ImageOptions and ImageRequest
+* change: resize precision default changed to always LESS_PIXELS
+
+DiskCache:
+
+* improve: LruDiskCache will now automatically delete cache records of lost files
+
+StateImage:
+
+* change: Now getDrawable for the placeholder and error StateImage is null and no longer calls
+  setImageDrawable for the ImageView
+
+Other:
+
+* improve: LongImageScaleDecider construction parameters now have default values
+* improve: Reduce w-level logs to avoid performance impact due to logs
+* improve: Improve ScaledAnimatedImageDrawable
+* improve: Improve Equals and hashCode
+* improve: Improve the code
+* improve: Improve the log
+
+### sketch-extensions
+
+* change: Replace PauseLoadWhenScrollingDisplayInterceptor with
+  PauseLoadWhenScrollingDrawableDecodeInterceptor, And remove pauseLoadWhenScrollingError ()
+
+### sketch-compose
+
+* fix: Fixed bug where AsyncImage and SubcomposeAsyncImage would cause constant recomposition
+* fix: Fix AsyncImage and AsyncImagePainter always change resize precision to EXACTLY bug
+* fix: Fixed bug that AsyncImagePainter did not inherit CrossfadeTransition.Factory.fadeStart
+  property
+* fix: Fixed bug where AsyncImagePainter would ignore nested Drawables when updating display count
+* improve: AsyncImage now uses dedicated DisplayTarget, SizeResolver, ScaleDecider
+
+### sketch-gif-movie
+
+* improve: Improve MovieDrawable
+
+### sketch-gif-koral
+
+* improve: Improve GifDrawableDrawableDecoder
+
 # v3.1.0-beta03
 
 ### sketch
