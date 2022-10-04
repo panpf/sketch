@@ -50,12 +50,11 @@ class MyBitmapDecoder : BitmapDecoder {
         const val MY_MIME_TYPE = "image/mypng"
     }
 
-    class Factory : Fetcher.Factory {
+    class Factory : BitmapDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
-            requestExtras: RequestExtras,
+            requestContext: RequestContext,
             fetchResult: FetchResult
         ): BitmapDecoder? {
             val mimeType = fetchResult.mimeType
@@ -72,7 +71,7 @@ class MyBitmapDecoder : BitmapDecoder {
 }
 ```
 
-2.然后在配置 Sketch 时通过 components 方法将其 Factory 注册到 Sketch，这样所有的 ImageRequest 都可以使用，如下：
+2.然后在配置 Sketch 时通过 components 方法将其 Factory 注册到 Sketch，这样所有的 [ImageRequest] 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -87,7 +86,7 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
 imageView.displayImage("mypng://my.png") {
@@ -100,7 +99,7 @@ imageView.displayImage("mypng://my.png") {
 > 注意：自定义 Decoder 需要应用 ImageRequest 中的很多与图片质量和尺寸相关的属性，例如 bitmapConfig、resize、colorSpace 等，可参考其它 Decoder 实现
 
 3.自定义 [DrawableDecoder] 和 [BitmapDecoder] 流程一样，唯一区别在于注册到 Sketch 时要调用 addDrawableDecoder() 方法
-> 注意 :如果你自定义的 [DrawableDecoder] 是解码动图的话一定要判断 [ImageRequest].disallowAnimatedImage 参数
+> 注意：如果你自定义的 [DrawableDecoder] 是解码动图的话一定要判断 [ImageRequest].disallowAnimatedImage 参数
 
 
 [comment]: <> (class)

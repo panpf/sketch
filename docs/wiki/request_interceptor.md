@@ -25,7 +25,7 @@ class MyRequestInterceptor : RequestInterceptor {
 
 ### 注册
 
-然后在初始化 Sketch 时通过 addRequestInterceptor() 方法注册，这样所有的 ImageRequest 都可以使用，如下：
+然后在初始化 Sketch 时通过 addRequestInterceptor() 方法注册，这样所有的 [ImageRequest] 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -40,7 +40,7 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {

@@ -4,7 +4,7 @@
 
 ### 显示 APK 文件的图标
 
-首先在初始化 [Sketch] 时注册 [ApkIconBitmapDecoder]，这样所有的 ImageRequest 都可以使用，如下：
+首先在初始化 [Sketch] 时注册 [ApkIconBitmapDecoder]，这样所有的 [ImageRequest] 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -25,7 +25,7 @@ class MyApplication : Application(), SketchFactory {
 imageView.displayImage("/sdcard/sample.apk")
 ```
 
-或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
 imageView.displayImage("/sdcard/sample.apk") {
@@ -37,7 +37,7 @@ imageView.displayImage("/sdcard/sample.apk") {
 
 ### 显示已安装 APP 的图标
 
-首先在初始化 [Sketch] 时注册 [AppIconUriFetcher] 和 [AppIconBitmapDecoder]，这样所有的 ImageRequest 都可以使用，如下：
+首先在初始化 [Sketch] 时注册 [AppIconUriFetcher] 和 [AppIconBitmapDecoder]，这样所有的 [ImageRequest] 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -59,7 +59,7 @@ class MyApplication : Application(), SketchFactory {
 imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", 1))
 ```
 
-或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
 imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", 1)) {
@@ -77,3 +77,5 @@ imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", 1)) {
 [ApkIconBitmapDecoder]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/decode/ApkIconBitmapDecoder.kt
 
 [AppIconUriFetcher]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt
+
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt

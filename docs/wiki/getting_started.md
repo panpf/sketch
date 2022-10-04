@@ -100,7 +100,7 @@ val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
 }
 ```
 
-你可以通过 Builder 提供的链式方法或同名函数提供的尾随 lambda 配置请求
+你可以通过 DisplayRequest.Builder 提供的链式方法或同名函数提供的尾随 lambda 配置请求
 
 更多可配置参数请参考 [DisplayRequest].Builder 类
 
@@ -183,17 +183,20 @@ imageView.disposeDisplay()
 val displayResult = imageView.displayResult
 when (displayResult) {
     is DisplayResult.Success -> {
-        val drawable = displayResult.drawable
-        val request = displayResult.request
-        val imageInfo = displayResult.imageInfo
-        val dataFrom = displayResult.dataFrom
-        val transformedList = displayResult.transformedList
+        val request: DisplayRequest = displayResult.request
+        val requestKey: String = displayResult.requestKey
+        val requestCacheKey: String = displayResult.requestCacheKey
+        val drawable: Drawable = displayResult.drawable
+        val imageInfo: ImageInfo = displayResult.imageInfo
+        val dataFrom: DataFrom = displayResult.dataFrom
+        val transformedList: List<String>? = displayResult.transformedList
+        val extras: Map<String, String>? = displayResult.extras
         // ...
     }
     is DisplayResult.Error -> {
-        val drawable = displayResult.drawable
-        val request = displayResult.request
-        val exception = displayResult.exception
+        val request: DisplayRequest = displayResult.request
+        val drawable: Drawable = displayResult.drawable
+        val exception: SketchException = displayResult.exception
         // ...
     }
 }

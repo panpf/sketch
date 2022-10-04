@@ -48,7 +48,7 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.gif") {
@@ -76,7 +76,7 @@ imageView.displayImage("https://www.example.com/image.gif") {
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.gif") {
-    // 禁用动图，会只解码动图的第一帧并显示
+    // 禁用动图，会只解码动图的第一帧
     disallowAnimatedImage()
 
     // 配置动图播放 1 次就停止，默认无限循环播放
@@ -90,7 +90,7 @@ imageView.displayImage("https://www.example.com/image.gif") {
         // ...
     }
 
-    // 对动图的每一帧在绘制时进行转换 
+    // 对动图的每一帧在绘制时进行修改 
     animatedTransformation { canvas ->
         // ...
     }

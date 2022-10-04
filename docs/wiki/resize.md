@@ -6,10 +6,10 @@
 
 * width、height：期望的宽和高
 * [Precision]：精度。决定如何使用 width 和 height 去调整图片的尺寸
-    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果尺寸不一致会根据 [Scale] 裁剪原图、优先使用 BitmapRegionDecoder 裁剪
+    * LESS_PIXELS：默认精度。只要最终 Bitmap 的像素数（宽乘以高）小于等于 [Resize] 的像素数即可
     * SAME_ASPECT_RATIO：最终 Bitmap 的宽高比和 [Resize] 的宽高比一致并且像素数一定少于 [Resize]，如果比例不一致会根据 [Scale]
       裁剪原图、优先使用 BitmapRegionDecoder 裁剪
-    * LESS_PIXELS：只要最终 Bitmap 的像素数（宽乘以高）小于等于 [Resize] 的像素数即可
+    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果尺寸不一致会根据 [Scale] 裁剪原图、优先使用 BitmapRegionDecoder 裁剪
 * [PrecisionDecider]：精度决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Precision]
     * [FixedPrecisionDecider]：始终使用指定的 [Precision]
     * [LongImageClipPrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
@@ -27,19 +27,46 @@
 
 ### 配置
 
-[ImageRequest] 和 [ImageOptions] 都提供了 resizeSize、resizePrecision、resizeScale 方法用于配置 [Resize]
+[ImageRequest] 和 [ImageOptions] 都提供了 resize、resizeSize、resizePrecision、resizeScale 方法用于配置 [Resize]
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    resizeSize(100, 100)
+    /* 一次设置三个属性 */
+    resize(
+        width = 100,
+        height = 100,
+        precision = Precision.SAME_ASPECT_RATIO,
+        scale = Scale.END_CROP
+    )
+    // 或
+    resize(
+        size = Size(100, 100),
+        precision = LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO),
+        scale = LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP)
+    )
+    // 或
+    resize(
+        size = FixedSizeResolver(100, 100),
+        precision = LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO),
+        scale = LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP)
+    )
 
+    /* 仅设置尺寸属性 */
+    resizeSize(100, 100)
+    // 或
+    resizeSize(Size(100, 100))
+    // 或
+    resizeSize(FixedSizeResolver(100, 100))
+
+    /* 仅设置精度属性 */
     resizePrecision(Precision.SAME_ASPECT_RATIO)
     // 或
-    resizePrecision(longImageClipPrecision(Precision.SAME_ASPECT_RATIO))
+    resizePrecision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
 
+    /* 仅设置缩放属性 */
     resizeScale(Scale.END_CROP)
     // 或
-    resizeScale(longImageScale(longImage = Scale.START_CROP, other = Scale.CENTER_CROP))
+    resizeScale(LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP))
 }
 ```
 

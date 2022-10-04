@@ -12,7 +12,7 @@ Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 
 ### 注册
 
-根据情况选择合适的 Decoder，然后在初始化 Sketch 时通过 components() 方法注册，这样所有的 ImageRequest 都可以使用，如下：
+根据情况选择合适的 Decoder，然后在初始化 Sketch 时通过 components() 方法注册，这样所有的 [ImageRequest] 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -27,7 +27,7 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
 imageView.displayImage("file:///sdcard/sample.mp4") {
@@ -70,3 +70,5 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 [DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
 
 [LoadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
+
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt

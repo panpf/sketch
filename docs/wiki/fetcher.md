@@ -1,6 +1,6 @@
 # Fetcher
 
-[Fetcher] 用于从 uri 获取数据，返回 [FetchResult]，交由 Decoder 使用。
+[Fetcher] 用于从 uri 获取数据，返回 [FetchResult]，交由 [BitmapDecoder] 或 [DrawableDecoder] 使用。
 
 Sketch 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下几种：
 
@@ -44,7 +44,7 @@ class MyFetcher : Fetcher {
 
 #### 2.使用
 
-如果要让所有的 ImageRequest 都使用就在配置 Sketch 时通过 components 方法注册，这样所有的 ImageRequest 都可以使用，如下：
+如果要让所有的 [ImageRequest] 都使用就在配置 Sketch 时通过 components 方法注册，这样所有的 [ImageRequest] 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -59,10 +59,10 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-如果只想让当前 ImageRequest 使用就通过 ImageRequest 的 components 方法注册，这样所有的 ImageRequest 都可以使用，如下：
+或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
-DisplayRequest(context, "http://sample.com/sample.jpeg") {
+imageView.displayImage(context, "http://sample.com/sample.jpeg") {
     components {
         addFetcher(MyFetcher.Factory())
     }
@@ -70,6 +70,8 @@ DisplayRequest(context, "http://sample.com/sample.jpeg") {
 ```
 
 [comment]: <> (class)
+
+[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
 [BitmapDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/BitmapDecoder.kt
 

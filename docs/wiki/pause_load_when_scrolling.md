@@ -10,16 +10,34 @@
 第 1 步. 在你的列表控件 RecyclerView 或 ListView 上添加滑动监听，如下：
 
 ```kotlin
+// RecyclerView
 recyclerView.addOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
 
-// 或
-
+// ListView
 listView.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
+
+// Compose LazyColumn
+@Composable
+fun ListContent() {
+    val lazyListState = rememberLazyListState()
+    if (lazyListState.isScrollInProgress) {
+        DisposableEffect(Unit) {
+            PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
+            onDispose {
+                PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = false
+            }
+        }
+    }
+
+    LazyColumn(state = lazyListState) {
+        // 绘制你的 item
+    }
+}
 ```
 
 第 2 步. 注册
 
-在初始化 [Sketch] 时添加 [PauseLoadWhenScrollingDrawableInterceptor] 请求拦截器，这样所有的 ImageRequest 都可以使用，如下：
+在初始化 [Sketch] 时添加 [PauseLoadWhenScrollingDrawableInterceptor] 请求拦截器，这样所有的 [ImageRequest] 都可以使用，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -34,7 +52,7 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {

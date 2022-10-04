@@ -9,7 +9,7 @@ Sketch 将解码分为 Drawable 和 Bitmap 两种，因此拦截也同样分为�
 class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
     // 如果你的 BitmapDecodeInterceptor 将会对结果产生影响并且只在个别 ImageRequest 中使用，
-    // 那么请给一个有效且不冲突的 key，否则可以一直是 null
+    // 那么请给一个有效且不冲突的 key，否则可以是 null
     override val key: String = "MyBitmapDecodeInterceptor"
 
     @WorkerThread
@@ -26,7 +26,7 @@ class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
     // 如果你的 DrawableDecodeInterceptor 将会对结果产生影响并且只在个别 ImageRequest 中使用，
-    // 那么请给一个有效且不冲突的 key，否则可以一直是 null
+    // 那么请给一个有效且不冲突的 key，否则可以是 null
     override val key: String = "MyDrawableDecodeInterceptor"
 
     @WorkerThread
@@ -63,7 +63,7 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-或者在显示图片时只给当前 ImageRequest 注册，这样就只有当前 ImageRequest 可以使用，如下：
+或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
 imageView.displayImage("file:///sdcard/sample.mp4") {
