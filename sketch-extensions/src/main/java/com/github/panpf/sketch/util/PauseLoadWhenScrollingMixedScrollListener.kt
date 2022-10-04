@@ -16,9 +16,6 @@
 package com.github.panpf.sketch.util
 
 import android.widget.AbsListView
-import android.widget.BaseAdapter
-import android.widget.ListAdapter
-import android.widget.WrapperListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
 
@@ -28,8 +25,7 @@ class PauseLoadWhenScrollingMixedScrollListener(
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
-        val adapter = recyclerView.adapter
-        if (adapter != null) {
+        if (recyclerView.adapter != null) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                 if (!PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
                     PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
@@ -43,8 +39,7 @@ class PauseLoadWhenScrollingMixedScrollListener(
     }
 
     override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
-        val listAdapter = view.adapter?.let { getFinalWrappedAdapter(it) }
-        if (listAdapter is BaseAdapter) {
+        if (view.adapter != null) {
             if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                 if (!PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
                     PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
@@ -64,11 +59,4 @@ class PauseLoadWhenScrollingMixedScrollListener(
         absListScrollListenerWrapper
             ?.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount)
     }
-
-    private fun getFinalWrappedAdapter(adapter: ListAdapter): ListAdapter =
-        if (adapter is WrapperListAdapter) {
-            getFinalWrappedAdapter(adapter.wrappedAdapter)
-        } else {
-            adapter
-        }
 }
