@@ -125,7 +125,7 @@ class LruDiskCache private constructor(
         val encodedKey = keyMapperCache.mapKey(key)
         var snapshot: DiskLruCache.Snapshot? = null
         try {
-            snapshot = cache.get(encodedKey).takeIf {
+            snapshot = cache.get(encodedKey)?.takeIf {
                 val exist = it.getFile(0).exists()
                 if (!exist) {
                     remove(key)

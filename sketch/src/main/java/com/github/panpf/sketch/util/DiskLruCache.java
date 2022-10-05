@@ -16,6 +16,8 @@
 
 package com.github.panpf.sketch.util;
 
+import androidx.annotation.Nullable;
+
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -423,6 +425,7 @@ public final class DiskLruCache implements Closeable {
      * exist is not currently readable. If a value is returned, it is moved to
      * the head of the LRU queue.
      */
+    @Nullable
     public synchronized Snapshot get(String key) throws IOException {
         checkNotClosed();
         validateKey(key);
