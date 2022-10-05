@@ -26,10 +26,13 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
+import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.VERBOSE
@@ -113,4 +116,16 @@ fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null
 
 fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
     return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size() })
+}
+
+fun LoadRequest.decode(sketch: Sketch): BitmapDecodeResult {
+    val request = this@decode
+    val fetchResult = runBlocking {
+        sketch.components.newFetcher(request).fetch()
+    }
+    return DefaultBitmapDecoder(
+        sketch = sketch,
+        requestContext = request.toRequestContext(),
+        dataSource = fetchResult.dataSource
+    ).let { runBlocking { it.decode() } }
 }
