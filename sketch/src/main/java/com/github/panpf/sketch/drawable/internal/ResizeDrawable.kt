@@ -20,19 +20,26 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.findLastSketchDrawable
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-fun Drawable.tryToResizeDrawable(request: ImageRequest, resize: Resize?): Drawable {
-    return if (request.resizeApplyToDrawable && resize != null) {
+fun Drawable.tryToResizeDrawable(
+    request: ImageRequest,
+    resizeSize: Size?,
+): Drawable {
+    return if (request.resizeApplyToDrawable && resizeSize != null) {
+        val scale = request.resizeScaleDecider.get(
+            imageWidth = intrinsicWidth,
+            imageHeight = intrinsicHeight,
+            resizeWidth = resizeSize.width,
+            resizeHeight = resizeSize.height
+        )
         if (this is SketchAnimatableDrawable) {
-            ResizeAnimatableDrawable(this, resize)
+            ResizeAnimatableDrawable(this, resizeSize, scale)
         } else {
-            ResizeDrawable(this, resize)
+            ResizeDrawable(this, resizeSize, scale)
         }
     } else {
         this
@@ -40,25 +47,28 @@ fun Drawable.tryToResizeDrawable(request: ImageRequest, resize: Resize?): Drawab
 }
 
 /**
- * Using [resize] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [resize].
+ * Using [resizeSize] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [resizeSize].
  * ResizeDrawable is suitable for changing the start and end pictures to the same size when using CrossfadeDrawable to display pictures in transition, so as to avoid the start or end pictures being scaled when the transition animation starts
  */
 @SuppressLint("RestrictedApi")
-open class ResizeDrawable constructor(drawable: Drawable, val resize: Resize) :
-    DrawableWrapper(drawable) {
+open class ResizeDrawable constructor(
+    drawable: Drawable,
+    val resizeSize: Size,
+    val resizeScale: Scale
+) : DrawableWrapper(drawable) {
 
     override fun getIntrinsicWidth(): Int {
-        return resize.width
+        return resizeSize.width
     }
 
     override fun getIntrinsicHeight(): Int {
-        return resize.height
+        return resizeSize.height
     }
 
     override fun mutate(): ResizeDrawable {
         val mutateDrawable = wrappedDrawable.mutate()
         return if (mutateDrawable !== wrappedDrawable) {
-            ResizeDrawable(mutateDrawable, resize)
+            ResizeDrawable(mutateDrawable, resizeSize, resizeScale)
         } else {
             this
         }
@@ -66,8 +76,8 @@ open class ResizeDrawable constructor(drawable: Drawable, val resize: Resize) :
 
     override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
         super.setBounds(left, top, right, bottom)
-        val resizeWidth = resize.width
-        val resizeHeight = resize.height
+        val resizeWidth = resizeSize.width
+        val resizeHeight = resizeSize.height
         val wrappedDrawable = wrappedDrawable
         val wrappedWidth = wrappedDrawable.intrinsicWidth
         val wrappedHeight = wrappedDrawable.intrinsicHeight
@@ -86,14 +96,6 @@ open class ResizeDrawable constructor(drawable: Drawable, val resize: Resize) :
             val drawableScale = max(widthRatio, heightRatio)
             val newWrappedWidth = (wrappedWidth * drawableScale).roundToInt()
             val newWrappedHeight = (wrappedHeight * drawableScale).roundToInt()
-            val imageSize = wrappedDrawable.findLastSketchDrawable()
-                ?.imageInfo?.let { info ->
-                    Size(info.width, info.height)
-                }
-            val resizeScale = resize.getScale(
-                imageSize?.width ?: wrappedWidth,
-                imageSize?.height ?: wrappedHeight
-            )
             when (resizeScale) {
                 Scale.START_CROP -> {
                     wrappedLeft = 0
@@ -125,6 +127,6 @@ open class ResizeDrawable constructor(drawable: Drawable, val resize: Resize) :
     }
 
     override fun toString(): String {
-        return "ResizeDrawable($wrappedDrawable)"
+        return "ResizeDrawable(wrapped=$wrappedDrawable, resizeSize=$resizeSize, resizeScale=$resizeScale)"
     }
 }

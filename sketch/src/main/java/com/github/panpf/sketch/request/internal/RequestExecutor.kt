@@ -36,7 +36,6 @@ import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.stateimage.internal.toSketchStateDrawable
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
@@ -44,6 +43,7 @@ import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.sketch.util.asOrNull
@@ -106,10 +106,8 @@ class RequestExecutor {
                     request = lastRequest,
                     requestKey = requestContext.key,
                     requestCacheKey = requestContext.cacheKey,
-                    drawable = imageData.drawable.tryToResizeDrawable(
-                        requestContext.request,
-                        requestContext.resize
-                    ),
+                    drawable = imageData.drawable
+                        .tryToResizeDrawable(lastRequest, requestContext.resizeSize),
                     imageInfo = imageData.imageInfo,
                     dataFrom = imageData.dataFrom,
                     transformedList = imageData.transformedList,
@@ -146,7 +144,7 @@ class RequestExecutor {
                 val errorResult: ImageResult.Error = when (lastRequest) {
                     is DisplayRequest -> {
                         val errorDrawable =
-                            getErrorDrawable(sketch, lastRequest, requestContext?.resize, exception)
+                            getErrorDrawable(sketch, lastRequest, requestContext?.resizeSize, exception)
                         DisplayResult.Error(lastRequest, errorDrawable, exception)
                     }
                     is LoadRequest -> LoadResult.Error(lastRequest, exception)
@@ -295,12 +293,12 @@ class RequestExecutor {
     private fun getErrorDrawable(
         sketch: Sketch,
         request: ImageRequest,
-        resize: Resize?,
+        resizeSize: Size?,
         exception: SketchException
     ): Drawable? =
         (request.error?.getDrawable(sketch, request, exception)
             ?: request.placeholder?.getDrawable(sketch, request, exception))
-            ?.tryToResizeDrawable(request, resize)
+            ?.tryToResizeDrawable(request, resizeSize)
             ?.toSketchStateDrawable()
 
     private fun newLogKey(

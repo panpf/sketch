@@ -32,7 +32,6 @@ import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
@@ -78,19 +77,19 @@ class ResizeDrawableTest {
         }
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(request2, request2.toRequestContext().resize)
+            bitmapDrawable.tryToResizeDrawable(request2, request2.toRequestContext().resizeSize)
         )
         val request3 = DisplayRequest(context, imageUri) {
             resizeApplyToDrawable(true)
             resizeSize(500, 300)
             resizePrecision(EXACTLY)
         }
-        bitmapDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resize)
+        bitmapDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resizeSize)
             .let { it as ResizeDrawable }
             .apply {
                 Assert.assertNotSame(bitmapDrawable, this)
                 Assert.assertSame(bitmapDrawable, wrappedDrawable)
-                Assert.assertEquals(Resize(500, 300, EXACTLY), resize)
+                Assert.assertEquals(Size(500, 300), resizeSize)
             }
 
         val animDrawable = SketchAnimatableDrawable(
@@ -103,12 +102,12 @@ class ResizeDrawableTest {
             transformedList = null,
             extras = null,
         )
-        animDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resize)
+        animDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resizeSize)
             .let { it as ResizeAnimatableDrawable }
             .apply {
                 Assert.assertNotSame(animDrawable, this)
                 Assert.assertSame(animDrawable, wrappedDrawable)
-                Assert.assertEquals(Resize(500, 300, EXACTLY), resize)
+                Assert.assertEquals(Size(500, 300), resizeSize)
             }
     }
 
@@ -122,9 +121,9 @@ class ResizeDrawableTest {
                 Assert.assertEquals(Size(100, 200), intrinsicSize)
             }
 
-        ResizeDrawable(bitmapDrawable, Resize(500, 300)).apply {
+        ResizeDrawable(bitmapDrawable, Size(500, 300), CENTER_CROP).apply {
             Assert.assertEquals(Size(500, 300), intrinsicSize)
-            Assert.assertEquals(Resize(500, 300), resize)
+            Assert.assertEquals(Size(500, 300), resizeSize)
             Assert.assertSame(bitmapDrawable, wrappedDrawable)
         }
     }
@@ -140,50 +139,49 @@ class ResizeDrawableTest {
                 Assert.assertEquals(Size(100, 200), intrinsicSize)
             }
 
-        ResizeDrawable(bitmapDrawable, Resize(500, 300)).apply {
-            Assert.assertEquals(Rect(0, 0, 0, 0), bounds)
-            Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
-        }
-        ResizeDrawable(bitmapDrawable, Resize(500, 300, START_CROP)).apply {
+        ResizeDrawable(bitmapDrawable, Size(500, 300), START_CROP).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, 0, 500, 1000), bitmapDrawable.bounds)
         }
-        ResizeDrawable(bitmapDrawable, Resize(500, 300, CENTER_CROP)).apply {
+        ResizeDrawable(bitmapDrawable, Size(500, 300), CENTER_CROP).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, -350, 500, 650), bitmapDrawable.bounds)
         }
-        ResizeDrawable(bitmapDrawable, Resize(500, 300, END_CROP)).apply {
+        ResizeDrawable(bitmapDrawable, Size(500, 300), END_CROP).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, -700, 500, 300), bitmapDrawable.bounds)
         }
-        ResizeDrawable(bitmapDrawable, Resize(500, 300, FILL)).apply {
+        ResizeDrawable(bitmapDrawable, Size(500, 300), FILL).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, 0, 500, 300), bitmapDrawable.bounds)
         }
 
         ResizeDrawable(
-            ResizeDrawable(bitmapDrawable, Resize(0, 300)),
-            Resize(500, 300, CENTER_CROP)
+            ResizeDrawable(bitmapDrawable, Size(0, 300), CENTER_CROP),
+            Size(500, 300),
+            CENTER_CROP
         ).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(-75, 0, 75, 300), bitmapDrawable.bounds)
         }
         ResizeDrawable(
-            ResizeDrawable(bitmapDrawable, Resize(300, 0)),
-            Resize(500, 300, CENTER_CROP)
+            ResizeDrawable(bitmapDrawable, Size(300, 0), CENTER_CROP),
+            Size(width = 500, height = 300),
+            CENTER_CROP
         ).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, -300, 300, 300), bitmapDrawable.bounds)
         }
         ResizeDrawable(
-            ResizeDrawable(bitmapDrawable, Resize(0, 0)),
-            Resize(500, 300, CENTER_CROP)
+            ResizeDrawable(bitmapDrawable, Size(0, 0), CENTER_CROP),
+            Size(500, 300),
+            CENTER_CROP
         ).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
@@ -206,7 +204,7 @@ class ResizeDrawableTest {
             extras = null,
             dataFrom = LOCAL,
         )
-        ResizeDrawable(sketchDrawable, Resize(500, 300, CENTER_CROP)).apply {
+        ResizeDrawable(sketchDrawable, Size(500, 300), CENTER_CROP).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
             Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
@@ -218,8 +216,9 @@ class ResizeDrawableTest {
         val context = getTestContext()
 
         ResizeDrawable(
-            drawable = context.getDrawableCompat(android.R.drawable.bottom_bar),
-            resize = Resize(500, 300)
+            context.getDrawableCompat(android.R.drawable.bottom_bar),
+            Size(500, 300),
+            CENTER_CROP
         ).apply {
             mutate()
             alpha = 146
@@ -232,8 +231,9 @@ class ResizeDrawableTest {
         }
 
         ResizeDrawable(
-            drawable = TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
-            resize = Resize(500, 300)
+            TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
+            Size(500, 300),
+            CENTER_CROP
         ).apply {
             mutate()
             alpha = 146
@@ -256,8 +256,8 @@ class ResizeDrawableTest {
                 Assert.assertEquals(Size(100, 200), intrinsicSize)
             }
 
-        ResizeDrawable(bitmapDrawable, Resize(500, 300)).apply {
-            Assert.assertEquals("ResizeDrawable($bitmapDrawable)", toString())
+        ResizeDrawable(bitmapDrawable, Size(500, 300), CENTER_CROP).apply {
+            Assert.assertEquals("ResizeDrawable(wrapped=$bitmapDrawable, resizeSize=500x300, resizeScale=CENTER_CROP)", toString())
         }
     }
 }
