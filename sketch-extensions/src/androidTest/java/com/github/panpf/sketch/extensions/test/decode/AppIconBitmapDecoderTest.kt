@@ -30,8 +30,8 @@ import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size

@@ -108,10 +108,10 @@ abstract class BaseAnimatedImageDrawableDecoder(
                     info.mimeType,
                     ExifInterface.ORIENTATION_UNDEFINED
                 )
-                val resize = requestContext.resize
+                val resizeSize = requestContext.resizeSize
                 inSampleSize = calculateSampleSize(
                     imageSize = Size(info.size.width, info.size.height),
-                    targetSize = Size(resize.width, resize.height)
+                    targetSize = Size(resizeSize.width, resizeSize.height)
                 )
                 decoder.setTargetSampleSize(inSampleSize)
 

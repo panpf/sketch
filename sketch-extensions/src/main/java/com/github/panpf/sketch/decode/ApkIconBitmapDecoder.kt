@@ -65,7 +65,7 @@ class ApkIconBitmapDecoder(
             "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
         return BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
-            .appliedResize(sketch, requestContext, requestContext.resize)
+            .appliedResize(sketch, requestContext)
     }
 
     class Factory : BitmapDecoder.Factory {

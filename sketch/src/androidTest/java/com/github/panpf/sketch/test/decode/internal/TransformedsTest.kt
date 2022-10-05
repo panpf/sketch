@@ -127,29 +127,29 @@ class TransformedsTest {
     @Test
     fun testResizeTransformed() {
         Assert.assertEquals(
-            "ResizeTransformed(100x100,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            "ResizeTransformed(100x100,LESS_PIXELS,CENTER_CROP)",
             createResizeTransformed(Resize(100, 100))
         )
         Assert.assertEquals(
-            "ResizeTransformed(200x200,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            "ResizeTransformed(200x200,LESS_PIXELS,CENTER_CROP)",
             createResizeTransformed(Resize(200, 200))
         )
         Assert.assertEquals(
-            "ResizeTransformed(300x300,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            "ResizeTransformed(300x300,LESS_PIXELS,CENTER_CROP)",
             createResizeTransformed(Resize(300, 300))
         )
         Assert.assertEquals(
-            "ResizeTransformed(400x400,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            "ResizeTransformed(400x400,LESS_PIXELS,CENTER_CROP)",
             createResizeTransformed(Resize(400, 400))
         )
 
         Assert.assertEquals(null, listOf<String>().getResizeTransformed())
         Assert.assertEquals(
-            "ResizeTransformed(200x200,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            "ResizeTransformed(200x200,LESS_PIXELS,CENTER_CROP)",
             listOf(createResizeTransformed(Resize(200, 200))).getResizeTransformed()
         )
         Assert.assertEquals(
-            "ResizeTransformed(500x500,Fixed(LESS_PIXELS),Fixed(CENTER_CROP))",
+            "ResizeTransformed(500x500,LESS_PIXELS,CENTER_CROP)",
             listOf(
                 "disruptive1",
                 createResizeTransformed(Resize(500, 500)),

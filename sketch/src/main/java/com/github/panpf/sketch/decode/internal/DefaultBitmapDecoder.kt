@@ -63,7 +63,7 @@ open class DefaultBitmapDecoder(
                 realDecodeRegion(imageInfo, srcRect, decodeConfig)
             } else null
         ).appliedExifOrientation(sketch, requestContext)
-            .appliedResize(sketch, requestContext, requestContext.resize)
+            .appliedResize(sketch, requestContext)
     }
 
     private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
@@ -169,7 +169,7 @@ open class DefaultBitmapDecoder(
                 }
                 isSrcRectError(throwable) -> {
                     val message =
-                        "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, resize=${requestContext.resize}, srcRect=${srcRect}"
+                        "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, srcRect=${srcRect}"
                     throw BitmapDecodeException(message, throwable)
                 }
                 else -> {

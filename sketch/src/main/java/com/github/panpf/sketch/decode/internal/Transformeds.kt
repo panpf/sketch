@@ -49,7 +49,7 @@ fun List<String>.getExifOrientationTransformed(): String? =
 
 
 fun createResizeTransformed(resize: Resize): String =
-    "ResizeTransformed(${resize.width}x${resize.height},${resize.precisionDecider.key},${resize.scaleDecider.key})"
+    "ResizeTransformed(${resize.width}x${resize.height},${resize.precision},${resize.scale})"
 
 fun isResizeTransformed(transformed: String): Boolean =
     transformed.startsWith("ResizeTransformed(")

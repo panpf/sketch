@@ -15,10 +15,8 @@
  */
 package com.github.panpf.sketch.resize
 
-import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.util.Size
 
 /**
  * Determines which scale to use dynamically based on image size and resizing
@@ -28,11 +26,6 @@ interface ScaleDecider {
     val key: String
 
     fun get(imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int): Scale
-
-    fun addExifOrientation(
-        exifOrientationHelper: ExifOrientationHelper,
-        imageSize: Size
-    ): ScaleDecider
 }
 
 
@@ -49,13 +42,6 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
         return scale
     }
 
-    override fun addExifOrientation(
-        exifOrientationHelper: ExifOrientationHelper,
-        imageSize: Size
-    ): FixedScaleDecider {
-        return FixedScaleDecider(exifOrientationHelper.addToScale(scale, imageSize))
-    }
-
     override fun toString(): String {
         return "FixedScaleDecider($scale)"
     }
@@ -70,15 +56,6 @@ class LongImageScaleDecider constructor(
     val otherImage: Scale = CENTER_CROP,
     val longImageDecider: LongImageDecider = DefaultLongImageDecider(),
 ) : ScaleDecider {
-
-    override fun addExifOrientation(
-        exifOrientationHelper: ExifOrientationHelper,
-        imageSize: Size
-    ): LongImageScaleDecider = LongImageScaleDecider(
-        longImage = exifOrientationHelper.addToScale(longImage, imageSize),
-        otherImage = exifOrientationHelper.addToScale(otherImage, imageSize),
-        longImageDecider = longImageDecider,
-    )
 
     override val key: String by lazy { "LongImage($longImage,$otherImage),${longImageDecider.key})" }
 

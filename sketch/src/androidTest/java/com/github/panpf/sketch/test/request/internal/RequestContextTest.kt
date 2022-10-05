@@ -28,12 +28,6 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
@@ -75,52 +69,6 @@ class RequestContextTest {
                 setNewRequest(request3)
                 Assert.assertSame(request3, request)
                 Assert.assertEquals(listOf(request0, request2, request3), requestList)
-            }
-        }
-    }
-
-    @Test
-    fun testResize() {
-        val context = getTestContext()
-        runBlocking {
-            val displaySize = runBlocking { DisplaySizeResolver(context).size() }
-
-            LoadRequest(context, TestAssets.SAMPLE_JPEG_URI).toRequestContext().apply {
-                val resize0 = resize
-                Assert.assertEquals(Resize(displaySize, LESS_PIXELS, CENTER_CROP), resize0)
-
-                setNewRequest(request.newRequest())
-                val resize1 = resize
-                Assert.assertSame(resize0, resize1)
-                Assert.assertEquals(Resize(displaySize, LESS_PIXELS, CENTER_CROP), resize1)
-
-                setNewRequest(request.newRequest {
-                    resizeSize(100, 300)
-                })
-                val resize2 = resize
-                Assert.assertNotEquals(resize1, resize2)
-                Assert.assertEquals(Resize(100, 300, LESS_PIXELS, CENTER_CROP), resize)
-
-                setNewRequest(request.newRequest {
-                    resizePrecision(EXACTLY)
-                })
-                val resize3 = resize
-                Assert.assertNotEquals(resize2, resize3)
-                Assert.assertEquals(Resize(100, 300, EXACTLY, CENTER_CROP), resize)
-
-                setNewRequest(request.newRequest {
-                    resizeScale(END_CROP)
-                })
-                val resize4 = resize
-                Assert.assertNotEquals(resize3, resize4)
-                Assert.assertEquals(Resize(100, 300, EXACTLY, END_CROP), resize)
-
-                setNewRequest(request.newRequest {
-                    bitmapConfig(RGB_565)
-                })
-                val resize5 = resize
-                Assert.assertSame(resize4, resize5)
-                Assert.assertEquals(Resize(100, 300, EXACTLY, END_CROP), resize)
             }
         }
     }

@@ -80,7 +80,7 @@ class VideoFrameBitmapDecoder(
                 },
                 decodeRegion = null
             ).appliedExifOrientation(sketch, requestContext)
-                .appliedResize(sketch, requestContext, requestContext.resize)
+                .appliedResize(sketch, requestContext)
         } finally {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mediaMetadataRetriever.close()

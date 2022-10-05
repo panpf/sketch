@@ -24,7 +24,6 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.Size
 
 internal fun ImageRequest.newCacheKey(size: Size): String = uriString.toUri().buildUpon().apply {
@@ -43,7 +42,7 @@ internal fun ImageRequest.newCacheKey(size: Size): String = uriString.toUri().bu
     if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
         appendQueryParameter("_preferQualityOverSpeed", true.toString())
     }
-    appendQueryParameter("_resize", Resize(size, resizePrecisionDecider, resizeScaleDecider).key)
+    appendQueryParameter("_resize", newResizeKey(size))
     transformations?.takeIf { it.isNotEmpty() }?.let { list ->
         appendQueryParameter(
             "_transformations",
@@ -111,10 +110,7 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
         if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
             appendQueryParameter("_preferQualityOverSpeed", true.toString())
         }
-        appendQueryParameter(
-            "_resize",
-            Resize(size, resizePrecisionDecider, resizeScaleDecider).key
-        )
+        appendQueryParameter("_resize", newResizeKey(size))
         transformations?.takeIf { it.isNotEmpty() }?.let { list ->
             appendQueryParameter(
                 "_transformations",
@@ -167,4 +163,8 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
                 list.joinToString(prefix = "[", postfix = "]", separator = ",")
             )
         }
-}.build().toString().let { Uri.decode(it) }
+}.build().toString()
+
+internal fun ImageRequest.newResizeKey(resizeSize: Size): String {
+    return "Resize(${resizeSize.width}x${resizeSize.height},${resizePrecisionDecider.key},${resizeScaleDecider.key})"
+}

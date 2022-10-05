@@ -69,7 +69,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
-import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
@@ -887,7 +887,7 @@ class DecodeUtilsTest {
     @Test
     fun testAppliedResize() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        var request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
         val newResult: () -> BitmapDecodeResult = {
             BitmapDecodeResult(
                 bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
@@ -899,28 +899,23 @@ class DecodeUtilsTest {
         }
 
         /*
-         * null
-         */
-        var resize: Resize? = null
-        var result: BitmapDecodeResult = newResult()
-        result.appliedResize(sketch, request.toRequestContext(), resize).apply {
-            Assert.assertTrue(this === result)
-        }
-
-        /*
          * LESS_PIXELS
          */
         // small
-        resize = Resize(40, 20, LESS_PIXELS)
-        result = newResult()
-        result.appliedResize(sketch, request.toRequestContext(), resize).apply {
+        request = request.newLoadRequest {
+            resize(40, 20, LESS_PIXELS, CENTER_CROP)
+        }
+        var result = newResult()
+        result.appliedResize(sketch, request.toRequestContext()).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("20x13", this.bitmap.sizeString)
         }
         // big
-        resize = Resize(50, 150, LESS_PIXELS)
+        request = request.newLoadRequest {
+            resize(50, 150, LESS_PIXELS)
+        }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext(), resize).apply {
+        result.appliedResize(sketch, request.toRequestContext()).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -928,16 +923,20 @@ class DecodeUtilsTest {
          * SAME_ASPECT_RATIO
          */
         // small
-        resize = Resize(40, 20, SAME_ASPECT_RATIO)
+        request = request.newLoadRequest {
+            resize(40, 20, SAME_ASPECT_RATIO)
+        }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext(), resize).apply {
+        result.appliedResize(sketch, request.toRequestContext()).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
-        resize = Resize(50, 150, SAME_ASPECT_RATIO)
+        request = request.newLoadRequest {
+            resize(50, 150, SAME_ASPECT_RATIO)
+        }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext(), resize).apply {
+        result.appliedResize(sketch, request.toRequestContext()).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("17x50", this.bitmap.sizeString)
         }
@@ -946,16 +945,20 @@ class DecodeUtilsTest {
          * EXACTLY
          */
         // small
-        resize = Resize(40, 20, EXACTLY)
+        request = request.newLoadRequest {
+            resize(40, 20, EXACTLY)
+        }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext(), resize).apply {
+        result.appliedResize(sketch, request.toRequestContext()).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
-        resize = Resize(50, 150, EXACTLY)
+        request = request.newLoadRequest {
+            resize(50, 150, EXACTLY)
+        }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext(), resize).apply {
+        result.appliedResize(sketch, request.toRequestContext()).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("50x150", this.bitmap.sizeString)
         }

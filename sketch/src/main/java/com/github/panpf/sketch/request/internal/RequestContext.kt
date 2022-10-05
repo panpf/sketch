@@ -18,16 +18,14 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredMainThread
 
-class RequestContext constructor(firstRequest: ImageRequest, var resizeSize: Size) {
+class RequestContext constructor(firstRequest: ImageRequest, resizeSize: Size) {
 
     private var pendingCountDrawable: SketchCountBitmapDrawable? = null
     private val _requestList = mutableListOf(firstRequest)
     private var _request: ImageRequest = firstRequest
-    private var _resize: Resize? = null
     private var _key: String? = null
     private var _cacheKey: String? = null
 
@@ -38,27 +36,22 @@ class RequestContext constructor(firstRequest: ImageRequest, var resizeSize: Siz
         get() = _request
 
     @get:Synchronized
-    val resize: Resize
-        get() = _resize ?: Resize(
-            size = resizeSize,
-            precision = request.resizePrecisionDecider,
-            scale = request.resizeScaleDecider
-        ).apply {
-            _resize = this
-        }
-
-    @get:Synchronized
     val key: String
-        get() = _key ?: request.newKey(resizeSize).apply {
-            _key = this
-        }
+        get() = _key
+            ?: request.newKey(resizeSize).apply {
+                _key = this
+            }
 
     /** Used to cache bitmaps in memory and on disk */
     @get:Synchronized
     val cacheKey: String
-        get() = _cacheKey ?: request.newCacheKey(resizeSize).apply {
-            _cacheKey = this
-        }
+        get() = _cacheKey
+            ?: request.newCacheKey(resizeSize).apply {
+                _cacheKey = this
+            }
+
+    var resizeSize: Size = resizeSize
+        private set
 
     internal suspend fun setNewRequest(request: ImageRequest) {
         val lastRequest = this.request
@@ -67,12 +60,6 @@ class RequestContext constructor(firstRequest: ImageRequest, var resizeSize: Siz
             _request = request
             if (lastRequest.resizeSizeResolver != request.resizeSizeResolver) {
                 resizeSize = request.resizeSizeResolver.size()
-            }
-            if (lastRequest.resizeSizeResolver != request.resizeSizeResolver
-                || lastRequest.resizePrecisionDecider != request.resizePrecisionDecider
-                || lastRequest.resizeScaleDecider != request.resizeScaleDecider
-            ) {
-                _resize = null
             }
             _key = null
             _cacheKey = null

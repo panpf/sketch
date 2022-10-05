@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
@@ -24,7 +23,6 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,73 +45,6 @@ class ScaleDeciderTest {
         }
         FixedScaleDecider(END_CROP).apply {
             Assert.assertEquals(END_CROP, get(100, 48, 50, 50))
-        }
-    }
-
-    @Test
-    fun testFixedScaleDeciderAddExifOrientation() {
-        val exifOriNormal =
-            ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
-        val exifOri90 =
-            ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90)
-        val exifOri180 =
-            ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180)
-
-        FixedScaleDecider(START_CROP).apply {
-            Assert.assertEquals(
-                FixedScaleDecider(START_CROP),
-                addExifOrientation(exifOriNormal, Size(100, 48))
-            )
-        }
-        FixedScaleDecider(START_CROP).apply {
-            Assert.assertEquals(
-                FixedScaleDecider(END_CROP),
-                addExifOrientation(exifOri90, Size(100, 48))
-            )
-        }
-        FixedScaleDecider(START_CROP).apply {
-            Assert.assertEquals(
-                FixedScaleDecider(END_CROP),
-                addExifOrientation(exifOri180, Size(100, 48))
-            )
-        }
-
-        FixedScaleDecider(CENTER_CROP).apply {
-            Assert.assertEquals(
-                FixedScaleDecider(CENTER_CROP),
-                addExifOrientation(exifOriNormal, Size(100, 48))
-            )
-        }
-        FixedScaleDecider(CENTER_CROP).apply {
-            Assert.assertEquals(
-                FixedScaleDecider(CENTER_CROP),
-                addExifOrientation(exifOri90, Size(100, 48))
-            )
-        }
-        FixedScaleDecider(CENTER_CROP).apply {
-            Assert.assertEquals(
-                FixedScaleDecider(CENTER_CROP),
-                addExifOrientation(exifOri180, Size(100, 48))
-            )
-        }
-
-        FixedScaleDecider(END_CROP).apply {
-            Assert.assertEquals(
-                FixedScaleDecider(END_CROP),
-                addExifOrientation(exifOriNormal, Size(100, 48))
-            )
-        }
-        FixedScaleDecider(END_CROP).apply {
-            Assert.assertEquals(
-                FixedScaleDecider(START_CROP),
-                addExifOrientation(exifOri90, Size(100, 48))
-            )
-        }
-        FixedScaleDecider(END_CROP).apply {
-            Assert.assertEquals(
-                FixedScaleDecider(START_CROP),
-                addExifOrientation(exifOri180, Size(100, 48))
-            )
         }
     }
 
@@ -184,35 +115,6 @@ class ScaleDeciderTest {
         LongImageScaleDecider(END_CROP, CENTER_CROP).apply {
             Assert.assertEquals(CENTER_CROP, get(100, 50, 50, 50))
             Assert.assertEquals(END_CROP, get(100, 40, 50, 50))
-        }
-    }
-
-    @Test
-    fun testLongImageScaleDeciderAddExifOrientation() {
-        val exifOriNormal =
-            ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
-        val exifOri90 =
-            ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90)
-        val exifOri180 =
-            ExifOrientationHelper(androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180)
-
-        LongImageScaleDecider(START_CROP, END_CROP).apply {
-            Assert.assertEquals(
-                LongImageScaleDecider(START_CROP, END_CROP),
-                addExifOrientation(exifOriNormal, Size(100, 48))
-            )
-        }
-        LongImageScaleDecider(START_CROP, END_CROP).apply {
-            Assert.assertEquals(
-                LongImageScaleDecider(END_CROP, START_CROP),
-                addExifOrientation(exifOri90, Size(100, 48))
-            )
-        }
-        LongImageScaleDecider(START_CROP, END_CROP).apply {
-            Assert.assertEquals(
-                LongImageScaleDecider(END_CROP, START_CROP),
-                addExifOrientation(exifOri180, Size(100, 48))
-            )
         }
     }
 

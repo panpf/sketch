@@ -48,7 +48,7 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
     ): TransformResult {
         val newSize = min(input.width, input.height)
         val scale = scale
-            ?: requestContext.resize.scaleDecider.get(
+            ?: requestContext.request.resizeScaleDecider.get(
                 imageWidth = input.width,
                 imageHeight = input.height,
                 resizeWidth = newSize,

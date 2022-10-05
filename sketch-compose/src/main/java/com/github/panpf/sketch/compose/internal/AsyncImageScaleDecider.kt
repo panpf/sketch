@@ -15,10 +15,8 @@
  */
 package com.github.panpf.sketch.compose.internal
 
-import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.util.Size
 
 /**
  * Just to show that it's [ScaleDecider] from AsyncImage
@@ -35,13 +33,6 @@ class AsyncImageScaleDecider(val wrapped: ScaleDecider) : ScaleDecider {
         resizeHeight: Int
     ): Scale {
         return wrapped.get(imageWidth, imageHeight, resizeWidth, resizeHeight)
-    }
-
-    override fun addExifOrientation(
-        exifOrientationHelper: ExifOrientationHelper,
-        imageSize: Size
-    ): ScaleDecider {
-        return wrapped.addExifOrientation(exifOrientationHelper, imageSize)
     }
 
     override fun equals(other: Any?): Boolean {

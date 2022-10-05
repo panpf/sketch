@@ -32,6 +32,7 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
+import com.github.panpf.sketch.request.internal.newResizeKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.stateimage.DrawableStateImage
@@ -72,8 +73,8 @@ class RequestUtilsTest {
             Assert.assertEquals(expectCacheKey, cacheKey)
         }
 
-        var resize = request.toRequestContext().resize
-        var _resize = "&_resize=${resize.key}"
+        var resizeKey = request.newResizeKey(request.toRequestContext().resizeSize)
+        var _resize = "&_resize=${resizeKey}"
         verifyCacheKey(
             uriString +
                     _resize
@@ -185,8 +186,8 @@ class RequestUtilsTest {
         request = request.newDisplayRequest {
             resize(300, 200, EXACTLY, END_CROP)
         }
-        resize = request.toRequestContext().resize
-        _resize = "&_resize=${resize.key}"
+        resizeKey = request.newResizeKey(request.toRequestContext().resizeSize)
+        _resize = "&_resize=${resizeKey}"
         verifyCacheKey(
             uriString + _parameters +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
@@ -316,8 +317,8 @@ class RequestUtilsTest {
             Assert.assertEquals(expectCacheKey, cacheKey)
         }
 
-        var resize = request.toRequestContext().resize
-        var _resize = "&_resize=${resize.key}"
+        var resizeKey = request.newResizeKey(request.toRequestContext().resizeSize)
+        var _resize = "&_resize=${resizeKey}"
         verifyCacheKey(
             uriString +
                     _resize
@@ -429,8 +430,8 @@ class RequestUtilsTest {
         request = request.newLoadRequest {
             resize(300, 200, EXACTLY, END_CROP)
         }
-        resize = request.toRequestContext().resize
-        _resize = "&_resize=${resize.key}"
+        resizeKey = request.newResizeKey(request.toRequestContext().resizeSize)
+        _resize = "&_resize=${resizeKey}"
         verifyCacheKey(
             uriString + _parameters +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
@@ -560,8 +561,8 @@ class RequestUtilsTest {
             Assert.assertEquals(expectCacheKey, cacheKey)
         }
 
-        var resize = request.toRequestContext().resize
-        var _resize = "&_resize=${resize.key}"
+        var resizeKey = request.newResizeKey(request.toRequestContext().resizeSize)
+        var _resize = "&_resize=${resizeKey}"
         verifyCacheKey(
             uriString +
                     _resize
@@ -673,8 +674,8 @@ class RequestUtilsTest {
         request = request.newDownloadRequest {
             resize(300, 200, EXACTLY, END_CROP)
         }
-        resize = request.toRequestContext().resize
-        _resize = "&_resize=${resize.key}"
+        resizeKey = request.newResizeKey(request.toRequestContext().resizeSize)
+        _resize = "&_resize=${resizeKey}"
         verifyCacheKey(
             uriString + _parameters +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
@@ -805,8 +806,8 @@ class RequestUtilsTest {
             Assert.assertEquals(expectKey, key)
         }
 
-        var resize = request.toRequestContext().resize
-        var _resize = "&_resize=${resize.key}"
+        var resizeKey = request.newResizeKey(request.toRequestContext().resizeSize)
+        var _resize = "&_resize=${resizeKey}"
         verifyCacheKey(
             uriString +
                     _resize
@@ -923,8 +924,8 @@ class RequestUtilsTest {
         request = request.newDisplayRequest {
             resize(300, 200, EXACTLY, END_CROP)
         }
-        resize = request.toRequestContext().resize
-        _resize = "&_resize=${resize.key}"
+        resizeKey = request.newResizeKey(request.toRequestContext().resizeSize)
+        _resize = "&_resize=${resizeKey}"
         verifyCacheKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize

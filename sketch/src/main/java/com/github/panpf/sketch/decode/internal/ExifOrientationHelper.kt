@@ -163,12 +163,12 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
 
     fun addToResize(resize: Resize, imageSize: Size): Resize {
         val newSize = addToSize(Size(resize.width, resize.height))
-        val newScaleDecider = resize.scaleDecider.addExifOrientation(this, imageSize)
+        val newScale = addToScale(resize.scale, imageSize)
         return Resize(
             width = newSize.width,
             height = newSize.height,
-            precisionDecider = resize.precisionDecider,
-            scaleDecider = newScaleDecider,
+            precision = resize.precision,
+            scale = newScale,
         )
     }
 

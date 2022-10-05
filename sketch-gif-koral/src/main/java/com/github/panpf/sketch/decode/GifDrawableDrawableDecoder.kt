@@ -70,10 +70,10 @@ class GifDrawableDrawableDecoder(
         val gifInfoHandleHelper = GifInfoHandleHelper(dataSource)
         val imageWidth = gifInfoHandleHelper.width
         val imageHeight = gifInfoHandleHelper.height
-        val resize = requestContext.resize
+        val resizeSize = requestContext.resizeSize
         val inSampleSize = calculateSampleSize(
             Size(imageWidth, imageHeight),
-            Size(resize.width, resize.height)
+            Size(resizeSize.width, resizeSize.height)
         )
         gifInfoHandleHelper.setOptions(GifOptions().apply {
             setInSampleSize(inSampleSize)
