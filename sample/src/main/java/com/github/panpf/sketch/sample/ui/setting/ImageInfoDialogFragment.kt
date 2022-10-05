@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.graphics.toRect
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.navArgs
@@ -108,15 +107,11 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                     "${width}x${height}, ${mimeType}, ${exifOrientationName(exifOrientation)}"
                 }
 
-                val keyUri = sketchDrawable.requestKey.toUri()
-                optionsInfo = keyUri.queryParameterNames.mapNotNull {
-                    if (it.startsWith("_")) {
-                        val value = keyUri.getQueryParameter(it)
-                        "$it=$value"
-                    } else {
-                        null
-                    }
-                }.joinToString(separator = "\n")
+                optionsInfo = sketchDrawable.requestKey
+                    .replace(sketchDrawable.imageUri, "")
+                    .let { if (it.startsWith("?")) it.substring(1) else it }
+                    .split("&")
+                    .joinToString(separator = "\n")
 
                 bitmapInfo = displayResult.drawable.let {
                     if (it is ResizeDrawable) it.wrappedDrawable else it
