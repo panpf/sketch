@@ -16,9 +16,15 @@
 package com.github.panpf.sketch.sample.ui.photo.local
 
 import android.content.Context
+import android.graphics.RectF
 import android.provider.MediaStore
+import androidx.exifinterface.media.ExifInterface
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.caverock.androidsvg.SVG
+import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.request.LoadRequest
@@ -98,8 +104,11 @@ class LocalPhotoListPagingSource(private val context: Context) :
             val sketch = context.sketch
             val fetcher = sketch.components.newFetcher(LoadRequest(context, uri))
             val dataSource = fetcher.fetch().dataSource
-            val imageInfo =
+            val imageInfo = if (uri.endsWith(".svg")) {
+                dataSource.readImageInfoWithSVG()
+            } else {
                 dataSource.readImageInfoWithBitmapFactoryOrNull(context.prefsService.ignoreExifOrientation.value)
+            }
             if (imageInfo != null) {
                 val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
                 val size =
@@ -123,5 +132,25 @@ class LocalPhotoListPagingSource(private val context: Context) :
                 )
             }
         }
+    }
+
+    private fun DataSource.readImageInfoWithSVG(useViewBoundsAsIntrinsicSize: Boolean = true): ImageInfo {
+        val svg = newInputStream().buffered().use { SVG.getFromInputStream(it) }
+        val width: Int
+        val height: Int
+        val viewBox: RectF? = svg.documentViewBox
+        if (useViewBoundsAsIntrinsicSize && viewBox != null) {
+            width = viewBox.width().toInt()
+            height = viewBox.height().toInt()
+        } else {
+            width = svg.documentWidth.toInt()
+            height = svg.documentHeight.toInt()
+        }
+        return ImageInfo(
+            width,
+            height,
+            SvgBitmapDecoder.MIME_TYPE,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
     }
 }
