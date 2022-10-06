@@ -25,7 +25,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 class HugeImageHorPagerFragment : BindingFragment<TabPagerFragmentBinding>() {
 
     override fun onViewCreated(binding: TabPagerFragmentBinding, savedInstanceState: Bundle?) {
-        val images = AssetImages.HUGES.plus(AssetImages.LONGS).toList()
+        val images = AssetImages.HUGES.toList()
         val titles = arrayOf("WORLD", "CARD", "QMSHT", "CWB")
 
         binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(

@@ -45,6 +45,10 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
 
     private val args by navArgs<ImageInfoDialogFragmentArgs>()
 
+    init {
+        dialogHeightRatio = 0.7f
+    }
+
     override fun onViewCreated(binding: ImageInfoDialogBinding, savedInstanceState: Bundle?) {
         binding.imageInfoUriContent.text = args.uri
         binding.imageInfoOptionsContent.text = args.optionsInfo
@@ -74,13 +78,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             args.throwableString == null && args.zoomInfo != null
         binding.imageInfoTilesContent.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString == null && args.tilesInfo != null
-
-        dialogHeightRatio = when {
-            args.throwableString != null -> 0.45f
-            arrayOf(args.zoomInfo, args.tilesInfo).all { it?.isNotEmpty() == true } -> 0.8f
-            args.zoomInfo?.isNotEmpty() == true -> 0.7f
-            else -> 0.45f
-        }
     }
 
     companion object {

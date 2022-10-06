@@ -26,7 +26,7 @@ import com.github.panpf.sketch.sample.widget.VerTabLayoutMediator
 class HugeImageVerPagerFragment : BindingFragment<TabPagerVerFragmentBinding>() {
 
     override fun onViewCreated(binding: TabPagerVerFragmentBinding, savedInstanceState: Bundle?) {
-        val images = AssetImages.HUGES.plus(AssetImages.LONGS).toList()
+        val images = AssetImages.HUGES.toList()
         val titles = arrayOf("WORLD", "CARD", "QMSHT", "CWB")
 
         binding.tabPagerVerPager.apply {

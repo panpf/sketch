@@ -31,6 +31,17 @@ object AssetImages {
         "asset://sample_anim.heif",
     )
 
+    val HUGES = arrayOf(
+        "asset://sample_huge_world.jpg",
+        "asset://sample_huge_card.png",
+        "asset://sample_long_qmsht.jpg",
+        "asset://sample_long_comic.jpg",
+    )
+
+    val VIDEOS = arrayOf(
+        "asset://sample.mp4"
+    )
+
     val NUMBERS = arrayOf(
 //        "asset://number_0.png",
         "asset://number_1.png",
@@ -42,19 +53,5 @@ object AssetImages {
         "asset://number_7.png",
         "asset://number_8.png",
         "asset://number_9.png",
-    )
-
-    val HUGES = arrayOf(
-        "asset://sample_huge_world.jpg",
-        "asset://sample_huge_card.png",
-    )
-
-    val LONGS = arrayOf(
-        "asset://sample_long_qmsht.jpg",
-        "asset://sample_long_comic.jpg",
-    )
-
-    val VIDEOS = arrayOf(
-        "asset://sample.mp4"
     )
 }
