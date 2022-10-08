@@ -163,7 +163,7 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
                 list.joinToString(prefix = "[", postfix = "]", separator = ",")
             )
         }
-}.build().toString()
+}.build().toString().let { Uri.decode(it) }
 
 internal fun ImageRequest.newResizeKey(resizeSize: Size): String {
     return "Resize(${resizeSize.width}x${resizeSize.height},${resizePrecisionDecider.key},${resizeScaleDecider.key})"
