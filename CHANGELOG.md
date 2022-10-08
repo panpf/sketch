@@ -1,3 +1,12 @@
+# v3.1.0-rc01
+
+### sketch
+
+* fix: Fixed bug where requestKey did not decode
+* fix: Fix a bug where the GET method of LruDiskCache throws NullPointException
+* change: To refactor the Resize
+* change: ResizeDrawable now uses Size and Scale directly
+
 # v3.1.0-beta04
 
 ### sketch
