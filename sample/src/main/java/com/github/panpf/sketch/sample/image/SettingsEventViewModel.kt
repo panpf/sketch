@@ -4,7 +4,6 @@ import android.app.Application
 import android.widget.ImageView.ScaleType
 import androidx.core.view.descendants
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
@@ -57,24 +56,6 @@ class SettingsEventViewModel(application: Application) : AndroidViewModel(applic
         recyclerView.lifecycleOwner.lifecycleScope.launch {
             listReloadFlow.collect {
                 recyclerView.adapter?.findPagingAdapter()?.refresh()
-            }
-        }
-    }
-
-    fun observeComposeListSettings(
-        lifecycleOwner: LifecycleOwner,
-        restart: () -> Unit,
-        reload: () -> Unit
-    ) {
-        lifecycleOwner.lifecycleScope.launch {
-            listRestartImageFlow.collect {
-                restart()
-            }
-        }
-
-        lifecycleOwner.lifecycleScope.launch {
-            listReloadFlow.collect {
-                reload()
             }
         }
     }

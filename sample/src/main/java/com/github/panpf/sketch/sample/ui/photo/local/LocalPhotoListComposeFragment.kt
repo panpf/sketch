@@ -87,16 +87,6 @@ class LocalPhotoListComposeFragment : ToolbarFragment() {
                 }
             }
         }
-
-        settingsEventViewModel.observeComposeListSettings(
-            viewLifecycleOwner,
-            restart = {
-
-            },
-            reload = {
-//                viewModel.pagingFlow.as
-            }
-        )
     }
 
     private fun startImageDetail(items: List<Photo>, position: Int) {
