@@ -174,7 +174,7 @@ class RequestUtilsTest {
                 @Suppress("DEPRECATION")
                 preferQualityOverSpeed(true)
             }
-            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true)"
+            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true"
             verifyCacheKey(
                 uriString + _parameters +
                         _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
@@ -418,7 +418,7 @@ class RequestUtilsTest {
                 @Suppress("DEPRECATION")
                 preferQualityOverSpeed(true)
             }
-            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true)"
+            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true"
             verifyCacheKey(
                 uriString + _parameters +
                         _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
@@ -662,7 +662,7 @@ class RequestUtilsTest {
                 @Suppress("DEPRECATION")
                 preferQualityOverSpeed(true)
             }
-            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true)"
+            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true"
             verifyCacheKey(
                 uriString + _parameters +
                         _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
@@ -912,7 +912,7 @@ class RequestUtilsTest {
                 @Suppress("DEPRECATION")
                 preferQualityOverSpeed(true)
             }
-            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true)"
+            _preferQualityOverSpeed = "&_preferQualityOverSpeed=true"
             verifyCacheKey(
                 uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                         _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
