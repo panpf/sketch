@@ -31,15 +31,16 @@ import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ImageViewerPagerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
+import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
+import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
-import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
-import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenHeight
@@ -170,7 +171,7 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(State.STARTED) {
                     prefsService.showOriginImage.stateFlow.collect {
-                        isSelected = it
+                        setImageResource(if (!it) R.drawable.ic_image_2 else R.drawable.ic_image_2_fill)
                     }
                 }
             }
