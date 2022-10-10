@@ -24,6 +24,7 @@ import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
@@ -39,6 +40,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toHexString
@@ -200,6 +202,7 @@ fun computeSizeMultiplier(
     }
 }
 
+@WorkerThread
 fun realDecode(
     requestContext: RequestContext,
     dataFrom: DataFrom,
@@ -207,6 +210,7 @@ fun realDecode(
     decodeFull: (decodeConfig: DecodeConfig) -> Bitmap,
     decodeRegion: ((srcRect: Rect, decodeConfig: DecodeConfig) -> Bitmap)?
 ): BitmapDecodeResult {
+    requiredWorkThread()
     val request = requestContext.request
     val resizeSize = requestContext.resizeSize
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
@@ -276,10 +280,12 @@ fun realDecode(
     )
 }
 
+@WorkerThread
 fun BitmapDecodeResult.appliedExifOrientation(
     sketch: Sketch,
     requestContext: RequestContext
 ): BitmapDecodeResult {
+    requiredWorkThread()
     if (transformedList?.getExifOrientationTransformed() != null
         || imageInfo.exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
         || imageInfo.exifOrientation == ExifInterface.ORIENTATION_NORMAL
@@ -317,10 +323,12 @@ fun BitmapDecodeResult.appliedExifOrientation(
     }
 }
 
+@WorkerThread
 fun BitmapDecodeResult.appliedResize(
     sketch: Sketch,
     requestContext: RequestContext,
 ): BitmapDecodeResult {
+    requiredWorkThread()
     val request = requestContext.request
     val resizeSize = requestContext.resizeSize
     val resize = Resize(
@@ -428,6 +436,7 @@ fun DataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Bool
     return imageInfo
 }
 
+@WorkerThread
 fun DataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrientation: Boolean = false): ImageInfo? =
     try {
         readImageInfoWithBitmapFactory(ignoreExifOrientation).takeIf {

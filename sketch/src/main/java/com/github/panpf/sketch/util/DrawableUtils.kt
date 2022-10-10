@@ -21,6 +21,7 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import androidx.annotation.WorkerThread
 import androidx.core.graphics.component1
 import androidx.core.graphics.component2
 import androidx.core.graphics.component3
@@ -49,6 +50,7 @@ fun Drawable.getLastChildDrawable(): Drawable? {
 /**
  * Drawable into new Bitmap. Each time a new bitmap is drawn
  */
+@WorkerThread
 internal fun Drawable.toNewBitmap(
     bitmapPool: BitmapPool,
     disallowReuseBitmap: Boolean,

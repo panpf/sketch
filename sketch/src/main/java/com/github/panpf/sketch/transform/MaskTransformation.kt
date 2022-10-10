@@ -23,6 +23,7 @@ import android.graphics.PorterDuffXfermode
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.getOrCreate
@@ -42,6 +43,7 @@ class MaskTransformation(
 
     override fun toString(): String = key
 
+    @WorkerThread
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,

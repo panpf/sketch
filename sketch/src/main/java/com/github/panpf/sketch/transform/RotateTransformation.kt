@@ -20,6 +20,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -32,6 +33,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
 
     override val key: String = "RotateTransformation($degrees)"
 
+    @WorkerThread
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,

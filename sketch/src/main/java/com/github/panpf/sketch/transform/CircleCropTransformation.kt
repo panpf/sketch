@@ -20,6 +20,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -41,6 +42,7 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
 
     override val key: String = "CircleCropTransformation($scale)"
 
+    @WorkerThread
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,

@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.transform
 
 import android.graphics.Bitmap
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
 
@@ -39,6 +40,7 @@ interface Transformation {
      * @param input The input [Bitmap] to transform. Don't recycle or put input into BitmapPool, it will cause unpredictable errors
      * @return The transformed [Bitmap].
      */
+    @WorkerThread
     suspend fun transform(sketch: Sketch, requestContext: RequestContext, input: Bitmap): TransformResult?
 }
 

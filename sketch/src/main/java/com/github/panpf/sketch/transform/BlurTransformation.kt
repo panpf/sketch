@@ -20,6 +20,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.getOrCreate
@@ -61,6 +62,7 @@ class BlurTransformation constructor(
     override val key: String =
         "BlurTransformation(${radius},$hasAlphaBitmapBgColor,$maskColor)"
 
+    @WorkerThread
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,

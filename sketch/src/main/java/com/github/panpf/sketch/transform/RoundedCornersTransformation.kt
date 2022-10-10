@@ -24,6 +24,7 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import androidx.annotation.Px
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -81,6 +82,7 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
     override val key: String =
         "RoundedCornersTransformation(${radiusArray.joinToString(separator = ",")})"
 
+    @WorkerThread
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,

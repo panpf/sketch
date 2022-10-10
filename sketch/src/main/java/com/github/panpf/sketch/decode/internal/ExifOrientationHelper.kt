@@ -21,6 +21,7 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
@@ -29,8 +30,10 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.safeConfig
+import java.io.IOException
 import kotlin.math.abs
 
+@Throws(IOException::class)
 fun DataSource.readExifOrientation(): Int =
     newInputStream().buffered().use {
         ExifInterface(it).getAttributeInt(
@@ -39,6 +42,7 @@ fun DataSource.readExifOrientation(): Int =
         )
     }
 
+@Throws(IOException::class)
 fun DataSource.readExifOrientationWithMimeType(mimeType: String): Int =
     if (ExifInterface.isSupportedMimeType(mimeType)) {
         readExifOrientation()
@@ -113,6 +117,7 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
 //            else -> 1
 //        }
 
+    @WorkerThread
     fun applyToBitmap(
         inBitmap: Bitmap,
         bitmapPool: BitmapPool,
@@ -128,6 +133,7 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
         )
     }
 
+    @WorkerThread
     fun addToBitmap(
         inBitmap: Bitmap,
         bitmapPool: BitmapPool,
@@ -244,6 +250,7 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
         }
     }
 
+    @WorkerThread
     private fun applyFlipAndRotation(
         inBitmap: Bitmap,
         isFlipped: Boolean,
