@@ -15,11 +15,14 @@
  */
 package com.github.panpf.sketch.util
 
+import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.Application
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.os.Build
 import android.os.Looper
+import android.os.Process
 import android.webkit.MimeTypeMap
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
@@ -134,28 +137,44 @@ internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): Fi
 
 // The getRunningAppProcesses() method is a privacy method and cannot be called before agreeing to the privacy agreement,
 // so the process name can only be obtained in this way
-internal fun getProcessNameCompat(): String? =
+@SuppressLint("PrivateApi")
+internal fun getProcessNameCompat(context: Context): String? {
     if (Build.VERSION.SDK_INT >= 28) {
-        Application.getProcessName()
-    } else {
+        return Application.getProcessName()
+    }
+
+    if (Build.VERSION.SDK_INT >= 18) {
         try {
             val activityThreadClass = Class.forName("android.app.ActivityThread")
-            val method = if (Build.VERSION.SDK_INT >= 18) {
-                activityThreadClass.getMethod("currentProcessName")
-            } else {
-                activityThreadClass.getMethod("currentPackageName")
+            val method = activityThreadClass.getMethod("currentProcessName").apply {
+                isAccessible = true
             }
-            method.isAccessible = true
-            method.invoke(null)?.toString()
+            val processName = method.invoke(null)?.toString()
+            if (processName != null && processName.isNotEmpty()) {
+                return processName
+            }
         } catch (e: Throwable) {
             e.printStackTrace()
-            null
         }
     }
 
+    val myPid = Process.myPid()
+    val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    val processInfoList = activityManager.runningAppProcesses
+    if (processInfoList != null) {
+        for (runningAppProcessInfo in processInfoList) {
+            if (runningAppProcessInfo.pid == myPid) {
+                return runningAppProcessInfo.processName
+            }
+        }
+    }
+
+    return null
+}
+
 internal fun getProcessNameSuffix(context: Context, processName: String? = null): String? {
     val packageName = context.packageName
-    val finalProcessName = processName ?: getProcessNameCompat() ?: return null
+    val finalProcessName = processName ?: getProcessNameCompat(context) ?: return null
     return if (
         finalProcessName.length > packageName.length
         && finalProcessName.startsWith(packageName)

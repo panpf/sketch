@@ -45,7 +45,9 @@ class NotificationService : Service() {
             }.execute()
 
             val cacheDirName = sketch.resultCache.directory.name
-            require(cacheDirName.startsWith("result") && cacheDirName != "result")
+            require(cacheDirName.startsWith("result") && cacheDirName != "result") {
+                cacheDirName
+            }
 
             stopSelf()
         }
