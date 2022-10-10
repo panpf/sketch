@@ -34,8 +34,8 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
@@ -386,7 +386,6 @@ fun BitmapDecodeResult.appliedResize(
             caller = "appliedResize"
         )
         sketch.logger.d("appliedResize") {
-            // todo Delete these excess logs
             "appliedResize. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.key}'"
         }
         newResult(bitmap = newBitmap) {
