@@ -1,7 +1,7 @@
+@file:Suppress("DEPRECATION")
+
 package com.github.panpf.sketch.gif.movie.test.drawable
 
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Movie
@@ -19,11 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
-import com.github.panpf.sketch.decode.internal.freeBitmap
-import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.drawable.MovieDrawable
-import com.github.panpf.sketch.drawable.MovieDrawable.BitmapCreator
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.transform.PixelOpacity.TRANSLUCENT
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
@@ -35,6 +31,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@Suppress("DEPRECATION")
 @RunWith(AndroidJUnit4::class)
 class MovieDrawableTest {
 
@@ -43,52 +40,39 @@ class MovieDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
 
         val callbackList = mutableListOf<String>()
         val movie = context.assets.open("sample_anim.gif").use { Movie.decodeStream(it) }
-        val movieDrawable =
-            MovieDrawable(movie, bitmapCreator = object : BitmapCreator {
-                override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
-                    sketch.bitmapPool.getOrCreate(width, height, config, false)
-
-                override fun freeBitmap(bitmap: Bitmap) {
-                    sketch.bitmapPool.freeBitmap(
-                        bitmap = bitmap,
-                        disallowReuseBitmap = false,
-                        caller = "MovieDrawable:recycle"
-                    )
+        val movieDrawable = MovieDrawable(movie).apply {
+            clearAnimationCallbacks()
+            val callback = object : AnimationCallback() {
+                override fun onAnimationStart(drawable: Drawable?) {
+                    super.onAnimationStart(drawable)
+                    callbackList.add("onAnimationStart")
                 }
-            }).apply {
-                clearAnimationCallbacks()
-                val callback = object : AnimationCallback() {
-                    override fun onAnimationStart(drawable: Drawable?) {
-                        super.onAnimationStart(drawable)
-                        callbackList.add("onAnimationStart")
-                    }
 
-                    override fun onAnimationEnd(drawable: Drawable?) {
-                        super.onAnimationEnd(drawable)
-                        callbackList.add("onAnimationEnd")
-                    }
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    super.onAnimationEnd(drawable)
+                    callbackList.add("onAnimationEnd")
                 }
-                Assert.assertFalse(unregisterAnimationCallback(callback))
-                registerAnimationCallback(callback)
-                Assert.assertTrue(unregisterAnimationCallback(callback))
-                registerAnimationCallback(callback)
-
-                setAnimatedTransformation { TRANSLUCENT }
-
-                assertThrow(IllegalArgumentException::class) {
-                    alpha = -1
-                }
-                assertThrow(IllegalArgumentException::class) {
-                    alpha = 256
-                }
-                alpha = 200
-
-                colorFilter = null
             }
+            Assert.assertFalse(unregisterAnimationCallback(callback))
+            registerAnimationCallback(callback)
+            Assert.assertTrue(unregisterAnimationCallback(callback))
+            registerAnimationCallback(callback)
+
+            setAnimatedTransformation { TRANSLUCENT }
+
+            assertThrow(IllegalArgumentException::class) {
+                alpha = -1
+            }
+            assertThrow(IllegalArgumentException::class) {
+                alpha = 256
+            }
+            alpha = 200
+
+            colorFilter = null
+        }
 
         MyTestFragment::class.launchFragmentInContainer().getFragmentSync().apply {
             runBlocking(Dispatchers.Main) {
@@ -117,22 +101,9 @@ class MovieDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
 
         val movie = context.assets.open("sample_anim.gif").use { Movie.decodeStream(it) }
-        val movieDrawable =
-            MovieDrawable(movie, bitmapCreator = object : BitmapCreator {
-                override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
-                    sketch.bitmapPool.getOrCreate(width, height, config, false)
-
-                override fun freeBitmap(bitmap: Bitmap) {
-                    sketch.bitmapPool.freeBitmap(
-                        bitmap = bitmap,
-                        disallowReuseBitmap = false,
-                        caller = "MovieDrawable:recycle"
-                    )
-                }
-            })
+        val movieDrawable = MovieDrawable(movie)
 
         MyTestFragment::class.launchFragmentInContainer().getFragmentSync().apply {
             runBlocking(Dispatchers.Main) {

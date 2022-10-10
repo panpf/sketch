@@ -48,15 +48,7 @@ import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
 class MovieDrawable constructor(
     private val movie: Movie,
     private val config: Bitmap.Config = Bitmap.Config.ARGB_8888,
-    bitmapCreator: BitmapCreator? = null
 ) : Drawable(), Animatable2Compat {
-
-    private val bitmapCreator = bitmapCreator ?: object : BitmapCreator {
-        override fun createBitmap(width: Int, height: Int, config: Bitmap.Config): Bitmap =
-            Bitmap.createBitmap(width, height, config)
-
-        override fun freeBitmap(bitmap: Bitmap) = bitmap.recycle()
-    }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
 
@@ -253,10 +245,8 @@ class MovieDrawable constructor(
         val bitmapWidth = (softwareScale * movieWidth).toInt()
         val bitmapHeight = (softwareScale * movieHeight).toInt()
 
-        val bitmap = bitmapCreator.createBitmap(bitmapWidth, bitmapHeight, config)
-        softwareBitmap?.let {
-            bitmapCreator.freeBitmap(it)
-        }
+        val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, config)
+        softwareBitmap?.recycle()
         softwareBitmap = bitmap
         softwareCanvas = Canvas(bitmap)
 
@@ -327,9 +317,4 @@ class MovieDrawable constructor(
     }
 
     private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }
-
-    interface BitmapCreator {
-        fun createBitmap(width: Int, height: Int, config: Bitmap.Config): Bitmap
-        fun freeBitmap(bitmap: Bitmap)
-    }
 }

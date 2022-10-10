@@ -17,8 +17,6 @@
  */
 package com.github.panpf.sketch.decode
 
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Movie
@@ -29,10 +27,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
-import com.github.panpf.sketch.decode.internal.freeBitmap
-import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.isGif
-import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -62,8 +57,7 @@ import kotlinx.coroutines.withContext
  * disallowReuseBitmap
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
-class GifMovieDrawableDecoder constructor(
-    private val sketch: Sketch,
+class GifMovieDrawableDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
@@ -81,24 +75,7 @@ class GifMovieDrawableDecoder constructor(
 
         val config = if (movie.isOpaque && request.bitmapConfig?.isLowQuality == true)
             RGB_565 else ARGB_8888
-        val bitmapCreator = if (!request.disallowReuseBitmap) {
-            object : MovieDrawable.BitmapCreator {
-                override fun createBitmap(width: Int, height: Int, config: Config): Bitmap =
-                    sketch.bitmapPool.getOrCreate(width, height, config, false)
-
-                override fun freeBitmap(bitmap: Bitmap) {
-                    sketch.bitmapPool.freeBitmap(
-                        bitmap = bitmap,
-                        disallowReuseBitmap = false,
-                        caller = "MovieDrawable:recycle"
-                    )
-                    sketch.logger.d("GifMovieDrawableDecoder") {
-                        "freeBitmap. freeBitmap. bitmap=${bitmap.logString}. '${requestContext.key}'"
-                    }
-                }
-            }
-        } else null
-        val movieDrawable = MovieDrawable(movie, config, bitmapCreator).apply {
+        val movieDrawable = MovieDrawable(movie, config).apply {
             setRepeatCount(request.repeatCount ?: ANIMATION_REPEAT_INFINITE)
 
             // Set the animated transformation to be applied on each frame.
@@ -150,7 +127,7 @@ class GifMovieDrawableDecoder constructor(
                 val isGif =
                     if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF
                 if (isGif) {
-                    return GifMovieDrawableDecoder(sketch, requestContext, fetchResult.dataSource)
+                    return GifMovieDrawableDecoder(requestContext, fetchResult.dataSource)
                 }
             }
             return null
