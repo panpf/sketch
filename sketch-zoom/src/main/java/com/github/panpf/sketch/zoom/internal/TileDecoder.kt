@@ -52,7 +52,6 @@ internal class TileDecoder internal constructor(
     private val exifOrientationHelper: ExifOrientationHelper =
         ExifOrientationHelper(imageInfo.exifOrientation)
     private var _destroyed: Boolean = false
-    private var inBitmapError: Boolean = false
     private val imageSize: Size = Size(imageInfo.width, imageInfo.height)
     private val addedImageSize: Size by lazy { exifOrientationHelper.addToSize(imageSize) }
 
@@ -86,16 +85,14 @@ internal class TileDecoder internal constructor(
         val decodeOptions = BitmapFactory.Options().apply {
             this.inSampleSize = inSampleSize
         }
-        if (!inBitmapError) {
-            bitmapPool.setInBitmapForRegion(
-                options = decodeOptions,
-                regionSize = Size(newSrcRect.width(), newSrcRect.height()),
-                imageMimeType = imageInfo.mimeType,
-                imageSize = addedImageSize,
-                disallowReuseBitmap = disallowReuseBitmap,
-                caller = "tile:decodeRegion"
-            )
-        }
+        bitmapPool.setInBitmapForRegion(
+            options = decodeOptions,
+            regionSize = Size(newSrcRect.width(), newSrcRect.height()),
+            imageMimeType = imageInfo.mimeType,
+            imageSize = addedImageSize,
+            disallowReuseBitmap = disallowReuseBitmap,
+            caller = "tile:decodeRegion"
+        )
         logger.d(SubsamplingHelper.MODULE) {
             "decodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. '$imageUri'"
         }
@@ -106,7 +103,6 @@ internal class TileDecoder internal constructor(
             throwable.printStackTrace()
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
-                inBitmapError = true
                 logger.e(SubsamplingHelper.MODULE, throwable) {
                     "decodeRegion. Bitmap region decode inBitmap error. '$imageUri'"
                 }

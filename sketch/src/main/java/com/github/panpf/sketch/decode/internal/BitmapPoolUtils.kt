@@ -16,27 +16,34 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config
 import android.graphics.BitmapFactory.Options
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.isAndSupportHardware
 import com.github.panpf.sketch.util.isMainThread
+import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withContext
 
 private const val MODULE = "BitmapPoolUtils"
 
+private val bitmapPoolLock = Mutex()
 
-fun BitmapPool.setInBitmap(
+@WorkerThread
+private fun BitmapPool.realSetInBitmap(
     options: Options,
     imageSize: Size,
     imageMimeType: String?,
     disallowReuseBitmap: Boolean = false,
     caller: String? = null,
 ): Boolean {
+    requiredWorkThread()
     if (disallowReuseBitmap) {
         logger?.d(MODULE) {
             "setInBitmap. disallowReuseBitmap. imageSize=$imageSize, imageMimeType=$imageMimeType. $caller"
@@ -68,6 +75,7 @@ fun BitmapPool.setInBitmap(
         }
         return false
     }
+
     val sampledBitmapSize =
         calculateSampledBitmapSize(imageSize, inSampleSize, imageMimeType)
     val inBitmap: Bitmap? = get(
@@ -96,7 +104,26 @@ fun BitmapPool.setInBitmap(
     return inBitmap != null
 }
 
-fun BitmapPool.setInBitmapForRegion(
+@WorkerThread
+fun BitmapPool.setInBitmap(
+    options: Options,
+    imageSize: Size,
+    imageMimeType: String?,
+    disallowReuseBitmap: Boolean = false,
+    caller: String? = null,
+): Boolean {
+    return runBlocking {
+        bitmapPoolLock.lock()
+        try {
+            realSetInBitmap(options, imageSize, imageMimeType, disallowReuseBitmap, caller)
+        } finally {
+            bitmapPoolLock.unlock()
+        }
+    }
+}
+
+@WorkerThread
+private fun BitmapPool.realSetInBitmapForRegion(
     options: Options,
     regionSize: Size,
     imageMimeType: String?,
@@ -104,6 +131,7 @@ fun BitmapPool.setInBitmapForRegion(
     disallowReuseBitmap: Boolean = false,
     caller: String? = null,
 ): Boolean {
+    requiredWorkThread()
     if (disallowReuseBitmap) {
         logger?.d(MODULE) {
             "setInBitmapForRegion. disallowReuseBitmap. imageSize=$imageSize, imageMimeType=$imageMimeType. $caller"
@@ -158,13 +186,41 @@ fun BitmapPool.setInBitmapForRegion(
     return true
 }
 
-fun BitmapPool.getOrCreate(
+@WorkerThread
+fun BitmapPool.setInBitmapForRegion(
+    options: Options,
+    regionSize: Size,
+    imageMimeType: String?,
+    imageSize: Size,
+    disallowReuseBitmap: Boolean = false,
+    caller: String? = null,
+): Boolean {
+    return runBlocking {
+        bitmapPoolLock.lock()
+        try {
+            realSetInBitmapForRegion(
+                options = options,
+                regionSize = regionSize,
+                imageMimeType = imageMimeType,
+                imageSize = imageSize,
+                disallowReuseBitmap = disallowReuseBitmap,
+                caller = caller
+            )
+        } finally {
+            bitmapPoolLock.unlock()
+        }
+    }
+}
+
+@WorkerThread
+private fun BitmapPool.realGetOrCreate(
     width: Int,
     height: Int,
-    config: Config,
+    config: Bitmap.Config,
     disallowReuseBitmap: Boolean = false,
     caller: String? = null,
 ): Bitmap {
+    requiredWorkThread()
     if (disallowReuseBitmap) {
         return Bitmap.createBitmap(width, height, config).apply {
             logger?.d(MODULE) {
@@ -172,12 +228,45 @@ fun BitmapPool.getOrCreate(
             }
         }
     }
-    return get(width, height, config)
-        ?: Bitmap.createBitmap(width, height, config).apply {
-            logger?.d(MODULE) {
-                "getOrCreate. new . ${this.logString}. $caller"
-            }
+    return get(width, height, config) ?: Bitmap.createBitmap(width, height, config).apply {
+        logger?.d(MODULE) {
+            "getOrCreate. new . ${this.logString}. $caller"
         }
+    }
+}
+
+@WorkerThread
+fun BitmapPool.getOrCreate(
+    width: Int,
+    height: Int,
+    config: Bitmap.Config,
+    disallowReuseBitmap: Boolean = false,
+    caller: String? = null,
+): Bitmap {
+    return runBlocking {
+        bitmapPoolLock.lock()
+        try {
+            realGetOrCreate(width, height, config, disallowReuseBitmap, caller)
+        } finally {
+            bitmapPoolLock.unlock()
+        }
+    }
+}
+
+@WorkerThread
+private fun BitmapPool.realFreeBitmap(bitmap: Bitmap, caller: String? = null) {
+    requiredWorkThread()
+    val success = put(bitmap, caller)
+    if (success) {
+        logger?.d(MODULE) {
+            "freeBitmap. successful. $caller. ${bitmap.logString}"
+        }
+    } else {
+        bitmap.recycle()
+        logger?.d(MODULE) {
+            "freeBitmap. failed. execute recycle. $caller. ${bitmap.logString}"
+        }
+    }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -186,35 +275,47 @@ fun BitmapPool.freeBitmap(
     disallowReuseBitmap: Boolean = false,
     caller: String? = null,
 ) {
-    if (bitmap != null && !bitmap.isRecycled) {
-        if (!disallowReuseBitmap) {
-            if (isMainThread()) {
-                GlobalScope.launch(Dispatchers.IO) {
-                    @Suppress("KotlinConstantConditions")
-                    freeBitmap(bitmap, disallowReuseBitmap, caller)
-                }
-            } else {
-                val success = put(bitmap, caller)
-                if (success) {
-                    logger?.d(MODULE) {
-                        "freeBitmap. successful. $caller. ${bitmap.logString}"
-                    }
-                } else {
-                    bitmap.recycle()
-                    logger?.d(MODULE) {
-                        "freeBitmap. failed. execute recycle. $caller. ${bitmap.logString}"
-                    }
-                }
-            }
-        } else {
-            bitmap.recycle()
-            logger?.d(MODULE) {
-                "freeBitmap. disallowReuseBitmap. execute recycle. $caller. ${bitmap.logString}"
-            }
-        }
-    } else {
+    if (bitmap == null || bitmap.isRecycled) {
         logger?.w(MODULE) {
             "freeBitmap. error. bitmap null or recycled. $caller. ${bitmap?.logString}"
         }
+        return
+    }
+    if (disallowReuseBitmap) {
+        bitmap.recycle()
+        logger?.d(MODULE) {
+            "freeBitmap. disallowReuseBitmap. execute recycle. $caller. ${bitmap.logString}"
+        }
+        return
+    }
+
+    if (isMainThread()) {
+        GlobalScope.launch(Dispatchers.Main.immediate) {
+            /*
+             * During the asynchronous execution of freeBitmap, if the waiting time is too long and a large number of new bitmaps are generated,
+             * a large number of bitmaps will be accumulated in a short period of time, resulting in out of memory
+             *
+             * The solution is to synchronize the released Bitmap with the produced Bitmap with a lock,
+             * so that a large number of new bitmaps are not generated before the old Bitmap is free
+             *
+             * This bug is triggered when swiping quickly in a SketchZoomImageView
+             *
+             * Why was this lock put here? Since this problem is caused by asynchronous freeBitmap,
+             * it makes more sense to address it here and avoid contaminating other code
+             */
+            bitmapPoolLock.lock()
+            try {
+                // Execute freeBitmap asynchronously.
+                // The BitmapPool operation was placed in the worker thread，
+                // because the main thread would stall if it had to compete with the worker thread for the synchronization lock
+                withContext(Dispatchers.IO) {
+                    realFreeBitmap(bitmap, caller)
+                }
+            } finally {
+                bitmapPoolLock.unlock()
+            }
+        }
+    } else {
+        realFreeBitmap(bitmap, caller)
     }
 }
