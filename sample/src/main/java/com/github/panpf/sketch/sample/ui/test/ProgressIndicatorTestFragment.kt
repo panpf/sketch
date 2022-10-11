@@ -51,9 +51,15 @@ class ProgressIndicatorTestFragment :
     ) {
         toolbar.title = "ProgressIndicator"
 
-        binding.testIndicatorTestImage1.setImageResource(R.drawable.im_placeholder)
-        binding.testIndicatorTestImage2.setImageResource(R.drawable.im_placeholder)
-        binding.testIndicatorTestImage3.setImageResource(R.drawable.im_placeholder)
+        if (VERSION.SDK_INT >= 21) {
+            binding.testIndicatorTestImage1.setImageResource(R.drawable.im_placeholder)
+            binding.testIndicatorTestImage2.setImageResource(R.drawable.im_placeholder)
+            binding.testIndicatorTestImage3.setImageResource(R.drawable.im_placeholder)
+        } else {
+            binding.testIndicatorTestImage1.setImageResource(R.drawable.im_placeholder_noicon)
+            binding.testIndicatorTestImage2.setImageResource(R.drawable.im_placeholder_noicon)
+            binding.testIndicatorTestImage3.setImageResource(R.drawable.im_placeholder_noicon)
+        }
         binding.testIndicatorTestImage1.showMaskProgressIndicator()
         binding.testIndicatorTestImage2.showSectorProgressIndicator()
         binding.testIndicatorTestImage3.showRingProgressIndicator()

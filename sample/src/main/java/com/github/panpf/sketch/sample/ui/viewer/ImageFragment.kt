@@ -23,8 +23,8 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.ImageFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.showDataFromLogo
-import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 
 class ImageFragment : BindingFragment<ImageFragmentBinding>() {
 
@@ -33,9 +33,18 @@ class ImageFragment : BindingFragment<ImageFragmentBinding>() {
     override fun onViewCreated(binding: ImageFragmentBinding, savedInstanceState: Bundle?) {
         binding.imageImage.apply {
             showDataFromLogo()
-            showSectorProgressIndicator()
             displayImage(args.url) {
                 lifecycle(viewLifecycleOwner.lifecycle)
+                listener(
+                    onStart = {
+                        binding.imageState.gone()
+                    },
+                    onError = { _, _ ->
+                        binding.imageState.errorWithRetry {
+                            SketchUtils.restart(this@apply)
+                        }
+                    }
+                )
             }
         }
     }

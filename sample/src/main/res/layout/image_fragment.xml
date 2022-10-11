@@ -8,4 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/app_name" />
+
+    <com.github.panpf.sketch.sample.widget.SmallStateView
+        android:id="@+id/imageState"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>
