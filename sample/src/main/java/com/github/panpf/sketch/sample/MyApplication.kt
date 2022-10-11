@@ -47,7 +47,16 @@ class MyApplication : MultiDexApplication(), SketchFactory {
 
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         logger(Logger(Logger.Level.valueOf(prefsService.logLevel.value)))
-        httpStack(OkHttpStack.Builder().build())
+        httpStack(OkHttpStack.Builder().apply {
+            if (VERSION.SDK_INT <= 19) {
+                enabledTlsProtocols("TLSv1.1", "TLSv1.2")
+            }
+        }.build())
+//        httpStack(HurlStack.Builder().apply {
+//            if (VERSION.SDK_INT <= 19) {
+//                enabledTlsProtocols("TLSv1.1", "TLSv1.2")
+//            }
+//        }.build())
         components {
             // global image request config
             addRequestInterceptor(SettingsDisplayRequestInterceptor())

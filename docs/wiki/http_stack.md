@@ -77,6 +77,32 @@ class MyApplication : Application(), SketchFactory {
 
 > 注意：由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app 最低版本较高，那么你可以使用较新版本的 OkHttp 自定一个 HttpStack
 
+### Android 4.* TLS 1.1, 1.2 支持
+
+Android 4.1 到 4.4 版本支持 TLS 1.1 和 1.2 但是默认没有开启，HurlStack 和 OkHttpStack 开启方式如下：
+
+```kotlin
+class MyApplication : Application(), SketchFactory {
+
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            httpStack(OkHttpStack.Builder().apply {
+                if (VERSION.SDK_INT <= 19) {
+                    enabledTlsProtocols("TLSv1.1", "TLSv1.2")
+                }
+            }.build())
+
+            // 或
+            httpStack(HurlStack.Builder().apply {
+                if (VERSION.SDK_INT <= 19) {
+                    enabledTlsProtocols("TLSv1.1", "TLSv1.2")
+                }
+            }.build())
+        }.build()
+    }
+}
+```
+
 ### 自定义：
 
 实现 [HttpStack] 接口定义自己的 HttpStack，然后在初始化 Sketch 时通过 httpStack() 方法注册即可：

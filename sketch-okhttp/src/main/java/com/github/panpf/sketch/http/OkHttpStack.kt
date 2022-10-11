@@ -83,6 +83,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         private var addExtraHeaders: MutableList<Pair<String, String>>? = null
         private var interceptors: List<Interceptor>? = null
         private var networkInterceptors: List<Interceptor>? = null
+        private var enabledTlsProtocols: List<String>? = null
 
         /**
          * Set connection timeout, in milliseconds
@@ -151,6 +152,20 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
             this.networkInterceptors = networkInterceptors.toList()
         }
 
+        /**
+         * Set tls protocols
+         */
+        fun enabledTlsProtocols(vararg enabledTlsProtocols: String): Builder = apply {
+            this.enabledTlsProtocols = enabledTlsProtocols.toList()
+        }
+
+        /**
+         * Set tls protocols
+         */
+        fun enabledTlsProtocols(enabledTlsProtocols: List<String>): Builder = apply {
+            this.enabledTlsProtocols = enabledTlsProtocols.toList()
+        }
+
         fun build(): OkHttpStack {
             val okHttpClient = OkHttpClient.Builder().apply {
                 connectTimeout(connectTimeoutMillis.toLong(), MILLISECONDS)
@@ -166,6 +181,10 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
                 }
                 networkInterceptors?.forEach { interceptor ->
                     addNetworkInterceptor(interceptor)
+                }
+                val enabledTlsProtocols = enabledTlsProtocols
+                if (enabledTlsProtocols?.isNotEmpty() == true) {
+                    setEnabledTlsProtocols(enabledTlsProtocols.toTypedArray())
                 }
             }.build()
             return OkHttpStack(okHttpClient)

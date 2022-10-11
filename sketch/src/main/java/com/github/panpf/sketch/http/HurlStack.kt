@@ -21,6 +21,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 /**
  * Use [HttpURLConnection] to request HTTP
@@ -29,32 +30,37 @@ class HurlStack private constructor(
     /**
      * Read timeout, in milliseconds
      */
-    val readTimeoutMillis: Int,
+    val readTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT,
 
     /**
      * Connection timeout, in milliseconds
      */
-    val connectTimeoutMillis: Int,
+    val connectTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT,
 
     /**
      * HTTP UserAgent
      */
-    val userAgent: String?,
+    val userAgent: String? = null,
 
     /**
      * HTTP header
      */
-    val headers: Map<String, String>?,
+    val headers: Map<String, String>? = null,
 
     /**
      * Repeatable HTTP headers
      */
-    val addHeaders: List<Pair<String, String>>?,
+    val addHeaders: List<Pair<String, String>>? = null,
 
     /**
      * Callback before executing connection
      */
-    val onBeforeConnect: ((url: String, connection: HttpURLConnection) -> Unit)?
+    val onBeforeConnect: ((url: String, connection: HttpURLConnection) -> Unit)? = null,
+
+    /**
+     * Enabled tls protocols
+     */
+    val enabledTlsProtocols: Array<String>? = null
 ) : HttpStack {
 
     @WorkerThread
@@ -88,6 +94,10 @@ class HurlStack private constructor(
                     setList.forEach {
                         setRequestProperty(it.first, it.second)
                     }
+                }
+                val enabledTlsProtocols = enabledTlsProtocols
+                if (this is HttpsURLConnection && enabledTlsProtocols?.isNotEmpty() == true) {
+                    sslSocketFactory = TlsCompatSocketFactory(enabledTlsProtocols)
                 }
             }
             onBeforeConnect?.invoke(url, connection)
@@ -162,6 +172,7 @@ class HurlStack private constructor(
         private var extraHeaders: MutableMap<String, String>? = null
         private var addExtraHeaders: MutableList<Pair<String, String>>? = null
         private var onBeforeConnect: ((url: String, connection: HttpURLConnection) -> Unit)? = null
+        private var enabledTlsProtocols: List<String>? = null
 
         /**
          * Set connection timeout, in milliseconds
@@ -224,6 +235,20 @@ class HurlStack private constructor(
                 this.onBeforeConnect = block
             }
 
+        /**
+         * Set tls protocols
+         */
+        fun enabledTlsProtocols(vararg enabledTlsProtocols: String): Builder = apply {
+            this.enabledTlsProtocols = enabledTlsProtocols.toList()
+        }
+
+        /**
+         * Set tls protocols
+         */
+        fun enabledTlsProtocols(enabledTlsProtocols: List<String>): Builder = apply {
+            this.enabledTlsProtocols = enabledTlsProtocols.toList()
+        }
+
         fun build(): HurlStack = HurlStack(
             readTimeoutMillis = readTimeoutMillis,
             connectTimeoutMillis = connectTimeoutMillis,
@@ -231,6 +256,7 @@ class HurlStack private constructor(
             headers = extraHeaders?.takeIf { it.isNotEmpty() },
             addHeaders = addExtraHeaders?.takeIf { it.isNotEmpty() },
             onBeforeConnect = onBeforeConnect,
+            enabledTlsProtocols = enabledTlsProtocols?.toTypedArray(),
         )
     }
 }
