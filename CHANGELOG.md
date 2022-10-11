@@ -1,3 +1,15 @@
+# v3.1.0-rc02
+
+* fix: Fixed bug where process names could not be correctly obtained in APi 17 and later
+* improve: To unify various Gif Drawable logic MovieDrawable no longer uses BitmapPool
+* new: RequestInterceptor, BitmapDecodeInterceptor, DrawableDecodeInterceptor support sorting
+* new: HurlStack and OkHttpStack now support enabling protocols such as TLS 1.1 and 1.2
+
+### sketch-zoom
+
+* fix: Fixed a bug that caused SketchZoomImageView to run out of memory when swiping quickly
+* improve: Improve SketchZoomImageView scroll bar style
+
 # v3.1.0-rc01
 
 ### sketch
