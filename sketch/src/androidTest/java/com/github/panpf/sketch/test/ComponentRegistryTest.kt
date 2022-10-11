@@ -55,63 +55,6 @@ import org.junit.runner.RunWith
 class ComponentRegistryTest {
 
     @Test
-    fun testBuilder() {
-        ComponentRegistry.Builder().build().apply {
-            Assert.assertTrue(fetcherFactoryList.isEmpty())
-            Assert.assertTrue(bitmapDecoderFactoryList.isEmpty())
-            Assert.assertTrue(drawableDecoderFactoryList.isEmpty())
-            Assert.assertTrue(requestInterceptorList.isEmpty())
-            Assert.assertTrue(bitmapDecodeInterceptorList.isEmpty())
-            Assert.assertTrue(drawableDecodeInterceptorList.isEmpty())
-        }
-
-        ComponentRegistry.Builder().apply {
-            addFetcher(HttpUriFetcher.Factory())
-            addFetcher(Base64UriFetcher.Factory())
-            addFetcher(ResourceUriFetcher.Factory())
-            addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
-            addBitmapDecoder(DefaultBitmapDecoder.Factory())
-            addDrawableDecoder(DefaultDrawableDecoder.Factory())
-            addRequestInterceptor(EngineRequestInterceptor())
-            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
-            addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
-        }.build().apply {
-            Assert.assertEquals(
-                listOf(
-                    HttpUriFetcher.Factory(),
-                    Base64UriFetcher.Factory(),
-                    ResourceUriFetcher.Factory()
-                ),
-                fetcherFactoryList
-            )
-            Assert.assertEquals(
-                listOf(
-                    XmlDrawableBitmapDecoder.Factory(),
-                    DefaultBitmapDecoder.Factory()
-                ),
-                bitmapDecoderFactoryList
-            )
-            Assert.assertEquals(
-                listOf(DefaultDrawableDecoder.Factory()),
-                drawableDecoderFactoryList
-            )
-            Assert.assertEquals(listOf(EngineRequestInterceptor()), requestInterceptorList)
-            Assert.assertEquals(
-                listOf(
-                    EngineBitmapDecodeInterceptor(),
-                    BitmapTransformationDecodeInterceptor()
-                ),
-                bitmapDecodeInterceptorList
-            )
-            Assert.assertEquals(
-                listOf(EngineDrawableDecodeInterceptor()),
-                drawableDecodeInterceptorList
-            )
-        }
-    }
-
-    @Test
     fun testNewBuilder() {
         ComponentRegistry.Builder().apply {
             addFetcher(HttpUriFetcher.Factory())
@@ -472,9 +415,9 @@ class ComponentRegistryTest {
                         "fetcherFactoryList=[TestFetcher]," +
                         "bitmapDecoderFactoryList=[TestBitmapDecoder]," +
                         "drawableDecoderFactoryList=[TestDrawableDecoder]," +
-                        "requestInterceptorList=[TestRequestInterceptor]," +
-                        "bitmapDecodeInterceptorList=[TestBitmapDecodeInterceptor]," +
-                        "drawableDecodeInterceptorList=[TestDrawableDecodeInterceptor]" +
+                        "requestInterceptorList=[TestRequestInterceptor(sortWeight=0)]," +
+                        "bitmapDecodeInterceptorList=[TestBitmapDecodeInterceptor(sortWeight=0)]," +
+                        "drawableDecodeInterceptorList=[TestDrawableDecodeInterceptor(sortWeight=0)]" +
                         ")",
                 toString()
             )
@@ -492,9 +435,9 @@ class ComponentRegistryTest {
                         "fetcherFactoryList=[HttpUriFetcher]," +
                         "bitmapDecoderFactoryList=[DefaultBitmapDecoder]," +
                         "drawableDecoderFactoryList=[DefaultDrawableDecoder]," +
-                        "requestInterceptorList=[EngineRequestInterceptor]," +
-                        "bitmapDecodeInterceptorList=[Test2BitmapDecodeInterceptor]," +
-                        "drawableDecodeInterceptorList=[Test2DrawableDecodeInterceptor]" +
+                        "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
+                        "bitmapDecodeInterceptorList=[Test2BitmapDecodeInterceptor(sortWeight=0)]," +
+                        "drawableDecodeInterceptorList=[Test2DrawableDecodeInterceptor(sortWeight=0)]" +
                         ")",
                 toString()
             )
@@ -507,9 +450,9 @@ class ComponentRegistryTest {
                         "fetcherFactoryList=[TestFetcher,HttpUriFetcher]," +
                         "bitmapDecoderFactoryList=[TestBitmapDecoder,DefaultBitmapDecoder]," +
                         "drawableDecoderFactoryList=[TestDrawableDecoder,DefaultDrawableDecoder]," +
-                        "requestInterceptorList=[TestRequestInterceptor,EngineRequestInterceptor]," +
-                        "bitmapDecodeInterceptorList=[TestBitmapDecodeInterceptor,Test2BitmapDecodeInterceptor]," +
-                        "drawableDecodeInterceptorList=[TestDrawableDecodeInterceptor,Test2DrawableDecodeInterceptor]" +
+                        "requestInterceptorList=[TestRequestInterceptor(sortWeight=0),EngineRequestInterceptor(sortWeight=100)]," +
+                        "bitmapDecodeInterceptorList=[TestBitmapDecodeInterceptor(sortWeight=0),Test2BitmapDecodeInterceptor(sortWeight=0)]," +
+                        "drawableDecodeInterceptorList=[TestDrawableDecodeInterceptor(sortWeight=0),Test2DrawableDecodeInterceptor(sortWeight=0)]" +
                         ")",
                 toString()
             )
@@ -553,9 +496,9 @@ class ComponentRegistryTest {
                         "fetcherFactoryList=[HttpUriFetcher,Base64UriFetcher,ResourceUriFetcher]," +
                         "bitmapDecoderFactoryList=[XmlDrawableBitmapDecoder,DefaultBitmapDecoder]," +
                         "drawableDecoderFactoryList=[DefaultDrawableDecoder]," +
-                        "requestInterceptorList=[EngineRequestInterceptor]," +
-                        "bitmapDecodeInterceptorList=[EngineBitmapDecodeInterceptor,BitmapTransformationDecodeInterceptor]," +
-                        "drawableDecodeInterceptorList=[EngineDrawableDecodeInterceptor]" +
+                        "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
+                        "bitmapDecodeInterceptorList=[BitmapTransformationDecodeInterceptor(sortWeight=90),EngineBitmapDecodeInterceptor(sortWeight=100)]," +
+                        "drawableDecodeInterceptorList=[EngineDrawableDecodeInterceptor(sortWeight=100)]" +
                         ")",
                 toString()
             )

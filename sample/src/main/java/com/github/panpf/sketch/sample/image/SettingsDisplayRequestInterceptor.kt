@@ -58,6 +58,7 @@ fun ImageOptions.Builder.setApplySettings(imageType: ImageType): ImageOptions.Bu
 class SettingsDisplayRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 0
 
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
@@ -151,7 +152,7 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
         return chain.proceed(newRequest)
     }
 
-    override fun toString(): String = "SettingsDisplayRequestInterceptor"
+    override fun toString(): String = "SettingsDisplayRequestInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

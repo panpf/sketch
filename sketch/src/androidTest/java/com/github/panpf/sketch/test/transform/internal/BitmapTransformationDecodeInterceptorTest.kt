@@ -195,6 +195,13 @@ class BitmapTransformationDecodeInterceptorTest {
     }
 
     @Test
+    fun testSortWeight() {
+        BitmapTransformationDecodeInterceptor().apply {
+            Assert.assertEquals(90, sortWeight)
+        }
+    }
+
+    @Test
     fun testEquals() {
         val ele1 = BitmapTransformationDecodeInterceptor()
         val ele2 = BitmapTransformationDecodeInterceptor()
@@ -215,7 +222,7 @@ class BitmapTransformationDecodeInterceptorTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "BitmapTransformationDecodeInterceptor",
+            "BitmapTransformationDecodeInterceptor(sortWeight=90)",
             BitmapTransformationDecodeInterceptor().toString()
         )
     }

@@ -8,6 +8,12 @@ Sketch 通过 [RequestInterceptor] 来拦截 [ImageRequest] 的执行过程，�
 
 ```kotlin
 class MyRequestInterceptor : RequestInterceptor {
+    
+    // 如果当前 RequestInterceptor 会修改返回的结果并且仅用于部分请求，那么请给一个不重复的 key 用于构建缓存 key，否则给 null 即可
+    override val key: String? = null
+    
+    // 用于排序，值越大在列表中越靠后。取值范围是 0 ~ 100。通常是零。只有 EngineRequestInterceptor 可以是 100
+    override val sortWeight: Int = 0
 
     override suspend fun intercept(chain: Chain): ImageData {
         // 所有请求禁止使用内存缓存

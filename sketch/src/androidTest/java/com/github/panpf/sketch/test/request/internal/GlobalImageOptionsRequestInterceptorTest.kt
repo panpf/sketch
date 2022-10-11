@@ -25,6 +25,7 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
@@ -55,6 +56,46 @@ class GlobalImageOptionsRequestInterceptorTest {
                 Assert.assertEquals(MEMORY, this.request.depth)
                 Assert.assertEquals(WRITE_ONLY, this.request.downloadCachePolicy)
             }
+        }
+    }
+
+    @Test
+    fun testSortWeight() {
+        GlobalImageOptionsRequestInterceptor().apply {
+            Assert.assertEquals(80, sortWeight)
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = GlobalImageOptionsRequestInterceptor()
+        val element11 = GlobalImageOptionsRequestInterceptor()
+        val element12 = GlobalImageOptionsRequestInterceptor()
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element12)
+        Assert.assertNotSame(element12, element11)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertEquals(element1, element12)
+        Assert.assertEquals(element12, element11)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertEquals(element1.hashCode(), element12.hashCode())
+        Assert.assertEquals(element12.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        GlobalImageOptionsRequestInterceptor().apply {
+            Assert.assertEquals(
+                "GlobalImageOptionsRequestInterceptor(sortWeight=80)",
+                toString()
+            )
         }
     }
 }

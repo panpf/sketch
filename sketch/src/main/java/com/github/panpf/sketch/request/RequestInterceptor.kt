@@ -18,6 +18,7 @@ package com.github.panpf.sketch.request
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestContext
 
 /**
@@ -27,10 +28,16 @@ interface RequestInterceptor {
 
     /**
      * If the current RequestInterceptor will change the ImageData,
-     * and may only be used for a single [ImageRequest],
+     * and may only work on part [ImageRequest],
      * provide a valid key to build request key and cache key
      */
     val key: String?
+
+    /**
+     * For sorting, larger values go lower in the list. It ranges from 0 to 100. It's usually zero.
+     * Convention 51-100 is the exclusive range for sketch. [EngineRequestInterceptor] is 100
+     */
+    val sortWeight: Int
 
     @MainThread
     suspend fun intercept(chain: Chain): ImageData

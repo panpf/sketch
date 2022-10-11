@@ -19,6 +19,7 @@ import android.graphics.Bitmap
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -30,10 +31,16 @@ interface BitmapDecodeInterceptor {
 
     /**
      * If the current BitmapDecodeInterceptor will change the BitmapDecodeResult,
-     * and may only be used for a single [ImageRequest],
+     * and may only work on part [ImageRequest],
      * provide a valid key to build request key and cache key
      */
     val key: String?
+
+    /**
+     * For sorting, larger values go lower in the list. It ranges from 0 to 100. It's usually zero.
+     * Convention 51-100 is the exclusive range for sketch. [EngineBitmapDecodeInterceptor] is 100
+     */
+    val sortWeight: Int
 
     @WorkerThread
     suspend fun intercept(chain: Chain): BitmapDecodeResult

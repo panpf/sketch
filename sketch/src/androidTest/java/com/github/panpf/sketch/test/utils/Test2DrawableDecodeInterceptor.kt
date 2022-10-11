@@ -21,6 +21,7 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 class Test2DrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 0
 
     override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
         throw UnsupportedOperationException()
@@ -37,6 +38,6 @@ class Test2DrawableDecodeInterceptor : DrawableDecodeInterceptor {
     }
 
     override fun toString(): String {
-        return "Test2DrawableDecodeInterceptor"
+        return "Test2DrawableDecodeInterceptor(sortWeight=$sortWeight)"
     }
 }

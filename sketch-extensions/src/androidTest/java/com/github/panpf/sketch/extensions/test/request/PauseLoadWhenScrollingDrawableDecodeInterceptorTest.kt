@@ -125,6 +125,55 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
         }
     }
 
+    @Test
+    fun testSortWeight() {
+        PauseLoadWhenScrollingDrawableDecodeInterceptor().apply {
+            Assert.assertEquals(0, sortWeight)
+        }
+
+        PauseLoadWhenScrollingDrawableDecodeInterceptor(30).apply {
+            Assert.assertEquals(30, sortWeight)
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = PauseLoadWhenScrollingDrawableDecodeInterceptor()
+        val element11 = PauseLoadWhenScrollingDrawableDecodeInterceptor().apply { enabled = false }
+        val element2 = PauseLoadWhenScrollingDrawableDecodeInterceptor(30)
+
+        Assert.assertNotSame(element1, element11)
+        Assert.assertNotSame(element1, element2)
+
+        Assert.assertEquals(element1, element1)
+        Assert.assertEquals(element1, element11)
+        Assert.assertNotEquals(element1, element2)
+        Assert.assertNotEquals(element1, null)
+        Assert.assertNotEquals(element1, Any())
+
+        Assert.assertEquals(element1.hashCode(), element1.hashCode())
+        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        PauseLoadWhenScrollingDrawableDecodeInterceptor().apply {
+            Assert.assertEquals(
+                "PauseLoadWhenScrollingDrawableDecodeInterceptor(sortWeight=0,enabled=true)",
+                toString()
+            )
+        }
+
+        PauseLoadWhenScrollingDrawableDecodeInterceptor(30).apply {
+            enabled = false
+            Assert.assertEquals(
+                "PauseLoadWhenScrollingDrawableDecodeInterceptor(sortWeight=30,enabled=false)",
+                toString()
+            )
+        }
+    }
+
     private fun DisplayRequest.toDrawableDecodeInterceptorChain(sketch: Sketch): DrawableDecodeInterceptor.Chain {
         return TestDrawableDecodeInterceptorChain(
             sketch = sketch,
@@ -136,39 +185,6 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
         )
     }
 
-    @Test
-    fun testEqualsAndHashCode() {
-        val element1 = PauseLoadWhenScrollingDrawableDecodeInterceptor()
-        val element11 = PauseLoadWhenScrollingDrawableDecodeInterceptor()
-        val element2 = PauseLoadWhenScrollingDrawableDecodeInterceptor().apply { enabled = false }
-
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element2, element11)
-
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
-
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-    }
-
-    @Test
-    fun testToString() {
-        PauseLoadWhenScrollingDrawableDecodeInterceptor().apply {
-            Assert.assertEquals(
-                "PauseLoadWhenScrollingDrawableDecodeInterceptor($enabled)",
-                toString()
-            )
-        }
-    }
-
     class TestDrawableDecodeInterceptorChain(
         override val sketch: Sketch,
         override val request: ImageRequest,
@@ -176,7 +192,7 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
         override val fetchResult: FetchResult?
     ) : DrawableDecodeInterceptor.Chain {
 
-        var finalRequest = request
+        private var finalRequest = request
 
         @MainThread
         override suspend fun proceed(): DrawableDecodeResult {

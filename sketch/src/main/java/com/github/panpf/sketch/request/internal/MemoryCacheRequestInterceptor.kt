@@ -35,6 +35,7 @@ import kotlinx.coroutines.withContext
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 90
 
     @MainThread
     override suspend fun intercept(chain: Chain): ImageData {
@@ -101,7 +102,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         }
     }
 
-    override fun toString(): String = "MemoryCacheRequestInterceptor"
+    override fun toString(): String = "MemoryCacheRequestInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

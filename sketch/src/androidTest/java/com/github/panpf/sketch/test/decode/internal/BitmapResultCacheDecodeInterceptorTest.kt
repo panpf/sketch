@@ -223,9 +223,16 @@ class BitmapResultCacheDecodeInterceptorTest {
     }
 
     @Test
+    fun testSortWeight() {
+        BitmapResultCacheDecodeInterceptor().apply {
+            Assert.assertEquals(80, sortWeight)
+        }
+    }
+
+    @Test
     fun testToString() {
         Assert.assertEquals(
-            "BitmapResultCacheDecodeInterceptor",
+            "BitmapResultCacheDecodeInterceptor(sortWeight=80)",
             BitmapResultCacheDecodeInterceptor().toString()
         )
     }
@@ -233,11 +240,16 @@ class BitmapResultCacheDecodeInterceptorTest {
     class ExtrasTestBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
         override val key: String? = null
+        override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
             return chain.proceed().newResult {
                 addExtras("key", "hasExtras")
             }
+        }
+
+        override fun toString(): String {
+            return "ExtrasTestBitmapDecodeInterceptor(sortWeight=$sortWeight)"
         }
     }
 }

@@ -40,6 +40,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
     }
 
     override val key: String? = null
+    override val sortWeight: Int = 80
 
     @WorkerThread
     override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
@@ -241,7 +242,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         }
     }
 
-    override fun toString(): String = "BitmapResultCacheDecodeInterceptor"
+    override fun toString(): String = "BitmapResultCacheDecodeInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

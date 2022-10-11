@@ -249,9 +249,16 @@ class MemoryCacheRequestInterceptorTest {
     }
 
     @Test
+    fun testSortWeight() {
+        MemoryCacheRequestInterceptor().apply {
+            Assert.assertEquals(90, sortWeight)
+        }
+    }
+
+    @Test
     fun testToString() {
         Assert.assertEquals(
-            "MemoryCacheRequestInterceptor",
+            "MemoryCacheRequestInterceptor(sortWeight=90)",
             MemoryCacheRequestInterceptor().toString()
         )
     }
@@ -259,6 +266,7 @@ class MemoryCacheRequestInterceptorTest {
     class FakeRequestInterceptor : RequestInterceptor {
 
         override val key: String? = null
+        override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): ImageData {
             return when (chain.request) {

@@ -22,6 +22,7 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 class EngineDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 100
 
     @WorkerThread
     override suspend fun intercept(
@@ -35,7 +36,7 @@ class EngineDrawableDecodeInterceptor : DrawableDecodeInterceptor {
             .decode()
     }
 
-    override fun toString(): String = "EngineDrawableDecodeInterceptor"
+    override fun toString(): String = "EngineDrawableDecodeInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

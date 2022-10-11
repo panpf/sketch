@@ -62,6 +62,13 @@ class EngineBitmapDecodeInterceptorTest {
     }
 
     @Test
+    fun testSortWeight() {
+        EngineBitmapDecodeInterceptor().apply {
+            Assert.assertEquals(100, sortWeight)
+        }
+    }
+
+    @Test
     fun testFactoryEqualsAndHashCode() {
         val element1 = EngineBitmapDecodeInterceptor()
         val element11 = EngineBitmapDecodeInterceptor()
@@ -87,7 +94,7 @@ class EngineBitmapDecodeInterceptorTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "EngineBitmapDecodeInterceptor",
+            "EngineBitmapDecodeInterceptor(sortWeight=100)",
             EngineBitmapDecodeInterceptor().toString()
         )
     }

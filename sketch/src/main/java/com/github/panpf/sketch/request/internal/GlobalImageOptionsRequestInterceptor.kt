@@ -22,6 +22,7 @@ import com.github.panpf.sketch.request.RequestInterceptor.Chain
 class GlobalImageOptionsRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 80
 
     override suspend fun intercept(chain: Chain): ImageData {
         val request = chain.request
@@ -40,7 +41,7 @@ class GlobalImageOptionsRequestInterceptor : RequestInterceptor {
         }
     }
 
-    override fun toString(): String = "GlobalImageOptionsRequestInterceptor"
+    override fun toString(): String = "GlobalImageOptionsRequestInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

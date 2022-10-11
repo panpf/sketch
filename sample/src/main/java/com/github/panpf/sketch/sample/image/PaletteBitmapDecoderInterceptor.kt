@@ -14,6 +14,7 @@ import org.json.JSONObject
 class PaletteBitmapDecoderInterceptor : BitmapDecodeInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 0
 
     @WorkerThread
     override suspend fun intercept(chain: Chain): BitmapDecodeResult {

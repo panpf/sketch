@@ -8,9 +8,11 @@ Sketch 将解码分为 Drawable 和 Bitmap 两种，因此拦截也同样分为�
 ```kotlin
 class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
-    // 如果你的 BitmapDecodeInterceptor 将会对结果产生影响并且只在个别 ImageRequest 中使用，
-    // 那么请给一个有效且不冲突的 key，否则可以是 null
+    // 如果当前 BitmapDecodeInterceptor 会修改返回的结果并且仅用于部分请求，那么请给一个不重复的 key 用于构建缓存 key，否则给 null 即可
     override val key: String = "MyBitmapDecodeInterceptor"
+
+    // 用于排序，值越大在列表中越靠后。取值范围是 0 ~ 100。通常是零。只有 EngineBitmapDecodeInterceptor 可以是 100
+    override val sortWeight: Int = 0
 
     @WorkerThread
     override suspend fun intercept(
@@ -25,9 +27,11 @@ class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
 class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
-    // 如果你的 DrawableDecodeInterceptor 将会对结果产生影响并且只在个别 ImageRequest 中使用，
-    // 那么请给一个有效且不冲突的 key，否则可以是 null
+    // 如果当前 DrawableDecodeInterceptor 会修改返回的结果并且仅用于部分请求，那么请给一个不重复的 key 用于构建缓存 key，否则给 null 即可
     override val key: String = "MyDrawableDecodeInterceptor"
+
+    // 用于排序，值越大在列表中越靠后。取值范围是 0 ~ 100。通常是零。只有 EngineDrawableDecodeInterceptor 可以是 100
+    override val sortWeight: Int = 0
 
     @WorkerThread
     override suspend fun intercept(

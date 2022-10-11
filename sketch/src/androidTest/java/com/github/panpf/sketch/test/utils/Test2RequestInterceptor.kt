@@ -22,6 +22,7 @@ import com.github.panpf.sketch.request.RequestInterceptor.Chain
 class Test2RequestInterceptor : RequestInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 0
 
     override suspend fun intercept(chain: Chain): ImageData {
         return chain.proceed(chain.request)
@@ -38,6 +39,6 @@ class Test2RequestInterceptor : RequestInterceptor {
     }
 
     override fun toString(): String {
-        return "Test2RequestInterceptor"
+        return "Test2RequestInterceptor(sortWeight=$sortWeight)"
     }
 }

@@ -39,7 +39,6 @@ import com.github.panpf.sketch.test.utils.AllFetcher
 import com.github.panpf.sketch.test.utils.Test2BitmapDecodeInterceptor
 import com.github.panpf.sketch.test.utils.Test2DrawableDecodeInterceptor
 import com.github.panpf.sketch.test.utils.Test2RequestInterceptor
-import com.github.panpf.sketch.test.utils.Test3DrawableDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestBitmapDecoder
@@ -68,7 +67,7 @@ class ComponentsTest {
         val emptyRequest = DisplayRequest(context, "")
         val notEmptyRequest = DisplayRequest(context, "") {
             components {
-                addRequestInterceptor(TestRequestInterceptor())
+                addRequestInterceptor(TestRequestInterceptor(95))
                 addRequestInterceptor(Test2RequestInterceptor())
             }
         }
@@ -79,7 +78,7 @@ class ComponentsTest {
                 getRequestInterceptorList(emptyRequest)
             )
             Assert.assertEquals(
-                listOf(TestRequestInterceptor(), Test2RequestInterceptor()),
+                listOf(Test2RequestInterceptor(), TestRequestInterceptor(95)),
                 getRequestInterceptorList(notEmptyRequest)
             )
         }
@@ -94,9 +93,9 @@ class ComponentsTest {
             )
             Assert.assertEquals(
                 listOf(
-                    TestRequestInterceptor(),
                     Test2RequestInterceptor(),
                     MemoryCacheRequestInterceptor(),
+                    TestRequestInterceptor(95),
                     EngineRequestInterceptor()
                 ),
                 getRequestInterceptorList(notEmptyRequest)
@@ -110,7 +109,7 @@ class ComponentsTest {
         val emptyRequest = DisplayRequest(context, "")
         val notEmptyRequest = DisplayRequest(context, "") {
             components {
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor(95))
                 addBitmapDecodeInterceptor(Test2BitmapDecodeInterceptor())
             }
         }
@@ -122,8 +121,8 @@ class ComponentsTest {
             )
             Assert.assertEquals(
                 listOf(
-                    TestBitmapDecodeInterceptor(),
                     Test2BitmapDecodeInterceptor(),
+                    TestBitmapDecodeInterceptor(95),
                 ),
                 getBitmapDecodeInterceptorList(notEmptyRequest)
             )
@@ -142,9 +141,9 @@ class ComponentsTest {
             )
             Assert.assertEquals(
                 listOf(
-                    TestBitmapDecodeInterceptor(),
                     Test2BitmapDecodeInterceptor(),
                     BitmapTransformationDecodeInterceptor(),
+                    TestBitmapDecodeInterceptor(95),
                     EngineBitmapDecodeInterceptor()
                 ),
                 getBitmapDecodeInterceptorList(notEmptyRequest)
@@ -158,7 +157,7 @@ class ComponentsTest {
         val emptyRequest = DisplayRequest(context, "")
         val notEmptyRequest = DisplayRequest(context, "") {
             components {
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor(95))
                 addDrawableDecodeInterceptor(Test2DrawableDecodeInterceptor())
             }
         }
@@ -170,26 +169,26 @@ class ComponentsTest {
             )
             Assert.assertEquals(
                 listOf(
-                    TestDrawableDecodeInterceptor(),
                     Test2DrawableDecodeInterceptor(),
+                    TestDrawableDecodeInterceptor(95),
                 ),
                 getDrawableDecodeInterceptorList(notEmptyRequest)
             )
         }
 
         Components(sketch, ComponentRegistry.Builder().apply {
-            addDrawableDecodeInterceptor(Test3DrawableDecodeInterceptor())
+            addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor(90))
             addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
         }.build()).apply {
             Assert.assertEquals(
-                listOf(Test3DrawableDecodeInterceptor(), EngineDrawableDecodeInterceptor()),
+                listOf(TestDrawableDecodeInterceptor(90), EngineDrawableDecodeInterceptor()),
                 getDrawableDecodeInterceptorList(emptyRequest)
             )
             Assert.assertEquals(
                 listOf(
-                    TestDrawableDecodeInterceptor(),
                     Test2DrawableDecodeInterceptor(),
-                    Test3DrawableDecodeInterceptor(),
+                    TestDrawableDecodeInterceptor(90),
+                    TestDrawableDecodeInterceptor(95),
                     EngineDrawableDecodeInterceptor()
                 ),
                 getDrawableDecodeInterceptorList(notEmptyRequest)
@@ -473,9 +472,9 @@ class ComponentsTest {
                         "fetcherFactoryList=[HttpUriFetcher,Base64UriFetcher,ResourceUriFetcher]," +
                         "bitmapDecoderFactoryList=[XmlDrawableBitmapDecoder,DefaultBitmapDecoder]," +
                         "drawableDecoderFactoryList=[DefaultDrawableDecoder]," +
-                        "requestInterceptorList=[EngineRequestInterceptor]," +
-                        "bitmapDecodeInterceptorList=[EngineBitmapDecodeInterceptor,BitmapTransformationDecodeInterceptor]," +
-                        "drawableDecodeInterceptorList=[EngineDrawableDecodeInterceptor]" +
+                        "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
+                        "bitmapDecodeInterceptorList=[BitmapTransformationDecodeInterceptor(sortWeight=90),EngineBitmapDecodeInterceptor(sortWeight=100)]," +
+                        "drawableDecodeInterceptorList=[EngineDrawableDecodeInterceptor(sortWeight=100)]" +
                         "))",
                 toString()
             )

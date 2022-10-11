@@ -21,6 +21,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 class Test3BitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
     override val key: String = "Test3BitmapDecodeInterceptor"
+    override val sortWeight: Int = 0
 
     override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
         return chain.proceed()
@@ -37,6 +38,6 @@ class Test3BitmapDecodeInterceptor : BitmapDecodeInterceptor {
     }
 
     override fun toString(): String {
-        return "Test3BitmapDecodeInterceptor"
+        return "Test3BitmapDecodeInterceptor(sortWeight=$sortWeight)"
     }
 }

@@ -18,7 +18,7 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 
-class TestDrawableDecodeInterceptor : DrawableDecodeInterceptor {
+class TestDrawableDecodeInterceptor(override val sortWeight: Int = 0) : DrawableDecodeInterceptor {
 
     override val key: String = "TestDrawableDecodeInterceptor"
 
@@ -33,15 +33,16 @@ class TestDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other !is TestDrawableDecodeInterceptor) return false
+        if (sortWeight != other.sortWeight) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return javaClass.hashCode()
+        return sortWeight
     }
 
     override fun toString(): String {
-        return "TestDrawableDecodeInterceptor"
+        return "TestDrawableDecodeInterceptor(sortWeight=$sortWeight)"
     }
 }

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.first
  * @see DisplayRequest.Builder.pauseLoadWhenScrolling
  * @see PauseLoadWhenScrollingMixedScrollListener
  */
-class PauseLoadWhenScrollingDrawableDecodeInterceptor : DrawableDecodeInterceptor {
+class PauseLoadWhenScrollingDrawableDecodeInterceptor(override val sortWeight: Int = 0) : DrawableDecodeInterceptor {
 
     companion object {
         private val scrollingFlow = MutableStateFlow(false)
@@ -58,16 +58,16 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptor : DrawableDecodeIntercepto
         return chain.proceed()
     }
 
-    override fun toString(): String = "PauseLoadWhenScrollingDrawableDecodeInterceptor($enabled)"
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is PauseLoadWhenScrollingDrawableDecodeInterceptor) return false
-        if (enabled != other.enabled) return false
+        if (sortWeight != other.sortWeight) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return enabled.hashCode()
+        return sortWeight
     }
+
+    override fun toString(): String = "PauseLoadWhenScrollingDrawableDecodeInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
 }

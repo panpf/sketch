@@ -22,6 +22,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 class EngineBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 100
 
     @WorkerThread
     override suspend fun intercept(
@@ -36,7 +37,7 @@ class EngineBitmapDecodeInterceptor : BitmapDecodeInterceptor {
             .decode()
     }
 
-    override fun toString(): String = "EngineBitmapDecodeInterceptor"
+    override fun toString(): String = "EngineBitmapDecodeInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

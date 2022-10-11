@@ -25,7 +25,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestHttpStack
@@ -99,6 +98,13 @@ class EngineRequestInterceptorTest {
     }
 
     @Test
+    fun testSortWeight() {
+        EngineRequestInterceptor().apply {
+            Assert.assertEquals(100, sortWeight)
+        }
+    }
+
+    @Test
     fun testEqualsAndHashCode() {
         val element1 = EngineRequestInterceptor()
         val element11 = EngineRequestInterceptor()
@@ -123,6 +129,6 @@ class EngineRequestInterceptorTest {
 
     @Test
     fun testToString() {
-        Assert.assertEquals("EngineRequestInterceptor", EngineRequestInterceptor().toString())
+        Assert.assertEquals("EngineRequestInterceptor(sortWeight=100)", EngineRequestInterceptor().toString())
     }
 }

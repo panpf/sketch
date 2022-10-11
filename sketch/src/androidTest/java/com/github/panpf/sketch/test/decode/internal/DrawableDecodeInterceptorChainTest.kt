@@ -26,7 +26,6 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
@@ -92,10 +91,15 @@ class DrawableDecodeInterceptorChainTest {
         DrawableDecodeInterceptor {
 
         override val key: String? = null
+        override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): DrawableDecodeResult {
             historyList.add("TestDrawableDecoderInterceptor1")
             return chain.proceed()
+        }
+
+        override fun toString(): String {
+            return "TestDrawableDecoderInterceptor1(sortWeight=$sortWeight)"
         }
     }
 
@@ -103,10 +107,15 @@ class DrawableDecodeInterceptorChainTest {
         DrawableDecodeInterceptor {
 
         override val key: String? = null
+        override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): DrawableDecodeResult {
             historyList.add("TestDrawableDecoderInterceptor2")
             return chain.proceed()
+        }
+
+        override fun toString(): String {
+            return "TestDrawableDecoderInterceptor2(sortWeight=$sortWeight)"
         }
     }
 
@@ -114,6 +123,7 @@ class DrawableDecodeInterceptorChainTest {
         DrawableDecodeInterceptor {
 
         override val key: String? = null
+        override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): DrawableDecodeResult {
             historyList.add("TestDrawableDecoderInterceptor3")
@@ -124,6 +134,10 @@ class DrawableDecodeInterceptorChainTest {
                 transformedList = null,
                 extras = null,
             )
+        }
+
+        override fun toString(): String {
+            return "TestDrawableDecoderInterceptor3(sortWeight=$sortWeight)"
         }
     }
 }

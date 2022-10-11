@@ -25,6 +25,7 @@ import java.util.LinkedList
 class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 90
 
     @WorkerThread
     override suspend fun intercept(
@@ -69,7 +70,7 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
         }
     }
 
-    override fun toString(): String = "BitmapTransformationDecodeInterceptor"
+    override fun toString(): String = "BitmapTransformationDecodeInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

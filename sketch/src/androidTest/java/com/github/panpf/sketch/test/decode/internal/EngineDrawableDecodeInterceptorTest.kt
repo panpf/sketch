@@ -64,6 +64,13 @@ class EngineDrawableDecodeInterceptorTest {
     }
 
     @Test
+    fun testSortWeight() {
+        EngineDrawableDecodeInterceptor().apply {
+            Assert.assertEquals(100, sortWeight)
+        }
+    }
+
+    @Test
     fun testFactoryEqualsAndHashCode() {
         val element1 = EngineDrawableDecodeInterceptor()
         val element11 = EngineDrawableDecodeInterceptor()
@@ -89,7 +96,7 @@ class EngineDrawableDecodeInterceptorTest {
     @Test
     fun testToString() {
         Assert.assertEquals(
-            "EngineDrawableDecodeInterceptor",
+            "EngineDrawableDecodeInterceptor(sortWeight=100)",
             EngineDrawableDecodeInterceptor().toString()
         )
     }

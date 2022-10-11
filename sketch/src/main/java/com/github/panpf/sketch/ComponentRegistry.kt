@@ -20,10 +20,13 @@ import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecoder
+import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.requiredWorkThread
 
@@ -275,6 +278,9 @@ open class ComponentRegistry private constructor(
          * Append an [RequestInterceptor]
          */
         fun addRequestInterceptor(interceptor: RequestInterceptor): Builder = apply {
+            require(if (interceptor is EngineRequestInterceptor) interceptor.sortWeight == 100 else interceptor.sortWeight in 0..99) {
+                "sortWeight has a valid range of 0 to 100, and only EngineRequestInterceptor can be 100"
+            }
             this.requestInterceptorList.add(interceptor)
         }
 
@@ -283,6 +289,9 @@ open class ComponentRegistry private constructor(
          */
         fun addBitmapDecodeInterceptor(bitmapDecodeInterceptor: BitmapDecodeInterceptor): Builder =
             apply {
+                require(if (bitmapDecodeInterceptor is EngineBitmapDecodeInterceptor) bitmapDecodeInterceptor.sortWeight == 100 else bitmapDecodeInterceptor.sortWeight in 0..99) {
+                    "sortWeight has a valid range of 0 to 100, and only EngineRequestInterceptor can be 100"
+                }
                 this.bitmapDecodeInterceptorList.add(bitmapDecodeInterceptor)
             }
 
@@ -291,6 +300,9 @@ open class ComponentRegistry private constructor(
          */
         fun addDrawableDecodeInterceptor(drawableDecodeInterceptor: DrawableDecodeInterceptor): Builder =
             apply {
+                require(if (drawableDecodeInterceptor is EngineDrawableDecodeInterceptor) drawableDecodeInterceptor.sortWeight == 100 else drawableDecodeInterceptor.sortWeight in 0..99) {
+                    "sortWeight has a valid range of 0 to 100, and only EngineRequestInterceptor can be 100"
+                }
                 this.drawableDecodeInterceptorList.add(drawableDecodeInterceptor)
             }
 
@@ -298,9 +310,9 @@ open class ComponentRegistry private constructor(
             fetcherFactoryList = fetcherFactoryList.toList(),
             bitmapDecoderFactoryList = bitmapDecoderFactoryList.toList(),
             drawableDecoderFactoryList = drawableDecoderFactoryList.toList(),
-            requestInterceptorList = requestInterceptorList.toList(),
-            bitmapDecodeInterceptorList = bitmapDecodeInterceptorList.toList(),
-            drawableDecodeInterceptorList = drawableDecodeInterceptorList.toList(),
+            requestInterceptorList = requestInterceptorList.sortedBy { it.sortWeight },
+            bitmapDecodeInterceptorList = bitmapDecodeInterceptorList.sortedBy { it.sortWeight },
+            drawableDecodeInterceptorList = drawableDecodeInterceptorList.sortedBy { it.sortWeight },
         )
     }
 }
@@ -344,7 +356,7 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     fun getRequestInterceptorList(request: ImageRequest): List<RequestInterceptor> {
         val localRequestInterceptorList =
             request.componentRegistry?.requestInterceptorList?.takeIf { it.isNotEmpty() }
-        return localRequestInterceptorList?.plus(registry.requestInterceptorList)
+        return (localRequestInterceptorList?.plus(registry.requestInterceptorList))?.sortedBy { it.sortWeight }
             ?: registry.requestInterceptorList
     }
 
@@ -354,7 +366,7 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     fun getBitmapDecodeInterceptorList(request: ImageRequest): List<BitmapDecodeInterceptor> {
         val localBitmapDecodeInterceptorList =
             request.componentRegistry?.bitmapDecodeInterceptorList?.takeIf { it.isNotEmpty() }
-        return localBitmapDecodeInterceptorList?.plus(registry.bitmapDecodeInterceptorList)
+        return (localBitmapDecodeInterceptorList?.plus(registry.bitmapDecodeInterceptorList))?.sortedBy { it.sortWeight }
             ?: registry.bitmapDecodeInterceptorList
     }
 
@@ -364,7 +376,7 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     fun getDrawableDecodeInterceptorList(request: ImageRequest): List<DrawableDecodeInterceptor> {
         val localDrawableDecodeInterceptorList =
             request.componentRegistry?.drawableDecodeInterceptorList?.takeIf { it.isNotEmpty() }
-        return localDrawableDecodeInterceptorList?.plus(registry.drawableDecodeInterceptorList)
+        return (localDrawableDecodeInterceptorList?.plus(registry.drawableDecodeInterceptorList))?.sortedBy { it.sortWeight }
             ?: registry.drawableDecodeInterceptorList
     }
 

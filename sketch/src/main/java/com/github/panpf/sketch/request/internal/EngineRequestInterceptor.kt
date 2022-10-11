@@ -42,6 +42,7 @@ import kotlinx.coroutines.withContext
 class EngineRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null
+    override val sortWeight: Int = 100
 
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): ImageData =
@@ -140,7 +141,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         }
     }
 
-    override fun toString(): String = "EngineRequestInterceptor"
+    override fun toString(): String = "EngineRequestInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

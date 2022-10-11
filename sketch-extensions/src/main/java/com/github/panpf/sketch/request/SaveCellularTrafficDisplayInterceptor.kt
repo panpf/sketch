@@ -29,6 +29,7 @@ import com.github.panpf.sketch.stateimage.saveCellularTrafficError
  * @see ErrorStateImage.Builder.saveCellularTrafficError
  */
 class SaveCellularTrafficDisplayInterceptor constructor(
+    override val sortWeight: Int = 0,
     isCellularNetworkConnected: ((Sketch) -> Boolean)? = null
 ) : RequestInterceptor {
 
@@ -89,16 +90,16 @@ class SaveCellularTrafficDisplayInterceptor constructor(
         return chain.proceed(finalRequest)
     }
 
-    override fun toString(): String = "SaveCellularTrafficDisplayInterceptor($enabled)"
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is SaveCellularTrafficDisplayInterceptor) return false
-        if (enabled != other.enabled) return false
+        if (sortWeight != other.sortWeight) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return enabled.hashCode()
+        return sortWeight
     }
+
+    override fun toString(): String = "SaveCellularTrafficDisplayInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
 }
