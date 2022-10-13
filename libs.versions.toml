@@ -1,28 +1,21 @@
 [versions]
 
-# android platform
-minSdk = "16"
-composeMinSdk = "21"
-targetSdk = "28"
+# app
 compileSdk = "31"
-composeCompileSdk = "32"
-
-# app version
+compileSdkCompose = "32"
+minSdk = "16"
+minSdkCompose = "21"
+targetSdk = "28"
 versionCode = "3106"
 versionName = "3.1.0-rc02"
-
-# android
-android-buildtools = "7.3.0"
-
-# maven
-maven-publishpluginx = "0.18.0"
 
 # kotlin
 kotlin = "1.7.10"
 kotlinx-coroutines = "1.6.4"
 kotlinx-serialization-json = "1.3.3"
 
-# androidx
+# android
+android-plugin = "7.3.0"
 androidx-activity = "1.5.1"
 androidx-annotation = "1.4.0"
 androidx-appcompat = "1.4.2"
@@ -43,50 +36,53 @@ androidx-recyclerview = "1.2.1"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-test = "1.4.0"
 androidx-test-ext-junit = "1.1.3"
-junit = "4.13.2"
+
+# google
+google-material = "1.6.1"
+google-accompanist = "0.25.0"
 
 # panpf
+activitymonitor = "1.0.0"
 assemblyadapter4 = "4.1.0"
+liveevent = "1.0.0"
 tools4a = "1.0.0"
 tools4j = "1.0.0"
 tools4k = "1.0.0"
-liveevent = "1.0.0"
-activitymonitor = "1.0.0"
 
 # other
-google-material = "1.6.1"
 androidgifdrawable = "1.2.15"
-tinypinyin = "2.0.3"
-retrofit2 = "2.6.4"
-retrofit2_kotlinxSerializationConverter = "0.8.0"
-okhttp3 = "3.12.0"   # 3.12.9 是最后一个支持 Android 5.0 以下的版本
 androidsvg = "1.4"
-accompanist_drawablepainter = "0.25.0"
 ffmpegMediaMetadataRetriever = "1.0.16"
+junit = "4.13.2"
 leakcanary = "2.9.1"
+maven-publish-plugin = "0.18.0"
 mmkv = "1.2.13"
+okhttp3 = "3.12.0"   # 3.12.9 是最后一个支持 Android 5.0 以下的版本
+retrofit2 = "2.6.4"
+retrofit2-kotlinxSerializationConverter = "0.8.0"
+tinypinyin = "2.0.3"
+
 
 [libraries]
 
-# android
-android-buildtools = { module = "com.android.tools.build:gradle", version.ref = "android-buildtools" }
-
-# maven
-maven-publishpluginx = { module = "io.github.panpf.maven-publish:maven-publish-gradle-plugin", version.ref = "maven-publishpluginx" }
-
 # kotlin
-kotlin-gradlepluginx = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-serializationpluginx = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization-plugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 
-# androidx
+# android
+android-plugin = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
+androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose" }
+androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "androidx-exifinterface" }
@@ -97,27 +93,29 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidx-multidex" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
-androidx-navigation-safeargsgradlepluginx = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
+androidx-navigation-safeargsgradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "androidx-paging" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "androidx-paging" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging-compose" }
 androidx-palette = { module = "androidx.palette:palette", version.ref = "androidx-palette" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
-androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
-androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose" }
-androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
-androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
-junit = { module = "junit:junit", version.ref = "junit" }
+
+# google
+google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
+accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "google-accompanist" }
+accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "google-accompanist" }
 
 # panpf
+activitymonitor = { module = "io.github.panpf.activitymonitor:activitymonitor", version.ref = "activitymonitor" }
 assemblyadapter4-recycler = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler", version.ref = "assemblyadapter4" }
 assemblyadapter4-recycler-paging = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler-paging", version.ref = "assemblyadapter4" }
 assemblyadapter4-pager2 = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager2", version.ref = "assemblyadapter4" }
 assemblyadapter4-pager = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager", version.ref = "assemblyadapter4" }
+liveevent = { module = "io.github.panpf.liveevent:liveevent", version.ref = "liveevent" }
 tools4a-activity = { module = "io.github.panpf.tools4a:tools4a-activity-ktx", version.ref = "tools4a" }
 tools4a-device = { module = "io.github.panpf.tools4a:tools4a-device-ktx", version.ref = "tools4a" }
 tools4a-display = { module = "io.github.panpf.tools4a:tools4a-display-ktx", version.ref = "tools4a" }
@@ -134,40 +132,32 @@ tools4j-test = { module = "io.github.panpf.tools4j:tools4j-test-ktx", version.re
 tools4j-reflect = { module = "io.github.panpf.tools4j:tools4j-reflect-ktx", version.ref = "tools4j" }
 tools4j-security = { module = "io.github.panpf.tools4j:tools4j-security-ktx", version.ref = "tools4j" }
 tools4k = { module = "io.github.panpf.tools4k:tools4k", version.ref = "tools4k" }
-liveevent = { module = "io.github.panpf.liveevent:liveevent", version.ref = "liveevent" }
-activitymonitor = { module = "io.github.panpf.activitymonitor:activitymonitor", version.ref = "activitymonitor" }
 
 # other
-google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 androidgifdrawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version.ref = "androidgifdrawable" }
-tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyin" }
-retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit2" }
-retrofit2_kotlinxSerializationConverter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2_kotlinxSerializationConverter" }
-okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
-okhttp3_logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3" }
 androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
-accompanist_drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanist_drawablepainter" }
-accompanist_swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist_drawablepainter" }
 ffmpegMediaMetadataRetriever-core = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-core", version.ref = "ffmpegMediaMetadataRetriever" }
 ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-native", version.ref = "ffmpegMediaMetadataRetriever" }
+junit = { module = "junit:junit", version.ref = "junit" }
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 mmkv = { module = "com.tencent:mmkv", version.ref = "mmkv" }
+maven-publish-plugin = { module = "io.github.panpf.maven-publish:maven-publish-gradle-plugin", version.ref = "maven-publish-plugin" }
+okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
+okhttp3-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3" }
+retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit2" }
+retrofit2-kotlinxSerializationConverter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2-kotlinxSerializationConverter" }
+tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyin" }
 
 [bundles]
-test = [
-    "junit",
-    "androidx-test-runner",
-    "androidx-test-rules",
-    "androidx-test-ext-junit",
-    "tools4j-test",
-    "tools4j-reflect",
-    "tools4j-security",
-    "tools4a-run",
-    "tools4a-dimen",
-    "tools4a-test",
-    "tools4a-display",
-    "tools4a-network",
-    "tools4a-device",
+androidx-compose = [
+    "androidx-activity-compose",
+    "androidx-compose-foundation",
+    "androidx-compose-material",
+    "androidx-compose-animation",
+    "androidx-compose-ui-tooling",
+    "androidx-lifecycle-viewmodel-compose",
+    "androidx-paging-compose",
+    "accompanist-swiperefresh",
 ]
 androidx-navigation = [
     "androidx-navigation-fragment",
@@ -178,10 +168,29 @@ androidx-paging = [
     "androidx-paging-runtime",
 ]
 assemblyadapter4 = [
-    "assemblyadapter4-recycler",
-    "assemblyadapter4-recycler-paging",
     "assemblyadapter4-pager2",
     "assemblyadapter4-pager",
+    "assemblyadapter4-recycler",
+    "assemblyadapter4-recycler-paging",
+]
+retrofit2 = [
+    "retrofit2",
+    "retrofit2-kotlinxSerializationConverter",
+]
+test = [
+    "androidx-test-runner",
+    "androidx-test-rules",
+    "androidx-test-ext-junit",
+    "junit",
+    "tools4j-test",
+    "tools4j-reflect",
+    "tools4j-security",
+    "tools4a-run",
+    "tools4a-dimen",
+    "tools4a-test",
+    "tools4a-display",
+    "tools4a-network",
+    "tools4a-device",
 ]
 tools4a = [
     "tools4a-activity",
@@ -189,26 +198,12 @@ tools4a = [
     "tools4a-display",
     "tools4a-dimen",
     "tools4a-fileprovider",
-    "tools4a-toast",
     "tools4a-network",
+    "tools4a-toast",
 ]
 tools4j = [
-    "tools4j-math",
     "tools4j-date",
+    "tools4j-math",
     "tools4j-io",
     "tools4j-security",
-]
-retrofit2 = [
-    "retrofit2",
-    "retrofit2_kotlinxSerializationConverter",
-]
-androidx-compose = [
-    "androidx-activity-compose",
-    "androidx-compose-foundation",
-    "androidx-compose-material",
-    "androidx-compose-animation",
-    "androidx-compose-ui-tooling",
-    "androidx-paging-compose",
-    "androidx-lifecycle-viewmodel-compose",
-    "accompanist_swiperefresh",
 ]

@@ -5,11 +5,11 @@ buildscript {
         google()
     }
     dependencies {
-        classpath(libs.android.buildtools)
-        classpath(libs.kotlin.gradlepluginx)
-        classpath(libs.kotlin.serializationpluginx)
-        classpath(libs.androidx.navigation.safeargsgradlepluginx)
-        classpath(libs.maven.publishpluginx)
+        classpath(libs.android.plugin)
+        classpath(libs.kotlin.gradle.plugin)
+        classpath(libs.kotlin.serialization.plugin)
+        classpath(libs.androidx.navigation.safeargsgradle.plugin)
+        classpath(libs.maven.publish.plugin)
     }
 }
 

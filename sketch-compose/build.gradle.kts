@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace = "com.github.panpf.sketch.compose"
-    compileSdk = libs.versions.composeCompileSdk.get().toInt()
+    compileSdk = libs.versions.compileSdkCompose.get().toInt()
 
     defaultConfig {
-        minSdk = libs.versions.composeMinSdk.get().toInt()
+        minSdk = libs.versions.minSdkCompose.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
 
         consumerProguardFiles("proguard-rules.pro")
