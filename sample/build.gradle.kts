@@ -8,15 +8,15 @@ plugins {
 
 android {
     namespace = "com.github.panpf.sketch.sample"
-    compileSdk = libs.versions.compileSdkCompose.get().toInt()
+    compileSdk = libs.versions.app.compileSdkCompose.get().toInt()
 
     defaultConfig {
         applicationId = "com.github.panpf.sketch3.sample"
 
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = libs.versions.versionCode.get().toInt()
-        versionName = "${libs.versions.versionName.get()}.${getGitVersion()}"
+        minSdk = libs.versions.app.minSdk.get().toInt()
+        targetSdk = libs.versions.app.targetSdk.get().toInt()
+        versionCode = libs.versions.app.versionCode.get().toInt()
+        versionName = "${libs.versions.app.versionName.get()}.${getGitVersion()}"
 
         vectorDrawables.useSupportLibrary = true    // Converting svg to png under version 21 is not allowed
     }
@@ -105,14 +105,14 @@ dependencies {
     implementation(libs.androidx.palette)
 
     implementation(libs.google.material)
-    implementation(libs.bundles.assemblyadapter4)
-    implementation(libs.bundles.tools4a)
-    implementation(libs.bundles.tools4j)
-    implementation(libs.tools4k)
-    implementation(libs.tinypinyin)
-    implementation(libs.liveevent)
-    implementation(libs.activitymonitor)
+    implementation(libs.bundles.panpf.assemblyadapter4)
+    implementation(libs.bundles.panpf.tools4a)
+    implementation(libs.bundles.panpf.tools4j)
+    implementation(libs.panpf.tools4k)
+    implementation(libs.panpf.liveevent)
+    implementation(libs.panpf.activitymonitor)
     implementation(libs.bundles.retrofit2)
+    implementation(libs.tinypinyin)
     implementation(libs.okhttp3.logging)
     implementation(libs.mmkv)
 

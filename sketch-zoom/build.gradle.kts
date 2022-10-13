@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "com.github.panpf.sketch.zoom"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk = libs.versions.app.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        minSdk = libs.versions.app.minSdk.get().toInt()
+        targetSdk = libs.versions.app.targetSdk.get().toInt()
 
         consumerProguardFiles("proguard-rules.pro")
 
@@ -49,7 +49,7 @@ if (hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.proper
     apply { plugin("com.github.panpf.maven.publish") }
 
     configure<com.github.panpf.maven.publish.MavenPublishPluginExtension> {
-        version = libs.versions.versionName.get()
+        version = libs.versions.app.versionName.get()
         sonatypeHost = com.github.panpf.maven.publish.SonatypeHost.S01
         disableAndroidJavaDocsAddReferencesLinks = true
     }
