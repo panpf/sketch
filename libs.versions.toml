@@ -39,7 +39,7 @@ androidx-test-ext-junit = "1.1.3"
 
 # google
 google-material = "1.6.1"
-google-accompanist = "0.25.0"
+google-accompanist = "0.25.1"
 
 # panpf
 activitymonitor = "1.0.0"
