@@ -106,15 +106,15 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "a
 
 # google
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
-accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "google-accompanist" }
-accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "google-accompanist" }
+google-accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "google-accompanist" }
+google-accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "google-accompanist" }
 
 # panpf
 activitymonitor = { module = "io.github.panpf.activitymonitor:activitymonitor", version.ref = "activitymonitor" }
+assemblyadapter4-pager = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager", version.ref = "assemblyadapter4" }
+assemblyadapter4-pager2 = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager2", version.ref = "assemblyadapter4" }
 assemblyadapter4-recycler = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler", version.ref = "assemblyadapter4" }
 assemblyadapter4-recycler-paging = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler-paging", version.ref = "assemblyadapter4" }
-assemblyadapter4-pager2 = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager2", version.ref = "assemblyadapter4" }
-assemblyadapter4-pager = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager", version.ref = "assemblyadapter4" }
 liveevent = { module = "io.github.panpf.liveevent:liveevent", version.ref = "liveevent" }
 tools4a-activity = { module = "io.github.panpf.tools4a:tools4a-activity-ktx", version.ref = "tools4a" }
 tools4a-device = { module = "io.github.panpf.tools4a:tools4a-device-ktx", version.ref = "tools4a" }
@@ -157,7 +157,7 @@ androidx-compose = [
     "androidx-compose-ui-tooling",
     "androidx-lifecycle-viewmodel-compose",
     "androidx-paging-compose",
-    "accompanist-swiperefresh",
+    "google-accompanist-swiperefresh",
 ]
 androidx-navigation = [
     "androidx-navigation-fragment",
@@ -168,8 +168,8 @@ androidx-paging = [
     "androidx-paging-runtime",
 ]
 assemblyadapter4 = [
-    "assemblyadapter4-pager2",
     "assemblyadapter4-pager",
+    "assemblyadapter4-pager2",
     "assemblyadapter4-recycler",
     "assemblyadapter4-recycler-paging",
 ]
