@@ -38,7 +38,7 @@ import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
-import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
+import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.launch
 
@@ -120,7 +120,7 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
         val uri = if (showOriginImage) args.originImageUri else args.previewImageUri
         binding.imageViewerZoomImage.displayImage(uri) {
             setApplySettings(DETAIL)
-            placeholder(InexactlyMemoryCacheStateImage(uri = args.thumbnailImageUrl))
+            placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
             lifecycle(viewLifecycleOwner.lifecycle)
             listener(

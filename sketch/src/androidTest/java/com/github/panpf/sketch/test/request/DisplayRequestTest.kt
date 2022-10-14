@@ -76,7 +76,7 @@ import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
+import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.ResColor
@@ -1788,7 +1788,7 @@ class DisplayRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newDisplayRequest())
         }.newDisplayRequest {
-            placeholder(InexactlyMemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
+            placeholder(ThumbnailMemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
         }.apply {
             Assert.assertEquals(this, this.newDisplayRequest())
         }.newDisplayRequest {

@@ -24,8 +24,8 @@ import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.stateimage.ColorStateImage
-import com.github.panpf.sketch.stateimage.InexactlyMemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.IntColor
+import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -39,7 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class InexactlyMemoryCacheStateImageTest {
+class ThumbnailMemoryCacheStateImageTest {
 
     @Test
     fun testGetDrawable() {
@@ -87,9 +87,9 @@ class InexactlyMemoryCacheStateImageTest {
         )
 
         runBlocking(Dispatchers.Main) {
-            val inexactlyStateImage = InexactlyMemoryCacheStateImage()
-            val inexactlyStateImage1 = InexactlyMemoryCacheStateImage(requests1[0].uriString)
-            val inexactlyStateImage2 = InexactlyMemoryCacheStateImage(requests2[0].uriString)
+            val inexactlyStateImage = ThumbnailMemoryCacheStateImage()
+            val inexactlyStateImage1 = ThumbnailMemoryCacheStateImage(requests1[0].uriString)
+            val inexactlyStateImage2 = ThumbnailMemoryCacheStateImage(requests2[0].uriString)
 
             Assert.assertEquals(0, memoryCache.keys().size)
             requests1.plus(requests2).forEach { request ->
@@ -311,14 +311,14 @@ class InexactlyMemoryCacheStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = InexactlyMemoryCacheStateImage("uri1", ColorStateImage(IntColor(Color.BLUE)))
+        val element1 = ThumbnailMemoryCacheStateImage("uri1", ColorStateImage(IntColor(Color.BLUE)))
         val element11 =
-            InexactlyMemoryCacheStateImage("uri1", ColorStateImage(IntColor(Color.BLUE)))
+            ThumbnailMemoryCacheStateImage("uri1", ColorStateImage(IntColor(Color.BLUE)))
         val element2 =
-            InexactlyMemoryCacheStateImage("uri1", ColorStateImage(IntColor(Color.GREEN)))
-        val element3 = InexactlyMemoryCacheStateImage("uri2", ColorStateImage(IntColor(Color.BLUE)))
-        val element4 = InexactlyMemoryCacheStateImage(null, ColorStateImage(IntColor(Color.BLUE)))
-        val element5 = InexactlyMemoryCacheStateImage("uri1", null)
+            ThumbnailMemoryCacheStateImage("uri1", ColorStateImage(IntColor(Color.GREEN)))
+        val element3 = ThumbnailMemoryCacheStateImage("uri2", ColorStateImage(IntColor(Color.BLUE)))
+        val element4 = ThumbnailMemoryCacheStateImage(null, ColorStateImage(IntColor(Color.BLUE)))
+        val element5 = ThumbnailMemoryCacheStateImage("uri1", null)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -370,21 +370,21 @@ class InexactlyMemoryCacheStateImageTest {
         val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
         val uriString = request.uriString
 
-        InexactlyMemoryCacheStateImage(uriString, ColorStateImage(IntColor(Color.BLUE))).apply {
+        ThumbnailMemoryCacheStateImage(uriString, ColorStateImage(IntColor(Color.BLUE))).apply {
             Assert.assertEquals(
-                "InexactlyMemoryCacheStateImage(uri=$uriString, defaultImage=ColorStateImage(IntColor(${Color.BLUE})))",
+                "ThumbnailMemoryCacheStateImage(uri=$uriString, defaultImage=ColorStateImage(IntColor(${Color.BLUE})))",
                 toString()
             )
         }
-        InexactlyMemoryCacheStateImage(uriString, ColorStateImage(IntColor(Color.GREEN))).apply {
+        ThumbnailMemoryCacheStateImage(uriString, ColorStateImage(IntColor(Color.GREEN))).apply {
             Assert.assertEquals(
-                "InexactlyMemoryCacheStateImage(uri=$uriString, defaultImage=ColorStateImage(IntColor(${Color.GREEN})))",
+                "ThumbnailMemoryCacheStateImage(uri=$uriString, defaultImage=ColorStateImage(IntColor(${Color.GREEN})))",
                 toString()
             )
         }
-        InexactlyMemoryCacheStateImage(null, null).apply {
+        ThumbnailMemoryCacheStateImage(null, null).apply {
             Assert.assertEquals(
-                "InexactlyMemoryCacheStateImage(uri=null, defaultImage=null)",
+                "ThumbnailMemoryCacheStateImage(uri=null, defaultImage=null)",
                 toString()
             )
         }

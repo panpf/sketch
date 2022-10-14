@@ -16,7 +16,7 @@ import kotlin.math.abs
  * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
  * @param uri The uri of the image, if null use ImageRequest.uriString
  */
-class InexactlyMemoryCacheStateImage(
+class ThumbnailMemoryCacheStateImage(
     private val uri: String? = null,
     private val defaultImage: StateImage? = null
 ) : StateImage {
@@ -87,7 +87,7 @@ class InexactlyMemoryCacheStateImage(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is InexactlyMemoryCacheStateImage) return false
+        if (other !is ThumbnailMemoryCacheStateImage) return false
         if (uri != other.uri) return false
         if (defaultImage != other.defaultImage) return false
         return true
@@ -100,6 +100,6 @@ class InexactlyMemoryCacheStateImage(
     }
 
     override fun toString(): String {
-        return "InexactlyMemoryCacheStateImage(uri=$uri, defaultImage=$defaultImage)"
+        return "ThumbnailMemoryCacheStateImage(uri=$uri, defaultImage=$defaultImage)"
     }
 }
