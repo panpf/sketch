@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.github.panpf.sketch.compose"
-    compileSdk = libs.versions.app.compileSdkCompose.get().toInt()
+    compileSdk = libs.versions.app.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = libs.versions.app.minSdkCompose.get().toInt()

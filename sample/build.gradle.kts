@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.github.panpf.sketch.sample"
-    compileSdk = libs.versions.app.compileSdkCompose.get().toInt()
+    compileSdk = libs.versions.app.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.github.panpf.sketch3.sample"
