@@ -5,8 +5,8 @@ app-compileSdk = "32"
 app-minSdk = "16"
 app-minSdkCompose = "21"
 app-targetSdk = "28"
-app-versionCode = "3106"
-app-versionName = "3.1.0-rc02"
+app-versionCode = "3107"
+app-versionName = "3.1.0"
 
 # kotlin
 kotlin = "1.7.20"

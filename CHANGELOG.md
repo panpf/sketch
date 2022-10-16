@@ -1,4 +1,119 @@
+# v3.1.0 stable
+
+### sketch
+
+BitmapPool:
+
+* fix: Fixed the bug that the put method of LruBitmapPool failed to put the second bitmap when
+  encountering a bitmap with the same size and config but not the same instance
+* improve: Improve LruBitmapPool
+
+Decode:
+
+* fix: Fixed BitmapPool will still be accessed when disallowReuseBitmap is true
+* improve: Improve freeBitmap performance and reduce main thread lag
+* new: BitmapDecodeInterceptor, DrawableDecodeInterceptor support sorting
+
+Drawable:
+
+* improve: Improve ScaledAnimatedImageDrawable
+
+HTTP:
+
+* change: Add the suspend keyword to the getResponse() method of HttpStack #167
+* new: HurlStack and OkHttpStack now support enabling protocols such as TLS 1.1 and 1.2
+
+MemoryCache:
+
+* change: MemoryCache now stores MemoryCache.Value
+* change: MemoryCache adds keys() method
+
+DiskCache:
+
+* fix: Fixed bug where process names could not be correctly obtained in APi 17 and later
+* fix: Fixed a bug where the GET method of LruDiskCache throws NullPointException
+* improve: LruDiskCache will now automatically delete cache records of lost files
+
+Request:
+
+* fix: Fixed a bug where equals to ImageRequest and their newRequest() result in false
+* fix: Fixed a bug in RequestInterceptor where modifying SizeResolver does not take effect
+* fix: Fixed the bug that the newRequest method of ImageRequest would nest one more layer of
+  listener and progressListener every time it called
+* improve: Improve the request key and cacheKey
+* new: RequestInterceptor support sorting
+
+Resize:
+
+* remove: Remove fixedPrecision(), longImageClipPrecision(), fixedScale(), longImageScale()
+  functions
+* change: To refactor the Resize
+* change: Simplification resize() overloading method of ImageOptions and ImageRequest
+* change: resize precision default changed to always LESS_PIXELS
+* change: ResizeDrawable now uses Size and Scale directly
+* improve: LongImageScaleDecider construction parameters now have default values
+
+StateImage:
+
+* change: Now getDrawable for the placeholder and error StateImage is null and no longer calls
+  setImageDrawable for the ImageView
+* new: Added ThumbnailMemoryCacheStateImage #166
+* new: Now the final state Drawable implements the SketchStateDrawable interface
+
+Other:
+
+* remove: Remove BitmapInfo
+* improve: Reduce w-level logs to avoid performance impact due to logs
+* improve: Improve Equals and hashCode
+* improve: Improve the code
+* improve: Improve the log
+
+### sketch-compose
+
+* fix: Fixed bug where AsyncImage and SubcomposeAsyncImage would cause constant recomposition
+* fix: Fixed AsyncImage and AsyncImagePainter always change resize precision to EXACTLY bug
+* fix: Fixed bug that AsyncImagePainter did not inherit CrossfadeTransition.Factory.fadeStart
+  property
+* fix: Fixed bug where AsyncImagePainter would ignore nested Drawables when updating display count
+* improve: AsyncImage now uses dedicated DisplayTarget, SizeResolver, ScaleDecider
+* build: Upgraded appcompanist to 0.25.1
+
+### sketch-extensions
+
+* change: Replace PauseLoadWhenScrollingDisplayInterceptor with
+  PauseLoadWhenScrollingDrawableDecodeInterceptor, And remove pauseLoadWhenScrollingError()
+
+### sketch-gif-movie
+
+* improve: Improve MovieDrawable
+
+### sketch-gif-koral
+
+* improve: Improve GifDrawableDrawableDecoder
+* improve: To unify various Gif Drawable logic MovieDrawable no longer uses BitmapPool
+
+### sketch-zoom
+
+* improve: Improve SketchZoomImageView scroll bar style
+* fix: Fixed the bug that SketchZoomImageView will still access MemoryCache when the read or write
+  of memoryCachePolicy is not ENABLED
+* fix: Fixed a bug where SketchZoomImageView would also trigger subsampling when encountering a
+  state image
+* fix: Fixed a bug where SketchZoomImageView might sometimes sample tiles not loading
+* fix: Fixed the bug that when SketchZoomImageView is nested in ViewPager, it cannot return the
+  swipe event to ViewPager when it reaches the edge and then swipes
+* change: Refactor Scales. Scales rename to ScaleState，SketchImageView's scalesFactory property
+  rename to scaleStateFactory
+* improve: Improve zoom
+
+### other
+
+* build: compileSdk upgraded to 32
+* build: Upgrade android build plugin 7.3.1 and kotlin 1.7.20
+
 # v3.1.0-rc02
+
+### sketch
 
 * fix: Fixed bug where process names could not be correctly obtained in APi 17 and later
 * improve: To unify various Gif Drawable logic MovieDrawable no longer uses BitmapPool
@@ -15,7 +130,7 @@
 ### sketch
 
 * fix: Fixed bug where requestKey did not decode
-* fix: Fix a bug where the GET method of LruDiskCache throws NullPointException
+* fix: Fixed a bug where the GET method of LruDiskCache throws NullPointException
 * change: To refactor the Resize
 * change: ResizeDrawable now uses Size and Scale directly
 
@@ -26,7 +141,7 @@
 Request:
 
 * fix: Fixed a bug where equals to ImageRequest and their newRequest() result in false
-* fix: Fix a bug in RequestInterceptor where modifying SizeResolver does not take effect
+* fix: Fixed a bug in RequestInterceptor where modifying SizeResolver does not take effect
 * fix: Fixed the bug that the newRequest method of ImageRequest would nest one more layer of
   listener and progressListener every time it called
 * improve: Improve the request key and cacheKey
@@ -57,12 +172,12 @@ Other:
 ### sketch-extensions
 
 * change: Replace PauseLoadWhenScrollingDisplayInterceptor with
-  PauseLoadWhenScrollingDrawableDecodeInterceptor, And remove pauseLoadWhenScrollingError ()
+  PauseLoadWhenScrollingDrawableDecodeInterceptor, And remove pauseLoadWhenScrollingError()
 
 ### sketch-compose
 
 * fix: Fixed bug where AsyncImage and SubcomposeAsyncImage would cause constant recomposition
-* fix: Fix AsyncImage and AsyncImagePainter always change resize precision to EXACTLY bug
+* fix: Fixed AsyncImage and AsyncImagePainter always change resize precision to EXACTLY bug
 * fix: Fixed bug that AsyncImagePainter did not inherit CrossfadeTransition.Factory.fadeStart
   property
 * fix: Fixed bug where AsyncImagePainter would ignore nested Drawables when updating display count
@@ -80,7 +195,7 @@ Other:
 
 ### sketch
 
-* fix: Fix BitmapPool will still be accessed when disallowReuseBitmap is true
+* fix: Fixed BitmapPool will still be accessed when disallowReuseBitmap is true
 * remove: Remove fixedPrecision(), longImageClipPrecision(), fixedScale(), longImageScale()
   functions
 * remove: Remove BitmapInfo
@@ -89,8 +204,8 @@ Other:
 
 ### sketch-zoom
 
-* fix: Fix the bug that SketchZoomImageView will still access MemoryCache when the read or write of
-  memoryCachePolicy is not ENABLED
+* fix: Fixed the bug that SketchZoomImageView will still access MemoryCache when the read or write
+  of memoryCachePolicy is not ENABLED
 * fix: Fixed a bug where SketchZoomImageView would also trigger subsampling when encountering a
   state image
 
@@ -105,8 +220,8 @@ Other:
 ### sketch-zoom
 
 * bug: Fixed a bug where SketchZoomImageView might sometimes sample tiles not loading
-* bug: Fix the bug that when SketchZoomImageView is nested in ViewPager, it cannot return the swipe
-  event to ViewPager when it reaches the edge and then swipes
+* bug: Fixed the bug that when SketchZoomImageView is nested in ViewPager, it cannot return the
+  swipe event to ViewPager when it reaches the edge and then swipes
 * change: Refactor Scales. Scales rename to ScaleState，SketchImageView's scalesFactory property
   rename to scaleStateFactory
 * improve: Improve zoom
@@ -169,7 +284,7 @@ New version, new beginning
 
 ### sketch
 
-* fix: Fix the bug that BitmapResultCacheDecodeInterceptor may cause multiple writes to the cache
+* fix: Fixed the bug that BitmapResultCacheDecodeInterceptor may cause multiple writes to the cache
   when the same image is loaded multiple times
 * improve: BlurTransformation now actively recycles intermediate bitmaps
 
@@ -177,7 +292,7 @@ New version, new beginning
 
 ### sketch
 
-* fix: Fix the bug that BlurTransformation put input Bitmap to BitmapPool causing exception
+* fix: Fixed the bug that BlurTransformation put input Bitmap to BitmapPool causing exception
 * improve: Logger now outputs thread name
 * improve: The log level for DepthException errors is now WARNING
 * improve: LruBitmapPool intercepts repeated put the same bitmap
@@ -206,7 +321,7 @@ New version, new beginning
 
 ### sketch-zoom
 
-* fix: Fix the bug that the tile and preview image of SketchZoomImageView are misplaced
+* fix: Fixed the bug that the tile and preview image of SketchZoomImageView are misplaced
 
 # v3.0.0-rc05
 
@@ -269,8 +384,8 @@ upgrade: Upgrade the latest version of kotlin and androidx library
 
 ### sketch-zoom
 
-* fix: Fix the bug that SketchZoomImageView location() is not as expected
-* fix: Fix the bug that the center point pans when SketchZoomImageView zooms with one finger
+* fix: Fixed the bug that SketchZoomImageView location() is not as expected
+* fix: Fixed the bug that the center point pans when SketchZoomImageView zooms with one finger
   up [#160](https://github.com/panpf/sketch/issues/160)
 * improve: SketchZoomImageView translate image during scale
 * improve: Improve SketchZoomImageView
@@ -285,7 +400,7 @@ upgrade: Upgrade the latest version of kotlin and androidx library
 
 Cache:
 
-* fix: Fix the bug that LruBitmapPool does not support RGBA_F16
+* fix: Fixed the bug that LruBitmapPool does not support RGBA_F16
 * change: Now the download cache directory name is 'download', and the result cache directory name
   is 'result'
 * change: LruMemoryCache.put() now intercepts larger bitmaps
@@ -295,8 +410,8 @@ Cache:
 
 Request:
 
-* fix: Fix the bug that the bitmap cannot be placed in the BitmapPool without using CountBitmap when
-  the memory cache is disabled
+* fix: Fixed the bug that the bitmap cannot be placed in the BitmapPool without using CountBitmap
+  when the memory cache is disabled
 * change: Now RequestInterceptor runs in worker thread, and Target.onStart() is executed before
   RequestInterceptor
 * change: Remove Transformed and JsonSerializable
@@ -306,8 +421,8 @@ Request:
 
 Decoder:
 
-* fix: Fix BaseAnimatedImageDrawableDecoder registration callback is crash bug
-* fix: Fix the bug that Bitmap read from Result cache is always immutable
+* fix: Fixed BaseAnimatedImageDrawableDecoder registration callback is crash bug
+* fix: Fixed the bug that Bitmap read from Result cache is always immutable
 
 ### sketch-extensions
 
@@ -321,7 +436,7 @@ Decoder:
 
 Decoder:
 
-* fix: Fix the bug that XmlDrawableBitmapDecoder do not support bitmapConfig
+* fix: Fixed the bug that XmlDrawableBitmapDecoder do not support bitmapConfig
 
 Sketch:
 
@@ -337,14 +452,14 @@ ImageRequest:
 
 Other:
 
-* fix: Fix ImageOptions bug that error is still null when stateImage is null and configBlock is not
-  null
+* fix: Fixed ImageOptions bug that error is still null when stateImage is null and configBlock is
+  not null
 * improve: DepthException no longer prints stack information
 
 ### sketch-extensions
 
 * fix: Fixed a bug where the click to ignore cellular data saving feature did not work
-* fix: Fix the bug that ApkIconBitmapDecoder, AppIconBitmapDecoder do not support bitmapConfig
+* fix: Fixed the bug that ApkIconBitmapDecoder, AppIconBitmapDecoder do not support bitmapConfig
 
 ### sketch-zoom
 
@@ -356,7 +471,7 @@ Other:
 
 Decoder:
 
-* fix: Fix the bug that XmlDrawableBitmapDecoder does not support loading vector resources from
+* fix: Fixed the bug that XmlDrawableBitmapDecoder does not support loading vector resources from
   other packages in versions below 7.0
 * improve: Replace ResourcesCompat with AppCompatResources
 
@@ -364,7 +479,7 @@ Logger:
 
 * rename: Logger's construction parameter _level is rename to level
 
-* fix: Fix the bug of abnormal transparency of placeholder drawable
+* fix: Fixed the bug of abnormal transparency of placeholder drawable
 
 DataSource:
 
@@ -412,8 +527,8 @@ StateImage:
 
 Resize:
 
-* fix: Fix the bug that the final image content is wrong when precision is LESS_PIXELS and the image
-  size is smaller than the resize size
+* fix: Fixed the bug that the final image content is wrong when precision is LESS_PIXELS and the
+  image size is smaller than the resize size
 
 # v3.0.0-beta03
 
@@ -424,7 +539,7 @@ Target:
 
 DiskCache:
 
-* fix: Fix the bug that the contentType disk cache does not take effect
+* fix: Fixed the bug that the contentType disk cache does not take effect
 
 MemoryCache:
 
@@ -436,7 +551,7 @@ ViewAbility:
 
 Other:
 
-* fix: Fix the bug that the ResizeAnimatableDrawable stop() method does not take effect
+* fix: Fixed the bug that the ResizeAnimatableDrawable stop() method does not take effect
 * remove: DepthException removes the depth property, UriInvalidException removes the uri property
 * remove: SketchException no longer contains ImageRequest
 * remove: SketchException no longer contains ImageRequest
@@ -469,8 +584,8 @@ Build:
 
 ImageRequest:
 
-* fix: Fix the bug that the cacheKey of ImageRequest always contains the parameter whose cacheKey is
-  null
+* fix: Fixed the bug that the cacheKey of ImageRequest always contains the parameter whose cacheKey
+  is null
 * improve: Improve the return result of ImageRequest's newKey() and newCacheKey() methods
 * new: DisplayResult, DisplayData, LoadResult, LoadData increased imageExifOrientation and
   transformedList properties
@@ -482,7 +597,7 @@ Decode:
 
 HTTP:
 
-* fix: Fix the bug of deduplication in the addExtraHeaders() method of HurlStack.Builder
+* fix: Fixed the bug of deduplication in the addExtraHeaders() method of HurlStack.Builder
 
 StateImage:
 
@@ -506,7 +621,7 @@ AnimatedImage:
 
 ### sketch-okhttp
 
-* fix: Fix the bug of deduplication in the addExtraHeaders() method of OkHttpStack.Builder
+* fix: Fixed the bug of deduplication in the addExtraHeaders() method of OkHttpStack.Builder
 
 ### sketch-video
 
@@ -519,7 +634,7 @@ AnimatedImage:
 
 ImageRequest:
 
-* fix: Fix the bug that GlobalLifecycle does not adapt to LifecycleEventObserver, causing the
+* fix: Fixed the bug that GlobalLifecycle does not adapt to LifecycleEventObserver, causing the
   request to fail when the target is not ViewTarget
 * remove: Remove lowQualityBitmapConfig() and highQualityBitmapConfig()
 * remove: Remove the downloadDiskCacheKey property of ImageRequest
@@ -561,11 +676,11 @@ Sketch:
 
 Decoder:
 
-* fix: Fix the bug of samplingSizeForRegion() returning wrong result in api 24 and 25
-* fix: Fix the bug that the returned Bitmap has the wrong size when the difference between the
+* fix: Fixed the bug of samplingSizeForRegion() returning wrong result in api 24 and 25
+* fix: Fixed the bug that the returned Bitmap has the wrong size when the difference between the
   resize and the original image's number of pixels does not exceed 10% and the precision is
   LESS_PIXELS
-* fix: Fix bug that resizePrecision is 'EXACTLY' when resizeSize is not set
+* fix: Fixed bug that resizePrecision is 'EXACTLY' when resizeSize is not set
 * fix: Fixed HARDWARE crash when setting inBitmap
 * move: ImageFormat move to 'com.github.panpf.sketch.decode.internal' package
 * rename: calculateSamplingSize() rename to samplingSize(), calculateSamplingSizeForRegion() rename
@@ -583,8 +698,8 @@ Decoder:
 
 Transformation:
 
-* fix: Fix the bug that if the Bitmap of the transformation result is not new, the current Bitmap is
-  incorrectly reclaimed, causing a crash
+* fix: Fixed the bug that if the Bitmap of the transformation result is not new, the current Bitmap
+  is incorrectly reclaimed, causing a crash
 * improve: Improve Transformation
 
 Cache:
@@ -660,7 +775,7 @@ other:
 
 ### sketch
 
-* fix: Fix bug that AnimatedImageDrawable doesn't support scaling via bounds
+* fix: Fixed bug that AnimatedImageDrawable doesn't support scaling via bounds
 * fix: Fixed a bug with incorrect transparency when using VectorDrawable as state image
 * change: All implementations of DisplayTarget now do not continue to set when the error Drawable is
   empty
