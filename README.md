@@ -6,8 +6,9 @@
 [![version_icon]][version_link]
 ![QQ Group][qq_group_image]
 
-Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 GIF、SVG，手势缩放、超大图采样、ExifInterface、视频缩略图、Jetpack Compose
-等功能
+Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 Jetpack Compose、GIF、SVG、视频缩略图、手势缩放、超大图采样、ExifInterface 等功能。
+
+Sketch is a powerful and comprehensive image load library on Android, in addition to the basic functions, it also supports Jetpack Compose, GIF, SVG, video thumbnails, gesture zoom, huge images sampling, ExifInterface and other functions.
 
 ## 关于 3.0 版本
 
