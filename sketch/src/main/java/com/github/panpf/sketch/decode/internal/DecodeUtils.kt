@@ -27,8 +27,8 @@ import androidx.annotation.Px
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
@@ -406,7 +406,7 @@ fun BitmapDecodeResult.appliedResize(
 
 
 @Throws(IOException::class)
-fun DataSource.readImageInfoWithBitmapFactory(ignoreExifOrientation: Boolean = false): ImageInfo {
+fun BasedStreamDataSource.readImageInfoWithBitmapFactory(ignoreExifOrientation: Boolean = false): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
     }
@@ -426,7 +426,7 @@ fun DataSource.readImageInfoWithBitmapFactory(ignoreExifOrientation: Boolean = f
 }
 
 @Throws(IOException::class, ImageInvalidException::class)
-fun DataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Boolean = false): ImageInfo {
+fun BasedStreamDataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Boolean = false): ImageInfo {
     val imageInfo = readImageInfoWithBitmapFactory(ignoreExifOrientation)
     val width = imageInfo.width
     val height = imageInfo.height
@@ -437,7 +437,7 @@ fun DataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Bool
 }
 
 @WorkerThread
-fun DataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrientation: Boolean = false): ImageInfo? =
+fun BasedStreamDataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrientation: Boolean = false): ImageInfo? =
     try {
         readImageInfoWithBitmapFactory(ignoreExifOrientation).takeIf {
             it.width > 0 && it.height > 0
@@ -449,7 +449,7 @@ fun DataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrientation: Boole
 
 
 @Throws(IOException::class)
-fun DataSource.decodeBitmap(options: BitmapFactory.Options? = null): Bitmap? =
+fun BasedStreamDataSource.decodeBitmap(options: BitmapFactory.Options? = null): Bitmap? =
     newInputStream().buffered().use {
         BitmapFactory.decodeStream(it, null, options)
     }
@@ -462,7 +462,7 @@ fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
             || (this == ImageFormat.HEIF && VERSION.SDK_INT >= VERSION_CODES.P)
 
 @Throws(IOException::class)
-fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options? = null): Bitmap? =
+fun BasedStreamDataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options? = null): Bitmap? =
     newInputStream().buffered().use {
         @Suppress("DEPRECATION")
         val regionDecoder = if (VERSION.SDK_INT >= VERSION_CODES.S) {

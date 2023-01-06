@@ -21,6 +21,9 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.DrawableFetcher
+import com.github.panpf.sketch.util.RealDrawable
+import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.SketchException
 
 /**

@@ -24,7 +24,7 @@ import android.graphics.RectF
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
@@ -34,7 +34,7 @@ import java.io.IOException
 import kotlin.math.abs
 
 @Throws(IOException::class)
-fun DataSource.readExifOrientation(): Int =
+fun BasedStreamDataSource.readExifOrientation(): Int =
     newInputStream().buffered().use {
         ExifInterface(it).getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
@@ -43,7 +43,7 @@ fun DataSource.readExifOrientation(): Int =
     }
 
 @Throws(IOException::class)
-fun DataSource.readExifOrientationWithMimeType(mimeType: String): Int =
+fun BasedStreamDataSource.readExifOrientationWithMimeType(mimeType: String): Int =
     if (ExifInterface.isSupportedMimeType(mimeType)) {
         readExifOrientation()
     } else {

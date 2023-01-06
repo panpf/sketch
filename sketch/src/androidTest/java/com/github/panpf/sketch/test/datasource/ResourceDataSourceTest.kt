@@ -50,33 +50,6 @@ class ResourceDataSourceTest {
     }
 
     @Test
-    fun testLength() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        ResourceDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
-            packageName = context.packageName,
-            resources = context.resources,
-            drawableId = R.drawable.ic_launcher
-        ).apply {
-            Assert.assertEquals(14792, length())
-            Assert.assertEquals(14792, length())
-        }
-
-        assertThrow(Resources.NotFoundException::class) {
-            ResourceDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newResourceUri(42)),
-                packageName = context.packageName,
-                resources = context.resources,
-                drawableId = 42
-            ).apply {
-                length()
-            }
-        }
-    }
-
-    @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
@@ -112,7 +85,7 @@ class ResourceDataSourceTest {
             resources = context.resources,
             drawableId = R.drawable.ic_launcher
         ).apply {
-            val file = file()
+            val file = getFile()
             Assert.assertEquals("d8613eafa03919093537960a44c4f919.0", file.name)
         }
     }

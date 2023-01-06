@@ -15,7 +15,24 @@
  */
 package com.github.panpf.sketch.datasource
 
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.DrawableFetcher
+
 /**
- * Unavailable data source
+ * Provides access to local file image data
  */
-interface UnavailableDataSource : DataSource
+class DrawableDataSource constructor(
+    override val sketch: Sketch,
+    override val request: ImageRequest,
+    override val dataFrom: DataFrom,
+    val drawableFetcher: DrawableFetcher
+) : DataSource {
+
+    val drawable: Drawable by lazy {
+        drawableFetcher.getDrawable(request.context)
+    }
+
+    override fun toString(): String = "DrawableDataSource"
+}

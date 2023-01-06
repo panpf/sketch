@@ -18,8 +18,6 @@ package com.github.panpf.sketch.datasource
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.withLock
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -34,41 +32,18 @@ interface DataSource {
     val request: ImageRequest
 
     val dataFrom: DataFrom
+}
 
-    @WorkerThread
-    @Throws(IOException::class)
-    fun length(): Long
+interface BasedStreamDataSource : DataSource {
 
     @WorkerThread
     @Throws(IOException::class)
     fun newInputStream(): InputStream
+}
+
+interface BasedFileDataSource : BasedStreamDataSource {
 
     @WorkerThread
     @Throws(IOException::class)
-    fun file(): File = runBlocking {
-        val resultCache = sketch.resultCache
-        val resultCacheKey = request.uriString + "_data_source"
-        resultCache.editLock(resultCacheKey).withLock {
-            val snapshot = resultCache[resultCacheKey]
-            if (snapshot != null) {
-                snapshot
-            } else {
-                val editor = resultCache.edit(resultCacheKey)
-                    ?: throw IOException("Disk cache cannot be used")
-                try {
-                    newInputStream().use { inputStream ->
-                        editor.newOutputStream().buffered().use { outputStream ->
-                            inputStream.copyTo(outputStream)
-                        }
-                    }
-                    editor.commit()
-                } catch (e: Throwable) {
-                    editor.abort()
-                    throw e
-                }
-                resultCache[resultCacheKey]
-                    ?: throw IOException("Disk cache cannot be used after edit")
-            }
-        }.file
-    }
+    fun getFile(): File
 }

@@ -15,18 +15,28 @@
  */
 package com.github.panpf.sketch.fetch
 
+import android.content.Context
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import androidx.annotation.WorkerThread
 import androidx.core.net.toUri
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.datasource.UnavailableDataSource
+import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.util.DrawableFetcher
 import com.github.panpf.sketch.util.ifOrNull
-import java.io.IOException
-import java.io.InputStream
+
+/**
+ * Adds App icon support
+ */
+fun ComponentRegistry.Builder.supportAppIcon(): ComponentRegistry.Builder = apply {
+    addFetcher(AppIconUriFetcher.Factory())
+}
 
 /**
  * Sample: 'app.icon://com.github.panpf.sketch.sample/1120'
@@ -53,7 +63,12 @@ class AppIconUriFetcher(
 
     @WorkerThread
     override suspend fun fetch(): FetchResult = FetchResult(
-        AppIconDataSource(sketch, request, LOCAL, packageName, versionCode),
+        DrawableDataSource(
+            sketch = sketch,
+            request = request,
+            dataFrom = DataFrom.LOCAL,
+            drawableFetcher = AppIconDrawableFetcher(packageName, versionCode)
+        ),
         MIME_TYPE
     )
 
@@ -86,25 +101,43 @@ class AppIconUriFetcher(
         }
     }
 
-    class AppIconDataSource(
-        override val sketch: Sketch,
-        override val request: ImageRequest,
-        override val dataFrom: DataFrom,
-        val packageName: String,
-        val versionCode: Int,
-    ) : UnavailableDataSource {
+    class AppIconDrawableFetcher(
+        private val packageName: String,
+        private val versionCode: Int,
+    ) : DrawableFetcher {
 
-        @WorkerThread
-        @Throws(IOException::class)
-        override fun length(): Long =
-            throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
+        override fun getDrawable(context: Context): Drawable {
+            val packageManager = context.packageManager
+            val packageInfo: PackageInfo = try {
+                packageManager.getPackageInfo(packageName, 0)
+            } catch (e: PackageManager.NameNotFoundException) {
+                throw Exception("Not found PackageInfo by '$packageName'", e)
+            }
+            @Suppress("DEPRECATION")
+            if (packageInfo.versionCode != versionCode) {
+                throw Exception("App versionCode mismatch, ${packageInfo.versionCode} != $versionCode")
+            }
+            return packageInfo.applicationInfo.loadIcon(packageManager)
+                ?: throw Exception("loadIcon return null '$packageName'")
+        }
 
-        @WorkerThread
-        @Throws(IOException::class)
-        override fun newInputStream(): InputStream =
-            throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            other as AppIconDrawableFetcher
+            if (packageName != other.packageName) return false
+            if (versionCode != other.versionCode) return false
+            return true
+        }
 
-        override fun toString(): String =
-            "AppIconDataSource(packageName='$packageName',versionCode=$versionCode)"
+        override fun hashCode(): Int {
+            var result = packageName.hashCode()
+            result = 31 * result + versionCode
+            return result
+        }
+
+        override fun toString(): String {
+            return "AppIconDrawableFetcher(packageName='$packageName',versionCode=$versionCode)"
+        }
     }
 }

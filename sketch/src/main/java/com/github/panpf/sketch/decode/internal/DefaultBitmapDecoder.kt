@@ -19,7 +19,7 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeException
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
@@ -36,7 +36,7 @@ import com.github.panpf.sketch.util.Size
 open class DefaultBitmapDecoder(
     private val sketch: Sketch,
     private val requestContext: RequestContext,
-    private val dataSource: DataSource,
+    private val dataSource: BasedStreamDataSource,
 ) : BitmapDecoder {
 
     companion object {
@@ -197,7 +197,14 @@ open class DefaultBitmapDecoder(
             sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): BitmapDecoder = DefaultBitmapDecoder(sketch, requestContext, fetchResult.dataSource)
+        ): BitmapDecoder? {
+            val dataSource = fetchResult.dataSource
+            return if(dataSource is BasedStreamDataSource) {
+                DefaultBitmapDecoder(sketch, requestContext, dataSource)
+            } else {
+                null
+            }
+        }
 
         override fun toString(): String = "DefaultBitmapDecoder"
 

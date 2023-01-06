@@ -29,21 +29,11 @@ import java.io.InputStream
 class FileDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    val file: File
-) : DataSource {
+    private val file: File
+) : BasedFileDataSource {
 
     override val dataFrom: DataFrom
         get() = DataFrom.LOCAL
-
-    private var _length = -1L
-
-    @WorkerThread
-    @Throws(IOException::class)
-    override fun length(): Long =
-        _length.takeIf { it != -1L }
-            ?: file.length().apply {
-                this@FileDataSource._length = this
-            }
 
     @WorkerThread
     @Throws(IOException::class)
@@ -51,7 +41,7 @@ class FileDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun file(): File = file
+    override fun getFile(): File = file
 
     override fun toString(): String = "FileDataSource('${file.path}')"
 }

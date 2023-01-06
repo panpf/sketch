@@ -16,40 +16,38 @@
 package pl.droidsonroids.gif
 
 import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.BasedFileDataSource
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 
-class GifInfoHandleHelper(private val dataSource: DataSource) {
+class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
 
     private val gifInfoHandle: GifInfoHandle by lazy {
+        val context = dataSource.request.context
         when (dataSource) {
             is ByteArrayDataSource -> {
                 GifInfoHandle(dataSource.data)
             }
-            is DiskCacheDataSource -> {
-                GifInfoHandle(dataSource.snapshot.file.path)
-            }
             is ResourceDataSource -> {
-                GifInfoHandle(dataSource.request.context.resources.openRawResourceFd(dataSource.drawableId))
+                GifInfoHandle(context.resources.openRawResourceFd(dataSource.drawableId))
             }
             is ContentDataSource -> {
-                GifInfoHandle.openUri(
-                    dataSource.request.context.contentResolver,
-                    dataSource.contentUri
-                )
-            }
-            is FileDataSource -> {
-                GifInfoHandle(dataSource.file.path)
+                GifInfoHandle.openUri(context.contentResolver, dataSource.contentUri)
             }
             is AssetDataSource -> {
-                GifInfoHandle(dataSource.request.context.assets.openFd(dataSource.assetFileName))
+                GifInfoHandle(context.assets.openFd(dataSource.assetFileName))
+            }
+            is BasedFileDataSource -> {
+                GifInfoHandle(dataSource.getFile().path)
+            }
+            is BasedStreamDataSource -> {
+                GifInfoHandle(dataSource.newInputStream())
             }
             else -> {
-                throw Exception("Unsupported DataSource: ${dataSource::class.qualifiedName}")
+                throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
             }
         }
     }

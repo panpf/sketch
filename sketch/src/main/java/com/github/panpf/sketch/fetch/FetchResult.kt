@@ -15,9 +15,9 @@
  */
 package com.github.panpf.sketch.fetch
 
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.datasource.UnavailableDataSource
 import com.github.panpf.sketch.util.Bytes
 
 fun FetchResult(dataSource: DataSource, mimeType: String?): FetchResult =
@@ -50,19 +50,14 @@ open class DefaultFetchResult constructor(
     }
 
     override val headerBytes: Bytes by lazy {
-        if (dataSource !is UnavailableDataSource) {
+        val dataSource = dataSource
+        if (dataSource is BasedStreamDataSource) {
             val byteArray = ByteArray(1024)
             val readLength = dataSource.newInputStream().use {
                 it.read(byteArray)
             }
             if (readLength != -1) {
-                Bytes(
-                    if (readLength == byteArray.size) {
-                        byteArray
-                    } else {
-                        byteArray.copyOf(readLength)
-                    }
-                )
+                Bytes(if (readLength == byteArray.size) byteArray else byteArray.copyOf(readLength))
             } else {
                 EMPTY
             }

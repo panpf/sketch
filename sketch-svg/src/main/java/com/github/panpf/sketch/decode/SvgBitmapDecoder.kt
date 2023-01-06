@@ -25,7 +25,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.isSvg
@@ -43,7 +43,7 @@ import kotlin.math.roundToInt
 class SvgBitmapDecoder constructor(
     private val sketch: Sketch,
     private val requestContext: RequestContext,
-    private val dataSource: DataSource,
+    private val dataSource: BasedStreamDataSource,
     private val useViewBoundsAsIntrinsicSize: Boolean = true,
     private val backgroundColor: Int?,
     private val css: String?,
@@ -150,15 +150,17 @@ class SvgBitmapDecoder constructor(
             sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): SvgBitmapDecoder? =
-            if (
-                MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
-                || fetchResult.headerBytes.isSvg()
+        ): SvgBitmapDecoder? {
+            val dataSource = fetchResult.dataSource
+            return if (
+                (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
+                        || fetchResult.headerBytes.isSvg())
+                && dataSource is BasedStreamDataSource
             ) {
                 SvgBitmapDecoder(
                     sketch = sketch,
                     requestContext = requestContext,
-                    dataSource = fetchResult.dataSource,
+                    dataSource = dataSource,
                     useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
                     backgroundColor = requestContext.request.svgBackgroundColor,
                     css = requestContext.request.svgCss
@@ -166,6 +168,7 @@ class SvgBitmapDecoder constructor(
             } else {
                 null
             }
+        }
 
         override fun toString(): String = "SvgBitmapDecoder"
 

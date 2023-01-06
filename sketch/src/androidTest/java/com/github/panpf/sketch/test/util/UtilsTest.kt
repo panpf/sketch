@@ -25,10 +25,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.fitScale
+import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
 import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.getTrimLevelName
@@ -47,6 +52,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.FileNotFoundException
 
 @RunWith(AndroidJUnit4::class)
 class UtilsTest {
@@ -201,6 +207,31 @@ class UtilsTest {
         }
         assertThrow(IllegalArgumentException::class) {
             intMerged(25, Short.MAX_VALUE + 1)
+        }
+    }
+
+    @Test
+    fun testGetCacheFileFromStreamDataSource() {
+        val (context, sketch) = getTestContextAndNewSketch()
+        AssetDataSource(
+            sketch = sketch,
+            request = LoadRequest(context, newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
+        ).apply {
+            val file = getCacheFileFromStreamDataSource(sketch, request, this)
+            Assert.assertTrue(file.path.contains("/cache/"))
+            val file1 = getCacheFileFromStreamDataSource(sketch, request, this)
+            Assert.assertEquals(file.path, file1.path)
+        }
+
+        assertThrow(FileNotFoundException::class) {
+            AssetDataSource(
+                sketch = sketch,
+                request = LoadRequest(context, newAssetUri("not_found.jpeg")),
+                assetFileName = "not_found.jpeg"
+            ).apply {
+                getCacheFileFromStreamDataSource(sketch, request, this)
+            }
         }
     }
 }

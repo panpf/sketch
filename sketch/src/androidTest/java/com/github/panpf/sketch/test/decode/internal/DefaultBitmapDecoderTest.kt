@@ -27,8 +27,8 @@ import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
+import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeException
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.exifOrientationName
@@ -53,6 +53,7 @@ import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
@@ -1071,7 +1072,7 @@ class DefaultBitmapDecoderTest {
             }
             sketch.bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
             DefaultBitmapDecoder(
-                sketch, request.toRequestContext(), FullTestDataSource(dataSource)
+                sketch, request.toRequestContext(), FullTestDataSource(dataSource.asOrThrow())
             ).let { runBlocking { it.decode() } }
         }
 
@@ -1084,7 +1085,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(
                 sketch,
                 request.toRequestContext(),
-                FullTestDataSource(dataSource, enabledCount = true)
+                FullTestDataSource(dataSource.asOrThrow(), enabledCount = true)
             ).let { runBlocking { it.decode() } }
         }
 
@@ -1098,7 +1099,7 @@ class DefaultBitmapDecoderTest {
                 sketch.components.newFetcher(request1).fetch().dataSource
             }
             DefaultBitmapDecoder(
-                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1, true)
+                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1.asOrThrow(), true)
             ).let { runBlocking { it.decode() } }
         }
 
@@ -1111,7 +1112,7 @@ class DefaultBitmapDecoderTest {
                 sketch.components.newFetcher(request1).fetch().dataSource
             }
             DefaultBitmapDecoder(
-                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1, false)
+                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1.asOrThrow(), false)
             ).let { runBlocking { it.decode() } }
         }
 
@@ -1126,7 +1127,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(
                 sketch,
                 request1.toRequestContext(),
-                RegionTestDataSource(dataSource1, false, enabledCount = true)
+                RegionTestDataSource(dataSource1.asOrThrow(), false, enabledCount = true)
             ).let { runBlocking { it.decode() } }
         }
 
@@ -1139,15 +1140,15 @@ class DefaultBitmapDecoderTest {
                 sketch.components.newFetcher(request1).fetch().dataSource
             }
             DefaultBitmapDecoder(
-                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1, null)
+                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1.asOrThrow(), null)
             ).let { runBlocking { it.decode() } }
         }
     }
 
     class FullTestDataSource(
-        private val fileDataSource: DataSource,
+        private val fileDataSource: BasedFileDataSource,
         private val enabledCount: Boolean = false,
-    ) : DataSource by fileDataSource {
+    ) : BasedFileDataSource by fileDataSource {
 
         private var count = 0
 
@@ -1165,10 +1166,10 @@ class DefaultBitmapDecoderTest {
     }
 
     class RegionTestDataSource(
-        private val fileDataSource: DataSource,
+        private val fileDataSource: BasedFileDataSource,
         private val srcError: Boolean? = false,
         private val enabledCount: Boolean = false,
-    ) : DataSource by fileDataSource {
+    ) : BasedFileDataSource by fileDataSource {
 
         private var count = 0
 

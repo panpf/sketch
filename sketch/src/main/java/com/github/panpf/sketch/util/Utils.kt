@@ -27,14 +27,21 @@ import android.webkit.MimeTypeMap
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.withLock
 import java.io.File
+import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -293,4 +300,37 @@ internal fun intMerged(highInt: Int, lowInt: Int): Int {
 
 internal fun intSplit(value: Int): Pair<Int, Int> {
     return (value shr 16) to ((value shl 16) shr 16)
+}
+
+@WorkerThread
+@Throws(IOException::class)
+internal fun getCacheFileFromStreamDataSource(
+    sketch: Sketch,
+    request: ImageRequest,
+    streamDataSource: BasedStreamDataSource,
+): File = runBlocking {
+    val resultCache = sketch.resultCache
+    val resultCacheKey = request.uriString + "_data_source"
+    resultCache.editLock(resultCacheKey).withLock {
+        val snapshot = resultCache[resultCacheKey]
+        if (snapshot != null) {
+            snapshot
+        } else {
+            val editor = resultCache.edit(resultCacheKey)
+                ?: throw IOException("Disk cache cannot be used")
+            try {
+                streamDataSource.newInputStream().use { inputStream ->
+                    editor.newOutputStream().buffered().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+                editor.commit()
+            } catch (e: Throwable) {
+                editor.abort()
+                throw e
+            }
+            resultCache[resultCacheKey]
+                ?: throw IOException("Disk cache cannot be used after edit")
+        }
+    }.file
 }

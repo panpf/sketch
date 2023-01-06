@@ -19,9 +19,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
+import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
 import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
@@ -58,7 +58,7 @@ class ComponentRegistryTest {
     fun testNewBuilder() {
         ComponentRegistry.Builder().apply {
             addFetcher(HttpUriFetcher.Factory())
-            addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
+            addBitmapDecoder(DrawableBitmapDecoder.Factory())
             addDrawableDecoder(DefaultDrawableDecoder.Factory())
         }.build().apply {
             Assert.assertEquals(
@@ -66,7 +66,7 @@ class ComponentRegistryTest {
                 fetcherFactoryList
             )
             Assert.assertEquals(
-                listOf(XmlDrawableBitmapDecoder.Factory()),
+                listOf(DrawableBitmapDecoder.Factory()),
                 bitmapDecoderFactoryList
             )
             Assert.assertEquals(
@@ -82,7 +82,7 @@ class ComponentRegistryTest {
                 fetcherFactoryList
             )
             Assert.assertEquals(
-                listOf(XmlDrawableBitmapDecoder.Factory()),
+                listOf(DrawableBitmapDecoder.Factory()),
                 bitmapDecoderFactoryList
             )
             Assert.assertEquals(
@@ -102,7 +102,7 @@ class ComponentRegistryTest {
                 fetcherFactoryList
             )
             Assert.assertEquals(
-                listOf(XmlDrawableBitmapDecoder.Factory()),
+                listOf(DrawableBitmapDecoder.Factory()),
                 bitmapDecoderFactoryList
             )
             Assert.assertEquals(
@@ -125,7 +125,7 @@ class ComponentRegistryTest {
     fun testNewRegistry() {
         ComponentRegistry.Builder().apply {
             addFetcher(HttpUriFetcher.Factory())
-            addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
+            addBitmapDecoder(DrawableBitmapDecoder.Factory())
             addDrawableDecoder(DefaultDrawableDecoder.Factory())
         }.build().apply {
             Assert.assertEquals(
@@ -133,7 +133,7 @@ class ComponentRegistryTest {
                 fetcherFactoryList
             )
             Assert.assertEquals(
-                listOf(XmlDrawableBitmapDecoder.Factory()),
+                listOf(DrawableBitmapDecoder.Factory()),
                 bitmapDecoderFactoryList
             )
             Assert.assertEquals(
@@ -149,7 +149,7 @@ class ComponentRegistryTest {
                 fetcherFactoryList
             )
             Assert.assertEquals(
-                listOf(XmlDrawableBitmapDecoder.Factory()),
+                listOf(DrawableBitmapDecoder.Factory()),
                 bitmapDecoderFactoryList
             )
             Assert.assertEquals(
@@ -169,7 +169,7 @@ class ComponentRegistryTest {
                 fetcherFactoryList
             )
             Assert.assertEquals(
-                listOf(XmlDrawableBitmapDecoder.Factory()),
+                listOf(DrawableBitmapDecoder.Factory()),
                 bitmapDecoderFactoryList
             )
             Assert.assertEquals(
@@ -483,7 +483,7 @@ class ComponentRegistryTest {
             addFetcher(HttpUriFetcher.Factory())
             addFetcher(Base64UriFetcher.Factory())
             addFetcher(ResourceUriFetcher.Factory())
-            addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
+            addBitmapDecoder(DrawableBitmapDecoder.Factory())
             addBitmapDecoder(DefaultBitmapDecoder.Factory())
             addDrawableDecoder(DefaultDrawableDecoder.Factory())
             addRequestInterceptor(EngineRequestInterceptor())
@@ -494,7 +494,7 @@ class ComponentRegistryTest {
             Assert.assertEquals(
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[HttpUriFetcher,Base64UriFetcher,ResourceUriFetcher]," +
-                        "bitmapDecoderFactoryList=[XmlDrawableBitmapDecoder,DefaultBitmapDecoder]," +
+                        "bitmapDecoderFactoryList=[DrawableBitmapDecoder,DefaultBitmapDecoder]," +
                         "drawableDecoderFactoryList=[DefaultDrawableDecoder]," +
                         "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
                         "bitmapDecodeInterceptorList=[BitmapTransformationDecodeInterceptor(sortWeight=90),EngineBitmapDecodeInterceptor(sortWeight=100)]," +
@@ -515,7 +515,7 @@ class ComponentRegistryTest {
             addFetcher(HttpUriFetcher.Factory())
         }.build()
         val componentRegistry2 = ComponentRegistry.Builder().apply {
-            addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
+            addBitmapDecoder(DrawableBitmapDecoder.Factory())
         }.build()
         val componentRegistry3 = ComponentRegistry.Builder().apply {
             addDrawableDecoder(DefaultDrawableDecoder.Factory())
@@ -564,7 +564,7 @@ class ComponentRegistryTest {
             addFetcher(HttpUriFetcher.Factory())
         }.build()
         val componentRegistry2 = ComponentRegistry.Builder().apply {
-            addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
+            addBitmapDecoder(DrawableBitmapDecoder.Factory())
         }.build()
         val componentRegistry3 = ComponentRegistry.Builder().apply {
             addDrawableDecoder(DefaultDrawableDecoder.Factory())

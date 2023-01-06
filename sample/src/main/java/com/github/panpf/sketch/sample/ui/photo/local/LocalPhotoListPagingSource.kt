@@ -22,7 +22,7 @@ import androidx.exifinterface.media.ExifInterface
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.caverock.androidsvg.SVG
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
@@ -103,7 +103,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
         uris.map { uri ->
             val sketch = context.sketch
             val fetcher = sketch.components.newFetcher(LoadRequest(context, uri))
-            val dataSource = fetcher.fetch().dataSource
+            val dataSource = fetcher.fetch().dataSource as BasedStreamDataSource
             val imageInfo = if (uri.endsWith(".svg")) {
                 dataSource.readImageInfoWithSVG()
             } else {
@@ -134,7 +134,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
         }
     }
 
-    private fun DataSource.readImageInfoWithSVG(useViewBoundsAsIntrinsicSize: Boolean = true): ImageInfo {
+    private fun BasedStreamDataSource.readImageInfoWithSVG(useViewBoundsAsIntrinsicSize: Boolean = true): ImageInfo {
         val svg = newInputStream().buffered().use { SVG.getFromInputStream(it) }
         val width: Int
         val height: Int

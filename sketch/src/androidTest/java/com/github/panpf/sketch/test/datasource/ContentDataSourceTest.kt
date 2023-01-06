@@ -41,7 +41,7 @@ class ContentDataSourceTest {
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
-        ).file().let { Uri.fromFile(it) }
+        ).getFile().let { Uri.fromFile(it) }
         val request = LoadRequest(context, contentUri.toString())
         ContentDataSource(
             sketch = sketch,
@@ -56,55 +56,13 @@ class ContentDataSourceTest {
     }
 
     @Test
-    fun testLength() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        val contentUri = AssetDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
-        ).file().let { Uri.fromFile(it) }
-        ContentDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, contentUri.toString()),
-            contentUri = contentUri,
-        ).apply {
-            Assert.assertEquals(540456, length())
-            Assert.assertEquals(540456, length())
-        }
-
-        assertThrow(FileNotFoundException::class) {
-            val errorContentUri = runBlocking {
-                Uri.fromFile(File("/sdcard/error.jpeg"))
-            }
-            ContentDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, errorContentUri.toString()),
-                contentUri = errorContentUri,
-            ).apply {
-                length()
-            }
-        }
-
-        assertThrow(FileNotFoundException::class) {
-            val errorContentUri = Uri.parse("content://fake/fake.jpeg")
-            ContentDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, errorContentUri.toString()),
-                contentUri = errorContentUri,
-            ).apply {
-                length()
-            }
-        }
-    }
-
-    @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = AssetDataSource(
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
-        ).file().let { Uri.fromFile(it) }
+        ).getFile().let { Uri.fromFile(it) }
         ContentDataSource(
             sketch = sketch,
             request = LoadRequest(context, contentUri.toString()),
@@ -134,13 +92,13 @@ class ContentDataSourceTest {
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
-        ).file().let { Uri.fromFile(it) }
+        ).getFile().let { Uri.fromFile(it) }
         ContentDataSource(
             sketch = sketch,
             request = LoadRequest(context, contentUri.toString()),
             contentUri = contentUri,
         ).apply {
-            val file = file()
+            val file = getFile()
             Assert.assertEquals("01d95711e2e30d06b88b93f82e3e1bde.0", file.name)
         }
 
@@ -150,7 +108,7 @@ class ContentDataSourceTest {
             request = LoadRequest(context, errorContentUri.toString()),
             contentUri = errorContentUri,
         ).apply {
-            val file = file()
+            val file = getFile()
             Assert.assertEquals("/sdcard/error.jpeg", file.path)
         }
 
@@ -160,7 +118,7 @@ class ContentDataSourceTest {
                 sketch = sketch,
                 request = LoadRequest(context, errorContentUri1.toString()),
                 contentUri = errorContentUri1,
-            ).file()
+            ).getFile()
         }
     }
 
@@ -171,7 +129,7 @@ class ContentDataSourceTest {
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
-        ).file().let { Uri.fromFile(it) }
+        ).getFile().let { Uri.fromFile(it) }
         ContentDataSource(
             sketch = sketch,
             request = LoadRequest(context, contentUri.toString()),

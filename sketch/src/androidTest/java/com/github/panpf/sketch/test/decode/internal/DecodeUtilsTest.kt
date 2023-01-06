@@ -25,6 +25,7 @@ import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.datasource.FileDataSource
@@ -81,6 +82,7 @@ import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -534,12 +536,12 @@ class DecodeUtilsTest {
                 { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcher(it).fetch()
-                }.dataSource.decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(imageInfo.size, bitmap.size)
@@ -567,12 +569,12 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcher(it).fetch()
-                }.dataSource.decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(imageInfo.size, bitmap.size)
@@ -600,12 +602,12 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcher(it).fetch()
-                }.dataSource.decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(121, 60), bitmap.size)
@@ -638,12 +640,12 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcher(it).fetch()
-                }.dataSource.decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(80, 161), bitmap.size)
@@ -670,12 +672,12 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcher(it).fetch()
-                }.dataSource.decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(121, 60), bitmap.size)
@@ -708,12 +710,12 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcher(it).fetch()
-                }.dataSource.decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(80, 161), bitmap.size)
@@ -740,12 +742,12 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcher(it).fetch()
-                }.dataSource.decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(121, 81), bitmap.size)
@@ -772,12 +774,12 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcher(it).fetch()
-                }.dataSource.decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(121, 81), bitmap.size)
@@ -798,7 +800,7 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 },
                 decodeRegion = null
             )
@@ -821,7 +823,7 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcher(it).fetch()
-                    }.dataSource.decodeBitmap(config.toBitmapOptions())!!
+                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 },
                 decodeRegion = null
             )

@@ -20,6 +20,8 @@ import androidx.annotation.ColorInt
 private const val SVG_BACKGROUND_COLOR_KEY = "sketch#svg_background_color"
 private const val SVG_CSS_KEY = "sketch#svg_css"
 
+// todo supportSvg()
+
 /**
  * Set the background color of the SVG image, the default is transparent
  */

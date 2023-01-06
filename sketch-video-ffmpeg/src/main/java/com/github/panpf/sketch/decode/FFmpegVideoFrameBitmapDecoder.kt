@@ -21,6 +21,7 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
@@ -56,12 +57,16 @@ class FFmpegVideoFrameBitmapDecoder(
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val mediaMetadataRetriever = FFmpegMediaMetadataRetriever().apply {
-            if (dataSource is ContentDataSource) {
-                setDataSource(dataSource.request.context, dataSource.contentUri)
-            } else {
-                // Currently running on a limited number of IO contexts, so this warning can be ignored
-                @Suppress("BlockingMethodInNonBlockingContext")
-                setDataSource(dataSource.file().path)
+            when (dataSource) {
+                is ContentDataSource -> {
+                    setDataSource(dataSource.request.context, dataSource.contentUri)
+                }
+                is BasedFileDataSource -> {
+                    setDataSource(dataSource.getFile().path)
+                }
+                else -> {
+                    throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
+                }
             }
         }
         try {
@@ -175,12 +180,15 @@ class FFmpegVideoFrameBitmapDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): FFmpegVideoFrameBitmapDecoder? {
+            val dataSource = fetchResult.dataSource
             val mimeType = fetchResult.mimeType
-            if (mimeType?.startsWith("video/") == true) {
+            if (mimeType?.startsWith("video/") == true
+                && (dataSource is ContentDataSource || dataSource is BasedFileDataSource)
+            ) {
                 return FFmpegVideoFrameBitmapDecoder(
                     sketch = sketch,
                     requestContext = requestContext,
-                    dataSource = fetchResult.dataSource,
+                    dataSource = dataSource,
                     mimeType = mimeType
                 )
             }

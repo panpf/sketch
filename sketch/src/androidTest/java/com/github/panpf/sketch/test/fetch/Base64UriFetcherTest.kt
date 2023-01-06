@@ -107,7 +107,6 @@ class Base64UriFetcherTest {
         val source = runBlocking {
             fetcher.fetch().dataSource
         }
-        Assert.assertEquals(imageData.size.toLong(), source.length())
         Assert.assertTrue(source is ByteArrayDataSource)
     }
 }

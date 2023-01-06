@@ -25,6 +25,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
@@ -45,7 +46,6 @@ internal class TileDecoder internal constructor(
     private val disallowReuseBitmap: Boolean,
     private val dataSource: DataSource,
 ) {
-
     private val logger: Logger = sketch.logger
     private val bitmapPool: BitmapPool = sketch.bitmapPool
     private val decoderPool = LinkedList<BitmapRegionDecoder>()
@@ -54,7 +54,6 @@ internal class TileDecoder internal constructor(
     private var _destroyed: Boolean = false
     private val imageSize: Size = Size(imageInfo.width, imageInfo.height)
     private val addedImageSize: Size by lazy { exifOrientationHelper.addToSize(imageSize) }
-
 
     @Suppress("MemberVisibilityCanBePrivate")
     val destroyed: Boolean
@@ -176,16 +175,22 @@ internal class TileDecoder internal constructor(
             }
         }
 
-        val bitmapRegionDecoder = synchronized(decoderPool) {
+        var bitmapRegionDecoder: BitmapRegionDecoder? = synchronized(decoderPool) {
             decoderPool.poll()
-        } ?: dataSource.newInputStream().buffered().use {
-            if (VERSION.SDK_INT >= VERSION_CODES.S) {
-                BitmapRegionDecoder.newInstance(it)
-            } else {
-                @Suppress("DEPRECATION")
-                BitmapRegionDecoder.newInstance(it, false)
+        }
+        if (bitmapRegionDecoder == null && dataSource is BasedStreamDataSource) {
+            bitmapRegionDecoder = dataSource.newInputStream().buffered().use {
+                if (VERSION.SDK_INT >= VERSION_CODES.S) {
+                    BitmapRegionDecoder.newInstance(it)
+                } else {
+                    @Suppress("DEPRECATION")
+                    BitmapRegionDecoder.newInstance(it, false)
+                }
             }
-        } ?: return null
+        }
+        if (bitmapRegionDecoder == null) {
+            return null
+        }
 
         val bitmap = block(bitmapRegionDecoder)
 

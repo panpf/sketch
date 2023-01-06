@@ -1,3 +1,5 @@
+[//]: # (todo update doc)
+
 # 显示 APK 文件或已安装 APP 的图标
 
 `需要导入 sketch-extensions 模块`

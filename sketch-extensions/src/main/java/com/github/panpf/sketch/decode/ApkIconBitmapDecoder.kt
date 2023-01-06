@@ -15,57 +15,49 @@
  */
 package com.github.panpf.sketch.decode
 
+import android.content.Context
 import android.content.pm.PackageManager
-import androidx.annotation.WorkerThread
-import androidx.exifinterface.media.ExifInterface
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.decode.internal.appliedResize
-import com.github.panpf.sketch.decode.internal.logString
+import com.github.panpf.sketch.datasource.BasedFileDataSource
+import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.datasource.DrawableDataSource
+import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.toNewBitmap
+import com.github.panpf.sketch.util.DrawableFetcher
+import java.io.File
 import java.io.IOException
+
+/**
+ * Adds Apk icon support
+ */
+fun ComponentRegistry.Builder.supportApkIcon(): ComponentRegistry.Builder = apply {
+    addBitmapDecoder(ApkIconBitmapDecoder.Factory())
+}
 
 /**
  * Extract the icon of the Apk file and convert it to Bitmap
  */
 class ApkIconBitmapDecoder(
-    private val sketch: Sketch,
-    private val requestContext: RequestContext,
-    private val fetchResult: FetchResult
-) : BitmapDecoder {
+    sketch: Sketch,
+    requestContext: RequestContext,
+    dataFrom: DataFrom,
+    file: File
+) : DrawableBitmapDecoder(
+    sketch = sketch,
+    requestContext = requestContext,
+    drawableDataSource = DrawableDataSource(
+        sketch = sketch,
+        request = requestContext.request,
+        dataFrom = dataFrom,
+        drawableFetcher = ApkIconDrawableFetcher(file)
+    )
+) {
 
     companion object {
-        const val MODULE = "ApkIconBitmapDecoder"
         const val MIME_TYPE = "application/vnd.android.package-archive"
-    }
-
-    @WorkerThread
-    override suspend fun decode(): BitmapDecodeResult {
-        val request = requestContext.request
-        // Currently running on a limited number of IO contexts, so this warning can be ignored
-        @Suppress("BlockingMethodInNonBlockingContext")
-        val file = fetchResult.dataSource.file()
-        val packageManager = request.context.packageManager
-        val packageInfo =
-            packageManager.getPackageArchiveInfo(file.path, PackageManager.GET_ACTIVITIES)
-                ?: throw IOException("getPackageArchiveInfo return null. ${file.path}")
-        packageInfo.applicationInfo.sourceDir = file.path
-        packageInfo.applicationInfo.publicSourceDir = file.path
-        val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
-        val bitmap = drawable.toNewBitmap(
-            bitmapPool = sketch.bitmapPool,
-            disallowReuseBitmap = request.disallowReuseBitmap,
-            preferredConfig = request.bitmapConfig?.getConfig(MIME_TYPE)
-        )
-        val imageInfo =
-            ImageInfo(bitmap.width, bitmap.height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
-        sketch.logger.d(MODULE) {
-            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
-        }
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
-            .appliedResize(sketch, requestContext)
     }
 
     class Factory : BitmapDecoder.Factory {
@@ -74,10 +66,21 @@ class ApkIconBitmapDecoder(
             sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): BitmapDecoder? = if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
-            ApkIconBitmapDecoder(sketch, requestContext, fetchResult)
-        } else {
-            null
+        ): BitmapDecoder? {
+            val dataSource = fetchResult.dataSource
+            return if (
+                MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
+                && dataSource is BasedFileDataSource
+            ) {
+                ApkIconBitmapDecoder(
+                    sketch = sketch,
+                    requestContext = requestContext,
+                    dataFrom = fetchResult.dataFrom,
+                    file = dataSource.getFile()
+                )
+            } else {
+                null
+            }
         }
 
         override fun toString(): String = "ApkIconBitmapDecoder"
@@ -90,6 +93,35 @@ class ApkIconBitmapDecoder(
 
         override fun hashCode(): Int {
             return javaClass.hashCode()
+        }
+    }
+
+    class ApkIconDrawableFetcher(private val file: File) : DrawableFetcher {
+
+        override fun getDrawable(context: Context): Drawable {
+            val packageManager = context.packageManager
+            val packageInfo =
+                packageManager.getPackageArchiveInfo(file.path, PackageManager.GET_ACTIVITIES)
+                    ?: throw IOException("getPackageArchiveInfo return null. ${file.path}")
+            packageInfo.applicationInfo.sourceDir = file.path
+            packageInfo.applicationInfo.publicSourceDir = file.path
+            return packageManager.getApplicationIcon(packageInfo.applicationInfo)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            other as ApkIconDrawableFetcher
+            if (file != other.file) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return file.hashCode()
+        }
+
+        override fun toString(): String {
+            return "ApkIconDrawableFetcher(file=$file)"
         }
     }
 }

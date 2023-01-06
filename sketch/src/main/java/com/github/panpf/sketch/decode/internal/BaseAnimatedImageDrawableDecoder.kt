@@ -21,7 +21,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
@@ -71,9 +71,9 @@ abstract class BaseAnimatedImageDrawableDecoder(
     override suspend fun decode(): DrawableDecodeResult {
         val request = requestContext.request
         val source = when (dataSource) {
-            is AssetDataSource -> {
-                ImageDecoder.createSource(request.context.assets, dataSource.assetFileName)
-            }
+//            is AssetDataSource -> {
+//                ImageDecoder.createSource(request.context.assets, dataSource.assetFileName)
+//            }
             is ResourceDataSource -> {
                 ImageDecoder.createSource(dataSource.resources, dataSource.drawableId)
             }
@@ -87,10 +87,11 @@ abstract class BaseAnimatedImageDrawableDecoder(
                     ImageDecoder.createSource(ByteBuffer.wrap(dataSource.data))
                 }
             }
+            is BasedFileDataSource -> {
+                ImageDecoder.createSource(dataSource.getFile())
+            }
             else -> {
-                // Currently running on a limited number of IO contexts, so this warning can be ignored
-                @Suppress("BlockingMethodInNonBlockingContext")
-                ImageDecoder.createSource(dataSource.file())
+                throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
             }
         }
 

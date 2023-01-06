@@ -18,7 +18,12 @@ package com.github.panpf.sketch.decode
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.BasedFileDataSource
+import com.github.panpf.sketch.datasource.ByteArrayDataSource
+import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
@@ -55,10 +60,19 @@ class WebpAnimatedDrawableDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): WebpAnimatedDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !requestContext.request.disallowAnimatedImage) {
+            val dataSource = fetchResult.dataSource
+            if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                && !requestContext.request.disallowAnimatedImage
+                && (dataSource is AssetDataSource
+                        || dataSource is ResourceDataSource
+                        || dataSource is ContentDataSource
+                        || dataSource is ByteArrayDataSource
+                        || dataSource is BasedFileDataSource)
+            ) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 if ((imageFormat == null || imageFormat == ImageFormat.WEBP) && fetchResult.headerBytes.isAnimatedWebP()) {
-                    return WebpAnimatedDrawableDecoder(requestContext, fetchResult.dataSource)
+                    return WebpAnimatedDrawableDecoder(requestContext, dataSource)
                 }
             }
             return null

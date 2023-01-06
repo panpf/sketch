@@ -23,6 +23,7 @@ import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
@@ -61,12 +62,16 @@ class VideoFrameBitmapDecoder(
     override suspend fun decode(): BitmapDecodeResult {
         val request = requestContext.request
         val mediaMetadataRetriever = MediaMetadataRetriever().apply {
-            if (dataSource is ContentDataSource) {
-                setDataSource(request.context, dataSource.contentUri)
-            } else {
-                // Currently running on a limited number of IO contexts, so this warning can be ignored
-                @Suppress("BlockingMethodInNonBlockingContext")
-                setDataSource(dataSource.file().path)
+            when (dataSource) {
+                is ContentDataSource -> {
+                    setDataSource(request.context, dataSource.contentUri)
+                }
+                is BasedFileDataSource -> {
+                    setDataSource(dataSource.getFile().path)
+                }
+                else -> {
+                    throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
+                }
             }
         }
         try {
@@ -211,12 +216,15 @@ class VideoFrameBitmapDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): VideoFrameBitmapDecoder? {
+            val dataSource = fetchResult.dataSource
             val mimeType = fetchResult.mimeType
-            if (mimeType?.startsWith("video/") == true) {
+            if (mimeType?.startsWith("video/") == true
+                && (dataSource is ContentDataSource || dataSource is BasedFileDataSource)
+            ) {
                 return VideoFrameBitmapDecoder(
                     sketch = sketch,
                     requestContext = requestContext,
-                    dataSource = fetchResult.dataSource,
+                    dataSource = dataSource,
                     mimeType = mimeType
                 )
             }

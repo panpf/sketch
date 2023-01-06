@@ -26,6 +26,7 @@ import com.github.panpf.sketch.request.ImageRequest.Builder
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
+import com.github.panpf.sketch.svg.test.decode.toRequestContext
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -73,16 +74,16 @@ class SvgExtensionsTest {
             Assert.assertEquals(Color.BLUE, svgBackgroundColor)
         }
 
-        val key1 = LoadRequest(context, newAssetUri("sample.svg")).key
+        val key1 = LoadRequest(context, newAssetUri("sample.svg")).toRequestContext().key
         val key2 = LoadRequest(context, newAssetUri("sample.svg")) {
             svgBackgroundColor(Color.BLUE)
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, newAssetUri("sample.svg")).cacheKey
+        val cacheKey1 = LoadRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample.svg")) {
             svgBackgroundColor(Color.BLUE)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 
@@ -126,16 +127,16 @@ class SvgExtensionsTest {
             Assert.assertEquals("css1", svgCss)
         }
 
-        val key1 = LoadRequest(context, newAssetUri("sample.svg")).key
+        val key1 = LoadRequest(context, newAssetUri("sample.svg")).toRequestContext().key
         val key2 = LoadRequest(context, newAssetUri("sample.svg")) {
             svgCss("css1")
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, newAssetUri("sample.svg")).cacheKey
+        val cacheKey1 = LoadRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample.svg")) {
             svgCss("css1")
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 }

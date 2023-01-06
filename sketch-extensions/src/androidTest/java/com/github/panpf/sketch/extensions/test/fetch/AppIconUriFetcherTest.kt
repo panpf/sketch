@@ -16,11 +16,13 @@
 package com.github.panpf.sketch.extensions.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.extensions.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
-import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.newAppIconUri
+import com.github.panpf.sketch.fetch.supportAppIcon
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
@@ -35,7 +37,56 @@ import org.junit.runner.RunWith
 class AppIconUriFetcherTest {
 
     @Test
-    fun testNewUri() {
+    fun testSupportAppIcon() {
+        ComponentRegistry.Builder().apply {
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportAppIcon()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[AppIconUriFetcher]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportAppIcon()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[AppIconUriFetcher,AppIconUriFetcher]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+        }
+    }
+
+    @Test
+    fun testNewAppIconUri() {
         Assert.assertEquals(
             "app.icon://packageName/12412",
             newAppIconUri("packageName", 12412)
@@ -118,31 +169,21 @@ class AppIconUriFetcherTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val fetcherFactory = AppIconUriFetcher.Factory()
 
+        val packageName = context.packageName
+
         @Suppress("DEPRECATION")
-        val appIconUri = newAppIconUri(
-            context.packageName,
-            context.packageManager.getPackageInfo(context.packageName, 0).versionCode
-        )
+        val versionCode = context.packageManager.getPackageInfo(packageName, 0).versionCode
+        val appIconUri = newAppIconUri(packageName, versionCode)
 
         val fetcher = fetcherFactory.create(sketch, LoadRequest(context, appIconUri))!!
         (runBlocking {
             fetcher.fetch().dataSource
-        } as AppIconDataSource).apply {
-            assertThrow(UnsupportedOperationException::class) {
-                length()
-            }
-            assertThrow(UnsupportedOperationException::class) {
-                newInputStream()
-            }
-            assertThrow(UnsupportedOperationException::class) {
-                file()
-            }
-
+        } as DrawableDataSource).apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
 
             Assert.assertEquals(
-                "AppIconDataSource(packageName='$packageName',versionCode=$versionCode)",
-                toString()
+                "AppIconDrawableFetcher(packageName='$packageName',versionCode=$versionCode)",
+                drawableFetcher.toString()
             )
         }
     }

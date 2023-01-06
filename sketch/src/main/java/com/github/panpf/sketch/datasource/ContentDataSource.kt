@@ -19,6 +19,7 @@ import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -30,22 +31,9 @@ class ContentDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
     val contentUri: Uri
-) : DataSource {
+) : BasedFileDataSource {
 
     override val dataFrom: DataFrom = DataFrom.LOCAL
-
-    private var _length = -1L
-
-    @WorkerThread
-    @Throws(IOException::class)
-    override fun length(): Long =
-        _length.takeIf { it != -1L }
-            ?: (request.context.contentResolver.openFileDescriptor(contentUri, "r")
-                ?.use {
-                    it.statSize
-                } ?: throw IOException("Invalid content uri: $contentUri")).apply {
-                this@ContentDataSource._length = this
-            }
 
     @WorkerThread
     @Throws(IOException::class)
@@ -55,11 +43,11 @@ class ContentDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun file(): File =
+    override fun getFile(): File =
         if (contentUri.scheme.equals("file", ignoreCase = true)) {
             File(contentUri.toString().substring("file://".length))
         } else {
-            super.file()
+            getCacheFileFromStreamDataSource(sketch, request, this)
         }
 
     override fun toString(): String = "ContentDataSource('$contentUri')"

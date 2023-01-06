@@ -19,9 +19,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
+import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
 import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
@@ -73,13 +73,13 @@ class ComponentRegistryBuilderTest {
         }
 
         ComponentRegistry.Builder().apply {
-            addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
+            addBitmapDecoder(DrawableBitmapDecoder.Factory())
             addBitmapDecoder(DefaultBitmapDecoder.Factory())
             addBitmapDecoder(TestBitmapDecoder.Factory())
         }.build().apply {
             Assert.assertEquals(
                 listOf(
-                    XmlDrawableBitmapDecoder.Factory(),
+                    DrawableBitmapDecoder.Factory(),
                     DefaultBitmapDecoder.Factory(),
                     TestBitmapDecoder.Factory(),
                 ),
