@@ -92,7 +92,8 @@ class SaveCellularTrafficDisplayInterceptor constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SaveCellularTrafficDisplayInterceptor) return false
+        if (javaClass != other?.javaClass) return false
+        other as SaveCellularTrafficDisplayInterceptor
         if (sortWeight != other.sortWeight) return false
         return true
     }

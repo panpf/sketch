@@ -33,7 +33,8 @@ class TestDrawableDecodeInterceptor(override val sortWeight: Int = 0) : Drawable
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is TestDrawableDecodeInterceptor) return false
+        if (javaClass != other?.javaClass) return false
+        other as TestDrawableDecodeInterceptor
         if (sortWeight != other.sortWeight) return false
         return true
     }

@@ -45,7 +45,8 @@ class DrawableStateImage : StateImage {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is DrawableStateImage) return false
+        if (javaClass != other?.javaClass) return false
+        other as DrawableStateImage
         if (drawableFetcher != other.drawableFetcher) return false
         return true
     }

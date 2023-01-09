@@ -299,7 +299,8 @@ class MovieDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is MovieDrawable) return false
+        if (javaClass != other?.javaClass) return false
+        other as MovieDrawable
         if (movie != other.movie) return false
         if (config != other.config) return false
         return true

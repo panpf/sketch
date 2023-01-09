@@ -64,8 +64,8 @@ data class ScaleState(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ScaleState) return false
-
+        if (javaClass != other?.javaClass) return false
+        other as ScaleState
         if (min != other.min) return false
         if (max != other.max) return false
         if (full != other.full) return false
@@ -73,7 +73,6 @@ data class ScaleState(
         if (origin != other.origin) return false
         if (initial != other.initial) return false
         if (!doubleClickSteps.contentEquals(other.doubleClickSteps)) return false
-
         return true
     }
 

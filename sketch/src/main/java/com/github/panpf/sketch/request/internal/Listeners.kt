@@ -52,7 +52,8 @@ class Listeners<REQUEST : ImageRequest, SUCCESS_RESULT : Success, ERROR_RESULT :
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Listeners<*, *, *>) return false
+        if (javaClass != other?.javaClass) return false
+        other as Listeners<*, *, *>
         if (listenerList != other.listenerList) return false
         return true
     }

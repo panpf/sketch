@@ -58,8 +58,8 @@ class ResDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        // todo 还是要判断 if (javaClass != other?.javaClass) return false，这样能区分出子类
-        if (other !is ResDrawable) return false
+        if (javaClass != other?.javaClass) return false
+        other as ResDrawable
         if (packageName != other.packageName) return false
         if (resources != other.resources) return false
         if (resId != other.resId) return false
@@ -90,7 +90,8 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RealDrawable) return false
+        if (javaClass != other?.javaClass) return false
+        other as RealDrawable
         if (drawable != other.drawable) return false
         return true
     }

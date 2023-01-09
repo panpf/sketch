@@ -4,7 +4,8 @@
 
 * change: The DataSource's newInputStream() and file() methods are now split into
   BasedStreamDataSource and BasedFileDataSource
-* new: Added supportAnimatedGif(), supportAnimatedWebp(), supportAnimatedHeif() for configuring gif in a more understandable way
+* new: Added supportAnimatedGif(), supportAnimatedWebp(), supportAnimatedHeif() for configuring gif
+  in a more understandable way
 
 ### sketch-extensions
 
@@ -31,6 +32,11 @@
 ### sketch-video-ffmpeg
 
 * new: Added supportFFmpegVideoFrame() for configuring video frame in a more understandable way
+
+### other
+
+* improve: Improved implementation of the equals method, which now always returns false when
+  compared to subclasses
 
 # v3.1.0 stable
 

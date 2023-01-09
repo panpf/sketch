@@ -60,7 +60,8 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptor(override val sortWeight: I
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is PauseLoadWhenScrollingDrawableDecodeInterceptor) return false
+        if (javaClass != other?.javaClass) return false
+        other as PauseLoadWhenScrollingDrawableDecodeInterceptor
         if (sortWeight != other.sortWeight) return false
         return true
     }

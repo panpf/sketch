@@ -119,7 +119,8 @@ class HurlStack private constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is HurlStack) return false
+        if (javaClass != other?.javaClass) return false
+        other as HurlStack
         if (readTimeoutMillis != other.readTimeoutMillis) return false
         if (connectTimeoutMillis != other.connectTimeoutMillis) return false
         if (userAgent != other.userAgent) return false

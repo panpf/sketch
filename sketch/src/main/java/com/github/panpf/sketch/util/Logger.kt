@@ -152,11 +152,10 @@ class Logger constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Logger) return false
-
+        if (javaClass != other?.javaClass) return false
+        other as Logger
         if (level != other.level) return false
         if (proxy != other.proxy) return false
-
         return true
     }
 

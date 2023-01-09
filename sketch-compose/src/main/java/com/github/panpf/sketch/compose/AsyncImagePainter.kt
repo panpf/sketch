@@ -543,7 +543,8 @@ class DrawSizeResolver(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is DrawSizeResolver) return false
+        if (javaClass != other?.javaClass) return false
+        other as DrawSizeResolver
         if (drawSize != other.drawSize) return false
         return true
     }

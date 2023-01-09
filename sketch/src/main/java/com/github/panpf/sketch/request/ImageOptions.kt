@@ -908,8 +908,8 @@ interface ImageOptions {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is ImageOptionsImpl) return false
-
+            if (javaClass != other?.javaClass) return false
+            other as ImageOptionsImpl
             if (depth != other.depth) return false
             if (parameters != other.parameters) return false
             if (httpHeaders != other.httpHeaders) return false
@@ -931,7 +931,6 @@ interface ImageOptions {
             if (resizeApplyToDrawable != other.resizeApplyToDrawable) return false
             if (memoryCachePolicy != other.memoryCachePolicy) return false
             if (componentRegistry != other.componentRegistry) return false
-
             return true
         }
 

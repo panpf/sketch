@@ -95,7 +95,8 @@ interface ErrorStateImage : StateImage {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is ErrorStateImageImpl) return false
+            if (javaClass != other?.javaClass) return false
+            other as ErrorStateImageImpl
             if (matcherList != other.matcherList) return false
             return true
         }
@@ -134,7 +135,8 @@ interface ErrorStateImage : StateImage {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is DefaultMatcher) return false
+            if (javaClass != other?.javaClass) return false
+            other as DefaultMatcher
             if (stateImage != other.stateImage) return false
             return true
         }
@@ -159,7 +161,8 @@ interface ErrorStateImage : StateImage {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is UriEmptyMatcher) return false
+            if (javaClass != other?.javaClass) return false
+            other as UriEmptyMatcher
             if (stateImage != other.stateImage) return false
             return true
         }

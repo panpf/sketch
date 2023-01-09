@@ -37,7 +37,8 @@ class AsyncImageScaleDecider(val wrapped: ScaleDecider) : ScaleDecider {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AsyncImageScaleDecider) return false
+        if (javaClass != other?.javaClass) return false
+        other as AsyncImageScaleDecider
         if (wrapped != other.wrapped) return false
         return true
     }

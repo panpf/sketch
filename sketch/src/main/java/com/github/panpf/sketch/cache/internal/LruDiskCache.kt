@@ -211,13 +211,12 @@ class LruDiskCache private constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is LruDiskCache) return false
-
+        if (javaClass != other?.javaClass) return false
+        other as LruDiskCache
         if (maxSize != other.maxSize) return false
         if (directory != other.directory) return false
         if (appVersion != other.appVersion) return false
         if (internalVersion != other.internalVersion) return false
-
         return true
     }
 
