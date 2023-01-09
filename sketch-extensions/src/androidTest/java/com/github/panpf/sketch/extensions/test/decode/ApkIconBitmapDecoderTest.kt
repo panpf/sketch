@@ -46,7 +46,7 @@ import org.junit.runner.RunWith
 class ApkIconBitmapDecoderTest {
 
     @Test
-    fun testSupportAppIcon() {
+    fun testSupportApkIcon() {
         ComponentRegistry.Builder().apply {
             build().apply {
                 Assert.assertEquals(

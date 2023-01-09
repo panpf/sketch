@@ -21,6 +21,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedFileDataSource
@@ -49,6 +50,13 @@ import kotlinx.coroutines.withContext
 import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
 import pl.droidsonroids.gif.transforms.Transform
+
+/**
+ * Adds gif support by koral GifDrawable
+ */
+fun ComponentRegistry.Builder.supportKoralGif(): ComponentRegistry.Builder = apply {
+    addDrawableDecoder(GifDrawableDrawableDecoder.Factory())
+}
 
 /**
  * Only the following attributes are supported:

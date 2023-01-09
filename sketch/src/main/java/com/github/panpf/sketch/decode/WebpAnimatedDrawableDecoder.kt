@@ -17,6 +17,7 @@ package com.github.panpf.sketch.decode
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedFileDataSource
@@ -29,6 +30,14 @@ import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+
+/**
+ * Adds animation webp support by AnimatedImageDrawable
+ */
+@RequiresApi(Build.VERSION_CODES.P)
+fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder = apply {
+    addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+}
 
 /**
  * Only the following attributes are supported:

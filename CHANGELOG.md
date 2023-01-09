@@ -4,12 +4,33 @@
 
 * change: The DataSource's newInputStream() and file() methods are now split into
   BasedStreamDataSource and BasedFileDataSource
+* new: Added supportAnimatedGif(), supportAnimatedWebp(), supportAnimatedHeif() for configuring gif in a more understandable way
 
 ### sketch-extensions
 
 * change: The deprecated AppIconBitmapDecoder does not need to be configured anymore
 * new: Added supportAppIcon() for configuring app icons in a more understandable way
 * new: Added supportApkIcon() for configuring apk icons in a more understandable way
+
+### sketch-gif-koral
+
+* new: Added supportKoralGif() for configuring gif in a more understandable way
+
+### sketch-gif-movie
+
+* new: Added supportMovieGif() for configuring gif in a more understandable way
+
+### sketch-svg
+
+* new: Added supportSvg() for configuring svg in a more understandable way
+
+### sketch-video
+
+* new: Added supportVideoFrame() for configuring video frame in a more understandable way
+
+### sketch-video-ffmpeg
+
+* new: Added supportFFmpegVideoFrame() for configuring video frame in a more understandable way
 
 # v3.1.0 stable
 

@@ -22,6 +22,7 @@ import android.media.MediaMetadataRetriever.BitmapParams
 import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
@@ -36,6 +37,14 @@ import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import kotlin.math.roundToInt
+
+/**
+ * Adds video frame support
+ */
+@TargetApi(Build.VERSION_CODES.O_MR1)
+fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = apply {
+    addBitmapDecoder(VideoFrameBitmapDecoder.Factory())
+}
 
 /**
  * Decode a frame of a video file and convert it to Bitmap

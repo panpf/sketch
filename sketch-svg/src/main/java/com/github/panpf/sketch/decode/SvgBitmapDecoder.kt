@@ -24,6 +24,7 @@ import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.internal.appliedResize
@@ -36,6 +37,13 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
 import kotlin.math.roundToInt
+
+/**
+ * Adds SVG support
+ */
+fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
+    addBitmapDecoder(SvgBitmapDecoder.Factory())
+}
 
 /**
  * Decode svg file and convert to Bitmap

@@ -24,6 +24,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
@@ -40,6 +41,14 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
+/**
+ * Adds gif support by Movie
+ */
+@RequiresApi(Build.VERSION_CODES.KITKAT)
+fun ComponentRegistry.Builder.supportMovieGif(): ComponentRegistry.Builder = apply {
+    addDrawableDecoder(GifMovieDrawableDecoder.Factory())
+}
 
 /**
  * A [DrawableDecoder] that uses [Movie] to decode GIFs.

@@ -20,11 +20,13 @@ import android.media.MediaMetadataRetriever
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.FFmpegVideoFrameBitmapDecoder
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
+import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
@@ -46,6 +48,55 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class FFmpegVideoFrameBitmapDecoderTest {
+
+    @Test
+    fun testSupportApkIcon() {
+        ComponentRegistry.Builder().apply {
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportFFmpegVideoFrame()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[FFmpegVideoFrameBitmapDecoder]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportFFmpegVideoFrame()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[FFmpegVideoFrameBitmapDecoder,FFmpegVideoFrameBitmapDecoder]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+        }
+    }
 
     @Test
     fun testFactory() {

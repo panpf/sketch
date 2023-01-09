@@ -19,11 +19,13 @@ import android.graphics.ColorSpace
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
+import com.github.panpf.sketch.decode.supportAnimatedGif
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -43,6 +45,57 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class GifAnimatedDrawableDecoderTest {
+
+    @Test
+    fun testSupportApkIcon() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+
+        ComponentRegistry.Builder().apply {
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportAnimatedGif()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[GifAnimatedDrawableDecoder]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportAnimatedGif()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[GifAnimatedDrawableDecoder,GifAnimatedDrawableDecoder]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+        }
+    }
 
     @Test
     fun testFactory() {

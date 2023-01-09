@@ -17,6 +17,7 @@ package com.github.panpf.sketch.decode
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedFileDataSource
@@ -29,6 +30,14 @@ import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isAnimatedHeif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+
+/**
+ * Adds animation heif support by AnimatedImageDrawable
+ */
+@RequiresApi(Build.VERSION_CODES.R)
+fun ComponentRegistry.Builder.supportAnimatedHeif(): ComponentRegistry.Builder = apply {
+    addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
+}
 
 /**
  * Only the following attributes are supported:
