@@ -1,4 +1,15 @@
-[//]: # (todo chang log)
+# NEW
+
+### sketch
+
+* change: The DataSource's newInputStream() and file() methods are now split into
+  BasedStreamDataSource and BasedFileDataSource
+
+### sketch-extensions
+
+* change: The deprecated AppIconBitmapDecoder does not need to be configured anymore
+* new: Added supportAppIcon() for configuring app icons in a more understandable way
+* new: Added supportApkIcon() for configuring apk icons in a more understandable way
 
 # v3.1.0 stable
 

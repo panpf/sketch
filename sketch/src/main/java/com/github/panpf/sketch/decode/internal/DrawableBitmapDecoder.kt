@@ -43,8 +43,8 @@ open class DrawableBitmapDecoder(
     @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val request = requestContext.request
-        val iconDrawable = drawableDataSource.drawable
-        val bitmap = iconDrawable.toNewBitmap(
+        val drawable = drawableDataSource.drawable
+        val bitmap = drawable.toNewBitmap(
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = request.disallowReuseBitmap,
             preferredConfig = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType)

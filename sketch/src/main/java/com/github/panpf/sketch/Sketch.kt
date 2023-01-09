@@ -170,7 +170,6 @@ class Sketch private constructor(
                 addFetcher(AssetUriFetcher.Factory())
                 addFetcher(Base64UriFetcher.Factory())
 
-//                addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
                 addBitmapDecoder(DrawableBitmapDecoder.Factory())
                 addBitmapDecoder(DefaultBitmapDecoder.Factory())
 
