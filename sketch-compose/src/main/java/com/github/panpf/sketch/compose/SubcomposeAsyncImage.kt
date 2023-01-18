@@ -18,7 +18,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
-import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.request.DisplayRequest
 
 /**
@@ -225,7 +224,7 @@ fun SubcomposeAsyncImage(
     )
 
     val sizeResolver = newRequest.resizeSizeResolver
-    if (sizeResolver is AsyncImageSizeResolver && sizeResolver.wrapped is ConstraintsSizeResolver) {
+    if (sizeResolver is ConstraintsSizeResolver) {
         // Slow path: draw the content with subcomposition as we need to resolve the constraints
         // before calling `content`.
         BoxWithConstraints(
@@ -236,7 +235,7 @@ fun SubcomposeAsyncImage(
             // Ensure `painter.state` is up to date immediately. Resolving the constraints
             // synchronously is necessary to ensure that images from the memory cache are resolved
             // and `painter.state` is updated to `Success` before invoking `content`.
-            sizeResolver.wrapped.setConstraints(constraints)
+            sizeResolver.setConstraints(constraints)
 
             RealSubcomposeAsyncImageScope(
                 parentScope = this,

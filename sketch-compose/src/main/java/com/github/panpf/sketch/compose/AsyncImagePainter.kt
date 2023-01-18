@@ -35,12 +35,10 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransf
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.compose.internal.AsyncImageDisplayTarget
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
-import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.resize.FixedScaleDecider
-import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.target.DisplayTarget
@@ -393,7 +391,7 @@ class AsyncImagePainter internal constructor(
             }))
             if (request.definedOptions.resizeSizeResolver == null) {
                 // If no other size resolver is set, suspend until the canvas size is positive.
-                resizeSize(AsyncImageSizeResolver(DrawSizeResolver(drawSize)))
+                resizeSize { drawSize.mapNotNull { it.toSizeOrNull() }.first() }
             }
             if (request.definedOptions.resizeScaleDecider == null) {
                 // If no other scale resolver is set, use the content scale.
@@ -530,32 +528,6 @@ class AsyncImagePainter internal constructor(
 
 private fun validateRequest(request: DisplayRequest) {
     require(request.target == null) { "request.target must be null." }
-}
-
-/** A [SizeResolver] that computes the size from the draw size passed during the draw phase. */
-class DrawSizeResolver(
-    val drawSize: MutableStateFlow<Size>
-) : SizeResolver {
-
-    override suspend fun size(): com.github.panpf.sketch.util.Size {
-        return drawSize.mapNotNull { it.toSizeOrNull() }.first()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as DrawSizeResolver
-        if (drawSize != other.drawSize) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return drawSize.hashCode()
-    }
-
-    override fun toString(): String {
-        return "DrawSizeResolver"
-    }
 }
 
 //private fun unsupportedData(

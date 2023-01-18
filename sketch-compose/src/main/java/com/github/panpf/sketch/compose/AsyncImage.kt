@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
-import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
@@ -237,8 +236,8 @@ fun AsyncImage(
     // Draw the content without a parent composable or subcomposition.
     val sizeResolver = newRequest.resizeSizeResolver
     Content(
-        modifier = if (sizeResolver is AsyncImageSizeResolver && sizeResolver.wrapped is ConstraintsSizeResolver) {
-            modifier.then(sizeResolver.wrapped)
+        modifier = if (sizeResolver is ConstraintsSizeResolver) {
+            modifier.then(sizeResolver)
         } else {
             modifier
         },
@@ -295,7 +294,7 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
     val noResetScale = request.definedOptions.resizeScaleDecider == null
     return if (noSizeResolver || noResetScale) {
         val sizeResolver = ifOrNull(noSizeResolver) {
-            remember { AsyncImageSizeResolver(ConstraintsSizeResolver()) }
+            remember { ConstraintsSizeResolver() }
         }
         request.newDisplayRequest {
             // If no other size resolver is set, pauses until the layout size is positive.
@@ -338,19 +337,7 @@ class ConstraintsSizeResolver : SizeResolver, LayoutModifier {
         _constraints.value = constraints
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return javaClass.hashCode()
-    }
-
-    override fun toString(): String {
-        return "ConstraintsSizeResolver"
-    }
+    // Equals and hashCode cannot be implemented because they are used in remember
 }
 
 @Stable
