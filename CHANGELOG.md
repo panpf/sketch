@@ -1,4 +1,4 @@
-# NEW
+# v3.2.0-beta01
 
 ### sketch
 
@@ -6,6 +6,12 @@
   BasedStreamDataSource and BasedFileDataSource
 * new: Added supportAnimatedGif(), supportAnimatedWebp(), supportAnimatedHeif() for configuring gif
   in a more understandable way
+
+### sketch-compose
+
+* fix: Fixed a bug where the AsyncImage function was not compatible with compose version 1.3.1
+* improve: Deprecate imageUri plus configBlock version of AsyncImage, add only the imageUri version instead
+* upgrade: Upgrade compose 1.3.1
 
 ### sketch-extensions
 
@@ -37,6 +43,7 @@
 
 * improve: Improved implementation of the equals method, which now always returns false when
   compared to subclasses
+* upgrade: Upgrade compile sdk to 33
 
 # v3.1.0 stable
 
