@@ -49,7 +49,8 @@ open class SketchStateNormalDrawable constructor(drawable: Drawable) :
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SketchStateNormalDrawable) return false
+        if (javaClass != other?.javaClass) return false
+        other as SketchStateNormalDrawable
         if (wrappedDrawable != other.wrappedDrawable) return false
         return true
     }
@@ -78,7 +79,8 @@ open class SketchStateAnimatableDrawable constructor(animatableDrawable: Drawabl
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SketchStateAnimatableDrawable) return false
+        if (javaClass != other?.javaClass) return false
+        other as SketchStateAnimatableDrawable
         if (wrappedDrawable != other.wrappedDrawable) return false
         return true
     }

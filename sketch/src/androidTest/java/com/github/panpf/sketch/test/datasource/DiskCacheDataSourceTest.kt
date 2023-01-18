@@ -37,7 +37,7 @@ class DiskCacheDataSourceTest {
             sketch = sketch,
             request = request,
             assetFileName = "sample.jpeg"
-        ).file()
+        ).getFile()
         val diskCache = sketch.resultCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
@@ -54,28 +54,6 @@ class DiskCacheDataSourceTest {
     }
 
     @Test
-    fun testLength() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
-        AssetDataSource(
-            sketch = sketch,
-            request = request,
-            assetFileName = "sample.jpeg"
-        ).file()
-        val diskCache = sketch.resultCache
-        val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
-        DiskCacheDataSource(
-            sketch = sketch,
-            request = request,
-            dataFrom = DataFrom.DOWNLOAD_CACHE,
-            snapshot = diskCacheSnapshot,
-        ).apply {
-            Assert.assertEquals(540456, length())
-            Assert.assertEquals(540456, length())
-        }
-    }
-
-    @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = LoadRequest(context, newAssetUri("sample.jpeg"))
@@ -83,7 +61,7 @@ class DiskCacheDataSourceTest {
             sketch = sketch,
             request = request,
             assetFileName = "sample.jpeg"
-        ).file()
+        ).getFile()
         val diskCache = sketch.resultCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
@@ -104,7 +82,7 @@ class DiskCacheDataSourceTest {
             sketch = sketch,
             request = request,
             assetFileName = "sample.jpeg"
-        ).file()
+        ).getFile()
         val diskCache = sketch.resultCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
@@ -113,7 +91,7 @@ class DiskCacheDataSourceTest {
             dataFrom = DataFrom.DOWNLOAD_CACHE,
             snapshot = diskCacheSnapshot,
         ).apply {
-            val file = file()
+            val file = getFile()
             Assert.assertEquals(
                 diskCacheSnapshot.file.path,
                 file.path
@@ -129,7 +107,7 @@ class DiskCacheDataSourceTest {
             sketch = sketch,
             request = request,
             assetFileName = "sample.jpeg"
-        ).file()
+        ).getFile()
         val diskCache = sketch.resultCache
         val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(

@@ -24,8 +24,9 @@ import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.isSvg
@@ -38,12 +39,19 @@ import com.github.panpf.sketch.request.svgCss
 import kotlin.math.roundToInt
 
 /**
+ * Adds SVG support
+ */
+fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
+    addBitmapDecoder(SvgBitmapDecoder.Factory())
+}
+
+/**
  * Decode svg file and convert to Bitmap
  */
 class SvgBitmapDecoder constructor(
     private val sketch: Sketch,
     private val requestContext: RequestContext,
-    private val dataSource: DataSource,
+    private val dataSource: BasedStreamDataSource,
     private val useViewBoundsAsIntrinsicSize: Boolean = true,
     private val backgroundColor: Int?,
     private val css: String?,
@@ -150,15 +158,17 @@ class SvgBitmapDecoder constructor(
             sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): SvgBitmapDecoder? =
-            if (
-                MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
-                || fetchResult.headerBytes.isSvg()
+        ): SvgBitmapDecoder? {
+            val dataSource = fetchResult.dataSource
+            return if (
+                (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
+                        || fetchResult.headerBytes.isSvg())
+                && dataSource is BasedStreamDataSource
             ) {
                 SvgBitmapDecoder(
                     sketch = sketch,
                     requestContext = requestContext,
-                    dataSource = fetchResult.dataSource,
+                    dataSource = dataSource,
                     useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
                     backgroundColor = requestContext.request.svgBackgroundColor,
                     css = requestContext.request.svgCss
@@ -166,12 +176,14 @@ class SvgBitmapDecoder constructor(
             } else {
                 null
             }
+        }
 
         override fun toString(): String = "SvgBitmapDecoder"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is Factory) return false
+            if (javaClass != other?.javaClass) return false
+            other as Factory
             if (useViewBoundsAsIntrinsicSize != other.useViewBoundsAsIntrinsicSize) return false
             return true
         }

@@ -17,13 +17,27 @@ package com.github.panpf.sketch.decode
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.BasedFileDataSource
+import com.github.panpf.sketch.datasource.ByteArrayDataSource
+import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+
+/**
+ * Adds gif support by AnimatedImageDrawable
+ */
+@RequiresApi(Build.VERSION_CODES.P)
+fun ComponentRegistry.Builder.supportAnimatedGif(): ComponentRegistry.Builder = apply {
+    addDrawableDecoder(GifAnimatedDrawableDecoder.Factory())
+}
 
 /**
  * Only the following attributes are supported:
@@ -55,12 +69,21 @@ class GifAnimatedDrawableDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): GifAnimatedDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !requestContext.request.disallowAnimatedImage) {
+            val dataSource = fetchResult.dataSource
+            if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                && !requestContext.request.disallowAnimatedImage
+                && (dataSource is AssetDataSource
+                        || dataSource is ResourceDataSource
+                        || dataSource is ContentDataSource
+                        || dataSource is ByteArrayDataSource
+                        || dataSource is BasedFileDataSource)
+            ) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 val isGif =
                     if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF
                 if (isGif) {
-                    return GifAnimatedDrawableDecoder(requestContext, fetchResult.dataSource)
+                    return GifAnimatedDrawableDecoder(requestContext, dataSource)
                 }
             }
             return null

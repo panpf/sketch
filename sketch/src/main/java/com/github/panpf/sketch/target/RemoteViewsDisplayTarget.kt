@@ -51,7 +51,8 @@ class RemoteViewsDisplayTarget(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RemoteViewsDisplayTarget) return false
+        if (javaClass != other?.javaClass) return false
+        other as RemoteViewsDisplayTarget
         if (remoteViews != other.remoteViews) return false
         if (imageViewId != other.imageViewId) return false
         if (ignoreNullDrawable != other.ignoreNullDrawable) return false

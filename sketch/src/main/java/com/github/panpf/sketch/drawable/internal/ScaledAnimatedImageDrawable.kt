@@ -169,7 +169,8 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ScaledAnimatedImageDrawable) return false
+        if (javaClass != other?.javaClass) return false
+        other as ScaledAnimatedImageDrawable
         if (drawable != other.drawable) return false
         if (fitScale != other.fitScale) return false
         return true

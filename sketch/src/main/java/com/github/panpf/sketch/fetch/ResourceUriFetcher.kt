@@ -23,9 +23,11 @@ import android.util.TypedValue
 import androidx.annotation.WorkerThread
 import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.ifOrNull
 
@@ -127,7 +129,12 @@ class ResourceUriFetcher(
             ?: path.toString()
         val mimeType = getMimeTypeFromUrl(entryName)
         return FetchResult(
-            ResourceDataSource(sketch, request, packageName, resources, finalResId),
+            DrawableDataSource(
+                sketch = sketch,
+                request = request,
+                dataFrom = DataFrom.LOCAL,
+                drawableFetcher = ResDrawable(packageName, resources, finalResId)
+            ),
             mimeType
         )
     }

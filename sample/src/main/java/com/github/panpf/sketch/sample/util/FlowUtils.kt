@@ -56,13 +56,13 @@ class ViewLifecycleOwner(view: View) : LifecycleOwner {
 
     init {
         view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View?) {
+            override fun onViewAttachedToWindow(v: View) {
                 lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
                 lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
                 lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
             }
 
-            override fun onViewDetachedFromWindow(v: View?) {
+            override fun onViewDetachedFromWindow(v: View) {
                 lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
                 lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
                 lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)

@@ -32,7 +32,8 @@ class ProgressListeners<REQUEST : ImageRequest>(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ProgressListeners<*>) return false
+        if (javaClass != other?.javaClass) return false
+        other as ProgressListeners<*>
         if (progressListenerList != other.progressListenerList) return false
         return true
     }

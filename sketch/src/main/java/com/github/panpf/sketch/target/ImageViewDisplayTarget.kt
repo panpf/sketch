@@ -66,7 +66,8 @@ open class ImageViewDisplayTarget(override val view: ImageView) :
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ImageViewDisplayTarget) return false
+        if (javaClass != other?.javaClass) return false
+        other as ImageViewDisplayTarget
         if (view != other.view) return false
         return true
     }

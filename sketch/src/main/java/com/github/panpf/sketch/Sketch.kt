@@ -34,9 +34,9 @@ import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
+import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
 import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher
@@ -170,7 +170,7 @@ class Sketch private constructor(
                 addFetcher(AssetUriFetcher.Factory())
                 addFetcher(Base64UriFetcher.Factory())
 
-                addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
+                addBitmapDecoder(DrawableBitmapDecoder.Factory())
                 addBitmapDecoder(DefaultBitmapDecoder.Factory())
 
                 addDrawableDecoder(DefaultDrawableDecoder.Factory())

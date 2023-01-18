@@ -17,8 +17,8 @@ package com.github.panpf.sketch.test.stateimage
 
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.stateimage.ResDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
@@ -33,7 +33,6 @@ class ResDrawableTest {
         val context = getTestContext()
 
         ResDrawable(android.R.drawable.ic_delete).apply {
-            Assert.assertEquals(android.R.drawable.ic_delete, resId)
             Assert.assertSame(
                 context.getDrawableCompat(android.R.drawable.ic_delete)
                     .asOrThrow<BitmapDrawable>().bitmap,
@@ -42,7 +41,6 @@ class ResDrawableTest {
         }
 
         ResDrawable(android.R.drawable.bottom_bar).apply {
-            Assert.assertEquals(android.R.drawable.bottom_bar, resId)
             Assert.assertSame(
                 context.getDrawableCompat(android.R.drawable.bottom_bar)
                     .asOrThrow<BitmapDrawable>().bitmap,
@@ -59,6 +57,11 @@ class ResDrawableTest {
 
         ResDrawable(android.R.drawable.bottom_bar).apply {
             Assert.assertEquals("ResDrawable(${android.R.drawable.bottom_bar})", toString())
+        }
+
+        val context = getTestContext()
+        ResDrawable(context.packageName, context.resources, android.R.drawable.bottom_bar).apply {
+            Assert.assertEquals("ResDrawable(packageName=${context.packageName}, resources=${context.resources}, resId=${android.R.drawable.bottom_bar})", toString())
         }
     }
 

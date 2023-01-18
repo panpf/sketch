@@ -21,6 +21,9 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.DrawableFetcher
+import com.github.panpf.sketch.util.RealDrawable
+import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.SketchException
 
 /**
@@ -73,7 +76,8 @@ class IconStateImage private constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is IconStateImage) return false
+        if (javaClass != other?.javaClass) return false
+        other as IconStateImage
         if (icon != other.icon) return false
         if (bg != other.bg) return false
         return true

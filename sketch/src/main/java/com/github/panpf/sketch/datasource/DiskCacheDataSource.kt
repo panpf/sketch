@@ -31,17 +31,7 @@ class DiskCacheDataSource constructor(
     override val request: ImageRequest,
     override val dataFrom: DataFrom,
     val snapshot: DiskCache.Snapshot,
-) : DataSource {
-
-    private var _length = -1L
-
-    @WorkerThread
-    @Throws(IOException::class)
-    override fun length(): Long =
-        _length.takeIf { it != -1L }
-            ?: snapshot.file.length().apply {
-                this@DiskCacheDataSource._length = this
-            }
+) : BasedFileDataSource {
 
     @WorkerThread
     @Throws(IOException::class)
@@ -49,7 +39,7 @@ class DiskCacheDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun file(): File = snapshot.file
+    override fun getFile(): File = snapshot.file
 
     override fun toString(): String =
         "DiskCacheDataSource(from=$dataFrom,file='${snapshot.file.path}')"

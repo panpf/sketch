@@ -1,12 +1,12 @@
 [versions]
 
 # app
-app-compileSdk = "32"
+app-compileSdk = "33"
 app-minSdk = "16"
 app-minSdkCompose = "21"
 app-targetSdk = "28"
-app-versionCode = "3107"
-app-versionName = "3.1.0"
+app-versionCode = "3109"
+app-versionName = "3.2.0-beta01"
 
 # kotlin
 kotlin = "1.7.20"
@@ -14,11 +14,11 @@ kotlinx-coroutines = "1.6.4"
 kotlinx-serialization-json = "1.3.3"
 
 # android
-android-plugin = "7.3.1"
+android-plugin = "7.4.0"
 androidx-activity = "1.5.1"
 androidx-annotation = "1.4.0"
 androidx-appcompat = "1.4.2"
-androidx-compose = "1.2.1"
+androidx-compose = "1.3.1"
 androidx-compose-compiler = "1.3.2"
 androidx-constraintlayout = "2.1.4"
 androidx-constraintlayout-compose = "1.0.1"
@@ -56,7 +56,7 @@ junit = "4.13.2"
 leakcanary = "2.9.1"
 maven-publish-plugin = "0.18.0"
 mmkv = "1.2.13"
-okhttp3 = "3.12.0"   # 3.12.9 是最后一个支持 Android 5.0 以下的版本
+okhttp3 = "3.12.0"   # 3.12.0 是最后一个支持 Android 5.0 以下的版本
 retrofit2 = "2.6.4"
 retrofit2-kotlinxSerializationConverter = "0.8.0"
 tinypinyin = "2.0.3"

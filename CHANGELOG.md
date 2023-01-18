@@ -1,3 +1,50 @@
+# v3.2.0-beta01
+
+### sketch
+
+* change: The DataSource's newInputStream() and file() methods are now split into
+  BasedStreamDataSource and BasedFileDataSource
+* new: Added supportAnimatedGif(), supportAnimatedWebp(), supportAnimatedHeif() for configuring gif
+  in a more understandable way
+
+### sketch-compose
+
+* fix: Fixed a bug where the AsyncImage function was not compatible with compose version 1.3.1
+* improve: Deprecate imageUri plus configBlock version of AsyncImage, add only the imageUri version instead
+* upgrade: Upgrade compose 1.3.1
+
+### sketch-extensions
+
+* change: The deprecated AppIconBitmapDecoder does not need to be configured anymore
+* new: Added supportAppIcon() for configuring app icons in a more understandable way
+* new: Added supportApkIcon() for configuring apk icons in a more understandable way
+
+### sketch-gif-koral
+
+* new: Added supportKoralGif() for configuring gif in a more understandable way
+
+### sketch-gif-movie
+
+* new: Added supportMovieGif() for configuring gif in a more understandable way
+
+### sketch-svg
+
+* new: Added supportSvg() for configuring svg in a more understandable way
+
+### sketch-video
+
+* new: Added supportVideoFrame() for configuring video frame in a more understandable way
+
+### sketch-video-ffmpeg
+
+* new: Added supportFFmpegVideoFrame() for configuring video frame in a more understandable way
+
+### other
+
+* improve: Improved implementation of the equals method, which now always returns false when
+  compared to subclasses
+* upgrade: Upgrade compile sdk to 33
+
 # v3.1.0 stable
 
 ### sketch

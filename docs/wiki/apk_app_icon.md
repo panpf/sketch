@@ -12,7 +12,7 @@ class MyApplication : Application(), SketchFactory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             components {
-                addBitmapDecoder(ApkIconBitmapDecoder.Factory())
+                supportApkIcon()
             }
         }.build()
     }
@@ -30,7 +30,7 @@ imageView.displayImage("/sdcard/sample.apk")
 ```kotlin
 imageView.displayImage("/sdcard/sample.apk") {
     components {
-        addBitmapDecoder(ApkIconBitmapDecoder.Factory())
+        supportApkIcon()
     }
 }
 ```
@@ -45,8 +45,7 @@ class MyApplication : Application(), SketchFactory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             components {
-                addFetcher(AppIconUriFetcher.Factory())
-                addBitmapDecoder(AppIconBitmapDecoder.Factory())
+                supportAppIcon()
             }
         }.build()
     }
@@ -56,19 +55,21 @@ class MyApplication : Application(), SketchFactory {
 然后使用 `newAppIconUri()` 函数创建专用 uri 并执行显示，如下：
 
 ```kotlin
-imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", 1))
+imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1))
 ```
 
 或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
 
 ```kotlin
-imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", 1)) {
+imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
     components {
-        addFetcher(AppIconUriFetcher.Factory())
-        addBitmapDecoder(AppIconBitmapDecoder.Factory())
+        supportAppIcon()
     }
 }
 ```
+
+* versionCode：App 的版本号，必须传入正确的版本号。因为对图标进行修改时就会将修改后的图标缓存在磁盘上，如果只用 packageName 作为缓存 key 那么 App
+  版本更新后图标即使改变了缓存也不会刷新
 
 [Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
 

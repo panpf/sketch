@@ -37,6 +37,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.VERBOSE
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.format
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -126,6 +127,6 @@ fun LoadRequest.decode(sketch: Sketch): BitmapDecodeResult {
     return DefaultBitmapDecoder(
         sketch = sketch,
         requestContext = request.toRequestContext(),
-        dataSource = fetchResult.dataSource
+        dataSource = fetchResult.dataSource.asOrThrow()
     ).let { runBlocking { it.decode() } }
 }

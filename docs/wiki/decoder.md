@@ -16,7 +16,7 @@ Decoder 用于解码图片文件得到一个 Bitmap 或 Drawable，因此 Sketch
       文件，[点我了解如何使用](svg.md)
     * [VideoFrameBitmapDecoder][VideoFrameBitmapDecoder]：使用 Android 内置的 [MediaMetadataRetriever]
       类解码视频文件的帧，[点我了解如何使用](video_frame.md)
-    * [XmlDrawableBitmapDecoder][XmlDrawableBitmapDecoder]：解码 vector、shape 等 Android 支持的 xml
+    * [DrawableBitmapDecoder][DrawableBitmapDecoder]：解码 vector、shape 等 Android 支持的 xml
       drawable 图片
 * [DrawableDecoder]： 用于解码图片文件并将其转成 Drawable
     * [DefaultDrawableDecoder][DefaultDrawableDecoder]：最后的 Drawable 解码器，调用 BitmapDecoder 得到 Bitmap
@@ -108,7 +108,7 @@ imageView.displayImage("mypng://my.png") {
 
 [DefaultBitmapDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/internal/DefaultBitmapDecoder.kt
 
-[XmlDrawableBitmapDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/internal/XmlDrawableBitmapDecoder.kt
+[DrawableBitmapDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/internal/DrawableBitmapDecoder.kt
 
 [FFmpegVideoFrameBitmapDecoder]: ../../sketch-video-ffmpeg/src/main/java/com/github/panpf/sketch/decode/FFmpegVideoFrameBitmapDecoder.kt
 

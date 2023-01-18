@@ -27,6 +27,7 @@ import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
+import com.github.panpf.sketch.video.test.decode.toRequestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -115,16 +116,16 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = LoadRequest(context, newAssetUri("sample.mp4")).key
+        val key1 = LoadRequest(context, newAssetUri("sample.mp4")).toRequestContext().key
         val key2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             videoFrameMillis(500)
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, newAssetUri("sample.mp4")).cacheKey
+        val cacheKey1 = LoadRequest(context, newAssetUri("sample.mp4")).toRequestContext().cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             videoFrameMillis(500)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 
@@ -208,16 +209,16 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = LoadRequest(context, newAssetUri("sample.mp4")).key
+        val key1 = LoadRequest(context, newAssetUri("sample.mp4")).toRequestContext().key
         val key2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             videoFramePercent(0.45f)
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, newAssetUri("sample.mp4")).cacheKey
+        val cacheKey1 = LoadRequest(context, newAssetUri("sample.mp4")).toRequestContext().cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             videoFramePercent(0.45f)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 
@@ -341,16 +342,16 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = LoadRequest(context, newAssetUri("sample.mp4")).key
+        val key1 = LoadRequest(context, newAssetUri("sample.mp4")).toRequestContext().key
         val key2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
-        }.key
+        }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, newAssetUri("sample.mp4")).cacheKey
+        val cacheKey1 = LoadRequest(context, newAssetUri("sample.mp4")).toRequestContext().cacheKey
         val cacheKey2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
-        }.cacheKey
+        }.toRequestContext().cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 }

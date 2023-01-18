@@ -69,7 +69,8 @@ class LongImageScaleDecider constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is LongImageScaleDecider) return false
+        if (javaClass != other?.javaClass) return false
+        other as LongImageScaleDecider
         if (longImage != other.longImage) return false
         if (otherImage != other.otherImage) return false
         if (longImageDecider != other.longImageDecider) return false

@@ -21,7 +21,8 @@ import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.useCompat
+import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
@@ -34,27 +35,19 @@ class ResourceDataSource constructor(
     val packageName: String,
     val resources: Resources,
     @RawRes @DrawableRes val drawableId: Int
-) : DataSource {
+) : BasedFileDataSource {
 
     override val dataFrom: DataFrom
         get() = DataFrom.LOCAL
-
-    private var _length = -1L
-
-    @WorkerThread
-    @Throws(IOException::class)
-    override fun length(): Long =
-        _length.takeIf { it != -1L }
-            ?: (resources.openRawResourceFd(drawableId)?.useCompat {
-                it.length
-            } ?: throw IOException("Invalid res id: $drawableId")).apply {
-                this@ResourceDataSource._length = this
-            }
 
     @WorkerThread
     @Throws(IOException::class)
     override fun newInputStream(): InputStream =
         resources.openRawResource(drawableId)
+
+    @WorkerThread
+    @Throws(IOException::class)
+    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
 
     override fun toString(): String = "ResourceDataSource($drawableId)"
 }

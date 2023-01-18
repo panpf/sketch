@@ -202,7 +202,8 @@ class LruBitmapPool constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is LruBitmapPool) return false
+        if (javaClass != other?.javaClass) return false
+        other as LruBitmapPool
         if (maxSize != other.maxSize) return false
         if (allowedConfigs != other.allowedConfigs) return false
         return true

@@ -25,10 +25,10 @@ import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.datasource.UnavailableDataSource
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
@@ -40,7 +40,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
-import java.io.InputStream
 
 @RunWith(AndroidJUnit4::class)
 class GifInfoHandlerHelperTest {
@@ -54,7 +53,7 @@ class GifInfoHandlerHelperTest {
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample_anim.gif")),
             assetFileName = "sample_anim.gif"
-        ).file()
+        ).getFile()
         val snapshot = sketch.resultCache[newAssetUri("sample_anim.gif") + "_data_source"]!!
 
         GifInfoHandleHelper(
@@ -177,25 +176,15 @@ class GifInfoHandlerHelperTest {
 
         assertThrow(Exception::class) {
             GifInfoHandleHelper(
-                object : UnavailableDataSource {
+                object : DataSource {
                     override val sketch: Sketch
-                        get() = throw UnsupportedOperationException()
+                        get() = sketch
                     override val request: ImageRequest
-                        get() = throw UnsupportedOperationException()
+                        get() = LoadRequest(context, Uri.fromFile(snapshot.file).toString())
                     override val dataFrom: DataFrom
-                        get() = throw UnsupportedOperationException()
-
-                    override fun length(): Long {
-                        throw UnsupportedOperationException()
-                    }
-
-                    override fun newInputStream(): InputStream {
-                        throw UnsupportedOperationException()
-                    }
+                        get() = LOCAL
                 }
-            ).apply {
-                Assert.assertEquals(480, width)
-            }
+            ).width
         }
     }
 }

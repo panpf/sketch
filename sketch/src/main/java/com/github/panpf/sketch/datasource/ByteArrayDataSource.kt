@@ -18,7 +18,9 @@ package com.github.panpf.sketch.datasource
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
@@ -30,15 +32,15 @@ class ByteArrayDataSource constructor(
     override val request: ImageRequest,
     override val dataFrom: DataFrom,
     val data: ByteArray,
-) : DataSource {
-
-    @WorkerThread
-    @Throws(IOException::class)
-    override fun length(): Long = data.size.toLong()
+) : BasedFileDataSource {
 
     @WorkerThread
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = ByteArrayInputStream(data)
+
+    @WorkerThread
+    @Throws(IOException::class)
+    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
 
     override fun toString(): String =
         "ByteArrayDataSource(from=$dataFrom,length=${data.size.toLong()})"

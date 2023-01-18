@@ -46,7 +46,8 @@ class CombinedListener<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult.Succ
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is CombinedListener<*, *, *>) return false
+        if (javaClass != other?.javaClass) return false
+        other as CombinedListener<*, *, *>
         if (fromProviderListener != other.fromProviderListener) return false
         if (fromBuilderListener != other.fromBuilderListener) return false
         return true

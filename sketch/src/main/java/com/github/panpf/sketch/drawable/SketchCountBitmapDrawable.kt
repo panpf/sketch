@@ -39,7 +39,8 @@ class SketchCountBitmapDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SketchCountBitmapDrawable) return false
+        if (javaClass != other?.javaClass) return false
+        other as SketchCountBitmapDrawable
         if (countBitmap != other.countBitmap) return false
         if (dataFrom != other.dataFrom) return false
         return true

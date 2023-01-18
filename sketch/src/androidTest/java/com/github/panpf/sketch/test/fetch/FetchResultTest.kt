@@ -23,7 +23,6 @@ import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.DefaultFetchResult
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.utils.TestUnavailableDataSource
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import org.junit.Assert
 import org.junit.Test
@@ -96,16 +95,6 @@ class FetchResultTest {
     fun testHeaderBytes() {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = LoadRequest(context, "")
-
-        FetchResult(
-            TestUnavailableDataSource(sketch, request, MEMORY),
-            "image/jpeg"
-        ).apply {
-            Assert.assertEquals(
-                byteArrayOf().contentToString(),
-                this.headerBytes.bytes.contentToString()
-            )
-        }
 
         val bytes = buildList {
             var number = 1

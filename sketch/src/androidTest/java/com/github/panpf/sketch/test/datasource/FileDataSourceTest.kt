@@ -40,7 +40,7 @@ class FileDataSourceTest {
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
-        ).file()
+        ).getFile()
         val request = LoadRequest(context, newFileUri(file.path))
         FileDataSource(
             sketch = sketch,
@@ -49,34 +49,8 @@ class FileDataSourceTest {
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertTrue(file === this.file)
+            Assert.assertTrue(file === this.getFile())
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
-        }
-    }
-
-    @Test
-    fun testLength() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        val file = AssetDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
-        ).file()
-        FileDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, newFileUri(file.path)),
-            file = file
-        ).apply {
-            Assert.assertEquals(540456, length())
-            Assert.assertEquals(540456, length())
-        }
-
-        FileDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, newFileUri("/sdcard/not_found.jpeg")),
-            file = File("/sdcard/not_found.jpeg")
-        ).apply {
-            Assert.assertEquals(0, length())
         }
     }
 
@@ -87,7 +61,7 @@ class FileDataSourceTest {
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
-        ).file()
+        ).getFile()
         FileDataSource(
             sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
@@ -114,13 +88,13 @@ class FileDataSourceTest {
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
-        ).file()
+        ).getFile()
         FileDataSource(
             sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),
             file = file,
         ).apply {
-            val file1 = file()
+            val file1 = getFile()
             Assert.assertEquals(file, file1)
         }
     }
@@ -132,7 +106,7 @@ class FileDataSourceTest {
             sketch = sketch,
             request = LoadRequest(context, newAssetUri("sample.jpeg")),
             assetFileName = "sample.jpeg"
-        ).file()
+        ).getFile()
         FileDataSource(
             sketch = sketch,
             request = LoadRequest(context, newFileUri(file.path)),

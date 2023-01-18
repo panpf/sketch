@@ -18,11 +18,13 @@ package com.github.panpf.sketch.gif.koral.test.decode
 import android.graphics.Canvas
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
+import com.github.panpf.sketch.decode.supportKoralGif
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -44,6 +46,55 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class GifDrawableDrawableDecoderTest {
+
+    @Test
+    fun testSupportApkIcon() {
+        ComponentRegistry.Builder().apply {
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportKoralGif()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[GifDrawableDrawableDecoder]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportKoralGif()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[GifDrawableDrawableDecoder,GifDrawableDrawableDecoder]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+        }
+    }
 
     @Test
     fun testFactory() {

@@ -21,8 +21,15 @@ import android.graphics.Paint
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.datasource.BasedFileDataSource
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.datasource.ByteArrayDataSource
+import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
@@ -43,6 +50,13 @@ import kotlinx.coroutines.withContext
 import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
 import pl.droidsonroids.gif.transforms.Transform
+
+/**
+ * Adds gif support by koral GifDrawable
+ */
+fun ComponentRegistry.Builder.supportKoralGif(): ComponentRegistry.Builder = apply {
+    addDrawableDecoder(GifDrawableDrawableDecoder.Factory())
+}
 
 /**
  * Only the following attributes are supported:
@@ -140,11 +154,22 @@ class GifDrawableDrawableDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): GifDrawableDrawableDecoder? {
-            if (!requestContext.request.disallowAnimatedImage) {
+            val dataSource = fetchResult.dataSource
+            if (!requestContext.request.disallowAnimatedImage
+                && (dataSource is ByteArrayDataSource
+                        || dataSource is ResourceDataSource
+                        || dataSource is ContentDataSource
+                        || dataSource is AssetDataSource
+                        || dataSource is BasedFileDataSource
+                        || dataSource is BasedStreamDataSource)
+            ) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
-                val isGif =
-                    if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF
+                val isGif = if (imageFormat == null) {
+                    fetchResult.headerBytes.isGif()
+                } else {
+                    imageFormat == ImageFormat.GIF
+                }
                 if (isGif) {
                     return GifDrawableDrawableDecoder(requestContext, fetchResult.dataSource)
                 }

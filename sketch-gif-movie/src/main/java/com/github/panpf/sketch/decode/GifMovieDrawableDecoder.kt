@@ -24,8 +24,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.drawable.MovieDrawable
@@ -40,6 +41,14 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
+/**
+ * Adds gif support by Movie
+ */
+@RequiresApi(Build.VERSION_CODES.KITKAT)
+fun ComponentRegistry.Builder.supportMovieGif(): ComponentRegistry.Builder = apply {
+    addDrawableDecoder(GifMovieDrawableDecoder.Factory())
+}
 
 /**
  * A [DrawableDecoder] that uses [Movie] to decode GIFs.
@@ -59,7 +68,7 @@ import kotlinx.coroutines.withContext
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifMovieDrawableDecoder(
     private val requestContext: RequestContext,
-    private val dataSource: DataSource,
+    private val dataSource: BasedStreamDataSource,
 ) : DrawableDecoder {
 
     @WorkerThread
@@ -122,12 +131,16 @@ class GifMovieDrawableDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): GifMovieDrawableDecoder? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !requestContext.request.disallowAnimatedImage) {
+            val dataSource = fetchResult.dataSource
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                && !requestContext.request.disallowAnimatedImage
+                && dataSource is BasedStreamDataSource
+            ) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 val isGif =
                     if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF
                 if (isGif) {
-                    return GifMovieDrawableDecoder(requestContext, fetchResult.dataSource)
+                    return GifMovieDrawableDecoder(requestContext, dataSource)
                 }
             }
             return null

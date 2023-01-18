@@ -124,7 +124,7 @@ AsyncImage(
 val painter = rememberAsyncImagePainter("https://example.com/image.jpg")
 
 val state = painter.state
-if (state is AsyncImagePainter.State.Success && state.dataSource != DataSource.MEMORY_CACHE) {
+if (state is AsyncImagePainter.State.Success && state.result.dataFrom != DataFrom.MEMORY_CACHE) {
     // 执行过渡动画
 }
 

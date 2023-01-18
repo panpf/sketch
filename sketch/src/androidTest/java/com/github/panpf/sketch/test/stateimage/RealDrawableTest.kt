@@ -18,7 +18,7 @@ package com.github.panpf.sketch.test.stateimage
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.stateimage.RealDrawable
+import com.github.panpf.sketch.util.RealDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.Assert
 import org.junit.Test

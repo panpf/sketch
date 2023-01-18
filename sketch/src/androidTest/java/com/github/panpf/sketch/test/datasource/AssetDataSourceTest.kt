@@ -48,30 +48,6 @@ class AssetDataSourceTest {
     }
 
     @Test
-    fun testLength() {
-        val (context, sketch) = getTestContextAndNewSketch()
-
-        AssetDataSource(
-            sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
-        ).apply {
-            Assert.assertEquals(540456, length())
-            Assert.assertEquals(540456, length())
-        }
-
-        assertThrow(FileNotFoundException::class) {
-            AssetDataSource(
-                sketch = sketch,
-                request = LoadRequest(context, newAssetUri("not_found.jpeg")),
-                assetFileName = "not_found.jpeg"
-            ).apply {
-                length()
-            }
-        }
-    }
-
-    @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
 

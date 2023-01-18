@@ -56,7 +56,8 @@ class MemoryCacheStateImage(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is MemoryCacheStateImage) return false
+        if (javaClass != other?.javaClass) return false
+        other as MemoryCacheStateImage
         if (memoryCacheKey != other.memoryCacheKey) return false
         if (defaultImage != other.defaultImage) return false
         return true

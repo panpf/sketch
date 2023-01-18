@@ -58,7 +58,8 @@ class SketchAnimatableDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SketchAnimatableDrawable) return false
+        if (javaClass != other?.javaClass) return false
+        other as SketchAnimatableDrawable
         if (animatableDrawable != other.animatableDrawable) return false
         if (imageUri != other.imageUri) return false
         if (requestKey != other.requestKey) return false

@@ -19,18 +19,20 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
+import com.github.panpf.sketch.decode.supportApkIcon
 import com.github.panpf.sketch.extensions.test.intrinsicSize
 import com.github.panpf.sketch.extensions.test.samplingByTarget
 import com.github.panpf.sketch.extensions.test.toRequestContext
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
@@ -42,6 +44,55 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ApkIconBitmapDecoderTest {
+
+    @Test
+    fun testSupportApkIcon() {
+        ComponentRegistry.Builder().apply {
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportApkIcon()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[ApkIconBitmapDecoder]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportApkIcon()
+            build().apply {
+                Assert.assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "bitmapDecoderFactoryList=[ApkIconBitmapDecoder,ApkIconBitmapDecoder]," +
+                            "drawableDecoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "bitmapDecodeInterceptorList=[]," +
+                            "drawableDecodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+        }
+    }
 
     @Test
     fun testFactory() {
@@ -117,7 +168,7 @@ class ApkIconBitmapDecoderTest {
                 bitmap.toShortInfoString()
             )
             Assert.assertEquals(
-                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.package-archive',UNDEFINED)",
+                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png',UNDEFINED)",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -138,7 +189,7 @@ class ApkIconBitmapDecoderTest {
                 bitmap.toShortInfoString()
             )
             Assert.assertEquals(
-                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.package-archive',UNDEFINED)",
+                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png',UNDEFINED)",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -160,7 +211,7 @@ class ApkIconBitmapDecoderTest {
                 bitmap.toShortInfoString()
             )
             Assert.assertEquals(
-                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'application/vnd.android.package-archive',UNDEFINED)",
+                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png',UNDEFINED)",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)

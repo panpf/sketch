@@ -30,7 +30,8 @@ class TestBitmapDecodeInterceptor(override val sortWeight: Int = 0) : BitmapDeco
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is TestBitmapDecodeInterceptor) return false
+        if (javaClass != other?.javaClass) return false
+        other as TestBitmapDecodeInterceptor
         if (sortWeight != other.sortWeight) return false
         return true
     }

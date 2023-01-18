@@ -20,17 +20,16 @@ import android.os.Build.VERSION_CODES
 import androidx.multidex.MultiDexApplication
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.SketchFactory
-import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
-import com.github.panpf.sketch.decode.AppIconBitmapDecoder
-import com.github.panpf.sketch.decode.FFmpegVideoFrameBitmapDecoder
-import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
-import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
-import com.github.panpf.sketch.decode.GifMovieDrawableDecoder
-import com.github.panpf.sketch.decode.HeifAnimatedDrawableDecoder
-import com.github.panpf.sketch.decode.SvgBitmapDecoder
-import com.github.panpf.sketch.decode.VideoFrameBitmapDecoder
-import com.github.panpf.sketch.decode.WebpAnimatedDrawableDecoder
-import com.github.panpf.sketch.fetch.AppIconUriFetcher
+import com.github.panpf.sketch.decode.supportAnimatedGif
+import com.github.panpf.sketch.decode.supportAnimatedHeif
+import com.github.panpf.sketch.decode.supportAnimatedWebp
+import com.github.panpf.sketch.decode.supportApkIcon
+import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
+import com.github.panpf.sketch.decode.supportKoralGif
+import com.github.panpf.sketch.decode.supportMovieGif
+import com.github.panpf.sketch.decode.supportSvg
+import com.github.panpf.sketch.decode.supportVideoFrame
+import com.github.panpf.sketch.fetch.supportAppIcon
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
 import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
@@ -66,41 +65,36 @@ class MyApplication : MultiDexApplication(), SketchFactory {
             addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())
 
             // app icon
-            addFetcher(AppIconUriFetcher.Factory())
-            addBitmapDecoder(AppIconBitmapDecoder.Factory())
+            supportAppIcon()
 
             // apk icon
-            addBitmapDecoder(ApkIconBitmapDecoder.Factory())
+            supportApkIcon()
 
             // svg
-            addBitmapDecoder(SvgBitmapDecoder.Factory())
+            supportSvg()
 
             // video
-            addBitmapDecoder(
-                if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
-                    VideoFrameBitmapDecoder.Factory()
-                } else {
-                    FFmpegVideoFrameBitmapDecoder.Factory()
-                }
-            )
+            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
+                supportVideoFrame()
+            } else {
+                supportFFmpegVideoFrame()
+            }
 
             // gif
-            addDrawableDecoder(
-                when {
-                    VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
-                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
-                    else -> GifDrawableDrawableDecoder.Factory()
-                }
-            )
+            when {
+                VERSION.SDK_INT >= VERSION_CODES.P -> supportAnimatedGif()
+                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> supportMovieGif()
+                else -> supportKoralGif()
+            }
 
             // webp animated
             if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+                supportAnimatedWebp()
             }
 
             // heif animated
             if (VERSION.SDK_INT >= VERSION_CODES.R) {
-                addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
+                supportAnimatedHeif()
             }
         }
     }.build()
