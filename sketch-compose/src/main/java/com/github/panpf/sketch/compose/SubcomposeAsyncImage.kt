@@ -61,6 +61,61 @@ fun SubcomposeAsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
+) = SubcomposeAsyncImage(
+    request = DisplayRequest(LocalContext.current, imageUri),
+    contentDescription = contentDescription,
+    modifier = modifier,
+    onState = onStateOf(onLoading, onSuccess, onError),
+    alignment = alignment,
+    contentScale = contentScale,
+    alpha = alpha,
+    colorFilter = colorFilter,
+    filterQuality = filterQuality,
+    content = contentOf(loading, success, error),
+)
+
+/**
+ * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ *
+ * @param imageUri [DisplayRequest.uriString] value.
+ * @param contentDescription Text used by accessibility services to describe what this image
+ *  represents. This should always be provided unless this image is used for decorative purposes,
+ *  and does not represent a meaningful action that a user can take.
+ * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
+ * @param loading An optional callback to overwrite what's drawn while the image request is loading.
+ * @param success An optional callback to overwrite what's drawn when the image request succeeds.
+ * @param error An optional callback to overwrite what's drawn when the image request fails.
+ * @param onLoading Called when the image request begins loading.
+ * @param onSuccess Called when the image request completes successfully.
+ * @param onError Called when the image request completes unsuccessfully.
+ * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
+ *  bounds defined by the width and height.
+ * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
+ *  used if the bounds are a different size from the intrinsic size of the [AsyncImagePainter].
+ * @param alpha Optional opacity to be applied to the [AsyncImagePainter] when it is rendered
+ *  onscreen.
+ * @param colorFilter Optional [ColorFilter] to apply for the [AsyncImagePainter] when it is
+ *  rendered onscreen.
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ */
+@Composable
+@Deprecated("Please use the request version")
+fun SubcomposeAsyncImage(
+    imageUri: String?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    loading: @Composable (SubcomposeAsyncImageScope.(State.Loading) -> Unit)? = null,
+    success: @Composable (SubcomposeAsyncImageScope.(State.Success) -> Unit)? = null,
+    error: @Composable (SubcomposeAsyncImageScope.(State.Error) -> Unit)? = null,
+    onLoading: ((State.Loading) -> Unit)? = null,
+    onSuccess: ((State.Success) -> Unit)? = null,
+    onError: ((State.Error) -> Unit)? = null,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    filterQuality: FilterQuality = DefaultFilterQuality,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
 ) = SubcomposeAsyncImage(
     request = DisplayRequest(LocalContext.current, imageUri, configBlock),
@@ -99,6 +154,57 @@ fun SubcomposeAsyncImage(
  * @param content A callback to draw the content inside an [SubcomposeAsyncImageScope].
  */
 @Composable
+fun SubcomposeAsyncImage(
+    imageUri: String?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    transform: (State) -> State = DefaultTransform,
+    onState: ((State) -> Unit)? = null,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    filterQuality: FilterQuality = DefaultFilterQuality,
+    content: @Composable SubcomposeAsyncImageScope.() -> Unit,
+) = SubcomposeAsyncImage(
+    request = DisplayRequest(LocalContext.current, imageUri),
+    contentDescription = contentDescription,
+    modifier = modifier,
+    transform = transform,
+    onState = onState,
+    alignment = alignment,
+    contentScale = contentScale,
+    alpha = alpha,
+    colorFilter = colorFilter,
+    filterQuality = filterQuality,
+    content = content
+)
+
+/**
+ * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ *
+ * @param imageUri [DisplayRequest.uriString] value.
+ * @param contentDescription Text used by accessibility services to describe what this image
+ *  represents. This should always be provided unless this image is used for decorative purposes,
+ *  and does not represent a meaningful action that a user can take.
+ * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
+ * @param transform A callback to transform a new [State] before it's applied to the
+ *  [AsyncImagePainter]. Typically this is used to modify the state's [Painter].
+ * @param onState Called when the state of this painter changes.
+ * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
+ *  bounds defined by the width and height.
+ * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
+ *  used if the bounds are a different size from the intrinsic size of the [AsyncImagePainter].
+ * @param alpha Optional opacity to be applied to the [AsyncImagePainter] when it is rendered
+ *  onscreen.
+ * @param colorFilter Optional [ColorFilter] to apply for the [AsyncImagePainter] when it is
+ *  rendered onscreen.
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ * @param content A callback to draw the content inside an [SubcomposeAsyncImageScope].
+ */
+@Composable
+@Deprecated("Please use the request version")
 fun SubcomposeAsyncImage(
     imageUri: String?,
     contentDescription: String?,

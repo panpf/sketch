@@ -141,7 +141,7 @@ fun PhotoContent(
         .clickable {
             onClick(photo, index)
         }
-    val configBlock: (DisplayRequest.Builder.() -> Unit) = {
+    val request = DisplayRequest(LocalContext.current, photo.listThumbnailUrl) {
         setApplySettings(LIST)
         placeholder(IconStateImage(drawable.ic_image_outline, ResColor(color.placeholder_bg)))
         error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg))) {
@@ -155,31 +155,28 @@ fun PhotoContent(
     when (index % 3) {
         0 -> {
             com.github.panpf.sketch.compose.AsyncImage(
-                imageUri = photo.listThumbnailUrl,
+                request = request,
                 modifier = modifier,
                 contentScale = ContentScale.Crop,
-                contentDescription = "",
-                configBlock = configBlock
+                contentDescription = "photo",
             )
         }
         1 -> {
             com.github.panpf.sketch.compose.SubcomposeAsyncImage(
-                imageUri = photo.listThumbnailUrl,
+                request = request,
                 modifier = modifier,
                 contentScale = ContentScale.Crop,
-                contentDescription = "",
-                configBlock = configBlock
+                contentDescription = "photo",
             )
         }
         else -> {
             Image(
                 painter = com.github.panpf.sketch.compose.rememberAsyncImagePainter(
-                    imageUri = photo.listThumbnailUrl,
-                    configBlock = configBlock
+                    request = request,
                 ),
                 modifier = modifier,
                 contentScale = ContentScale.Crop,
-                contentDescription = ""
+                contentDescription = "photo"
             )
         }
     }
