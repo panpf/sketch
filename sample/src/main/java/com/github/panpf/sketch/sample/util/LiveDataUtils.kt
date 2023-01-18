@@ -25,14 +25,14 @@ fun <T> LiveData<T>.observeWithViewLifecycle(view: View, observer: Observer<T>) 
         observeForever(observer)
     }
     view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-        override fun onViewAttachedToWindow(v: View?) {
+        override fun onViewAttachedToWindow(v: View) {
             try {
                 observeForever(observer)
             } catch (e: IllegalArgumentException) {
             }
         }
 
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             removeObserver(observer)
         }
     })

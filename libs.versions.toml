@@ -1,7 +1,7 @@
 [versions]
 
 # app
-app-compileSdk = "32"
+app-compileSdk = "33"
 app-minSdk = "16"
 app-minSdkCompose = "21"
 app-targetSdk = "28"

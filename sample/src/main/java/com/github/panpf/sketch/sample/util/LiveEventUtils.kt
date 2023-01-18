@@ -27,14 +27,14 @@ fun <T> LiveEvent<T>.observeWithViewLifecycle(
         listenForever(observer)
     }
     view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-        override fun onViewAttachedToWindow(v: View?) {
+        override fun onViewAttachedToWindow(v: View) {
             try {
                 listenForever(observer)
             } catch (e: IllegalArgumentException) {
             }
         }
 
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             removeListener(observer)
         }
     })
