@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.util
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
@@ -33,7 +32,6 @@ import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 /**
  * Find the last child [Drawable] from the specified Drawable
  */
-@SuppressLint("RestrictedApi")
 fun Drawable.getLastChildDrawable(): Drawable? {
     return when (val drawable = this) {
         is CrossfadeDrawable -> {

@@ -88,7 +88,7 @@ class ResizeDrawableTest {
             .let { it as ResizeDrawable }
             .apply {
                 Assert.assertNotSame(bitmapDrawable, this)
-                Assert.assertSame(bitmapDrawable, wrappedDrawable)
+                Assert.assertSame(bitmapDrawable, drawable)
                 Assert.assertEquals(Size(500, 300), resizeSize)
             }
 
@@ -106,7 +106,7 @@ class ResizeDrawableTest {
             .let { it as ResizeAnimatableDrawable }
             .apply {
                 Assert.assertNotSame(animDrawable, this)
-                Assert.assertSame(animDrawable, wrappedDrawable)
+                Assert.assertSame(animDrawable, drawable)
                 Assert.assertEquals(Size(500, 300), resizeSize)
             }
     }
@@ -124,7 +124,7 @@ class ResizeDrawableTest {
         ResizeDrawable(bitmapDrawable, Size(500, 300), CENTER_CROP).apply {
             Assert.assertEquals(Size(500, 300), intrinsicSize)
             Assert.assertEquals(Size(500, 300), resizeSize)
-            Assert.assertSame(bitmapDrawable, wrappedDrawable)
+            Assert.assertSame(bitmapDrawable, drawable)
         }
     }
 

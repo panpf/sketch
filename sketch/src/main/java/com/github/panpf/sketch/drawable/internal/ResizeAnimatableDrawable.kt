@@ -15,14 +15,12 @@
  */
 package com.github.panpf.sketch.drawable.internal
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.requiredMainThread
 
 /**
@@ -36,44 +34,41 @@ open class ResizeAnimatableDrawable(
 ) : ResizeDrawable(drawable, resizeSize, resizeScale), Animatable2Compat {
 
     override fun start() {
-        wrappedDrawable.start()
+        drawable?.start()
     }
 
     override fun stop() {
-        wrappedDrawable.stop()
+        drawable?.stop()
     }
 
     override fun isRunning(): Boolean {
-        return wrappedDrawable.isRunning
+        return drawable?.isRunning ?: false
     }
 
     override fun registerAnimationCallback(callback: AnimationCallback) {
         requiredMainThread()    // Consistent with AnimatedImageDrawable
-        wrappedDrawable.registerAnimationCallback(callback)
+        drawable?.registerAnimationCallback(callback)
     }
 
     override fun unregisterAnimationCallback(callback: AnimationCallback): Boolean {
-        return wrappedDrawable.unregisterAnimationCallback(callback)
+        return drawable?.unregisterAnimationCallback(callback) ?: false
     }
 
     override fun clearAnimationCallbacks() {
-        wrappedDrawable.clearAnimationCallbacks()
+        drawable?.clearAnimationCallbacks()
     }
 
-    @SuppressLint("RestrictedApi")
-    override fun getWrappedDrawable(): SketchAnimatableDrawable {
-        return super.getWrappedDrawable().asOrThrow()
+    override fun getDrawable(): SketchAnimatableDrawable? {
+        return super.getDrawable() as SketchAnimatableDrawable?
     }
 
-    @SuppressLint("RestrictedApi")
-    override fun setWrappedDrawable(drawable: Drawable) {
-        super.setWrappedDrawable(drawable as SketchAnimatableDrawable)
+    override fun setDrawable(drawable: Drawable?) {
+        super.setDrawable(drawable as SketchAnimatableDrawable?)
     }
 
-    @SuppressLint("RestrictedApi")
     override fun mutate(): ResizeAnimatableDrawable {
-        val mutateDrawable = wrappedDrawable.mutate()
-        return if (mutateDrawable !== wrappedDrawable) {
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
             ResizeAnimatableDrawable(mutateDrawable, resizeSize, resizeScale)
         } else {
             this
@@ -81,6 +76,6 @@ open class ResizeAnimatableDrawable(
     }
 
     override fun toString(): String {
-        return "ResizeAnimatableDrawable(wrapped=$wrappedDrawable, resizeSize=$resizeSize, resizeScale=$resizeScale)"
+        return "ResizeAnimatableDrawable(wrapped=$drawable, resizeSize=$resizeSize, resizeScale=$resizeScale)"
     }
 }

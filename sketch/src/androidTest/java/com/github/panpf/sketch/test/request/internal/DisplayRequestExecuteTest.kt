@@ -1759,10 +1759,10 @@ class DisplayRequestExecuteTest {
                 runBlocking { sketch.execute(request) }
             }
             Assert.assertNotNull(testTarget.startDrawable)
-            Assert.assertTrue(testTarget.startDrawable!!.asOrThrow<SketchStateNormalDrawable>().wrappedDrawable is ColorDrawable)
+            Assert.assertTrue(testTarget.startDrawable!!.asOrThrow<SketchStateNormalDrawable>().drawable is ColorDrawable)
             Assert.assertNull(testTarget.successDrawable)
             Assert.assertNotNull(testTarget.errorDrawable)
-            Assert.assertTrue(testTarget.errorDrawable!!.asOrThrow<SketchStateNormalDrawable>().wrappedDrawable is StateListDrawable)
+            Assert.assertTrue(testTarget.errorDrawable!!.asOrThrow<SketchStateNormalDrawable>().drawable is StateListDrawable)
         }
 
         TestDisplayTarget().let { testTarget ->

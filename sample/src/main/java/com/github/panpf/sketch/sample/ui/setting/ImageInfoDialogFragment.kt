@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.sample.ui.setting
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Rect
 import android.graphics.RectF
@@ -81,7 +80,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
     }
 
     companion object {
-        @SuppressLint("RestrictedApi")
         fun createDirectionsFromImageView(
             imageView: ImageView,
             uri: String?,
@@ -111,7 +109,7 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                     .joinToString(separator = "\n")
 
                 bitmapInfo = displayResult.drawable.let {
-                    if (it is ResizeDrawable) it.wrappedDrawable else it
+                    if (it is ResizeDrawable) it.drawable!! else it
                 }.let {
                     if (it is SketchCountBitmapDrawable) {
                         "${it.bitmap.width}x${it.bitmap.height}, ${it.bitmap.config}, ${

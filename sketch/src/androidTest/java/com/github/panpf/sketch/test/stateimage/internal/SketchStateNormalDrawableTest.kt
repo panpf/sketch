@@ -51,7 +51,7 @@ class SketchStateNormalDrawableTest {
 
         bitmapDrawable.toSketchStateDrawable().let { it as SketchStateNormalDrawable }.apply {
             Assert.assertNotSame(bitmapDrawable, this)
-            Assert.assertSame(bitmapDrawable, wrappedDrawable)
+            Assert.assertSame(bitmapDrawable, drawable)
         }
 
         val animDrawable = SketchAnimatableDrawable(
@@ -66,7 +66,7 @@ class SketchStateNormalDrawableTest {
         )
         animDrawable.toSketchStateDrawable().let { it as SketchStateAnimatableDrawable }.apply {
             Assert.assertNotSame(animDrawable, this)
-            Assert.assertSame(animDrawable, wrappedDrawable)
+            Assert.assertSame(animDrawable, drawable)
         }
     }
 

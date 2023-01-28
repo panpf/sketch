@@ -22,6 +22,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.widget.ImageView
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CountBitmap
@@ -39,7 +40,6 @@ import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import androidx.appcompat.graphics.drawable.DrawableWrapper as CompatDrawableWrapper
 
 @RunWith(AndroidJUnit4::class)
 class SketchUtilsTest {
@@ -100,7 +100,7 @@ class SketchUtilsTest {
         )
         Assert.assertSame(
             sketchDrawable,
-            CompatDrawableWrapper(sketchDrawable).findLastSketchDrawable()
+            DrawableWrapperCompat(sketchDrawable).findLastSketchDrawable()
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Assert.assertSame(
@@ -127,7 +127,7 @@ class SketchUtilsTest {
             ).findLastSketchDrawable()
         )
         Assert.assertNull(
-            CompatDrawableWrapper(colorDrawable).findLastSketchDrawable()
+            DrawableWrapperCompat(colorDrawable).findLastSketchDrawable()
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Assert.assertNull(
@@ -230,7 +230,7 @@ class SketchUtilsTest {
             )
         }
 
-        CompatDrawableWrapper(countDrawable).let { drawable ->
+        DrawableWrapperCompat(countDrawable).let { drawable ->
             mutableListOf<String>().also { list ->
                 drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }
@@ -281,7 +281,7 @@ class SketchUtilsTest {
             Assert.assertEquals(listOf<String>(), this)
         }
 
-        CompatDrawableWrapper(colorDrawable).let { drawable ->
+        DrawableWrapperCompat(colorDrawable).let { drawable ->
             mutableListOf<String>().also { list ->
                 drawable.iterateSketchCountBitmapDrawable { list.add(it::class.java.simpleName) }
             }

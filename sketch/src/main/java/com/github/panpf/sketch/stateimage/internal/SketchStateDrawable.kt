@@ -15,10 +15,9 @@
  */
 package com.github.panpf.sketch.stateimage.internal
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
-import androidx.appcompat.graphics.drawable.DrawableWrapper
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
 
 /**
@@ -34,13 +33,12 @@ internal fun Drawable.toSketchStateDrawable(): Drawable {
     }
 }
 
-@SuppressLint("RestrictedApi")
 open class SketchStateNormalDrawable constructor(drawable: Drawable) :
-    DrawableWrapper(drawable), SketchStateDrawable {
+    DrawableWrapperCompat(drawable), SketchStateDrawable {
 
     override fun mutate(): SketchStateNormalDrawable {
-        val mutateDrawable = wrappedDrawable.mutate()
-        return if (mutateDrawable !== wrappedDrawable) {
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
             SketchStateNormalDrawable(mutateDrawable)
         } else {
             this
@@ -51,26 +49,25 @@ open class SketchStateNormalDrawable constructor(drawable: Drawable) :
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as SketchStateNormalDrawable
-        if (wrappedDrawable != other.wrappedDrawable) return false
+        if (drawable != other.drawable) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return wrappedDrawable.hashCode()
+        return drawable.hashCode()
     }
 
     override fun toString(): String {
-        return "SketchStateNormalDrawable($wrappedDrawable)"
+        return "SketchStateNormalDrawable($drawable)"
     }
 }
 
-@SuppressLint("RestrictedApi")
 open class SketchStateAnimatableDrawable constructor(animatableDrawable: Drawable) :
     AnimatableDrawableWrapper(animatableDrawable), SketchStateDrawable {
 
     override fun mutate(): SketchStateAnimatableDrawable {
-        val mutateDrawable = wrappedDrawable.mutate()
-        return if (mutateDrawable !== wrappedDrawable) {
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
             SketchStateAnimatableDrawable(mutateDrawable)
         } else {
             this
@@ -81,15 +78,15 @@ open class SketchStateAnimatableDrawable constructor(animatableDrawable: Drawabl
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as SketchStateAnimatableDrawable
-        if (wrappedDrawable != other.wrappedDrawable) return false
+        if (drawable != other.drawable) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return wrappedDrawable.hashCode()
+        return drawable.hashCode()
     }
 
     override fun toString(): String {
-        return "SketchStateAnimatableDrawable($wrappedDrawable)"
+        return "SketchStateAnimatableDrawable($drawable)"
     }
 }

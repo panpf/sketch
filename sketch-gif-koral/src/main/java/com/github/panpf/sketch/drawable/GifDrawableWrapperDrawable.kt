@@ -1,15 +1,13 @@
 package com.github.panpf.sketch.drawable
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Animatable
 import android.widget.MediaController.MediaPlayerControl
-import androidx.appcompat.graphics.drawable.DrawableWrapper
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import pl.droidsonroids.gif.GifDrawable
 
-@SuppressLint("RestrictedApi")
 class GifDrawableWrapperDrawable(
     val gifDrawable: GifDrawable
-) : DrawableWrapper(gifDrawable), Animatable, MediaPlayerControl {
+) : DrawableWrapperCompat(gifDrawable), Animatable, MediaPlayerControl {
 
     override fun start() {
         gifDrawable.start()

@@ -67,7 +67,7 @@ class SketchStateAnimatableDrawableTest {
             mutate()
             alpha = 146
 
-            context.getDrawableCompat(drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     Assert.assertEquals(255, it.alpha)
                 }
@@ -84,7 +84,7 @@ class SketchStateAnimatableDrawableTest {
             mutate()
             alpha = 146
 
-            context.getDrawableCompat(drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     Assert.assertEquals(255, it.alpha)
                 }

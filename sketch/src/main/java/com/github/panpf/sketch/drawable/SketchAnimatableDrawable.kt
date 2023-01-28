@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.drawable
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
@@ -25,7 +24,6 @@ import com.github.panpf.sketch.util.Size
 /**
  * Provide unified Callback support for Animatable2, Animatable2Compat, Animatable
  */
-@SuppressLint("RestrictedApi")
 class SketchAnimatableDrawable constructor(
     private val animatableDrawable: Drawable,
     override val imageUri: String,
@@ -37,10 +35,9 @@ class SketchAnimatableDrawable constructor(
     override val extras: Map<String, String>?,
 ) : AnimatableDrawableWrapper(animatableDrawable), SketchDrawable {
 
-    @SuppressLint("RestrictedApi")
     override fun mutate(): SketchAnimatableDrawable {
-        val mutateDrawable = wrappedDrawable.mutate()
-        return if (mutateDrawable !== wrappedDrawable) {
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
             SketchAnimatableDrawable(
                 animatableDrawable = mutateDrawable,
                 imageUri = imageUri,

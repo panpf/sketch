@@ -184,7 +184,7 @@ class WebpAnimatedDrawableDecoderTest {
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val animatedImageDrawable =
-                    ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as ScaledAnimatedImageDrawable).drawable
+                    ((this.drawable as SketchAnimatableDrawable).drawable as ScaledAnimatedImageDrawable).drawable
                 Assert.assertEquals(-1, animatedImageDrawable.repeatCount)
             }
 
@@ -200,7 +200,7 @@ class WebpAnimatedDrawableDecoderTest {
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
                 val animatedImageDrawable =
-                    ((this.drawable as SketchAnimatableDrawable).wrappedDrawable as ScaledAnimatedImageDrawable).drawable
+                    ((this.drawable as SketchAnimatableDrawable).drawable as ScaledAnimatedImageDrawable).drawable
                 Assert.assertEquals(3, animatedImageDrawable.repeatCount)
             }
     }

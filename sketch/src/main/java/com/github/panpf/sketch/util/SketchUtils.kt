@@ -15,12 +15,13 @@
  */
 package com.github.panpf.sketch.util
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.DrawableWrapper
 import android.graphics.drawable.LayerDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.view.View
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import com.github.panpf.sketch.R
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
@@ -55,7 +56,6 @@ class SketchUtils private constructor() {
 /**
  * Find the last [SketchDrawable] from the specified Drawable
  */
-@SuppressLint("RestrictedApi")
 fun Drawable.findLastSketchDrawable(): SketchDrawable? {
     val drawable = this
     return when {
@@ -63,10 +63,10 @@ fun Drawable.findLastSketchDrawable(): SketchDrawable? {
         drawable is CrossfadeDrawable || drawable is LayerDrawable -> {
             drawable.getLastChildDrawable()?.findLastSketchDrawable()
         }
-        drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {
-            drawable.wrappedDrawable?.findLastSketchDrawable()
+        drawable is DrawableWrapperCompat -> {
+            drawable.drawable?.findLastSketchDrawable()
         }
-        VERSION.SDK_INT >= VERSION_CODES.M && drawable is android.graphics.drawable.DrawableWrapper -> {
+        VERSION.SDK_INT >= VERSION_CODES.M && drawable is DrawableWrapper -> {
             drawable.drawable?.findLastSketchDrawable()
         }
         else -> null
@@ -76,7 +76,6 @@ fun Drawable.findLastSketchDrawable(): SketchDrawable? {
 /**
  * Traverse all SketchCountBitmapDrawable in specified Drawable
  */
-@SuppressLint("RestrictedApi")
 fun Drawable.iterateSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
     val drawable = this
     when {
@@ -93,10 +92,10 @@ fun Drawable.iterateSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable)
             drawable.start?.iterateSketchCountBitmapDrawable(block)
             drawable.end?.iterateSketchCountBitmapDrawable(block)
         }
-        drawable is androidx.appcompat.graphics.drawable.DrawableWrapper -> {
-            drawable.wrappedDrawable?.iterateSketchCountBitmapDrawable(block)
+        drawable is DrawableWrapperCompat -> {
+            drawable.drawable?.iterateSketchCountBitmapDrawable(block)
         }
-        VERSION.SDK_INT >= VERSION_CODES.M && drawable is android.graphics.drawable.DrawableWrapper -> {
+        VERSION.SDK_INT >= VERSION_CODES.M && drawable is DrawableWrapper -> {
             drawable.drawable?.iterateSketchCountBitmapDrawable(block)
         }
     }

@@ -15,17 +15,16 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.Animatable2.AnimationCallback
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresApi
-import androidx.appcompat.graphics.drawable.DrawableWrapper
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 
 @RequiresApi(23)
-class TestAnimatableDrawable2(drawable: Drawable) : DrawableWrapper(drawable), Animatable2 {
+class TestAnimatableDrawable2(drawable: Drawable) : DrawableWrapperCompat(drawable), Animatable2 {
     private var running = false
     private var callbacks: MutableList<AnimationCallback> = mutableListOf()
     private val handler by lazy { Handler(Looper.getMainLooper()) }
@@ -64,10 +63,9 @@ class TestAnimatableDrawable2(drawable: Drawable) : DrawableWrapper(drawable), A
         callbacks.clear()
     }
 
-    @SuppressLint("RestrictedApi")
     override fun mutate(): TestAnimatableDrawable2 {
-        val mutateDrawable = wrappedDrawable.mutate()
-        return if (mutateDrawable !== wrappedDrawable) {
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
             TestAnimatableDrawable2(drawable = mutateDrawable)
         } else {
             this

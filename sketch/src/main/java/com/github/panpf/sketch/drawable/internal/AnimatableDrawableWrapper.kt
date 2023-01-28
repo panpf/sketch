@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.drawable.internal
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.Drawable
@@ -23,17 +22,16 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Handler
 import android.os.Looper
-import androidx.appcompat.graphics.drawable.DrawableWrapper
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.util.requiredMainThread
 
 /**
  * Provide unified Callback support for Animatable2, Animatable2Compat, Animatable
  */
-@SuppressLint("RestrictedApi")
 open class AnimatableDrawableWrapper constructor(
     private val animatableDrawable: Drawable,
-) : DrawableWrapper(animatableDrawable), Animatable2Compat {
+) : DrawableWrapperCompat(animatableDrawable), Animatable2Compat {
 
     private var callbacks: MutableList<Animatable2Compat.AnimationCallback>? = null
     private var callbackMap: HashMap<Animatable2Compat.AnimationCallback, Animatable2.AnimationCallback>? =
@@ -152,10 +150,9 @@ open class AnimatableDrawableWrapper constructor(
         return animatableDrawable.isRunning
     }
 
-    @SuppressLint("RestrictedApi")
     override fun mutate(): AnimatableDrawableWrapper {
-        val mutateDrawable = wrappedDrawable.mutate()
-        return if (mutateDrawable !== wrappedDrawable) {
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
             AnimatableDrawableWrapper(mutateDrawable)
         } else {
             this

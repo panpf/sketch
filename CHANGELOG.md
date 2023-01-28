@@ -1,3 +1,8 @@
+# new
+
+* upgrade: Upgrade androidx activity 1.6.1, annotation 1.5.0, appcompat 1.6.0, compose animation and
+  ui 1.3.3, core 1.9.0, exifinterface 1.3.5, fragment 1.5.5
+
 # v3.2.0-beta01
 
 ### sketch
@@ -10,7 +15,8 @@
 ### sketch-compose
 
 * fix: Fixed a bug where the AsyncImage function was not compatible with compose version 1.3.1
-* improve: Deprecate imageUri plus configBlock version of AsyncImage, add only the imageUri version instead
+* improve: Deprecate imageUri plus configBlock version of AsyncImage, add only the imageUri version
+  instead
 * upgrade: Upgrade compose 1.3.1
 
 ### sketch-extensions

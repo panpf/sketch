@@ -15,15 +15,17 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
-import androidx.appcompat.graphics.drawable.DrawableWrapper
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 
-class TestNewMutateDrawable(drawable: Drawable) : DrawableWrapper(drawable) {
+class TestNewMutateDrawable(drawable: Drawable) : DrawableWrapperCompat(drawable) {
 
-    @SuppressLint("RestrictedApi")
     override fun mutate(): TestNewMutateDrawable {
-        val mutateDrawable = wrappedDrawable.mutate()
-        return TestNewMutateDrawable(drawable = mutateDrawable)
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
+            TestNewMutateDrawable(drawable = mutateDrawable)
+        } else {
+            this
+        }
     }
 }

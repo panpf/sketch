@@ -15,12 +15,11 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
-import androidx.appcompat.graphics.drawable.DrawableWrapper
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 
-class TestAnimatableDrawable1(drawable: Drawable) : DrawableWrapper(drawable), Animatable {
+class TestAnimatableDrawable1(drawable: Drawable) : DrawableWrapperCompat(drawable), Animatable {
     private var running = false
 
     override fun start() {
@@ -35,10 +34,9 @@ class TestAnimatableDrawable1(drawable: Drawable) : DrawableWrapper(drawable), A
         return running
     }
 
-    @SuppressLint("RestrictedApi")
     override fun mutate(): TestAnimatableDrawable1 {
-        val mutateDrawable = wrappedDrawable.mutate()
-        return if (mutateDrawable !== wrappedDrawable) {
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
             TestAnimatableDrawable1(drawable = mutateDrawable)
         } else {
             this

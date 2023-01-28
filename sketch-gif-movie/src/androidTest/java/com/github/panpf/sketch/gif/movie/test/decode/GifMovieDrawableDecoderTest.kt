@@ -226,7 +226,7 @@ class GifMovieDrawableDecoderTest {
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val movieDrawable =
-                    (this.drawable as SketchAnimatableDrawable).wrappedDrawable as MovieDrawable
+                    (this.drawable as SketchAnimatableDrawable).drawable as MovieDrawable
                 Assert.assertEquals(-1, movieDrawable.getRepeatCount())
                 Assert.assertNull(movieDrawable.getAnimatedTransformation())
             }
@@ -250,7 +250,7 @@ class GifMovieDrawableDecoderTest {
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val movieDrawable =
-                    (this.drawable as SketchAnimatableDrawable).wrappedDrawable as MovieDrawable
+                    (this.drawable as SketchAnimatableDrawable).drawable as MovieDrawable
                 Assert.assertEquals(3, movieDrawable.getRepeatCount())
                 Assert.assertNotNull(movieDrawable.getAnimatedTransformation())
             }
