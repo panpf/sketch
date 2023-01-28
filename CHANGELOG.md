@@ -1,4 +1,4 @@
-# new
+# v3.2.0-beta02
 
 * upgrade: Upgrade androidx activity 1.6.1, annotation 1.5.0, appcompat 1.6.0, compose animation and
   ui 1.3.3, core 1.9.0, exifinterface 1.3.5, fragment 1.5.5
