@@ -9,7 +9,7 @@
 Sketch is a powerful and comprehensive image load library on Android, in addition to the basic
 functions, it also supports Jetpack Compose, GIF, SVG, video thumbnails, gesture zoom, huge images
 sampling, ExifInterface and other functions.
-
+<br>
 Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 Jetpack
 Compose、GIF、SVG、视频缩略图、手势缩放、超大图采样、ExifInterface 等功能。
 
@@ -56,7 +56,7 @@ dependencies {
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v' · 不包含 'v')
 
 There are also optional modules to extend the functionality of sketch:
-
+<br>
 还有一些可选的模块用来扩展 sketch 的功能：
 
 ```kotlin
@@ -101,9 +101,9 @@ dependencies {
 
 #### R8 / Proguard
 
-sketch doesn't need to configure any obfuscation rules itself, but you may need to add obfuscation configurations for indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio].
-
-sketch 自己不需要配置任何混淆规则，但你可能需要为间接依赖的 [Kotlin Coroutines], [OkHttp], [Okio]
+Sketch doesn't need to configure any obfuscation rules itself, but you may need to add obfuscation configurations for indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio].
+<br>
+Sketch 自己不需要配置任何混淆规则，但你可能需要为间接依赖的 [Kotlin Coroutines], [OkHttp], [Okio]
 添加混淆配置
 
 ## Get started/快速上手
@@ -111,7 +111,7 @@ sketch 自己不需要配置任何混淆规则，但你可能需要为间接依�
 #### ImageView
 
 Sketch provides a series of extended functions called displayImage for ImageView, which can easily display images
-
+<br>
 Sketch 为 ImageView 提供了一系列的名为 displayImage 的扩展函数，可以方便的显示图片
 
 ```kotlin
@@ -128,7 +128,7 @@ imageView.displayImage("asset://image.jpg")
 ```
 
 You can also configure parameters through a trailing lambda function:
-
+<br>
 还可以通过尾随的 lambda 函数配置参数：
 
 ```kotlin
@@ -212,7 +212,7 @@ Featured features/特色功能：
 ## Changelog/更新日志
 
 Please review the [CHANGELOG.md] file
-
+<br>
 请查看 [CHANGELOG.md] 文件
 
 ### About version 3.0/关于 3.0 版本
