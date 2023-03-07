@@ -43,7 +43,7 @@
 val sketch = context.sketch
 ```
 
-你可以在你的 Application 类上实现 [SketchFactory] 接口来配置 Sketch ，如下：
+可以在 Application 类上实现 [SketchFactory] 接口来创建并配置 Sketch ，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -100,9 +100,7 @@ val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
 }
 ```
 
-你可以通过 DisplayRequest.Builder 提供的链式方法或同名函数提供的尾随 lambda 配置请求
-
-更多可配置参数请参考 [DisplayRequest].Builder 类
+可以通过 DisplayRequest.Builder 提供的链式方法或同名函数提供的尾随 lambda 配置请求，更多配置参数请参考 [DisplayRequest].Builder 类
 
 ### 执行请求
 
@@ -127,20 +125,62 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
+### 获取结果
+
+[Sketch] 会将结果交给 [DisplayRequest] 的 target 去显示 Drawable，如果没有设置 target 就需要主动获取结果来处理它了
+
+使用 enqueue() 方法执行请求时通过返回的 [Disposable].job 即可获取结果，如下:
+
+```kotlin
+val disposable = DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
+
+coroutineScope.launch(Dispatchers.Main) {
+    val result: DisplayResult = disposable.job.await()
+    // ...
+}
+```
+
+使用 execute() 方法执行请求时可直接获取结果，如下：
+
+```kotlin
+coroutineScope.launch(Dispatchers.Main) {
+    val result: DisplayResult = DisplayRequest(context, "https://www.example.com/image.jpg")
+        .execute()
+    // ...
+}
+```
+
 ### 取消请求
+
+#### 自动取消
 
 [ImageRequest] 会在下列情况下自动取消:
 
 * request.lifecycle 变为 DESTROYED 状态
 * request.target 是一个 [ViewDisplayTarget] 并且 view 的 onViewDetachedFromWindow() 方法被执行
 
-另外, enqueue() 方法会返回一个 [Disposable], 它可以用来取消请求，如下:
+#### 主动取消
+
+使用 enqueue() 方法执行请求时会返回一个 [Disposable], 可以用来它取消请求，如下:
 
 ```kotlin
 val disposable = DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 
-// 在你需要的时候取消请求
+// 在需要的时候取消请求
 disposable.dispose()
+```
+
+使用 execute() 方法执行请求时可以通过其协程的 Job 来取消，如下：
+
+```kotlin
+val job = coroutineScope.launch(Dispatchers.Main) {
+    val result: DisplayResult = DisplayRequest(context, "https://www.example.com/image.jpg")
+        .execute()
+    imageView.setImageDrawable(result.drawable)
+}
+
+// 在需要的时候取消请求
+job.cancel()
 ```
 
 ## ImageView 扩展
