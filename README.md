@@ -172,7 +172,7 @@ AsyncImage(
 
 Basic features/基础功能：
 
-* [入门/Started][getting_started]
+* [Started/快速上手][getting_started]
 * [AnimatedImage：GIF、WEBP、HEIF][animated_image]
 * [Resize：Modify the image size/修改图片尺寸][resize]
 * [Transformation：Transformation image/转换图片][transformation]
