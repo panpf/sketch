@@ -77,12 +77,12 @@ class HurlStack private constructor(
                 if (this@HurlStack.userAgent != null) {
                     setRequestProperty("User-Agent", this@HurlStack.userAgent)
                 }
-                if (addHeaders != null && addHeaders.isNotEmpty()) {
+                if (!addHeaders.isNullOrEmpty()) {
                     for ((key, value) in addHeaders) {
                         addRequestProperty(key, value)
                     }
                 }
-                if (headers != null && headers.isNotEmpty()) {
+                if (!headers.isNullOrEmpty()) {
                     for ((key, value) in headers) {
                         setRequestProperty(key, value)
                     }
@@ -239,6 +239,7 @@ class HurlStack private constructor(
         /**
          * Set tls protocols
          */
+        @Suppress("unused")
         fun enabledTlsProtocols(vararg enabledTlsProtocols: String): Builder = apply {
             this.enabledTlsProtocols = enabledTlsProtocols.toList()
         }
@@ -246,6 +247,7 @@ class HurlStack private constructor(
         /**
          * Set tls protocols
          */
+        @Suppress("unused")
         fun enabledTlsProtocols(enabledTlsProtocols: List<String>): Builder = apply {
             this.enabledTlsProtocols = enabledTlsProtocols.toList()
         }

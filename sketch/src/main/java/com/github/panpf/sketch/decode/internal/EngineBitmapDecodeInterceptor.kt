@@ -30,8 +30,7 @@ class EngineBitmapDecodeInterceptor : BitmapDecodeInterceptor {
     ): BitmapDecodeResult {
         val request = chain.request
         val components = chain.sketch.components
-        val fetcher = components.newFetcher(request)
-        val fetchResult = chain.fetchResult ?: fetcher.fetch()
+        val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch()
         return components
             .newBitmapDecoder(chain.requestContext, fetchResult)
             .decode()

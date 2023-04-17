@@ -100,8 +100,6 @@ abstract class BaseAnimatedImageDrawableDecoder(
         var inSampleSize = 1
         var imageDecoder: ImageDecoder? = null
         val drawable = try {
-            // Currently running on a limited number of IO contexts, so this warning can be ignored
-            @Suppress("BlockingMethodInNonBlockingContext")
             ImageDecoder.decodeDrawable(source) { decoder, info, _ ->
                 imageDecoder = decoder
                 imageInfo = ImageInfo(

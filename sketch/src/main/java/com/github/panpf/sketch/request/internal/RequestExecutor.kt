@@ -131,6 +131,7 @@ class RequestExecutor {
             onSuccess(sketch, requestContext, firstRequestKey, successResult)
             return successResult
         } catch (throwable: Throwable) {
+            // todo 会有捕获不到的异常，例如 HttpUriFetcher 的 getResponse(request, url) 或 throw IOException
             val lastRequest = (requestContext?.request ?: request)
             if (throwable is CancellationException) {
                 onCancel(sketch, requestContext, firstRequestKey, request)

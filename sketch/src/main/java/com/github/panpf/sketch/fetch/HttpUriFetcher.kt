@@ -82,11 +82,9 @@ open class HttpUriFetcher(
         /* execute download */
         return withContext(sketch.networkTaskDispatcher) {
             // open connection
-            // Currently running on a limited number of IO contexts, so this warning can be ignored
-            @Suppress("BlockingMethodInNonBlockingContext")
             val response = sketch.httpStack.getResponse(request, url)
 
-            // intercept Cancel
+            // intercept cancel
             if (!isActive) {
                 throw CancellationException()
             }
@@ -112,8 +110,6 @@ open class HttpUriFetcher(
                 if (request.downloadCachePolicy.readEnabled) {
                     DiskCacheDataSource(sketch, request, NETWORK, diskCacheSnapshot)
                 } else {
-                    // Currently running on a limited number of IO contexts, so this warning can be ignored
-                    @Suppress("BlockingMethodInNonBlockingContext")
                     diskCacheSnapshot.newInputStream()
                         .use { it.readBytes() }
                         .let { ByteArrayDataSource(sketch, request, NETWORK, it) }
@@ -122,8 +118,6 @@ open class HttpUriFetcher(
                 val byteArrayOutputStream = ByteArrayOutputStream()
                 byteArrayOutputStream.use { out ->
                     response.content.use { input ->
-                        // Currently running on a limited number of IO contexts, so this warning can be ignored
-                        @Suppress("BlockingMethodInNonBlockingContext")
                         copyToWithActive(
                             request = request,
                             inputStream = input,
