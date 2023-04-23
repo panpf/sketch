@@ -1,3 +1,9 @@
+# v3.2.1-beta01
+
+### sketch
+
+* fix: Fixing child thread exceptions may not catch bugs that cause your app to crash [#176](https://github.com/panpf/sketch/issues/176)
+
 # v3.2.0 stable
 
 ### sketch
