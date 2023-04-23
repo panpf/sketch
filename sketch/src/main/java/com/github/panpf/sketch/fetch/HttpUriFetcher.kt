@@ -32,11 +32,11 @@ import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.requiredWorkThread
+import com.github.panpf.sketch.util.withContextRunCatching
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -80,7 +80,7 @@ open class HttpUriFetcher(
         }
 
         /* execute download */
-        return withContext(sketch.networkTaskDispatcher) {
+        return withContextRunCatching(sketch.networkTaskDispatcher) {
             // open connection
             val response = sketch.httpStack.getResponse(request, url)
 
@@ -122,7 +122,7 @@ open class HttpUriFetcher(
                             request = request,
                             inputStream = input,
                             outputStream = out,
-                            coroutineScope = this@withContext,
+                            coroutineScope = this@withContextRunCatching,
                             contentLength = response.contentLength
                         )
                     }

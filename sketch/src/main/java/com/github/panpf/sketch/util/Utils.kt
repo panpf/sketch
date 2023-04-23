@@ -35,16 +35,19 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.request.ImageRequest
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 
 
@@ -53,7 +56,6 @@ inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (value) block(
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null
  */
-@Suppress("NOTHING_TO_INLINE")
 internal inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
 }
@@ -333,4 +335,29 @@ internal fun getCacheFileFromStreamDataSource(
                 ?: throw IOException("Disk cache cannot be used after edit")
         }
     }.file
+}
+
+/**
+ * scope.async {
+ *  try {
+ *      withContext(Dispatchers.IO) {
+ *          // 这里抛出的异常，外面的 try-catch 有可能无法捕获到，因此需要使用 runCatching 包裹，出了 withContext 之后再抛出
+ *      }
+ * }catch {
+ * }
+ */
+suspend fun <T> withContextRunCatching(
+    context: CoroutineContext,
+    block: suspend CoroutineScope.() -> T
+): T {
+    val result = withContext(context) {
+        runCatching {
+            block()
+        }
+    }
+    if (result.isSuccess) {
+        return result.getOrThrow()
+    } else {
+        throw result.exceptionOrNull() ?: throw Exception("Exception loss")
+    }
 }

@@ -36,8 +36,7 @@ import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.util.asOrNull
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.github.panpf.sketch.util.withContextRunCatching
 
 class EngineRequestInterceptor : RequestInterceptor {
 
@@ -70,7 +69,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                 ?.toSketchStateDrawable()
             it.onStart(placeholderDrawable)
         }
-        return withContext(sketch.decodeTaskDispatcher) {
+        return withContextRunCatching(sketch.decodeTaskDispatcher) {
             DrawableDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
@@ -97,7 +96,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         chain: RequestInterceptor.Chain
     ): LoadData {
         request.target?.asOrNull<LoadTarget>()?.onStart()
-        return withContext(sketch.decodeTaskDispatcher) {
+        return withContextRunCatching(sketch.decodeTaskDispatcher) {
             BitmapDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
@@ -119,18 +118,16 @@ class EngineRequestInterceptor : RequestInterceptor {
 
     @MainThread
     private suspend fun download(sketch: Sketch, request: DownloadRequest): DownloadData {
-        withContext(Dispatchers.Main) {
-            request.target?.asOrNull<DownloadTarget>()?.onStart()
-        }
+        request.target?.asOrNull<DownloadTarget>()?.onStart()
 
-        val fetcher = withContext(sketch.decodeTaskDispatcher) {
+        val fetcher = withContextRunCatching(sketch.decodeTaskDispatcher) {
             sketch.components.newFetcher(request)
         }
         if (fetcher !is HttpUriFetcher) {
             throw IllegalArgumentException("DownloadRequest only support HTTP and HTTPS uri: ${request.uriString}")
         }
 
-        val fetchResult = withContext(sketch.decodeTaskDispatcher) {
+        val fetchResult = withContextRunCatching(sketch.decodeTaskDispatcher) {
             fetcher.fetch()
         }
         val dataFrom = fetchResult.dataFrom
