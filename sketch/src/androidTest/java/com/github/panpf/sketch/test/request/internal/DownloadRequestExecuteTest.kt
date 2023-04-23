@@ -470,7 +470,7 @@ class DownloadRequestExecuteTest {
 
         TestDownloadTarget().let { testTarget ->
             Assert.assertNull(testTarget.start)
-            Assert.assertNull(testTarget.successBitmap)
+            Assert.assertNull(testTarget.downloadData)
             Assert.assertNull(testTarget.exception)
         }
 
@@ -481,7 +481,7 @@ class DownloadRequestExecuteTest {
                 runBlocking { sketch.execute(request) }
             }
             Assert.assertNotNull(testTarget.start)
-            Assert.assertNotNull(testTarget.successBitmap)
+            Assert.assertNotNull(testTarget.downloadData)
             Assert.assertNull(testTarget.exception)
         }
 
@@ -492,7 +492,7 @@ class DownloadRequestExecuteTest {
                 runBlocking { sketch.execute(request) }
             }
             Assert.assertNotNull(testTarget.start)
-            Assert.assertNull(testTarget.successBitmap)
+            Assert.assertNull(testTarget.downloadData)
             Assert.assertNotNull(testTarget.exception)
         }
 
@@ -514,8 +514,8 @@ class DownloadRequestExecuteTest {
                     deferred?.join()
                 }
             }
-            Assert.assertNull(testTarget.start)
-            Assert.assertNull(testTarget.successBitmap)
+            Assert.assertNotNull(testTarget.start)
+            Assert.assertNull(testTarget.downloadData)
             Assert.assertNull(testTarget.exception)
         }
 
@@ -538,8 +538,8 @@ class DownloadRequestExecuteTest {
                     deferred?.join()
                 }
             }
-            Assert.assertNull(testTarget.start)
-            Assert.assertNull(testTarget.successBitmap)
+            Assert.assertNotNull(testTarget.start)
+            Assert.assertNull(testTarget.downloadData)
             Assert.assertNull(testTarget.exception)
         }
     }

@@ -22,7 +22,7 @@ import com.github.panpf.sketch.util.SketchException
 class TestDownloadTarget : DownloadTarget {
 
     var start: String? = null
-    var successBitmap: DownloadData? = null
+    var downloadData: DownloadData? = null
     var exception: SketchException? = null
 
     override fun onStart() {
@@ -32,7 +32,7 @@ class TestDownloadTarget : DownloadTarget {
 
     override fun onSuccess(result: DownloadData) {
         super.onSuccess(result)
-        this.successBitmap = result
+        this.downloadData = result
     }
 
     override fun onError(exception: SketchException) {

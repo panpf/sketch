@@ -29,7 +29,6 @@ class ProgressListenerDelegate<REQUEST : ImageRequest>(
 
     private var lastDeferred: Deferred<*>? = null
 
-    @Suppress("DeferredResultUnused")
     fun onUpdateProgress(request: REQUEST, totalLength: Long, completedLength: Long) {
         val lastDeferred = this.lastDeferred
         if (lastDeferred?.isActive == true) {

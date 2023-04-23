@@ -431,7 +431,6 @@ class LoadRequestExecuteTest {
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     Assert.assertEquals(RGBA_F16, bitmap.config)
                 } else {
-                    @Suppress("DEPRECATION")
                     Assert.assertEquals(ARGB_8888, bitmap.config)
                 }
             }
@@ -445,7 +444,6 @@ class LoadRequestExecuteTest {
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     Assert.assertEquals(RGBA_F16, bitmap.config)
                 } else {
-                    @Suppress("DEPRECATION")
                     Assert.assertEquals(ARGB_8888, bitmap.config)
                 }
             }

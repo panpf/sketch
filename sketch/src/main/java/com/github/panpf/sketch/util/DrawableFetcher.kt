@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
@@ -40,6 +41,7 @@ class ResDrawable constructor(
 
     constructor(@DrawableRes resId: Int) : this(null, null, resId)
 
+    @SuppressLint("ResourceType")
     override fun getDrawable(context: Context): Drawable {
         return if (packageName != null && resources != null && packageName != context.packageName) {
             // getXmlDrawableCompat can load vector resources that are in the other package.

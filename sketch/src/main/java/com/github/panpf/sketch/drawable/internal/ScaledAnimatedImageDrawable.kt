@@ -70,7 +70,6 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     }
 
     @Deprecated("Deprecated in Java", ReplaceWith("child.opacity"))
-    @Suppress("DEPRECATION")
     override fun getOpacity() = drawable.opacity
 
     override fun getColorFilter(): ColorFilter? = DrawableCompat.getColorFilter(drawable)

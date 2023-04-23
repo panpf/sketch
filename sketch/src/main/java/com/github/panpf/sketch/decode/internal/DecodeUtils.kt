@@ -454,6 +454,7 @@ fun BasedStreamDataSource.decodeBitmap(options: BitmapFactory.Options? = null): 
         BitmapFactory.decodeStream(it, null, options)
     }
 
+@SuppressLint("ObsoleteSdkInt")
 fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
     this == ImageFormat.JPEG
             || this == ImageFormat.PNG
@@ -462,7 +463,10 @@ fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
             || (this == ImageFormat.HEIF && VERSION.SDK_INT >= VERSION_CODES.P)
 
 @Throws(IOException::class)
-fun BasedStreamDataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options? = null): Bitmap? =
+fun BasedStreamDataSource.decodeRegionBitmap(
+    srcRect: Rect,
+    options: BitmapFactory.Options? = null
+): Bitmap? =
     newInputStream().buffered().use {
         @Suppress("DEPRECATION")
         val regionDecoder = if (VERSION.SDK_INT >= VERSION_CODES.S) {

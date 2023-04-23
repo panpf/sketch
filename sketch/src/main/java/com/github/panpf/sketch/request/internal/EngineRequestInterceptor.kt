@@ -69,7 +69,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                 ?.toSketchStateDrawable()
             it.onStart(placeholderDrawable)
         }
-        return withContextRunCatching(sketch.decodeTaskDispatcher) {
+        val decodeResult = withContextRunCatching(sketch.decodeTaskDispatcher) {
             DrawableDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
@@ -77,16 +77,15 @@ class EngineRequestInterceptor : RequestInterceptor {
                 fetchResult = null,
                 interceptors = sketch.components.getDrawableDecodeInterceptorList(request),
                 index = 0,
-            ).proceed().let {
-                DisplayData(
-                    drawable = it.drawable,
-                    imageInfo = it.imageInfo,
-                    dataFrom = it.dataFrom,
-                    transformedList = it.transformedList,
-                    extras = it.extras
-                )
-            }
+            ).proceed()
         }
+        return DisplayData(
+            drawable = decodeResult.drawable,
+            imageInfo = decodeResult.imageInfo,
+            dataFrom = decodeResult.dataFrom,
+            transformedList = decodeResult.transformedList,
+            extras = decodeResult.extras
+        )
     }
 
     @MainThread
@@ -96,7 +95,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         chain: RequestInterceptor.Chain
     ): LoadData {
         request.target?.asOrNull<LoadTarget>()?.onStart()
-        return withContextRunCatching(sketch.decodeTaskDispatcher) {
+        val decodeResult = withContextRunCatching(sketch.decodeTaskDispatcher) {
             BitmapDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
@@ -104,16 +103,15 @@ class EngineRequestInterceptor : RequestInterceptor {
                 fetchResult = null,
                 interceptors = sketch.components.getBitmapDecodeInterceptorList(request),
                 index = 0,
-            ).proceed().let {
-                LoadData(
-                    bitmap = it.bitmap,
-                    imageInfo = it.imageInfo,
-                    dataFrom = it.dataFrom,
-                    transformedList = it.transformedList,
-                    extras = it.extras
-                )
-            }
+            ).proceed()
         }
+        return LoadData(
+            bitmap = decodeResult.bitmap,
+            imageInfo = decodeResult.imageInfo,
+            dataFrom = decodeResult.dataFrom,
+            transformedList = decodeResult.transformedList,
+            extras = decodeResult.extras
+        )
     }
 
     @MainThread

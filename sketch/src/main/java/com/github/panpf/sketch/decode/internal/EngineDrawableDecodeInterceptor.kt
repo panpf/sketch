@@ -31,9 +31,8 @@ class EngineDrawableDecodeInterceptor : DrawableDecodeInterceptor {
         val request = chain.request
         val components = chain.sketch.components
         val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch()
-        return components
-            .newDrawableDecoder(chain.requestContext, fetchResult)
-            .decode()
+        val drawableDecoder = components.newDrawableDecoder(chain.requestContext, fetchResult)
+        return drawableDecoder.decode()
     }
 
     override fun toString(): String = "EngineDrawableDecodeInterceptor(sortWeight=$sortWeight)"

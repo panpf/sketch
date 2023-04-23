@@ -31,9 +31,8 @@ class EngineBitmapDecodeInterceptor : BitmapDecodeInterceptor {
         val request = chain.request
         val components = chain.sketch.components
         val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch()
-        return components
-            .newBitmapDecoder(chain.requestContext, fetchResult)
-            .decode()
+        val bitmapDecoder = components.newBitmapDecoder(chain.requestContext, fetchResult)
+        return bitmapDecoder.decode()
     }
 
     override fun toString(): String = "EngineBitmapDecodeInterceptor(sortWeight=$sortWeight)"

@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.fetch
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
@@ -96,6 +97,7 @@ class ResourceUriFetcher(
         const val SCHEME = "android.resource"
     }
 
+    @SuppressLint("DiscouragedApi")
     @WorkerThread
     override suspend fun fetch(): FetchResult {
         val packageName = contentUri.getQueryParameters("packageName")

@@ -159,7 +159,7 @@ internal fun getProcessNameCompat(context: Context): String? {
                 isAccessible = true
             }
             val processName = method.invoke(null)?.toString()
-            if (processName != null && processName.isNotEmpty()) {
+            if (!processName.isNullOrEmpty()) {
                 return processName
             }
         } catch (e: Throwable) {
@@ -221,7 +221,6 @@ internal fun Long.formatFileSize(
     } else {
         val value: Double
         val suffix: String
-        @Suppress("CascadeIf")
         if (finalFileSize <= 1024L * 999) {
             value = (finalFileSize / 1024f).toDouble()
             suffix = if (compact) "KB" else " KB"

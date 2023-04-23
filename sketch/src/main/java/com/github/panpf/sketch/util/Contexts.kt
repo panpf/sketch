@@ -17,6 +17,7 @@
  */
 package com.github.panpf.sketch.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
@@ -51,6 +52,7 @@ internal fun Resources.getDrawableCompat(
  *
  * Prefer using [Context.getDrawableCompat] for resources that are part of the current package.
  */
+@SuppressLint("ResourceType")
 internal fun Context.getXmlDrawableCompat(resources: Resources, @XmlRes resId: Int): Drawable {
     // Modified from androidx.appcompat.widget.ResourceManagerInternal.
     return if (SDK_INT >= 24) {
