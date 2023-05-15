@@ -113,6 +113,7 @@ class RequestExecutor {
                     transformedList = imageData.transformedList,
                     extras = imageData.extras,
                 )
+
                 lastRequest is LoadRequest && imageData is LoadData -> LoadResult.Success(
                     request = lastRequest,
                     requestKey = requestContext.key,
@@ -123,9 +124,11 @@ class RequestExecutor {
                     transformedList = imageData.transformedList,
                     extras = imageData.extras,
                 )
+
                 lastRequest is DownloadRequest && imageData is DownloadData -> DownloadResult.Success(
                     lastRequest, imageData
                 )
+
                 else -> throw UnsupportedOperationException("Unsupported ImageData: ${imageData::class.java}")
             }
             onSuccess(sketch, requestContext, firstRequestKey, successResult)
@@ -136,17 +139,19 @@ class RequestExecutor {
                 onCancel(sketch, requestContext, firstRequestKey, request)
                 throw throwable
             } else {
-                if (throwable !is DepthException) {
-                    throwable.printStackTrace()
-                }
                 val exception: SketchException = throwable.asOrNull<SketchException>()
                     ?: UnknownException(throwable.toString(), throwable)
                 val errorResult: ImageResult.Error = when (lastRequest) {
                     is DisplayRequest -> {
-                        val errorDrawable =
-                            getErrorDrawable(sketch, lastRequest, requestContext?.resizeSize, exception)
+                        val errorDrawable = getErrorDrawable(
+                            sketch = sketch,
+                            request = lastRequest,
+                            resizeSize = requestContext?.resizeSize,
+                            exception = exception
+                        )
                         DisplayResult.Error(lastRequest, errorDrawable, exception)
                     }
+
                     is LoadRequest -> LoadResult.Error(lastRequest, exception)
                     is DownloadRequest -> DownloadResult.Error(lastRequest, exception)
                     else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${lastRequest::class.java}")
@@ -185,9 +190,11 @@ class RequestExecutor {
                     target.onSuccess(result.drawable)
                 }
             }
+
             target is LoadTarget && result is LoadResult.Success -> {
                 target.onSuccess(result.bitmap)
             }
+
             target is DownloadTarget && result is DownloadResult.Success -> {
                 target.onSuccess(result.data)
             }
@@ -199,12 +206,15 @@ class RequestExecutor {
                 is DisplayResult.Success -> {
                     "Request Successful. ${result.drawable}. $logKey"
                 }
+
                 is LoadResult.Success -> {
                     "Request Successful. ${result.bitmap.logString}. ${result.imageInfo}. ${result.transformedList}. $logKey"
                 }
+
                 is DownloadResult.Success -> {
                     "Request Successful. ${result.data}. '${requestContext.key}'. $logKey"
                 }
+
                 else -> {
                     "Request Successful. $logKey"
                 }
@@ -228,9 +238,11 @@ class RequestExecutor {
                     target.onError(result.drawable)
                 }
             }
+
             target is LoadTarget && result is LoadResult.Error -> {
                 target.onError(result.exception)
             }
+
             target is DownloadTarget && result is DownloadResult.Error -> {
                 target.onError(result.exception)
             }
