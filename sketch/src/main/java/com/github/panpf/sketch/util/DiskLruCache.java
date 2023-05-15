@@ -16,6 +16,8 @@
 
 package com.github.panpf.sketch.util;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import java.io.BufferedWriter;
@@ -959,7 +961,7 @@ public final class DiskLruCache implements Closeable {
          * Deletes the contents of {@code dir}. Throws an IOException if any file
          * could not be deleted, or if {@code dir} is not a readable directory.
          */
-        public static void deleteContents(File dir) throws IOException {
+        public static void deleteContents(File dir) {
             File[] files = dir.listFiles();
             if (files == null) {
 //                throw new IOException("not a readable directory: " + dir);
@@ -970,7 +972,7 @@ public final class DiskLruCache implements Closeable {
                     deleteContents(file);
                 }
                 if (!file.delete()) {
-                    throw new IOException("failed to delete file: " + file);
+                    Log.e("DiskLruCache", "failed to delete file: " + file.getPath());
                 }
             }
         }
