@@ -15,22 +15,33 @@
  */
 package com.github.panpf.sketch.sample.ui.test
 
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Log
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.commit
+import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.displayAssetImage
-import com.github.panpf.sketch.sample.databinding.TestShareElement1FragmentBinding
+import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.databinding.TestShareElement2FragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
-class TestShareElement1Fragment : BindingFragment<TestShareElement1FragmentBinding>() {
+class ShareElement2TestFragment : BindingFragment<TestShareElement2FragmentBinding>() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            sharedElementEnterTransition = TransitionInflater.from(requireContext())
+                .inflateTransition(R.transition.my_move)
+        }
+    }
 
     override fun onViewCreated(
-        binding: TestShareElement1FragmentBinding,
+        binding: TestShareElement2FragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.testShareElement1Image.apply {
+        binding.testShareElement2Image.apply {
             ViewCompat.setTransitionName(this, "transition_app_icon")
             Log.i("ShareElementTest", "$id. displayImage")
             postponeEnterTransition(100, MILLISECONDS)
@@ -44,13 +55,9 @@ class TestShareElement1Fragment : BindingFragment<TestShareElement1FragmentBindi
                     }
                 )
             }
+
             setOnClickListener {
-                requireParentFragment().childFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    addSharedElement(binding.testShareElement1Image, "transition_app_icon")
-                    replace(this@TestShareElement1Fragment.id, TestShareElement2Fragment())
-                    addToBackStack(null)
-                }
+                parentFragmentManager.popBackStack()
             }
         }
     }

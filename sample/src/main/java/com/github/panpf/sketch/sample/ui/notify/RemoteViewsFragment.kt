@@ -36,7 +36,7 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.target.RemoteViewsDisplayTarget
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
-class RemoteViewsTestFragment : ToolbarBindingFragment<RemoteViewsTestFragmentBinding>() {
+class RemoteViewsFragment : ToolbarBindingFragment<RemoteViewsTestFragmentBinding>() {
 
     private var notificationHelper: NotificationHelper? = null
 

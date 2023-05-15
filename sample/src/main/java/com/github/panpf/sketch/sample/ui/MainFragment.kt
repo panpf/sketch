@@ -25,6 +25,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
+import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.MainFragmentBinding
 import com.github.panpf.sketch.sample.model.Link
@@ -51,7 +52,7 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
         toolbar.menu.add(0, 0, 0, "Settings").apply {
             setIcon(R.drawable.ic_settings)
             setOnMenuItemClickListener {
-                findNavController().navigate(MainFragmentDirections.actionSettingsFragment())
+                findNavController().navigate(NavMainDirections.actionSettingsFragment())
                 true
             }
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
@@ -67,83 +68,53 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                     ListSeparator("Samples"),
                     Link(
                         title = "Local Photos",
-                        navDirections = MainFragmentDirections.actionLocalPhotoListFragment(),
+                        navDirections = NavMainDirections.actionLocalPhotoListFragment(),
                         permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     ),
                     Link(
                         title = "Pexels Photos",
-                        navDirections = MainFragmentDirections.actionPexelsPhotoListFragment()
+                        navDirections = NavMainDirections.actionPexelsPhotoListFragment()
                     ),
                     Link(
                         title = "Giphy GIFs",
-                        navDirections = MainFragmentDirections.actionGiphyGifListFragment()
+                        navDirections = NavMainDirections.actionGiphyGifListFragment()
                     ),
                     Link(
                         title = "Local Videos",
-                        navDirections = MainFragmentDirections.actionLocalVideoListFragment(),
+                        navDirections = NavMainDirections.actionLocalVideoListFragment(),
                         permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     ),
                     Link(
                         title = "Huge Image",
-                        navDirections = MainFragmentDirections.actionHugeImageHomeFragment()
+                        navDirections = NavMainDirections.actionHugeImageHomeFragment()
                     ),
                     Link(
                         title = "RemoteViews",
-                        navDirections = MainFragmentDirections.actionRemoteViewsTestFragment()
+                        navDirections = NavMainDirections.actionRemoteViewsFragment()
                     ),
 
                     ListSeparator("Jetpack Compose"),
                     Link(
                         title = "Local Photos (Compose)",
-                        navDirections = MainFragmentDirections.actionLocalPhotoListComposeFragment(),
+                        navDirections = NavMainDirections.actionLocalPhotoListComposeFragment(),
                         minSdk = Build.VERSION_CODES.LOLLIPOP,
                         permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     ),
                     Link(
                         title = "Pexels Photos (Compose)",
-                        navDirections = MainFragmentDirections.actionPexelsPhotoListComposeFragment(),
+                        navDirections = NavMainDirections.actionPexelsPhotoListComposeFragment(),
                         minSdk = Build.VERSION_CODES.LOLLIPOP
                     ),
                     Link(
                         title = "Giphy GIFs (Compose)",
-                        navDirections = MainFragmentDirections.actionGiphyGifListComposeFragment(),
+                        navDirections = NavMainDirections.actionGiphyGifListComposeFragment(),
                         minSdk = Build.VERSION_CODES.LOLLIPOP
                     ),
 
                     ListSeparator("Test"),
                     Link(
-                        title = "Fetcher",
-                        navDirections = MainFragmentDirections.actionFetcherTestFragment(),
-                        permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    ),
-                    Link(
-                        title = "Decoder",
-                        navDirections = MainFragmentDirections.actionDecoderTestFragment()
-                    ),
-                    Link(
-                        title = "Transformation",
-                        navDirections = MainFragmentDirections.actionTransformationTestPagerFragment()
-                    ),
-                    Link(
-                        title = "ExifOrientation",
-                        navDirections = MainFragmentDirections.actionExifOrientationTestPagerFragment()
-                    ),
-                    Link(
-                        title = "ProgressIndicator",
-                        navDirections = MainFragmentDirections.actionProgressIndicatorTestFragment()
-                    ),
-                    Link(
-                        title = "Insanity Test",
-                        navDirections = MainFragmentDirections.actionInsanityTestFragment()
-                    ),
-                    Link(
-                        title = "Insanity Test (Compose)",
-                        navDirections = MainFragmentDirections.actionInsanityTestComposeFragment(),
-                        minSdk = Build.VERSION_CODES.LOLLIPOP
-                    ),
-                    Link(
-                        title = "Other Test",
-                        navDirections = MainFragmentDirections.actionTestFragment()
+                        title = "Test",
+                        navDirections = NavMainDirections.actionTestFragment()
                     ),
                 )
             )
