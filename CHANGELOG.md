@@ -4,6 +4,7 @@
 
 * fix: When the merged() method of ImageOptions has its own componentRegistry as null and other’s
   componentRegistry is not null, the returned componentRegistry is still null
+* fix: Fixed an issue where AnimatableDrawable could not be played when used as a placeholder when resizeApplyToDrawable was turned on
 
 # v3.2.1-beta01
 
