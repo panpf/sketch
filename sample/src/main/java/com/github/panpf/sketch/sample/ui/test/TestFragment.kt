@@ -89,12 +89,10 @@ class TestFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                     Link(
                         title = "Animatable Placeholder",
                         navDirections = NavMainDirections.actionAnimatablePlaceholder(),
-                        minSdk = VERSION_CODES.LOLLIPOP
                     ),
                     Link(
                         title = "Share Element",
                         navDirections = NavMainDirections.actionShareElementTestFragment(),
-                        minSdk = VERSION_CODES.LOLLIPOP
                     ),
                 )
             )

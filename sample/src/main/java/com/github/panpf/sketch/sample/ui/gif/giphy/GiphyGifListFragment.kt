@@ -155,7 +155,7 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
     private fun newAdapter(binding: RecyclerFragmentBinding): RecyclerView.Adapter<*> {
         val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
-            ImageGridItemFactory().setOnViewClickListener(R.id.imageGridItemImage) { _, _, _, absoluteAdapterPosition, _ ->
+            ImageGridItemFactory(animatedPlaceholder = true).setOnViewClickListener(R.id.imageGridItemImage) { _, _, _, absoluteAdapterPosition, _ ->
                 startImageDetail(binding, absoluteAdapterPosition)
             }
         )).apply {

@@ -39,7 +39,8 @@ import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnab
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
-class ImageGridItemFactory : MyBindingItemFactory<Photo, ImageGridItemBinding>(Photo::class) {
+class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
+    MyBindingItemFactory<Photo, ImageGridItemBinding>(Photo::class) {
 
     private var itemSize: Point? = null
 
@@ -57,11 +58,13 @@ class ImageGridItemFactory : MyBindingItemFactory<Photo, ImageGridItemBinding>(P
                     val itemSize1 = (screenWidth - (gridDivider * (spanCount + 1))) / spanCount
                     Point(itemSize1, itemSize1)
                 }
+
                 is StaggeredGridLayoutManager -> {
                     val spanCount = layoutManager.spanCount
                     val itemSize1 = (screenWidth - (gridDivider * (spanCount + 1))) / spanCount
                     Point(itemSize1, -1)
                 }
+
                 else -> {
                     Point(screenWidth, -1)
                 }
@@ -80,9 +83,16 @@ class ImageGridItemFactory : MyBindingItemFactory<Photo, ImageGridItemBinding>(P
             setClickIgnoreSaveCellularTrafficEnabled(true)
             updateDisplayImageOptions {
                 setApplySettings(LIST)
-                placeholder(
-                    IconStateImage(R.drawable.ic_image_outline, ResColor(R.color.placeholder_bg))
-                )
+                if (animatedPlaceholder) {
+                    placeholder(R.drawable.ic_placeholder_eclipse_animated)
+                } else {
+                    placeholder(
+                        IconStateImage(
+                            R.drawable.ic_image_outline,
+                            ResColor(R.color.placeholder_bg)
+                        )
+                    )
+                }
                 error(IconStateImage(R.drawable.ic_error, ResColor(R.color.placeholder_bg))) {
                     saveCellularTrafficError(
                         IconStateImage(

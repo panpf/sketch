@@ -60,6 +60,7 @@ fun PhotoListContent(
     photoPagingFlow: Flow<PagingData<Photo>>,
     restartImageFlow: Flow<Any>,
     reloadFlow: Flow<Any>,
+    animatedPlaceholder: Boolean = false,
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit
 ) {
     val lazyPagingItems = photoPagingFlow.collectAsLazyPagingItems()
@@ -108,7 +109,7 @@ fun PhotoListContent(
             ) { index ->
                 val item = lazyPagingItems[index]
                 item?.let {
-                    PhotoContent(index, it) { photo, index ->
+                    PhotoContent(index, it, animatedPlaceholder) { photo, index ->
                         onClick(lazyPagingItems.itemSnapshotList.items, photo, index)
                     }
                 }
@@ -133,6 +134,7 @@ fun PhotoListContent(
 fun PhotoContent(
     index: Int,
     photo: Photo,
+    animatedPlaceholder: Boolean = false,
     onClick: (photo: Photo, index: Int) -> Unit
 ) {
     val modifier = Modifier
@@ -143,7 +145,11 @@ fun PhotoContent(
         }
     val request = DisplayRequest(LocalContext.current, photo.listThumbnailUrl) {
         setApplySettings(LIST)
-        placeholder(IconStateImage(drawable.ic_image_outline, ResColor(color.placeholder_bg)))
+        if (animatedPlaceholder) {
+            placeholder(drawable.ic_placeholder_eclipse_animated)
+        } else {
+            placeholder(IconStateImage(drawable.ic_image_outline, ResColor(color.placeholder_bg)))
+        }
         error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg))) {
             saveCellularTrafficError(
                 IconStateImage(drawable.ic_signal_cellular, ResColor(color.placeholder_bg))
@@ -161,6 +167,7 @@ fun PhotoContent(
                 contentDescription = "photo",
             )
         }
+
         1 -> {
             com.github.panpf.sketch.compose.SubcomposeAsyncImage(
                 request = request,
@@ -169,6 +176,7 @@ fun PhotoContent(
                 contentDescription = "photo",
             )
         }
+
         else -> {
             Image(
                 painter = com.github.panpf.sketch.compose.rememberAsyncImagePainter(

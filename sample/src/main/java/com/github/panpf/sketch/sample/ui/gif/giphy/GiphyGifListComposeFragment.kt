@@ -54,7 +54,8 @@ class GiphyGifListComposeFragment : ToolbarFragment() {
                 PhotoListContent(
                     photoPagingFlow = giphyGifListViewModel.pagingFlow,
                     restartImageFlow = settingsEventViewModel.listRestartImageFlow,
-                    reloadFlow = settingsEventViewModel.listReloadFlow
+                    reloadFlow = settingsEventViewModel.listReloadFlow,
+                    animatedPlaceholder = true,
                 ) { items, _, index ->
                     startImageDetail(items, index)
                 }
