@@ -643,15 +643,31 @@ class ImageOptionsTest {
             Assert.assertEquals(DISABLED, this.memoryCachePolicy)
         }
 
-        ImageOptions {
-            components {
-                addFetcher(TestFetcher.Factory())
-                addBitmapDecoder(TestBitmapDecoder.Factory())
-                addDrawableDecoder(TestDrawableDecoder.Factory())
-                addRequestInterceptor(TestRequestInterceptor())
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+        ImageOptions().apply {
+            Assert.assertNull(componentRegistry)
+        }.merged(
+            ImageOptions {
+                components {
+                    addFetcher(TestFetcher.Factory())
+                    addBitmapDecoder(TestBitmapDecoder.Factory())
+                    addDrawableDecoder(TestDrawableDecoder.Factory())
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                    addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                }
             }
+        ).apply {
+            Assert.assertEquals(
+                ComponentRegistry.Builder().apply {
+                    addFetcher(TestFetcher.Factory())
+                    addBitmapDecoder(TestBitmapDecoder.Factory())
+                    addDrawableDecoder(TestDrawableDecoder.Factory())
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                    addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                }.build(),
+                componentRegistry
+            )
         }.merged(ImageOptions {
             components {
                 addFetcher(HttpUriFetcher.Factory())

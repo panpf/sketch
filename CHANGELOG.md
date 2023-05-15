@@ -1,8 +1,16 @@
+# v3.2.1-beta02
+
+### sketch
+
+* fix: When the merged() method of ImageOptions has its own componentRegistry as null and other’s
+  componentRegistry is not null, the returned componentRegistry is still null
+
 # v3.2.1-beta01
 
 ### sketch
 
-* fix: Fixing child thread exceptions may not catch bugs that cause your app to crash [#176](https://github.com/panpf/sketch/issues/176)
+* fix: Fixing child thread exceptions may not catch bugs that cause your app to
+  crash [#176](https://github.com/panpf/sketch/issues/176)
 
 # v3.2.0 stable
 

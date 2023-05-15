@@ -848,7 +848,7 @@ interface ImageOptions {
                 this.memoryCachePolicy = options.memoryCachePolicy
             }
 
-            componentRegistry = componentRegistry?.merged(options.componentRegistry)
+            componentRegistry = componentRegistry.merged(options.componentRegistry)
         }
 
 
