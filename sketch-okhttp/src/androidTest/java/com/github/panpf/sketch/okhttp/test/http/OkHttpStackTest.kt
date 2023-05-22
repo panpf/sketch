@@ -24,7 +24,6 @@ import com.github.panpf.sketch.http.OkHttpStack.MyInterceptor
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.tools4a.network.Networkx
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.junit.Assert
 import org.junit.Test
@@ -151,34 +150,32 @@ class OkHttpStackTest {
 
         val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"
 
-        OkHttpStack.Builder().build().let {
-            runBlocking { it.getResponse(DownloadRequest(context, url), url) }
-        }.apply {
-            Assert.assertEquals(200, code)
-            if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertEquals("", message)
-            } else {
-                Assert.assertEquals("OK", message)
+        OkHttpStack.Builder().build()
+            .getResponse(DownloadRequest(context, url), url)
+            .apply {
+                Assert.assertEquals(200, code)
+                if (Build.VERSION.SDK_INT >= 21) {
+                    Assert.assertEquals("", message)
+                } else {
+                    Assert.assertEquals("OK", message)
+                }
+                Assert.assertEquals(9904, contentLength)
+                Assert.assertEquals("image/png", contentType)
+                Assert.assertEquals("image/png", getHeaderField("Content-Type"))
+                content.use {
+                    Assert.assertNotNull(it)
+                }
             }
-            Assert.assertEquals(9904, contentLength)
-            Assert.assertEquals("image/png", contentType)
-            Assert.assertEquals("image/png", getHeaderField("Content-Type"))
-            content.use {
-                Assert.assertNotNull(it)
-            }
-        }
 
         OkHttpStack.Builder().apply {
             userAgent("Android 8.1")
             headers("header1" to "value1")
             addHeaders("addHeader1" to "addValue1")
         }.build().let {
-            runBlocking {
-                it.getResponse(DownloadRequest(context, url) {
-                    addHttpHeader("addHttpHeader1", "setHttpValue1")
-                    setHttpHeader("setHttpHeader1", "setHttpValue1")
-                }, url)
-            }
+            it.getResponse(DownloadRequest(context, url) {
+                addHttpHeader("addHttpHeader1", "setHttpValue1")
+                setHttpHeader("setHttpHeader1", "setHttpValue1")
+            }, url)
         }.apply {
             Assert.assertEquals(200, code)
             if (Build.VERSION.SDK_INT >= 21) {
@@ -195,9 +192,7 @@ class OkHttpStackTest {
         }
 
         assertThrow(IllegalArgumentException::class) {
-            OkHttpStack.Builder().build().let {
-                runBlocking { it.getResponse(DownloadRequest(context, url), "") }
-            }
+            OkHttpStack.Builder().build().getResponse(DownloadRequest(context, url), "")
         }
     }
 

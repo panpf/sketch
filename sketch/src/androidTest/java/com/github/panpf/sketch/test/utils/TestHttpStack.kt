@@ -40,7 +40,7 @@ class TestHttpStack constructor(
         )
     }
 
-    override suspend fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
+    override fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
         connectionDelayMillis?.let {
             Thread.sleep(it)
         }

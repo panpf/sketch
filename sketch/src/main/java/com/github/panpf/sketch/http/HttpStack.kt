@@ -31,7 +31,7 @@ interface HttpStack {
 
     @WorkerThread
     @Throws(IOException::class)
-    suspend fun getResponse(request: ImageRequest, url: String): Response
+    fun getResponse(request: ImageRequest, url: String): Response
 
     interface Response {
         @get:Throws(IOException::class)

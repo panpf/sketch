@@ -1,10 +1,17 @@
+# v3.2.1-beta03
+
+### sketch
+
+* change: Remove HttpStack.getResponse() method suspend modifier 
+
 # v3.2.1-beta02
 
 ### sketch
 
 * fix: When the merged() method of ImageOptions has its own componentRegistry as null and other’s
   componentRegistry is not null, the returned componentRegistry is still null
-* fix: Fixed an issue where AnimatableDrawable could not be played when used as a placeholder when resizeApplyToDrawable was turned on
+* fix: Fixed an issue where AnimatableDrawable could not be played when used as a placeholder when
+  resizeApplyToDrawable was turned on
 * improve: IOException is no longer thrown when deleting disk cache files fails
 
 # v3.2.1-beta01

@@ -22,7 +22,6 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4a.network.Networkx
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -103,30 +102,28 @@ class HurlStackTest {
 
         val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"
 
-        HurlStack.Builder().build().let {
-            runBlocking { it.getResponse(DownloadRequest(context, url), url) }
-        }.apply {
-            Assert.assertEquals(200, code)
-            Assert.assertEquals("OK", message)
-            Assert.assertEquals(9904, contentLength)
-            Assert.assertEquals("image/png", contentType)
-            Assert.assertEquals("image/png", getHeaderField("Content-Type"))
-            content.use {
-                Assert.assertNotNull(it)
+        HurlStack.Builder().build()
+            .getResponse(DownloadRequest(context, url), url)
+            .apply {
+                Assert.assertEquals(200, code)
+                Assert.assertEquals("OK", message)
+                Assert.assertEquals(9904, contentLength)
+                Assert.assertEquals("image/png", contentType)
+                Assert.assertEquals("image/png", getHeaderField("Content-Type"))
+                content.use {
+                    Assert.assertNotNull(it)
+                }
             }
-        }
 
         HurlStack.Builder().apply {
             userAgent("Android 8.1")
             headers("header1" to "value1")
             addHeaders("addHeader1" to "addValue1")
         }.build().let {
-            runBlocking {
-                it.getResponse(DownloadRequest(context, url) {
-                    addHttpHeader("addHttpHeader1", "setHttpValue1")
-                    setHttpHeader("setHttpHeader1", "setHttpValue1")
-                }, url)
-            }
+            it.getResponse(DownloadRequest(context, url) {
+                addHttpHeader("addHttpHeader1", "setHttpValue1")
+                setHttpHeader("setHttpHeader1", "setHttpValue1")
+            }, url)
         }.apply {
             Assert.assertEquals(200, code)
             Assert.assertEquals("OK", message)
@@ -139,9 +136,7 @@ class HurlStackTest {
         }
 
         assertThrow(IOException::class) {
-            HurlStack.Builder().build().let {
-                runBlocking { it.getResponse(DownloadRequest(context, url), "") }
-            }
+            HurlStack.Builder().build().getResponse(DownloadRequest(context, url), "")
         }
     }
 

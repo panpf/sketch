@@ -15,18 +15,22 @@
  */
 package com.github.panpf.sketch.http
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.ImageRequest
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.IOException
 import java.io.InputStream
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
-    override suspend fun getResponse(request: ImageRequest, url: String): Response {
+    @WorkerThread
+    @Throws(IOException::class)
+    override fun getResponse(request: ImageRequest, url: String): Response {
         val httpRequest = Request.Builder().apply {
             url(url)
             request.httpHeaders?.apply {
