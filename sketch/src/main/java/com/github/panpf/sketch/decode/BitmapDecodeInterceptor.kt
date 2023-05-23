@@ -43,7 +43,7 @@ interface BitmapDecodeInterceptor {
     val sortWeight: Int
 
     @WorkerThread
-    suspend fun intercept(chain: Chain): BitmapDecodeResult
+    suspend fun intercept(chain: Chain): Result<BitmapDecodeResult>
 
     interface Chain {
 
@@ -59,6 +59,6 @@ interface BitmapDecodeInterceptor {
          * Continue executing the chain.
          */
         @WorkerThread
-        suspend fun proceed(): BitmapDecodeResult
+        suspend fun proceed(): Result<BitmapDecodeResult>
     }
 }

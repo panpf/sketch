@@ -72,10 +72,8 @@ class GifMovieDrawableDecoder(
 ) : DrawableDecoder {
 
     @WorkerThread
-    override suspend fun decode(): DrawableDecodeResult {
+    override suspend fun decode(): Result<DrawableDecodeResult> = kotlin.runCatching {
         val request = requestContext.request
-        // Currently running on a limited number of IO contexts, so this warning can be ignored
-        @Suppress("BlockingMethodInNonBlockingContext")
         val movie: Movie? = dataSource.newInputStream().buffered().use { Movie.decodeStream(it) }
 
         val width = movie?.width() ?: 0
@@ -114,7 +112,7 @@ class GifMovieDrawableDecoder(
             }
         }
 
-        return DrawableDecodeResult(
+        DrawableDecodeResult(
             drawable = animatableDrawable,
             imageInfo = animatableDrawable.imageInfo,
             dataFrom = animatableDrawable.dataFrom,

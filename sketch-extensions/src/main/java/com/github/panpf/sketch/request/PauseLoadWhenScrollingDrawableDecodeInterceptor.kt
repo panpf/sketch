@@ -45,7 +45,7 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptor(override val sortWeight: I
 
     override val key: String? = null
 
-    override suspend fun intercept(chain: Chain): DrawableDecodeResult {
+    override suspend fun intercept(chain: Chain): Result<DrawableDecodeResult> {
         val request = chain.request
         if (enabled
             && request is DisplayRequest

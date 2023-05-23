@@ -40,6 +40,9 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
             val fetcher = application1.sketch.components
                 .newFetcher(LoadRequest(application1, imageUri))
             fetcher.fetch()
+        }.let {
+            it.getOrNull()
+                ?: return ActionResult.error("Failed to save picture: ${it.exceptionOrNull()!!.message}")
         }
 
         val fileExtension = fetchResult.mimeType
@@ -51,11 +54,12 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
 
         try {
             withContext(Dispatchers.IO) {
-                fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().newInputStream().use { input ->
-                    imageFile.outputStream().buffered().use { output ->
-                        input.copyTo(output)
+                fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().newInputStream()
+                    .use { input ->
+                        imageFile.outputStream().buffered().use { output ->
+                            input.copyTo(output)
+                        }
                     }
-                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -81,13 +85,11 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
             return ActionResult.error("Local files do not need to be saved")
         }
 
-        val fetchResult = try {
-            withContext(Dispatchers.IO) {
-                fetcher.fetch()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return ActionResult.error("Failed to save picture: ${e.message}")
+        val fetchResult = withContext(Dispatchers.IO) {
+            fetcher.fetch()
+        }.let {
+            it.getOrNull()
+                ?: return ActionResult.error("Failed to save picture: ${it.exceptionOrNull()!!.message}")
         }
 
         val picturesDir =
@@ -99,11 +101,12 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
         if (!imageFile.exists()) {
             try {
                 withContext(Dispatchers.IO) {
-                    fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().newInputStream().use { input ->
-                        imageFile.outputStream().buffered().use { output ->
-                            input.copyTo(output)
+                    fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().newInputStream()
+                        .use { input ->
+                            imageFile.outputStream().buffered().use { output ->
+                                input.copyTo(output)
+                            }
                         }
-                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

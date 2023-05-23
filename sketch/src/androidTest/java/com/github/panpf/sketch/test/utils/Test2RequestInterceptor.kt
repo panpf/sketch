@@ -24,7 +24,7 @@ class Test2RequestInterceptor : RequestInterceptor {
     override val key: String? = null
     override val sortWeight: Int = 0
 
-    override suspend fun intercept(chain: Chain): ImageData {
+    override suspend fun intercept(chain: Chain): Result<ImageData> {
         return chain.proceed(chain.request)
     }
 

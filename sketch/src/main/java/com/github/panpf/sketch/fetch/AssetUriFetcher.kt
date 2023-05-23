@@ -42,9 +42,9 @@ class AssetUriFetcher(
     }
 
     @WorkerThread
-    override suspend fun fetch(): FetchResult {
+    override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val mimeType = getMimeTypeFromUrl(assetFileName)
-        return FetchResult(AssetDataSource(sketch, request, assetFileName), mimeType)
+        FetchResult(AssetDataSource(sketch, request, assetFileName), mimeType)
     }
 
     class Factory : Fetcher.Factory {

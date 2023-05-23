@@ -68,16 +68,18 @@ class VideoFrameBitmapDecoder(
     }
 
     @WorkerThread
-    override suspend fun decode(): BitmapDecodeResult {
+    override suspend fun decode(): Result<BitmapDecodeResult> = kotlin.runCatching {
         val request = requestContext.request
         val mediaMetadataRetriever = MediaMetadataRetriever().apply {
             when (dataSource) {
                 is ContentDataSource -> {
                     setDataSource(request.context, dataSource.contentUri)
                 }
+
                 is BasedFileDataSource -> {
                     setDataSource(dataSource.getFile().path)
                 }
+
                 else -> {
                     throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
                 }
@@ -85,7 +87,7 @@ class VideoFrameBitmapDecoder(
         }
         try {
             val imageInfo = readImageInfo(mediaMetadataRetriever)
-            return realDecode(
+            realDecode(
                 requestContext = requestContext,
                 dataFrom = dataSource.dataFrom,
                 imageInfo = imageInfo,
@@ -182,6 +184,7 @@ class VideoFrameBitmapDecoder(
                         )
                     )
             }
+
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
                 mediaMetadataRetriever
                     .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
@@ -192,6 +195,7 @@ class VideoFrameBitmapDecoder(
                         )
                     )
             }
+
             else -> {
                 mediaMetadataRetriever.getFrameAtTime(frameMicros, option)
                     ?: throw BitmapDecodeException(

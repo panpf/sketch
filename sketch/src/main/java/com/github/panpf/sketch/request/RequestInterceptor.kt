@@ -40,7 +40,7 @@ interface RequestInterceptor {
     val sortWeight: Int
 
     @MainThread
-    suspend fun intercept(chain: Chain): ImageData
+    suspend fun intercept(chain: Chain): Result<ImageData>
 
     interface Chain {
 
@@ -58,6 +58,6 @@ interface RequestInterceptor {
          * @param request The request to proceed with.
          */
         @MainThread
-        suspend fun proceed(request: ImageRequest): ImageData
+        suspend fun proceed(request: ImageRequest): Result<ImageData>
     }
 }

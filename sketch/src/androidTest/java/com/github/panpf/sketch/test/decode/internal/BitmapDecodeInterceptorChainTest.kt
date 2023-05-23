@@ -93,7 +93,7 @@ class BitmapDecodeInterceptorChainTest {
         override val key: String? = null
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: Chain): BitmapDecodeResult {
+        override suspend fun intercept(chain: Chain): Result<BitmapDecodeResult> {
             historyList.add("TestBitmapDecoderInterceptor1")
             return chain.proceed()
         }
@@ -109,7 +109,7 @@ class BitmapDecodeInterceptorChainTest {
         override val key: String? = null
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: Chain): BitmapDecodeResult {
+        override suspend fun intercept(chain: Chain): Result<BitmapDecodeResult> {
             historyList.add("TestBitmapDecoderInterceptor2")
             return chain.proceed()
         }
@@ -125,14 +125,16 @@ class BitmapDecodeInterceptorChainTest {
         override val key: String? = null
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: Chain): BitmapDecodeResult {
+        override suspend fun intercept(chain: Chain): Result<BitmapDecodeResult> {
             historyList.add("TestBitmapDecoderInterceptor3")
-            return BitmapDecodeResult(
-                bitmap = Bitmap.createBitmap(12, 45, RGB_565),
-                imageInfo = ImageInfo(12, 45, "image/jpeg", 0),
-                dataFrom = LOCAL,
-                transformedList = null,
-                extras = null,
+            return Result.success(
+                BitmapDecodeResult(
+                    bitmap = Bitmap.createBitmap(12, 45, RGB_565),
+                    imageInfo = ImageInfo(12, 45, "image/jpeg", 0),
+                    dataFrom = LOCAL,
+                    transformedList = null,
+                    extras = null,
+                )
             )
         }
 

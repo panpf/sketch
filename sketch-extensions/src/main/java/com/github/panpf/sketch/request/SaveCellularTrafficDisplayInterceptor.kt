@@ -48,7 +48,7 @@ class SaveCellularTrafficDisplayInterceptor constructor(
         }
 
     @MainThread
-    override suspend fun intercept(chain: Chain): ImageData {
+    override suspend fun intercept(chain: Chain): Result<ImageData> {
         val request = chain.request
         val finalRequest = when {
             request !is DisplayRequest -> {

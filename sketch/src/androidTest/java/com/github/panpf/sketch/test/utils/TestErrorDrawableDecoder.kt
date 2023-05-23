@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 
 class TestErrorDrawableDecoder : DrawableDecoder {
 
-    override suspend fun decode(): DrawableDecodeResult {
+    override suspend fun decode(): Result<DrawableDecodeResult> {
         throw UnsupportedOperationException()
     }
 

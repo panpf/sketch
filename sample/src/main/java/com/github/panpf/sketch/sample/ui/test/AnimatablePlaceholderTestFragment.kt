@@ -67,7 +67,7 @@ class AnimatablePlaceholderTestFragment :
                     override val sortWeight: Int
                         get() = 0
 
-                    override suspend fun intercept(chain: Chain): BitmapDecodeResult {
+                    override suspend fun intercept(chain: Chain): Result<BitmapDecodeResult> {
                         delay(5000)
                         return chain.proceed()
                     }

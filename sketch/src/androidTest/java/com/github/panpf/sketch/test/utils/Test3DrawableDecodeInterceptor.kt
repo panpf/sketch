@@ -23,7 +23,7 @@ class Test3DrawableDecodeInterceptor : DrawableDecodeInterceptor {
     override val key: String? = null
     override val sortWeight: Int = 0
 
-    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
+    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): Result<DrawableDecodeResult> {
         throw UnsupportedOperationException()
     }
 

@@ -48,9 +48,9 @@ class FileUriFetcher(
     }
 
     @WorkerThread
-    override suspend fun fetch(): FetchResult {
+    override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
-        return FetchResult(FileDataSource(sketch, request, file), mimeType)
+        FetchResult(FileDataSource(sketch, request, file), mimeType)
     }
 
     class Factory : Fetcher.Factory {

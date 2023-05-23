@@ -27,7 +27,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 class AppIconBitmapDecoder : BitmapDecoder {
 
     @WorkerThread
-    override suspend fun decode(): BitmapDecodeResult {
+    override suspend fun decode(): Result<BitmapDecodeResult> {
         throw UnsupportedOperationException("No longer supported")
     }
 

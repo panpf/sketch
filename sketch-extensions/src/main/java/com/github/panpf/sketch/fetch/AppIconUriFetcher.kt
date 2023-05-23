@@ -62,14 +62,16 @@ class AppIconUriFetcher(
     }
 
     @WorkerThread
-    override suspend fun fetch(): FetchResult = FetchResult(
-        DrawableDataSource(
-            sketch = sketch,
-            request = request,
-            dataFrom = DataFrom.LOCAL,
-            drawableFetcher = AppIconDrawableFetcher(packageName, versionCode)
-        ),
-        MIME_TYPE
+    override suspend fun fetch(): Result<FetchResult> = Result.success(
+        FetchResult(
+            dataSource = DrawableDataSource(
+                sketch = sketch,
+                request = request,
+                dataFrom = DataFrom.LOCAL,
+                drawableFetcher = AppIconDrawableFetcher(packageName, versionCode)
+            ),
+            mimeType = MIME_TYPE
+        )
     )
 
     class Factory : Fetcher.Factory {
@@ -109,6 +111,7 @@ class AppIconUriFetcher(
         override fun getDrawable(context: Context): Drawable {
             val packageManager = context.packageManager
             val packageInfo: PackageInfo = try {
+                // todo Deprecated
                 packageManager.getPackageInfo(packageName, 0)
             } catch (e: PackageManager.NameNotFoundException) {
                 throw Exception("Not found PackageInfo by '$packageName'", e)

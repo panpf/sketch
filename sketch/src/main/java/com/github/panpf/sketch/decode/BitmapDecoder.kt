@@ -32,7 +32,7 @@ fun interface BitmapDecoder {
      * Decode [Bitmap] from [DataSource] and wrap it as a [BitmapDecodeResult] return.
      */
     @WorkerThread
-    suspend fun decode(): BitmapDecodeResult
+    suspend fun decode(): Result<BitmapDecodeResult>
 
     /**
      * [Factory] will be registered in [ComponentRegistry], and will traverse [Factory]

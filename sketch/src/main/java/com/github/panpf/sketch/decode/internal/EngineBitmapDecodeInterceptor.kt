@@ -27,10 +27,12 @@ class EngineBitmapDecodeInterceptor : BitmapDecodeInterceptor {
     @WorkerThread
     override suspend fun intercept(
         chain: BitmapDecodeInterceptor.Chain,
-    ): BitmapDecodeResult {
+    ): Result<BitmapDecodeResult> {
         val request = chain.request
         val components = chain.sketch.components
-        val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch()
+        val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch().let {
+            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
+        }
         val bitmapDecoder = components.newBitmapDecoder(chain.requestContext, fetchResult)
         return bitmapDecoder.decode()
     }

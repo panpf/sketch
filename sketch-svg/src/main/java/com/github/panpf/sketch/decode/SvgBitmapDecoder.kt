@@ -63,12 +63,10 @@ class SvgBitmapDecoder constructor(
     }
 
     @WorkerThread
-    override suspend fun decode(): BitmapDecodeResult {
-        // Currently running on a limited number of IO contexts, so this warning can be ignored
-        @Suppress("BlockingMethodInNonBlockingContext")
+    override suspend fun decode(): Result<BitmapDecodeResult> = kotlin.runCatching {
         val svg = dataSource.newInputStream().buffered().use { SVG.getFromInputStream(it) }
         val imageInfo = readImageInfo(svg)
-        return realDecode(
+        realDecode(
             requestContext = requestContext,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,

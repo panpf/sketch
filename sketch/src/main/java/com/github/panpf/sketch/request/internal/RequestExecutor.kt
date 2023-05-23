@@ -29,7 +29,6 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
-import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LoadData
@@ -91,7 +90,7 @@ class RequestExecutor {
 
             onStart(sketch, requestContext, firstRequestKey)
 
-            val imageData: ImageData = RequestInterceptorChain(
+            val result = RequestInterceptorChain(
                 sketch = sketch,
                 initialRequest = requestContext.request,
                 request = requestContext.request,
@@ -99,40 +98,44 @@ class RequestExecutor {
                 interceptors = sketch.components.getRequestInterceptorList(requestContext.request),
                 index = 0,
             ).proceed(requestContext.request)
+            val imageData = result.getOrNull()
+            if (imageData != null) {
+                val lastRequest: ImageRequest = requestContext.request
+                val successResult: ImageResult.Success = when {
+                    lastRequest is DisplayRequest && imageData is DisplayData -> DisplayResult.Success(
+                        request = lastRequest,
+                        requestKey = requestContext.key,
+                        requestCacheKey = requestContext.cacheKey,
+                        drawable = imageData.drawable
+                            .tryToResizeDrawable(lastRequest, requestContext.resizeSize),
+                        imageInfo = imageData.imageInfo,
+                        dataFrom = imageData.dataFrom,
+                        transformedList = imageData.transformedList,
+                        extras = imageData.extras,
+                    )
 
-            val lastRequest: ImageRequest = requestContext.request
-            val successResult: ImageResult.Success = when {
-                lastRequest is DisplayRequest && imageData is DisplayData -> DisplayResult.Success(
-                    request = lastRequest,
-                    requestKey = requestContext.key,
-                    requestCacheKey = requestContext.cacheKey,
-                    drawable = imageData.drawable
-                        .tryToResizeDrawable(lastRequest, requestContext.resizeSize),
-                    imageInfo = imageData.imageInfo,
-                    dataFrom = imageData.dataFrom,
-                    transformedList = imageData.transformedList,
-                    extras = imageData.extras,
-                )
+                    lastRequest is LoadRequest && imageData is LoadData -> LoadResult.Success(
+                        request = lastRequest,
+                        requestKey = requestContext.key,
+                        requestCacheKey = requestContext.cacheKey,
+                        bitmap = imageData.bitmap,
+                        imageInfo = imageData.imageInfo,
+                        dataFrom = imageData.dataFrom,
+                        transformedList = imageData.transformedList,
+                        extras = imageData.extras,
+                    )
 
-                lastRequest is LoadRequest && imageData is LoadData -> LoadResult.Success(
-                    request = lastRequest,
-                    requestKey = requestContext.key,
-                    requestCacheKey = requestContext.cacheKey,
-                    bitmap = imageData.bitmap,
-                    imageInfo = imageData.imageInfo,
-                    dataFrom = imageData.dataFrom,
-                    transformedList = imageData.transformedList,
-                    extras = imageData.extras,
-                )
+                    lastRequest is DownloadRequest && imageData is DownloadData -> DownloadResult.Success(
+                        lastRequest, imageData
+                    )
 
-                lastRequest is DownloadRequest && imageData is DownloadData -> DownloadResult.Success(
-                    lastRequest, imageData
-                )
-
-                else -> throw UnsupportedOperationException("Unsupported ImageData: ${imageData::class.java}")
+                    else -> throw UnsupportedOperationException("Unsupported ImageData: ${imageData::class.java}")
+                }
+                onSuccess(sketch, requestContext, firstRequestKey, successResult)
+                return successResult
+            } else {
+                throw result.exceptionOrNull()!!
             }
-            onSuccess(sketch, requestContext, firstRequestKey, successResult)
-            return successResult
         } catch (throwable: Throwable) {
             val lastRequest = (requestContext?.request ?: request)
             if (throwable is CancellationException) {

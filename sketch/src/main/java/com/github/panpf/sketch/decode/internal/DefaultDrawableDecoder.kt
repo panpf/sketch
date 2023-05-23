@@ -31,7 +31,7 @@ class DefaultDrawableDecoder(
 ) : DrawableDecoder {
 
     @WorkerThread
-    override suspend fun decode(): DrawableDecodeResult {
+    override suspend fun decode(): Result<DrawableDecodeResult> {
         val decodeResult = BitmapDecodeInterceptorChain(
             sketch = sketch,
             request = requestContext.request,
@@ -39,7 +39,10 @@ class DefaultDrawableDecoder(
             fetchResult = fetchResult,
             interceptors = sketch.components.getBitmapDecodeInterceptorList(requestContext.request),
             index = 0,
-        ).proceed()
+        ).proceed().let {
+            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
+        }
+
         val countBitmap = CountBitmap(
             cacheKey = requestContext.cacheKey,
             bitmap = decodeResult.bitmap,
@@ -57,12 +60,14 @@ class DefaultDrawableDecoder(
             extras = decodeResult.extras,
             dataFrom = decodeResult.dataFrom
         )
-        return DrawableDecodeResult(
-            drawable = countDrawable,
-            imageInfo = decodeResult.imageInfo,
-            dataFrom = decodeResult.dataFrom,
-            transformedList = decodeResult.transformedList,
-            extras = decodeResult.extras,
+        return Result.success(
+            DrawableDecodeResult(
+                drawable = countDrawable,
+                imageInfo = decodeResult.imageInfo,
+                dataFrom = decodeResult.dataFrom,
+                transformedList = decodeResult.transformedList,
+                extras = decodeResult.extras,
+            )
         )
     }
 

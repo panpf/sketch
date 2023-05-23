@@ -41,7 +41,7 @@ open class DrawableBitmapDecoder(
     }
 
     @WorkerThread
-    override suspend fun decode(): BitmapDecodeResult {
+    override suspend fun decode(): Result<BitmapDecodeResult> = kotlin.runCatching {
         val request = requestContext.request
         val drawable = drawableDataSource.drawable
         val bitmap = drawable.toNewBitmap(
@@ -58,7 +58,7 @@ open class DrawableBitmapDecoder(
         sketch.logger.d(MODULE) {
             "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
+        BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
             .appliedResize(sketch, requestContext)
     }
 

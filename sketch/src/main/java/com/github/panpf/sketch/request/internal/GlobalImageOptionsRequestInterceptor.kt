@@ -24,7 +24,7 @@ class GlobalImageOptionsRequestInterceptor : RequestInterceptor {
     override val key: String? = null
     override val sortWeight: Int = 80
 
-    override suspend fun intercept(chain: Chain): ImageData {
+    override suspend fun intercept(chain: Chain): Result<ImageData> {
         val request = chain.request
         val defaultImageOptions = request.defaultOptions
         val globalImageOptions = chain.sketch.globalImageOptions

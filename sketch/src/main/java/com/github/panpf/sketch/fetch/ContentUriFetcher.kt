@@ -36,9 +36,9 @@ class ContentUriFetcher(
     }
 
     @WorkerThread
-    override suspend fun fetch(): FetchResult {
+    override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val mimeType = request.context.contentResolver.getType(contentUri)
-        return FetchResult(ContentDataSource(sketch, request, contentUri), mimeType)
+        FetchResult(ContentDataSource(sketch, request, contentUri), mimeType)
     }
 
     class Factory : Fetcher.Factory {

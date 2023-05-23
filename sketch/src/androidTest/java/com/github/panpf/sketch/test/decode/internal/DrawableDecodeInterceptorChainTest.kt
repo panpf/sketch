@@ -93,7 +93,7 @@ class DrawableDecodeInterceptorChainTest {
         override val key: String? = null
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: Chain): DrawableDecodeResult {
+        override suspend fun intercept(chain: Chain): Result<DrawableDecodeResult> {
             historyList.add("TestDrawableDecoderInterceptor1")
             return chain.proceed()
         }
@@ -109,7 +109,7 @@ class DrawableDecodeInterceptorChainTest {
         override val key: String? = null
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: Chain): DrawableDecodeResult {
+        override suspend fun intercept(chain: Chain): Result<DrawableDecodeResult> {
             historyList.add("TestDrawableDecoderInterceptor2")
             return chain.proceed()
         }
@@ -125,14 +125,16 @@ class DrawableDecodeInterceptorChainTest {
         override val key: String? = null
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: Chain): DrawableDecodeResult {
+        override suspend fun intercept(chain: Chain): Result<DrawableDecodeResult> {
             historyList.add("TestDrawableDecoderInterceptor3")
-            return DrawableDecodeResult(
-                drawable = ColorDrawable(Color.BLUE),
-                imageInfo = ImageInfo(12, 45, "image/jpeg", 0),
-                dataFrom = LOCAL,
-                transformedList = null,
-                extras = null,
+            return Result.success(
+                DrawableDecodeResult(
+                    drawable = ColorDrawable(Color.BLUE),
+                    imageInfo = ImageInfo(12, 45, "image/jpeg", 0),
+                    dataFrom = LOCAL,
+                    transformedList = null,
+                    extras = null,
+                )
             )
         }
 

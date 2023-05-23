@@ -30,14 +30,17 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
     @WorkerThread
     override suspend fun intercept(
         chain: BitmapDecodeInterceptor.Chain,
-    ): BitmapDecodeResult {
+    ): Result<BitmapDecodeResult> {
         val request = chain.request
         val requestContext = chain.requestContext
         val sketch = chain.sketch
         val result = chain.proceed()
         val transformations = request.transformations ?: return result
+        val decodeResult = result.let {
+            it.getOrNull() ?: return it
+        }
 
-        val oldBitmap = result.bitmap
+        val oldBitmap = decodeResult.bitmap
         val transformedList = LinkedList<String>()
         val newBitmap = transformations.fold(oldBitmap) { inputBitmap, next ->
             val transformResult = next.transform(sketch, requestContext, inputBitmap)
@@ -60,17 +63,19 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
         }
         return if (transformedList.isNotEmpty()) {
             require(!newBitmap.isRecycled)
-            result.newResult(bitmap = newBitmap) {
+            val newDecodeResult = decodeResult.newResult(bitmap = newBitmap) {
                 transformedList.forEach {
                     addTransformed(it)
                 }
             }
+            Result.success(newDecodeResult)
         } else {
-            result
+            Result.success(decodeResult)
         }
     }
 
-    override fun toString(): String = "BitmapTransformationDecodeInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String =
+        "BitmapTransformationDecodeInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

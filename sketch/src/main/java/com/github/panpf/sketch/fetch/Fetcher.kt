@@ -32,7 +32,7 @@ fun interface Fetcher {
      * Get the data stream from the uri of [ImageRequest] and wrap it as a [FetchResult] return
      */
     @WorkerThread
-    suspend fun fetch(): FetchResult
+    suspend fun fetch(): Result<FetchResult>
 
     /**
      * [Factory] will be registered in [ComponentRegistry], and will traverse [Factory]

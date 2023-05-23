@@ -32,7 +32,7 @@ fun interface DrawableDecoder {
      * Decode [Drawable] from [DataSource] and wrap it as a [DrawableDecodeResult] return.
      */
     @WorkerThread
-    suspend fun decode(): DrawableDecodeResult
+    suspend fun decode(): Result<DrawableDecodeResult>
 
     /**
      * [Factory] will be registered in [ComponentRegistry], and will traverse [Factory]

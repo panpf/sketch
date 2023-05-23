@@ -32,7 +32,7 @@ internal class RequestInterceptorChain(
 ) : RequestInterceptor.Chain {
 
     @MainThread
-    override suspend fun proceed(request: ImageRequest): ImageData {
+    override suspend fun proceed(request: ImageRequest): Result<ImageData> {
         requiredMainThread()
         if (request != requestContext.request) {
             requestContext.setNewRequest(request)

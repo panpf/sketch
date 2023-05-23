@@ -23,7 +23,7 @@ class Test2BitmapDecodeInterceptor : BitmapDecodeInterceptor {
     override val key: String? = null
     override val sortWeight: Int = 0
 
-    override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
+    override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): Result<BitmapDecodeResult> {
         throw UnsupportedOperationException()
     }
 

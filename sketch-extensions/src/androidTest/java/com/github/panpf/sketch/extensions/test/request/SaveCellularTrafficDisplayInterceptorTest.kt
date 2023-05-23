@@ -364,14 +364,16 @@ class SaveCellularTrafficDisplayInterceptorTest {
         var finalRequest = request
 
         @MainThread
-        override suspend fun proceed(request: ImageRequest): ImageData {
+        override suspend fun proceed(request: ImageRequest): Result<ImageData> {
             finalRequest = request
-            return DisplayData(
-                drawable = ColorDrawable(Color.BLUE),
-                imageInfo = ImageInfo(100, 100, "image/xml", 0),
-                dataFrom = LOCAL,
-                transformedList = null,
-                extras = null,
+            return Result.success(
+                DisplayData(
+                    drawable = ColorDrawable(Color.BLUE),
+                    imageInfo = ImageInfo(100, 100, "image/xml", 0),
+                    dataFrom = LOCAL,
+                    transformedList = null,
+                    extras = null,
+                )
             )
         }
     }

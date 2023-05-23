@@ -43,7 +43,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
     override val sortWeight: Int = 80
 
     @WorkerThread
-    override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
+    override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): Result<BitmapDecodeResult> {
         val sketch = chain.sketch
         val requestContext = chain.requestContext
         val resultCache = sketch.resultCache
@@ -53,9 +53,11 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             resultCache.lockResultCache(requestContext) {
                 ifOrNull(resultCachePolicy.readEnabled) {
                     readCache(sketch, requestContext)
+                        ?.let { Result.success(it) }
                 } ?: chain.proceed().apply {
-                    if (resultCachePolicy.writeEnabled) {
-                        writeCache(sketch, requestContext, result = this)
+                    val result = this.getOrNull()
+                    if (result != null && resultCachePolicy.writeEnabled) {
+                        writeCache(sketch, requestContext, result = result)
                     }
                 }
             }
@@ -115,17 +117,13 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                 extras.toMap()
             }
 
-            val dataSource =
-                DiskCacheDataSource(
-                    sketch,
-                    requestContext.request,
-                    RESULT_CACHE,
-                    bitmapDataDiskCacheSnapshot
-                )
+            val dataSource = DiskCacheDataSource(
+                sketch, requestContext.request, RESULT_CACHE, bitmapDataDiskCacheSnapshot
+            )
             val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory(true)
-            val decodeOptions =
-                requestContext.request.newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
-                    .toBitmapOptions()
+            val decodeOptions = requestContext.request
+                .newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
+                .toBitmapOptions()
             sketch.bitmapPool.setInBitmap(
                 options = decodeOptions,
                 imageSize = Size(cacheImageInfo.width, cacheImageInfo.height),

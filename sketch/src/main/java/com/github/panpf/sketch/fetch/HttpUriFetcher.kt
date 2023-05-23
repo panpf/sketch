@@ -32,11 +32,11 @@ import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.requiredWorkThread
-import com.github.panpf.sketch.util.withContextRunCatching
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -60,78 +60,85 @@ open class HttpUriFetcher(
     private val downloadCacheLockKey = request.uriString
 
     @WorkerThread
-    override suspend fun fetch(): FetchResult {
+    override suspend fun fetch(): Result<FetchResult> {
         requiredWorkThread()
         return if (request.downloadCachePolicy.isReadOrWrite) {
             lockDownloadCache {
-                ifOrNull(request.downloadCachePolicy.readEnabled) { readCache() }
-                    ?: executeFetch()
+                ifOrNull(request.downloadCachePolicy.readEnabled) { readCache() } ?: executeFetch()
             }
         } else {
             executeFetch()
         }
     }
 
-    private suspend fun executeFetch(): FetchResult {
+    private suspend fun executeFetch(): Result<FetchResult> {
         /* verify depth */
         val depth = request.depth
         if (depth >= Depth.LOCAL) {
-            throw DepthException("Request depth limited to $depth. ${request.uriString}")
+            return Result.failure(DepthException("Request depth limited to $depth. ${request.uriString}"))
         }
 
         /* execute download */
-        return withContextRunCatching(sketch.networkTaskDispatcher) {
+        return withContext(sketch.networkTaskDispatcher) {
             // open connection
-            val response = sketch.httpStack.getResponse(request, url)
+            val response = try {
+                sketch.httpStack.getResponse(request, url)
+            } catch (e: Exception) {
+                return@withContext Result.failure(e)
+            }
 
             // intercept cancel
             if (!isActive) {
-                throw CancellationException()
+                return@withContext Result.failure(CancellationException())
             }
 
             // check response
             val responseCode = response.code
             if (responseCode != 200) {
-                throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uriString}")
+                return@withContext Result.failure(IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uriString}"))
             }
             val isContentChunked =
                 response.getHeaderField("Transfer-Encoding")?.let { transferEncoding ->
                     "chunked".equals(transferEncoding.trim { it <= ' ' }, ignoreCase = true)
                 } ?: false
             if (isContentChunked) {
-                throw IOException("Not supported 'chunked' for 'Transfer-Encoding'. ${request.uriString}")
+                return@withContext Result.failure(IOException("Not supported 'chunked' for 'Transfer-Encoding'. ${request.uriString}"))
             }
 
             // write to disk or byte array
-            val diskCacheSnapshot = ifOrNull(request.downloadCachePolicy.writeEnabled) {
-                writeCache(response, this)
-            }
-            val dataSource = if (diskCacheSnapshot != null) {
-                if (request.downloadCachePolicy.readEnabled) {
-                    DiskCacheDataSource(sketch, request, NETWORK, diskCacheSnapshot)
-                } else {
-                    diskCacheSnapshot.newInputStream()
-                        .use { it.readBytes() }
-                        .let { ByteArrayDataSource(sketch, request, NETWORK, it) }
+            try {
+                val diskCacheSnapshot = ifOrNull(request.downloadCachePolicy.writeEnabled) {
+                    writeCache(response, this)
                 }
-            } else {
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                byteArrayOutputStream.use { out ->
-                    response.content.use { input ->
-                        copyToWithActive(
-                            request = request,
-                            inputStream = input,
-                            outputStream = out,
-                            coroutineScope = this@withContextRunCatching,
-                            contentLength = response.contentLength
-                        )
+                val dataSource = if (diskCacheSnapshot != null) {
+                    if (request.downloadCachePolicy.readEnabled) {
+                        DiskCacheDataSource(sketch, request, NETWORK, diskCacheSnapshot)
+                    } else {
+                        diskCacheSnapshot.newInputStream()
+                            .use { it.readBytes() }
+                            .let { ByteArrayDataSource(sketch, request, NETWORK, it) }
                     }
+                } else {
+                    val byteArrayOutputStream = ByteArrayOutputStream()
+                    byteArrayOutputStream.use { out ->
+                        response.content.use { input ->
+                            copyToWithActive(
+                                request = request,
+                                inputStream = input,
+                                outputStream = out,
+                                coroutineScope = this@withContext,
+                                contentLength = response.contentLength
+                            )
+                        }
+                    }
+                    val byteArray = byteArrayOutputStream.toByteArray()
+                    ByteArrayDataSource(sketch, request, NETWORK, byteArray)
                 }
-                val byteArray = byteArrayOutputStream.toByteArray()
-                ByteArrayDataSource(sketch, request, NETWORK, byteArray)
+                val mimeType = getMimeType(request.uriString, response.contentType)
+                return@withContext Result.success(FetchResult(dataSource, mimeType))
+            } catch (e: Exception) {
+                return@withContext Result.failure(e)
             }
-            val mimeType = getMimeType(request.uriString, response.contentType)
-            FetchResult(dataSource, mimeType)
         }
     }
 
@@ -148,32 +155,30 @@ open class HttpUriFetcher(
     }
 
     @WorkerThread
-    private fun readCache(): FetchResult? {
+    private fun readCache(): Result<FetchResult>? {
         val downloadCache = sketch.downloadCache
 
-        val dataDiskCacheSnapshot = downloadCache[dataKey] ?: return null
-        val contentType = downloadCache[contentTypeKey]?.let { snapshot ->
-            try {
-                snapshot.newInputStream()
-                    .use { it.bufferedReader().readText() }
-                    .takeIf { it.isNotEmpty() && it.isNotBlank() }
-                    ?: throw IOException("contentType disk cache text empty")
-            } catch (e: Exception) {
-                e.printStackTrace()
-                snapshot.remove()
-                null
+        try {
+            val dataDiskCacheSnapshot = downloadCache[dataKey] ?: return null
+            val contentType = downloadCache[contentTypeKey]?.let { snapshot ->
+                try {
+                    snapshot.newInputStream()
+                        .use { it.bufferedReader().readText() }
+                        .takeIf { it.isNotEmpty() && it.isNotBlank() }
+                        ?: throw IOException("contentType disk cache text empty")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    snapshot.remove()
+                    null
+                }
             }
+            val mimeType = getMimeType(request.uriString, contentType)
+            val dataSource =
+                DiskCacheDataSource(sketch, request, DOWNLOAD_CACHE, dataDiskCacheSnapshot)
+            return Result.success(FetchResult(dataSource, mimeType))
+        } catch (e: Exception) {
+            return Result.failure(e)
         }
-        val mimeType = getMimeType(request.uriString, contentType)
-        return FetchResult(
-            DiskCacheDataSource(
-                sketch = sketch,
-                request = request,
-                dataFrom = DOWNLOAD_CACHE,
-                snapshot = dataDiskCacheSnapshot
-            ),
-            mimeType
-        )
     }
 
     @WorkerThread

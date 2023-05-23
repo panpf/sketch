@@ -79,7 +79,7 @@ class GifDrawableDrawableDecoder(
 ) : DrawableDecoder {
 
     @WorkerThread
-    override suspend fun decode(): DrawableDecodeResult {
+    override suspend fun decode(): Result<DrawableDecodeResult> = kotlin.runCatching{
         val request = requestContext.request
         val gifInfoHandleHelper = GifInfoHandleHelper(dataSource)
         val imageWidth = gifInfoHandleHelper.width
@@ -138,7 +138,7 @@ class GifDrawableDrawableDecoder(
             }
         }
 
-        return DrawableDecodeResult(
+        DrawableDecodeResult(
             drawable = animatableDrawable,
             imageInfo = animatableDrawable.imageInfo,
             dataFrom = animatableDrawable.dataFrom,

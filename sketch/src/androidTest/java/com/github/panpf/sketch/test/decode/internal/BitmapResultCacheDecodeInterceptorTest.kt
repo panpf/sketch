@@ -242,10 +242,14 @@ class BitmapResultCacheDecodeInterceptorTest {
         override val key: String? = null
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
-            return chain.proceed().newResult {
+        override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): Result<BitmapDecodeResult> {
+            val decodeResult = chain.proceed().let {
+                it.getOrNull() ?: return it
+            }
+            val newDecodeResult = decodeResult.newResult {
                 addExtras("key", "hasExtras")
             }
+            return Result.success(newDecodeResult)
         }
 
         override fun toString(): String {

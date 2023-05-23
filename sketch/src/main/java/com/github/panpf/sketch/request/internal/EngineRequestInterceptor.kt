@@ -36,7 +36,7 @@ import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.withContextRunCatching
+import kotlinx.coroutines.withContext
 
 class EngineRequestInterceptor : RequestInterceptor {
 
@@ -44,7 +44,7 @@ class EngineRequestInterceptor : RequestInterceptor {
     override val sortWeight: Int = 100
 
     @MainThread
-    override suspend fun intercept(chain: RequestInterceptor.Chain): ImageData =
+    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> =
         when (val request = chain.request) {
             is DisplayRequest -> display(chain.sketch, request, chain.requestContext)
             is LoadRequest -> load(chain.sketch, request, chain)
@@ -57,7 +57,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         sketch: Sketch,
         request: DisplayRequest,
         requestContext: RequestContext,
-    ): DisplayData {
+    ): Result<DisplayData> {
         // Why does Target.start() have to be executed after the memory cache check?
         // First, when the memory cache is valid, one callback can be reduced
         // Secondly, when RecyclerView executes notifyDataSetChanged(),
@@ -69,7 +69,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                 ?.toSketchStateDrawable()
             it.onStart(placeholderDrawable)
         }
-        val decodeResult = withContextRunCatching(sketch.decodeTaskDispatcher) {
+        val decodeResult = withContext(sketch.decodeTaskDispatcher) {
             DrawableDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
@@ -78,13 +78,17 @@ class EngineRequestInterceptor : RequestInterceptor {
                 interceptors = sketch.components.getDrawableDecodeInterceptorList(request),
                 index = 0,
             ).proceed()
+        }.let {
+            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
         }
-        return DisplayData(
-            drawable = decodeResult.drawable,
-            imageInfo = decodeResult.imageInfo,
-            dataFrom = decodeResult.dataFrom,
-            transformedList = decodeResult.transformedList,
-            extras = decodeResult.extras
+        return Result.success(
+            DisplayData(
+                drawable = decodeResult.drawable,
+                imageInfo = decodeResult.imageInfo,
+                dataFrom = decodeResult.dataFrom,
+                transformedList = decodeResult.transformedList,
+                extras = decodeResult.extras
+            )
         )
     }
 
@@ -93,9 +97,9 @@ class EngineRequestInterceptor : RequestInterceptor {
         sketch: Sketch,
         request: LoadRequest,
         chain: RequestInterceptor.Chain
-    ): LoadData {
+    ): Result<LoadData> {
         request.target?.asOrNull<LoadTarget>()?.onStart()
-        val decodeResult = withContextRunCatching(sketch.decodeTaskDispatcher) {
+        val decodeResult = withContext(sketch.decodeTaskDispatcher) {
             BitmapDecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
@@ -104,35 +108,43 @@ class EngineRequestInterceptor : RequestInterceptor {
                 interceptors = sketch.components.getBitmapDecodeInterceptorList(request),
                 index = 0,
             ).proceed()
+        }.let {
+            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
         }
-        return LoadData(
-            bitmap = decodeResult.bitmap,
-            imageInfo = decodeResult.imageInfo,
-            dataFrom = decodeResult.dataFrom,
-            transformedList = decodeResult.transformedList,
-            extras = decodeResult.extras
+        return Result.success(
+            LoadData(
+                bitmap = decodeResult.bitmap,
+                imageInfo = decodeResult.imageInfo,
+                dataFrom = decodeResult.dataFrom,
+                transformedList = decodeResult.transformedList,
+                extras = decodeResult.extras
+            )
         )
     }
 
     @MainThread
-    private suspend fun download(sketch: Sketch, request: DownloadRequest): DownloadData {
+    private suspend fun download(sketch: Sketch, request: DownloadRequest): Result<DownloadData> {
         request.target?.asOrNull<DownloadTarget>()?.onStart()
 
-        val fetcher = withContextRunCatching(sketch.decodeTaskDispatcher) {
-            sketch.components.newFetcher(request)
-        }
-        if (fetcher !is HttpUriFetcher) {
-            throw IllegalArgumentException("DownloadRequest only support HTTP and HTTPS uri: ${request.uriString}")
-        }
-
-        val fetchResult = withContextRunCatching(sketch.decodeTaskDispatcher) {
-            fetcher.fetch()
+        val fetchResult = withContext(sketch.decodeTaskDispatcher) {
+            val fetcher = kotlin.runCatching {
+                sketch.components.newFetcher(request)
+            }.let {
+                it.getOrNull() ?: return@withContext Result.failure(it.exceptionOrNull()!!)
+            }
+            if (fetcher !is HttpUriFetcher) {
+                Result.failure(IllegalArgumentException("DownloadRequest only support HTTP and HTTPS uri: ${request.uriString}"))
+            } else {
+                fetcher.fetch()
+            }
+        }.let {
+            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
         }
         val dataFrom = fetchResult.dataFrom
         return when (val source = fetchResult.dataSource) {
-            is ByteArrayDataSource -> DownloadData(source.data, dataFrom)
-            is DiskCacheDataSource -> DownloadData(source.snapshot, dataFrom)
-            else -> throw UnsupportedOperationException("Unsupported DataSource for DownloadRequest: ${source::class.qualifiedName}")
+            is ByteArrayDataSource -> Result.success(DownloadData(source.data, dataFrom))
+            is DiskCacheDataSource -> Result.success(DownloadData(source.snapshot, dataFrom))
+            else -> Result.failure(UnsupportedOperationException("Unsupported DataSource for DownloadRequest: ${source::class.qualifiedName}"))
         }
     }
 

@@ -17,12 +17,15 @@ class PaletteBitmapDecoderInterceptor : BitmapDecodeInterceptor {
     override val sortWeight: Int = 0
 
     @WorkerThread
-    override suspend fun intercept(chain: Chain): BitmapDecodeResult {
-        val result = chain.proceed()
-        val palette = Palette.from(result.bitmap).generate()
-        return result.newResult {
+    override suspend fun intercept(chain: Chain): Result<BitmapDecodeResult> {
+        val decodeResult = chain.proceed().let {
+            it.getOrNull() ?: return it
+        }
+        val palette = Palette.from(decodeResult.bitmap).generate()
+        val newDecodeResult = decodeResult.newResult {
             addExtras("simple_palette", paletteToJSONObject(palette).toString())
         }
+        return Result.success(newDecodeResult)
     }
 
     companion object {

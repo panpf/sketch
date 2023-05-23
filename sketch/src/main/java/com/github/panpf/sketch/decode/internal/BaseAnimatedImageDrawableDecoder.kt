@@ -69,18 +69,21 @@ abstract class BaseAnimatedImageDrawableDecoder(
 ) : DrawableDecoder {
 
     @WorkerThread
-    override suspend fun decode(): DrawableDecodeResult {
+    override suspend fun decode(): Result<DrawableDecodeResult> = kotlin.runCatching {
         val request = requestContext.request
         val source = when (dataSource) {
             is AssetDataSource -> {
                 ImageDecoder.createSource(request.context.assets, dataSource.assetFileName)
             }
+
             is ResourceDataSource -> {
                 ImageDecoder.createSource(dataSource.resources, dataSource.drawableId)
             }
+
             is ContentDataSource -> {
                 ImageDecoder.createSource(request.context.contentResolver, dataSource.contentUri)
             }
+
             is ByteArrayDataSource -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     ImageDecoder.createSource(dataSource.data)
@@ -88,9 +91,11 @@ abstract class BaseAnimatedImageDrawableDecoder(
                     ImageDecoder.createSource(ByteBuffer.wrap(dataSource.data))
                 }
             }
+
             is BasedFileDataSource -> {
                 ImageDecoder.createSource(dataSource.getFile())
             }
+
             else -> {
                 throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
             }
@@ -154,7 +159,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
                 }
             }
         }
-        return DrawableDecodeResult(
+        DrawableDecodeResult(
             drawable = animatableDrawable,
             imageInfo = animatableDrawable.imageInfo,
             dataFrom = animatableDrawable.dataFrom,

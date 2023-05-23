@@ -24,7 +24,7 @@ import com.github.panpf.sketch.request.ImageRequest
 class TestFetcher : Fetcher {
 
     @WorkerThread
-    override suspend fun fetch(): FetchResult {
+    override suspend fun fetch(): Result<FetchResult> {
         throw UnsupportedOperationException()
     }
 

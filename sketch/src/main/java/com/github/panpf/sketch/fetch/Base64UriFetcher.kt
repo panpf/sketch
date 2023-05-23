@@ -49,9 +49,11 @@ class Base64UriFetcher(
     }
 
     @WorkerThread
-    override suspend fun fetch(): FetchResult {
+    override suspend fun fetch(): Result<FetchResult> {
         val bytes = Base64.decode(imageDataBase64StringLazy.value, Base64.DEFAULT)
-        return FetchResult(ByteArrayDataSource(sketch, request, MEMORY, bytes), mimeType)
+        return Result.success(
+            FetchResult(ByteArrayDataSource(sketch, request, MEMORY, bytes), mimeType)
+        )
     }
 
     class Factory : Fetcher.Factory {

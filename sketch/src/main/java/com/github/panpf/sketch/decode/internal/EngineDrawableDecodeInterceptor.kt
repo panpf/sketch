@@ -27,10 +27,12 @@ class EngineDrawableDecodeInterceptor : DrawableDecodeInterceptor {
     @WorkerThread
     override suspend fun intercept(
         chain: DrawableDecodeInterceptor.Chain,
-    ): DrawableDecodeResult {
+    ): Result<DrawableDecodeResult> {
         val request = chain.request
         val components = chain.sketch.components
-        val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch()
+        val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch().let {
+            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
+        }
         val drawableDecoder = components.newDrawableDecoder(chain.requestContext, fetchResult)
         return drawableDecoder.decode()
     }

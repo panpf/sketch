@@ -94,7 +94,7 @@ internal class SubsamplingHelper constructor(
         scope.launch(Dispatchers.Main) {
             val dataSource = withContext(Dispatchers.IO) {
                 sketch.components.newFetcher(LoadRequest(context, imageUri)).fetch()
-            }.dataSource
+            }.getOrThrow().dataSource
             val tileDecoder = TileDecoder(
                 sketch = sketch,
                 imageUri = imageUri,

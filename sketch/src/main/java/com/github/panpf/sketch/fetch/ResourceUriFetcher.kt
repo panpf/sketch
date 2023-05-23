@@ -99,7 +99,7 @@ class ResourceUriFetcher(
 
     @SuppressLint("DiscouragedApi")
     @WorkerThread
-    override suspend fun fetch(): FetchResult {
+    override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val packageName = contentUri.getQueryParameters("packageName")
             .firstOrNull()
             ?.takeIf { it.isNotEmpty() }
@@ -115,9 +115,11 @@ class ResourceUriFetcher(
             resId
         } else {
             val resType =
-                contentUri.getQueryParameters("resType").firstOrNull()?.takeIf { it.isNotEmpty() }
+                contentUri.getQueryParameters("resType").firstOrNull()
+                    ?.takeIf { it.isNotEmpty() }
             val resName =
-                contentUri.getQueryParameters("resName").firstOrNull()?.takeIf { it.isNotEmpty() }
+                contentUri.getQueryParameters("resName").firstOrNull()
+                    ?.takeIf { it.isNotEmpty() }
             if (resType == null || resName == null) {
                 throw Resources.NotFoundException("Invalid resource uri: $contentUri")
             }
@@ -125,12 +127,13 @@ class ResourceUriFetcher(
                 ?: throw Resources.NotFoundException("No found resource identifier by resType, resName: $contentUri")
         }
 
-        val path = TypedValue().apply { resources.getValue(finalResId, this, true) }.string ?: ""
+        val path =
+            TypedValue().apply { resources.getValue(finalResId, this, true) }.string ?: ""
         val entryName = path.lastIndexOf('/').takeIf { it != -1 }
             ?.let { path.substring(it + 1) }
             ?: path.toString()
         val mimeType = getMimeTypeFromUrl(entryName)
-        return FetchResult(
+        FetchResult(
             DrawableDataSource(
                 sketch = sketch,
                 request = request,

@@ -34,7 +34,7 @@ internal class DrawableDecodeInterceptorChain constructor(
 ) : DrawableDecodeInterceptor.Chain {
 
     @WorkerThread
-    override suspend fun proceed(): DrawableDecodeResult {
+    override suspend fun proceed(): Result<DrawableDecodeResult> {
         requiredWorkThread()
         val interceptor = interceptors[index]
         val next = DrawableDecodeInterceptorChain(

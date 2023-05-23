@@ -103,7 +103,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
         uris.map { uri ->
             val sketch = context.sketch
             val fetcher = sketch.components.newFetcher(LoadRequest(context, uri))
-            val dataSource = fetcher.fetch().dataSource as BasedStreamDataSource
+            val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
             val imageInfo = if (uri.endsWith(".svg")) {
                 dataSource.readImageInfoWithSVG()
             } else {

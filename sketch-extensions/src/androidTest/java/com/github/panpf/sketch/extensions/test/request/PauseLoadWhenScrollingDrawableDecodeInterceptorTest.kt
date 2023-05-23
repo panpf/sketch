@@ -181,6 +181,7 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
             requestContext = this.toRequestContext(),
             fetchResult = runBlocking {
                 sketch.components.newFetcher(this@toDrawableDecodeInterceptorChain).fetch()
+                    .getOrThrow()
             }
         )
     }
@@ -195,14 +196,16 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
         private var finalRequest = request
 
         @MainThread
-        override suspend fun proceed(): DrawableDecodeResult {
+        override suspend fun proceed(): Result<DrawableDecodeResult> {
             finalRequest = request
-            return DrawableDecodeResult(
-                drawable = ColorDrawable(Color.BLUE),
-                imageInfo = ImageInfo(100, 100, "image/xml", 0),
-                dataFrom = LOCAL,
-                transformedList = null,
-                extras = null
+            return Result.success(
+                DrawableDecodeResult(
+                    drawable = ColorDrawable(Color.BLUE),
+                    imageInfo = ImageInfo(100, 100, "image/xml", 0),
+                    dataFrom = LOCAL,
+                    transformedList = null,
+                    extras = null
+                )
             )
         }
     }

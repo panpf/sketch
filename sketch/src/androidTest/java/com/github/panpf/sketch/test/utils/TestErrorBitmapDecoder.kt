@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 
 class TestErrorBitmapDecoder : BitmapDecoder {
 
-    override suspend fun decode(): BitmapDecodeResult {
+    override suspend fun decode(): Result<BitmapDecodeResult> {
         throw UnsupportedOperationException()
     }
 

@@ -55,7 +55,7 @@ class InsanityTestPagingSource(private val context: Context) :
         uris.mapIndexed { index, uri ->
             val sketch = context.sketch
             val fetcher = sketch.components.newFetcher(LoadRequest(context, uri))
-            val dataSource = fetcher.fetch().dataSource as BasedStreamDataSource
+            val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
             val imageInfo =
                 dataSource.readImageInfoWithBitmapFactoryOrNull(context.prefsService.ignoreExifOrientation.value)
             if (imageInfo != null) {

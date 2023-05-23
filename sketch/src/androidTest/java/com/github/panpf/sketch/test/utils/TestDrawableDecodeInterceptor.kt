@@ -22,13 +22,17 @@ class TestDrawableDecodeInterceptor(override val sortWeight: Int = 0) : Drawable
 
     override val key: String = "TestDrawableDecodeInterceptor"
 
-    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
-        return chain.proceed().let {
+    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): Result<DrawableDecodeResult> {
+        val decodeResult = chain.proceed().let {
+            it.getOrNull() ?: return it
+        }
+        val newDecodeResult = decodeResult.let {
             it.copy(
                 transformedList = (it.transformedList
                     ?: listOf()).plus("TestDrawableDecodeInterceptor")
             )
         }
+        return Result.success(newDecodeResult)
     }
 
     override fun equals(other: Any?): Boolean {

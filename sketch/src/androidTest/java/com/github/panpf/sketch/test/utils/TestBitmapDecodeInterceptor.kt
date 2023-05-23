@@ -22,10 +22,14 @@ class TestBitmapDecodeInterceptor(override val sortWeight: Int = 0) : BitmapDeco
 
     override val key: String = "TestBitmapDecodeInterceptor"
 
-    override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): BitmapDecodeResult {
-        return chain.proceed().newResult {
+    override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): Result<BitmapDecodeResult> {
+        val decodeResult = chain.proceed().let {
+            it.getOrNull() ?: return it
+        }
+        val newDecodeResult = decodeResult.newResult {
             addTransformed("TestBitmapDecodeInterceptor")
         }
+        return Result.success(newDecodeResult)
     }
 
     override fun equals(other: Any?): Boolean {

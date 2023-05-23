@@ -43,7 +43,7 @@ interface DrawableDecodeInterceptor {
     val sortWeight: Int
 
     @WorkerThread
-    suspend fun intercept(chain: Chain): DrawableDecodeResult
+    suspend fun intercept(chain: Chain): Result<DrawableDecodeResult>
 
     interface Chain {
 
@@ -59,6 +59,6 @@ interface DrawableDecodeInterceptor {
          * Continue executing the chain.
          */
         @WorkerThread
-        suspend fun proceed(): DrawableDecodeResult
+        suspend fun proceed(): Result<DrawableDecodeResult>
     }
 }

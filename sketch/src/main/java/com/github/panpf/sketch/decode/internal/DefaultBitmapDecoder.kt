@@ -44,13 +44,13 @@ open class DefaultBitmapDecoder(
     }
 
     @WorkerThread
-    override suspend fun decode(): BitmapDecodeResult {
+    override suspend fun decode(): Result<BitmapDecodeResult> = kotlin.runCatching {
         val request = requestContext.request
         val imageInfo =
             dataSource.readImageInfoWithBitmapFactoryOrThrow(request.ignoreExifOrientation)
         val canDecodeRegion = ImageFormat.parseMimeType(imageInfo.mimeType)
             ?.supportBitmapRegionDecoder() == true
-        return realDecode(
+        realDecode(
             requestContext = requestContext,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
@@ -165,11 +165,13 @@ open class DefaultBitmapDecoder(
                         throw BitmapDecodeException(message2, throwable2)
                     }
                 }
+
                 isSrcRectError(throwable) -> {
                     val message =
                         "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, srcRect=${srcRect}"
                     throw BitmapDecodeException(message, throwable)
                 }
+
                 else -> {
                     throw BitmapDecodeException("Bitmap region decode error", throwable)
                 }
@@ -197,7 +199,7 @@ open class DefaultBitmapDecoder(
             fetchResult: FetchResult
         ): BitmapDecoder? {
             val dataSource = fetchResult.dataSource
-            return if(dataSource is BasedStreamDataSource) {
+            return if (dataSource is BasedStreamDataSource) {
                 DefaultBitmapDecoder(sketch, requestContext, dataSource)
             } else {
                 null

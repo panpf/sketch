@@ -23,7 +23,7 @@ class Test4DrawableDecodeInterceptor : DrawableDecodeInterceptor {
     override val key: String = "Test4DrawableDecodeInterceptor"
     override val sortWeight: Int = 0
 
-    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): DrawableDecodeResult {
+    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): Result<DrawableDecodeResult> {
         return chain.proceed()
     }
 

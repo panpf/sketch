@@ -26,6 +26,7 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.MEMORY
@@ -72,7 +73,7 @@ class MemoryCacheRequestInterceptorTest {
                     requestContext = request.toRequestContext(),
                     interceptors = requestInterceptorList,
                     index = 0,
-                ).proceed(request)
+                ).proceed(request).getOrThrow()
             }
         }
 
@@ -268,8 +269,8 @@ class MemoryCacheRequestInterceptorTest {
         override val key: String? = null
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: Chain): ImageData {
-            return when (chain.request) {
+        override suspend fun intercept(chain: Chain): Result<ImageData> = kotlin.runCatching {
+            when (chain.request) {
                 is DisplayRequest -> {
                     val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
                     val imageInfo: ImageInfo
@@ -298,14 +299,17 @@ class MemoryCacheRequestInterceptorTest {
                     }
                     DisplayData(drawable, imageInfo, DataFrom.LOCAL, null, null)
                 }
+
                 is LoadRequest -> {
                     val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
                     val imageInfo = ImageInfo(100, 100, "image/jpeg", 0)
                     LoadData(bitmap, imageInfo, DataFrom.LOCAL, null, null)
                 }
+
                 is DownloadRequest -> {
-                    DownloadData(byteArrayOf(), DataFrom.NETWORK)
+                    DownloadData(byteArrayOf(), NETWORK)
                 }
+
                 else -> {
                     throw UnsupportedOperationException("Unsupported ImageRequest: ${chain.request::class.java}")
                 }
