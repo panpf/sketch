@@ -151,14 +151,14 @@ class ResourceUriFetcherTest {
                 newResourceUri("drawable", "ic_launcher").let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
         assertNoThrow {
             runBlocking {
                 newResourceUri(drawable.ic_launcher).let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
 
         assertNoThrow {
@@ -166,14 +166,14 @@ class ResourceUriFetcherTest {
                 newResourceUri(context.packageName, "drawable", "ic_launcher").let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
         assertNoThrow {
             runBlocking {
                 newResourceUri(context.packageName, drawable.ic_launcher).let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
 
         assertNoThrow {
@@ -181,14 +181,14 @@ class ResourceUriFetcherTest {
                 context.newResourceUri("drawable", "ic_launcher").let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
         assertNoThrow {
             runBlocking {
                 context.newResourceUri(drawable.ic_launcher).let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
 
         assertThrow(Resources.NotFoundException::class) {
@@ -196,7 +196,7 @@ class ResourceUriFetcherTest {
                 "${ResourceUriFetcher.SCHEME}://".let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
 
         assertThrow(Resources.NotFoundException::class) {
@@ -204,7 +204,7 @@ class ResourceUriFetcherTest {
                 "${ResourceUriFetcher.SCHEME}://resource?packageName=fakePackageName".let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
 
         assertThrow(Resources.NotFoundException::class) {
@@ -212,7 +212,7 @@ class ResourceUriFetcherTest {
                 "${ResourceUriFetcher.SCHEME}://resource?packageName=${context.packageName}&resId=errorResId".let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
 
         assertThrow(Resources.NotFoundException::class) {
@@ -220,7 +220,7 @@ class ResourceUriFetcherTest {
                 "${ResourceUriFetcher.SCHEME}://resource?packageName=${context.packageName}&resType=drawable&resName=34&error".let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
 
         assertThrow(Resources.NotFoundException::class) {
@@ -228,7 +228,7 @@ class ResourceUriFetcherTest {
                 "${ResourceUriFetcher.SCHEME}://resource?packageName=${context.packageName}&resType=drawable&resName=0".let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
-            }
+            }.getOrThrow()
         }
     }
 }

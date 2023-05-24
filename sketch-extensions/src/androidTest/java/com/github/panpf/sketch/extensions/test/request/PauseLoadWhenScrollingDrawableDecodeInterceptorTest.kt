@@ -180,7 +180,7 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
             request = this,
             requestContext = this.toRequestContext(),
             fetchResult = runBlocking {
-                sketch.components.newFetcher(this@toDrawableDecodeInterceptorChain).fetch()
+                sketch.components.newFetcherOrThrow(this@toDrawableDecodeInterceptorChain).fetch()
                     .getOrThrow()
             }
         )

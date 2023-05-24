@@ -95,9 +95,7 @@ open class ComponentRegistry private constructor(
     /**
      * Create a [Fetcher] with the registered [Fetcher.Factory]
      */
-    @WorkerThread
     internal fun newFetcherOrNull(sketch: Sketch, request: ImageRequest): Fetcher? {
-        requiredWorkThread()
         return fetcherFactoryList.firstNotNullOfOrNull {
             it.create(sketch, request)
         }
@@ -106,13 +104,21 @@ open class ComponentRegistry private constructor(
     /**
      * Create a [Fetcher] with the registered [Fetcher.Factory]
      */
-    @WorkerThread
-    internal fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher {
+    internal fun newFetcherOrThrow(sketch: Sketch, request: ImageRequest): Fetcher {
         return newFetcherOrNull(sketch, request)
             ?: throw IllegalArgumentException(
                 "No Fetcher can handle this uri '${request.uriString}', " +
                         "please pass ComponentRegistry. Builder addFetcher () function to add a new Fetcher to support it"
             )
+    }
+
+    /**
+     * Create a [Fetcher] with the registered [Fetcher.Factory]
+     */
+    @WorkerThread
+    @Deprecated("Use newFetcherOrThrow instead", replaceWith = ReplaceWith("newFetcherOrThrow(sketch, request)"))
+    internal fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher {
+        return newFetcherOrThrow(sketch, request)
     }
 
     /**
@@ -134,7 +140,7 @@ open class ComponentRegistry private constructor(
      * Create a [BitmapDecoder] with the registered [BitmapDecoder.Factory]
      */
     @WorkerThread
-    internal fun newBitmapDecoder(
+    internal fun newBitmapDecoderOrThrow(
         sketch: Sketch,
         requestContext: RequestContext,
         fetchResult: FetchResult,
@@ -144,6 +150,19 @@ open class ComponentRegistry private constructor(
                 "No BitmapDecoder can handle this uri '${requestContext.request.uriString}', " +
                         "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
             )
+    }
+
+    /**
+     * Create a [BitmapDecoder] with the registered [BitmapDecoder.Factory]
+     */
+    @WorkerThread
+    @Deprecated("Use newBitmapDecoderOrThrow instead", replaceWith = ReplaceWith("newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)"))
+    internal fun newBitmapDecoder(
+        sketch: Sketch,
+        requestContext: RequestContext,
+        fetchResult: FetchResult,
+    ): BitmapDecoder {
+        return newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)
     }
 
     /**
@@ -165,7 +184,7 @@ open class ComponentRegistry private constructor(
      * Create a [DrawableDecoder] with the registered [DrawableDecoder.Factory]
      */
     @WorkerThread
-    internal fun newDrawableDecoder(
+    internal fun newDrawableDecoderOrThrow(
         sketch: Sketch,
         requestContext: RequestContext,
         fetchResult: FetchResult,
@@ -175,6 +194,19 @@ open class ComponentRegistry private constructor(
                 "No DrawableDecoder can handle this uri '${requestContext.request.uriString}', " +
                         "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"
             )
+    }
+
+    /**
+     * Create a [DrawableDecoder] with the registered [DrawableDecoder.Factory]
+     */
+    @WorkerThread
+    @Deprecated("Use newDrawableDecoderOrThrow instead", replaceWith = ReplaceWith("newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)"))
+    internal fun newDrawableDecoder(
+        sketch: Sketch,
+        requestContext: RequestContext,
+        fetchResult: FetchResult,
+    ): DrawableDecoder {
+        return newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -384,34 +416,59 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     /**
      * Create a [Fetcher] with [ImageRequest]'s (preferred) and global [Fetcher.Factory]
      */
-    @WorkerThread
-    fun newFetcher(request: ImageRequest): Fetcher =
+    fun newFetcherOrThrow(request: ImageRequest): Fetcher =
         request.componentRegistry?.newFetcherOrNull(sketch, request)
-            ?: registry.newFetcher(sketch, request)
+            ?: registry.newFetcherOrThrow(sketch, request)
+
+    /**
+     * Create a [Fetcher] with [ImageRequest]'s (preferred) and global [Fetcher.Factory]
+     */
+    @Deprecated("Use newFetcherOrThrow instead", replaceWith = ReplaceWith("newFetcherOrThrow(request)"))
+    fun newFetcher(request: ImageRequest): Fetcher = newFetcherOrThrow(request)
 
     /**
      * Create a [BitmapDecoder] with [ImageRequest]'s (preferred) and global [BitmapDecoder.Factory]
      */
     @WorkerThread
-    fun newBitmapDecoder(
+    fun newBitmapDecoderOrThrow(
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): BitmapDecoder =
         requestContext.request.componentRegistry
             ?.newBitmapDecoderOrNull(sketch, requestContext, fetchResult)
-            ?: registry.newBitmapDecoder(sketch, requestContext, fetchResult)
+            ?: registry.newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)
+
+    /**
+     * Create a [BitmapDecoder] with [ImageRequest]'s (preferred) and global [BitmapDecoder.Factory]
+     */
+    @WorkerThread
+    @Deprecated("Use newBitmapDecoderOrThrow instead", replaceWith = ReplaceWith("newBitmapDecoderOrThrow(requestContext, fetchResult)"))
+    fun newBitmapDecoder(
+        requestContext: RequestContext,
+        fetchResult: FetchResult,
+    ): BitmapDecoder = newBitmapDecoderOrThrow(requestContext, fetchResult)
 
     /**
      * Create a [DrawableDecoder] with [ImageRequest]'s (preferred) and global [DrawableDecoder.Factory]
      */
     @WorkerThread
-    fun newDrawableDecoder(
+    fun newDrawableDecoderOrThrow(
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): DrawableDecoder =
         requestContext.request.componentRegistry
             ?.newDrawableDecoderOrNull(sketch, requestContext, fetchResult)
-            ?: registry.newDrawableDecoder(sketch, requestContext, fetchResult)
+            ?: registry.newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)
+
+    /**
+     * Create a [DrawableDecoder] with [ImageRequest]'s (preferred) and global [DrawableDecoder.Factory]
+     */
+    @WorkerThread
+    @Deprecated("Use newDrawableDecoderOrThrow instead", replaceWith = ReplaceWith("newDrawableDecoderOrThrow(requestContext, fetchResult)"))
+    fun newDrawableDecoder(
+        requestContext: RequestContext,
+        fetchResult: FetchResult,
+    ): DrawableDecoder = newDrawableDecoderOrThrow(requestContext, fetchResult)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

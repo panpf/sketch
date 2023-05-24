@@ -122,11 +122,11 @@ fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
 fun LoadRequest.decode(sketch: Sketch): BitmapDecodeResult {
     val request = this@decode
     val fetchResult = runBlocking {
-        sketch.components.newFetcher(request).fetch()
-    }
+        sketch.components.newFetcherOrThrow(request).fetch()
+    }.getOrThrow()
     return DefaultBitmapDecoder(
         sketch = sketch,
         requestContext = request.toRequestContext(),
         dataSource = fetchResult.dataSource.asOrThrow()
-    ).let { runBlocking { it.decode() } }
+    ).let { runBlocking { it.decode() }.getOrThrow() }
 }

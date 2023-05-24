@@ -52,7 +52,7 @@ class BitmapDecodeInterceptorChainTest {
             )
             runBlocking {
                 chain.proceed()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals(
                 listOf(
@@ -75,7 +75,7 @@ class BitmapDecodeInterceptorChainTest {
             )
             runBlocking {
                 chain.proceed()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals(
                 listOf(

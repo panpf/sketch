@@ -72,8 +72,8 @@ class ContentUriFetcherTest {
 
         val fetcher = fetcherFactory.create(sketch, LoadRequest(context, contentUri))!!
         val source = runBlocking {
-            fetcher.fetch().dataSource
-        }
+            fetcher.fetch()
+        }.getOrThrow().dataSource
         Assert.assertTrue(source is ContentDataSource)
     }
 }

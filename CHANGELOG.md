@@ -1,17 +1,16 @@
-# v3.2.1-beta03
+# new
 
 ### sketch
 
-* change: Remove HttpStack.getResponse() method suspend modifier 
-
-# v3.2.1-beta02
-
-### sketch
-
+* fix: Again try fixing child thread exceptions may not catch bugs that cause your app to
+  crash [#176](https://github.com/panpf/sketch/issues/176)
 * fix: When the merged() method of ImageOptions has its own componentRegistry as null and other’s
   componentRegistry is not null, the returned componentRegistry is still null
 * fix: Fixed an issue where AnimatableDrawable could not be played when used as a placeholder when
   resizeApplyToDrawable was turned on
+* change: Remove HttpStack.getResponse() method suspend modifier
+* change: BitmapDecoder, DrawableDecoder, Fetcher, BitmapDecodeInterceptor,
+  DrawableDecodeInterceptor, RequestInterceptor return results wrapped in Result
 * improve: IOException is no longer thrown when deleting disk cache files fails
 
 # v3.2.1-beta01

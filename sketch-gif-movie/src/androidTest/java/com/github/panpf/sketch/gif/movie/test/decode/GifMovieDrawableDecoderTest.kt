@@ -214,12 +214,13 @@ class GifMovieDrawableDecoderTest {
             onAnimationStart { }
             disallowReuseBitmap()
         }.apply {
-            val fetchResult = sketch.components.newFetcher(this).let { runBlocking { it.fetch() } }
+            val fetchResult = sketch.components.newFetcherOrThrow(this)
+                .let { runBlocking { it.fetch() }.getOrThrow() }
             factory.create(
                 sketch,
                 this@apply.toRequestContext(),
                 fetchResult
-            )!!.let { runBlocking { it.decode() } }.apply {
+            )!!.let { runBlocking { it.decode() }.getOrThrow() }.apply {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
                 Assert.assertEquals(480, this.drawable.intrinsicHeight)
@@ -238,12 +239,13 @@ class GifMovieDrawableDecoderTest {
             onAnimationEnd { }
             resize(300, 300)
         }.apply {
-            val fetchResult1 = sketch.components.newFetcher(this).let { runBlocking { it.fetch() } }
+            val fetchResult1 = sketch.components.newFetcherOrThrow(this)
+                .let { runBlocking { it.fetch() }.getOrThrow() }
             factory.create(
                 sketch,
                 this@apply.toRequestContext(),
                 fetchResult1
-            )!!.let { runBlocking { it.decode() } }.apply {
+            )!!.let { runBlocking { it.decode() }.getOrThrow() }.apply {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
                 Assert.assertEquals(480, this.drawable.intrinsicWidth)
                 Assert.assertEquals(480, this.drawable.intrinsicHeight)

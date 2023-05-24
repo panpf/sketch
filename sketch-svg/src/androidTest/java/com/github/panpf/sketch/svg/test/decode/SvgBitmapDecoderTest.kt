@@ -158,11 +158,11 @@ class SvgBitmapDecoderTest {
         val factory = SvgBitmapDecoder.Factory()
 
         LoadRequest(context, newAssetUri("sample.svg")).run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals("Bitmap(841x595,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
@@ -176,11 +176,11 @@ class SvgBitmapDecoderTest {
         LoadRequest(context, newAssetUri("sample.svg")) {
             bitmapConfig(RGB_565)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals("Bitmap(841x595,RGB_565)", bitmap.toShortInfoString())
             Assert.assertEquals(
@@ -194,11 +194,11 @@ class SvgBitmapDecoderTest {
         LoadRequest(context, newAssetUri("sample.svg")) {
             resize(600, 600, LESS_PIXELS)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals("Bitmap(421x298,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
@@ -210,13 +210,12 @@ class SvgBitmapDecoderTest {
         }
 
         LoadRequest(context, newAssetUri("sample.png")).run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(NullPointerException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run.toRequestContext(), fetchResult)!!
-                        .decode()
-                }
+                    factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
+                }.getOrThrow()
             }
         }
     }

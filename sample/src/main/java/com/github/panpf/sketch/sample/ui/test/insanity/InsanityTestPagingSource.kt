@@ -54,7 +54,7 @@ class InsanityTestPagingSource(private val context: Context) :
     private suspend fun urisToPhotos(uris: List<String>): List<Photo> = withToIO {
         uris.mapIndexed { index, uri ->
             val sketch = context.sketch
-            val fetcher = sketch.components.newFetcher(LoadRequest(context, uri))
+            val fetcher = sketch.components.newFetcherOrThrow(LoadRequest(context, uri))
             val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
             val imageInfo =
                 dataSource.readImageInfoWithBitmapFactoryOrNull(context.prefsService.ignoreExifOrientation.value)

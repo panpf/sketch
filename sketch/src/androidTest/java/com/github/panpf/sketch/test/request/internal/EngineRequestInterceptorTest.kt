@@ -60,7 +60,7 @@ class EngineRequestInterceptorTest {
                     interceptors = listOf(EngineRequestInterceptor()),
                     index = 0,
                 ).proceed(request)
-            }
+            }.getOrThrow()
         }
 
         executeRequest(DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)).asOrThrow<DisplayData>()
@@ -89,7 +89,7 @@ class EngineRequestInterceptorTest {
                     interceptors = listOf(EngineRequestInterceptor()),
                     index = 0,
                 ).proceed(request)
-            }
+            }.getOrThrow()
         }
 
         assertThrow(UnsupportedOperationException::class) {

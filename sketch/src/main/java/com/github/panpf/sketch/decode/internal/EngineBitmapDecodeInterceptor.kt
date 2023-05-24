@@ -25,15 +25,17 @@ class EngineBitmapDecodeInterceptor : BitmapDecodeInterceptor {
     override val sortWeight: Int = 100
 
     @WorkerThread
-    override suspend fun intercept(
-        chain: BitmapDecodeInterceptor.Chain,
-    ): Result<BitmapDecodeResult> {
+    override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): Result<BitmapDecodeResult> {
         val request = chain.request
         val components = chain.sketch.components
-        val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch().let {
-            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
-        }
-        val bitmapDecoder = components.newBitmapDecoder(chain.requestContext, fetchResult)
+        val fetchResult = chain.fetchResult
+            ?: kotlin.runCatching { components.newFetcherOrThrow(request) }
+                .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
+                .fetch()
+                .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
+        val bitmapDecoder = kotlin.runCatching {
+            components.newBitmapDecoderOrThrow(chain.requestContext, fetchResult)
+        }.let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
         return bitmapDecoder.decode()
     }
 

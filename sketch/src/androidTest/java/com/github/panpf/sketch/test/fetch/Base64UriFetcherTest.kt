@@ -105,8 +105,8 @@ class Base64UriFetcherTest {
 
         val fetcher = fetcherFactory.create(sketch, LoadRequest(context, base64Uri))!!
         val source = runBlocking {
-            fetcher.fetch().dataSource
-        }
+            fetcher.fetch()
+        }.getOrThrow().dataSource
         Assert.assertTrue(source is ByteArrayDataSource)
     }
 }

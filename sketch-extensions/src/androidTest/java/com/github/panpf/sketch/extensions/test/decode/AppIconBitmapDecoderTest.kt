@@ -130,7 +130,7 @@ class AppIconBitmapDecoderTest {
         assertThrow(UnsupportedOperationException::class) {
             runBlocking {
                 AppIconBitmapDecoder().decode()
-            }
+            }.getOrThrow()
         }
     }
 }

@@ -18,10 +18,12 @@ class PaletteBitmapDecoderInterceptor : BitmapDecodeInterceptor {
 
     @WorkerThread
     override suspend fun intercept(chain: Chain): Result<BitmapDecodeResult> {
-        val decodeResult = chain.proceed().let {
-            it.getOrNull() ?: return it
+        val decodeResult = chain.proceed().let { it.getOrNull() ?: return it }
+        val palette = try {
+            Palette.from(decodeResult.bitmap).generate()
+        } catch (e: Exception) {
+            return Result.failure(e)
         }
-        val palette = Palette.from(decodeResult.bitmap).generate()
         val newDecodeResult = decodeResult.newResult {
             addExtras("simple_palette", paletteToJSONObject(palette).toString())
         }

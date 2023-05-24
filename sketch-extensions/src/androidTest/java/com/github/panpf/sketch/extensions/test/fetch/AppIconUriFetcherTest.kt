@@ -176,9 +176,7 @@ class AppIconUriFetcherTest {
         val appIconUri = newAppIconUri(packageName, versionCode)
 
         val fetcher = fetcherFactory.create(sketch, LoadRequest(context, appIconUri))!!
-        (runBlocking {
-            fetcher.fetch().dataSource
-        } as DrawableDataSource).apply {
+        (runBlocking { fetcher.fetch() }.getOrThrow().dataSource as DrawableDataSource).apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
 
             Assert.assertEquals(

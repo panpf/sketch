@@ -78,7 +78,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
 
             runBlocking {
                 interceptor.intercept(chain)
-            }
+            }.getOrThrow()
             Assert.assertEquals(NETWORK, chain.request.depth)
             Assert.assertFalse(chain.request.isDepthFromSaveCellularTraffic)
         }
@@ -104,7 +104,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
 
             runBlocking {
                 interceptor.intercept(chain)
-            }
+            }.getOrThrow()
             Assert.assertEquals(Depth.LOCAL, chain.finalRequest.depth)
             Assert.assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
@@ -130,7 +130,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
 
             runBlocking {
                 interceptor.intercept(chain)
-            }
+            }.getOrThrow()
             Assert.assertEquals(NETWORK, chain.finalRequest.depth)
             Assert.assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
@@ -156,7 +156,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
 
             runBlocking {
                 interceptor.intercept(chain)
-            }
+            }.getOrThrow()
             Assert.assertEquals(NETWORK, chain.finalRequest.depth)
             Assert.assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
@@ -180,7 +180,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
 
             runBlocking {
                 interceptor.intercept(chain)
-            }
+            }.getOrThrow()
             Assert.assertEquals(NETWORK, chain.finalRequest.depth)
             Assert.assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
@@ -207,7 +207,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
 
             runBlocking {
                 interceptor.intercept(chain)
-            }
+            }.getOrThrow()
             Assert.assertEquals(NETWORK, chain.finalRequest.depth)
             Assert.assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
@@ -233,7 +233,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
 
             runBlocking {
                 errorInterceptor.intercept(chain)
-            }
+            }.getOrThrow()
             Assert.assertEquals(NETWORK, chain.finalRequest.depth)
             Assert.assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
@@ -260,7 +260,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
 
             runBlocking {
                 interceptor.intercept(chain)
-            }
+            }.getOrThrow()
             Assert.assertEquals(Depth.LOCAL, chain.finalRequest.depth)
             Assert.assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
@@ -286,7 +286,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
                 )
             runBlocking {
                 interceptor.intercept(chain)
-            }
+            }.getOrThrow()
             Assert.assertEquals(Depth.LOCAL, chain.finalRequest.depth)
             Assert.assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
 
@@ -299,7 +299,7 @@ class SaveCellularTrafficDisplayInterceptorTest {
             )
             runBlocking {
                 interceptor.intercept(chain1)
-            }
+            }.getOrThrow()
             Assert.assertEquals(NETWORK, chain1.finalRequest.depth)
             Assert.assertFalse(chain1.finalRequest.isDepthFromSaveCellularTraffic)
         }

@@ -65,7 +65,7 @@ class BitmapTransformationDecodeInterceptorTest {
                 0
             )
             BitmapTransformationDecodeInterceptor().intercept(chain)
-        }.apply {
+        }.getOrThrow().apply {
             Assert.assertEquals(Size(1291, 1936), bitmap.size)
             Assert.assertNotEquals(
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
@@ -89,7 +89,7 @@ class BitmapTransformationDecodeInterceptorTest {
                 0
             )
             BitmapTransformationDecodeInterceptor().intercept(chain)
-        }.apply {
+        }.getOrThrow().apply {
             Assert.assertEquals(Size(1291, 1291), bitmap.size)
             Assert.assertEquals(
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
@@ -122,7 +122,7 @@ class BitmapTransformationDecodeInterceptorTest {
                 0
             )
             BitmapTransformationDecodeInterceptor().intercept(chain)
-        }.apply {
+        }.getOrThrow().apply {
             Assert.assertEquals(Size(1291, 1936), bitmap.size)
             Assert.assertNotEquals(
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
@@ -155,7 +155,7 @@ class BitmapTransformationDecodeInterceptorTest {
                 0
             )
             BitmapTransformationDecodeInterceptor().intercept(chain)
-        }.apply {
+        }.getOrThrow().apply {
             Assert.assertEquals(Size(1291, 1936), bitmap.size)
             Assert.assertNotEquals(
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
@@ -190,7 +190,7 @@ class BitmapTransformationDecodeInterceptorTest {
                     0
                 )
                 BitmapTransformationDecodeInterceptor().intercept(chain)
-            }
+            }.getOrThrow()
         }
     }
 

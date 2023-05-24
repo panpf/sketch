@@ -36,30 +36,32 @@ class BitmapTransformationDecodeInterceptor : BitmapDecodeInterceptor {
         val sketch = chain.sketch
         val result = chain.proceed()
         val transformations = request.transformations ?: return result
-        val decodeResult = result.let {
-            it.getOrNull() ?: return it
-        }
+        val decodeResult = result.let { it.getOrNull() ?: return it }
 
         val oldBitmap = decodeResult.bitmap
         val transformedList = LinkedList<String>()
-        val newBitmap = transformations.fold(oldBitmap) { inputBitmap, next ->
-            val transformResult = next.transform(sketch, requestContext, inputBitmap)
-            if (transformResult != null) {
-                if (transformResult.bitmap !== inputBitmap) {
-                    sketch.bitmapPool.freeBitmap(
-                        bitmap = inputBitmap,
-                        disallowReuseBitmap = request.disallowReuseBitmap,
-                        caller = "transform:${next}"
-                    )
-                    sketch.logger.d("BitmapTransformationDecodeInterceptor") {
-                        "transform. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.key}'"
+        val newBitmap = try {
+            transformations.fold(oldBitmap) { inputBitmap, next ->
+                val transformResult = next.transform(sketch, requestContext, inputBitmap)
+                if (transformResult != null) {
+                    if (transformResult.bitmap !== inputBitmap) {
+                        sketch.bitmapPool.freeBitmap(
+                            bitmap = inputBitmap,
+                            disallowReuseBitmap = request.disallowReuseBitmap,
+                            caller = "transform:${next}"
+                        )
+                        sketch.logger.d("BitmapTransformationDecodeInterceptor") {
+                            "transform. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.key}'"
+                        }
                     }
+                    transformedList.add(transformResult.transformed)
+                    transformResult.bitmap
+                } else {
+                    inputBitmap
                 }
-                transformedList.add(transformResult.transformed)
-                transformResult.bitmap
-            } else {
-                inputBitmap
             }
+        } catch (e: Throwable) {
+            return Result.failure(e)
         }
         return if (transformedList.isNotEmpty()) {
             require(!newBitmap.isRecycled)

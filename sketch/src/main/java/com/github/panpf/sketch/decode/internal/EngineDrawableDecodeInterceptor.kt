@@ -25,15 +25,17 @@ class EngineDrawableDecodeInterceptor : DrawableDecodeInterceptor {
     override val sortWeight: Int = 100
 
     @WorkerThread
-    override suspend fun intercept(
-        chain: DrawableDecodeInterceptor.Chain,
-    ): Result<DrawableDecodeResult> {
+    override suspend fun intercept(chain: DrawableDecodeInterceptor.Chain): Result<DrawableDecodeResult> {
         val request = chain.request
         val components = chain.sketch.components
-        val fetchResult = chain.fetchResult ?: components.newFetcher(request).fetch().let {
-            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
-        }
-        val drawableDecoder = components.newDrawableDecoder(chain.requestContext, fetchResult)
+        val fetchResult = chain.fetchResult
+            ?: kotlin.runCatching { components.newFetcherOrThrow(request) }
+                .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
+                .fetch()
+                .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
+        val drawableDecoder = kotlin.runCatching {
+            components.newDrawableDecoderOrThrow(chain.requestContext, fetchResult)
+        }.let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
         return drawableDecoder.decode()
     }
 

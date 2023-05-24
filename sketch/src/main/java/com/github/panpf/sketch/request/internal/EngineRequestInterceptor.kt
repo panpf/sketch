@@ -128,10 +128,8 @@ class EngineRequestInterceptor : RequestInterceptor {
 
         val fetchResult = withContext(sketch.decodeTaskDispatcher) {
             val fetcher = kotlin.runCatching {
-                sketch.components.newFetcher(request)
-            }.let {
-                it.getOrNull() ?: return@withContext Result.failure(it.exceptionOrNull()!!)
-            }
+                sketch.components.newFetcherOrThrow(request)
+            }.let { it.getOrNull() ?: return@withContext Result.failure(it.exceptionOrNull()!!) }
             if (fetcher !is HttpUriFetcher) {
                 Result.failure(IllegalArgumentException("DownloadRequest only support HTTP and HTTPS uri: ${request.uriString}"))
             } else {

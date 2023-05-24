@@ -62,7 +62,7 @@ class BitmapResultCacheDecodeInterceptorTest {
                     interceptors = interceptors,
                     index = 0
                 ).proceed()
-            }
+            }.getOrThrow()
         }
 
         val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg")) {

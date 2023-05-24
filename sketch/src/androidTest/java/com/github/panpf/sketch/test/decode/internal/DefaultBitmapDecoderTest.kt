@@ -1068,25 +1068,25 @@ class DefaultBitmapDecoderTest {
         assertThrow(BitmapDecodeException::class) {
             val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
             val dataSource = runBlocking {
-                sketch.components.newFetcher(request).fetch().dataSource
-            }
+                sketch.components.newFetcherOrThrow(request).fetch()
+            }.getOrThrow().dataSource
             sketch.bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
             DefaultBitmapDecoder(
                 sketch, request.toRequestContext(), FullTestDataSource(dataSource.asOrThrow())
-            ).let { runBlocking { it.decode() } }
+            ).let { runBlocking { it.decode() } }.getOrThrow()
         }
 
         assertNoThrow {
             val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
             val dataSource = runBlocking {
-                sketch.components.newFetcher(request).fetch().dataSource
-            }
+                sketch.components.newFetcherOrThrow(request).fetch()
+            }.getOrThrow().dataSource
             sketch.bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
             DefaultBitmapDecoder(
                 sketch,
                 request.toRequestContext(),
                 FullTestDataSource(dataSource.asOrThrow(), enabledCount = true)
-            ).let { runBlocking { it.decode() } }
+            ).let { runBlocking { it.decode() } }.getOrThrow()
         }
 
         /* region */
@@ -1096,11 +1096,13 @@ class DefaultBitmapDecoderTest {
                 resizePrecision(EXACTLY)
             }
             val dataSource1 = runBlocking {
-                sketch.components.newFetcher(request1).fetch().dataSource
-            }
+                sketch.components.newFetcherOrThrow(request1).fetch()
+            }.getOrThrow().dataSource
             DefaultBitmapDecoder(
-                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1.asOrThrow(), true)
-            ).let { runBlocking { it.decode() } }
+                sketch,
+                request1.toRequestContext(),
+                RegionTestDataSource(dataSource1.asOrThrow(), true)
+            ).let { runBlocking { it.decode() } }.getOrThrow()
         }
 
         assertThrow(BitmapDecodeException::class) {
@@ -1109,11 +1111,13 @@ class DefaultBitmapDecoderTest {
                 resizePrecision(EXACTLY)
             }
             val dataSource1 = runBlocking {
-                sketch.components.newFetcher(request1).fetch().dataSource
-            }
+                sketch.components.newFetcherOrThrow(request1).fetch()
+            }.getOrThrow().dataSource
             DefaultBitmapDecoder(
-                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1.asOrThrow(), false)
-            ).let { runBlocking { it.decode() } }
+                sketch,
+                request1.toRequestContext(),
+                RegionTestDataSource(dataSource1.asOrThrow(), false)
+            ).let { runBlocking { it.decode() } }.getOrThrow()
         }
 
         assertNoThrow {
@@ -1122,13 +1126,13 @@ class DefaultBitmapDecoderTest {
                 resizePrecision(EXACTLY)
             }
             val dataSource1 = runBlocking {
-                sketch.components.newFetcher(request1).fetch().dataSource
-            }
+                sketch.components.newFetcherOrThrow(request1).fetch()
+            }.getOrThrow().dataSource
             DefaultBitmapDecoder(
                 sketch,
                 request1.toRequestContext(),
                 RegionTestDataSource(dataSource1.asOrThrow(), false, enabledCount = true)
-            ).let { runBlocking { it.decode() } }
+            ).let { runBlocking { it.decode() } }.getOrThrow()
         }
 
         assertThrow(BitmapDecodeException::class) {
@@ -1137,11 +1141,13 @@ class DefaultBitmapDecoderTest {
                 resizePrecision(EXACTLY)
             }
             val dataSource1 = runBlocking {
-                sketch.components.newFetcher(request1).fetch().dataSource
-            }
+                sketch.components.newFetcherOrThrow(request1).fetch()
+            }.getOrThrow().dataSource
             DefaultBitmapDecoder(
-                sketch, request1.toRequestContext(), RegionTestDataSource(dataSource1.asOrThrow(), null)
-            ).let { runBlocking { it.decode() } }
+                sketch,
+                request1.toRequestContext(),
+                RegionTestDataSource(dataSource1.asOrThrow(), null)
+            ).let { runBlocking { it.decode() } }.getOrThrow()
         }
     }
 
@@ -1181,12 +1187,14 @@ class DefaultBitmapDecoderTest {
                     true -> {
                         throw IllegalArgumentException("rectangle is outside the image srcRect")
                     }
+
                     false -> {
                         count++
                         if (!enabledCount || count == 1) {
                             throw IllegalArgumentException("Problem decoding into existing bitmap")
                         }
                     }
+
                     else -> {
                         throw Exception()
                     }

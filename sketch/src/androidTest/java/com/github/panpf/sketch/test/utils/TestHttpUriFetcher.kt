@@ -28,8 +28,8 @@ class TestHttpUriFetcher(sketch: Sketch, request: ImageRequest, url: String) :
     HttpUriFetcher(sketch, request, url) {
 
     @WorkerThread
-    override suspend fun fetch(): FetchResult {
-        return FetchResult(AssetDataSource(sketch, request, "fake_asset_name"), null)
+    override suspend fun fetch(): Result<FetchResult> {
+        return Result.success(FetchResult(AssetDataSource(sketch, request, "fake_asset_name"), null))
     }
 
     class Factory : Fetcher.Factory {

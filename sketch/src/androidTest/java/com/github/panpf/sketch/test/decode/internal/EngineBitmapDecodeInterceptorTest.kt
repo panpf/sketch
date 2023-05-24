@@ -50,7 +50,7 @@ class EngineBitmapDecodeInterceptorTest {
         )
         val result = runBlocking {
             chain.proceed()
-        }
+        }.getOrThrow()
         Assert.assertEquals(1291, result.bitmap.width)
         Assert.assertEquals(1936, result.bitmap.height)
         Assert.assertEquals(

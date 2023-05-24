@@ -73,8 +73,8 @@ class MemoryCacheRequestInterceptorTest {
                     requestContext = request.toRequestContext(),
                     interceptors = requestInterceptorList,
                     index = 0,
-                ).proceed(request).getOrThrow()
-            }
+                ).proceed(request)
+            }.getOrThrow()
         }
 
         memoryCache.clear()

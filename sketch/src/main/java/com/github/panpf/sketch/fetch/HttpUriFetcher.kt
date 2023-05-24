@@ -83,7 +83,7 @@ open class HttpUriFetcher(
             // open connection
             val response = try {
                 sketch.httpStack.getResponse(request, url)
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 return@withContext Result.failure(e)
             }
 
@@ -136,7 +136,7 @@ open class HttpUriFetcher(
                 }
                 val mimeType = getMimeType(request.uriString, response.contentType)
                 return@withContext Result.success(FetchResult(dataSource, mimeType))
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 return@withContext Result.failure(e)
             }
         }
@@ -166,7 +166,7 @@ open class HttpUriFetcher(
                         .use { it.bufferedReader().readText() }
                         .takeIf { it.isNotEmpty() && it.isNotBlank() }
                         ?: throw IOException("contentType disk cache text empty")
-                } catch (e: Exception) {
+                } catch (e: Throwable) {
                     e.printStackTrace()
                     snapshot.remove()
                     null
@@ -176,7 +176,7 @@ open class HttpUriFetcher(
             val dataSource =
                 DiskCacheDataSource(sketch, request, DOWNLOAD_CACHE, dataDiskCacheSnapshot)
             return Result.success(FetchResult(dataSource, mimeType))
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             return Result.failure(e)
         }
     }
@@ -222,7 +222,7 @@ open class HttpUriFetcher(
                             it.write(contentType)
                         }
                         commit()
-                    } catch (e: Exception) {
+                    } catch (e: Throwable) {
                         e.printStackTrace()
                         abort()
                     }

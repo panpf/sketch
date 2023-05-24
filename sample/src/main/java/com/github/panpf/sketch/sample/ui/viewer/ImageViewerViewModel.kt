@@ -38,7 +38,7 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
         val application = application1
         val fetchResult = withContext(Dispatchers.IO) {
             val fetcher = application1.sketch.components
-                .newFetcher(LoadRequest(application1, imageUri))
+                .newFetcherOrThrow(LoadRequest(application1, imageUri))
             fetcher.fetch()
         }.let {
             it.getOrNull()
@@ -79,7 +79,7 @@ class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel
     suspend fun save(imageUri: String): ActionResult {
         val application = application1
         val fetcher = withContext(Dispatchers.IO) {
-            application.sketch.components.newFetcher(LoadRequest(application, imageUri))
+            application.sketch.components.newFetcherOrThrow(LoadRequest(application, imageUri))
         }
         if (fetcher is FileUriFetcher) {
             return ActionResult.error("Local files do not need to be saved")

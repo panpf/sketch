@@ -51,8 +51,8 @@ class EngineDrawableDecodeInterceptorTest {
             index = 0
         )
         val result = runBlocking {
-            chain.proceed().getOrNull()!!
-        }
+            chain.proceed()
+        }.getOrThrow()
         Assert.assertEquals(1291, result.drawable.intrinsicWidth)
         Assert.assertEquals(1936, result.drawable.intrinsicHeight)
         Assert.assertEquals(

@@ -51,11 +51,11 @@ class DefaultDrawableDecoderTest {
 
         request.let {
             runBlocking {
-                val fetchResult = sketch.components.newFetcher(it).fetch()
+                val fetchResult = sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 DefaultDrawableDecoder.Factory()
                     .create(sketch, it.toRequestContext(), fetchResult)
                     .decode()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals(samplingByTarget(imageSize, resizeSize), drawable.intrinsicSize)
             Assert.assertEquals(imageInfo.size.ratio, drawable.intrinsicSize.ratio)

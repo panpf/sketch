@@ -244,19 +244,11 @@ class ComponentRegistryTest {
         val sketch = newSketch()
 
         ComponentRegistry.Builder().build().apply {
-            assertThrow(IllegalStateException::class) {
-                runBlocking(Dispatchers.Main) {
-                    newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
-                }
-            }
-        }
-
-        ComponentRegistry.Builder().build().apply {
             assertThrow(IllegalArgumentException::class) {
-                newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+                newFetcherOrThrow(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
             }
             assertThrow(IllegalArgumentException::class) {
-                newFetcher(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
+                newFetcherOrThrow(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
             }
 
             Assert.assertNull(
@@ -271,10 +263,10 @@ class ComponentRegistryTest {
             addFetcher(AssetUriFetcher.Factory())
         }.build().apply {
             assertNoThrow {
-                newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+                newFetcherOrThrow(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
             }
             assertThrow(IllegalArgumentException::class) {
-                newFetcher(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
+                newFetcherOrThrow(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
             }
 
             Assert.assertNotNull(
@@ -290,10 +282,10 @@ class ComponentRegistryTest {
             addFetcher(HttpUriFetcher.Factory())
         }.build().apply {
             assertNoThrow {
-                newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+                newFetcherOrThrow(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
             }
             assertNoThrow {
-                newFetcher(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
+                newFetcherOrThrow(sketch, DisplayRequest(context, "http://sample.com/sample.jpeg"))
             }
 
             Assert.assertNotNull(
@@ -315,11 +307,11 @@ class ComponentRegistryTest {
         ComponentRegistry.Builder().apply {
             addFetcher(AssetUriFetcher.Factory())
         }.build().apply {
-            val fetcher = newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = newFetcherOrThrow(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(IllegalStateException::class) {
                 runBlocking(Dispatchers.Main) {
-                    newBitmapDecoder(sketch, requestContext, fetchResult)
+                    newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)
                 }
             }
         }
@@ -327,10 +319,10 @@ class ComponentRegistryTest {
         ComponentRegistry.Builder().apply {
             addFetcher(AssetUriFetcher.Factory())
         }.build().apply {
-            val fetcher = newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = newFetcherOrThrow(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(IllegalArgumentException::class) {
-                newBitmapDecoder(sketch, requestContext, fetchResult)
+                newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)
             }
             Assert.assertNull(
                 newBitmapDecoderOrNull(sketch, requestContext, fetchResult)
@@ -341,10 +333,10 @@ class ComponentRegistryTest {
             addFetcher(AssetUriFetcher.Factory())
             addBitmapDecoder(DefaultBitmapDecoder.Factory())
         }.build().apply {
-            val fetcher = newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = newFetcherOrThrow(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertNoThrow {
-                newBitmapDecoder(sketch, requestContext, fetchResult)
+                newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)
             }
             Assert.assertNotNull(
                 newBitmapDecoderOrNull(sketch, requestContext, fetchResult)
@@ -363,11 +355,11 @@ class ComponentRegistryTest {
         ComponentRegistry.Builder().apply {
             addFetcher(AssetUriFetcher.Factory())
         }.build().apply {
-            val fetcher = newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = newFetcherOrThrow(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(IllegalStateException::class) {
                 runBlocking(Dispatchers.Main) {
-                    newDrawableDecoder(sketch, requestContext, fetchResult)
+                    newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)
                 }
             }
         }
@@ -375,10 +367,10 @@ class ComponentRegistryTest {
         ComponentRegistry.Builder().apply {
             addFetcher(AssetUriFetcher.Factory())
         }.build().apply {
-            val fetcher = newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = newFetcherOrThrow(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(IllegalArgumentException::class) {
-                newDrawableDecoder(sketch, requestContext, fetchResult)
+                newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)
             }
             Assert.assertNull(
                 newDrawableDecoderOrNull(sketch, requestContext, fetchResult)
@@ -389,10 +381,10 @@ class ComponentRegistryTest {
             addFetcher(AssetUriFetcher.Factory())
             addDrawableDecoder(DefaultDrawableDecoder.Factory())
         }.build().apply {
-            val fetcher = newFetcher(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = newFetcherOrThrow(sketch, DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertNoThrow {
-                newDrawableDecoder(sketch, requestContext, fetchResult)
+                newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)
             }
             Assert.assertNotNull(
                 newDrawableDecoderOrNull(sketch, requestContext, fetchResult)

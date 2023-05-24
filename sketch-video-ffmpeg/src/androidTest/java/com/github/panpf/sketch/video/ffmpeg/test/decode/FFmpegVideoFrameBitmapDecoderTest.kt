@@ -167,11 +167,11 @@ class FFmpegVideoFrameBitmapDecoderTest {
         val factory = FFmpegVideoFrameBitmapDecoder.Factory()
 
         LoadRequest(context, newAssetUri("sample.mp4")).run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals("Bitmap(500x250,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
@@ -185,11 +185,11 @@ class FFmpegVideoFrameBitmapDecoderTest {
         LoadRequest(context, newAssetUri("sample.mp4")) {
             resize(300, 300, LESS_PIXELS)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals("Bitmap(250x125,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
@@ -201,13 +201,13 @@ class FFmpegVideoFrameBitmapDecoderTest {
         }
 
         LoadRequest(context, newAssetUri("sample.png")).run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(NullPointerException::class) {
                 runBlocking {
                     factory.create(sketch, this@run.toRequestContext(), fetchResult)!!
                         .decode()
-                }
+                }.getOrThrow()
             }
         }
     }
@@ -228,22 +228,22 @@ class FFmpegVideoFrameBitmapDecoderTest {
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.bitmap
         val bitmap11 = LoadRequest(context, newAssetUri("sample.mp4")) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.bitmap
         val bitmap2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             memoryCachePolicy(DISABLED)
@@ -251,11 +251,11 @@ class FFmpegVideoFrameBitmapDecoderTest {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
             videoFrameMillis(500)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.bitmap
         Assert.assertEquals(bitmap1.corners(), bitmap11.corners())
         Assert.assertNotEquals(bitmap1.corners(), bitmap2.corners())
@@ -277,22 +277,22 @@ class FFmpegVideoFrameBitmapDecoderTest {
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.bitmap
         val bitmap11 = LoadRequest(context, newAssetUri("sample.mp4")) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.bitmap
         val bitmap2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             memoryCachePolicy(DISABLED)
@@ -300,11 +300,11 @@ class FFmpegVideoFrameBitmapDecoderTest {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
             videoFramePercent(0.45f)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.bitmap
         Assert.assertEquals(bitmap1.corners(), bitmap11.corners())
         Assert.assertNotEquals(bitmap1.corners(), bitmap2.corners())
@@ -326,17 +326,11 @@ class FFmpegVideoFrameBitmapDecoderTest {
             resultCachePolicy(DISABLED)
             videoFramePercent(0.5f)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                try {
-                    factory.create(sketch, this@run.toRequestContext(), fetchResult)!!
-                        .decode()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    null
-                }
-            }
+                    factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
+            }.getOrNull()
         }?.bitmap
         val bitmap2 = LoadRequest(context, newAssetUri("sample.mp4")) {
             memoryCachePolicy(DISABLED)
@@ -344,11 +338,11 @@ class FFmpegVideoFrameBitmapDecoderTest {
             videoFramePercent(0.5f)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcher(this)
-            val fetchResult = runBlocking { fetcher.fetch() }
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
-            }
+            }.getOrThrow()
         }.bitmap
         Assert.assertNotEquals(bitmap1?.corners(), bitmap2.corners())
     }

@@ -142,8 +142,8 @@ class FileUriFetcherTest {
 
         val fetcher = fetcherFactory.create(sketch, LoadRequest(context, fileUri))!!
         val source = runBlocking {
-            fetcher.fetch().dataSource
-        }
+            fetcher.fetch()
+        }.getOrThrow().dataSource
         Assert.assertTrue(source is FileDataSource)
     }
 }

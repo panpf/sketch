@@ -524,7 +524,6 @@ class DecodeUtilsTest {
         val hasExifFile = ExifOrientationTestFileHelper(context, "sample.jpeg")
             .files().find { it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 }!!
 
-        @Suppress("ComplexRedundantLet")
         val result1 = LoadRequest(context, hasExifFile.file.path) {
             resizeSize(3000, 3000)
             resizePrecision(LESS_PIXELS)
@@ -535,12 +534,12 @@ class DecodeUtilsTest {
                 ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
-                    sketch.components.newFetcher(it).fetch()
+                    sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
@@ -568,12 +567,12 @@ class DecodeUtilsTest {
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 decodeFull = { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
-                    sketch.components.newFetcher(it).fetch()
+                    sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
@@ -601,12 +600,12 @@ class DecodeUtilsTest {
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 decodeFull = { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
-                    sketch.components.newFetcher(it).fetch()
+                    sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
@@ -639,12 +638,12 @@ class DecodeUtilsTest {
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", 0),
                 decodeFull = { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
-                    sketch.components.newFetcher(it).fetch()
+                    sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
@@ -671,12 +670,12 @@ class DecodeUtilsTest {
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 decodeFull = { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
-                    sketch.components.newFetcher(it).fetch()
+                    sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
@@ -709,12 +708,12 @@ class DecodeUtilsTest {
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", 0),
                 decodeFull = { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
-                    sketch.components.newFetcher(it).fetch()
+                    sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
@@ -741,12 +740,12 @@ class DecodeUtilsTest {
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 decodeFull = { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
-                    sketch.components.newFetcher(it).fetch()
+                    sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
@@ -773,12 +772,12 @@ class DecodeUtilsTest {
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", 0),
                 decodeFull = { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
-                    sketch.components.newFetcher(it).fetch()
+                    sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
@@ -799,8 +798,8 @@ class DecodeUtilsTest {
                 imageInfo = ImageInfo(700, 1012, "image/bmp", 0),
                 decodeFull = { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 },
                 decodeRegion = null
             )
@@ -822,8 +821,8 @@ class DecodeUtilsTest {
                 imageInfo = ImageInfo(700, 1012, "image/jpeg", 0),
                 decodeFull = { config ->
                     runBlocking {
-                        sketch.components.newFetcher(it).fetch()
-                    }.dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                        sketch.components.newFetcherOrThrow(it).fetch()
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
                 },
                 decodeRegion = null
             )

@@ -168,9 +168,10 @@ class GifAnimatedDrawableDecoderTest {
             onAnimationEnd { }
             onAnimationStart { }
         }
-        val fetchResult = sketch.components.newFetcher(request).let { runBlocking { it.fetch() } }
+        val fetchResult = sketch.components.newFetcherOrThrow(request)
+            .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(sketch, request.toRequestContext(), fetchResult)!!
-            .let { runBlocking { it.decode() } }.apply {
+            .let { runBlocking { it.decode() }.getOrThrow() }.apply {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
                 Assert.assertEquals(Size(480, 480), this.drawable.intrinsicSize)
                 Assert.assertEquals(LOCAL, this.dataFrom)
@@ -184,9 +185,10 @@ class GifAnimatedDrawableDecoderTest {
             repeatCount(3)
             resizeSize(300, 300)
         }
-        val fetchResult1 = sketch.components.newFetcher(request1).let { runBlocking { it.fetch() } }
+        val fetchResult1 = sketch.components.newFetcherOrThrow(request1)
+            .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(sketch, request1.toRequestContext(), fetchResult1)!!
-            .let { runBlocking { it.decode() } }.apply {
+            .let { runBlocking { it.decode() }.getOrThrow() }.apply {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif", 0), this.imageInfo)
                 Assert.assertEquals(Size(240, 240), this.drawable.intrinsicSize)
                 Assert.assertEquals(LOCAL, this.dataFrom)

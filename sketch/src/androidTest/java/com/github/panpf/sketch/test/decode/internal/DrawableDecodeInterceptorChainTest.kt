@@ -52,7 +52,7 @@ class DrawableDecodeInterceptorChainTest {
             )
             runBlocking {
                 chain.proceed()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals(
                 listOf(
@@ -75,7 +75,7 @@ class DrawableDecodeInterceptorChainTest {
             )
             runBlocking {
                 chain.proceed()
-            }
+            }.getOrThrow()
         }.apply {
             Assert.assertEquals(
                 listOf(
