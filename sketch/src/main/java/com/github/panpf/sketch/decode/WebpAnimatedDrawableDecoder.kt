@@ -58,9 +58,10 @@ fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder =
  */
 @RequiresApi(Build.VERSION_CODES.P)
 class WebpAnimatedDrawableDecoder(
+    sketch: Sketch,
     requestContext: RequestContext,
     dataSource: DataSource,
-) : BaseAnimatedImageDrawableDecoder(requestContext, dataSource) {
+) : BaseAnimatedImageDrawableDecoder(sketch, requestContext, dataSource) {
 
     class Factory : DrawableDecoder.Factory {
 
@@ -81,7 +82,7 @@ class WebpAnimatedDrawableDecoder(
             ) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 if ((imageFormat == null || imageFormat == ImageFormat.WEBP) && fetchResult.headerBytes.isAnimatedWebP()) {
-                    return WebpAnimatedDrawableDecoder(requestContext, dataSource)
+                    return WebpAnimatedDrawableDecoder(sketch, requestContext, dataSource)
                 }
             }
             return null

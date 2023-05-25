@@ -17,10 +17,13 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.ImageDecoder
 import android.graphics.drawable.AnimatedImageDrawable
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -31,6 +34,7 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
@@ -64,6 +68,7 @@ import java.nio.ByteBuffer
  */
 @RequiresApi(Build.VERSION_CODES.P)
 abstract class BaseAnimatedImageDrawableDecoder(
+    private val sketch: Sketch,
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
@@ -130,41 +135,70 @@ abstract class BaseAnimatedImageDrawableDecoder(
         } finally {
             imageDecoder?.close()
         }
-        if (drawable !is AnimatedImageDrawable) {
-            throw Exception("Only support AnimatedImageDrawable")
-        }
-        drawable.repeatCount = request.repeatCount
-            ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
-            ?: AnimatedImageDrawable.REPEAT_INFINITE
 
-        val transformedList =
-            if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
-        val animatableDrawable = SketchAnimatableDrawable(
-            // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
-            // Use ScaledAnimatedImageDrawable package solution to this it
-            animatableDrawable = ScaledAnimatedImageDrawable(drawable),
-            imageUri = request.uriString,
-            requestKey = requestContext.key,
-            requestCacheKey = requestContext.cacheKey,
+        val transformedList: List<String>?
+        val finalDrawable = when (drawable) {
+            is AnimatedImageDrawable -> {
+                transformedList =
+                    if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
+                drawable.repeatCount = request.repeatCount
+                    ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
+                    ?: AnimatedImageDrawable.REPEAT_INFINITE
+                SketchAnimatableDrawable(
+                    // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
+                    // Use ScaledAnimatedImageDrawable package solution to this it
+                    animatableDrawable = ScaledAnimatedImageDrawable(drawable),
+                    imageUri = request.uriString,
+                    requestKey = requestContext.key,
+                    requestCacheKey = requestContext.cacheKey,
+                    imageInfo = imageInfo!!,
+                    dataFrom = dataSource.dataFrom,
+                    transformedList = transformedList,
+                    extras = null,
+                ).apply {
+                    val onStart = request.animationStartCallback
+                    val onEnd = request.animationEndCallback
+                    if (onStart != null || onEnd != null) {
+                        withContext(Dispatchers.Main) {
+                            registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                        }
+                    }
+                }
+            }
+
+            is BitmapDrawable -> {
+                transformedList =
+                    if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
+                val countBitmap = CountBitmap(
+                    cacheKey = requestContext.cacheKey,
+                    bitmap = drawable.bitmap,
+                    bitmapPool = sketch.bitmapPool,
+                    disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+                )
+                SketchCountBitmapDrawable(
+                    resources = requestContext.request.context.resources,
+                    countBitmap = countBitmap,
+                    imageUri = requestContext.request.uriString,
+                    requestKey = requestContext.key,
+                    requestCacheKey = requestContext.cacheKey,
+                    imageInfo = imageInfo!!,
+                    transformedList = transformedList,
+                    extras = null,
+                    dataFrom = dataSource.dataFrom
+                )
+            }
+
+            else -> {
+                transformedList = null
+                drawable
+            }
+        }
+        DrawableDecodeResult(
+            drawable = finalDrawable,
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
             extras = null,
-        ).apply {
-            val onStart = request.animationStartCallback
-            val onEnd = request.animationEndCallback
-            if (onStart != null || onEnd != null) {
-                withContext(Dispatchers.Main) {
-                    registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
-                }
-            }
-        }
-        DrawableDecodeResult(
-            drawable = animatableDrawable,
-            imageInfo = animatableDrawable.imageInfo,
-            dataFrom = animatableDrawable.dataFrom,
-            transformedList = animatableDrawable.transformedList,
-            extras = animatableDrawable.extras,
         )
     }
 }

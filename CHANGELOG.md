@@ -1,3 +1,9 @@
+# new
+
+### sketch
+
+* improve: Compatible with still images encoded using WebP Animated panpf Moments ago [#179](https://github.com/panpf/sketch/issues/179)
+
 # v3.2.1-beta02
 
 ### sketch
