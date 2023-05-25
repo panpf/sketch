@@ -15,7 +15,7 @@ class MyRequestInterceptor : RequestInterceptor {
     // 用于排序，值越大在列表中越靠后。取值范围是 0 ~ 100。通常是零。只有 EngineRequestInterceptor 可以是 100
     override val sortWeight: Int = 0
 
-    override suspend fun intercept(chain: Chain): ImageData {
+    override suspend fun intercept(chain: Chain): Result<ImageData> {
         // 所有请求禁止使用内存缓存
         val newRequest = chain.request.newRequest {
             memoryCachePolicy(CachePolicy.DISABLED)

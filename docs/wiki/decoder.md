@@ -42,7 +42,7 @@ Decoder 列表，直到找到一个能解码当前类型图片的 Decoder，然�
 ```kotlin
 class MyBitmapDecoder : BitmapDecoder {
 
-    override suspend fun decode(): BitmapDecodeResult {
+    override suspend fun decode(): Result<BitmapDecodeResult> {
         // 在这里解析图片
     }
 

@@ -21,7 +21,7 @@ Sketch 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下
 ```kotlin
 class MyFetcher : Fetcher {
 
-    override suspend fun fetch(): FetchResult {
+    override suspend fun fetch(): Result<FetchResult> {
         // 在这里解析你的 uri，获取数据
     }
 

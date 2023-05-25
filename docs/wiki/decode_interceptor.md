@@ -17,7 +17,7 @@ class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
     @WorkerThread
     override suspend fun intercept(
         chain: BitmapDecodeInterceptor.Chain,
-    ): BitmapDecodeResult {
+    ): Result<BitmapDecodeResult> {
         val newRequest = chain.request.newRequest {
             bitmapConfig(Bitmap.Config.ARGB_4444)
         }
@@ -36,7 +36,7 @@ class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
     @WorkerThread
     override suspend fun intercept(
         chain: DrawableDecodeInterceptor.Chain,
-    ): DrawableDecodeResult {
+    ): Result<DrawableDecodeResult> {
         val newRequest = chain.request.newRequest {
             disallowAnimatedImage()
         }
