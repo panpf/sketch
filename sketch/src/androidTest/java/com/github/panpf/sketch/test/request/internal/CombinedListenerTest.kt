@@ -23,7 +23,6 @@ import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.UnknownException
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -91,7 +90,7 @@ class CombinedListenerTest {
         combinedListener.onStart(request)
         Assert.assertEquals(listOf("onStart1", "onStart2"), listenerCallbackList)
 
-        combinedListener.onError(request, DownloadResult.Error(request, UnknownException("")))
+        combinedListener.onError(request, DownloadResult.Error(request, Exception("")))
         Assert.assertEquals(
             listOf("onStart1", "onStart2", "onError1", "onError2"),
             listenerCallbackList

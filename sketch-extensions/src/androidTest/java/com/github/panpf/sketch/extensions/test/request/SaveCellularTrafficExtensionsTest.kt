@@ -32,7 +32,6 @@ import com.github.panpf.sketch.request.isDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic
 import com.github.panpf.sketch.request.saveCellularTraffic
-import com.github.panpf.sketch.util.UnknownException
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -227,7 +226,7 @@ class SaveCellularTrafficExtensionsTest {
         DisplayRequest(context, "http://sample.com/sample.jpeg") {
             depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
-            Assert.assertFalse(isCausedBySaveCellularTraffic(this, UnknownException("")))
+            Assert.assertFalse(isCausedBySaveCellularTraffic(this, Exception("")))
         }
 
         DisplayRequest(context, "http://sample.com/sample.jpeg") {

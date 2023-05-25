@@ -25,7 +25,6 @@ import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyMatcher
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
@@ -45,7 +44,7 @@ class ErrorStateImageUriEmptyMatcherTest {
             Assert.assertTrue(match(request1, UriInvalidException("")))
             Assert.assertTrue(match(request2, UriInvalidException("")))
             Assert.assertFalse(match(request, UriInvalidException("")))
-            Assert.assertFalse(match(request1, UnknownException("")))
+            Assert.assertFalse(match(request1, Exception("")))
             Assert.assertFalse(match(request1, null))
         }
     }

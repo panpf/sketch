@@ -24,7 +24,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.DrawableFetcher
 import com.github.panpf.sketch.util.RealDrawable
 import com.github.panpf.sketch.util.ResDrawable
-import com.github.panpf.sketch.util.SketchException
 
 /**
  * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.
@@ -63,7 +62,7 @@ class IconStateImage private constructor(
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
-        exception: SketchException?
+        throwable: Throwable?
     ): Drawable {
         val icon = icon.getDrawable(request.context)
         val bgDrawable = when (bg) {

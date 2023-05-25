@@ -43,7 +43,6 @@ import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition.Factory
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.SketchException
 
 /**
  * Build and set the [LoadRequest]
@@ -180,11 +179,11 @@ interface LoadRequest : ImageRequest {
          */
         inline fun target(
             crossinline onStart: () -> Unit = {},
-            crossinline onError: (exception: SketchException) -> Unit = {},
+            crossinline onError: (throwable: Throwable) -> Unit = {},
             crossinline onSuccess: (result: Bitmap) -> Unit = {}
         ) = target(object : LoadTarget {
             override fun onStart() = onStart()
-            override fun onError(exception: SketchException) = onError(exception)
+            override fun onError(throwable: Throwable) = onError(throwable)
             override fun onSuccess(result: Bitmap) = onSuccess(result)
         })
 

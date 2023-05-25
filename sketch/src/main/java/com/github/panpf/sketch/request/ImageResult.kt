@@ -15,8 +15,6 @@
  */
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.util.SketchException
-
 /**
  * Result of [ImageRequest]
  */
@@ -27,6 +25,6 @@ interface ImageResult {
     interface Success : ImageResult
 
     interface Error : ImageResult {
-        val exception: SketchException
+        val throwable: Throwable
     }
 }

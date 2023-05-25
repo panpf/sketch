@@ -9,7 +9,7 @@ DownloadRequest(context, "https://www.sample.com/image.jpg") {
             val input = result.data.newInputStream()
             // ...
         }, onSuccess = { request: DownloadRequest, result: DownloadResult.Error ->
-            val exception: SketchException = result.exception
+            val throwable: Throwable = result.throwable
             // ...
         }
     )
@@ -25,7 +25,7 @@ coroutineScope.launch(Dispatchers.Main) {
         val input = result.data.newInputStream()
         // ...
     } else if (result is DownloadResult.Error) {
-        val exception: SketchException = result.exception
+        val throwable: Throwable = result.throwable
         // ...
     }
 }

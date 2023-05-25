@@ -19,7 +19,6 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
-import com.github.panpf.sketch.util.SketchException
 
 
 /**
@@ -61,11 +60,11 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageRes
 class SaveCellularTrafficMatcher(val stateImage: StateImage?) :
     ErrorStateImage.Matcher {
 
-    override fun match(request: ImageRequest, exception: SketchException?): Boolean =
-        isCausedBySaveCellularTraffic(request, exception)
+    override fun match(request: ImageRequest, throwable: Throwable?): Boolean =
+        isCausedBySaveCellularTraffic(request, throwable)
 
     override fun getDrawable(
-        sketch: Sketch, request: ImageRequest, throwable: SketchException?
+        sketch: Sketch, request: ImageRequest, throwable: Throwable?
     ): Drawable? = stateImage?.getDrawable(sketch, request, throwable)
 
     override fun equals(other: Any?): Boolean {

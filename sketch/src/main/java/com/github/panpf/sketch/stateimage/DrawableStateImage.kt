@@ -22,7 +22,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.DrawableFetcher
 import com.github.panpf.sketch.util.RealDrawable
 import com.github.panpf.sketch.util.ResDrawable
-import com.github.panpf.sketch.util.SketchException
 
 /**
  * Use [Drawable] as the state [Drawable]
@@ -40,7 +39,7 @@ class DrawableStateImage : StateImage {
     }
 
     override fun getDrawable(
-        sketch: Sketch, request: ImageRequest, exception: SketchException?
+        sketch: Sketch, request: ImageRequest, throwable: Throwable?
     ): Drawable = drawableFetcher.getDrawable(request.context)
 
     override fun equals(other: Any?): Boolean {

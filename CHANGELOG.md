@@ -2,8 +2,13 @@
 
 ### sketch
 
-* improve: Compatible with still images encoded using WebP Animated panpf Moments ago [#179](https://github.com/panpf/sketch/issues/179)
-* improve: Improved memory caching, now all BitmapDrawable is converted to SketchCountBitmapDrawable in MemoryCacheRequestInterceptor and cached in memory, so all BitmapDecoders can return BitmapDrawable directly
+* change: 'exception: SketchException' for ImageResult.Error was changed to 'throwable: Throwable'
+  and UnknownException was removed
+* improve: Compatible with still images encoded using WebP Animated panpf Moments
+  ago [#179](https://github.com/panpf/sketch/issues/179)
+* improve: Improved memory caching, now all BitmapDrawable is converted to SketchCountBitmapDrawable
+  in MemoryCacheRequestInterceptor and cached in memory, so all BitmapDecoders can return
+  BitmapDrawable directly
 
 # v3.2.1-beta02
 

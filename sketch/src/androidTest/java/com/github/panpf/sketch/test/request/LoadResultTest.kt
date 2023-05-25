@@ -27,7 +27,6 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.createCircleCropTransformed
-import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.sketch.util.toShortInfoString
 import org.junit.Assert
 import org.junit.Test
@@ -67,9 +66,9 @@ class LoadResultTest {
             Assert.assertEquals(mapOf("age" to "16"), extras)
         }
 
-        LoadResult.Error(request1, UnknownException("")).apply {
+        LoadResult.Error(request1, Exception("")).apply {
             Assert.assertSame(request1, request)
-            Assert.assertTrue(exception is UnknownException)
+            Assert.assertTrue(throwable is Exception)
         }
     }
 }

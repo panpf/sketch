@@ -23,7 +23,6 @@ import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.UnknownException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -69,7 +68,7 @@ class ListenersTest {
             ), list.flatMap { it.callbackActionList })
 
         runBlocking(Dispatchers.Main) {
-            listeners.onError(request, DownloadResult.Error(request, UnknownException("")))
+            listeners.onError(request, DownloadResult.Error(request, Exception("")))
         }
         Assert.assertEquals(
             listOf(

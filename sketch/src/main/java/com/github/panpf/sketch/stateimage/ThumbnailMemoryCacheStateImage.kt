@@ -8,7 +8,6 @@ import com.github.panpf.sketch.decode.internal.isExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.isInSampledTransformed
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.format
 import kotlin.math.abs
 
@@ -24,7 +23,7 @@ class ThumbnailMemoryCacheStateImage(
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
-        exception: SketchException?
+        throwable: Throwable?
     ): Drawable? {
         val uri = uri ?: request.uriString
         val keys = sketch.memoryCache.keys()
@@ -81,7 +80,7 @@ class ThumbnailMemoryCacheStateImage(
                 dataFrom = DataFrom.MEMORY_CACHE
             )
         } else {
-            defaultImage?.getDrawable(sketch, request, exception)
+            defaultImage?.getDrawable(sketch, request, throwable)
         }
     }
 

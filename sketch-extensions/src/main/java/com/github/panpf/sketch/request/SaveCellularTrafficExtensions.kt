@@ -15,8 +15,6 @@
  */
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.util.SketchException
-
 const val SAVE_CELLULAR_TRAFFIC_KEY = "sketch#save_cellular_traffic"
 private const val SAVE_CELLULAR_TRAFFIC_ENABLED_KEY = "sketch#save_cellular_traffic_enabled"
 private const val SAVE_CELLULAR_TRAFFIC_IGNORED_KEY = "sketch#save_cellular_traffic_ignored"
@@ -134,5 +132,5 @@ val ImageOptions.isDepthFromSaveCellularTraffic: Boolean
 /**
  * Returns true if the request is abnormal due to the cellular data saving feature
  */
-fun isCausedBySaveCellularTraffic(request: ImageRequest, exception: SketchException?): Boolean =
-    exception is DepthException && request.depth == Depth.LOCAL && request.isDepthFromSaveCellularTraffic
+fun isCausedBySaveCellularTraffic(request: ImageRequest, throwable: Throwable?): Boolean =
+    throwable is DepthException && request.depth == Depth.LOCAL && request.isDepthFromSaveCellularTraffic

@@ -19,7 +19,6 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ViewDisplayTarget
-import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
 
 /**
@@ -36,10 +35,10 @@ class CurrentStateImage(
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
-        exception: SketchException?
+        throwable: Throwable?
     ): Drawable? =
         request.target.asOrNull<ViewDisplayTarget<*>>()?.drawable
-            ?: defaultImage?.getDrawable(sketch, request, exception)
+            ?: defaultImage?.getDrawable(sketch, request, throwable)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

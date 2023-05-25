@@ -18,12 +18,11 @@ package com.github.panpf.sketch.stateimage
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.SketchException
 
 /**
  * Provide [Drawable] for placeholder and error states
  */
 interface StateImage {
 
-    fun getDrawable(sketch: Sketch, request: ImageRequest, exception: SketchException?): Drawable?
+    fun getDrawable(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Drawable?
 }

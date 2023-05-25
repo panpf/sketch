@@ -236,7 +236,7 @@ when (displayResult) {
     is DisplayResult.Error -> {
         val request: DisplayRequest = displayResult.request
         val drawable: Drawable = displayResult.drawable
-        val exception: SketchException = displayResult.exception
+        val throwable: Throwable = displayResult.throwable
         // ...
     }
 }

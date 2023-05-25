@@ -67,7 +67,6 @@ import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
-import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Deferred
@@ -462,7 +461,7 @@ class SketchTest {
             try {
                 sketch.execute(request4)
             } catch (e: Exception) {
-                DisplayResult.Error(request4, null, UnknownException("", e))
+                DisplayResult.Error(request4, null, e)
             }
         }
         Assert.assertTrue(result4 is DisplayResult.Error)

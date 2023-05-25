@@ -17,13 +17,12 @@ package com.github.panpf.sketch.test.utils
 
 import android.graphics.Bitmap
 import com.github.panpf.sketch.target.LoadTarget
-import com.github.panpf.sketch.util.SketchException
 
 class TestLoadTarget : LoadTarget {
 
     var start: String? = null
     var successBitmap: Bitmap? = null
-    var exception: SketchException? = null
+    var throwable: Throwable? = null
 
     override fun onStart() {
         super.onStart()
@@ -35,8 +34,8 @@ class TestLoadTarget : LoadTarget {
         this.successBitmap = result
     }
 
-    override fun onError(exception: SketchException) {
-        super.onError(exception)
-        this.exception = exception
+    override fun onError(throwable: Throwable) {
+        super.onError(throwable)
+        this.throwable = throwable
     }
 }

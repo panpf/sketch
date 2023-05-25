@@ -43,8 +43,6 @@ import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.SketchException
-import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.fitScale
@@ -142,21 +140,19 @@ class RequestExecutor {
                 onCancel(sketch, requestContext, firstRequestKey, request)
                 throw throwable
             } else {
-                val exception: SketchException = throwable.asOrNull<SketchException>()
-                    ?: UnknownException(throwable.toString(), throwable)
                 val errorResult: ImageResult.Error = when (lastRequest) {
                     is DisplayRequest -> {
                         val errorDrawable = getErrorDrawable(
                             sketch = sketch,
                             request = lastRequest,
                             resizeSize = requestContext?.resizeSize,
-                            exception = exception
+                            throwable = throwable
                         )
-                        DisplayResult.Error(lastRequest, errorDrawable, exception)
+                        DisplayResult.Error(lastRequest, errorDrawable, throwable)
                     }
 
-                    is LoadRequest -> LoadResult.Error(lastRequest, exception)
-                    is DownloadRequest -> DownloadResult.Error(lastRequest, exception)
+                    is LoadRequest -> LoadResult.Error(lastRequest, throwable)
+                    is DownloadRequest -> DownloadResult.Error(lastRequest, throwable)
                     else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${lastRequest::class.java}")
                 }
 
@@ -243,23 +239,23 @@ class RequestExecutor {
             }
 
             target is LoadTarget && result is LoadResult.Error -> {
-                target.onError(result.exception)
+                target.onError(result.throwable)
             }
 
             target is DownloadTarget && result is DownloadResult.Error -> {
-                target.onError(result.exception)
+                target.onError(result.throwable)
             }
         }
         request1.listener?.onError(request1, result)
-        if (result.exception is DepthException) {
+        if (result.throwable is DepthException) {
             sketch.logger.d(MODULE) {
                 val logKey = newLogKey(requestContext, firstRequestKey, request)
-                "Request failed. ${result.exception.message}. $logKey"
+                "Request failed. ${result.throwable.message}. $logKey"
             }
         } else {
-            sketch.logger.e(MODULE, result.exception) {
+            sketch.logger.e(MODULE, result.throwable) {
                 val logKey = newLogKey(requestContext, firstRequestKey, request)
-                "Request failed. ${result.exception.message}. $logKey"
+                "Request failed. ${result.throwable.message}. $logKey"
             }
         }
     }
@@ -309,10 +305,10 @@ class RequestExecutor {
         sketch: Sketch,
         request: ImageRequest,
         resizeSize: Size?,
-        exception: SketchException
+        throwable: Throwable
     ): Drawable? =
-        (request.error?.getDrawable(sketch, request, exception)
-            ?: request.placeholder?.getDrawable(sketch, request, exception))
+        (request.error?.getDrawable(sketch, request, throwable)
+            ?: request.placeholder?.getDrawable(sketch, request, throwable))
             ?.tryToResizeDrawable(request, resizeSize)
             ?.toSketchStateDrawable()
 

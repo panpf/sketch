@@ -17,13 +17,12 @@ package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.target.DownloadTarget
-import com.github.panpf.sketch.util.SketchException
 
 class TestDownloadTarget : DownloadTarget {
 
     var start: String? = null
     var downloadData: DownloadData? = null
-    var exception: SketchException? = null
+    var throwable: Throwable? = null
 
     override fun onStart() {
         super.onStart()
@@ -35,8 +34,8 @@ class TestDownloadTarget : DownloadTarget {
         this.downloadData = result
     }
 
-    override fun onError(exception: SketchException) {
-        super.onError(exception)
-        this.exception = exception
+    override fun onError(throwable: Throwable) {
+        super.onError(throwable)
+        this.throwable = throwable
     }
 }

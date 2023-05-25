@@ -158,7 +158,7 @@ class LoadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<LoadResult.Error>()!!.apply {
-            Assert.assertTrue(exception is DepthException)
+            Assert.assertTrue(throwable is DepthException)
         }
 
         // MEMORY
@@ -1436,7 +1436,7 @@ class LoadRequestExecuteTest {
         TestLoadTarget().let { testTarget ->
             Assert.assertNull(testTarget.start)
             Assert.assertNull(testTarget.successBitmap)
-            Assert.assertNull(testTarget.exception)
+            Assert.assertNull(testTarget.throwable)
         }
 
         TestLoadTarget().let { testTarget ->
@@ -1447,7 +1447,7 @@ class LoadRequestExecuteTest {
             }
             Assert.assertNotNull(testTarget.start)
             Assert.assertNotNull(testTarget.successBitmap)
-            Assert.assertNull(testTarget.exception)
+            Assert.assertNull(testTarget.throwable)
         }
 
         TestLoadTarget().let { testTarget ->
@@ -1458,7 +1458,7 @@ class LoadRequestExecuteTest {
             }
             Assert.assertNotNull(testTarget.start)
             Assert.assertNull(testTarget.successBitmap)
-            Assert.assertNotNull(testTarget.exception)
+            Assert.assertNotNull(testTarget.throwable)
         }
 
         TestLoadTarget().let { testTarget ->
@@ -1481,7 +1481,7 @@ class LoadRequestExecuteTest {
             }
             Assert.assertNotNull(testTarget.start)
             Assert.assertNull(testTarget.successBitmap)
-            Assert.assertNull(testTarget.exception)
+            Assert.assertNull(testTarget.throwable)
         }
 
         TestLoadTarget().let { testTarget ->
@@ -1505,7 +1505,7 @@ class LoadRequestExecuteTest {
             }
             Assert.assertNotNull(testTarget.start)
             Assert.assertNull(testTarget.successBitmap)
-            Assert.assertNull(testTarget.exception)
+            Assert.assertNull(testTarget.throwable)
         }
     }
 

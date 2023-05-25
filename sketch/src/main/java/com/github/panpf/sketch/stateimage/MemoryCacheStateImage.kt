@@ -20,7 +20,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.SketchException
 
 /**
  * Get a Bitmap from memory using the given memory cache key as a state Drawable, if not found, use defaultImage
@@ -33,7 +32,7 @@ class MemoryCacheStateImage(
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
-        exception: SketchException?
+        throwable: Throwable?
     ): Drawable? {
         val memoryCache = sketch.memoryCache
         val cachedValue = memoryCacheKey?.let { memoryCache[it] }
@@ -50,7 +49,7 @@ class MemoryCacheStateImage(
                 dataFrom = DataFrom.MEMORY_CACHE
             )
         } else {
-            defaultImage?.getDrawable(sketch, request, exception)
+            defaultImage?.getDrawable(sketch, request, throwable)
         }
     }
 

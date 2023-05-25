@@ -21,7 +21,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.stateimage.ErrorStateImage.Builder
 import com.github.panpf.sketch.stateimage.ErrorStateImage.Matcher
-import com.github.panpf.sketch.util.SketchException
 import java.util.LinkedList
 
 /**
@@ -44,10 +43,10 @@ interface ErrorStateImage : StateImage {
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
-        exception: SketchException?
+        throwable: Throwable?
     ): Drawable? = matcherList
-        .find { it.match(request, exception) }
-        ?.getDrawable(sketch, request, exception)
+        .find { it.match(request, throwable) }
+        ?.getDrawable(sketch, request, throwable)
 
     class Builder constructor(private val defaultImage: StateImage?) {
 
@@ -116,21 +115,21 @@ interface ErrorStateImage : StateImage {
      */
     interface Matcher {
 
-        fun match(request: ImageRequest, exception: SketchException?): Boolean
+        fun match(request: ImageRequest, throwable: Throwable?): Boolean
 
         fun getDrawable(
             sketch: Sketch,
             request: ImageRequest,
-            throwable: SketchException?
+            throwable: Throwable?
         ): Drawable?
     }
 
     class DefaultMatcher(private val stateImage: StateImage) : Matcher {
 
-        override fun match(request: ImageRequest, exception: SketchException?): Boolean = true
+        override fun match(request: ImageRequest, throwable: Throwable?): Boolean = true
 
         override fun getDrawable(
-            sketch: Sketch, request: ImageRequest, throwable: SketchException?
+            sketch: Sketch, request: ImageRequest, throwable: Throwable?
         ): Drawable? = stateImage.getDrawable(sketch, request, throwable)
 
         override fun equals(other: Any?): Boolean {
@@ -152,11 +151,11 @@ interface ErrorStateImage : StateImage {
 
     class UriEmptyMatcher(private val stateImage: StateImage) : Matcher {
 
-        override fun match(request: ImageRequest, exception: SketchException?): Boolean =
-            exception is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())
+        override fun match(request: ImageRequest, throwable: Throwable?): Boolean =
+            throwable is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())
 
         override fun getDrawable(
-            sketch: Sketch, request: ImageRequest, throwable: SketchException?
+            sketch: Sketch, request: ImageRequest, throwable: Throwable?
         ): Drawable? = stateImage.getDrawable(sketch, request, throwable)
 
         override fun equals(other: Any?): Boolean {

@@ -48,16 +48,16 @@ class MyMatcher(val stateImage: StateImage) : Matcher {
     override fun match(
         sketch: Sketch,
         request: ImageRequest,
-        exception: SketchException?
+        throwable: Throwable?
     ): Boolean {
-        // 根据 exception 判断错误类型
+        // 根据 throwable 判断错误类型
     }
 
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
-        exception: SketchException?
-    ): Drawable = stateImage.getDrawable(sketch, request, exception)
+        throwable: Throwable?
+    ): Drawable = stateImage.getDrawable(sketch, request, throwable)
 }
 
 imageView.displayImage("https://www.sample.com/image.jpg") {

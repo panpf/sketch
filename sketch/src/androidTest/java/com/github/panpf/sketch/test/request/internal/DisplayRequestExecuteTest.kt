@@ -173,7 +173,7 @@ class DisplayRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Error>()!!.apply {
-            Assert.assertTrue(exception is DepthException)
+            Assert.assertTrue(throwable is DepthException)
         }
 
         // MEMORY
@@ -199,7 +199,7 @@ class DisplayRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Error>()!!.apply {
-            Assert.assertTrue(exception is DepthException)
+            Assert.assertTrue(throwable is DepthException)
         }
     }
 

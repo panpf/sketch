@@ -9,7 +9,7 @@ LoadRequest(context, "https://www.sample.com/image.jpg") {
             val bitmap = result.bitmap
             // ...
         }, onSuccess = { request: LoadRequest, result: LoadResult.Error ->
-            val exception: SketchException = result.exception
+            val throwable: Throwable = result.throwable
             // ...
         }
     )
@@ -25,7 +25,7 @@ coroutineScope.launch(Dispatchers.Main) {
         val bitmap = result.bitmap
         // ...
     } else if (result is LoadResult.Error) {
-        val exception: SketchException = result.exception
+        val throwable: Throwable = result.throwable
         // ...
     }
 }

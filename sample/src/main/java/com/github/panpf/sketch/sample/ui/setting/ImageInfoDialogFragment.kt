@@ -139,7 +139,7 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             } else if (displayResult is DisplayResult.Error) {
                 uri1 = displayResult.request.uriString
 
-                throwableString = displayResult.exception.toString()
+                throwableString = displayResult.throwable.toString()
             }
 
             if (imageView is SketchZoomImageView) {

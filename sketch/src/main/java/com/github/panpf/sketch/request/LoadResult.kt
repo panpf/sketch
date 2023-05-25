@@ -18,7 +18,6 @@ package com.github.panpf.sketch.request
 import android.graphics.Bitmap
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.util.SketchException
 
 /**
  * Result of [LoadRequest]
@@ -44,6 +43,6 @@ sealed interface LoadResult : ImageResult {
 
     data class Error constructor(
         override val request: LoadRequest,
-        override val exception: SketchException,
+        override val throwable: Throwable,
     ) : LoadResult, ImageResult.Error
 }

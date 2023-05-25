@@ -34,7 +34,6 @@ import com.github.panpf.sketch.target.ImageViewDisplayTarget
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transition.CrossfadeTransition
-import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import com.github.panpf.tools4j.reflect.ktx.setFieldValue
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -134,7 +133,7 @@ class CrossfadeTransitionTest {
         val error = DisplayResult.Error(
             request = request,
             drawable = resultDrawable,
-            exception = UnknownException(""),
+            throwable = Exception(""),
         )
         CrossfadeTransition(imageViewTarget, error).transition()
         (imageView.drawable as CrossfadeDrawable).apply {
@@ -213,7 +212,7 @@ class CrossfadeTransitionTest {
         val errorResult = DisplayResult.Error(
             request = request,
             drawable = resultDrawable,
-            exception = UnknownException("", null)
+            throwable = Exception("")
         )
         Assert.assertNotNull(factory.create(imageViewTarget, errorResult, true))
 

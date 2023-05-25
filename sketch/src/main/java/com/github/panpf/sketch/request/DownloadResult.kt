@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.util.SketchException
 
 /**
  * Result of [DownloadRequest]
@@ -31,6 +30,6 @@ sealed interface DownloadResult : ImageResult {
 
     data class Error constructor(
         override val request: DownloadRequest,
-        override val exception: SketchException,
+        override val throwable: Throwable,
     ) : DownloadResult, ImageResult.Error
 }

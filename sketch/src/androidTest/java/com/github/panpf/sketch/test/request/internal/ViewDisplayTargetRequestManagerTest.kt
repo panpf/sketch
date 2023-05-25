@@ -34,7 +34,6 @@ import com.github.panpf.sketch.request.ViewTargetDisposable
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.UnknownException
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
@@ -75,7 +74,7 @@ class ViewDisplayTargetRequestManagerTest {
 
         runBlocking(Dispatchers.Main) {
             val deferred = async {
-                DisplayResult.Error(request, null, UnknownException(""))
+                DisplayResult.Error(request, null, Exception(""))
             }
             val requestManager = imageView.requestManager
             val disposable = requestManager.getDisposable(deferred)

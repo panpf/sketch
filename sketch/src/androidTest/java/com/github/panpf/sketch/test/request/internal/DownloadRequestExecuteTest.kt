@@ -121,7 +121,7 @@ class DownloadRequestExecuteTest {
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DownloadResult.Error>()!!.apply {
-            Assert.assertTrue(exception is DepthException)
+            Assert.assertTrue(throwable is DepthException)
         }
 
         // MEMORY
@@ -471,7 +471,7 @@ class DownloadRequestExecuteTest {
         TestDownloadTarget().let { testTarget ->
             Assert.assertNull(testTarget.start)
             Assert.assertNull(testTarget.downloadData)
-            Assert.assertNull(testTarget.exception)
+            Assert.assertNull(testTarget.throwable)
         }
 
         TestDownloadTarget().let { testTarget ->
@@ -482,7 +482,7 @@ class DownloadRequestExecuteTest {
             }
             Assert.assertNotNull(testTarget.start)
             Assert.assertNotNull(testTarget.downloadData)
-            Assert.assertNull(testTarget.exception)
+            Assert.assertNull(testTarget.throwable)
         }
 
         TestDownloadTarget().let { testTarget ->
@@ -493,7 +493,7 @@ class DownloadRequestExecuteTest {
             }
             Assert.assertNotNull(testTarget.start)
             Assert.assertNull(testTarget.downloadData)
-            Assert.assertNotNull(testTarget.exception)
+            Assert.assertNotNull(testTarget.throwable)
         }
 
         TestDownloadTarget().let { testTarget ->
@@ -516,7 +516,7 @@ class DownloadRequestExecuteTest {
             }
             Assert.assertNotNull(testTarget.start)
             Assert.assertNull(testTarget.downloadData)
-            Assert.assertNull(testTarget.exception)
+            Assert.assertNull(testTarget.throwable)
         }
 
         TestDownloadTarget().let { testTarget ->
@@ -540,7 +540,7 @@ class DownloadRequestExecuteTest {
             }
             Assert.assertNotNull(testTarget.start)
             Assert.assertNull(testTarget.downloadData)
-            Assert.assertNull(testTarget.exception)
+            Assert.assertNull(testTarget.throwable)
         }
     }
 

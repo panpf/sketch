@@ -21,7 +21,6 @@ import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.UnknownException
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,9 +39,9 @@ class DownloadResultTest {
             Assert.assertEquals(MEMORY, dataFrom)
         }
 
-        DownloadResult.Error(request1, UnknownException("")).apply {
+        DownloadResult.Error(request1, Exception("")).apply {
             Assert.assertSame(request1, request)
-            Assert.assertTrue(exception is UnknownException)
+            Assert.assertTrue(throwable is Exception)
         }
     }
 }

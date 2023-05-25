@@ -27,7 +27,6 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.createCircleCropTransformed
-import com.github.panpf.sketch.util.UnknownException
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -66,10 +65,10 @@ class DisplayResultTest {
             Assert.assertEquals(mapOf("age" to "16"), extras)
         }
 
-        DisplayResult.Error(request1, ColorDrawable(Color.BLACK), UnknownException("")).apply {
+        DisplayResult.Error(request1, ColorDrawable(Color.BLACK), Exception("")).apply {
             Assert.assertSame(request1, request)
             Assert.assertTrue(drawable is ColorDrawable)
-            Assert.assertTrue(exception is UnknownException)
+            Assert.assertTrue(throwable is Exception)
         }
     }
 }

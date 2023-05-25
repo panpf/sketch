@@ -36,7 +36,7 @@ internal fun transformOf(
                     if (placeholder != null) state.copy(painter = placeholder) else state
                 }
 //                is State.Error -> if (state.result.throwable is NullRequestDataException) {
-                is State.Error -> if (state.result.exception is UriInvalidException) {
+                is State.Error -> if (state.result.throwable is UriInvalidException) {
                     if (uriEmpty != null) state.copy(painter = uriEmpty) else state
                 } else {
                     if (error != null) state.copy(painter = error) else state
