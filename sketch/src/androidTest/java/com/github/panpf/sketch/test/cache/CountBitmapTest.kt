@@ -294,7 +294,7 @@ class CountBitmapTest {
         height: Int,
     ): CountBitmap = CountBitmap(
         cacheKey = cacheKey,
-        bitmap = Bitmap.createBitmap(width, height, ARGB_8888),
+        originBitmap = Bitmap.createBitmap(width, height, ARGB_8888),
         bitmapPool = sketch.bitmapPool,
         disallowReuseBitmap = false,
     )

@@ -17,10 +17,9 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 
@@ -32,43 +31,34 @@ class DefaultDrawableDecoder(
 
     @WorkerThread
     override suspend fun decode(): Result<DrawableDecodeResult> {
-        val decodeResult = BitmapDecodeInterceptorChain(
+        val bitmapDecodeResult = BitmapDecodeInterceptorChain(
             sketch = sketch,
             request = requestContext.request,
             requestContext = requestContext,
             fetchResult = fetchResult,
             interceptors = sketch.components.getBitmapDecodeInterceptorList(requestContext.request),
             index = 0,
-        ).proceed().let {
-            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
-        }
-
-        val countBitmap = CountBitmap(
-            cacheKey = requestContext.cacheKey,
-            bitmap = decodeResult.bitmap,
-            bitmapPool = sketch.bitmapPool,
-            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-        )
-        val countDrawable = SketchCountBitmapDrawable(
+        ).proceed()
+            .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
+        val sketchBitmapDrawable = SketchBitmapDrawable(
             resources = requestContext.request.context.resources,
-            countBitmap = countBitmap,
+            bitmap = bitmapDecodeResult.bitmap,
             imageUri = requestContext.request.uriString,
             requestKey = requestContext.key,
             requestCacheKey = requestContext.cacheKey,
-            imageInfo = decodeResult.imageInfo,
-            transformedList = decodeResult.transformedList,
-            extras = decodeResult.extras,
-            dataFrom = decodeResult.dataFrom
+            imageInfo = bitmapDecodeResult.imageInfo,
+            transformedList = bitmapDecodeResult.transformedList,
+            extras = bitmapDecodeResult.extras,
+            dataFrom = bitmapDecodeResult.dataFrom
         )
-        return Result.success(
-            DrawableDecodeResult(
-                drawable = countDrawable,
-                imageInfo = decodeResult.imageInfo,
-                dataFrom = decodeResult.dataFrom,
-                transformedList = decodeResult.transformedList,
-                extras = decodeResult.extras,
-            )
+        val drawableDecodeResult = DrawableDecodeResult(
+            drawable = sketchBitmapDrawable,
+            imageInfo = bitmapDecodeResult.imageInfo,
+            dataFrom = bitmapDecodeResult.dataFrom,
+            transformedList = bitmapDecodeResult.transformedList,
+            extras = bitmapDecodeResult.extras,
         )
+        return Result.success(drawableDecodeResult)
     }
 
     class Factory : DrawableDecoder.Factory {

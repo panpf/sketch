@@ -266,7 +266,7 @@ internal class TileManager constructor(
                     withContext(Dispatchers.Main) {
                         val newCountBitmap = CountBitmap(
                             cacheKey = memoryCacheKey,
-                            bitmap = bitmap,
+                            originBitmap = bitmap,
                             bitmapPool = sketch.bitmapPool,
                             disallowReuseBitmap = disallowReuseBitmap,
                         )

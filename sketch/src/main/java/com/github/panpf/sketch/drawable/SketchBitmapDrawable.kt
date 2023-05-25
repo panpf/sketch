@@ -16,17 +16,15 @@
 package com.github.panpf.sketch.drawable
 
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.logString
 
-/**
- * BitmapDrawable with reference counting support
- */
-class SketchCountBitmapDrawable constructor(
+class SketchBitmapDrawable constructor(
     resources: Resources,
-    val countBitmap: CountBitmap,
+    bitmap: Bitmap,
     override val imageUri: String,
     override val requestKey: String,
     override val requestCacheKey: String,
@@ -34,13 +32,13 @@ class SketchCountBitmapDrawable constructor(
     override val transformedList: List<String>?,
     override val extras: Map<String, String>?,
     override val dataFrom: DataFrom,
-) : BitmapDrawable(resources, countBitmap.bitmap!!), SketchDrawable {
+) : BitmapDrawable(resources, bitmap), SketchDrawable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as SketchCountBitmapDrawable
-        if (countBitmap != other.countBitmap) return false
+        other as SketchBitmapDrawable
+        if (bitmap != other.bitmap) return false
         if (imageUri != other.imageUri) return false
         if (requestKey != other.requestKey) return false
         if (requestCacheKey != other.requestCacheKey) return false
@@ -64,5 +62,5 @@ class SketchCountBitmapDrawable constructor(
     }
 
     override fun toString(): String =
-        "SketchCountBitmapDrawable($countBitmap,${imageInfo.toShortString()},$dataFrom,$transformedList,$extras,'$requestKey')"
+        "SketchBitmapDrawable(${bitmap.logString},${imageInfo.toShortString()},$dataFrom,$transformedList,$extras,'$requestKey')"
 }

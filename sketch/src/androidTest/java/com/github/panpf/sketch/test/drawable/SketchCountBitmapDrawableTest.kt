@@ -22,7 +22,6 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import org.junit.Assert
@@ -41,7 +40,7 @@ class SketchCountBitmapDrawableTest {
             resources = context.resources,
             countBitmap = CountBitmap(
                 cacheKey = "requestCacheKey1",
-                bitmap = bitmap,
+                originBitmap = bitmap,
                 bitmapPool = sketch.bitmapPool,
                 disallowReuseBitmap = false,
             ),
@@ -66,13 +65,13 @@ class SketchCountBitmapDrawableTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val countBitmap = CountBitmap(
             cacheKey = "requestCacheKey1",
-            bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
         )
         val countBitmap2 = CountBitmap(
             cacheKey = "requestCacheKey2",
-            bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
         )
@@ -150,7 +149,7 @@ class SketchCountBitmapDrawableTest {
 
         val countBitmap = CountBitmap(
             cacheKey = "requestCacheKey1",
-            bitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
+            originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
         )
@@ -166,7 +165,7 @@ class SketchCountBitmapDrawableTest {
             dataFrom = MEMORY
         ).apply {
             Assert.assertEquals(
-                "SketchCountBitmapDrawable(${countBitmap.bitmap!!.logString},${imageInfo.toShortString()},$MEMORY,null,null,'requestKey1')",
+                "SketchCountBitmapDrawable(${countBitmap},${imageInfo.toShortString()},$MEMORY,null,null,'requestKey1')",
                 toString()
             )
         }

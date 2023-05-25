@@ -16,7 +16,10 @@
 package com.github.panpf.sketch.request.internal
 
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -27,7 +30,6 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.util.asOrNull
 
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 
@@ -39,6 +41,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val request = chain.request
         val requestContext = chain.requestContext
         val memoryCache = chain.sketch.memoryCache
+        val bitmapPool = chain.sketch.bitmapPool
 
         if (request is DisplayRequest && request.memoryCachePolicy.readEnabled) {
             val cachedDisplayData =
@@ -57,8 +60,12 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             && imageData is DisplayData
             && request is DisplayRequest
             && request.memoryCachePolicy.writeEnabled
+            && imageData.drawable is BitmapDrawable
         ) {
-            saveToMemoryCache(memoryCache, requestContext, imageData)
+            val countDrawable = saveToMemoryCache(
+                memoryCache, requestContext, bitmapPool, imageData, imageData.drawable
+            )
+            return Result.success(imageData.copy(drawable = countDrawable))
         }
 
         return result
@@ -96,22 +103,39 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     private fun saveToMemoryCache(
         memoryCache: MemoryCache,
         requestContext: RequestContext,
+        bitmapPool: BitmapPool,
         displayData: DisplayData,
-    ) {
-        val countDrawable = displayData.drawable.asOrNull<SketchCountBitmapDrawable>()
-        if (countDrawable != null) {
-            requestContext.pendingCountDrawable(countDrawable, "newDecode")
-            val newCacheValue = MemoryCache.Value(
-                countBitmap = countDrawable.countBitmap,
-                imageUri = countDrawable.imageUri,
-                requestKey = countDrawable.requestKey,
-                requestCacheKey = countDrawable.requestCacheKey,
-                imageInfo = countDrawable.imageInfo,
-                transformedList = countDrawable.transformedList,
-                extras = countDrawable.extras,
-            )
-            memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
-        }
+        bitmapDrawable: BitmapDrawable,
+    ): SketchCountBitmapDrawable {
+        val countBitmap = CountBitmap(
+            cacheKey = requestContext.cacheKey,
+            originBitmap = bitmapDrawable.bitmap,
+            bitmapPool = bitmapPool,
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+        )
+        val countDrawable = SketchCountBitmapDrawable(
+            resources = requestContext.request.context.resources,
+            countBitmap = countBitmap,
+            imageUri = requestContext.request.uriString,
+            requestKey = requestContext.key,
+            requestCacheKey = requestContext.cacheKey,
+            imageInfo = displayData.imageInfo,
+            transformedList = displayData.transformedList,
+            extras = displayData.extras,
+            dataFrom = displayData.dataFrom
+        )
+        requestContext.pendingCountDrawable(countDrawable, "newDecode")
+        val newCacheValue = MemoryCache.Value(
+            countBitmap = countDrawable.countBitmap,
+            imageUri = countDrawable.imageUri,
+            requestKey = countDrawable.requestKey,
+            requestCacheKey = countDrawable.requestCacheKey,
+            imageInfo = countDrawable.imageInfo,
+            transformedList = countDrawable.transformedList,
+            extras = countDrawable.extras,
+        )
+        memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
+        return countDrawable
     }
 
     override fun toString(): String = "MemoryCacheRequestInterceptor(sortWeight=$sortWeight)"

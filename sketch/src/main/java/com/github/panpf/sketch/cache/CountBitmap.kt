@@ -27,7 +27,7 @@ import com.github.panpf.sketch.util.requiredMainThread
  */
 class CountBitmap constructor(
     val cacheKey: String,
-    bitmap: Bitmap,
+    private val originBitmap: Bitmap,
     private val bitmapPool: BitmapPool,
     private val disallowReuseBitmap: Boolean,
 ) {
@@ -36,8 +36,7 @@ class CountBitmap constructor(
         private const val MODULE = "CountBitmap"
     }
 
-    private val bitmapLogString = bitmap.logString
-    private var _bitmap: Bitmap? = bitmap
+    private var _bitmap: Bitmap? = originBitmap
     private var cachedCount = 0
     private var displayedCount = 0
     private var pendingCount = 0
@@ -110,10 +109,6 @@ class CountBitmap constructor(
         return displayedCount
     }
 
-    override fun toString(): String {
-        return "CountBitmap(${bitmapLogString},$pendingCount/$cachedCount/$displayedCount,'$cacheKey')"
-    }
-
     private fun tryFree(caller: String, pending: Boolean) {
         val bitmap = this._bitmap
         if (bitmap == null) {
@@ -127,5 +122,24 @@ class CountBitmap constructor(
         } else {
             bitmapPool.logger?.d(MODULE) { "keep. $caller. ${toString()}" }
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as CountBitmap
+        if (cacheKey != other.cacheKey) return false
+        if (originBitmap != other.originBitmap) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = cacheKey.hashCode()
+        result = 31 * result + originBitmap.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "CountBitmap(${originBitmap.logString},$pendingCount/$cachedCount/$displayedCount,'$cacheKey')"
     }
 }

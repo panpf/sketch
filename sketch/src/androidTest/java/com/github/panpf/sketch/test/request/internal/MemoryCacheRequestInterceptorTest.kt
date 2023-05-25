@@ -23,7 +23,6 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
@@ -197,24 +196,6 @@ class MemoryCacheRequestInterceptorTest {
         }
         Assert.assertEquals(40000, memoryCache.size)
 
-        /* Non SketchCountBitmapDrawable */
-        val displayRequest1 = DisplayRequest(context, TestAssets.SAMPLE_PNG_URI)
-        memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.size)
-        executeRequest(displayRequest1.newDisplayRequest {
-            memoryCachePolicy(ENABLED)
-        }).asOrThrow<DisplayData>().apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-        }
-        Assert.assertEquals(0, memoryCache.size)
-
-        executeRequest(displayRequest1.newDisplayRequest {
-            memoryCachePolicy(ENABLED)
-        }).asOrThrow<DisplayData>().apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-        }
-        Assert.assertEquals(0, memoryCache.size)
-
         /* Depth.MEMORY */
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
@@ -273,30 +254,8 @@ class MemoryCacheRequestInterceptorTest {
             when (chain.request) {
                 is DisplayRequest -> {
                     val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
-                    val imageInfo: ImageInfo
-                    val drawable = if (chain.request.uriString.contains(".jpeg")) {
-                        imageInfo = ImageInfo(100, 100, "image/jpeg", 0)
-                        val countBitmap = CountBitmap(
-                            cacheKey = chain.request.toRequestContext().cacheKey,
-                            bitmap = bitmap,
-                            bitmapPool = chain.sketch.bitmapPool,
-                            disallowReuseBitmap = false,
-                        )
-                        SketchCountBitmapDrawable(
-                            resources = chain.sketch.context.resources,
-                            countBitmap = countBitmap,
-                            imageUri = chain.request.uriString,
-                            requestKey = chain.request.toRequestContext().key,
-                            requestCacheKey = chain.request.toRequestContext().cacheKey,
-                            imageInfo = imageInfo,
-                            transformedList = null,
-                            extras = null,
-                            dataFrom = DataFrom.LOCAL
-                        )
-                    } else {
-                        imageInfo = ImageInfo(100, 100, "image/png", 0)
-                        BitmapDrawable(chain.sketch.context.resources, bitmap)
-                    }
+                    val imageInfo = ImageInfo(100, 100, "image/png", 0)
+                    val drawable = BitmapDrawable(chain.sketch.context.resources, bitmap)
                     DisplayData(drawable, imageInfo, DataFrom.LOCAL, null, null)
                 }
 

@@ -58,10 +58,9 @@ fun ComponentRegistry.Builder.supportAnimatedGif(): ComponentRegistry.Builder = 
  */
 @RequiresApi(Build.VERSION_CODES.P)
 class GifAnimatedDrawableDecoder(
-    sketch: Sketch,
     requestContext: RequestContext,
     dataSource: DataSource,
-) : BaseAnimatedImageDrawableDecoder(sketch, requestContext, dataSource) {
+) : BaseAnimatedImageDrawableDecoder(requestContext, dataSource) {
 
     class Factory : DrawableDecoder.Factory {
 
@@ -84,7 +83,7 @@ class GifAnimatedDrawableDecoder(
                 val isGif =
                     if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF
                 if (isGif) {
-                    return GifAnimatedDrawableDecoder(sketch, requestContext, dataSource)
+                    return GifAnimatedDrawableDecoder(requestContext, dataSource)
                 }
             }
             return null

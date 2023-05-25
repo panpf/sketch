@@ -22,8 +22,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -34,7 +32,7 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
@@ -68,7 +66,6 @@ import java.nio.ByteBuffer
  */
 @RequiresApi(Build.VERSION_CODES.P)
 abstract class BaseAnimatedImageDrawableDecoder(
-    private val sketch: Sketch,
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
 ) : DrawableDecoder {
@@ -167,17 +164,12 @@ abstract class BaseAnimatedImageDrawableDecoder(
             }
 
             is BitmapDrawable -> {
+                // Some images are encoded with animated, but only one frame is static, which will be decoded into BitmapDrawable
                 transformedList =
                     if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
-                val countBitmap = CountBitmap(
-                    cacheKey = requestContext.cacheKey,
-                    bitmap = drawable.bitmap,
-                    bitmapPool = sketch.bitmapPool,
-                    disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-                )
-                SketchCountBitmapDrawable(
+                SketchBitmapDrawable(
                     resources = requestContext.request.context.resources,
-                    countBitmap = countBitmap,
+                    bitmap = drawable.bitmap,
                     imageUri = requestContext.request.uriString,
                     requestKey = requestContext.key,
                     requestCacheKey = requestContext.cacheKey,

@@ -58,10 +58,9 @@ fun ComponentRegistry.Builder.supportAnimatedHeif(): ComponentRegistry.Builder =
  */
 @RequiresApi(Build.VERSION_CODES.R)
 class HeifAnimatedDrawableDecoder(
-    sketch: Sketch,
     requestContext: RequestContext,
     dataSource: DataSource,
-) : BaseAnimatedImageDrawableDecoder(sketch, requestContext, dataSource) {
+) : BaseAnimatedImageDrawableDecoder(requestContext, dataSource) {
 
     class Factory : DrawableDecoder.Factory {
 
@@ -84,7 +83,7 @@ class HeifAnimatedDrawableDecoder(
                 if ((imageFormat == null || imageFormat == ImageFormat.HEIC || imageFormat == ImageFormat.HEIF)
                     && fetchResult.headerBytes.isAnimatedHeif()
                 ) {
-                    return HeifAnimatedDrawableDecoder(sketch, requestContext, dataSource)
+                    return HeifAnimatedDrawableDecoder(requestContext, dataSource)
                 }
             }
             return null

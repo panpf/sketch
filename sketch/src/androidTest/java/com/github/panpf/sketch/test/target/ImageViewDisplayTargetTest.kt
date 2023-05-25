@@ -53,7 +53,7 @@ class ImageViewDisplayTargetTest {
 
         val countBitmap = CountBitmap(
             cacheKey = request.toRequestContext().cacheKey,
-            bitmap = Bitmap.createBitmap(100, 100, RGB_565),
+            originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
         )
@@ -70,7 +70,7 @@ class ImageViewDisplayTargetTest {
         )
         val countBitmap2 = CountBitmap(
             cacheKey = request.toRequestContext().cacheKey,
-            bitmap = Bitmap.createBitmap(100, 100, RGB_565),
+            originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
         )
