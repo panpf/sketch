@@ -359,7 +359,7 @@ Please review the [CHANGELOG.md] file
 
 [log]: docs/wiki/log.md
 
-[Lifecycle]: docs/wiki/lifecycle.md
+[lifecycle]: docs/wiki/lifecycle.md
 
 [jetpack_compose]: docs/wiki/jetpack_compose.md
 

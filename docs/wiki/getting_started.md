@@ -14,11 +14,11 @@
 
 > 上表中的 `创建函数` 列展示了 Sketch 对部分 URI 提供的便捷创建函数
 
-每一种 URI 都有对应的 Fetcher 对其提供支持，[点击查看更多 Fetcher 介绍以及如何扩展新的 URI][fetcher]
+每一种 URI 都有对应的 Fetcher 对其提供支持，[查看更多 Fetcher 介绍以及如何扩展新的 URI][fetcher]
 
 ## 支持的图片类型
 
-| 类型            | API 限制      | 依赖模块                                 |
+| 类型            | API 限制      | 额外依赖模块                               |
 |:--------------|:------------|:-------------------------------------|
 | jpeg          | _           | _                                    |
 | png           | _           | _                                    |
@@ -31,7 +31,7 @@
 | heif Animated | Android 11+ | _                                    |
 | video frames  | _           | sketch-video<br>sketch-video-ffmpeg  |
 
-每一种图片类型都有对应的 Decoder 对其提供支持，[点击查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
+每一种图片类型都有对应的 Decoder 对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
 
 ## Sketch
 
@@ -65,8 +65,8 @@ class MyApplication : Application(), SketchFactory {
 
 [ImageRequest] 分为以下三种：
 
-* [DisplayRequest]：请求结果是 Drawable，用于显示图片到 ImageView、RemoteViews 或 Compose Painter 上
-* [LoadRequest]：请求结果是 Bitmap，用于需要直接操作 Bitmap 的场景
+* [DisplayRequest]：请求结果是 Drawable，用于显示图片到 ImageView、RemoteViews 或 Compose Painter
+* [LoadRequest]：请求结果是 Bitmap，用于需要直接操作 Bitmap 的场景，不支持内存缓存，所有动图将会被解码成静态图
 * [DownloadRequest]：请求结果是 [DiskCache].Snapshot 或 ByteArray，用于提前下载图片或直接访问图片文件
 
 ### 创建请求

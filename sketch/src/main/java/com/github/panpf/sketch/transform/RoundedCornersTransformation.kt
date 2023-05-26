@@ -34,6 +34,9 @@ import com.github.panpf.sketch.util.safeConfig
  * A [Transformation] that crops the image to fit the target's dimensions and rounds the corners of
  * the image.
  *
+ * Please use it with 'resizePrecision(Precision.EXACTLY)' because if the original image size and resize size are inconsistent,
+ * the final fillet will be scaled when displayed, resulting in inconsistency between the size of the fillet and the expectation
+ *
  * If you're using Jetpack Compose, use `Modifier.clip(RoundedCornerShape(radius))` instead of this
  * transformation as it's more efficient.
  *

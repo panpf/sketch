@@ -75,10 +75,10 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 * width、height：
     1. 如果 target 是 [ViewDisplayTarget]
         1. 优先取 view 的 LayoutParams 宽高
-        2. 其次延迟到绘制阶段取 View 的宽高，如果到绘制阶段还是宽高还是 0，那么请求不会继续执行
+        2. 其次延迟到绘制阶段取 View 的宽高，如果到绘制阶段宽高还是 0，那么请求不会继续执行
     2. 如果是在 compose 中使用
         1. 如果是使用的 AsyncImage 则取测量宽高
-        2. 如果是直接使用的 AsyncImagePainter 则在绘制阶段取绘制宽高，同样到绘制阶段还是宽高还是 0，那么请求不会继续执行
+        2. 如果是直接使用的 AsyncImagePainter 则在绘制阶段取绘制宽高，同样到绘制阶段宽高还是 0，那么请求不会继续执行
     3. 取屏幕的宽高
 * [Precision]：LESS_PIXELS
 * [Scale]：CENTER_CROP
