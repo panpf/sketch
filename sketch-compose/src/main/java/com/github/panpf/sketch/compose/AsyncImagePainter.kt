@@ -549,15 +549,19 @@ class AsyncImagePainter internal constructor(
         is DisplayResult.Error -> State.Error(drawable?.toPainter(), this)
     }
 
-    /** Convert this [Drawable] into a [Painter] using Compose primitives if possible. */
-    private fun Drawable.toPainter() = when (this) {
-        // Very important, updateDisplayed() needs to set setDisplayed to keep SketchDrawable
-        is SketchDrawable -> DrawablePainter(mutate())
-        is SketchStateDrawable -> DrawablePainter(mutate())
-        is BitmapDrawable -> BitmapPainter(bitmap.asImageBitmap(), filterQuality = filterQuality)
-        is ColorDrawable -> ColorPainter(Color(color))
-        else -> DrawablePainter(mutate())
-    }
+    /**
+     * Convert this [Drawable] into a [Painter] using Compose primitives if possible.
+     *
+     * Very important, updateDisplayed() needs to set setDisplayed to keep SketchDrawable, SketchStateDrawable
+     */
+    private fun Drawable.toPainter() = DrawablePainter(mutate())
+//        when (this) {
+//        is SketchDrawable -> DrawablePainter(mutate())
+//        is SketchStateDrawable -> DrawablePainter(mutate())
+//        is BitmapDrawable -> BitmapPainter(bitmap.asImageBitmap(), filterQuality = filterQuality)
+//        is ColorDrawable -> ColorPainter(Color(color))
+//        else -> DrawablePainter(mutate())
+//    }
 
     /**
      * The current state of the [AsyncImagePainter].

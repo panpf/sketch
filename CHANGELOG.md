@@ -1,3 +1,12 @@
+# new
+
+### sketch
+
+#### sketch-compose
+
+* improve: AsyncImagePainter no longer converts BitmapDrawable and ColorDrawable to BitmapPainter and ColorPainter
+
+
 # v3.2.1-beta03
 
 ### sketch
