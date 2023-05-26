@@ -91,6 +91,10 @@ class TestFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                         navDirections = NavMainDirections.actionAnimatablePlaceholder(),
                     ),
                     Link(
+                        title = "Animatable Placeholder (Compose)",
+                        navDirections = NavMainDirections.actionAnimatablePlaceholderCompose(),
+                    ),
+                    Link(
                         title = "Share Element",
                         navDirections = NavMainDirections.actionShareElementTestFragment(),
                     ),

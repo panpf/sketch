@@ -6,20 +6,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.github.panpf.sketch.sample.widget.MyImageView
-        android:id="@+id/animatablePlaceholderTestImage"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/animatablePlaceholderComposeTestCompose"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        app:layout_constraintBottom_toTopOf="@id/animatablePlaceholderTestButton"
+        app:layout_constraintBottom_toTopOf="@id/animatablePlaceholderComposeTestButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread"
-        android:scaleType="centerCrop"
         tools:srcCompat="@drawable/im_placeholder" />
 
     <Button
-        android:id="@+id/animatablePlaceholderTestButton"
+        android:id="@+id/animatablePlaceholderComposeTestButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -28,5 +27,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/animatablePlaceholderTestImage" />
+        app:layout_constraintTop_toBottomOf="@id/animatablePlaceholderComposeTestCompose" />
 </androidx.constraintlayout.widget.ConstraintLayout>

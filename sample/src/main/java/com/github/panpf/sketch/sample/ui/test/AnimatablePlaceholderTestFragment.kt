@@ -33,6 +33,8 @@ import kotlinx.coroutines.delay
 class AnimatablePlaceholderTestFragment :
     ToolbarBindingFragment<AnimatablePlaceholderTestFragmentBinding>() {
 
+    private var urlIndex = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
@@ -51,12 +53,14 @@ class AnimatablePlaceholderTestFragment :
         displayImage(binding)
 
         binding.animatablePlaceholderTestButton.setOnClickListener {
+            urlIndex++
             displayImage(binding)
         }
     }
 
     private fun displayImage(binding: AnimatablePlaceholderTestFragmentBinding) {
-        binding.animatablePlaceholderTestImage.displayImage(AssetImages.STATICS[0]) {
+        val urlString = AssetImages.STATICS[urlIndex % AssetImages.STATICS.size]
+        binding.animatablePlaceholderTestImage.displayImage(urlString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(R.drawable.ic_placeholder_eclipse_animated)
