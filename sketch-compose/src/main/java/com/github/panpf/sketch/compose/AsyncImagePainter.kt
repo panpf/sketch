@@ -1,7 +1,5 @@
 package com.github.panpf.sketch.compose
 
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,15 +14,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -35,12 +29,10 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransf
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.compose.internal.AsyncImageDisplayTarget
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
-import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
@@ -131,7 +123,10 @@ fun rememberAsyncImagePainter(
  *  destination.
  */
 @Composable
-@Deprecated("Please use the request version")
+@Deprecated(
+    "Please use the request version",
+    replaceWith = ReplaceWith("rememberAsyncImagePainter(request = DisplayRequest(LocalContext.current, imageUri), ...)")
+)
 fun rememberAsyncImagePainter(
     imageUri: String?,
     placeholder: Painter? = null,
@@ -213,7 +208,10 @@ internal fun rememberAsyncImagePainter(
  *  destination.
  */
 @Composable
-@Deprecated("Please use the request version")
+@Deprecated(
+    "Please use the request version",
+    replaceWith = ReplaceWith("rememberAsyncImagePainter(request = DisplayRequest(LocalContext.current, imageUri), ...)")
+)
 internal fun rememberAsyncImagePainter(
     imageUri: String?,
     transform: (State) -> State = DefaultTransform,
@@ -587,7 +585,7 @@ class AsyncImagePainter internal constructor(
             val result: DisplayResult.Success,
         ) : State()
 
-        /** The request failed due to [DisplayResult.Error.exception]. */
+        /** The request failed due to [DisplayResult.Error.throwable]. */
         data class Error(
             override val painter: Painter?,
             val result: DisplayResult.Error,

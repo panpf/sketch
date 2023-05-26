@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -61,6 +62,7 @@ import com.github.panpf.sketch.util.Size as SketchSize
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun AsyncImage(
     imageUri: String?,
     contentDescription: String?,
@@ -115,7 +117,11 @@ fun AsyncImage(
  *  destination.
  */
 @Composable
-@Deprecated("Please use the request version")
+@NonRestartableComposable
+@Deprecated(
+    "Please use the request version",
+    replaceWith = ReplaceWith("AsyncImage(request = DisplayRequest(LocalContext.current, imageUri), ...)")
+)
 fun AsyncImage(
     imageUri: String?,
     contentDescription: String?,
@@ -168,6 +174,7 @@ fun AsyncImage(
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun AsyncImage(
     imageUri: String?,
     contentDescription: String?,
@@ -215,7 +222,11 @@ fun AsyncImage(
  *  destination.
  */
 @Composable
-@Deprecated("Please use the request version")
+@NonRestartableComposable
+@Deprecated(
+    "Please use the request version",
+    replaceWith = ReplaceWith("AsyncImage(request = DisplayRequest(LocalContext.current, imageUri), ...)")
+)
 fun AsyncImage(
     imageUri: String?,
     contentDescription: String?,
@@ -267,6 +278,7 @@ fun AsyncImage(
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun AsyncImage(
     request: DisplayRequest,
     contentDescription: String?,

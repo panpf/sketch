@@ -100,7 +100,10 @@ fun SubcomposeAsyncImage(
  *  destination.
  */
 @Composable
-@Deprecated("Please use the request version")
+@Deprecated(
+    "Please use the request version",
+    replaceWith = ReplaceWith("SubcomposeAsyncImage(request = DisplayRequest(LocalContext.current, imageUri), ...)")
+)
 fun SubcomposeAsyncImage(
     imageUri: String?,
     contentDescription: String?,
@@ -204,7 +207,10 @@ fun SubcomposeAsyncImage(
  * @param content A callback to draw the content inside an [SubcomposeAsyncImageScope].
  */
 @Composable
-@Deprecated("Please use the request version")
+@Deprecated(
+    "Please use the request version",
+    replaceWith = ReplaceWith("SubcomposeAsyncImage(request = DisplayRequest(LocalContext.current, imageUri), ...)")
+)
 fun SubcomposeAsyncImage(
     imageUri: String?,
     contentDescription: String?,
