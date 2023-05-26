@@ -21,9 +21,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.stateimage.ColorStateImage
-import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyMatcher
+import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyErrorRules
 import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
@@ -31,56 +30,49 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ErrorStateImageUriEmptyMatcherTest {
-
-    @Test
-    fun testMatch() {
-        val context = getTestContext()
-        val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
-        val request1 = DisplayRequest(context, "")
-        val request2 = DisplayRequest(context, " ")
-
-        UriEmptyMatcher(ColorStateImage(Color.RED)).apply {
-            Assert.assertTrue(match(request1, UriInvalidException("")))
-            Assert.assertTrue(match(request2, UriInvalidException("")))
-            Assert.assertFalse(match(request, UriInvalidException("")))
-            Assert.assertFalse(match(request1, Exception("")))
-            Assert.assertFalse(match(request1, null))
-        }
-    }
+class UriEmptyErrorRulesTest {
 
     @Test
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val request1 = DisplayRequest(context, "")
+        val request2 = DisplayRequest(context, " ")
 
-        UriEmptyMatcher(ColorStateImage(Color.RED)).apply {
-            Assert.assertEquals(
-                Color.RED,
-                getDrawable(sketch, request, null)!!.asOrThrow<ColorDrawable>().color
-            )
+        UriEmptyErrorRules(ColorStateImage(Color.RED)).apply {
+            Assert.assertNotNull(getDrawable(sketch, request1, UriInvalidException(""))?.getOrNull())
+            Assert.assertNotNull(getDrawable(sketch, request2, UriInvalidException(""))?.getOrNull())
+            Assert.assertNull(getDrawable(sketch, request, UriInvalidException(""))?.getOrNull())
+            Assert.assertNull(getDrawable(sketch, request1, Exception(""))?.getOrNull())
+            Assert.assertNull(getDrawable(sketch, request1, null)?.getOrNull())
         }
 
-        UriEmptyMatcher(ColorStateImage(Color.GREEN)).apply {
+        UriEmptyErrorRules(ColorStateImage(Color.RED)).apply {
+            Assert.assertEquals(
+                Color.RED,
+                getDrawable(sketch, request1, UriInvalidException(""))?.getOrNull()!!.asOrThrow<ColorDrawable>().color
+            )
+        }
+        UriEmptyErrorRules(ColorStateImage(Color.GREEN)).apply {
             Assert.assertEquals(
                 Color.GREEN,
-                getDrawable(sketch, request, null)!!.asOrThrow<ColorDrawable>().color
+                getDrawable(sketch, request1, UriInvalidException(""))?.getOrNull()!!.asOrThrow<ColorDrawable>().color
             )
         }
     }
 
     @Test
     fun testToString() {
-        UriEmptyMatcher(ColorStateImage(Color.RED)).apply {
+        UriEmptyErrorRules(ColorStateImage(Color.RED)).apply {
             Assert.assertEquals(
-                "UriEmptyMatcher(ColorStateImage(IntColor(${Color.RED})))",
+                "UriEmptyErrorRules(ColorStateImage(IntColor(${Color.RED})))",
                 toString()
             )
         }
 
-        UriEmptyMatcher(ColorStateImage(Color.GREEN)).apply {
+        UriEmptyErrorRules(ColorStateImage(Color.GREEN)).apply {
             Assert.assertEquals(
-                "UriEmptyMatcher(ColorStateImage(IntColor(${Color.GREEN})))",
+                "UriEmptyErrorRules(ColorStateImage(IntColor(${Color.GREEN})))",
                 toString()
             )
         }
@@ -88,10 +80,10 @@ class ErrorStateImageUriEmptyMatcherTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = UriEmptyMatcher(ColorStateImage(Color.RED))
-        val element11 = UriEmptyMatcher(ColorStateImage(Color.RED))
-        val element2 = UriEmptyMatcher(ColorStateImage(Color.GREEN))
-        val element3 = UriEmptyMatcher(ColorStateImage(Color.BLUE))
+        val element1 = UriEmptyErrorRules(ColorStateImage(Color.RED))
+        val element11 = UriEmptyErrorRules(ColorStateImage(Color.RED))
+        val element2 = UriEmptyErrorRules(ColorStateImage(Color.GREEN))
+        val element3 = UriEmptyErrorRules(ColorStateImage(Color.BLUE))
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)

@@ -41,7 +41,7 @@ class ErrorStateImageTest {
         val colorDrawable2 = ColorDrawable(Color.RED)
 
         ErrorStateImage(DrawableStateImage(colorDrawable)).apply {
-            Assert.assertFalse(matcherList.isEmpty())
+            Assert.assertFalse(errorRulesList.isEmpty())
             Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable,
@@ -52,7 +52,7 @@ class ErrorStateImageTest {
         ErrorStateImage(DrawableStateImage(colorDrawable)) {
             uriEmptyError(colorDrawable2)
         }.apply {
-            Assert.assertFalse(matcherList.isEmpty())
+            Assert.assertFalse(errorRulesList.isEmpty())
             Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable2,
@@ -62,7 +62,7 @@ class ErrorStateImageTest {
 
         ErrorStateImage {
         }.apply {
-            Assert.assertTrue(matcherList.isEmpty())
+            Assert.assertTrue(errorRulesList.isEmpty())
             Assert.assertNull(getDrawable(sketch, request, null))
             Assert.assertNull(
                 getDrawable(sketch, request, UriInvalidException(""))
@@ -104,7 +104,7 @@ class ErrorStateImageTest {
     fun testToString() {
         ErrorStateImage(ColorStateImage(Color.RED)).apply {
             Assert.assertEquals(
-                "ErrorStateImage([DefaultMatcher(ColorStateImage(IntColor(${Color.RED})))])",
+                "ErrorStateImage([DefaultErrorRules(ColorStateImage(IntColor(${Color.RED})))])",
                 toString()
             )
         }
@@ -113,7 +113,7 @@ class ErrorStateImageTest {
             uriEmptyError(ColorStateImage(Color.YELLOW))
         }.apply {
             Assert.assertEquals(
-                "ErrorStateImage([UriEmptyMatcher(ColorStateImage(IntColor(${Color.YELLOW}))), DefaultMatcher(ColorStateImage(IntColor(${Color.GREEN})))])",
+                "ErrorStateImage([UriEmptyErrorRules(ColorStateImage(IntColor(${Color.YELLOW}))), DefaultErrorRules(ColorStateImage(IntColor(${Color.GREEN})))])",
                 toString()
             )
         }

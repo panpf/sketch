@@ -20,7 +20,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.stateimage.ErrorStateImage.Builder
-import com.github.panpf.sketch.stateimage.ErrorStateImage.Matcher
+import com.github.panpf.sketch.stateimage.ErrorStateImage.ErrorRules
+import com.github.panpf.sketch.util.ifOrNull
 import java.util.LinkedList
 
 /**
@@ -34,108 +35,106 @@ fun ErrorStateImage(
 }.build()
 
 /**
- * Provide Drawable specifically for error status, support custom [Matcher] Provide different Drawable according to different error types
+ * Provide Drawable specifically for error status, support custom [ErrorRules] Provide different Drawable according to different error types
  */
 interface ErrorStateImage : StateImage {
 
-    val matcherList: List<Matcher>
+    val errorRulesList: List<ErrorRules>
 
     override fun getDrawable(
         sketch: Sketch,
         request: ImageRequest,
         throwable: Throwable?
-    ): Drawable? = matcherList
-        .find { it.match(request, throwable) }
-        ?.getDrawable(sketch, request, throwable)
+    ): Drawable? = errorRulesList
+        .firstNotNullOfOrNull { it.getDrawable(sketch, request, throwable) }
+        ?.getOrNull()
 
     class Builder constructor(private val defaultImage: StateImage?) {
 
-        private val matcherList = LinkedList<Matcher>()
+        private val errorRulesList = LinkedList<ErrorRules>()
 
         /**
-         * Add a custom [Matcher]
+         * Add a custom [ErrorRules]
          */
-        fun addMatcher(matcher: Matcher): Builder = apply {
-            matcherList.add(matcher)
+        fun addErrorRules(errorRules: ErrorRules): Builder = apply {
+            errorRulesList.add(errorRules)
         }
 
         /**
          * Add a StateImage dedicated to the empty uri error
          */
         fun uriEmptyError(emptyImage: StateImage): Builder = apply {
-            addMatcher(UriEmptyMatcher(emptyImage))
+            addErrorRules(UriEmptyErrorRules(emptyImage))
         }
 
         /**
          * Add a StateImage dedicated to the empty uri error
          */
         fun uriEmptyError(emptyDrawable: Drawable): Builder = apply {
-            addMatcher(UriEmptyMatcher(DrawableStateImage(emptyDrawable)))
+            addErrorRules(UriEmptyErrorRules(DrawableStateImage(emptyDrawable)))
         }
 
         /**
          * Add a StateImage dedicated to the empty uri error
          */
         fun uriEmptyError(emptyImageResId: Int): Builder = apply {
-            addMatcher(UriEmptyMatcher(DrawableStateImage(emptyImageResId)))
+            addErrorRules(UriEmptyErrorRules(DrawableStateImage(emptyImageResId)))
         }
 
         fun build(): ErrorStateImage {
             val list = if (defaultImage != null) {
-                matcherList.plus(DefaultMatcher(defaultImage))
+                errorRulesList.plus(DefaultErrorRules(defaultImage))
             } else {
-                matcherList
+                errorRulesList
             }
             return ErrorStateImageImpl(list)
         }
     }
 
-    class ErrorStateImageImpl(override val matcherList: List<Matcher>) : ErrorStateImage {
+    class ErrorStateImageImpl(override val errorRulesList: List<ErrorRules>) :
+        ErrorStateImage {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
             other as ErrorStateImageImpl
-            if (matcherList != other.matcherList) return false
+            if (errorRulesList != other.errorRulesList) return false
             return true
         }
 
         override fun hashCode(): Int {
-            return matcherList.hashCode()
+            return errorRulesList.hashCode()
         }
 
         override fun toString(): String {
-            val matchersString = matcherList.joinToString(prefix = "[", postfix = "]")
-            return "ErrorStateImage(${matchersString})"
+            val factoryListString =
+                errorRulesList.joinToString(prefix = "[", postfix = "]")
+            return "ErrorStateImage(${factoryListString})"
         }
     }
 
     /**
      * Match the error and return a dedicated Drawable
      */
-    interface Matcher {
-
-        fun match(request: ImageRequest, throwable: Throwable?): Boolean
+    interface ErrorRules {
 
         fun getDrawable(
             sketch: Sketch,
             request: ImageRequest,
             throwable: Throwable?
-        ): Drawable?
+        ): Result<Drawable?>?
     }
 
-    class DefaultMatcher(private val stateImage: StateImage) : Matcher {
-
-        override fun match(request: ImageRequest, throwable: Throwable?): Boolean = true
+    class DefaultErrorRules(private val stateImage: StateImage) : ErrorRules {
 
         override fun getDrawable(
             sketch: Sketch, request: ImageRequest, throwable: Throwable?
-        ): Drawable? = stateImage.getDrawable(sketch, request, throwable)
+        ): Result<Drawable?> = Result.success(stateImage.getDrawable(sketch, request, throwable))
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
-            other as DefaultMatcher
+            other as DefaultErrorRules
             if (stateImage != other.stateImage) return false
             return true
         }
@@ -145,23 +144,23 @@ interface ErrorStateImage : StateImage {
         }
 
         override fun toString(): String {
-            return "DefaultMatcher($stateImage)"
+            return "DefaultErrorRules($stateImage)"
         }
     }
 
-    class UriEmptyMatcher(private val stateImage: StateImage) : Matcher {
-
-        override fun match(request: ImageRequest, throwable: Throwable?): Boolean =
-            throwable is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())
+    class UriEmptyErrorRules(private val stateImage: StateImage) : ErrorRules {
 
         override fun getDrawable(
             sketch: Sketch, request: ImageRequest, throwable: Throwable?
-        ): Drawable? = stateImage.getDrawable(sketch, request, throwable)
+        ): Result<Drawable?>? =
+            ifOrNull(throwable is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())) {
+                Result.success(stateImage.getDrawable(sketch, request, throwable))
+            }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
-            other as UriEmptyMatcher
+            other as UriEmptyErrorRules
             if (stateImage != other.stateImage) return false
             return true
         }
@@ -171,7 +170,7 @@ interface ErrorStateImage : StateImage {
         }
 
         override fun toString(): String {
-            return "UriEmptyMatcher($stateImage)"
+            return "UriEmptyErrorRules($stateImage)"
         }
     }
 }

@@ -19,6 +19,7 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
+import com.github.panpf.sketch.util.ifOrNull
 
 
 /**
@@ -26,7 +27,7 @@ import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder =
     apply {
-        addMatcher(SaveCellularTrafficMatcher(null))
+        addErrorRules(SaveCellularTrafficErrorRules(null))
     }
 
 /**
@@ -34,7 +35,7 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder 
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImage: StateImage): ErrorStateImage.Builder =
     apply {
-        addMatcher(SaveCellularTrafficMatcher(saveCellularTrafficImage))
+        addErrorRules(SaveCellularTrafficErrorRules(saveCellularTrafficImage))
     }
 
 /**
@@ -42,8 +43,8 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImage: S
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficDrawable: Drawable): ErrorStateImage.Builder =
     apply {
-        addMatcher(
-            SaveCellularTrafficMatcher(DrawableStateImage(saveCellularTrafficDrawable))
+        addErrorRules(
+            SaveCellularTrafficErrorRules(DrawableStateImage(saveCellularTrafficDrawable))
         )
     }
 
@@ -52,25 +53,24 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficDrawable
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageResId: Int): ErrorStateImage.Builder =
     apply {
-        addMatcher(
-            SaveCellularTrafficMatcher(DrawableStateImage(saveCellularTrafficImageResId))
+        addErrorRules(
+            SaveCellularTrafficErrorRules(DrawableStateImage(saveCellularTrafficImageResId))
         )
     }
 
-class SaveCellularTrafficMatcher(val stateImage: StateImage?) :
-    ErrorStateImage.Matcher {
-
-    override fun match(request: ImageRequest, throwable: Throwable?): Boolean =
-        isCausedBySaveCellularTraffic(request, throwable)
+class SaveCellularTrafficErrorRules(val stateImage: StateImage?) :
+    ErrorStateImage.ErrorRules {
 
     override fun getDrawable(
         sketch: Sketch, request: ImageRequest, throwable: Throwable?
-    ): Drawable? = stateImage?.getDrawable(sketch, request, throwable)
+    ): Result<Drawable?>? = ifOrNull(isCausedBySaveCellularTraffic(request, throwable)) {
+        Result.success(stateImage?.getDrawable(sketch, request, throwable))
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as SaveCellularTrafficMatcher
+        other as SaveCellularTrafficErrorRules
         if (stateImage != other.stateImage) return false
         return true
     }
@@ -80,6 +80,6 @@ class SaveCellularTrafficMatcher(val stateImage: StateImage?) :
     }
 
     override fun toString(): String {
-        return "SaveCellularTrafficMatcher($stateImage)"
+        return "SaveCellularTrafficErrorRules($stateImage)"
     }
 }

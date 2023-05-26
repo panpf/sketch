@@ -684,7 +684,7 @@ interface ImageOptions {
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
             this.error = ErrorStateImage(defaultStateImage, configBlock)
-                .takeIf { it.matcherList.isNotEmpty() }
+                .takeIf { it.errorRulesList.isNotEmpty() }
         }
 
         /**

@@ -6,10 +6,12 @@ StateImage 用来为加载中状态和错误状态提供图片，有以下几种
 * [ColorStateImage]：使用给定的颜色值或颜色资源 Id 创建一个 ColorDrawable 作为状态图片
 * [DrawableStateImage]：使用给定的 Drawable 或 Drawable 资源 Id 创建一个 Drawable 作为状态图片
 * [ErrorStateImage]：专门用于错误状态，会根据错误类型选择不同的状态图片
-* [IconStateImage]：使用给定的图标 Drawable 和背景 Drawable 创建一个状态图片，无论目标 Bounds 多大，图标始终居中且大小不变
-* [MemoryCacheStateImage]：使用给定的内存缓存 key，尝试从内存缓存中获取 bitmap 作为状态图片
-* [ThumbnailMemoryCacheStateImage]：使用给定的或当前请求的 uri 匹配内存缓存中的宽高比和原图一致，并且没有用 Transformation 修改的缩略图
-  作为状态图片
+* [IconStateImage]：使用给定的图标 Drawable 和背景 Drawable 创建一个状态图片，这样可以确保无论 View
+  多大，图标始终居中且大小不变，比较适合在瀑布流布局中使用
+* [MemoryCacheStateImage]：使用给定的内存缓存 key，尝试从内存缓存中获取 bitmap
+  作为状态图片，搭配 crossfade 可以实现从小图到大图的完美过渡
+* [ThumbnailMemoryCacheStateImage]：使用给定的或当前请求的 uri 匹配内存缓存中的宽高比和原图一致，并且没有用
+  Transformation 修改的缩略图作为状态图片
 
 ### 配置
 
@@ -39,39 +41,44 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [ErrorStateImage] 支持根据不同的错误类型返回不同的状态图片
 
-默认 Sketch 仅提供了 uriEmptyError 一种类型，你可以实现 [ErrorStateImage].Matcher 接口来扩展新的类型，然后通过
-[ErrorStateImage].Builder.addMatcher() 使用自定义的类型，如下：
+默认 Sketch 仅提供了 uriEmptyError 一种类型，你可以实现 [ErrorStateImage].ErrorRules 接口来扩展新的类型，然后通过
+[ErrorStateImage].Builder.addErrorRules() 使用自定义的类型，如下：
 
 ```kotlin
-class MyMatcher(val stateImage: StateImage) : Matcher {
 
-    override fun match(
-        sketch: Sketch,
-        request: ImageRequest,
-        throwable: Throwable?
-    ): Boolean {
-        // 根据 throwable 判断错误类型
+import java.io.IOException
+
+class MyErrorRules(val stateImage: StateImage) : ErrorRules {
+
+  override fun getDrawable(
+    sketch: Sketch,
+    request: ImageRequest,
+    throwable: Throwable?
+  ): Drawable? {
+    // 根据 throwable 判断错误类型并返回对应的 Drawable
+    return if (throwable is IOException) {
+      stateImage.getDrawable(sketch, request, throwable)
+    } else {
+      null
     }
-
-    override fun getDrawable(
-        sketch: Sketch,
-        request: ImageRequest,
-        throwable: Throwable?
-    ): Drawable = stateImage.getDrawable(sketch, request, throwable)
+  }
 }
 
-imageView.displayImage("https://www.sample.com/image.jpg") {
-    error(R.drawable.error) {
-        addMatcher(MyMatcher(DrawableStateImage(R.drawable.uri_empty)))
-    }
+imageView.displayImage("https://www.sample.com/image.jpg")
+{
+  error(R.drawable.error) {
+    addErrorRules(MyErrorRules(DrawableStateImage(R.drawable.uri_empty)))
+  }
 }
 ```
 
 ### 使用 IconStateImage 在瀑布流布局中实现完美占位图
 
-在瀑布流布局中由于每个 item 的大小可能不一样，所有 item 使用同一个 placeholder 时由于 ImageView 的缩放导致在页面上看起来 placeholder 会有大有小
+在瀑布流布局中由于每个 item 的大小可能不一样，所有 item 使用同一个 placeholder 时由于 ImageView
+的缩放导致在页面上看起来 placeholder 会有大有小
 
-针对这样的情况使用 [IconStateImage] 可以完美解决问题，[IconStateImage] 由一个图标和一个背景组成，且没有固定的大小，不论 bounds
+针对这样的情况使用 [IconStateImage] 可以完美解决问题，[IconStateImage] 由一个图标和一个背景组成，且没有固定的大小，不论
+bounds
 多大图标都会保持固定大小不变，这样页面上看起来所有 placeholder 都是一样的大小
 
 ### 使用 ThumbnailMemoryCacheStateImage 在图片详情页面寻找内存缓存中的缩略图作为占位图
@@ -89,7 +96,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-[ThumbnailMemoryCacheStateImage] 默认会用当前 [ImageRequest] 的 uri 去内存中寻找缩略图，但如果列表页面和详情页面用的是不同的 uri
+[ThumbnailMemoryCacheStateImage] 默认会用当前 [ImageRequest] 的 uri 去内存中寻找缩略图，但如果列表页面和详情页面用的是不同的
+uri
 就需要主动指定列表页面的 uri，如下：
 
 ```kotlin

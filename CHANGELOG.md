@@ -2,9 +2,12 @@
 
 ### sketch
 
+* change: ErrorStateImage.Matcher is refactored as ErrorStateImage.ErrorRules
+
 #### sketch-compose
 
 * improve: AsyncImagePainter no longer converts BitmapDrawable and ColorDrawable to BitmapPainter and ColorPainter
+* improve: Improve AsyncImage(), rememberAsyncImagePainter(), SubcomposeAsyncImage()
 
 
 # v3.2.1-beta03
