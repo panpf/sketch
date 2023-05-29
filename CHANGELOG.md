@@ -2,7 +2,7 @@
 
 ### sketch
 
-* change: ErrorStateImage.Matcher is refactored as ErrorStateImage.ErrorRules
+* change: Redesign ErrorStateImage
 
 #### sketch-compose
 

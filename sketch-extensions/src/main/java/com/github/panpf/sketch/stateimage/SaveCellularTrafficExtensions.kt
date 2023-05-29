@@ -16,10 +16,9 @@
 package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
-import com.github.panpf.sketch.util.ifOrNull
+import com.github.panpf.sketch.stateimage.internal.CompositeStateImage
 
 
 /**
@@ -27,7 +26,7 @@ import com.github.panpf.sketch.util.ifOrNull
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder =
     apply {
-        addErrorRules(SaveCellularTrafficErrorRules(null))
+        addState(SaveCellularTrafficCondition to null)
     }
 
 /**
@@ -35,7 +34,7 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder 
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImage: StateImage): ErrorStateImage.Builder =
     apply {
-        addErrorRules(SaveCellularTrafficErrorRules(saveCellularTrafficImage))
+        addState(SaveCellularTrafficCondition to saveCellularTrafficImage)
     }
 
 /**
@@ -43,9 +42,7 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImage: S
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficDrawable: Drawable): ErrorStateImage.Builder =
     apply {
-        addErrorRules(
-            SaveCellularTrafficErrorRules(DrawableStateImage(saveCellularTrafficDrawable))
-        )
+        addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficDrawable))
     }
 
 /**
@@ -53,33 +50,15 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficDrawable
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageResId: Int): ErrorStateImage.Builder =
     apply {
-        addErrorRules(
-            SaveCellularTrafficErrorRules(DrawableStateImage(saveCellularTrafficImageResId))
-        )
+        addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficImageResId))
     }
 
-class SaveCellularTrafficErrorRules(val stateImage: StateImage?) :
-    ErrorStateImage.ErrorRules {
+object SaveCellularTrafficCondition : CompositeStateImage.Condition {
 
-    override fun getDrawable(
-        sketch: Sketch, request: ImageRequest, throwable: Throwable?
-    ): Result<Drawable?>? = ifOrNull(isCausedBySaveCellularTraffic(request, throwable)) {
-        Result.success(stateImage?.getDrawable(sketch, request, throwable))
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as SaveCellularTrafficErrorRules
-        if (stateImage != other.stateImage) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return stateImage.hashCode()
-    }
+    override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
+        isCausedBySaveCellularTraffic(request, throwable)
 
     override fun toString(): String {
-        return "SaveCellularTrafficErrorRules($stateImage)"
+        return "SaveCellularTrafficCondition"
     }
 }

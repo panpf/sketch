@@ -25,11 +25,10 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_KEY
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
-import com.github.panpf.sketch.stateimage.SaveCellularTrafficErrorRules
+import com.github.panpf.sketch.stateimage.SaveCellularTrafficCondition
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import org.junit.Assert
 import org.junit.Test
@@ -41,122 +40,62 @@ class SaveCellularTrafficExtensionsTest {
     @Test
     fun testSaveCellularTrafficError() {
         ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))).apply {
-            Assert.assertNull(errorRulesList.find { it is SaveCellularTrafficErrorRules })
+            Assert.assertNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
         ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             saveCellularTrafficError()
         }.apply {
-            Assert.assertNotNull(errorRulesList.find { it is SaveCellularTrafficErrorRules })
+            Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
         ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             saveCellularTrafficError(ColorStateImage(IntColor(Color.BLUE)))
         }.apply {
-            Assert.assertNotNull(errorRulesList.find { it is SaveCellularTrafficErrorRules })
+            Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
         ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             saveCellularTrafficError(ColorDrawable(Color.GREEN))
         }.apply {
-            Assert.assertNotNull(errorRulesList.find { it is SaveCellularTrafficErrorRules })
+            Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
         ErrorStateImage(ColorStateImage(IntColor(Color.BLACK))) {
             saveCellularTrafficError(android.R.drawable.btn_dialog)
         }.apply {
-            Assert.assertNotNull(errorRulesList.find { it is SaveCellularTrafficErrorRules })
+            Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
     }
 
     @Test
-    fun testSaveCellularTrafficErrorRules() {
+    fun testSaveCellularTrafficCondition() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
+            depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
+        }
 
-        SaveCellularTrafficErrorRules(null).apply {
-            val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
-                depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
-            }
-            Assert.assertNull(
-                getDrawable(
-                    sketch,
+        SaveCellularTrafficCondition.apply {
+            Assert.assertTrue(
+                accept(
                     request.newDisplayRequest {
                         depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
                     },
                     DepthException("")
-                )?.getOrNull()
+                )
             )
-            Assert.assertNull(
-                getDrawable(
-                    sketch,
+            Assert.assertFalse(
+                accept(
                     request.newDisplayRequest {
                         depth(MEMORY, SAVE_CELLULAR_TRAFFIC_KEY)
                     },
                     DepthException("")
-                )?.getOrNull()
+                )
             )
-            Assert.assertNull(getDrawable(sketch, request, null)?.getOrNull())
-            Assert.assertNull(getDrawable(sketch, request, null)?.getOrNull())
-        }
+            Assert.assertFalse(accept(request, null))
 
-        SaveCellularTrafficErrorRules(ColorStateImage(IntColor(Color.BLUE))).apply {
-            val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
-                depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
-            }
-            Assert.assertNotNull(
-                getDrawable(
-                    sketch,
-                    request.newDisplayRequest {
-                        depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
-                    },
-                    DepthException("")
-                )?.getOrNull()
-            )
-            Assert.assertNull(
-                getDrawable(
-                    sketch,
-                    request.newDisplayRequest {
-                        depth(MEMORY, SAVE_CELLULAR_TRAFFIC_KEY)
-                    },
-                    DepthException("")
-                )?.getOrNull()
-            )
-            Assert.assertNull(getDrawable(sketch, request, null)?.getOrNull())
-            Assert.assertNull(getDrawable(sketch, request, null)?.getOrNull())
-        }
-
-        SaveCellularTrafficErrorRules(ColorStateImage(IntColor(Color.BLUE))).apply {
-            val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
-                depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
-            }
-
-            Assert.assertTrue(getDrawable(sketch, request, DepthException(""))?.getOrNull() is ColorDrawable)
-        }
-
-        val element1 = SaveCellularTrafficErrorRules(ColorStateImage(Color.BLUE))
-        val element11 = SaveCellularTrafficErrorRules(ColorStateImage(Color.BLUE))
-        val element2 = SaveCellularTrafficErrorRules(null)
-
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element2, element11)
-
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
-
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-
-        SaveCellularTrafficErrorRules(ColorStateImage(Color.BLUE)).apply {
             Assert.assertEquals(
-                "SaveCellularTrafficErrorRules(${stateImage})",
+                "SaveCellularTrafficCondition",
                 toString()
             )
         }

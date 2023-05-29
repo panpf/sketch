@@ -41,33 +41,25 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [ErrorStateImage] 支持根据不同的错误类型返回不同的状态图片
 
-默认 Sketch 仅提供了 uriEmptyError 一种类型，你可以实现 [ErrorStateImage].ErrorRules 接口来扩展新的类型，然后通过
-[ErrorStateImage].Builder.addErrorRules() 使用自定义的类型，如下：
+默认 Sketch 仅提供了 uriEmptyError 一种类型，你可以实现 [CompositeStateImage].Condition 接口来扩展新的类型，然后通过
+[ErrorStateImage].Builder.addState() 使用自定义的类型，如下：
 
 ```kotlin
 
 import java.io.IOException
 
-class MyErrorRules(val stateImage: StateImage) : ErrorRules {
+object MyCondition : CompositeStateImage.Condition {
 
-  override fun getDrawable(
-    sketch: Sketch,
+  override fun accept(
     request: ImageRequest,
     throwable: Throwable?
-  ): Drawable? {
-    // 根据 throwable 判断错误类型并返回对应的 Drawable
-    return if (throwable is IOException) {
-      stateImage.getDrawable(sketch, request, throwable)
-    } else {
-      null
-    }
-  }
+  ): Boolean  = throwable is IOException
 }
 
 imageView.displayImage("https://www.sample.com/image.jpg")
 {
   error(R.drawable.error) {
-    addErrorRules(MyErrorRules(DrawableStateImage(R.drawable.uri_empty)))
+    addState(MyCondition to DrawableStateImage(R.drawable.uri_empty))
   }
 }
 ```
@@ -116,6 +108,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 [DrawableStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/DrawableStateImage.kt
 
 [ErrorStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
+
+[CompositeStateImage.]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/internal/CompositeStateImage.kt
 
 [IconStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/IconStateImage.kt
 

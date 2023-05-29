@@ -25,6 +25,8 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,7 +43,7 @@ class ErrorStateImageTest {
         val colorDrawable2 = ColorDrawable(Color.RED)
 
         ErrorStateImage(DrawableStateImage(colorDrawable)).apply {
-            Assert.assertFalse(errorRulesList.isEmpty())
+            Assert.assertFalse(stateList.isEmpty())
             Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable,
@@ -52,7 +54,7 @@ class ErrorStateImageTest {
         ErrorStateImage(DrawableStateImage(colorDrawable)) {
             uriEmptyError(colorDrawable2)
         }.apply {
-            Assert.assertFalse(errorRulesList.isEmpty())
+            Assert.assertFalse(stateList.isEmpty())
             Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable2,
@@ -62,7 +64,7 @@ class ErrorStateImageTest {
 
         ErrorStateImage {
         }.apply {
-            Assert.assertTrue(errorRulesList.isEmpty())
+            Assert.assertTrue(stateList.isEmpty())
             Assert.assertNull(getDrawable(sketch, request, null))
             Assert.assertNull(
                 getDrawable(sketch, request, UriInvalidException(""))
@@ -104,7 +106,7 @@ class ErrorStateImageTest {
     fun testToString() {
         ErrorStateImage(ColorStateImage(Color.RED)).apply {
             Assert.assertEquals(
-                "ErrorStateImage([DefaultErrorRules(ColorStateImage(IntColor(${Color.RED})))])",
+                "ErrorStateImage([(DefaultCondition, ColorStateImage(IntColor(${Color.RED})))])",
                 toString()
             )
         }
@@ -113,9 +115,38 @@ class ErrorStateImageTest {
             uriEmptyError(ColorStateImage(Color.YELLOW))
         }.apply {
             Assert.assertEquals(
-                "ErrorStateImage([UriEmptyErrorRules(ColorStateImage(IntColor(${Color.YELLOW}))), DefaultErrorRules(ColorStateImage(IntColor(${Color.GREEN})))])",
+                "ErrorStateImage([(UriEmptyCondition, ColorStateImage(IntColor(${Color.YELLOW}))), (DefaultCondition, ColorStateImage(IntColor(${Color.GREEN})))])",
                 toString()
             )
+        }
+    }
+
+    @Test
+    fun testUriEmptyCondition(){
+        val context = getTestContext()
+        val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val request1 = DisplayRequest(context, "")
+        val request2 = DisplayRequest(context, " ")
+
+        ErrorStateImage.UriEmptyCondition.apply {
+            Assert.assertTrue(accept(request1, UriInvalidException("")))
+            Assert.assertTrue(accept(request2, UriInvalidException("")))
+            Assert.assertFalse(accept(request, UriInvalidException("")))
+            Assert.assertFalse(accept(request1, Exception("")))
+            Assert.assertFalse(accept(request1, null))
+            Assert.assertEquals("UriEmptyCondition", toString())
+        }
+    }
+
+    @Test
+    fun testDefaultCondition(){
+        val context = getTestContext()
+        val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+
+        ErrorStateImage.DefaultCondition.apply {
+            Assert.assertTrue(accept(request, null))
+            Assert.assertTrue(accept(request, null))
+            Assert.assertEquals("DefaultCondition", toString())
         }
     }
 }

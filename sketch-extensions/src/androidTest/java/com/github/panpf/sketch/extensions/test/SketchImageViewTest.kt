@@ -37,7 +37,7 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyErrorRules
+import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyCondition
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
@@ -87,7 +87,7 @@ class SketchImageViewTest {
             .inflate(R.layout.attrs_test_state, null, false) as SketchImageView).apply {
             Assert.assertNotNull(displayImageOptions!!.placeholder)
             Assert.assertNotNull(displayImageOptions!!.error)
-            Assert.assertNotNull((displayImageOptions!!.error as ErrorStateImage).errorRulesList.find { it is UriEmptyErrorRules })
+            Assert.assertNotNull((displayImageOptions!!.error as ErrorStateImage).stateList.find { it.first is UriEmptyCondition })
         }
 
         (LayoutInflater.from(context)
