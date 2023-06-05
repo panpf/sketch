@@ -179,7 +179,7 @@ class ResizeDrawableTest {
             Assert.assertEquals(Rect(0, -300, 300, 300), bitmapDrawable.bounds)
         }
         ResizeDrawable(
-            ResizeDrawable(bitmapDrawable, Size(0, 0), CENTER_CROP),
+            ResizeDrawable(bitmapDrawable, Size.Empty, CENTER_CROP),
             Size(500, 300),
             CENTER_CROP
         ).apply {

@@ -98,21 +98,21 @@ internal class ZoomerHelper constructor(
     var scaleAnimationInterpolator: Interpolator = AccelerateDecelerateInterpolator()
     var onViewLongPressListener: OnViewLongPressListener? = null
     var onViewTapListener: OnViewTapListener? = null
-    var viewSize = Size(0, 0)
+    var viewSize = Size.Empty
         internal set(value) {
             if (field != value) {
                 field = value
                 reset()
             }
         }
-    var imageSize = Size(0, 0)
+    var imageSize = Size.Empty
         internal set(value) {
             if (field != value) {
                 field = value
                 reset()
             }
         }
-    var drawableSize = Size(0, 0)
+    var drawableSize = Size.Empty
         internal set(value) {
             if (field != value) {
                 field = value
