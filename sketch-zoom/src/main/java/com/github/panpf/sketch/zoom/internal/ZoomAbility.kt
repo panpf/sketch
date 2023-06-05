@@ -91,10 +91,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private val lifecycleObserver = LifecycleEventObserver { _, event ->
         when (event) {
             ON_START -> {
-                subsamplingHelper?.paused = true
+                subsamplingHelper?.paused = false
             }
             ON_STOP -> {
-                subsamplingHelper?.paused = false
+                subsamplingHelper?.paused = true
             }
             else -> {}
         }

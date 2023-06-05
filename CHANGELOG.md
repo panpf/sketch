@@ -1,3 +1,11 @@
+# new
+
+#### sketch-zoom
+
+* fix: Fixed a bug where SketchZoomImageView's auto-pause feature based on lifecycle could cause subsampling exceptions
+
+
+
 # v3.2.1-rc01
 
 ### sketch
