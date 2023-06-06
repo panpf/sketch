@@ -8,6 +8,7 @@
 
 * fix: Fixed a bug where SketchZoomImageView's auto-pause feature based on lifecycle could cause subsampling exceptions
 * fix: Fixed a bug where subsampling could not work after scaling exceeded the maximum scale
+* improve: Subsampling can now be turned on when the aspect ratio differs by 0.50f
 
 
 

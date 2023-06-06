@@ -44,7 +44,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.max
 
 internal class TileManager constructor(
     private val sketch: Sketch,
@@ -169,10 +168,8 @@ internal class TileManager constructor(
             return
         }
         resetVisibleAndLoadRect(drawableSize, drawableVisibleRect)
-        val targetScale = max(
-            (imageSize.width / drawableSize.width.toFloat()),
-            (imageSize.height / drawableSize.height.toFloat())
-        )
+        val widthScale = imageSize.width / drawableSize.width.toFloat()
+        val heightScale = imageSize.height / drawableSize.height.toFloat()
         canvas.withSave {
             canvas.concat(drawMatrix)
             tileList.forEach { tile ->
@@ -181,10 +178,10 @@ internal class TileManager constructor(
                     val tileSrcRect = tile.srcRect
                     val tileDrawRect = tileDrawRect.apply {
                         set(
-                            floor(tileSrcRect.left / targetScale).toInt(),
-                            floor(tileSrcRect.top / targetScale).toInt(),
-                            floor(tileSrcRect.right / targetScale).toInt(),
-                            floor(tileSrcRect.bottom / targetScale).toInt()
+                            floor(tileSrcRect.left / widthScale).toInt(),
+                            floor(tileSrcRect.top / heightScale).toInt(),
+                            floor(tileSrcRect.right / widthScale).toInt(),
+                            floor(tileSrcRect.bottom / heightScale).toInt()
                         )
                     }
                     if (tileBitmap != null) {
