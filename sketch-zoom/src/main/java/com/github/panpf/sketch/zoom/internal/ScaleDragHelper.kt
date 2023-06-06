@@ -512,13 +512,13 @@ internal class ScaleDragHelper constructor(
 
     private fun doScaleEnd() {
         logger.v(ZoomerHelper.MODULE) { "onScaleEnd" }
-        val currentScale = scale.format(2)
-        val overMinZoomScale = currentScale < zoomerHelper.minScale.format(2)
-        val overMaxZoomScale = currentScale > zoomerHelper.maxScale.format(2)
-        if (!overMinZoomScale && !overMaxZoomScale) {
+//        val currentScale = scale.format(2)
+//        val overMinZoomScale = currentScale < zoomerHelper.minScale.format(2)
+//        val overMaxZoomScale = currentScale > zoomerHelper.maxScale.format(2)
+//        if (!overMinZoomScale && !overMaxZoomScale) {
             manualScaling = false
             onUpdateMatrix()
-        }
+//        }
     }
 
     private fun actionDown() {
