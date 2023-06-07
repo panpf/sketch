@@ -36,6 +36,7 @@ import androidx.core.animation.addListener
 import androidx.core.graphics.ColorUtils
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.github.panpf.sketch.util.format
+import java.lang.ref.WeakReference
 
 /**
  * Ring Progress Drawable
@@ -83,7 +84,7 @@ class RingProgressDrawable(
         val oldHelper = helper
         if (newProgress == 0f) {
             oldHelper?.stop()
-            helper = IndeterminateHelper(this)
+            helper = IndeterminateHelper(WeakReference(this))
             if (isActive()) {
                 helper?.start()
             }
@@ -99,33 +100,38 @@ class RingProgressDrawable(
                     oldHelper.stop()
                     pendingProgress = newProgress
                     val startProgress: (animator: Animator) -> Unit = {
-                        helper = ProgressHelper(this).apply {
+                        helper = ProgressHelper(WeakReference(this)).apply {
                             updateProgress(pendingProgress)
                         }
                         helper?.start()
                     }
                     helper = TransitionHelper(
-                        drawable = this,
+                        drawableReference = WeakReference(this),
                         initStartAngle = oldHelper.startAngle,
                         onEnd = startProgress
                     )
                     helper?.start()
                 }
+
                 oldProgress == 0f && oldHelper is TransitionHelper -> {
                     pendingProgress = newProgress
                 }
+
                 oldProgress == 0f && oldHelper is ProgressHelper -> {
                     oldHelper.updateProgress(newProgress)
                 }
+
                 oldProgress == 0f -> {
-                    helper = ProgressHelper(this).apply {
+                    helper = ProgressHelper(WeakReference(this)).apply {
                         updateProgress(newProgress)
                     }
                     helper?.start()
                 }
+
                 oldHelper is ProgressHelper -> {
                     oldHelper.updateProgress(newProgress)
                 }
+
                 else -> {
                     throw IllegalStateException("There was an error")
                 }
@@ -201,11 +207,16 @@ class RingProgressDrawable(
         fun setColorFilter(colorFilter: ColorFilter?)
     }
 
-    private class IndeterminateHelper(val drawable: RingProgressDrawable) : Helper {
+    // WeakReference: ThreadLocal -> ValueAnimator -> IndeterminateHelper -> drawable -> ImageView
+    private class IndeterminateHelper(private val drawableReference: WeakReference<RingProgressDrawable>) :
+        Helper {
 
         companion object {
             private const val TURNS_COUNT = 5
         }
+
+        val drawable: RingProgressDrawable?
+            get() = drawableReference.get()
 
         private val interpolator = FastOutSlowInInterpolator()
         private val indeterminateAnimator: Animator = createAnimator()
@@ -213,20 +224,22 @@ class RingProgressDrawable(
         private val paint = Paint().apply {
             isAntiAlias = true
             style = STROKE
-            strokeWidth = drawable.ringWidth
-            color = drawable.ringColor
-            strokeCap = ROUND
-            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                alpha = drawable.alpha
-            }
-            if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-                colorFilter = drawable.colorFilter
+            drawable?.also {
+                strokeWidth = it.ringWidth
+                color = it.ringColor
+                strokeCap = ROUND
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    alpha = it.alpha
+                }
+                if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+                    colorFilter = it.colorFilter
+                }
             }
         }
         var startAngle: Float = 0f
             private set(value) {
                 field = value
-                drawable.invalidateSelf()
+                drawable?.invalidateSelf()
             }
 
         override fun draw(canvas: Canvas, cx: Float, cy: Float, radius: Float) {
@@ -270,7 +283,7 @@ class RingProgressDrawable(
             var currentRepeatCount = 0
             var lastValue = 0f
             animator.addUpdateListener {
-                if (drawable.isActive()) {
+                if (drawable?.isActive() == true) {
                     val value = (animator.animatedValue as Float).format(2)
                     // 为什么不用 AnimatorListener.onAnimationRepeat 方法来计算圈数，因为它有时会在到达 1.0 时提前回调 onAnimationRepeat 导致圈数提前加 1
                     // 为什么不直接判断 value == 1.0f，因为 value 可能到 0.99 就结束了
@@ -287,7 +300,7 @@ class RingProgressDrawable(
                     startAngle %= 360
                     lastValue = value
                 } else {
-                    it?.cancel()
+                    it.cancel()
                 }
             }
             animator.addListener(onStart = {
@@ -298,29 +311,34 @@ class RingProgressDrawable(
         }
     }
 
+    // WeakReference: ThreadLocal -> ValueAnimator -> IndeterminateHelper -> drawable -> ImageView
     private class TransitionHelper(
-        val drawable: RingProgressDrawable,
+        private val drawableReference: WeakReference<RingProgressDrawable>,
         val initStartAngle: Float,
         val onEnd: (animator: Animator) -> Unit
     ) : Helper {
+        val drawable: RingProgressDrawable?
+            get() = drawableReference.get()
         private val oval = RectF()
         private val paint = Paint().apply {
             isAntiAlias = true
             style = STROKE
-            strokeWidth = drawable.ringWidth
-            color = drawable.ringColor
-            strokeCap = ROUND
-            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                alpha = drawable.alpha
-            }
-            if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-                colorFilter = drawable.colorFilter
+            drawable?.also {
+                strokeWidth = it.ringWidth
+                color = it.ringColor
+                strokeCap = ROUND
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    alpha = it.alpha
+                }
+                if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+                    colorFilter = it.colorFilter
+                }
             }
         }
         private var startAngle: Float = 0f
             set(value) {
                 field = value
-                drawable.invalidateSelf()
+                drawable?.invalidateSelf()
             }
         private var sweepAngle: Float = 0f
         private var animator: Animator? = null
@@ -345,7 +363,7 @@ class RingProgressDrawable(
             animator?.cancel()
             animator = ValueAnimator.ofFloat(0f, 1f).apply {
                 addUpdateListener {
-                    if (drawable.isActive()) {
+                    if (drawable?.isActive() == true) {
                         val value = animatedValue as Float
                         startAngle = initStartAngle + (value * angleDistance)
                         startAngle %= 360
@@ -372,25 +390,32 @@ class RingProgressDrawable(
         }
     }
 
-    private class ProgressHelper(val drawable: RingProgressDrawable) : Helper {
+    // WeakReference: ThreadLocal -> ValueAnimator -> IndeterminateHelper -> drawable -> ImageView
+    private class ProgressHelper(private val drawableReference: WeakReference<RingProgressDrawable>) :
+        Helper {
+        val drawable: RingProgressDrawable?
+            get() = drawableReference.get()
         private var progressAnimator: ValueAnimator? = null
 
         private val progressPaint = Paint().apply {
             isAntiAlias = true
             style = STROKE
-            strokeWidth = drawable.ringWidth
-            color = drawable.ringColor
-            strokeCap = ROUND
-            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                alpha = drawable.alpha
-            }
-            if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-                colorFilter = drawable.colorFilter
+            drawable?.also {
+                strokeWidth = it.ringWidth
+                color = it.ringColor
+                strokeCap = ROUND
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    alpha = it.alpha
+                }
+                if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+                    colorFilter = it.colorFilter
+                }
             }
         }
         private val progressOval = RectF()
 
         override fun draw(canvas: Canvas, cx: Float, cy: Float, radius: Float) {
+            val drawable = drawable ?: return
             progressOval.set(cx - radius, cy - radius, cx + radius, cy + radius)
             val sweepAngle = drawable._progress.coerceAtLeast(0.01f) * 360f
             canvas.drawArc(progressOval, 270f, sweepAngle, false, progressPaint)
@@ -398,10 +423,11 @@ class RingProgressDrawable(
 
         fun updateProgress(newProgress: Float) {
             progressAnimator?.cancel()
-            progressAnimator = ValueAnimator.ofFloat(drawable._progress, newProgress).apply {
+            val drawable1 = drawable ?: return
+            progressAnimator = ValueAnimator.ofFloat(drawable1._progress, newProgress).apply {
                 addUpdateListener {
-                    if (drawable.isActive()) {
-                        drawable._progress = animatedValue as Float
+                    if (drawable?.isActive() == true) {
+                        drawable?._progress = animatedValue as Float
                     } else {
                         it.cancel()
                     }

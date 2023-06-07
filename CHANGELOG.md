@@ -12,6 +12,10 @@
 * fix: Fixed a bug where subsampling could not work after scaling exceeded the maximum scale
 * improve: Subsampling can now be turned on when the aspect ratio differs by 0.50f
 
+#### sketch-extensions
+
+* improve: Use WeakReference to improve RingProgressDrawable and avoid false positives by LeakCanary
+
 # v3.2.1-rc01
 
 ### sketch
