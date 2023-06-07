@@ -3,14 +3,14 @@
 #### sketch
 
 * new: Size added Empty constant
+* improve: Sketch now changes all ImageView references to weak references, avoid false positives by LeakCanary
 
 #### sketch-zoom
 
-* fix: Fixed a bug where SketchZoomImageView's auto-pause feature based on lifecycle could cause subsampling exceptions
+* fix: Fixed a bug where SketchZoomImageView's auto-pause feature based on lifecycle could cause
+  subsampling exceptions
 * fix: Fixed a bug where subsampling could not work after scaling exceeded the maximum scale
 * improve: Subsampling can now be turned on when the aspect ratio differs by 0.50f
-
-
 
 # v3.2.1-rc01
 
@@ -20,9 +20,9 @@
 
 #### sketch-compose
 
-* improve: AsyncImagePainter no longer converts BitmapDrawable and ColorDrawable to BitmapPainter and ColorPainter
+* improve: AsyncImagePainter no longer converts BitmapDrawable and ColorDrawable to BitmapPainter
+  and ColorPainter
 * improve: Improve AsyncImage(), rememberAsyncImagePainter(), SubcomposeAsyncImage()
-
 
 # v3.2.1-beta03
 

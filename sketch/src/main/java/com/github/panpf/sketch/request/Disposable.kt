@@ -20,6 +20,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.requestManager
 import kotlinx.coroutines.Deferred
+import java.lang.ref.WeakReference
 
 /**
  * Represents the work of an *Request that has been executed by an [Sketch].
@@ -70,16 +71,19 @@ class OneShotDisposable<T>(
  * [DefaultLifecycleObserver.onDestroy]) or replaced by a new request attached to the view.
  */
 class ViewTargetDisposable(
-    private val view: View,
+    private val viewReference: WeakReference<View>,
     @Volatile override var job: Deferred<DisplayResult>
 ) : Disposable<DisplayResult> {
 
+    private val view: View?
+        get() = viewReference.get()
+
     override val isDisposed: Boolean
-        get() = view.requestManager.isDisposed(this)
+        get() = view?.requestManager?.isDisposed(this) != false
 
     override fun dispose() {
         if (!isDisposed) {
-            view.requestManager.dispose()
+            view?.requestManager?.dispose()
         }
     }
 }

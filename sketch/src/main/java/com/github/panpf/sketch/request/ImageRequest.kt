@@ -895,6 +895,7 @@ interface ImageRequest {
                         componentRegistry = componentRegistry,
                     )
                 }
+
                 is LoadRequest.Builder -> {
                     LoadRequest.LoadRequestImpl(
                         context = context,
@@ -928,6 +929,7 @@ interface ImageRequest {
                         componentRegistry = componentRegistry,
                     )
                 }
+
                 is DownloadRequest.Builder -> {
                     DownloadRequest.DownloadRequestImpl(
                         context = context,
@@ -961,6 +963,7 @@ interface ImageRequest {
                         componentRegistry = componentRegistry,
                     )
                 }
+
                 else -> throw UnsupportedOperationException("Unsupported ImageRequest.Builder: ${this@Builder::class.java}")
             }
         }
@@ -968,7 +971,7 @@ interface ImageRequest {
         private fun resolveResizeSizeResolver(): SizeResolver {
             val target = target
             return if (target is ViewDisplayTarget<*>) {
-                ViewSizeResolver(target.view)
+                target.view?.let { ViewSizeResolver(it) } ?: DisplaySizeResolver(context)
             } else {
                 DisplaySizeResolver(context)
             }

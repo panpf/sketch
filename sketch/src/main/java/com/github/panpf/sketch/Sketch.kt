@@ -221,7 +221,7 @@ class Sketch private constructor(
         }
         val target = request.target
         return if (target is ViewDisplayTarget<*>) {
-            target.view.requestManager.getDisposable(job)
+            target.view?.requestManager?.getDisposable(job) ?: OneShotDisposable(job)
         } else {
             OneShotDisposable(job)
         }
@@ -243,7 +243,7 @@ class Sketch private constructor(
             // Update the current request attached to the view and await the result.
             val target = request.target
             if (target is ViewDisplayTarget<*>) {
-                target.view.requestManager.getDisposable(job)
+                target.view?.requestManager?.getDisposable(job)
             }
             job.await()
         }

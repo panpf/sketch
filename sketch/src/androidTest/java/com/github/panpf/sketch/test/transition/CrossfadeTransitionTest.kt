@@ -42,6 +42,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.lang.ref.WeakReference
 
 @RunWith(AndroidJUnit4::class)
 class CrossfadeTransitionTest {
@@ -50,7 +51,7 @@ class CrossfadeTransitionTest {
     fun testConstructor() {
         val context = getTestContext()
         val imageView = ImageView(context)
-        val imageViewTarget = ImageViewDisplayTarget(imageView)
+        val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
         val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
         val resultDrawable =
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))
@@ -91,7 +92,7 @@ class CrossfadeTransitionTest {
         val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
 
         val imageView = ImageView(context)
-        val imageViewTarget = ImageViewDisplayTarget(imageView)
+        val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
 
         Assert.assertNull(imageView.drawable)
         Assert.assertNull(imageViewTarget.drawable)
@@ -192,7 +193,7 @@ class CrossfadeTransitionTest {
         val factory = CrossfadeTransition.Factory()
 
         val imageView = ImageView(context)
-        val imageViewTarget = ImageViewDisplayTarget(imageView)
+        val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
 
         val resultDrawable =
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))

@@ -31,7 +31,7 @@ interface ViewDisplayTarget<T : View> : DisplayTarget {
     /**
      * The [View] used by this [Target]. This field should be immutable.
      */
-    val view: T
+    val view: T?
 
     /**
      * The [view]'s current [Drawable].

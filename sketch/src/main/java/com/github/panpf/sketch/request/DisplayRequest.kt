@@ -45,6 +45,7 @@ import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition.Factory
 import com.github.panpf.sketch.util.Size
+import java.lang.ref.WeakReference
 
 /**
  * Build and set the [DisplayRequest]
@@ -207,7 +208,7 @@ interface DisplayRequest : ImageRequest {
          * Set the target to the ImageView
          */
         fun target(imageView: ImageView): Builder = apply {
-            super.target(ImageViewDisplayTarget(imageView))
+            super.target(ImageViewDisplayTarget(WeakReference(imageView)))
         }
 
         override fun lifecycle(lifecycle: Lifecycle?): Builder = apply {

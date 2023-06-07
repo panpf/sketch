@@ -35,6 +35,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.lang.ref.WeakReference
 
 @RunWith(AndroidJUnit4::class)
 class ImageViewDisplayTargetTest {
@@ -48,7 +49,7 @@ class ImageViewDisplayTargetTest {
         val imageView = ImageView(context)
         Assert.assertNull(imageView.drawable)
 
-        val imageViewTarget = ImageViewDisplayTarget(imageView)
+        val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
         Assert.assertNull(imageViewTarget.drawable)
 
         val countBitmap = CountBitmap(
@@ -125,9 +126,9 @@ class ImageViewDisplayTargetTest {
         val context = getTestContext()
         val imageView1 = ImageView(context)
         val imageView2 = ImageView(context)
-        val element1 = ImageViewDisplayTarget(imageView1)
-        val element11 = ImageViewDisplayTarget(imageView1)
-        val element2 = ImageViewDisplayTarget(imageView2)
+        val element1 = ImageViewDisplayTarget(WeakReference(imageView1))
+        val element11 = ImageViewDisplayTarget(WeakReference(imageView1))
+        val element2 = ImageViewDisplayTarget(WeakReference(imageView2))
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)

@@ -46,6 +46,7 @@ import kotlinx.coroutines.withContext
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.lang.ref.WeakReference
 
 @RunWith(AndroidJUnit4::class)
 class ViewDisplayTargetRequestManagerTest {
@@ -78,7 +79,7 @@ class ViewDisplayTargetRequestManagerTest {
             }
             val requestManager = imageView.requestManager
             val disposable = requestManager.getDisposable(deferred)
-            val disposable1 = ViewTargetDisposable(imageView, deferred)
+            val disposable1 = ViewTargetDisposable(WeakReference(imageView), deferred)
 
             Assert.assertFalse(requestManager.isDisposed(disposable))
             Assert.assertTrue(requestManager.isDisposed(disposable1))

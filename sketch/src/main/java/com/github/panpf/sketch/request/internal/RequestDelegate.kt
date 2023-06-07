@@ -47,6 +47,7 @@ internal fun requestDelegate(
             lifecycle = lifecycle,
             job = job
         )
+
         else -> BaseRequestDelegate(lifecycle, job)
     }
 }
@@ -110,6 +111,7 @@ class ViewTargetRequestDelegate(
 
     override fun assertActive() {
         val view = target.view
+            ?: throw CancellationException("'ViewTarget.view' is cleared.")
         if (!ViewCompat.isAttachedToWindow(view)) {
             view.requestManager.setRequest(this)
             throw CancellationException("'ViewTarget.view' must be attached to a window.")
@@ -117,7 +119,8 @@ class ViewTargetRequestDelegate(
     }
 
     override fun start() {
-        target.view.requestManager.setRequest(this)
+        val view = target.view ?: return
+        view.requestManager.setRequest(this)
 
         lifecycle.addObserver(this)
         if (target is LifecycleObserver) {
@@ -139,7 +142,7 @@ class ViewTargetRequestDelegate(
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         if (event == Lifecycle.Event.ON_DESTROY) {
-            target.view.requestManager.dispose()
+            target.view?.requestManager?.dispose()
         }
     }
 

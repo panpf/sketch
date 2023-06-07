@@ -28,8 +28,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 
-class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChangeListener {
+class ViewTargetRequestManager constructor(private val view: View) : View.OnAttachStateChangeListener {
 
     // The disposable for the current request attached to this view.
     private var currentDisposable: ViewTargetDisposable? = null
@@ -65,7 +66,7 @@ class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChang
         pendingClear = null
 
         // Create a new disposable as this is a new request.
-        return ViewTargetDisposable(view, job).also {
+        return ViewTargetDisposable(WeakReference(view), job).also {
             currentDisposable = it
         }
     }

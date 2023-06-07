@@ -21,19 +21,24 @@ import android.widget.ImageView
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
 import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
+import java.lang.ref.WeakReference
 
 /**
  * A [Target] that handles setting images on an [ImageView].
  */
-open class ImageViewDisplayTarget(override val view: ImageView) :
+open class ImageViewDisplayTarget constructor(private val viewReference: WeakReference<ImageView>) :
     GenericViewDisplayTarget<ImageView>() {
+
+    override val view: ImageView?
+        get() = viewReference.get()
 
     /**
      * @see [ViewTargetRequestDelegate.onViewDetachedFromWindow]
      */
     override var drawable: Drawable?
-        get() = view.drawable
+        get() = view?.drawable
         set(value) {
+            val view = view ?: return
             val oldDrawable = view.drawable
             value?.iterateSketchCountBitmapDrawable {
                 it.countBitmap.setIsDisplayed(true, "ImageView")

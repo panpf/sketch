@@ -24,6 +24,7 @@ import android.view.ViewTreeObserver.OnPreDrawListener
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
 
 /**
@@ -32,16 +33,34 @@ import kotlin.coroutines.resume
  * @param view The view to measure.
  * @param subtractPadding If true, the view's padding will be subtracted from its size.
  */
-@Suppress("FunctionName")
 @JvmOverloads
 @JvmName("create")
 fun <T : View> ViewSizeResolver(view: T, subtractPadding: Boolean = true): ViewSizeResolver<T> =
-    RealViewSizeResolver(view, subtractPadding)
+    RealViewSizeResolver(WeakReference(view), subtractPadding)
 
 internal data class RealViewSizeResolver<T : View>(
-    override val view: T,
+    private val viewReference: WeakReference<T>,
     override val subtractPadding: Boolean
 ) : ViewSizeResolver<T> {
+
+    override val view: T?
+        get() = viewReference.get()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as RealViewSizeResolver<*>
+        if (view != other.view) return false
+        if (subtractPadding != other.subtractPadding) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = view.hashCode()
+        result = 31 * result + subtractPadding.hashCode()
+        return result
+    }
+
     override fun toString(): String {
         return "ViewSizeResolver(view=$view, subtractPadding=$subtractPadding)"
     }
@@ -53,7 +72,7 @@ internal data class RealViewSizeResolver<T : View>(
 interface ViewSizeResolver<T : View> : SizeResolver {
 
     /** The [View] to measure. This field should be immutable. */
-    val view: T
+    val view: T?
 
     /** If true, the [view]'s padding will be subtracted from its size. */
     val subtractPadding: Boolean
@@ -64,8 +83,8 @@ interface ViewSizeResolver<T : View> : SizeResolver {
 
         // Slow path: wait for the view to be measured.
         return suspendCancellableCoroutine { continuation ->
+            val view = view ?: return@suspendCancellableCoroutine
             val viewTreeObserver = view.viewTreeObserver
-
             val preDrawListener = object : OnPreDrawListener {
                 private var isResumed = false
 
@@ -92,19 +111,20 @@ interface ViewSizeResolver<T : View> : SizeResolver {
     }
 
     private fun getSize(): Size? {
-        val width = getWidth() ?: return null
-        val height = getHeight() ?: return null
+        val view = view ?: return null
+        val width = getWidth(view) ?: return null
+        val height = getHeight(view) ?: return null
         return Size(width, height)
     }
 
-    private fun getWidth(): Int? = getDimension(
+    private fun getWidth(view: View): Int? = getDimension(
         paramSize = view.layoutParams?.width ?: ViewGroup.LayoutParams.WRAP_CONTENT,
         viewSize = view.width,
         paddingSize = if (subtractPadding) view.paddingLeft + view.paddingRight else 0,
         wrapMaxSize = view.resources.displayMetrics.widthPixels
     )
 
-    private fun getHeight(): Int? = getDimension(
+    private fun getHeight(view: View): Int? = getDimension(
         paramSize = view.layoutParams?.height ?: ViewGroup.LayoutParams.WRAP_CONTENT,
         viewSize = view.height,
         paddingSize = if (subtractPadding) view.paddingTop + view.paddingBottom else 0,
@@ -142,7 +162,7 @@ interface ViewSizeResolver<T : View> : SizeResolver {
         if (isAlive) {
             removeOnPreDrawListener(victim)
         } else {
-            view.viewTreeObserver.removeOnPreDrawListener(victim)
+            view?.viewTreeObserver?.removeOnPreDrawListener(victim)
         }
     }
 }
