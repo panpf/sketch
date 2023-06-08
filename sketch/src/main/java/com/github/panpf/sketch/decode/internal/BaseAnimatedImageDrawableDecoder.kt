@@ -79,7 +79,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
             }
 
             is ResourceDataSource -> {
-                ImageDecoder.createSource(dataSource.resources, dataSource.drawableId)
+                ImageDecoder.createSource(dataSource.resources, dataSource.resId)
             }
 
             is ContentDataSource -> {

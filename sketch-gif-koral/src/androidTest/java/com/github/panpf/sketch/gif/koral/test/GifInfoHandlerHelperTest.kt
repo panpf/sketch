@@ -102,7 +102,7 @@ class GifInfoHandlerHelperTest {
                 request = LoadRequest(context, newResourceUri(R.drawable.sample_anim)),
                 packageName = context.packageName,
                 resources = context.resources,
-                drawableId = R.drawable.sample_anim
+                resId = R.drawable.sample_anim
             )
         ).apply {
             Assert.assertEquals(480, width)

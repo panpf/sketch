@@ -34,7 +34,7 @@ class ResourceDataSource constructor(
     override val request: ImageRequest,
     val packageName: String,
     val resources: Resources,
-    @RawRes @DrawableRes val drawableId: Int
+    @RawRes @DrawableRes val resId: Int
 ) : BasedFileDataSource {
 
     override val dataFrom: DataFrom
@@ -43,11 +43,11 @@ class ResourceDataSource constructor(
     @WorkerThread
     @Throws(IOException::class)
     override fun newInputStream(): InputStream =
-        resources.openRawResource(drawableId)
+        resources.openRawResource(resId)
 
     @WorkerThread
     @Throws(IOException::class)
     override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
 
-    override fun toString(): String = "ResourceDataSource($drawableId)"
+    override fun toString(): String = "ResourceDataSource($resId)"
 }

@@ -26,6 +26,7 @@ import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DrawableDataSource
+import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ResDrawable
@@ -133,15 +134,23 @@ class ResourceUriFetcher(
             ?.let { path.substring(it + 1) }
             ?: path.toString()
         val mimeType = getMimeTypeFromUrl(entryName)
-        FetchResult(
+        val dataSource = if (resources.getResourceTypeName(finalResId) == "raw") {
+            ResourceDataSource(
+                sketch = sketch,
+                request = request,
+                packageName = packageName,
+                resources = resources,
+                resId = finalResId,
+            )
+        } else {
             DrawableDataSource(
                 sketch = sketch,
                 request = request,
                 dataFrom = DataFrom.LOCAL,
                 drawableFetcher = ResDrawable(packageName, resources, finalResId)
-            ),
-            mimeType
-        )
+            )
+        }
+        FetchResult(dataSource, mimeType)
     }
 
     class Factory : Fetcher.Factory {

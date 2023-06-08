@@ -32,7 +32,7 @@ class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
                 GifInfoHandle(dataSource.data)
             }
             is ResourceDataSource -> {
-                GifInfoHandle(context.resources.openRawResourceFd(dataSource.drawableId))
+                GifInfoHandle(context.resources.openRawResourceFd(dataSource.resId))
             }
             is ContentDataSource -> {
                 GifInfoHandle.openUri(context.contentResolver, dataSource.contentUri)

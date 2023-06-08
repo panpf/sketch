@@ -40,11 +40,11 @@ class ResourceDataSourceTest {
             request = request,
             packageName = context.packageName,
             resources = context.resources,
-            drawableId = R.drawable.ic_launcher
+            resId = R.drawable.ic_launcher
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertEquals(R.drawable.ic_launcher, this.drawableId)
+            Assert.assertEquals(R.drawable.ic_launcher, this.resId)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
         }
     }
@@ -57,7 +57,7 @@ class ResourceDataSourceTest {
             request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
             packageName = context.packageName,
             resources = context.resources,
-            drawableId = R.drawable.ic_launcher
+            resId = R.drawable.ic_launcher
         ).apply {
             newInputStream().close()
         }
@@ -68,7 +68,7 @@ class ResourceDataSourceTest {
                 request = LoadRequest(context, newResourceUri(42)),
                 packageName = context.packageName,
                 resources = context.resources,
-                drawableId = 42
+                resId = 42
             ).apply {
                 newInputStream()
             }
@@ -83,7 +83,7 @@ class ResourceDataSourceTest {
             request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
             packageName = context.packageName,
             resources = context.resources,
-            drawableId = R.drawable.ic_launcher
+            resId = R.drawable.ic_launcher
         ).apply {
             val file = getFile()
             Assert.assertEquals("d8613eafa03919093537960a44c4f919.0", file.name)
@@ -98,7 +98,7 @@ class ResourceDataSourceTest {
             request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
             packageName = context.packageName,
             resources = context.resources,
-            drawableId = R.drawable.ic_launcher
+            resId = R.drawable.ic_launcher
         ).apply {
             Assert.assertEquals(
                 "ResourceDataSource(${R.drawable.ic_launcher})",
@@ -111,7 +111,7 @@ class ResourceDataSourceTest {
             request = LoadRequest(context, newResourceUri(42)),
             packageName = context.packageName,
             resources = context.resources,
-            drawableId = 42
+            resId = 42
         ).apply {
             Assert.assertEquals("ResourceDataSource(42)", toString())
         }

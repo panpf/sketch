@@ -1,3 +1,9 @@
+# new
+
+#### sketch
+
+* improve: ResourceUriFetcher now returns ResourceDataSource for raw resources
+
 # v3.2.1-rc02
 
 #### sketch
