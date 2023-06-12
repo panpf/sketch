@@ -3,6 +3,7 @@
 #### sketch
 
 * improve: ResourceUriFetcher now returns ResourceDataSource for raw resources
+* fix: Try again to fix the HttpUriFetcher.IOException exception that can't be caught [#176](https://github.com/panpf/sketch/issues/176)
 
 # v3.2.1-rc02
 
