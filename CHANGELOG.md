@@ -1,20 +1,64 @@
-# new
-* fix: Fixed a bug where the SketchZoomImageView.location() method crashed when Logger.level was VERBOSE
+# v3.2.1
 
+#### sketch
+
+* fix: Fixing child thread exceptions may not catch bugs that cause your app to
+  crash [#176](https://github.com/panpf/sketch/issues/176)
+* fix: When the merged() method of ImageOptions has its own componentRegistry as null and other’s
+  componentRegistry is not null, the returned componentRegistry is still null
+* fix: Fixed an issue where AnimatableDrawable could not be played when used as a placeholder when
+  resizeApplyToDrawable was turned on
+* improve: ResourceUriFetcher now returns ResourceDataSource for raw resources
+* improve: Sketch now changes all ImageView references to weak references, avoid false positives by
+  LeakCanary
+* change: Redesign ErrorStateImage
+* change: 'exception: SketchException' for ImageResult.Error was changed to 'throwable: Throwable'
+  and UnknownException was removed
+* change: Remove HttpStack.getResponse() method suspend modifier
+* change: BitmapDecoder, DrawableDecoder, Fetcher, BitmapDecodeInterceptor,
+  DrawableDecodeInterceptor, RequestInterceptor return results wrapped in Result
+* improve: Compatible with still images encoded using WebP Animated panpf Moments
+  ago [#179](https://github.com/panpf/sketch/issues/179)
+* improve: Improved memory caching, now all BitmapDrawable is converted to SketchCountBitmapDrawable
+  in MemoryCacheRequestInterceptor and cached in memory, so all BitmapDecoders can return
+  BitmapDrawable directly
+* improve: IOException is no longer thrown when deleting disk cache files fails
+* new: Size added Empty constant
+
+#### sketch-zoom
+
+* fix: Fixed a bug where SketchZoomImageView's auto-pause feature based on lifecycle could cause
+  subsampling exceptions
+* fix: Fixed a bug where subsampling could not work after scaling exceeded the maximum scale
+* fix: Fixed a bug where the SketchZoomImageView.location() method crashed when Logger.level was
+  VERBOSE
+* improve: Subsampling can now be turned on when the aspect ratio differs by 0.50f
+
+#### sketch-extensions
+
+* improve: Use WeakReference to improve RingProgressDrawable and avoid false positives by LeakCanary
+
+#### sketch-compose
+
+* improve: AsyncImagePainter no longer converts BitmapDrawable and ColorDrawable to BitmapPainter
+  and ColorPainter
+* improve: Improve AsyncImage(), rememberAsyncImagePainter(), SubcomposeAsyncImage()
 
 # v3.2.1-rc03
 
 #### sketch
 
 * improve: ResourceUriFetcher now returns ResourceDataSource for raw resources
-* fix: Try again to fix the HttpUriFetcher.IOException exception that can't be caught [#176](https://github.com/panpf/sketch/issues/176)
+* fix: Try again to fix the HttpUriFetcher.IOException exception that can't be
+  caught [#176](https://github.com/panpf/sketch/issues/176)
 
 # v3.2.1-rc02
 
 #### sketch
 
 * new: Size added Empty constant
-* improve: Sketch now changes all ImageView references to weak references, avoid false positives by LeakCanary
+* improve: Sketch now changes all ImageView references to weak references, avoid false positives by
+  LeakCanary
 
 #### sketch-zoom
 
