@@ -1,3 +1,7 @@
+# new
+* fix: Fixed a bug where the SketchZoomImageView.location() method crashed when Logger.level was VERBOSE
+
+
 # v3.2.1-rc03
 
 #### sketch
