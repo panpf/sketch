@@ -563,6 +563,7 @@ fun isSupportInBitmapForRegion(mimeType: String?): Boolean =
 private val WEBP_HEADER_RIFF = "RIFF".toByteArray()
 private val WEBP_HEADER_WEBP = "WEBP".toByteArray()
 private val WEBP_HEADER_VP8X = "VP8X".toByteArray()
+private val WEBP_HEADER_ANIM = "ANIM".toByteArray()
 
 // https://nokiatech.github.io/heif/technical.html
 private val HEIF_HEADER_FTYP = "ftyp".toByteArray()
@@ -583,8 +584,12 @@ fun Bytes.isWebP(): Boolean =
 /**
  * Return 'true' if the [Bytes] contains an animated WebP image.
  */
-fun Bytes.isAnimatedWebP(): Boolean =
-    isWebP() && rangeEquals(12, WEBP_HEADER_VP8X) && (get(16) and 0b00000010) > 0
+fun Bytes.isAnimatedWebP(): Boolean = isWebP()
+        && rangeEquals(12, WEBP_HEADER_VP8X)
+        && (get(16) and 0b00000010) > 0
+        // Some webp images do not comply with standard protocols, obviously not GIFs but have GIF markup, here to do a fault tolerance
+        // The VP8X block is fixed at 9 bytes, plus the first 16 bytes, for a total of 25 bytes, so an anim block can only start at 25
+        && containsRiffAnimChunk(25)
 
 /**
  * Return 'true' if the [Bytes] contains an HEIF image. The [Bytes] is not consumed.
@@ -604,3 +609,12 @@ fun Bytes.isAnimatedHeif(): Boolean = isHeif()
  */
 fun Bytes.isGif(): Boolean =
     rangeEquals(0, GIF_HEADER_89A) || rangeEquals(0, GIF_HEADER_87A)
+
+fun Bytes.containsRiffAnimChunk(offset: Int = 0): Boolean {
+    (offset until size - WEBP_HEADER_ANIM.size).forEach {
+        if (rangeEquals(it, WEBP_HEADER_ANIM)) {
+            return true
+        }
+    }
+    return false
+}

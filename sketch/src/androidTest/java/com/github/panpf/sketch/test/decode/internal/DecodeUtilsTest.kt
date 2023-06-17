@@ -535,12 +535,14 @@ class DecodeUtilsTest {
                 { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>()
+                    .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(imageInfo.size, bitmap.size)
@@ -568,12 +570,14 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>()
+                    .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(imageInfo.size, bitmap.size)
@@ -601,12 +605,14 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>()
+                    .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(121, 60), bitmap.size)
@@ -639,12 +645,14 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>()
+                    .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(80, 161), bitmap.size)
@@ -671,12 +679,14 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>()
+                    .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(121, 60), bitmap.size)
@@ -709,12 +719,14 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>()
+                    .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(80, 161), bitmap.size)
@@ -741,12 +753,14 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>()
+                    .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(121, 81), bitmap.size)
@@ -773,12 +787,14 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 }
             ) { rect, config ->
                 runBlocking {
                     sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                }.dataSource.asOrThrow<BasedStreamDataSource>().decodeRegionBitmap(rect, config.toBitmapOptions())!!
+                }.dataSource.asOrThrow<BasedStreamDataSource>()
+                    .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
             Assert.assertEquals(Size(121, 81), bitmap.size)
@@ -799,7 +815,8 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 },
                 decodeRegion = null
             )
@@ -822,7 +839,8 @@ class DecodeUtilsTest {
                 decodeFull = { config ->
                     runBlocking {
                         sketch.components.newFetcherOrThrow(it).fetch()
-                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>().decodeBitmap(config.toBitmapOptions())!!
+                    }.getOrThrow().dataSource.asOrThrow<BasedStreamDataSource>()
+                        .decodeBitmap(config.toBitmapOptions())!!
                 },
                 decodeRegion = null
             )
@@ -1322,6 +1340,13 @@ class DecodeUtilsTest {
             ByteArray(1024).apply { it.read(this) }
         }).apply {
             Assert.assertTrue(isAnimatedWebP())
+        }
+
+        // test_error_webp_anim.webp is not animated webp, must use the RiffAnimChunk function to judge
+        Bytes(context.assets.open("test_error_webp_anim.webp").use {
+            ByteArray(1024).apply { it.read(this) }
+        }).apply {
+            Assert.assertFalse(isAnimatedWebP())
         }
 
         Bytes(context.assets.open("sample_anim.webp").use {

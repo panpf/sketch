@@ -1,3 +1,10 @@
+# new
+
+#### sketch
+
+* fix: Fixed the bug that webp images with animated markers but not animated image could not use resize,
+  Transformation, BitmapDecodeInterceptor and other functions
+
 # v3.2.1
 
 #### sketch

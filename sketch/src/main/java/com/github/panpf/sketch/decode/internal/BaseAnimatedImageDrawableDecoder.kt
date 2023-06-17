@@ -17,7 +17,6 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.ImageDecoder
 import android.graphics.drawable.AnimatedImageDrawable
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
@@ -32,7 +31,6 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
-import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
@@ -133,60 +131,37 @@ abstract class BaseAnimatedImageDrawableDecoder(
             imageDecoder?.close()
         }
 
-        val transformedList: List<String>?
-        val finalDrawable = when (drawable) {
-            is AnimatedImageDrawable -> {
-                transformedList =
-                    if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
-                drawable.repeatCount = request.repeatCount
-                    ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
-                    ?: AnimatedImageDrawable.REPEAT_INFINITE
-                SketchAnimatableDrawable(
-                    // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
-                    // Use ScaledAnimatedImageDrawable package solution to this it
-                    animatableDrawable = ScaledAnimatedImageDrawable(drawable),
-                    imageUri = request.uriString,
-                    requestKey = requestContext.key,
-                    requestCacheKey = requestContext.cacheKey,
-                    imageInfo = imageInfo!!,
-                    dataFrom = dataSource.dataFrom,
-                    transformedList = transformedList,
-                    extras = null,
-                ).apply {
-                    val onStart = request.animationStartCallback
-                    val onEnd = request.animationEndCallback
-                    if (onStart != null || onEnd != null) {
-                        withContext(Dispatchers.Main) {
-                            registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
-                        }
-                    }
+        if (drawable !is AnimatedImageDrawable) {
+            throw Exception("This image is not a animated image, please modify your DrawableDecoder.Factory.create() method to match the image accurately")
+        }
+
+        val transformedList: List<String>? =
+            if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
+        drawable.repeatCount = request.repeatCount
+            ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
+            ?: AnimatedImageDrawable.REPEAT_INFINITE
+        val wrappedDrawable = SketchAnimatableDrawable(
+            // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
+            // Use ScaledAnimatedImageDrawable package solution to this it
+            animatableDrawable = ScaledAnimatedImageDrawable(drawable),
+            imageUri = request.uriString,
+            requestKey = requestContext.key,
+            requestCacheKey = requestContext.cacheKey,
+            imageInfo = imageInfo!!,
+            dataFrom = dataSource.dataFrom,
+            transformedList = transformedList,
+            extras = null,
+        ).apply {
+            val onStart = request.animationStartCallback
+            val onEnd = request.animationEndCallback
+            if (onStart != null || onEnd != null) {
+                withContext(Dispatchers.Main) {
+                    registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
                 }
-            }
-
-            is BitmapDrawable -> {
-                // Some images are encoded with animated, but only one frame is static, which will be decoded into BitmapDrawable
-                transformedList =
-                    if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
-                SketchBitmapDrawable(
-                    resources = requestContext.request.context.resources,
-                    bitmap = drawable.bitmap,
-                    imageUri = requestContext.request.uriString,
-                    requestKey = requestContext.key,
-                    requestCacheKey = requestContext.cacheKey,
-                    imageInfo = imageInfo!!,
-                    transformedList = transformedList,
-                    extras = null,
-                    dataFrom = dataSource.dataFrom
-                )
-            }
-
-            else -> {
-                transformedList = null
-                drawable
             }
         }
         DrawableDecodeResult(
-            drawable = finalDrawable,
+            drawable = wrappedDrawable,
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,

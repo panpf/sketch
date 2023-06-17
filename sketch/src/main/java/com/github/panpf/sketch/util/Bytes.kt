@@ -17,6 +17,8 @@ package com.github.panpf.sketch.util
 
 class Bytes constructor(val bytes: ByteArray) {
 
+    val size = bytes.size
+
     fun rangeEquals(offset: Int, bytes: ByteArray): Boolean {
         require(bytes.isNotEmpty()) { "bytes is empty" }
 

@@ -52,7 +52,7 @@ open class DefaultFetchResult constructor(
     override val headerBytes: Bytes by lazy {
         val dataSource = dataSource
         if (dataSource is BasedStreamDataSource) {
-            val byteArray = ByteArray(1024)
+            val byteArray = ByteArray(100)
             val readLength = dataSource.newInputStream().use {
                 it.read(byteArray)
             }
