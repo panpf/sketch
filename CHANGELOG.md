@@ -1,3 +1,9 @@
+# new
+
+#### sketch
+
+* fix: SketchCountBitmapDrawable is no longer returned when MemoryCachePolicy is WRITE_ONLY
+
 # v3.2.2
 
 #### sketch

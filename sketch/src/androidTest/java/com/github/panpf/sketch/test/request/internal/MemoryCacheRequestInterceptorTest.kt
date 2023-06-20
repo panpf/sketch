@@ -126,6 +126,7 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(DISABLED)
         }).asOrThrow<DisplayData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+            Assert.assertTrue(drawable !is SketchCountBitmapDrawable)
         }
         Assert.assertEquals(0, memoryCache.size)
 
@@ -156,6 +157,7 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(READ_ONLY)
         }).asOrThrow<DisplayData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+            Assert.assertTrue(drawable !is SketchCountBitmapDrawable)
         }
         Assert.assertEquals(0, memoryCache.size)
 
@@ -176,6 +178,7 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(READ_ONLY)
         }).asOrThrow<DisplayData>().apply {
             Assert.assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
+            Assert.assertTrue(drawable is SketchCountBitmapDrawable)
         }
         Assert.assertEquals(40000, memoryCache.size)
 
@@ -186,6 +189,7 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(WRITE_ONLY)
         }).asOrThrow<DisplayData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+            Assert.assertTrue(drawable !is SketchCountBitmapDrawable)
         }
         Assert.assertEquals(40000, memoryCache.size)
 
@@ -193,6 +197,7 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(WRITE_ONLY)
         }).asOrThrow<DisplayData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+            Assert.assertTrue(drawable !is SketchCountBitmapDrawable)
         }
         Assert.assertEquals(40000, memoryCache.size)
 
