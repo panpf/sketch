@@ -98,7 +98,7 @@ class FetchResultTest {
 
         val bytes = buildList {
             var number = 1
-            repeat(1025) {
+            repeat(101) {
                 add((number++).toByte())
             }
         }.toByteArray()
@@ -107,14 +107,14 @@ class FetchResultTest {
             "image/jpeg"
         ).apply {
             Assert.assertEquals(
-                bytes.take(1024).toTypedArray().contentToString(),
+                bytes.take(100).toTypedArray().contentToString(),
                 this.headerBytes.bytes.contentToString()
             )
         }
 
         val bytes1 = buildList {
             var number = 1
-            repeat(1023) {
+            repeat(99) {
                 add((number++).toByte())
             }
         }.toByteArray()
