@@ -468,6 +468,9 @@ class AsyncImagePainter internal constructor(
     private fun updateRequest(request: DisplayRequest): DisplayRequest {
         return request.newDisplayRequest {
             target(AsyncImageDisplayTarget(object : DisplayTarget {
+
+                override val supportDisplayCount: Boolean = true
+
                 override fun onStart(placeholder: Drawable?) {
                     updateState(State.Loading(placeholder?.toPainter()))
                 }
@@ -550,7 +553,7 @@ class AsyncImagePainter internal constructor(
     /**
      * Convert this [Drawable] into a [Painter] using Compose primitives if possible.
      *
-     * Very important, updateDisplayed() needs to set setDisplayed to keep SketchDrawable, SketchStateDrawable
+     * Very important, updateDisplayed() needs to set setIsDisplayed to keep SketchDrawable, SketchStateDrawable
      */
     private fun Drawable.toPainter() = DrawablePainter(mutate())
 //        when (this) {
@@ -649,4 +652,5 @@ private fun Size.toSizeOrNull(): CoilSize? = when {
 
 private val FakeTransitionTarget = object : TransitionDisplayTarget {
     override val drawable: Drawable? get() = null
+    override val supportDisplayCount: Boolean = true
 }

@@ -70,12 +70,14 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.stateimage.internal.SketchStateNormalDrawable
+import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
 import com.github.panpf.sketch.test.utils.DisplayProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssetFetcherFactory
 import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDisplayCountDisplayTarget
 import com.github.panpf.sketch.test.utils.TestDisplayTarget
 import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestErrorBitmapDecoder
@@ -128,6 +130,7 @@ class DisplayRequestExecuteTest {
         sketch.memoryCache.clear()
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
+            target(TestDisplayCountDisplayTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Success>()!!.apply {
@@ -140,6 +143,7 @@ class DisplayRequestExecuteTest {
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(NETWORK)
+            target(TestDisplayCountDisplayTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Success>()!!.apply {
@@ -152,6 +156,7 @@ class DisplayRequestExecuteTest {
         runBlocking {
             sketch.execute(DisplayRequest(context, imageUri) {
                 resultCachePolicy(DISABLED)
+                target(TestDisplayCountDisplayTarget())
             })
         }
         sketch.memoryCache.clear()
@@ -159,6 +164,7 @@ class DisplayRequestExecuteTest {
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(LOCAL)
+            target(TestDisplayCountDisplayTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Success>()!!.apply {
@@ -170,6 +176,7 @@ class DisplayRequestExecuteTest {
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(LOCAL)
+            target(TestDisplayCountDisplayTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Error>()!!.apply {
@@ -181,11 +188,13 @@ class DisplayRequestExecuteTest {
         runBlocking {
             sketch.execute(DisplayRequest(context, imageUri) {
                 resultCachePolicy(DISABLED)
+                target(TestDisplayCountDisplayTarget())
             })
         }
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(MEMORY)
+            target(TestDisplayCountDisplayTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Success>()!!.apply {
@@ -196,6 +205,7 @@ class DisplayRequestExecuteTest {
         DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(MEMORY)
+            target(TestDisplayCountDisplayTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<DisplayResult.Error>()!!.apply {
@@ -1237,11 +1247,13 @@ class DisplayRequestExecuteTest {
         var onStartDrawable: Drawable?
         val request = DisplayRequest(context, imageUri) {
             resizeSize(500, 500)
-            target(
-                onStart = {
-                    onStartDrawable = it
+            target(object : DisplayTarget {
+                override val supportDisplayCount: Boolean = true
+                override fun onStart(placeholder: Drawable?) {
+                    super.onStart(placeholder)
+                    onStartDrawable = placeholder
                 }
-            )
+            })
         }
         val memoryCacheKey = request.toRequestContext().memoryCacheKey
         val memoryCache = sketch.memoryCache
@@ -1446,6 +1458,7 @@ class DisplayRequestExecuteTest {
         val request = DisplayRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             resizeSize(500, 500)
+            target(TestDisplayCountDisplayTarget())
         }
         val memoryCacheKey = request.toRequestContext().memoryCacheKey
 

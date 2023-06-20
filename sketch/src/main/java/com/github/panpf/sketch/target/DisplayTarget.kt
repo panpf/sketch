@@ -25,6 +25,13 @@ import com.github.panpf.sketch.request.DisplayRequest
 interface DisplayTarget : Target {
 
     /**
+     * If display counting is not supported, memory caching will not be used.
+     * If true is returned, call the SketchCountBitmapDrawable.countBitmap.setIsDisplayed() method to record the number of impressions.
+     * Otherwise, there will be image confusion and crashes
+     */
+    val supportDisplayCount: Boolean
+
+    /**
      * Called when the request starts.
      */
     @MainThread

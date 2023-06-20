@@ -27,6 +27,7 @@ import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.TestDisplayCountDisplayTarget
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -53,14 +54,17 @@ class ThumbnailMemoryCacheStateImageTest {
             DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
+                target(TestDisplayCountDisplayTarget())
             },
             DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
+                target(TestDisplayCountDisplayTarget())
             },
             DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
+                target(TestDisplayCountDisplayTarget())
                 transformations(CircleCropTransformation())
             },
         )
@@ -68,14 +72,17 @@ class ThumbnailMemoryCacheStateImageTest {
             DisplayRequest(context, TestAssets.SAMPLE_PNG_URI) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
+                target(TestDisplayCountDisplayTarget())
             },
             DisplayRequest(context, TestAssets.SAMPLE_PNG_URI) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
+                target(TestDisplayCountDisplayTarget())
             },
             DisplayRequest(context, TestAssets.SAMPLE_PNG_URI) {
                 resizeSize(100, 100)
                 resizePrecision( LESS_PIXELS)
+                target(TestDisplayCountDisplayTarget())
                 transformations(CircleCropTransformation())
             },
         )

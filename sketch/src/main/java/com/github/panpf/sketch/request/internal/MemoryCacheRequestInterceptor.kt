@@ -30,6 +30,8 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.target.DisplayTarget
+import com.github.panpf.sketch.util.asOrNull
 
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 
@@ -43,8 +45,10 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val memoryCache = chain.sketch.memoryCache
         val bitmapPool = chain.sketch.bitmapPool
         val memoryCachePolicy = request.memoryCachePolicy
+        val targetSupportDisplayCount =
+            request.target.asOrNull<DisplayTarget>()?.supportDisplayCount == true
 
-        if (request is DisplayRequest && memoryCachePolicy.readEnabled) {
+        if (request is DisplayRequest && memoryCachePolicy.readEnabled && targetSupportDisplayCount) {
             val countDrawable = readFromMemoryCache(
                 context = request.context,
                 memoryCache = memoryCache,
@@ -73,6 +77,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             && imageData is DisplayData
             && request is DisplayRequest
             && memoryCachePolicy.writeEnabled
+            && targetSupportDisplayCount
             && imageData.drawable is BitmapDrawable
         ) {
             val saveSuccess = saveToMemoryCache(

@@ -21,6 +21,8 @@ import com.github.panpf.sketch.transition.TransitionDisplayTarget
 
 class TestTransitionDisplayTarget : DisplayTarget, TransitionDisplayTarget {
 
+    override val supportDisplayCount: Boolean = true
+
     override var drawable: Drawable? = null
 
     override fun onStart(placeholder: Drawable?) {

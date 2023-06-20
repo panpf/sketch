@@ -32,6 +32,8 @@ open class ImageViewDisplayTarget constructor(private val viewReference: WeakRef
     override val view: ImageView?
         get() = viewReference.get()
 
+    override val supportDisplayCount: Boolean = true
+
     /**
      * @see [ViewTargetRequestDelegate.onViewDetachedFromWindow]
      */

@@ -43,6 +43,7 @@ import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.test.utils.TestDisplayCountDisplayTarget
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
@@ -100,7 +101,9 @@ class MemoryCacheRequestInterceptorTest {
         Assert.assertEquals(0, memoryCache.size)
 
         /* DisplayRequest - ENABLED */
-        val displayRequest = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val displayRequest = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI){
+            target(TestDisplayCountDisplayTarget())
+        }
         val countBitmapDrawable: SketchCountBitmapDrawable
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)

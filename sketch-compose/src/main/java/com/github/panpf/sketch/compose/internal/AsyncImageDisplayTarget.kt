@@ -23,6 +23,8 @@ import com.github.panpf.sketch.target.DisplayTarget
  */
 class AsyncImageDisplayTarget(val wrapped: DisplayTarget) : DisplayTarget {
 
+    override val supportDisplayCount: Boolean = wrapped.supportDisplayCount
+
     override fun onStart(placeholder: Drawable?) {
         wrapped.onStart(placeholder)
     }

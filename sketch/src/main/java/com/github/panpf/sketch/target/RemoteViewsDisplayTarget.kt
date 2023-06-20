@@ -30,6 +30,8 @@ class RemoteViewsDisplayTarget(
     private val onUpdated: () -> Unit,
 ) : DisplayTarget {
 
+    override val supportDisplayCount: Boolean = false
+
     override fun onStart(placeholder: Drawable?) {
         if (placeholder != null || !ignoreNullDrawable) {
             setDrawable(placeholder)

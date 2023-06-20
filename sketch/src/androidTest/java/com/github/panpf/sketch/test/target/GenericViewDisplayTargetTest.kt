@@ -93,6 +93,7 @@ class GenericViewDisplayTargetTest {
 
     class TestViewDisplayTarget(override val view: ImageView) :
         GenericViewDisplayTarget<ImageView>() {
+        override val supportDisplayCount: Boolean = false
         override var drawable: Drawable?
             get() = view.drawable
             set(value) {

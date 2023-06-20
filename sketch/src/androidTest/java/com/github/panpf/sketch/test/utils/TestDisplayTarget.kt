@@ -20,6 +20,8 @@ import com.github.panpf.sketch.target.DisplayTarget
 
 class TestDisplayTarget : DisplayTarget {
 
+    override val supportDisplayCount: Boolean = true
+
     var startDrawable: Drawable? = null
     var successDrawable: Drawable? = null
     var errorDrawable: Drawable? = null

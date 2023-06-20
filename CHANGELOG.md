@@ -3,6 +3,7 @@
 #### sketch
 
 * fix: SketchCountBitmapDrawable is no longer returned when MemoryCachePolicy is WRITE_ONLY
+* fix: Now if DisplayTarget does not support display counting, the memory cache will not be able to be used, avoiding the Bitmap recycle exception thrown by this
 
 # v3.2.2
 

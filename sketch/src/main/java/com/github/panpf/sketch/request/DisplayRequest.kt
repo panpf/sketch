@@ -199,6 +199,7 @@ interface DisplayRequest : ImageRequest {
             crossinline onError: (error: Drawable?) -> Unit = {},
             crossinline onSuccess: (result: Drawable) -> Unit = {}
         ) = target(object : DisplayTarget {
+            override val supportDisplayCount: Boolean = false
             override fun onStart(placeholder: Drawable?) = onStart(placeholder)
             override fun onError(error: Drawable?) = onError(error)
             override fun onSuccess(result: Drawable) = onSuccess(result)

@@ -39,6 +39,7 @@ class ViewDisplayTargetTest {
     }
 
     class TestImageViewDisplayTarget(override val view: ImageView) : ViewDisplayTarget<ImageView> {
+        override val supportDisplayCount: Boolean = false
         override var drawable: Drawable?
             get() = view.drawable
             set(value) {
