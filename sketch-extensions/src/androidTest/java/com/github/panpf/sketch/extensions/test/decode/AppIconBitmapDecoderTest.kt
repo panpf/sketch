@@ -24,6 +24,7 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.extensions.test.toRequestContext
+import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDrawableFetcher
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAppIconUri
@@ -53,13 +54,13 @@ class AppIconBitmapDecoderTest {
         // normal
         LoadRequest(context, testAppIconUri).let {
             val fetchResult = FetchResult(
-                DrawableDataSource(
-                    sketch,
-                    it,
-                    LOCAL,
-                    AppIconDrawableFetcher(packageName, versionCode)
+                dataSource = DrawableDataSource(
+                    sketch = sketch,
+                    request = it,
+                    dataFrom = LOCAL,
+                    drawableFetcher = AppIconDrawableFetcher(packageName, versionCode),
                 ),
-                "application/vnd.android.app-icon"
+                mimeType = AppIconUriFetcher.IMAGE_MIME_TYPE
             )
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
@@ -70,12 +71,12 @@ class AppIconBitmapDecoderTest {
         LoadRequest(context, testAppIconUri).let {
             val fetchResult = FetchResult(
                 DrawableDataSource(
-                    sketch,
-                    it,
-                    LOCAL,
-                    AppIconDrawableFetcher(packageName, versionCode)
+                    sketch = sketch,
+                    request = it,
+                    dataFrom = LOCAL,
+                    drawableFetcher = AppIconDrawableFetcher(packageName, versionCode)
                 ),
-                null
+                AppIconUriFetcher.IMAGE_MIME_TYPE
             )
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
@@ -84,12 +85,12 @@ class AppIconBitmapDecoderTest {
         LoadRequest(context, testAppIconUri).let {
             val fetchResult = FetchResult(
                 DrawableDataSource(
-                    sketch,
-                    it,
-                    LOCAL,
-                    AppIconDrawableFetcher(packageName, versionCode)
+                    sketch = sketch,
+                    request = it,
+                    dataFrom = LOCAL,
+                    drawableFetcher = AppIconDrawableFetcher(packageName, versionCode)
                 ),
-                "application/vnd.android.package-archive"
+                AppIconUriFetcher.IMAGE_MIME_TYPE
             )
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {

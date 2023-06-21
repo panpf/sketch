@@ -52,12 +52,14 @@ class ApkIconBitmapDecoder(
         sketch = sketch,
         request = requestContext.request,
         dataFrom = dataFrom,
-        drawableFetcher = ApkIconDrawableFetcher(file)
-    )
+        drawableFetcher = ApkIconDrawableFetcher(file),
+    ),
+    mimeType = IMAGE_MIME_TYPE
 ) {
 
     companion object {
         const val MIME_TYPE = "application/vnd.android.package-archive"
+        const val IMAGE_MIME_TYPE = "image/appicon"
     }
 
     class Factory : BitmapDecoder.Factory {

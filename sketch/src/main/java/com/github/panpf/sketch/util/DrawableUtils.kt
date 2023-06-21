@@ -52,15 +52,18 @@ fun Drawable.getLastChildDrawable(): Drawable? {
 internal fun Drawable.toNewBitmap(
     bitmapPool: BitmapPool,
     disallowReuseBitmap: Boolean,
-    preferredConfig: Bitmap.Config? = null
+    preferredConfig: Bitmap.Config? = null,
+    targetSize: Size? = null
 ): Bitmap {
     val (oldLeft, oldTop, oldRight, oldBottom) = bounds
-    setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+    val targetWidth = targetSize?.width ?: intrinsicWidth
+    val targetHeight = targetSize?.height ?: intrinsicHeight
+    setBounds(0, 0, targetWidth, targetHeight)
 
     val config = preferredConfig ?: ARGB_8888
     val bitmap: Bitmap = bitmapPool.getOrCreate(
-        width = intrinsicWidth,
-        height = intrinsicHeight,
+        width = targetWidth,
+        height = targetHeight,
         config = config,
         disallowReuseBitmap = disallowReuseBitmap,
         caller = "toNewBitmap"

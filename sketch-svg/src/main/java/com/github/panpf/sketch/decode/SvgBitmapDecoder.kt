@@ -27,13 +27,15 @@ import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.appliedResize
+import com.github.panpf.sketch.decode.internal.calculateSampleSize
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
+import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.logString
-import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
@@ -68,95 +70,81 @@ class SvgBitmapDecoder constructor(
 
     @WorkerThread
     override suspend fun decode(): Result<BitmapDecodeResult> = kotlin.runCatching {
+        val request = requestContext.request
         val svg = dataSource.newInputStream().buffered().use { SVG.getFromInputStream(it) }
-        val imageInfo = readImageInfo(svg)
-        realDecode(
-            requestContext = requestContext,
-            dataFrom = dataSource.dataFrom,
-            imageInfo = imageInfo,
-            decodeFull = { decodeConfig: DecodeConfig ->
-                realDecodeFull(
-                    request = requestContext.request,
-                    resize = requestContext.resizeSize,
-                    imageInfo = imageInfo,
-                    decodeConfig = decodeConfig,
-                    svg = svg
-                )
-            },
-            decodeRegion = null
-        ).appliedResize(sketch, requestContext)
-    }
 
-    private fun readImageInfo(svg: SVG): ImageInfo {
-        val width: Int
-        val height: Int
+        val imageWidth: Float
+        val imageHeight: Float
         val viewBox: RectF? = svg.documentViewBox
         if (useViewBoundsAsIntrinsicSize && viewBox != null) {
-            width = viewBox.width().toInt()
-            height = viewBox.height().toInt()
+            imageWidth = viewBox.width()
+            imageHeight = viewBox.height()
         } else {
-            width = svg.documentWidth.toInt()
-            height = svg.documentHeight.toInt()
+            imageWidth = svg.documentWidth
+            imageHeight = svg.documentHeight
         }
-        return ImageInfo(width, height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
-    }
-
-    private fun realDecodeFull(
-        request: ImageRequest,
-        resize: Size,
-        imageInfo: ImageInfo,
-        decodeConfig: DecodeConfig,
-        svg: SVG
-    ): Bitmap {
-        val svgWidth: Float
-        val svgHeight: Float
-        val viewBox: RectF? = svg.documentViewBox
-        if (useViewBoundsAsIntrinsicSize && viewBox != null) {
-            svgWidth = viewBox.width()
-            svgHeight = viewBox.height()
-        } else {
-            svgWidth = svg.documentWidth
-            svgHeight = svg.documentHeight
+        if (imageWidth <= 0f || imageHeight <= 0f) {
+            throw ImageInvalidException(
+                "Invalid svg image, width or height is less than or equal to 0"
+            )
         }
+        val imageInfo = ImageInfo(
+            width = imageWidth.roundToInt(),
+            height = imageHeight.roundToInt(),
+            mimeType = MIME_TYPE,
+            exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
+        )
 
+        val resize = requestContext.resizeSize
         val dstWidth: Int
         val dstHeight: Int
+        var transformedList: List<String>? = null
         if (request.resizeSizeResolver is DisplaySizeResolver) {
-            val inSampleSize = decodeConfig.inSampleSize?.toFloat() ?: 1f
-            dstWidth = (imageInfo.width / inSampleSize).roundToInt()
-            dstHeight = (imageInfo.height / inSampleSize).roundToInt()
+            val inSampleSize =
+                calculateSampleSize(Size(imageInfo.width, imageInfo.height), resize, null)
+            dstWidth = (imageWidth / inSampleSize).roundToInt()
+            dstHeight = (imageHeight / inSampleSize).roundToInt()
+            if (inSampleSize > 1) {
+                transformedList = listOf(createInSampledTransformed(inSampleSize))
+            }
         } else {
-            val scale = min(resize.width / svgWidth, resize.height / svgHeight)
-            dstWidth = (svgWidth * scale).roundToInt()
-            dstHeight = (svgHeight * scale).roundToInt()
+            val scale: Float = min(resize.width / imageWidth, resize.height / imageHeight)
+            dstWidth = (imageWidth * scale).roundToInt()
+            dstHeight = (imageHeight * scale).roundToInt()
+            if (scale != 1f) {
+                transformedList = listOf(createScaledTransformed(scale))
+            }
         }
 
         // Set the SVG's view box to enable scaling if it is not set.
-        if (viewBox == null && svgWidth > 0 && svgHeight > 0) {
-            svg.setDocumentViewBox(0f, 0f, svgWidth, svgHeight)
+        if (viewBox == null && imageWidth > 0f && imageHeight > 0f) {
+            svg.setDocumentViewBox(0f, 0f, imageWidth, imageHeight)
         }
-
         svg.setDocumentWidth("100%")
         svg.setDocumentHeight("100%")
 
         val bitmap = sketch.bitmapPool.getOrCreate(
             width = dstWidth,
             height = dstHeight,
-            config = decodeConfig.inPreferredConfig.toSoftware(),
+            config = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType).toSoftware(),
             disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
             caller = "SvgBitmapDecoder"
         )
-        val canvas = Canvas(bitmap).apply {
-            backgroundColor?.let {
-                drawColor(it)
-            }
-        }
+        val canvas = Canvas(bitmap)
+        backgroundColor?.let { canvas.drawColor(it) }
         val renderOptions = css?.let { RenderOptions().css(it) }
         svg.renderToCanvas(canvas, renderOptions)
         sketch.logger.d(MODULE) {
-            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
+            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
-        return bitmap
+
+        BitmapDecodeResult(
+            bitmap = bitmap,
+            imageInfo = imageInfo,
+            dataFrom = dataSource.dataFrom,
+            transformedList = transformedList,
+            extras = null
+        ).appliedResize(sketch, requestContext)
     }
 
     /**

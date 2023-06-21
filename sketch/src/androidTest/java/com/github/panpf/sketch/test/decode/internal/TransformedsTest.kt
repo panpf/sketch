@@ -21,10 +21,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.createExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
+import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.internal.createSubsamplingTransformed
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
+import com.github.panpf.sketch.decode.internal.getScaledTransformed
 import com.github.panpf.sketch.decode.internal.getSubsamplingTransformed
 import com.github.panpf.sketch.resize.Resize
 import org.junit.Assert
@@ -155,6 +157,28 @@ class TransformedsTest {
                 createResizeTransformed(Resize(500, 500)),
                 "disruptive2"
             ).getResizeTransformed()
+        )
+    }
+
+    @Test
+    fun testScaledTransformed() {
+        Assert.assertEquals("ScaledTransformed(1.0)", createScaledTransformed(1f))
+        Assert.assertEquals("ScaledTransformed(2.0)", createScaledTransformed(2f))
+        Assert.assertEquals("ScaledTransformed(4.0)", createScaledTransformed(4f))
+        Assert.assertEquals("ScaledTransformed(8.0)", createScaledTransformed(8f))
+
+        Assert.assertEquals(null, listOf<String>().getScaledTransformed())
+        Assert.assertEquals(
+            "ScaledTransformed(2.0)",
+            listOf(createScaledTransformed(2f)).getScaledTransformed()
+        )
+        Assert.assertEquals(
+            "ScaledTransformed(16.0)",
+            listOf(
+                "disruptive1",
+                createScaledTransformed(16f),
+                "disruptive2"
+            ).getScaledTransformed()
         )
     }
 }

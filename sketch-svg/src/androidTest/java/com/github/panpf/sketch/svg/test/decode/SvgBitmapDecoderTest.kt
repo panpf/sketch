@@ -24,7 +24,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
-import com.github.panpf.sketch.decode.internal.createInSampledTransformed
+import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -127,8 +127,6 @@ class SvgBitmapDecoderTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
-
         val element1 = SvgBitmapDecoder.Factory()
         val element11 = SvgBitmapDecoder.Factory()
         val element2 = SvgBitmapDecoder.Factory(false)
@@ -164,9 +162,9 @@ class SvgBitmapDecoderTest {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }.getOrThrow()
         }.apply {
-            Assert.assertEquals("Bitmap(841x595,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(842x595,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(841x595,'image/svg+xml',UNDEFINED)",
+                "ImageInfo(842x595,'image/svg+xml',UNDEFINED)",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -182,9 +180,9 @@ class SvgBitmapDecoderTest {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }.getOrThrow()
         }.apply {
-            Assert.assertEquals("Bitmap(841x595,RGB_565)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(842x595,RGB_565)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(841x595,'image/svg+xml',UNDEFINED)",
+                "ImageInfo(842x595,'image/svg+xml',UNDEFINED)",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -201,9 +199,9 @@ class SvgBitmapDecoderTest {
             }.getOrThrow()
         }.apply {
             Assert.assertEquals("Bitmap(600x424,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
+            Assert.assertEquals(listOf(createScaledTransformed(0.71f)), transformedList)
             Assert.assertEquals(
-                "ImageInfo(841x595,'image/svg+xml',UNDEFINED)",
+                "ImageInfo(842x595,'image/svg+xml',UNDEFINED)",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -219,9 +217,9 @@ class SvgBitmapDecoderTest {
             }.getOrThrow()
         }.apply {
             Assert.assertEquals("Bitmap(1500x1061,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(null, transformedList)
+            Assert.assertEquals(listOf(createScaledTransformed(1.78f)), transformedList)
             Assert.assertEquals(
-                "ImageInfo(841x595,'image/svg+xml',UNDEFINED)",
+                "ImageInfo(842x595,'image/svg+xml',UNDEFINED)",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)

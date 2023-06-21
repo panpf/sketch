@@ -45,16 +45,16 @@ class ResDrawable constructor(
     override fun getDrawable(context: Context): Drawable {
         return if (packageName != null && resources != null && packageName != context.packageName) {
             // getXmlDrawableCompat can load vector resources that are in the other package.
-            context.getXmlDrawableCompat(resources, resId).apply {
-                if (intrinsicWidth <= 0 || intrinsicHeight <= 0) {
-                    throw ImageInvalidException(
-                        "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
-                    )
-                }
-            }
+            context.getXmlDrawableCompat(resources, resId)
         } else {
             // getDrawableCompat can only load vector resources that are in the current package.
             context.getDrawableCompat(resId)
+        }.apply {
+            if (intrinsicWidth <= 0 || intrinsicHeight <= 0) {
+                throw ImageInvalidException(
+                    "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
+                )
+            }
         }
     }
 

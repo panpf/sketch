@@ -1,6 +1,7 @@
 # new
 
 * fix: Fixed a bug where SVGBitmapDecoder did not enlarge images based on resize
+* fix: Fixed a bug where DrawableBitmapDecoder did not enlarge images based on resize
 
 # v3.2.3
 

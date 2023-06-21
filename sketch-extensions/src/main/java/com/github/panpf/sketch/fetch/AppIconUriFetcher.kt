@@ -58,7 +58,7 @@ class AppIconUriFetcher(
 
     companion object {
         const val SCHEME = "app.icon"
-        const val MIME_TYPE = "application/vnd.android.app-icon"
+        const val IMAGE_MIME_TYPE = "image/appicon"
     }
 
     @WorkerThread
@@ -68,9 +68,9 @@ class AppIconUriFetcher(
                 sketch = sketch,
                 request = request,
                 dataFrom = DataFrom.LOCAL,
-                drawableFetcher = AppIconDrawableFetcher(packageName, versionCode)
+                drawableFetcher = AppIconDrawableFetcher(packageName, versionCode),
             ),
-            mimeType = MIME_TYPE
+            mimeType = IMAGE_MIME_TYPE
         )
     )
 

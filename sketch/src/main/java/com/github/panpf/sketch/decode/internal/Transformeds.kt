@@ -17,6 +17,7 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Rect
 import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.util.format
 
 fun createInSampledTransformed(inSampleSize: Int): String = "InSampledTransformed($inSampleSize)"
 
@@ -56,3 +57,13 @@ fun isResizeTransformed(transformed: String): Boolean =
 
 fun List<String>.getResizeTransformed(): String? =
     find { isResizeTransformed(it) }
+
+
+fun createScaledTransformed(scale: Float): String =
+    "ScaledTransformed(${scale.format(2)})"
+
+fun isScaledTransformed(transformed: String): Boolean =
+    transformed.startsWith("ScaledTransformed(")
+
+fun List<String>.getScaledTransformed(): String? =
+    find { isScaledTransformed(it) }

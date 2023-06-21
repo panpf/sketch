@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.decode.internal
 
+import android.graphics.drawable.BitmapDrawable
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
@@ -23,17 +24,23 @@ import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toNewBitmap
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
  * Extract the icon of the installed app and convert it to Bitmap
  */
-open class DrawableBitmapDecoder(
+open class DrawableBitmapDecoder constructor(
     private val sketch: Sketch,
     private val requestContext: RequestContext,
     private val drawableDataSource: DrawableDataSource,
+    private val mimeType: String?
 ) : BitmapDecoder {
 
     companion object {
@@ -44,22 +51,57 @@ open class DrawableBitmapDecoder(
     override suspend fun decode(): Result<BitmapDecodeResult> = kotlin.runCatching {
         val request = requestContext.request
         val drawable = drawableDataSource.drawable
+
+        val imageWidth = drawable.intrinsicWidth
+        val imageHeight = drawable.intrinsicHeight
+        if (imageWidth <= 0 || imageHeight <= 0) {
+            throw ImageInvalidException(
+                "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
+            )
+        }
+        val resize = requestContext.resizeSize
+        val dstWidth: Int
+        val dstHeight: Int
+        var transformedList: List<String>? = null
+        if (drawable is BitmapDrawable || request.resizeSizeResolver is DisplaySizeResolver) {
+            val inSampleSize = calculateSampleSize(Size(imageWidth, imageHeight), resize, null)
+            dstWidth = (imageWidth / inSampleSize.toFloat()).roundToInt()
+            dstHeight = (imageHeight / inSampleSize.toFloat()).roundToInt()
+            if (inSampleSize > 1) {
+                transformedList = listOf(createInSampledTransformed(inSampleSize))
+            }
+        } else {
+            val scale: Float =
+                min(resize.width / imageWidth.toFloat(), resize.height / imageHeight.toFloat())
+            dstWidth = (imageWidth * scale).roundToInt()
+            dstHeight = (imageHeight * scale).roundToInt()
+            if (scale != 1f) {
+                transformedList = listOf(createScaledTransformed(scale))
+            }
+        }
+        val targetSize = Size(width = dstWidth, height = dstHeight)
         val bitmap = drawable.toNewBitmap(
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = request.disallowReuseBitmap,
-            preferredConfig = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType)
+            preferredConfig = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType),
+            targetSize = targetSize
         )
         val imageInfo = ImageInfo(
-            width = bitmap.width,
-            height = bitmap.height,
-            mimeType = ImageFormat.PNG.mimeType,
+            width = imageWidth,
+            height = imageHeight,
+            mimeType = mimeType ?: "image/png",
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
         )
         sketch.logger.d(MODULE) {
             "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
         }
-        BitmapDecodeResult(bitmap, imageInfo, LOCAL, null, null)
-            .appliedResize(sketch, requestContext)
+        BitmapDecodeResult(
+            bitmap = bitmap,
+            imageInfo = imageInfo,
+            dataFrom = LOCAL,
+            transformedList = transformedList,
+            extras = null
+        ).appliedResize(sketch, requestContext)
     }
 
     class Factory : BitmapDecoder.Factory {
@@ -71,7 +113,7 @@ open class DrawableBitmapDecoder(
         ): BitmapDecoder? {
             val dataSource = fetchResult.dataSource
             return if (dataSource is DrawableDataSource) {
-                DrawableBitmapDecoder(sketch, requestContext, dataSource)
+                DrawableBitmapDecoder(sketch, requestContext, dataSource, fetchResult.mimeType)
             } else {
                 null
             }
