@@ -200,8 +200,26 @@ class SvgBitmapDecoderTest {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }.getOrThrow()
         }.apply {
-            Assert.assertEquals("Bitmap(421x298,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(600x424,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
+            Assert.assertEquals(
+                "ImageInfo(841x595,'image/svg+xml',UNDEFINED)",
+                imageInfo.toShortString()
+            )
+            Assert.assertEquals(LOCAL, dataFrom)
+        }
+
+        LoadRequest(context, newAssetUri("sample.svg")) {
+            resize(1500, 1800, LESS_PIXELS)
+        }.run {
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
+            runBlocking {
+                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
+            }.getOrThrow()
+        }.apply {
+            Assert.assertEquals("Bitmap(1500x1061,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals(null, transformedList)
             Assert.assertEquals(
                 "ImageInfo(841x595,'image/svg+xml',UNDEFINED)",
                 imageInfo.toShortString()

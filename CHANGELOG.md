@@ -1,3 +1,7 @@
+# new
+
+* fix: Fixed a bug where SVGBitmapDecoder did not enlarge images based on resize
+
 # v3.2.3
 
 #### sketch

@@ -33,9 +33,13 @@ import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
+import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
+import com.github.panpf.sketch.util.Size
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -71,7 +75,13 @@ class SvgBitmapDecoder constructor(
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
             decodeFull = { decodeConfig: DecodeConfig ->
-                realDecodeFull(imageInfo, decodeConfig, svg)
+                realDecodeFull(
+                    request = requestContext.request,
+                    resize = requestContext.resizeSize,
+                    imageInfo = imageInfo,
+                    decodeConfig = decodeConfig,
+                    svg = svg
+                )
             },
             decodeRegion = null
         ).appliedResize(sketch, requestContext)
@@ -91,7 +101,13 @@ class SvgBitmapDecoder constructor(
         return ImageInfo(width, height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
     }
 
-    private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig, svg: SVG): Bitmap {
+    private fun realDecodeFull(
+        request: ImageRequest,
+        resize: Size,
+        imageInfo: ImageInfo,
+        decodeConfig: DecodeConfig,
+        svg: SVG
+    ): Bitmap {
         val svgWidth: Float
         val svgHeight: Float
         val viewBox: RectF? = svg.documentViewBox
@@ -103,16 +119,16 @@ class SvgBitmapDecoder constructor(
             svgHeight = svg.documentHeight
         }
 
-        val inSampleSize = decodeConfig.inSampleSize?.toFloat()
-        val dstWidth = if (inSampleSize != null) {
-            (imageInfo.width / inSampleSize).roundToInt()
+        val dstWidth: Int
+        val dstHeight: Int
+        if (request.resizeSizeResolver is DisplaySizeResolver) {
+            val inSampleSize = decodeConfig.inSampleSize?.toFloat() ?: 1f
+            dstWidth = (imageInfo.width / inSampleSize).roundToInt()
+            dstHeight = (imageInfo.height / inSampleSize).roundToInt()
         } else {
-            imageInfo.width
-        }
-        val dstHeight = if (inSampleSize != null) {
-            (imageInfo.height / inSampleSize).roundToInt()
-        } else {
-            imageInfo.height
+            val scale = min(resize.width / svgWidth, resize.height / svgHeight)
+            dstWidth = (svgWidth * scale).roundToInt()
+            dstHeight = (svgHeight * scale).roundToInt()
         }
 
         // Set the SVG's view box to enable scaling if it is not set.
