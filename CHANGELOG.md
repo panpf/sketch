@@ -1,20 +1,28 @@
 # new
 
+#### sketch
+
 * fix: Fixed a bug where SVGBitmapDecoder did not enlarge images based on resize
 * fix: Fixed a bug where DrawableBitmapDecoder did not enlarge images based on resize
+
+#### sketch-compose
+
+* fix: Fixed a bug where AsyncImage() crashed when placeholder and error were not set and the image failed to load [#178](https://github.com/panpf/sketch/issues/178)
 
 # v3.2.3
 
 #### sketch
 
 * fix: SketchCountBitmapDrawable is no longer returned when MemoryCachePolicy is WRITE_ONLY
-* fix: Now if DisplayTarget does not support display counting, the memory cache will not be able to be used, avoiding the Bitmap recycle exception thrown by this
+* fix: Now if DisplayTarget does not support display counting, the memory cache will not be able to
+  be used, avoiding the Bitmap recycle exception thrown by this
 
 # v3.2.2
 
 #### sketch
 
-* fix: Fixed the bug that webp images with animated markers but not animated image could not use resize,
+* fix: Fixed the bug that webp images with animated markers but not animated image could not use
+  resize,
   Transformation, BitmapDecodeInterceptor and other functions
 
 # v3.2.1

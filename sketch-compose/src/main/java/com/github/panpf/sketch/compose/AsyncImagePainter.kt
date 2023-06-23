@@ -49,7 +49,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-import com.github.panpf.sketch.util.Size as CoilSize
+import com.github.panpf.sketch.util.Size as SketchSize
 
 /**
  * Return an [AsyncImagePainter] that executes an [DisplayRequest] asynchronously and renders the result.
@@ -636,9 +636,9 @@ private val Size.isPositive get() = width >= 0.5 && height >= 0.5
 //    else -> null
 //}
 
-private fun Size.toSizeOrNull(): CoilSize? = when {
+private fun Size.toSizeOrNull(): SketchSize? = when {
     isUnspecified -> null
-    isPositive && width.isFinite() && height.isFinite() -> CoilSize(
+    isPositive && width.isFinite() && height.isFinite() -> SketchSize(
         width.roundToInt(),
         height.roundToInt()
     )
