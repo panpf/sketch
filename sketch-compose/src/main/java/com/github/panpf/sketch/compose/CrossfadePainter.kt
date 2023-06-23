@@ -81,8 +81,8 @@ internal class CrossfadePainter(
     }
 
     private fun computeIntrinsicSize(): Size {
-        val startSize = start?.intrinsicSize ?: Size.Zero
-        val endSize = end?.intrinsicSize ?: Size.Zero
+        val startSize = start?.intrinsicSize ?: Size.Unspecified
+        val endSize = end?.intrinsicSize ?: Size.Unspecified
 
         val isStartSpecified = startSize.isSpecified
         val isEndSpecified = endSize.isSpecified
