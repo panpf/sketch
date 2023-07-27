@@ -206,6 +206,8 @@ interface ImageRequest {
      */
     val error: ErrorStateImage?
 
+    // todo added uriEmpty Image and with this parameter configured, no exception is thrown
+
     /**
      * How the current image and the new image transition
      *

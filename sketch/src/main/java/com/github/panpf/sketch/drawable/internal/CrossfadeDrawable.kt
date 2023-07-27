@@ -300,8 +300,12 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     private fun computeIntrinsicDimension(startSize: Int?, endSize: Int?): Int {
-        if (!preferExactIntrinsicSize && (startSize == -1 || endSize == -1)) return -1
-        return max(startSize ?: -1, endSize ?: -1)
+//        if (!preferExactIntrinsicSize && (startSize == -1 || endSize == -1)) return -1
+//        return max(startSize ?: -1, endSize ?: -1)
+        if (preferExactIntrinsicSize || (startSize != -1 && endSize != -1)) {
+            return max(startSize ?: -1, endSize ?: -1)
+        }
+        return -1
     }
 
     private fun markDone() {

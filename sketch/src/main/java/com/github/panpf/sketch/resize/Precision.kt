@@ -19,6 +19,8 @@ import android.graphics.Bitmap
 
 enum class Precision {
 
+    // todo added SMALLER_SIZE, and use default value of Resize to determine the size
+
     /**
      * Try to keep the number of pixels of the returned image smaller than resize. A 10% margin of error is allowed
      */
