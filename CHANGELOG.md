@@ -3,6 +3,7 @@
 #### sketch-compose
 
 * fix: Fixed an issue where CrossfadePainter's computeIntrinsicSize calculation logic bug caused an exception to be displayed on the Image component
+* improve: Remove some internal restrictions for the rememberAsyncImagePainter() function
 
 # v3.2.4
 

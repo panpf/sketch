@@ -170,7 +170,7 @@ fun rememberAsyncImagePainter(
  *  destination.
  */
 @Composable
-internal fun rememberAsyncImagePainter(
+fun rememberAsyncImagePainter(
     imageUri: String?,
     transform: (State) -> State = DefaultTransform,
     onState: ((State) -> Unit)? = null,
@@ -212,7 +212,7 @@ internal fun rememberAsyncImagePainter(
     "Please use the request version",
     replaceWith = ReplaceWith("rememberAsyncImagePainter(request = DisplayRequest(LocalContext.current, imageUri), ...)")
 )
-internal fun rememberAsyncImagePainter(
+fun rememberAsyncImagePainter(
     imageUri: String?,
     transform: (State) -> State = DefaultTransform,
     onState: ((State) -> Unit)? = null,
@@ -296,7 +296,7 @@ fun rememberAsyncImagePainter(
  *  destination.
  */
 @Composable
-internal fun rememberAsyncImagePainter(
+fun rememberAsyncImagePainter(
     request: DisplayRequest,
     transform: (State) -> State = DefaultTransform,
     onState: ((State) -> Unit)? = null,
