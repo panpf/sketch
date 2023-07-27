@@ -1,3 +1,9 @@
+# new
+
+#### sketch-compose
+
+* fix: Fixed an issue where CrossfadePainter's computeIntrinsicSize calculation logic bug caused an exception to be displayed on the Image component
+
 # v3.2.4
 
 #### sketch
