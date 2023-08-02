@@ -104,7 +104,11 @@ class PrefsService(val context: Context) {
     }
 
     val logLevel by lazy {
-        StringMmkvData(mmkv, "logLevel", Logger.Level.INFO.name)
+        StringMmkvData(
+            mmkv,
+            "logLevel",
+            if (BuildConfig.DEBUG) Logger.Level.DEBUG.name else Logger.Level.INFO.name
+        )
     }
 
     val showOriginImage by lazy {

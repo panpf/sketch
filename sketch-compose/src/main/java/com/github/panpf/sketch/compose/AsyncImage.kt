@@ -427,7 +427,7 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
 }
 
 /** A [SizeResolver] that computes the size from the constrains passed during the layout phase. */
-class ConstraintsSizeResolver : SizeResolver, LayoutModifier {
+internal class ConstraintsSizeResolver : SizeResolver, LayoutModifier {
 
     private val _constraints = MutableStateFlow(ZeroConstraints)
 
