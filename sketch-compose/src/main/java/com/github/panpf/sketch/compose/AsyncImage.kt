@@ -405,6 +405,7 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
 //    } else {
 //        request
 //    }
+    // todo get Lifecycle from LocalLifecycleOwner
     val noSizeResolver = request.definedOptions.resizeSizeResolver == null
     val noResetScale = request.definedOptions.resizeScaleDecider == null
     return if (noSizeResolver || noResetScale) {
