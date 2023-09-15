@@ -13,7 +13,7 @@ sampling, ExifInterface and other functions.
 Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 Jetpack
 Compose、GIF、SVG、视频缩略图、手势缩放、超大图采样、ExifInterface 等功能。
 
-## Features/简介
+## Features/特点
 
 * Support http, asset, content, android.resource and other URIs
 * Support playing GIFs, WebP, HEIF and other animated image
