@@ -9,7 +9,7 @@
 Sketch is a powerful and comprehensive image load library on Android, in addition to the basic
 functions, it also supports Jetpack Compose, GIF, SVG, video thumbnails, gesture zoom, huge images
 sampling, ExifInterface and other functions.
-<br>
+<br>-----------------</br>
 Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 Jetpack
 Compose、GIF、SVG、视频缩略图、手势缩放、超大图采样、ExifInterface 等功能。
 
@@ -28,7 +28,7 @@ Compose、GIF、SVG、视频缩略图、手势缩放、超大图采样、ExifInt
 * Support the extension of URI, cache, decoding, conversion, display, placeholder and other links
 * Based on Kotlin and Kotlin coroutines
 
-<div>-----------------------</div>
+<div>-----------------</div>
 
 * 支持 http、asset、content、android.resource 等多种 URI
 * 支持播放 gif、webp、heif 等动图
@@ -56,7 +56,7 @@ dependencies {
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v' · 不包含 'v')
 
 There are also optional modules to extend the functionality of sketch:
-<br>
+<br>-----------------</br>
 还有一些可选的模块用来扩展 sketch 的功能：
 
 ```kotlin
@@ -102,16 +102,16 @@ dependencies {
 #### R8 / Proguard
 
 Sketch doesn't need to configure any obfuscation rules itself, but you may need to add obfuscation configurations for indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio].
-<br>
+<br>-----------------</br>
 Sketch 自己不需要配置任何混淆规则，但你可能需要为间接依赖的 [Kotlin Coroutines], [OkHttp], [Okio]
 添加混淆配置
 
-## Get started/快速上手
+## Quickly Started/快速上手
 
 #### ImageView
 
 Sketch provides a series of extended functions called displayImage for ImageView, which can easily display images
-<br>
+<br>-----------------</br>
 Sketch 为 ImageView 提供了一系列的名为 displayImage 的扩展函数，可以方便的显示图片
 
 ```kotlin
@@ -128,7 +128,7 @@ imageView.displayImage("asset://image.jpg")
 ```
 
 You can also configure parameters through a trailing lambda function:
-<br>
+<br>-----------------</br>
 还可以通过尾随的 lambda 函数配置参数：
 
 ```kotlin
@@ -172,7 +172,7 @@ AsyncImage(
 
 Basic features/基础功能：
 
-* [Started/快速上手][getting_started]
+* [Get Started/开始使用][getting_started]
 * [AnimatedImage：GIF、WEBP、HEIF][animated_image]
 * [Resize：Modify the image size/修改图片尺寸][resize]
 * [Transformation：Transformation image/转换图片][transformation]
@@ -212,7 +212,7 @@ Featured features/特色功能：
 ## Changelog/更新日志
 
 Please review the [CHANGELOG.md] file
-<br>
+<br>-----------------</br>
 请查看 [CHANGELOG.md] 文件
 
 ### About version 3.0/关于 3.0 版本
@@ -232,7 +232,7 @@ Please review the [CHANGELOG.md] file
   * sketch clearly distinguishes between display, load, and download requests
   * sketch provides image scaling and display components and supports large image sampling
 
-<div>-----------------------</div>
+<div>-----------------</div>
 
 * maven groupId 改为 `io.github.panpf.sketch3`，因此 2.\* 版本不会提示升级
 * 包名改为 `com.github.panpf.sketch` 因此与 2.\* 版本不会冲突
