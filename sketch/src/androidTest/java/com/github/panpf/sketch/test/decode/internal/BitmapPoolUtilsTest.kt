@@ -364,9 +364,11 @@ class BitmapPoolUtilsTest {
         Assert.assertEquals(0, bitmapPool.size)
 
         bitmapPool.freeBitmap(null)
+        Thread.sleep(100)
         Assert.assertEquals(0, bitmapPool.size)
 
         bitmapPool.freeBitmap(Bitmap.createBitmap(100, 100, ARGB_8888).apply { recycle() })
+        Thread.sleep(100)
         Assert.assertEquals(0, bitmapPool.size)
 
         val resources = getTestContext().resources
@@ -375,6 +377,7 @@ class BitmapPoolUtilsTest {
         Assert.assertEquals(0, bitmapPool.size)
 
         bitmapPool.freeBitmap(Bitmap.createBitmap(100, 100, ARGB_8888))
+        Thread.sleep(100)
         Assert.assertTrue(bitmapPool.size > 0)
     }
 }

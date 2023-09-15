@@ -141,7 +141,7 @@ internal class TileDecoder internal constructor(
         requiredWorkThread()
 
         val newBitmap = exifOrientationHelper.applyToBitmap(bitmap, bitmapPool, disallowReuseBitmap)
-        return if (newBitmap != null && newBitmap != bitmap) {
+        return if (newBitmap != null && newBitmap !== bitmap) {
             bitmapPool.freeBitmap(bitmap, disallowReuseBitmap, "tile:applyExifOrientation")
             logger.d(SubsamplingHelper.MODULE) {
                 "applyExifOrientation. freeBitmap. bitmap=${bitmap.logString}. '$imageUri'"
