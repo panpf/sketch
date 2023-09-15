@@ -980,6 +980,7 @@ interface ImageRequest {
         }
 
 
+        // todo view.findViewTreeLifecycleOwner()
         private fun resolveLifecycle(): Lifecycle? =
             (target.asOrNull<ViewDisplayTarget<*>>()?.view?.context ?: context).getLifecycle()
 

@@ -77,6 +77,7 @@ internal fun Context.getXmlDrawableCompat(resources: Resources, @XmlRes resId: I
     }
 }
 
+// todo rename to findLifecycle
 internal fun Context?.getLifecycle(): Lifecycle? {
     var context: Context? = this
     while (true) {

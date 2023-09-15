@@ -421,6 +421,8 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
                 resizeScale(AsyncImageScaleDecider(FixedScaleDecider(contentScale.toScale())))
             }
         }
+
+        // todo LocalLifecycleOwner.getLifecycle()
     } else {
         request
     }
