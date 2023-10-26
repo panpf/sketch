@@ -15,9 +15,9 @@
  */
 package com.github.panpf.sketch.fetch
 
+import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.annotation.WorkerThread
-import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher.Companion.SCHEME
@@ -45,6 +45,22 @@ class FileUriFetcher(
 
     companion object {
         const val SCHEME = "file"
+
+        fun parseFilePathFromFileUri(uriString: String): String? {
+            val startFlag = "$SCHEME://"
+            val start = uriString.substring(0, startFlag.length)
+            return if (startFlag.equals(start, ignoreCase = true)) {
+                val subStartIndex = startFlag.length
+                val subEndIndex = uriString.indexOf("?").takeIf { it != -1 }
+                    ?: uriString.indexOf("#").takeIf { it != -1 }
+                    ?: uriString.length
+                Uri.decode(uriString.substring(subStartIndex, subEndIndex))
+            } else if (uriString.startsWith("/")) {
+                uriString
+            } else {
+                null
+            }
+        }
     }
 
     @WorkerThread
@@ -56,20 +72,8 @@ class FileUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {
-            val uriString = request.uriString
-            val subStartIndex = when {
-                SCHEME.equals(uriString.toUri().scheme, ignoreCase = true) -> SCHEME.length + 3
-                uriString.startsWith("/") -> 0
-                else -> -1
-            }
-            if (subStartIndex != -1) {
-                val subEndIndex = uriString.indexOf("?").takeIf { it != -1 }
-                    ?: uriString.indexOf("#").takeIf { it != -1 }
-                    ?: uriString.length
-                val file = File(uriString.substring(subStartIndex, subEndIndex))
-                return FileUriFetcher(sketch, request, file)
-            }
-            return null
+            val filePath = parseFilePathFromFileUri(request.uriString) ?: return null
+            return FileUriFetcher(sketch, request, File(filePath))
         }
 
         override fun toString(): String = "FileUriFetcher"

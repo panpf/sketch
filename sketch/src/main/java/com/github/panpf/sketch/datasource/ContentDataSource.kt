@@ -18,6 +18,7 @@ package com.github.panpf.sketch.datasource
 import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
 import java.io.File
@@ -45,7 +46,8 @@ class ContentDataSource constructor(
     @Throws(IOException::class)
     override fun getFile(): File =
         if (contentUri.scheme.equals("file", ignoreCase = true)) {
-            File(contentUri.toString().substring("file://".length))
+            val filePath = FileUriFetcher.parseFilePathFromFileUri(contentUri.toString())!!
+            File(filePath)
         } else {
             getCacheFileFromStreamDataSource(sketch, request, this)
         }
