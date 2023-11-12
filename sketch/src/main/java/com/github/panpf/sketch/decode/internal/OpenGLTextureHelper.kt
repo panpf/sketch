@@ -34,6 +34,7 @@ object OpenGLTextureHelper {
         if (VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             openGLTextureMaxSizeJB1()
         } else {
+            // todo 在 api 16 上读取的结果是 32766，但是实际上运行时 Bitmap 无法绘制，日志中报错 'Bitmap too large to be uploaded into a texture (3750x116, max=2048x2048)'
             openGLTextureMaxSizeBase()
         }
     } catch (e: Exception) {
