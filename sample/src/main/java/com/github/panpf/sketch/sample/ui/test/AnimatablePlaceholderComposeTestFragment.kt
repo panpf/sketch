@@ -58,7 +58,7 @@ class AnimatablePlaceholderComposeTestFragment :
         toolbar.title = "AnimatablePlaceholder (Compose)"
 
         binding.animatablePlaceholderComposeTestCompose.setContent {
-            // todo AnimatedVectorDrawable 和 AnimatedVectorDrawableCompat 在 api 29 以上无法播放
+            // todo AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above api 29
 
             val urlIndexState = urlIndexFlow.collectAsState()
             val uriString = AssetImages.STATICS[urlIndexState.value % AssetImages.STATICS.size]

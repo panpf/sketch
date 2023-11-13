@@ -28,7 +28,7 @@ import com.github.panpf.sketch.util.format
  */
 class MaskProgressDrawable(
     @ColorInt private val maskColor: Int = DEFAULT_MASK_COLOR
-    // todo 增加等待时显示控制参数
+    // todo Add display control parameters while waiting
 ) : ProgressDrawable() {
 
     companion object {
