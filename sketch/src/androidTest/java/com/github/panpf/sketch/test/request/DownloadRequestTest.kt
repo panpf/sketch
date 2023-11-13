@@ -44,8 +44,8 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
-import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -71,10 +71,10 @@ import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.ResColor
+import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.target.DownloadTarget
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -295,7 +295,10 @@ class DownloadRequestTest {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         var lifecycle1: Lifecycle? = null
-        val lifecycleOwner = LifecycleOwner { lifecycle1!! }
+        val lifecycleOwner = object: LifecycleOwner {
+            override val lifecycle: Lifecycle
+                get() = lifecycle1!!
+        }
         lifecycle1 = LifecycleRegistry(lifecycleOwner)
 
         DownloadRequest(context1, uriString1).apply {

@@ -1514,12 +1514,7 @@ class LoadRequestExecuteTest {
         val context = getTestContext()
         val sketch = newSketch()
         val lifecycleOwner = object : LifecycleOwner {
-            private var lifecycle: Lifecycle? = null
-            override fun getLifecycle(): Lifecycle {
-                return lifecycle ?: LifecycleRegistry(this).apply {
-                    lifecycle = this
-                }
-            }
+            override var lifecycle: Lifecycle = LifecycleRegistry(this)
         }
         val myLifecycle = lifecycleOwner.lifecycle as LifecycleRegistry
         runBlocking(Dispatchers.Main) {

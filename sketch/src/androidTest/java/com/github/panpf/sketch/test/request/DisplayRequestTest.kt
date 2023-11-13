@@ -351,7 +351,10 @@ class DisplayRequestTest {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         var lifecycle1: Lifecycle? = null
-        val lifecycleOwner = LifecycleOwner { lifecycle1!! }
+        val lifecycleOwner = object: LifecycleOwner {
+            override val lifecycle: Lifecycle
+                get() = lifecycle1!!
+        }
         lifecycle1 = LifecycleRegistry(lifecycleOwner)
 
         DisplayRequest(context1, uriString1).apply {

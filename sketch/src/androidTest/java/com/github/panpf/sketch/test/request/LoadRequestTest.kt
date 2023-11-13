@@ -71,10 +71,10 @@ import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.ResColor
+import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -295,7 +295,10 @@ class LoadRequestTest {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         var lifecycle1: Lifecycle? = null
-        val lifecycleOwner = LifecycleOwner { lifecycle1!! }
+        val lifecycleOwner = object: LifecycleOwner {
+            override val lifecycle: Lifecycle
+                get() = lifecycle1!!
+        }
         lifecycle1 = LifecycleRegistry(lifecycleOwner)
 
         LoadRequest(context1, uriString1).apply {
