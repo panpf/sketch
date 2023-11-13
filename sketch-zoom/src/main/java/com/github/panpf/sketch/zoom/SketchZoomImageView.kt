@@ -31,6 +31,7 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 import com.github.panpf.sketch.zoom.internal.ZoomAbility
 
+@Deprecated("Please use the SketchZoomImageView component of the https://github.com/panpf/zoomimage library instead. This component will no longer be updated.")
 open class SketchZoomImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

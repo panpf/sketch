@@ -1,5 +1,9 @@
 # v3.3.0-SNAPSHOT
 
+sketch-zoom:
+
+* deprecated：The SketchZoomImageView component is deprecated. Please use the SketchZoomImageView component of the https://github.com/panpf/zoomimage library instead.
+
 other:
 
 * depend: Upgrade kotlin 1.9.0, kotlinx coroutines 1.7.3, compose 1.5.0, lifecycle 2.6.1

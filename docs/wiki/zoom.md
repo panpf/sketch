@@ -1,5 +1,7 @@
 # 手势缩放
 
+* 此组件不再更新，请使用 https://github.com/panpf/zoomimage 库的 SketchZoomImageView 组件代替 *
+
 `需要导入 sketch-zoom 模块`
 
 Sketch 的 [SketchZoomImageView] 提供了手势缩放以及超大图采样功能，手势缩放功能参考 [PhotoView] 实现
