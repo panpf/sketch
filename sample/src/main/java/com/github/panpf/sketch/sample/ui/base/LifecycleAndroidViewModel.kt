@@ -32,6 +32,9 @@ import java.util.LinkedList
 open class LifecycleAndroidViewModel(val application1: Application) :
     AndroidViewModel(application1), LifecycleOwner {
 
+    override val lifecycle: Lifecycle
+        get() = lifecycleRegistry
+
     private val clearedListenerList: MutableList<OnClearedListener> = LinkedList()
 
     @Suppress("LeakingThis")
@@ -63,10 +66,6 @@ open class LifecycleAndroidViewModel(val application1: Application) :
             onDestroyViewListener.onCleared()
         }
         clearedListenerList.clear()
-    }
-
-    override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
     }
 
     fun interface OnClearedListener {

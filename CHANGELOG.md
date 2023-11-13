@@ -1,8 +1,15 @@
+# v3.3.0-SNAPSHOT
+
+other:
+
+* depend: Upgrade kotlin 1.9.0, kotlinx coroutines 1.7.3, compose 1.5.0, lifecycle 2.6.1
+
 # v3.2.5
 
 #### sketch-compose
 
-* fix: Fixed an issue where CrossfadePainter's computeIntrinsicSize calculation logic bug caused an exception to be displayed on the Image component
+* fix: Fixed an issue where CrossfadePainter's computeIntrinsicSize calculation logic bug caused an
+  exception to be displayed on the Image component
 * improve: Remove some internal restrictions for the rememberAsyncImagePainter() function
 
 # v3.2.4
@@ -14,7 +21,8 @@
 
 #### sketch-compose
 
-* fix: Fixed a bug where AsyncImage() crashed when placeholder and error were not set and the image failed to load [#184](https://github.com/panpf/sketch/issues/184)
+* fix: Fixed a bug where AsyncImage() crashed when placeholder and error were not set and the image
+  failed to load [#184](https://github.com/panpf/sketch/issues/184)
 
 # v3.2.3
 

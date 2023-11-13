@@ -1,22 +1,24 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-parcelize")
-    id("kotlinx-serialization")
-    id("androidx.navigation.safeargs.kotlin")
+    alias(libs.plugins.com.android.application)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.serialization)
+    alias(libs.plugins.org.jetbrains.kotlin.parcelize)
+//    id("kotlin-parcelize")
+//    id("kotlinx-serialization")
+    alias(libs.plugins.androidx.navigation.safeargs.kotlin)
 }
 
 android {
     namespace = "com.github.panpf.sketch.sample"
-    compileSdk = libs.versions.app.compileSdk.get().toInt()
+    compileSdk = property("compileSdk").toString().toInt()
 
     defaultConfig {
         applicationId = "com.github.panpf.sketch3.sample"
 
-        minSdk = libs.versions.app.minSdk.get().toInt()
-        targetSdk = libs.versions.app.targetSdk.get().toInt()
-        versionCode = libs.versions.app.versionCode.get().toInt()
-        versionName = "${libs.versions.app.versionName.get()}.${getGitVersion()}"
+        minSdk = property("minSdk").toString().toInt()
+        targetSdk = property("targetSdk").toString().toInt()
+        versionCode = property("versionCode").toString().toInt()
+        versionName = property("versionName").toString()
 
         vectorDrawables.useSupportLibrary = true    // Converting svg to png under version 21 is not allowed
     }
@@ -57,6 +59,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         compose = true
     }

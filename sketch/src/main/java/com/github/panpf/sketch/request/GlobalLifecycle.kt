@@ -28,7 +28,13 @@ import com.github.panpf.sketch.util.getLifecycle
  */
 internal object GlobalLifecycle : Lifecycle() {
 
-    private val owner = LifecycleOwner { this }
+    private val owner = object: LifecycleOwner {
+        override val lifecycle: Lifecycle
+            get() = this@GlobalLifecycle
+    }
+
+    override val currentState: State
+        get() = State.RESUMED
 
     override fun addObserver(observer: LifecycleObserver) {
         require(observer is LifecycleEventObserver) {
@@ -42,8 +48,6 @@ internal object GlobalLifecycle : Lifecycle() {
     }
 
     override fun removeObserver(observer: LifecycleObserver) {}
-
-    override fun getCurrentState() = State.RESUMED
 
     override fun toString() = "GlobalLifecycle"
 }

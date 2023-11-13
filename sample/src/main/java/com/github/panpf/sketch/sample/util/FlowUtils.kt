@@ -54,6 +54,9 @@ class ViewLifecycleOwner(view: View) : LifecycleOwner {
 
     private val lifecycleRegistry = LifecycleRegistry(this)
 
+    override val lifecycle: Lifecycle
+        get() = lifecycleRegistry
+
     init {
         view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
@@ -70,9 +73,5 @@ class ViewLifecycleOwner(view: View) : LifecycleOwner {
                 view.setTag(R.id.tagId_viewLifecycle, null)
             }
         })
-    }
-
-    override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
     }
 }

@@ -1,22 +1,26 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
+    alias(libs.plugins.com.android.library)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
 }
 
 android {
     namespace = "com.github.panpf.sketch.compose"
-    compileSdk = libs.versions.app.compileSdk.get().toInt()
+    compileSdk = property("compileSdk").toString().toInt()
 
     defaultConfig {
-        minSdk = libs.versions.app.minSdkCompose.get().toInt()
-        targetSdk = libs.versions.app.targetSdk.get().toInt()
+        minSdk = property("minSdk21").toString().toInt()
 
         consumerProguardFiles("proguard-rules.pro")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "VERSION_NAME", "\"${libs.versions.app.versionName.get()}\"")
-        buildConfigField("int", "VERSION_CODE", libs.versions.app.versionCode.get())
+        buildConfigField("String", "VERSION_NAME", "\"${property("versionName").toString()}\"")
+        buildConfigField("int", "VERSION_CODE", property("versionCode").toString())
+    }
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
     }
 
     buildTypes {
@@ -28,10 +32,6 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
-    }
-
-    buildFeatures {
-        compose = true
     }
 
     // Set both the Java and Kotlin compilers to target Java 8.
@@ -57,24 +57,4 @@ dependencies {
     api(libs.google.accompanist.drawablepainter)
 
     androidTestImplementation(libs.bundles.test)
-}
-
-/**
- * publish config
- */
-if (hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.properties file
-    && hasProperty("signing.password")    // configured in the ~/.gradle/gradle.properties file
-    && hasProperty("signing.secretKeyRingFile")    // configured in the ~/.gradle/gradle.properties file
-    && hasProperty("mavenCentralUsername")    // configured in the ~/.gradle/gradle.properties file
-    && hasProperty("mavenCentralPassword")    // configured in the ~/.gradle/gradle.properties file
-    && hasProperty("GROUP")    // configured in the rootProject/gradle.properties file
-    && hasProperty("POM_ARTIFACT_ID")    // configured in the project/gradle.properties file
-) {
-    apply { plugin("com.github.panpf.maven.publish") }
-
-    configure<com.github.panpf.maven.publish.MavenPublishPluginExtension> {
-        version = libs.versions.app.versionName.get()
-        sonatypeHost = com.github.panpf.maven.publish.SonatypeHost.S01
-        disableAndroidJavaDocsAddReferencesLinks = true
-    }
 }
