@@ -33,6 +33,7 @@
         <enum name="exactly" value="1" />
         <enum name="sameAspectRatio" value="2" />
         <enum name="lessPixels" value="3" />
+        <enum name="smallerSize" value="4" />
     </attr>
     <attr name="sketch_resizeScale" format="enum">
         <enum name="startCrop" value="1" />

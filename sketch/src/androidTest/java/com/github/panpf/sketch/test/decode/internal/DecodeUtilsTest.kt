@@ -224,6 +224,7 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(1006, 202),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -231,6 +232,7 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(1005, 201),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -238,6 +240,7 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(1004, 200),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -245,6 +248,7 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(503, 101),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -252,6 +256,7 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -259,6 +264,7 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(252, 51),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -266,6 +272,7 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(251, 50),
+                smallerSizeMode = false
             )
         )
 
@@ -274,7 +281,8 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
-                mimeType = "image/jpeg"
+                mimeType = "image/jpeg",
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -282,7 +290,8 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
-                mimeType = "image/png"
+                mimeType = "image/png",
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -290,7 +299,8 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
-                mimeType = "image/bmp"
+                mimeType = "image/bmp",
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -298,7 +308,8 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
-                mimeType = "image/webp"
+                mimeType = "image/webp",
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -306,7 +317,8 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
-                mimeType = "image/gif"
+                mimeType = "image/gif",
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -314,7 +326,8 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
-                mimeType = "image/heic"
+                mimeType = "image/heic",
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -322,7 +335,148 @@ class DecodeUtilsTest {
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
-                mimeType = "image/heif"
+                mimeType = "image/heif",
+                smallerSizeMode = false
+            )
+        )
+
+        // smallerSizeMode = true
+        Assert.assertEquals(
+            1,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1006, 202),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            1,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1005, 201),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1004, 200),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(503, 101),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(252, 51),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            8,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(251, 50),
+                smallerSizeMode = true
+            )
+        )
+
+        Assert.assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/jpeg",
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/png",
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/bmp",
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/webp",
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/gif",
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/heic",
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/heif",
+                smallerSizeMode = true
+            )
+        )
+
+
+        Assert.assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(30000, 750),
+                targetSize = Size(1080, 1920),
+                smallerSizeMode = false
+            )
+        )
+        Assert.assertEquals(
+            32,
+            calculateSampleSize(
+                imageSize = Size(30000, 750),
+                targetSize = Size(1080, 1920),
+                smallerSizeMode = true
             )
         )
     }
@@ -334,6 +488,7 @@ class DecodeUtilsTest {
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(1006, 202),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -341,6 +496,7 @@ class DecodeUtilsTest {
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(1005, 201),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -349,6 +505,7 @@ class DecodeUtilsTest {
                 regionSize = Size(1005, 201),
                 targetSize = Size(1004, 200),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -357,6 +514,7 @@ class DecodeUtilsTest {
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -365,6 +523,7 @@ class DecodeUtilsTest {
                 regionSize = Size(1005, 201),
                 targetSize = Size(501, 99),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -373,6 +532,7 @@ class DecodeUtilsTest {
                 regionSize = Size(1005, 201),
                 targetSize = Size(251, 50),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
         Assert.assertEquals(
@@ -381,6 +541,7 @@ class DecodeUtilsTest {
                 regionSize = Size(1005, 201),
                 targetSize = Size(250, 49),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
 
@@ -390,6 +551,7 @@ class DecodeUtilsTest {
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
                 imageSize = Size(1005, 201),
+                smallerSizeMode = false
             )
         )
 
@@ -400,6 +562,108 @@ class DecodeUtilsTest {
                 targetSize = Size(502, 100),
                 mimeType = "image/png",
                 imageSize = Size(1005, 201),
+                smallerSizeMode = false
+            )
+        )
+
+        // smallerSizeMode = true
+        Assert.assertEquals(
+            1,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(1006, 202),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            1,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(1005, 201),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(1004, 200),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            2,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(501, 99),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(251, 50),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+        Assert.assertEquals(
+            8,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(250, 49),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+
+        Assert.assertEquals(
+            if (VERSION.SDK_INT >= VERSION_CODES.N) 4 else 2,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                imageSize = Size(1005, 201),
+                smallerSizeMode = true
+            )
+        )
+
+        Assert.assertEquals(
+            2,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/png",
+                imageSize = Size(1005, 201),
+                smallerSizeMode = true
+            )
+        )
+
+        Assert.assertEquals(
+            4,
+            calculateSampleSizeForRegion(
+                regionSize = Size(30000, 750),
+                targetSize = Size(1080, 1920),
+                smallerSizeMode = false
+            )
+        )
+        Assert.assertEquals(
+            32,
+            calculateSampleSizeForRegion(
+                regionSize = Size(30000, 750),
+                targetSize = Size(1080, 1920),
+                smallerSizeMode = true
             )
         )
     }

@@ -22,7 +22,7 @@ import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
-import com.github.panpf.tools4j.test.ktx.assertThrow
+import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -120,8 +120,8 @@ class PrecisionDeciderTest {
         LongImageClipPrecisionDecider(EXACTLY).apply {
             Assert.assertEquals(EXACTLY, get(150, 48, 50, 50))
         }
-        assertThrow(IllegalArgumentException::class) {
-            LongImageClipPrecisionDecider(LESS_PIXELS)
+        LongImageClipPrecisionDecider(SMALLER_SIZE).apply {
+            Assert.assertEquals(SMALLER_SIZE, get(150, 48, 50, 50))
         }
     }
 
@@ -133,6 +133,14 @@ class PrecisionDeciderTest {
             Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 50, 50, 50))
             Assert.assertEquals(LESS_PIXELS, get(150, 76, 50, 50))
             Assert.assertEquals(LESS_PIXELS, get(150, 77, 50, 50))
+        }
+
+        LongImageClipPrecisionDecider(SAME_ASPECT_RATIO, SMALLER_SIZE).apply {
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 49, 50, 50))
+            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 50, 50, 50))
+            Assert.assertEquals(SMALLER_SIZE, get(150, 76, 50, 50))
+            Assert.assertEquals(SMALLER_SIZE, get(150, 77, 50, 50))
         }
 
         LongImageClipPrecisionDecider(EXACTLY).apply {
@@ -147,11 +155,11 @@ class PrecisionDeciderTest {
     @Test
     fun testLongImageClipPrecisionDeciderKey() {
         Assert.assertEquals(
-            "LongImageClip(EXACTLY,Default(2.5,5.0))",
+            "LongImageClip(EXACTLY,LESS_PIXELS,Default(2.5,5.0))",
             LongImageClipPrecisionDecider(EXACTLY).key
         )
         Assert.assertEquals(
-            "LongImageClip(SAME_ASPECT_RATIO,Default(2.5,5.0))",
+            "LongImageClip(SAME_ASPECT_RATIO,LESS_PIXELS,Default(2.5,5.0))",
             LongImageClipPrecisionDecider(SAME_ASPECT_RATIO).key
         )
     }
@@ -190,11 +198,11 @@ class PrecisionDeciderTest {
     @Test
     fun testLongImageClipPrecisionDeciderToString() {
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(precision=EXACTLY, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
+            "LongImageClipPrecisionDecider(precision=EXACTLY, otherPrecision=LESS_PIXELS, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
             LongImageClipPrecisionDecider(EXACTLY).toString()
         )
         Assert.assertEquals(
-            "LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
+            "LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO, otherPrecision=LESS_PIXELS, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
             LongImageClipPrecisionDecider(SAME_ASPECT_RATIO).toString()
         )
     }

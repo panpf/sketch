@@ -7,6 +7,7 @@
 * width、height：期望的宽和高
 * [Precision]：精度。决定如何使用 width 和 height 去调整图片的尺寸
     * LESS_PIXELS：默认精度。只要最终 Bitmap 的像素数（宽乘以高）小于等于 [Resize] 的像素数即可
+    * SMALLER_SIZE：只要最终 Bitmap 的宽和高都小于等于 [Resize] 的宽和高即可
     * SAME_ASPECT_RATIO：最终 Bitmap 的宽高比和 [Resize] 的宽高比一致并且像素数一定少于 [Resize]，如果比例不一致会根据 [Scale]
       裁剪原图、优先使用 BitmapRegionDecoder 裁剪
     * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果尺寸不一致会根据 [Scale] 裁剪原图、优先使用 BitmapRegionDecoder 裁剪

@@ -19,12 +19,15 @@ import android.graphics.Bitmap
 
 enum class Precision {
 
-    // todo added SMALLER_SIZE, and use default value of Resize to determine the size
-
     /**
      * Try to keep the number of pixels of the returned image smaller than resize. A 10% margin of error is allowed
      */
     LESS_PIXELS,
+
+    /**
+     * The size of the returned image must be smaller than [Resize]
+     */
+    SMALLER_SIZE,
 
     /**
      * The size of the new image will not be larger than [Resize], but the aspect ratio will be the same

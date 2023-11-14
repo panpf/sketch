@@ -59,12 +59,24 @@ open class DrawableBitmapDecoder constructor(
                 "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
             )
         }
-        val resize = requestContext.resizeSize
+        val resizeSize = requestContext.resizeSize
         val dstWidth: Int
         val dstHeight: Int
         var transformedList: List<String>? = null
         if (drawable is BitmapDrawable || request.resizeSizeResolver is DisplaySizeResolver) {
-            val inSampleSize = calculateSampleSize(Size(imageWidth, imageHeight), resize, null)
+            val imageSize = Size(imageWidth, imageHeight)
+            val precision = request.resizePrecisionDecider.get(
+                imageWidth = imageSize.width,
+                imageHeight = imageSize.height,
+                resizeWidth = resizeSize.width,
+                resizeHeight = resizeSize.height
+            )
+            val inSampleSize = calculateSampleSize(
+                imageSize = imageSize,
+                targetSize = resizeSize,
+                smallerSizeMode = precision.isSmallerSizeMode(),
+                mimeType = null
+            )
             dstWidth = (imageWidth / inSampleSize.toFloat()).roundToInt()
             dstHeight = (imageHeight / inSampleSize.toFloat()).roundToInt()
             if (inSampleSize > 1) {
@@ -72,7 +84,7 @@ open class DrawableBitmapDecoder constructor(
             }
         } else {
             val scale: Float =
-                min(resize.width / imageWidth.toFloat(), resize.height / imageHeight.toFloat())
+                min(resizeSize.width / imageWidth.toFloat(), resizeSize.height / imageHeight.toFloat())
             dstWidth = (imageWidth * scale).roundToInt()
             dstHeight = (imageHeight * scale).roundToInt()
             if (scale != 1f) {

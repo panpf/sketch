@@ -33,6 +33,7 @@ import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.internal.getOrCreate
+import com.github.panpf.sketch.decode.internal.isSmallerSizeMode
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.fetch.FetchResult
@@ -95,20 +96,31 @@ class SvgBitmapDecoder constructor(
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
         )
 
-        val resize = requestContext.resizeSize
+        val resizeSize = requestContext.resizeSize
         val dstWidth: Int
         val dstHeight: Int
         var transformedList: List<String>? = null
         if (request.resizeSizeResolver is DisplaySizeResolver) {
-            val inSampleSize =
-                calculateSampleSize(Size(imageInfo.width, imageInfo.height), resize, null)
+            val imageSize = Size(imageInfo.width, imageInfo.height)
+            val precision = request.resizePrecisionDecider.get(
+                imageWidth = imageSize.width,
+                imageHeight = imageSize.height,
+                resizeWidth = resizeSize.width,
+                resizeHeight = resizeSize.height
+            )
+            val inSampleSize = calculateSampleSize(
+                imageSize = imageSize,
+                targetSize = resizeSize,
+                smallerSizeMode = precision.isSmallerSizeMode(),
+                mimeType = null
+            )
             dstWidth = (imageWidth / inSampleSize).roundToInt()
             dstHeight = (imageHeight / inSampleSize).roundToInt()
             if (inSampleSize > 1) {
                 transformedList = listOf(createInSampledTransformed(inSampleSize))
             }
         } else {
-            val scale: Float = min(resize.width / imageWidth, resize.height / imageHeight)
+            val scale: Float = min(resizeSize.width / imageWidth, resizeSize.height / imageHeight)
             dstWidth = (imageWidth * scale).roundToInt()
             dstHeight = (imageHeight * scale).roundToInt()
             if (scale != 1f) {

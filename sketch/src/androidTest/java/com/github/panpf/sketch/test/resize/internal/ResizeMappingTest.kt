@@ -20,6 +20,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
@@ -77,6 +78,45 @@ class ResizeMappingTest {
         Assert.assertEquals(
             ResizeMapping(Rect(0, 0, 50, 200), Rect(0, 0, 50, 200)),
             calculateResizeMapping(50, 200, 150, 100, LESS_PIXELS, START_CROP)
+        )
+    }
+
+    @Test
+    fun testCalculatorResizeMappingSmallerSize() {
+        /* resize < imageSize */
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 40, 10)),
+            calculateResizeMapping(200, 50, 40, 20, SMALLER_SIZE, START_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 20, 5)),
+            calculateResizeMapping(200, 50, 20, 40, SMALLER_SIZE, START_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 50, 200), Rect(0, 0, 5, 20)),
+            calculateResizeMapping(50, 200, 40, 20, SMALLER_SIZE, START_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 50, 200), Rect(0, 0, 10, 40)),
+            calculateResizeMapping(50, 200, 20, 40, SMALLER_SIZE, START_CROP)
+        )
+
+        /* resize > imageSize */
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 100, 25)),
+            calculateResizeMapping(200, 50, 100, 150, SMALLER_SIZE, START_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 200, 50), Rect(0, 0, 150, 37)),
+            calculateResizeMapping(200, 50, 150, 100, SMALLER_SIZE, START_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 50, 200), Rect(0, 0, 37, 150)),
+            calculateResizeMapping(50, 200, 100, 150, SMALLER_SIZE, START_CROP)
+        )
+        Assert.assertEquals(
+            ResizeMapping(Rect(0, 0, 50, 200), Rect(0, 0, 25, 100)),
+            calculateResizeMapping(50, 200, 150, 100, SMALLER_SIZE, START_CROP)
         )
     }
 

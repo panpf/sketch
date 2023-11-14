@@ -34,6 +34,7 @@ import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.isGif
+import com.github.panpf.sketch.decode.internal.isSmallerSizeMode
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -79,15 +80,23 @@ class GifDrawableDrawableDecoder(
 ) : DrawableDecoder {
 
     @WorkerThread
-    override suspend fun decode(): Result<DrawableDecodeResult> = kotlin.runCatching{
+    override suspend fun decode(): Result<DrawableDecodeResult> = kotlin.runCatching {
         val request = requestContext.request
         val gifInfoHandleHelper = GifInfoHandleHelper(dataSource)
         val imageWidth = gifInfoHandleHelper.width
         val imageHeight = gifInfoHandleHelper.height
         val resizeSize = requestContext.resizeSize
+        val imageSize = Size(imageWidth, imageHeight)
+        val precision = request.resizePrecisionDecider.get(
+            imageWidth = imageSize.width,
+            imageHeight = imageSize.height,
+            resizeWidth = resizeSize.width,
+            resizeHeight = resizeSize.height
+        )
         val inSampleSize = calculateSampleSize(
-            Size(imageWidth, imageHeight),
-            Size(resizeSize.width, resizeSize.height)
+            imageSize = imageSize,
+            targetSize = resizeSize,
+            smallerSizeMode = precision.isSmallerSizeMode(),
         )
         gifInfoHandleHelper.setOptions(GifOptions().apply {
             setInSampleSize(inSampleSize)

@@ -111,7 +111,7 @@ val Drawable.alphaCompat: Int
     get() = DrawableCompat.getAlpha(this)
 
 fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null): Size {
-    val sampleSize = calculateSampleSize(imageSize, targetSize)
+    val sampleSize = calculateSampleSize(imageSize, targetSize, false)
     return calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
 }
 

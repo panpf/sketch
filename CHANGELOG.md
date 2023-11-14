@@ -1,5 +1,9 @@
 # v3.3.0-SNAPSHOT
 
+#### sketch:
+
+* new: Precision adds SMALLER_SIZE enum value
+
 #### sketch-zoom:
 
 * deprecated：The SketchZoomImageView component is deprecated. Please use the SketchZoomImageView component of the https://github.com/panpf/zoomimage library instead.

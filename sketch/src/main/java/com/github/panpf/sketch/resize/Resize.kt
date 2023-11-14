@@ -56,6 +56,7 @@ data class Resize constructor(
                 imageAspectRatio != resizeAspectRatio
             }
             Precision.LESS_PIXELS -> false
+            Precision.SMALLER_SIZE -> false
         }
 
     override fun toString(): String {

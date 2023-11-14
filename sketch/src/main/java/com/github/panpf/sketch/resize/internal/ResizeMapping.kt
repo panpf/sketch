@@ -19,6 +19,7 @@ import android.graphics.Rect
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
@@ -53,6 +54,14 @@ fun calculateResizeMapping(
         val resizePixels = resizeWidth * resizeHeight
         var scale = 1f
         while (((imageWidth * scale).toInt() * (imageHeight * scale).toInt()) > resizePixels) {
+            scale -= 0.01f
+        }
+        val srcRect = Rect(0, 0, imageWidth, imageHeight)
+        val dstRect = Rect(0, 0, (imageWidth * scale).toInt(), (imageHeight * scale).toInt())
+        return ResizeMapping(srcRect, dstRect)
+    } else if (precision == SMALLER_SIZE) {
+        var scale = 1f
+        while ((imageWidth * scale).toInt() > resizeWidth ||  (imageHeight * scale).toInt() > resizeHeight) {
             scale -= 0.01f
         }
         val srcRect = Rect(0, 0, imageWidth, imageHeight)

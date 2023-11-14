@@ -52,27 +52,22 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
  */
 class LongImageClipPrecisionDecider constructor(
     val precision: Precision = Precision.SAME_ASPECT_RATIO,
+    val otherPrecision: Precision = Precision.LESS_PIXELS,
     val longImageDecider: LongImageDecider = DefaultLongImageDecider(),
 ) : PrecisionDecider {
 
-    init {
-        require(precision == Precision.EXACTLY || precision == Precision.SAME_ASPECT_RATIO) {
-            "precision must be EXACTLY or SAME_ASPECT_RATIO"
-        }
-    }
-
-    override val key: String by lazy { "LongImageClip($precision,${longImageDecider.key})" }
+    override val key: String by lazy { "LongImageClip($precision,$otherPrecision,${longImageDecider.key})" }
 
     override fun get(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Precision {
         val isLongImage = longImageDecider
             .isLongImage(imageWidth, imageHeight, resizeWidth, resizeHeight)
-        return if (isLongImage) precision else Precision.LESS_PIXELS
+        return if (isLongImage) precision else otherPrecision
     }
 
     override fun toString(): String {
-        return "LongImageClipPrecisionDecider(precision=$precision, longImageDecider=$longImageDecider)"
+        return "LongImageClipPrecisionDecider(precision=$precision, otherPrecision=$otherPrecision, longImageDecider=$longImageDecider)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -80,12 +75,14 @@ class LongImageClipPrecisionDecider constructor(
         if (javaClass != other?.javaClass) return false
         other as LongImageClipPrecisionDecider
         if (precision != other.precision) return false
+        if (otherPrecision != other.otherPrecision) return false
         if (longImageDecider != other.longImageDecider) return false
         return true
     }
 
     override fun hashCode(): Int {
         var result = precision.hashCode()
+        result = 31 * result + otherPrecision.hashCode()
         result = 31 * result + longImageDecider.hashCode()
         return result
     }

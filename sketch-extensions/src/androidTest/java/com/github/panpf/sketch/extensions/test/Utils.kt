@@ -60,7 +60,7 @@ val Drawable.intrinsicSize: Size
     get() = Size(intrinsicWidth, intrinsicHeight)
 
 fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null): Size {
-    val sampleSize = calculateSampleSize(imageSize, targetSize)
+    val sampleSize = calculateSampleSize(imageSize, targetSize, false)
     return calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
 }
 

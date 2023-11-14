@@ -16,13 +16,13 @@
 package com.github.panpf.sketch.extensions.test.decode
 
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.supportApkIcon
 import com.github.panpf.sketch.extensions.test.intrinsicSize
@@ -32,6 +32,7 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.sketch
@@ -176,7 +177,7 @@ class ApkIconBitmapDecoderTest {
         }
 
         LoadRequest(context, apkFilePath) {
-            bitmapConfig(RGB_565)
+            bitmapConfig(Bitmap.Config.RGB_565)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
@@ -216,7 +217,31 @@ class ApkIconBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
-                listOf(createResizeTransformed(Resize(100, 100, LESS_PIXELS, CENTER_CROP))),
+                listOf(createInSampledTransformed(2)),
+                transformedList
+            )
+        }
+
+        LoadRequest(context, apkFilePath) {
+            resize(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight * 2, SAME_ASPECT_RATIO)
+        }.run {
+            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
+            runBlocking {
+                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
+            }.getOrThrow()
+        }.apply {
+            Assert.assertEquals(
+                "Bitmap(${iconDrawable.intrinsicWidth/2}x${iconDrawable.intrinsicHeight},ARGB_8888)",
+                bitmap.toShortInfoString()
+            )
+            Assert.assertEquals(
+                "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png',UNDEFINED)",
+                imageInfo.toShortString()
+            )
+            Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(
+                listOf(createResizeTransformed(Resize(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight * 2, SAME_ASPECT_RATIO, CENTER_CROP))),
                 transformedList
             )
         }

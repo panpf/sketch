@@ -35,6 +35,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
@@ -101,20 +102,37 @@ fun calculateSampledBitmapSizeForRegion(
     return Size(width, height)
 }
 
+private fun checkSampleSize(
+    sampledSize: Size,
+    targetSize: Size,
+    smallerSizeMode: Boolean
+): Boolean {
+    return if (smallerSizeMode) {
+        sampledSize.width <= targetSize.width && sampledSize.height <= targetSize.height
+    } else {
+        sampledSize.width * sampledSize.height <= targetSize.width * targetSize.height
+    }
+}
 
 /**
  * Calculate the sample size, support for BitmapFactory or ImageDecoder
  */
 fun calculateSampleSize(
-    imageSize: Size, targetSize: Size, mimeType: String? = null
+    imageSize: Size,
+    targetSize: Size,
+    smallerSizeMode: Boolean,
+    mimeType: String? = null
 ): Int {
-    val targetPixels = targetSize.width * targetSize.height
     var sampleSize = 1
-    while (true) {
+    var accepted = false
+    while (!accepted) {
         val bitmapSize = calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
-        if (bitmapSize.width * bitmapSize.height <= targetPixels) {
-            break
-        } else {
+        accepted = checkSampleSize(
+            sampledSize = bitmapSize,
+            targetSize = targetSize,
+            smallerSizeMode = smallerSizeMode
+        )
+        if (!accepted) {
             sampleSize *= 2
         }
     }
@@ -125,17 +143,24 @@ fun calculateSampleSize(
  * Calculate the sample size, support for BitmapRegionDecoder
  */
 fun calculateSampleSizeForRegion(
-    regionSize: Size, targetSize: Size, mimeType: String? = null, imageSize: Size? = null
+    regionSize: Size,
+    targetSize: Size,
+    smallerSizeMode: Boolean,
+    mimeType: String? = null,
+    imageSize: Size? = null
 ): Int {
-    val targetPixels = targetSize.width * targetSize.height
     var sampleSize = 1
-    while (true) {
+    var accepted = false
+    while (!accepted) {
         val bitmapSize = calculateSampledBitmapSizeForRegion(
             regionSize, sampleSize, mimeType, imageSize
         )
-        if (bitmapSize.width * bitmapSize.height <= targetPixels) {
-            break
-        } else {
+        accepted = checkSampleSize(
+            sampledSize = bitmapSize,
+            targetSize = targetSize,
+            smallerSizeMode = smallerSizeMode
+        )
+        if (!accepted) {
             sampleSize *= 2
         }
     }
@@ -251,6 +276,7 @@ fun realDecode(
         val sampleSize = calculateSampleSizeForRegion(
             regionSize = Size(resizeMapping.srcRect.width(), resizeMapping.srcRect.height()),
             targetSize = Size(resizeMapping.destRect.width(), resizeMapping.destRect.height()),
+            smallerSizeMode = addedResize.precision.isSmallerSizeMode(),
             mimeType = imageInfo.mimeType,
             imageSize = imageSize
         )
@@ -263,7 +289,12 @@ fun realDecode(
     } else {
         val sampleSize = run {
             val targetSize = Size(addedResize.width, addedResize.height)
-            calculateSampleSize(imageSize, targetSize, imageInfo.mimeType)
+            calculateSampleSize(
+                imageSize = imageSize,
+                targetSize = targetSize,
+                smallerSizeMode = addedResize.precision.isSmallerSizeMode(),
+                mimeType = imageInfo.mimeType
+            )
         }
         if (sampleSize > 1) {
             transformedList.add(0, createInSampledTransformed(sampleSize))
@@ -351,7 +382,8 @@ fun BitmapDecodeResult.appliedResize(
     val newBitmap = if (resize.precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
             imageSize = Size(inputBitmap.width, inputBitmap.height),
-            targetSize = Size(resize.width, resize.height)
+            targetSize = Size(resize.width, resize.height),
+            smallerSizeMode = resize.precision.isSmallerSizeMode()
         )
         if (sampleSize != 1) {
             inputBitmap.scaled(
@@ -617,4 +649,8 @@ fun Bytes.containsRiffAnimChunk(offset: Int = 0): Boolean {
         }
     }
     return false
+}
+
+fun Precision.isSmallerSizeMode(): Boolean {
+    return this == Precision.SMALLER_SIZE
 }
