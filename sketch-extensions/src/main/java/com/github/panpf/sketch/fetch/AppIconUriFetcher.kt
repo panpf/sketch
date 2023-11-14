@@ -58,7 +58,7 @@ class AppIconUriFetcher(
 
     companion object {
         const val SCHEME = "app.icon"
-        const val IMAGE_MIME_TYPE = "image/appicon"
+        const val IMAGE_MIME_TYPE = "image/png"
     }
 
     @WorkerThread

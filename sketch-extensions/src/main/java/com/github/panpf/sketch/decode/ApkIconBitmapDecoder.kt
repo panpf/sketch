@@ -59,7 +59,7 @@ class ApkIconBitmapDecoder(
 
     companion object {
         const val MIME_TYPE = "application/vnd.android.package-archive"
-        const val IMAGE_MIME_TYPE = "image/appicon"
+        const val IMAGE_MIME_TYPE = "image/png"
     }
 
     class Factory : BitmapDecoder.Factory {
