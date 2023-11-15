@@ -53,6 +53,7 @@ class SketchUtils private constructor() {
     }
 }
 
+// todo rename to findLeafSketchDrawable
 /**
  * Find the last [SketchDrawable] from the specified Drawable
  */

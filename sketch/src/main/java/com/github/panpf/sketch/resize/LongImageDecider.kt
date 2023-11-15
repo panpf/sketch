@@ -17,6 +17,8 @@ package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.util.format
 
+// todo add LongImageDecider()
+
 /**
  * Determine whether it is a long image given the image size and target size
  */

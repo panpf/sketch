@@ -115,7 +115,7 @@ interface DisplayRequest : ImageRequest {
     /**
      * Execute current DisplayRequest asynchronously.
      *
-     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * Note: The request will not start executing until Lifecycle state is STARTED
      * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
@@ -128,7 +128,7 @@ interface DisplayRequest : ImageRequest {
     /**
      * Execute current DisplayRequest synchronously in the current coroutine scope.
      *
-     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * Note: The request will not start executing until Lifecycle state is STARTED
      * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [DisplayResult.Success] if the request completes successfully. Else, returns an [DisplayResult.Error].
@@ -214,6 +214,10 @@ interface DisplayRequest : ImageRequest {
 
         override fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
             super.lifecycle(lifecycle)
+        }
+
+        override fun lifecycle(lifecycleResolver: LifecycleResolver?): Builder = apply {
+            super.lifecycle(lifecycleResolver)
         }
 
         override fun build(): DisplayRequest {
@@ -456,7 +460,7 @@ interface DisplayRequest : ImageRequest {
         override val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?,
         override val progressListener: ProgressListener<ImageRequest>?,
         override val target: Target?,
-        override val lifecycle: Lifecycle,
+        override val lifecycleResolver: LifecycleResolver,
         override val definedOptions: ImageOptions,
         override val defaultOptions: ImageOptions?,
         override val depth: Depth,

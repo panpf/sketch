@@ -17,7 +17,6 @@ package com.github.panpf.sketch.test.utils
 
 import android.content.Context
 import android.graphics.ColorSpace
-import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -31,6 +30,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageRequest.Builder
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.ProgressListener
@@ -54,7 +54,7 @@ class TestRequest(
     override val listener: Listener<ImageRequest, Success, Error>?,
     override val progressListener: ProgressListener<ImageRequest>?,
     override val target: Target?,
-    override val lifecycle: Lifecycle,
+    override val lifecycleResolver: LifecycleResolver,
     override val definedOptions: ImageOptions,
     override val defaultOptions: ImageOptions?,
     override val depth: Depth,
@@ -89,7 +89,7 @@ class TestRequest(
         listener = null,
         progressListener = null,
         target = null,
-        lifecycle = GlobalLifecycle,
+        lifecycleResolver = LifecycleResolver(GlobalLifecycle),
         definedOptions = ImageOptions(),
         defaultOptions = null,
         depth = NETWORK,

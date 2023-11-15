@@ -26,8 +26,8 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.getDrawableCompat
-import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.sketch.util.getXmlDrawableCompat
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
@@ -40,14 +40,14 @@ import org.junit.runner.RunWith
 class ContextsTest {
 
     @Test
-    fun testGetLifecycle() {
+    fun testFindLifecycle() {
         val context = getTestContext()
-        Assert.assertNull(context.getLifecycle())
+        Assert.assertNull(context.findLifecycle())
 
-        Assert.assertNull(context.applicationContext.getLifecycle())
+        Assert.assertNull(context.applicationContext.findLifecycle())
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
-        Assert.assertSame(activity.lifecycle, activity.asOrThrow<Context>().getLifecycle())
+        Assert.assertSame(activity.lifecycle, activity.asOrThrow<Context>().findLifecycle())
     }
 
     @Test

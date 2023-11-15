@@ -209,7 +209,7 @@ class Sketch private constructor(
     /**
      * Execute the DisplayRequest asynchronously.
      *
-     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * Note: The request will not start executing until Lifecycle state is STARTED
      * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
@@ -230,7 +230,7 @@ class Sketch private constructor(
     /**
      * Execute the DisplayRequest synchronously in the current coroutine scope.
      *
-     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * Note: The request will not start executing until Lifecycle state is STARTED
      * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [DisplayResult.Success] if the request completes successfully. Else, returns an [DisplayResult.Error].
@@ -252,7 +252,7 @@ class Sketch private constructor(
     /**
      * Execute the LoadRequest asynchronously.
      *
-     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * Note: The request will not start executing until Lifecycle state is STARTED
      * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
@@ -268,7 +268,7 @@ class Sketch private constructor(
     /**
      * Execute the LoadRequest synchronously in the current coroutine scope.
      *
-     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * Note: The request will not start executing until Lifecycle state is STARTED
      * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [LoadResult.Success] if the request completes successfully. Else, returns an [LoadResult.Error].
@@ -284,7 +284,7 @@ class Sketch private constructor(
     /**
      * Execute the DownloadRequest asynchronously.
      *
-     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * Note: The request will not start executing until Lifecycle state is STARTED
      * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
@@ -300,7 +300,7 @@ class Sketch private constructor(
     /**
      * Execute the DownloadRequest synchronously in the current coroutine scope.
      *
-     * Note: The request will not start executing until [ImageRequest.lifecycle]
+     * Note: The request will not start executing until Lifecycle state is STARTED
      * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
      *
      * @return A [DownloadResult.Success] if the request completes successfully. Else, returns an [DownloadResult.Error].

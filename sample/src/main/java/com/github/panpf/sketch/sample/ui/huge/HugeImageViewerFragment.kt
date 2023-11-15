@@ -60,7 +60,6 @@ class HugeImageViewerFragment : BindingFragment<HugeImageViewerFragmentBinding>(
 
             displayImage(args.imageUri) {
                 setApplySettings(DETAIL)
-                lifecycle(viewLifecycleOwner.lifecycle)
             }
         }
 

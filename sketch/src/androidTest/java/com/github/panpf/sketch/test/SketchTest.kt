@@ -42,6 +42,7 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
+import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
@@ -456,6 +457,7 @@ class SketchTest {
         val listenerSupervisor4 = DisplayListenerSupervisor()
         val request4 = DisplayRequest(imageView, TestAssets.SAMPLE_JPEG_URI) {
             listener(listenerSupervisor4)
+            lifecycle(GlobalLifecycle)
         }
         val result4 = runBlocking {
             try {

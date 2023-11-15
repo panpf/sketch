@@ -37,7 +37,9 @@ class OtherImageViewExtensionsTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = ImageView(context)
 
-        imageView.displayAppIconImage(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_CODE)
+        imageView.displayAppIconImage(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_CODE) {
+            lifecycle(TestGlobalLifecycle)
+        }
         Thread.sleep(300)
         val manager = imageView.getTag(R.id.sketch_request_manager) as ViewTargetRequestManager
         val request = manager.getFieldValue<ViewTargetRequestDelegate>("currentRequestDelegate")!!

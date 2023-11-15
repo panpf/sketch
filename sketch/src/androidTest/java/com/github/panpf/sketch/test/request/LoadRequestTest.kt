@@ -42,11 +42,13 @@ import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.Parameters
@@ -112,7 +114,10 @@ class LoadRequestTest {
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
             Assert.assertNull(this.target)
-            Assert.assertSame(GlobalLifecycle, this.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(LifecycleResolver(GlobalLifecycle)),
+                this.lifecycleResolver
+            )
 
             Assert.assertEquals(NETWORK, this.depth)
             Assert.assertNull(this.parameters)
@@ -302,19 +307,25 @@ class LoadRequestTest {
         lifecycle1 = LifecycleRegistry(lifecycleOwner)
 
         LoadRequest(context1, uriString1).apply {
-            Assert.assertEquals(GlobalLifecycle, this.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(LifecycleResolver(GlobalLifecycle)),
+                this.lifecycleResolver
+            )
         }
 
         LoadRequest(context1, uriString1) {
             lifecycle(lifecycle1)
         }.apply {
-            Assert.assertEquals(lifecycle1, this.lifecycle)
+            Assert.assertEquals(LifecycleResolver(lifecycle1), this.lifecycleResolver)
         }
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
 
         LoadRequest(activity, uriString1).apply {
-            Assert.assertEquals(activity.lifecycle, this.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(LifecycleResolver(activity.lifecycle)),
+                this.lifecycleResolver
+            )
         }
     }
 

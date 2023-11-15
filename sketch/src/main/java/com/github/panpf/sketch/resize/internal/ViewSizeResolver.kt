@@ -25,7 +25,6 @@ import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.ref.WeakReference
-import kotlin.coroutines.resume
 
 /**
  * Create a [ViewSizeResolver] using the default [View] measurement implementation.
@@ -95,7 +94,7 @@ interface ViewSizeResolver<T : View> : SizeResolver {
 
                         if (!isResumed) {
                             isResumed = true
-                            continuation.resume(size)
+                            continuation.resumeWith(Result.success(size))
                         }
                     }
                     return true

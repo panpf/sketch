@@ -33,12 +33,12 @@ import androidx.lifecycle.Lifecycle.Event.ON_START
 import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.isSketchGlobalLifecycle
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.util.Size
@@ -93,9 +93,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             ON_START -> {
                 subsamplingHelper?.paused = false
             }
+
             ON_STOP -> {
                 subsamplingHelper?.paused = true
             }
+
             else -> {}
         }
     }
@@ -136,7 +138,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
                 field?.container?.superSetScaleType(ScaleType.MATRIX)
             }
 
-            lifecycle = value?.context.getLifecycle()
+            lifecycle = value?.context.findLifecycle()
             if (value == null) {
                 scope.cancel()
             }
@@ -419,6 +421,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
     override fun onAttachedToWindow() {
         initialize()
+        lifecycle = host?.view?.findViewTreeLifecycleOwner()?.lifecycle
+            ?: host?.context.findLifecycle()
         registerLifecycleObserver()
     }
 
@@ -585,28 +589,56 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         if (drawableWidth >= imageWidth && drawableHeight >= imageHeight) {
             logger.d(MODULE) {
                 "Don't need to use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
-                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, requestKey)
+                    .format(
+                        drawableWidth,
+                        drawableHeight,
+                        imageWidth,
+                        imageHeight,
+                        mimeType,
+                        requestKey
+                    )
             }
             return null
         }
         if (!canUseSubsampling(imageWidth, imageHeight, drawableWidth, drawableHeight)) {
             logger.d(MODULE) {
                 "Can't use Subsampling. drawableSize error. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
-                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, requestKey)
+                    .format(
+                        drawableWidth,
+                        drawableHeight,
+                        imageWidth,
+                        imageHeight,
+                        mimeType,
+                        requestKey
+                    )
             }
             return null
         }
         if (ImageFormat.parseMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
             logger.d(MODULE) {
                 "MimeType does not support Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
-                    .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, requestKey)
+                    .format(
+                        drawableWidth,
+                        drawableHeight,
+                        imageWidth,
+                        imageHeight,
+                        mimeType,
+                        requestKey
+                    )
             }
             return null
         }
 
         logger.d(MODULE) {
             "Use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
-                .format(drawableWidth, drawableHeight, imageWidth, imageHeight, mimeType, requestKey)
+                .format(
+                    drawableWidth,
+                    drawableHeight,
+                    imageWidth,
+                    imageHeight,
+                    mimeType,
+                    requestKey
+                )
         }
 
         val memoryCachePolicy: CachePolicy
@@ -640,8 +672,6 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     }
 
     override fun onRequestStart(request: DisplayRequest) {
-        lifecycle = request.lifecycle.takeIf { !it.isSketchGlobalLifecycle() }
-            ?: host?.context.getLifecycle()
     }
 
     override fun onRequestError(request: DisplayRequest, result: DisplayResult.Error) {

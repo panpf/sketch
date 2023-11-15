@@ -53,6 +53,7 @@ import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -60,6 +61,7 @@ import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.GlobalLifecycle
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -1837,7 +1839,10 @@ class DisplayRequestExecuteTest {
         }
 
         DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
-            Assert.assertSame(GlobalLifecycle, request.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(LifecycleResolver(GlobalLifecycle)),
+                request.lifecycleResolver
+            )
             runBlocking {
                 sketch.execute(request)
             }
@@ -1848,7 +1853,7 @@ class DisplayRequestExecuteTest {
         DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             lifecycle(myLifecycle)
         }.let { request ->
-            Assert.assertSame(myLifecycle, request.lifecycle)
+            Assert.assertEquals(LifecycleResolver(myLifecycle), request.lifecycleResolver)
             runBlocking {
                 val deferred = async {
                     sketch.execute(request)

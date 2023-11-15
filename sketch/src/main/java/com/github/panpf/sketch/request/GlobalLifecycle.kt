@@ -19,16 +19,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.github.panpf.sketch.util.getLifecycle
+import com.github.panpf.sketch.util.findLifecycle
 
 /**
  * A [Lifecycle] implementation that is always resumed and never destroyed.
  *
- * This is used as a fallback if [getLifecycle] cannot find a more tightly scoped [Lifecycle].
+ * This is used as a fallback if [findLifecycle] cannot find a more tightly scoped [Lifecycle].
  */
 internal object GlobalLifecycle : Lifecycle() {
 
-    private val owner = object: LifecycleOwner {
+    private val owner = object : LifecycleOwner {
         override val lifecycle: Lifecycle
             get() = this@GlobalLifecycle
     }

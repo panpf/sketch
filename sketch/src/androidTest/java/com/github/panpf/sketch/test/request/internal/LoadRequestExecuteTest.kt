@@ -42,11 +42,13 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.resultCacheDataKey
+import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.GlobalLifecycle
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.get
@@ -1522,7 +1524,10 @@ class LoadRequestExecuteTest {
         }
 
         LoadRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
-            Assert.assertSame(GlobalLifecycle, request.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(LifecycleResolver(GlobalLifecycle)),
+                request.lifecycleResolver
+            )
             runBlocking {
                 sketch.execute(request)
             }
@@ -1533,7 +1538,7 @@ class LoadRequestExecuteTest {
         LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
             lifecycle(myLifecycle)
         }.let { request ->
-            Assert.assertSame(myLifecycle, request.lifecycle)
+            Assert.assertEquals(LifecycleResolver(myLifecycle), request.lifecycleResolver)
             runBlocking {
                 val deferred = async {
                     sketch.execute(request)

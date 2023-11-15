@@ -46,7 +46,7 @@ internal fun requiredWorkThread() {
     }
 }
 
-internal fun Context?.getLifecycle(): Lifecycle? {
+internal fun Context?.findLifecycle(): Lifecycle? {
     var context: Context? = this
     while (true) {
         when (context) {

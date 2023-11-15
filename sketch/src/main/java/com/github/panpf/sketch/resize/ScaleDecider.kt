@@ -18,6 +18,8 @@ package com.github.panpf.sketch.resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
 
+// todo add ScaleDecider(scale: Scale)
+
 /**
  * Determines which scale to use dynamically based on image size and resizing
  */

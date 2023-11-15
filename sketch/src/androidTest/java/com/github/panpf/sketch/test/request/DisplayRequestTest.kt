@@ -45,6 +45,7 @@ import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DisplayRequest
@@ -52,7 +53,9 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.ViewLifecycleResolver
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
@@ -100,7 +103,6 @@ import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -123,7 +125,10 @@ class DisplayRequestTest {
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
             Assert.assertNull(this.target)
-            Assert.assertSame(GlobalLifecycle, this.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(LifecycleResolver(GlobalLifecycle)),
+                this.lifecycleResolver
+            )
 
             Assert.assertEquals(NETWORK, this.depth)
             Assert.assertNull(this.parameters)
@@ -157,7 +162,10 @@ class DisplayRequestTest {
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
             Assert.assertEquals(ImageViewDisplayTarget(WeakReference(imageView1)), this.target)
-            Assert.assertSame(GlobalLifecycle, this.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(ViewLifecycleResolver(imageView1)),
+                this.lifecycleResolver
+            )
 
             Assert.assertEquals(NETWORK, this.depth)
             Assert.assertNull(this.parameters)
@@ -351,31 +359,40 @@ class DisplayRequestTest {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         var lifecycle1: Lifecycle? = null
-        val lifecycleOwner = object: LifecycleOwner {
+        val lifecycleOwner = object : LifecycleOwner {
             override val lifecycle: Lifecycle
                 get() = lifecycle1!!
         }
         lifecycle1 = LifecycleRegistry(lifecycleOwner)
 
         DisplayRequest(context1, uriString1).apply {
-            Assert.assertEquals(GlobalLifecycle, this.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(LifecycleResolver(GlobalLifecycle)),
+                this.lifecycleResolver
+            )
         }
 
         DisplayRequest(context1, uriString1) {
             lifecycle(lifecycle1)
         }.apply {
-            Assert.assertEquals(lifecycle1, this.lifecycle)
+            Assert.assertEquals(LifecycleResolver(lifecycle1), this.lifecycleResolver)
         }
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
 
         val imageView = TestOptionsImageView(activity)
         DisplayRequest(imageView, uriString1).apply {
-            Assert.assertEquals(imageView.context.getLifecycle(), this.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(ViewLifecycleResolver(imageView)),
+                this.lifecycleResolver
+            )
         }
 
         DisplayRequest(activity, uriString1).apply {
-            Assert.assertEquals(activity.lifecycle, this.lifecycle)
+            Assert.assertEquals(
+                DefaultLifecycleResolver(LifecycleResolver(activity.lifecycle)),
+                this.lifecycleResolver
+            )
         }
     }
 

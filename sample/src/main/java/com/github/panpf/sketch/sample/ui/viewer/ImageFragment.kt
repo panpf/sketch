@@ -38,7 +38,6 @@ class ImageFragment : BindingFragment<ImageFragmentBinding>() {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 downloadCachePolicy(DISABLED)
-                lifecycle(viewLifecycleOwner.lifecycle)
                 listener(
                     onStart = {
                         binding.imageState.gone()

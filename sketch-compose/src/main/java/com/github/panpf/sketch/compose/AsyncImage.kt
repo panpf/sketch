@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -28,6 +29,7 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransf
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.isDefault
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.ifOrNull
@@ -378,7 +380,7 @@ internal fun Content(
 ) = Layout(
     modifier = modifier
         .contentDescription(contentDescription)
-        .clipToBounds()
+        .clipToBounds() // todo noClipContent
         .then(
             ContentPainterModifier(
                 painter = painter,
@@ -405,10 +407,11 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
 //    } else {
 //        request
 //    }
-    // todo get Lifecycle from LocalLifecycleOwner
     val noSizeResolver = request.definedOptions.resizeSizeResolver == null
     val noResetScale = request.definedOptions.resizeScaleDecider == null
-    return if (noSizeResolver || noResetScale) {
+    val defaultLifecycleResolver = request.lifecycleResolver.isDefault()
+    val localLifecycle = LocalLifecycleOwner.current.lifecycle
+    return if (noSizeResolver || noResetScale || defaultLifecycleResolver) {
         val sizeResolver = ifOrNull(noSizeResolver) {
             remember { ConstraintsSizeResolver() }
         }
@@ -421,9 +424,11 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
             if (noResetScale) {
                 resizeScale(AsyncImageScaleDecider(FixedScaleDecider(contentScale.toScale())))
             }
-        }
 
-        // todo LocalLifecycleOwner.getLifecycle()
+            if (defaultLifecycleResolver) {
+                lifecycle(localLifecycle)
+            }
+        }
     } else {
         request
     }

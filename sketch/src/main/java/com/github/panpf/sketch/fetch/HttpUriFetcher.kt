@@ -97,6 +97,7 @@ open class HttpUriFetcher(
             if (responseCode != 200) {
                 return@withContext Result.failure(IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uriString}"))
             }
+            // todo support chunked
             val isContentChunked =
                 response.getHeaderField("Transfer-Encoding")?.let { transferEncoding ->
                     "chunked".equals(transferEncoding.trim { it <= ' ' }, ignoreCase = true)

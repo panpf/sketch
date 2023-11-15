@@ -18,6 +18,10 @@ package com.github.panpf.sketch.extensions.test
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
@@ -27,6 +31,7 @@ import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.findLifecycle
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
@@ -66,4 +71,35 @@ fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null
 
 fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
     return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size() })
+}
+
+/**
+ * A [Lifecycle] implementation that is always resumed and never destroyed.
+ *
+ * This is used as a fallback if [findLifecycle] cannot find a more tightly scoped [Lifecycle].
+ */
+internal object TestGlobalLifecycle : Lifecycle() {
+
+    private val owner = object : LifecycleOwner {
+        override val lifecycle: Lifecycle
+            get() = this@TestGlobalLifecycle
+    }
+
+    override val currentState: State
+        get() = State.RESUMED
+
+    override fun addObserver(observer: LifecycleObserver) {
+        require(observer is LifecycleEventObserver) {
+            "$observer must implement androidx.lifecycle.LifecycleEventObserver."
+        }
+
+        // Call the lifecycle methods in order and do not hold a reference to the observer.
+        observer.onStateChanged(owner, Event.ON_CREATE)
+        observer.onStateChanged(owner, Event.ON_START)
+        observer.onStateChanged(owner, Event.ON_RESUME)
+    }
+
+    override fun removeObserver(observer: LifecycleObserver) {}
+
+    override fun toString() = "TestGlobalLifecycle"
 }

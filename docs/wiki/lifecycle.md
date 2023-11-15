@@ -6,42 +6,31 @@ Sketch 依赖 Lifecycle 监控页面的生命周期，用于以下功能：
 2. [GenericViewDisplayTarget] 在 在 onStart 和 onStop 时自动控制动图播放
 3. [SketchZoomImageView] 在 onStop 和 onStart 时自动释放或恢复碎片
 
-### 配置
-
-[ImageRequest].Builder 提供了 lifecycle() 方法用于设置 lifecycle，如下：
-
-```kotlin
-imageView.displayImage("https://www.example.com/image.gif") {
-    lifecycle(fragment.viewLifecycleOwner.lifecyle)
-}
-```
-
 ### 默认值
 
 如果在创建请求时没有设置 lifecycle Sketch 会按如下顺序获取 lifecycle:
 
-1. 从 Context 取 Lifecycle
-    1. 取 context
-        1. 如果 target 是 ViewTarget 就用 view.context
-        2. 否则用 ImageRequest.Builder.context
-    2. 取 Lifecycle
-        1. 如果 context 实现了 LifecycleOwner 接口就从 LifecycleOwner 取
-        2. 如果 context 是 ContextWrapper 就取出 baseContext 再去递归条件 1
-2. 使用 GlobalLifecycle
+view:
 
-### ViewPager+Fragment
+1. 通过 view.findViewTreeLifecycleOwner() API 获取
+2. 通过 view.context 获取（如果 context 实现了 LifecycleOwner 接口，例如 Activity）
+3. 通过 ImageRequest.Builder.context 获取（如果 context 实现了 LifecycleOwner 接口，例如 Activity）
+4. 使用 GlobalLifecycle
 
-从 Context 取 Lifecycle 一般取到的是 Activity 的 Lifecycle，大多数情况下已经够用了，但是当在 ViewPager + Fragment 的组合中时，需要
-Fragment 的 View Lifecycle，这时候需要你手动指定，如下：
+compose:
+
+1. 通过 LocalLifecycleOwner.current.lifecycle API 获取
+2. 通过 ImageRequest.Builder.context 获取（如果 context 实现了 LifecycleOwner 接口，例如 Activity）
+3. 使用 GlobalLifecycle
+
+### 配置
+
+如果上述默认值无法获取到 Lifecycle 或默认获取的 Lifecycle 不满足你的需求，[ImageRequest].Builder 还提供了 lifecycle() 方法用于设置 lifecycle，如下：
 
 ```kotlin
-class ImageZoomFragment : Fragment() {
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        imageView.displayImage("https://www.example.com/image.gif") {
-            lifecycle(viewLifecycleOwner.lifecycle)
-        }
-    }
+val lifecycle = LifecycleRegistry(this)
+imageView.displayImage("https://www.example.com/image.gif") {
+    lifecycle(lifecycle)
 }
 ```
 

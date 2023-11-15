@@ -62,7 +62,8 @@ class RequestExecutor {
         requiredMainThread()
 
         // Wrap the request to manage its lifecycle.
-        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
+        val lifecycle = request.lifecycleResolver.lifecycle()
+        val requestDelegate = requestDelegate(sketch, request, lifecycle, coroutineContext.job)
         requestDelegate.assertActive()
         var requestContext: RequestContext? = null
         var firstRequestKey: String? = null
@@ -78,7 +79,7 @@ class RequestExecutor {
 
             // Enqueued requests suspend until the lifecycle is started.
             if (enqueue) {
-                request.lifecycle.awaitStarted()
+                lifecycle.awaitStarted()
             }
 
             // resolve resize size

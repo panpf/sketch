@@ -57,7 +57,7 @@ import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.getLifecycle
+import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.ifOrNull
 
 /**
@@ -68,7 +68,7 @@ interface ImageRequest {
 
     val context: Context
     val uriString: String    // todo Consider supporting bitmap, drawable, bytes
-    val lifecycle: Lifecycle
+    val lifecycleResolver: LifecycleResolver
     val target: Target?
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
     val progressListener: ProgressListener<ImageRequest>?
@@ -270,7 +270,7 @@ interface ImageRequest {
         private var progressListener: ProgressListener<ImageRequest>? = null
         private var providerProgressListener: ProgressListener<ImageRequest>? = null
         private var target: Target? = null
-        private var lifecycle: Lifecycle? = null
+        private var lifecycleResolver: LifecycleResolver? = null
         private var defaultOptions: ImageOptions? = null
         private var viewTargetOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
@@ -301,7 +301,7 @@ interface ImageRequest {
                 this.providerProgressListener = null
             }
             this.target = request.target
-            this.lifecycle = request.lifecycle
+            this.lifecycleResolver = request.lifecycleResolver
             this.defaultOptions = request.defaultOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
         }
@@ -333,7 +333,20 @@ interface ImageRequest {
          * for this request through its [context].
          */
         open fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
-            this.lifecycle = lifecycle
+            this.lifecycleResolver = if (lifecycle != null) LifecycleResolver(lifecycle) else null
+        }
+
+        /**
+         * Set the [LifecycleResolver] for this request.
+         *
+         * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
+         *
+         * If this is null or is not set the will attempt to find the lifecycle
+         * for this request through its [context].
+         */
+        open fun lifecycle(lifecycleResolver: LifecycleResolver?): Builder = apply {
+            this.lifecycleResolver = lifecycleResolver
         }
 
         /**
@@ -833,7 +846,7 @@ interface ImageRequest {
         open fun build(): ImageRequest {
             val listener = combinationListener()
             val progressListener = combinationProgressListener()
-            val lifecycle = lifecycle ?: resolveLifecycle() ?: GlobalLifecycle
+            val lifecycleResolver = lifecycleResolver ?: DefaultLifecycleResolver(resolveLifecycleResolver())
             val definedOptions = definedOptionsBuilder.merge(viewTargetOptions).build()
             val finalOptions = definedOptions.merged(defaultOptions)
             val depth = finalOptions.depth ?: Depth.NETWORK
@@ -871,7 +884,7 @@ interface ImageRequest {
                         listener = listener,
                         progressListener = progressListener,
                         target = target,
-                        lifecycle = lifecycle,
+                        lifecycleResolver = lifecycleResolver,
                         defaultOptions = defaultOptions,
                         definedOptions = definedOptions,
                         depth = depth,
@@ -905,7 +918,7 @@ interface ImageRequest {
                         listener = listener,
                         progressListener = progressListener,
                         target = target,
-                        lifecycle = lifecycle,
+                        lifecycleResolver = lifecycleResolver,
                         defaultOptions = defaultOptions,
                         definedOptions = definedOptions,
                         depth = depth,
@@ -939,7 +952,7 @@ interface ImageRequest {
                         listener = listener,
                         progressListener = progressListener,
                         target = target,
-                        lifecycle = lifecycle,
+                        lifecycleResolver = lifecycleResolver,
                         defaultOptions = defaultOptions,
                         definedOptions = definedOptions,
                         depth = depth,
@@ -979,10 +992,17 @@ interface ImageRequest {
             }
         }
 
-
-        // TODO view.findViewTreeLifecycleOwner()
-        private fun resolveLifecycle(): Lifecycle? =
-            (target.asOrNull<ViewDisplayTarget<*>>()?.view?.context ?: context).getLifecycle()
+        private fun resolveLifecycleResolver(): LifecycleResolver {
+            val view = target.asOrNull<ViewDisplayTarget<*>>()?.view
+            if (view != null) {
+                return ViewLifecycleResolver(view)
+            }
+            val lifecycleFromContext = context.findLifecycle()
+            if (lifecycleFromContext != null) {
+                return FixedLifecycleResolver(lifecycleFromContext)
+            }
+            return FixedLifecycleResolver(GlobalLifecycle)
+        }
 
         private fun resolveResizeScale(): Scale =
             target.asOrNull<ViewDisplayTarget<*>>()

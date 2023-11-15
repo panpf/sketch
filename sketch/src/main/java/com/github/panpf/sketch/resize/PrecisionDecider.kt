@@ -15,6 +15,8 @@
  */
 package com.github.panpf.sketch.resize
 
+// todo add PrecisionDecider(precision: Precision)
+
 /**
  * Determines which precision to use dynamically based on image size and resizing
  */

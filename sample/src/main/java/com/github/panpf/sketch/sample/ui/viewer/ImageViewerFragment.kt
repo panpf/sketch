@@ -122,7 +122,6 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             setApplySettings(DETAIL)
             placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
-            lifecycle(viewLifecycleOwner.lifecycle)
             listener(
                 onStart = {
                     binding.imageViewerErrorLayout.isVisible = false

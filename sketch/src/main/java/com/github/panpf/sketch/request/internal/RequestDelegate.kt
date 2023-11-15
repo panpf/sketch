@@ -36,9 +36,9 @@ import kotlinx.coroutines.Job
 internal fun requestDelegate(
     sketch: Sketch,
     initialRequest: ImageRequest,
+    lifecycle: Lifecycle,
     job: Job
 ): RequestDelegate {
-    val lifecycle = initialRequest.lifecycle
     return when (val target = initialRequest.target) {
         is ViewDisplayTarget<*> -> ViewTargetRequestDelegate(
             sketch = sketch,

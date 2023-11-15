@@ -32,9 +32,9 @@ import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.awaitStarted
+import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
-import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.intMerged
@@ -87,12 +87,12 @@ class UtilsTest {
     }
 
     @Test
-    fun testGetLifecycle() {
+    fun testFindLifecycle() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        Assert.assertNull(context.getLifecycle())
+        Assert.assertNull(context.findLifecycle())
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
-        Assert.assertNotNull((activity as Context).getLifecycle())
+        Assert.assertNotNull((activity as Context).findLifecycle())
     }
 
     @Test

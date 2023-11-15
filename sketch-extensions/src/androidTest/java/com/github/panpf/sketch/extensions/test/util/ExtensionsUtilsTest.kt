@@ -19,8 +19,8 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.format
-import com.github.panpf.sketch.util.getLifecycle
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import org.junit.Assert
@@ -39,12 +39,12 @@ class ExtensionsUtilsTest {
     }
 
     @Test
-    fun testGetLifecycle() {
+    fun testFindLifecycle() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        Assert.assertNull(context.getLifecycle())
+        Assert.assertNull(context.findLifecycle())
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
-        Assert.assertNotNull((activity as Context).getLifecycle())
+        Assert.assertNotNull((activity as Context).findLifecycle())
     }
 
     class TestActivity : FragmentActivity()

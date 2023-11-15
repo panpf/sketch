@@ -66,9 +66,7 @@ class ProgressIndicatorTestFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             var progress = 0L
-            val request = DisplayRequest(requireContext(), "http://sample.com/sample.jpeg") {
-                lifecycle(viewLifecycleOwner.lifecycle)
-            }
+            val request = DisplayRequest(requireContext(), "http://sample.com/sample.jpeg")
             binding.testIndicatorTestImage1.progressIndicatorAbility.onRequestStart(request)
             binding.testIndicatorTestImage2.progressIndicatorAbility.onRequestStart(request)
             binding.testIndicatorTestImage3.progressIndicatorAbility.onRequestStart(request)

@@ -24,7 +24,7 @@ import java.math.BigDecimal
 internal fun Float.format(newScale: Int): Float =
     BigDecimal(toDouble()).setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
 
-internal fun Context?.getLifecycle(): Lifecycle? {
+internal fun Context?.findLifecycle(): Lifecycle? {
     var context: Context? = this
     while (true) {
         when (context) {

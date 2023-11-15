@@ -31,6 +31,7 @@ import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.drawable.RingProgressDrawable
@@ -39,8 +40,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.isSketchGlobalLifecycle
-import com.github.panpf.sketch.util.getLifecycle
+import com.github.panpf.sketch.util.findLifecycle
 
 /**
  * Display a progress indicator, [progressDrawable] is responsible for the specific style
@@ -106,10 +106,6 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
             }
         }
     override var host: Host? = null
-        set(value) {
-            field = value
-            lifecycle = value?.context.getLifecycle()
-        }
 
     private var requestRunning = false
     private var isAttachedToWindow = false
@@ -134,6 +130,8 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
 
     override fun onAttachedToWindow() {
         isAttachedToWindow = true
+        lifecycle = host?.view?.findViewTreeLifecycleOwner()?.lifecycle
+            ?: host?.context.findLifecycle()
         registerLifecycleObserver()
         resetDrawableVisible()
     }
@@ -175,9 +173,6 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
     }
 
     override fun onRequestStart(request: DisplayRequest) {
-        lifecycle =
-            request.lifecycle.takeIf { !it.isSketchGlobalLifecycle() }
-                ?: host?.context.getLifecycle()
         requestRunning = true
         progressDrawable.progress = 0f
         resetDrawableVisible()
