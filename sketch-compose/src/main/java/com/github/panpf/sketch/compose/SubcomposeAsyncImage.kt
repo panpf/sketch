@@ -61,6 +61,7 @@ fun SubcomposeAsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
+    noClipContent: Boolean = false,
 ) = SubcomposeAsyncImage(
     request = DisplayRequest(LocalContext.current, imageUri),
     contentDescription = contentDescription,
@@ -71,7 +72,7 @@ fun SubcomposeAsyncImage(
     alpha = alpha,
     colorFilter = colorFilter,
     filterQuality = filterQuality,
-    content = contentOf(loading, success, error),
+    content = contentOf(loading, success, error, noClipContent),
 )
 
 /**
@@ -279,6 +280,7 @@ fun SubcomposeAsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
+    noClipContent: Boolean = false,
 ) = SubcomposeAsyncImage(
     request = request,
     contentDescription = contentDescription,
@@ -289,7 +291,7 @@ fun SubcomposeAsyncImage(
     alpha = alpha,
     colorFilter = colorFilter,
     filterQuality = filterQuality,
-    content = contentOf(loading, success, error),
+    content = contentOf(loading, success, error, noClipContent),
 )
 
 /**
@@ -421,6 +423,7 @@ fun SubcomposeAsyncImageScope.SubcomposeAsyncImageContent(
     contentScale: ContentScale = this.contentScale,
     alpha: Float = this.alpha,
     colorFilter: ColorFilter? = this.colorFilter,
+    noClipContent: Boolean = false,
 ) = Content(
     modifier = modifier,
     painter = painter,
@@ -428,7 +431,8 @@ fun SubcomposeAsyncImageScope.SubcomposeAsyncImageContent(
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
-    colorFilter = colorFilter
+    colorFilter = colorFilter,
+    noClipContent = noClipContent,
 )
 
 @Stable
@@ -436,6 +440,7 @@ private fun contentOf(
     loading: @Composable (SubcomposeAsyncImageScope.(State.Loading) -> Unit)?,
     success: @Composable (SubcomposeAsyncImageScope.(State.Success) -> Unit)?,
     error: @Composable (SubcomposeAsyncImageScope.(State.Error) -> Unit)?,
+    noClipContent: Boolean = false,
 ): @Composable SubcomposeAsyncImageScope.() -> Unit {
     return if (loading != null || success != null || error != null) {
         {
@@ -446,10 +451,10 @@ private fun contentOf(
                 is State.Error -> if (error != null) error(state).also { draw = false }
                 is State.Empty -> {} // Skipped if rendering on the main thread.
             }
-            if (draw) SubcomposeAsyncImageContent()
+            if (draw) SubcomposeAsyncImageContent(noClipContent = noClipContent)
         }
     } else {
-        { SubcomposeAsyncImageContent() }
+        { SubcomposeAsyncImageContent(noClipContent = noClipContent) }
     }
 }
 

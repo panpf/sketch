@@ -11,7 +11,11 @@
 
 #### sketch-extensions
 
-* change: ApkIconBitmapDecoder and AppIconUriFetcher's IMAGE_MIME_TYPE changed from 'image/appicon' to 'image/png' 
+* change: ApkIconBitmapDecoder and AppIconUriFetcher's IMAGE_MIME_TYPE changed from 'image/appicon' to 'image/png'
+
+#### sketch-compose:
+
+* new: AsyncImage and SubcomposeAsyncImage add noClipContent parameter
 
 #### other:
 

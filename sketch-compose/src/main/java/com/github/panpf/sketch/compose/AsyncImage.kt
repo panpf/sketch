@@ -38,6 +38,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import com.github.panpf.sketch.util.Size as SketchSize
 
+// todo update from coil
+
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *
@@ -80,6 +82,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
+    noClipContent: Boolean = false,
 ) = AsyncImage(
     request = DisplayRequest(LocalContext.current, imageUri),
     contentDescription = contentDescription,
@@ -91,6 +94,7 @@ fun AsyncImage(
     alpha = alpha,
     colorFilter = colorFilter,
     filterQuality = filterQuality,
+    noClipContent = noClipContent,
 )
 
 /**
@@ -188,6 +192,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
+    noClipContent: Boolean = false,
 ) = AsyncImage(
     request = DisplayRequest(LocalContext.current, imageUri),
     contentDescription = contentDescription,
@@ -198,7 +203,8 @@ fun AsyncImage(
     contentScale = contentScale,
     alpha = alpha,
     colorFilter = colorFilter,
-    filterQuality = filterQuality
+    filterQuality = filterQuality,
+    noClipContent = noClipContent,
 )
 
 /**
@@ -296,6 +302,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
+    noClipContent: Boolean = false,
 ) = AsyncImage(
     request = request,
     contentDescription = contentDescription,
@@ -307,6 +314,7 @@ fun AsyncImage(
     alpha = alpha,
     colorFilter = colorFilter,
     filterQuality = filterQuality,
+    noClipContent = noClipContent,
 )
 
 /**
@@ -343,6 +351,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
+    noClipContent: Boolean = false,
 ) {
     // Create and execute the image request.
     val newRequest = updateRequest(request, contentScale)
@@ -363,7 +372,8 @@ fun AsyncImage(
         alignment = alignment,
         contentScale = contentScale,
         alpha = alpha,
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
+        noClipContent = noClipContent,
     )
 }
 
@@ -377,10 +387,11 @@ internal fun Content(
     contentScale: ContentScale,
     alpha: Float,
     colorFilter: ColorFilter?,
+    noClipContent: Boolean = false,
 ) = Layout(
     modifier = modifier
         .contentDescription(contentDescription)
-        .clipToBounds() // todo noClipContent
+        .let { if (!noClipContent) it.clipToBounds() else it }
         .then(
             ContentPainterModifier(
                 painter = painter,
