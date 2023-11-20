@@ -53,25 +53,38 @@ class SketchUtils private constructor() {
     }
 }
 
-// todo rename to findLeafSketchDrawable
 /**
  * Find the last [SketchDrawable] from the specified Drawable
  */
-fun Drawable.findLastSketchDrawable(): SketchDrawable? {
+fun Drawable.findLeafSketchDrawable(): SketchDrawable? {
     val drawable = this
     return when {
         drawable is SketchDrawable -> drawable
         drawable is CrossfadeDrawable || drawable is LayerDrawable -> {
-            drawable.getLastChildDrawable()?.findLastSketchDrawable()
+            drawable.findLeafChildDrawable()?.findLeafSketchDrawable()
         }
+
         drawable is DrawableWrapperCompat -> {
-            drawable.drawable?.findLastSketchDrawable()
+            drawable.drawable?.findLeafSketchDrawable()
         }
+
         VERSION.SDK_INT >= VERSION_CODES.M && drawable is DrawableWrapper -> {
-            drawable.drawable?.findLastSketchDrawable()
+            drawable.drawable?.findLeafSketchDrawable()
         }
+
         else -> null
     }
+}
+
+/**
+ * Find the last [SketchDrawable] from the specified Drawable
+ */
+@Deprecated(
+    message = "Please use findLeafSketchDrawable()",
+    replaceWith = ReplaceWith(expression = "findLeafSketchDrawable")
+)
+fun Drawable.findLastSketchDrawable(): SketchDrawable? {
+    return findLeafSketchDrawable()
 }
 
 /**
@@ -83,19 +96,23 @@ fun Drawable.iterateSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable)
         drawable is SketchCountBitmapDrawable -> {
             block(drawable)
         }
+
         drawable is LayerDrawable -> {
             val layerCount = drawable.numberOfLayers
             for (index in 0 until layerCount) {
                 drawable.getDrawable(index).iterateSketchCountBitmapDrawable(block)
             }
         }
+
         drawable is CrossfadeDrawable -> {
             drawable.start?.iterateSketchCountBitmapDrawable(block)
             drawable.end?.iterateSketchCountBitmapDrawable(block)
         }
+
         drawable is DrawableWrapperCompat -> {
             drawable.drawable?.iterateSketchCountBitmapDrawable(block)
         }
+
         VERSION.SDK_INT >= VERSION_CODES.M && drawable is DrawableWrapper -> {
             drawable.drawable?.iterateSketchCountBitmapDrawable(block)
         }

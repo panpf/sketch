@@ -21,7 +21,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.util.findLastSketchDrawable
+import com.github.panpf.sketch.util.findLeafSketchDrawable
 
 /**
  * Set to enable the data source identification function
@@ -102,7 +102,7 @@ class DataFromLogoAbility(
         path.reset()
         val host = host ?: return false
 
-        val lastDrawable = host.container.getDrawable()?.findLastSketchDrawable() ?: return false
+        val lastDrawable = host.container.getDrawable()?.findLeafSketchDrawable() ?: return false
         when (lastDrawable.dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
             DataFrom.MEMORY -> paint.color = FROM_FLAG_COLOR_MEMORY

@@ -20,7 +20,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
-import com.github.panpf.sketch.util.findLastSketchDrawable
+import com.github.panpf.sketch.util.findLeafSketchDrawable
 
 /**
  * Display the MimeType logo in the lower right corner of the View
@@ -109,7 +109,7 @@ class MimeTypeLogoAbility(
         logoDrawable = null
         val host = host ?: return
         val view = host.view
-        val lastDrawable = host.container.getDrawable()?.findLastSketchDrawable() ?: return
+        val lastDrawable = host.container.getDrawable()?.findLeafSketchDrawable() ?: return
         val mimeType = lastDrawable.imageInfo.mimeType
         val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return
         if (mimeTypeLogo.hiddenWhenAnimatable && lastDrawable is Animatable) return

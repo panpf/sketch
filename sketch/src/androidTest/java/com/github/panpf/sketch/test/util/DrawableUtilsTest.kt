@@ -26,7 +26,7 @@ import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.getLastChildDrawable
+import com.github.panpf.sketch.util.findLeafChildDrawable
 import com.github.panpf.sketch.util.toNewBitmap
 import com.github.panpf.sketch.util.toShortInfoString
 import org.junit.Assert
@@ -37,14 +37,14 @@ import org.junit.runner.RunWith
 class DrawableUtilsTest {
 
     @Test
-    fun testGetLastChildDrawable() {
+    fun testFindLeafChildDrawable() {
         LayerDrawable(
             arrayOf(
                 ColorDrawable(Color.BLUE),
                 ColorDrawable(Color.RED),
                 ColorDrawable(Color.GREEN)
             )
-        ).getLastChildDrawable().apply {
+        ).findLeafChildDrawable().apply {
             Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
         }
 
@@ -54,11 +54,11 @@ class DrawableUtilsTest {
                 ColorDrawable(Color.GREEN),
                 ColorDrawable(Color.BLUE),
             )
-        ).getLastChildDrawable().apply {
+        ).findLeafChildDrawable().apply {
             Assert.assertEquals(Color.BLUE, this!!.asOrThrow<ColorDrawable>().color)
         }
 
-        LayerDrawable(arrayOf()).getLastChildDrawable().apply {
+        LayerDrawable(arrayOf()).findLeafChildDrawable().apply {
             Assert.assertEquals(null, this)
         }
 
@@ -66,26 +66,26 @@ class DrawableUtilsTest {
         CrossfadeDrawable(
             ColorDrawable(Color.BLUE),
             ColorDrawable(Color.RED),
-        ).getLastChildDrawable().apply {
+        ).findLeafChildDrawable().apply {
             Assert.assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
         }
 
         CrossfadeDrawable(
             ColorDrawable(Color.RED),
             ColorDrawable(Color.GREEN),
-        ).getLastChildDrawable().apply {
+        ).findLeafChildDrawable().apply {
             Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
         }
 
-        CrossfadeDrawable(null, null).getLastChildDrawable().apply {
+        CrossfadeDrawable(null, null).findLeafChildDrawable().apply {
             Assert.assertEquals(null, this)
         }
 
-        ColorDrawable(Color.GREEN).getLastChildDrawable().apply {
+        ColorDrawable(Color.GREEN).findLeafChildDrawable().apply {
             Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
         }
 
-        ColorDrawable(Color.RED).getLastChildDrawable().apply {
+        ColorDrawable(Color.RED).findLeafChildDrawable().apply {
             Assert.assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
         }
     }

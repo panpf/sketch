@@ -35,7 +35,7 @@ import com.github.panpf.sketch.sample.databinding.ImageInfoDialogBinding
 import com.github.panpf.sketch.sample.ui.base.BindingDialogFragment
 import com.github.panpf.sketch.sample.util.format
 import com.github.panpf.sketch.util.calculateBitmapByteCount
-import com.github.panpf.sketch.util.findLastSketchDrawable
+import com.github.panpf.sketch.util.findLeafSketchDrawable
 import com.github.panpf.sketch.zoom.SketchZoomImageView
 import com.github.panpf.tools4j.io.ktx.formatFileSize
 import com.github.panpf.tools4k.lang.asOrThrow
@@ -96,7 +96,7 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             var throwableString: String? = null
             val displayResult = imageView.displayResult
             if (displayResult is DisplayResult.Success) {
-                val sketchDrawable = displayResult.drawable.findLastSketchDrawable()!!
+                val sketchDrawable = displayResult.drawable.findLeafSketchDrawable()!!
                 uri1 = sketchDrawable.imageUri
                 imageInfo = sketchDrawable.imageInfo.run {
                     "${width}x${height}, ${mimeType}, ${exifOrientationName(exifOrientation)}"

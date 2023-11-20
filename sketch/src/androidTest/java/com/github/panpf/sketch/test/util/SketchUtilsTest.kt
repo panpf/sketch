@@ -35,7 +35,7 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.InternalDrawableWrapperImpl
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.util.findLastSketchDrawable
+import com.github.panpf.sketch.util.findLeafSketchDrawable
 import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
 import org.junit.Assert
 import org.junit.Test
@@ -55,7 +55,7 @@ class SketchUtilsTest {
     }
 
     @Test
-    fun testFindLastSketchDrawable() {
+    fun testFindLeafSketchDrawable() {
         val sketch = getTestContext().sketch
         val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
         val resources = InstrumentationRegistry.getInstrumentation().context.resources
@@ -80,14 +80,14 @@ class SketchUtilsTest {
 
         Assert.assertSame(
             sketchDrawable,
-            sketchDrawable.findLastSketchDrawable()
+            sketchDrawable.findLeafSketchDrawable()
         )
         Assert.assertSame(
             sketchDrawable,
             CrossfadeDrawable(
                 colorDrawable,
                 CrossfadeDrawable(colorDrawable2, sketchDrawable)
-            ).findLastSketchDrawable()
+            ).findLeafSketchDrawable()
         )
         Assert.assertSame(
             sketchDrawable,
@@ -96,27 +96,27 @@ class SketchUtilsTest {
                     colorDrawable,
                     TransitionDrawable(arrayOf(colorDrawable2, sketchDrawable))
                 )
-            ).findLastSketchDrawable()
+            ).findLeafSketchDrawable()
         )
         Assert.assertSame(
             sketchDrawable,
-            DrawableWrapperCompat(sketchDrawable).findLastSketchDrawable()
+            DrawableWrapperCompat(sketchDrawable).findLeafSketchDrawable()
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Assert.assertSame(
                 sketchDrawable,
-                InternalDrawableWrapperImpl(sketchDrawable).findLastSketchDrawable()
+                InternalDrawableWrapperImpl(sketchDrawable).findLeafSketchDrawable()
             )
         }
 
         Assert.assertNull(
-            colorDrawable.findLastSketchDrawable()
+            colorDrawable.findLeafSketchDrawable()
         )
         Assert.assertNull(
             CrossfadeDrawable(
                 colorDrawable,
                 CrossfadeDrawable(sketchDrawable, colorDrawable2)
-            ).findLastSketchDrawable()
+            ).findLeafSketchDrawable()
         )
         Assert.assertNull(
             TransitionDrawable(
@@ -124,14 +124,14 @@ class SketchUtilsTest {
                     colorDrawable,
                     TransitionDrawable(arrayOf(sketchDrawable, colorDrawable2))
                 )
-            ).findLastSketchDrawable()
+            ).findLeafSketchDrawable()
         )
         Assert.assertNull(
-            DrawableWrapperCompat(colorDrawable).findLastSketchDrawable()
+            DrawableWrapperCompat(colorDrawable).findLeafSketchDrawable()
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Assert.assertNull(
-                InternalDrawableWrapperImpl(colorDrawable).findLastSketchDrawable()
+                InternalDrawableWrapperImpl(colorDrawable).findLeafSketchDrawable()
             )
         }
     }

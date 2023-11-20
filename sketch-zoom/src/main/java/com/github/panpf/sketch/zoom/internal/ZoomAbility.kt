@@ -43,8 +43,8 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.util.findLastSketchDrawable
-import com.github.panpf.sketch.util.getLastChildDrawable
+import com.github.panpf.sketch.util.findLeafSketchDrawable
+import com.github.panpf.sketch.util.findLeafChildDrawable
 import com.github.panpf.sketch.viewability.AttachObserver
 import com.github.panpf.sketch.viewability.DrawObserver
 import com.github.panpf.sketch.viewability.DrawableObserver
@@ -543,7 +543,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val drawable = host.container.getDrawable()
         zoomerHelper.drawableSize =
             Size(drawable?.intrinsicWidth ?: 0, drawable?.intrinsicHeight ?: 0)
-        val sketchDrawable = drawable?.findLastSketchDrawable()
+        val sketchDrawable = drawable?.findLeafSketchDrawable()
         zoomerHelper.imageSize =
             Size(sketchDrawable?.imageInfo?.width ?: 0, sketchDrawable?.imageInfo?.height ?: 0)
     }
@@ -565,14 +565,14 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             logger.d(MODULE) { "Can't use Subsampling. Drawable is null" }
             return null
         }
-        if (drawable.getLastChildDrawable() is SketchStateDrawable) {
+        if (drawable.findLeafChildDrawable() is SketchStateDrawable) {
             logger.d(MODULE) { "Can't use Subsampling. Drawable is StateDrawable" }
             return null
         }
         val drawableWidth = drawable.intrinsicWidth
         val drawableHeight = drawable.intrinsicHeight
 
-        val sketchDrawable = drawable.findLastSketchDrawable()
+        val sketchDrawable = drawable.findLeafSketchDrawable()
         if (sketchDrawable == null) {
             logger.d(MODULE) { "Can't use Subsampling. Drawable is not SketchDrawable" }
             return null

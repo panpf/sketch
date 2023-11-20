@@ -32,17 +32,34 @@ import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 /**
  * Find the last child [Drawable] from the specified Drawable
  */
-fun Drawable.getLastChildDrawable(): Drawable? {
+fun Drawable.findLeafChildDrawable(): Drawable? {
     return when (val drawable = this) {
         is CrossfadeDrawable -> {
-            drawable.end?.getLastChildDrawable()
+            drawable.end?.findLeafChildDrawable()
         }
+
         is LayerDrawable -> {
-            val layerCount = drawable.numberOfLayers.takeIf { it > 0 } ?: return null
-            drawable.getDrawable(layerCount - 1).getLastChildDrawable()
+            val layerCount = drawable.numberOfLayers
+            if (layerCount > 0) {
+                drawable.getDrawable(layerCount - 1).findLeafChildDrawable()
+            } else {
+                null
+            }
         }
+
         else -> drawable
     }
+}
+
+/**
+ * Find the last child [Drawable] from the specified Drawable
+ */
+@Deprecated(
+    message = "Please use findLeafChildDrawable()",
+    replaceWith = ReplaceWith(expression = "findLeafChildDrawable")
+)
+fun Drawable.getLastChildDrawable(): Drawable? {
+    return findLeafChildDrawable()
 }
 
 /**
