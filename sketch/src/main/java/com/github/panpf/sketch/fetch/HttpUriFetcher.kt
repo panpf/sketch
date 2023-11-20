@@ -97,14 +97,6 @@ open class HttpUriFetcher(
             if (responseCode != 200) {
                 return@withContext Result.failure(IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uriString}"))
             }
-            // todo support chunked
-            val isContentChunked =
-                response.getHeaderField("Transfer-Encoding")?.let { transferEncoding ->
-                    "chunked".equals(transferEncoding.trim { it <= ' ' }, ignoreCase = true)
-                } ?: false
-            if (isContentChunked) {
-                return@withContext Result.failure(IOException("Not supported 'chunked' for 'Transfer-Encoding'. ${request.uriString}"))
-            }
 
             // write to disk or byte array
             try {
@@ -207,7 +199,7 @@ open class HttpUriFetcher(
                 }
             }
 
-            if (readLength == contentLength) {
+            if (contentLength <= 0 || readLength == contentLength) {
                 diskCacheEditor.commit()
             } else {
                 diskCacheEditor.abort()

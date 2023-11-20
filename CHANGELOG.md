@@ -4,6 +4,7 @@
 
 * new: Precision adds SMALLER_SIZE enum value
 * change: With the help of View.findViewTreeLifecycleOwner() and LocalLifecycleOwner.current API, the latest Lifecycle can now be automatically obtained, and there is no need to actively set the Lifecycle.
+* change: No longer intercept requests with 'Transfer-Encoding' is 'chunked'
 
 #### sketch-zoom:
 

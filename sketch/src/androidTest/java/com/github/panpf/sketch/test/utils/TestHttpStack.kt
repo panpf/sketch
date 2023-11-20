@@ -31,7 +31,7 @@ class TestHttpStack constructor(
         val errorImage = TestImage("http://assets.com.com/error.jpeg", 540456)
         val chunkedErrorImage = TestImage(
             "http://assets.com/sample.png",
-            254533,
+            -1,
             mapOf("Transfer-Encoding" to "chunked")
         )
         val lengthErrorImage = TestImage(

@@ -478,7 +478,7 @@ class HttpUriFetcherTest {
     }
 
     @Test
-    fun testChunkedError() {
+    fun testChunkedImage() {
         val (context, sketch) = getTestContextAndNewSketch {
             httpStack(TestHttpStack(it))
         }
@@ -491,18 +491,14 @@ class HttpUriFetcherTest {
             }
         }
         sketch.downloadCache.clear()
+
         runBlocking {
-            try {
-                HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
-                Assert.fail("No exception thrown")
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+            HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
         }
         Assert.assertTrue(progressList.size == 0)
         Assert.assertNull(progressList.find { it == testUri.contentLength })
 
-        Assert.assertFalse(sketch.downloadCache.exist(request.uriString))
+        Assert.assertTrue(sketch.downloadCache.exist(request.uriString))
     }
 
     @Test
