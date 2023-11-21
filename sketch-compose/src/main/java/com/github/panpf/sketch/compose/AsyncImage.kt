@@ -38,8 +38,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import com.github.panpf.sketch.util.Size as SketchSize
 
-// todo update from coil
-
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
  *

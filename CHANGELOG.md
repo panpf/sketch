@@ -17,6 +17,7 @@
 #### sketch-compose:
 
 * new: AsyncImage and SubcomposeAsyncImage add noClipContent parameter
+* improve: Synchronize coil-compose-base updates as of 2023/11/21
 
 #### other:
 
