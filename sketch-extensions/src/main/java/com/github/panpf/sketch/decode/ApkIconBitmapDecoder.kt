@@ -102,7 +102,6 @@ class ApkIconBitmapDecoder(
 
         override fun getDrawable(context: Context): Drawable {
             val packageManager = context.packageManager
-            // todo Deprecated
             val packageInfo =
                 packageManager.getPackageArchiveInfo(file.path, PackageManager.GET_ACTIVITIES)
                     ?: throw IOException("getPackageArchiveInfo return null. ${file.path}")

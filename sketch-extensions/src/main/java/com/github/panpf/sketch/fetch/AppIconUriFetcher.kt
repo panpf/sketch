@@ -111,12 +111,10 @@ class AppIconUriFetcher(
         override fun getDrawable(context: Context): Drawable {
             val packageManager = context.packageManager
             val packageInfo: PackageInfo = try {
-                // todo Deprecated
                 packageManager.getPackageInfo(packageName, 0)
             } catch (e: PackageManager.NameNotFoundException) {
                 throw Exception("Not found PackageInfo by '$packageName'", e)
             }
-            @Suppress("DEPRECATION")
             if (packageInfo.versionCode != versionCode) {
                 throw Exception("App versionCode mismatch, ${packageInfo.versionCode} != $versionCode")
             }

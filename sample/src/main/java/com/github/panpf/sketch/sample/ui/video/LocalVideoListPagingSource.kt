@@ -23,6 +23,7 @@ import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.tools4k.coroutines.withToIO
 import java.text.SimpleDateFormat
+import java.util.Locale
 
 class LocalVideoListPagingSource(private val context: Context) :
     PagingSource<Int, VideoInfo>() {
@@ -38,13 +39,15 @@ class LocalVideoListPagingSource(private val context: Context) :
         val assetVideos = if (startPosition == 0) {
             withToIO {
                 AssetImages.VIDEOS.map {
+                    val simpleDateFormat =
+                        SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     VideoInfo(
                         title = "sample",
                         path = it,
                         mimeType = "video/mp4",
                         size = 157092,
                         duration = 2000,
-                        date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2022-01-25 17:08:22").time
+                        date = simpleDateFormat.parse("2022-01-25 17:08:22")!!.time
                     )
                 }
             }

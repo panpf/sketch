@@ -89,7 +89,7 @@ class RemoteViewsFragment : ToolbarBindingFragment<RemoteViewsTestFragmentBindin
         init {
             val notificationChannel = NotificationChannelCompat.Builder(
                 NOTIFICATION_CHANNEL_ID,
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManagerCompat.IMPORTANCE_DEFAULT
             ).setName("测试加载图片并显示到 RemoteViews 上").build()
             notificationManager.createNotificationChannel(notificationChannel)
         }

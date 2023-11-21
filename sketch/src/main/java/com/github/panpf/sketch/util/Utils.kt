@@ -89,7 +89,7 @@ internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
     }
 }
 
-/** Suspend until [Lifecycle.getCurrentState] is at least [Lifecycle.State.STARTED] */
+/** Suspend until [Lifecycle.currentState] is at least [Lifecycle.State.STARTED] */
 @MainThread
 internal suspend fun Lifecycle.awaitStarted() {
     // Fast path: we're already started.

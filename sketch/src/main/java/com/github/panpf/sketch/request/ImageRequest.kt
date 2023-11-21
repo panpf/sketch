@@ -67,7 +67,7 @@ import com.github.panpf.sketch.util.ifOrNull
 interface ImageRequest {
 
     val context: Context
-    val uriString: String    // todo Consider supporting bitmap, drawable, bytes
+    val uriString: String
     val lifecycleResolver: LifecycleResolver
     val target: Target?
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?

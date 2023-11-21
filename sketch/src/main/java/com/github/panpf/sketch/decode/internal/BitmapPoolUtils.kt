@@ -169,7 +169,7 @@ private fun BitmapPool.realSetInBitmapForRegion(
         sampledBitmapSize.width, sampledBitmapSize.height, options.inPreferredConfig
     ) ?: Bitmap.createBitmap(
         sampledBitmapSize.width, sampledBitmapSize.height, options.inPreferredConfig
-    )!!.apply {
+    ).apply {
         newCreate = true
     }
     logger?.d(MODULE) {
