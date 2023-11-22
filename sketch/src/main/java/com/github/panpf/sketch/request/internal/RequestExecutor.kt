@@ -43,6 +43,7 @@ import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.fitScale
@@ -258,6 +259,7 @@ class RequestExecutor {
         result: ImageResult.Error
     ) {
         val target = lastRequest.target
+        val throwable = result.throwable
         when {
             target is DisplayTarget && result is DisplayResult.Error -> {
                 setDrawable(target, result) {
@@ -266,24 +268,20 @@ class RequestExecutor {
             }
 
             target is LoadTarget && result is LoadResult.Error -> {
-                target.onError(result.throwable)
+                target.onError(throwable)
             }
 
             target is DownloadTarget && result is DownloadResult.Error -> {
-                target.onError(result.throwable)
+                target.onError(throwable)
             }
         }
         lastRequest.listener?.onError(lastRequest, result)
-        if (result.throwable is DepthException) {
-            sketch.logger.d(MODULE) {
-                val logKey = newLogKey(requestContext, firstRequestKey, lastRequest)
-                "Request failed. ${result.throwable.message}. $logKey"
-            }
-        } else {
-            sketch.logger.e(MODULE, result.throwable) {
-                val logKey = newLogKey(requestContext, firstRequestKey, lastRequest)
-                "Request failed. ${result.throwable.message}. $logKey"
-            }
+        val logKey = newLogKey(requestContext, firstRequestKey, lastRequest)
+        val logMessage = "Request failed. ${throwable.message}. $logKey"
+        when (throwable) {
+            is DepthException -> sketch.logger.d(MODULE) { logMessage }
+            is SketchException -> sketch.logger.e(MODULE, logMessage)
+            else -> sketch.logger.e(MODULE, throwable, logMessage)
         }
     }
 
