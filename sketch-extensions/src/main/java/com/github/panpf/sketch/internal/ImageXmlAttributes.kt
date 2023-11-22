@@ -133,6 +133,9 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_placeholder)?.apply {
                 placeholder(this)
             }
+            typedArray.getDrawable(R.styleable.SketchImageView_sketch_uriEmpty)?.apply {
+                uriEmpty(this)
+            }
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_error)?.apply {
                 error(this) {
                     typedArray.getDrawable(R.styleable.SketchImageView_sketch_uriEmptyError)

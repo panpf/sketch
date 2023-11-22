@@ -122,6 +122,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.ignoreExifOrientation)
             Assert.assertNull(this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
+            Assert.assertNull(this.uriEmpty)
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertNull(this.disallowAnimatedImage)
@@ -260,6 +261,14 @@ class ImageOptionsTest {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
             Assert.assertNotNull(this.placeholder)
+        }
+
+        ImageOptions {
+            uriEmpty(ColorDrawable(Color.BLUE))
+        }.apply {
+            Assert.assertFalse(this.isEmpty())
+            Assert.assertTrue(this.isNotEmpty())
+            Assert.assertNotNull(this.uriEmpty)
         }
 
         ImageOptions {
@@ -586,6 +595,24 @@ class ImageOptionsTest {
             Assert.assertEquals(
                 DrawableStateImage(android.R.drawable.bottom_bar),
                 this.placeholder
+            )
+        }
+
+        ImageOptions().apply {
+            Assert.assertEquals(null, this.uriEmpty)
+        }.merged(ImageOptions {
+            uriEmpty(android.R.drawable.bottom_bar)
+        }).apply {
+            Assert.assertEquals(
+                DrawableStateImage(android.R.drawable.bottom_bar),
+                this.uriEmpty
+            )
+        }.merged(ImageOptions {
+            uriEmpty(android.R.drawable.arrow_up_float)
+        }).apply {
+            Assert.assertEquals(
+                DrawableStateImage(android.R.drawable.bottom_bar),
+                this.uriEmpty
             )
         }
 
@@ -1454,6 +1481,38 @@ class ImageOptionsTest {
             placeholder(null)
             build().apply {
                 Assert.assertNull(placeholder)
+            }
+        }
+    }
+
+    @Test
+    fun testUriEmpty() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                Assert.assertNull(uriEmpty)
+            }
+
+            uriEmpty(ColorStateImage(IntColor(Color.BLUE)))
+            build().apply {
+                Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), uriEmpty)
+            }
+
+            uriEmpty(ColorDrawable(Color.GREEN))
+            build().apply {
+                Assert.assertEquals(true, uriEmpty is DrawableStateImage)
+            }
+
+            uriEmpty(android.R.drawable.bottom_bar)
+            build().apply {
+                Assert.assertEquals(
+                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    uriEmpty
+                )
+            }
+
+            uriEmpty(null)
+            build().apply {
+                Assert.assertNull(uriEmpty)
             }
         }
     }

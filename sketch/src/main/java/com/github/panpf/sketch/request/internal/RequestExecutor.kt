@@ -56,6 +56,7 @@ class RequestExecutor {
 
     companion object {
         const val MODULE = "RequestExecutor"
+        private const val uriEmptyMessage = "Request uri is empty or blank"
     }
 
     @MainThread
@@ -330,11 +331,18 @@ class RequestExecutor {
         request: ImageRequest,
         resizeSize: Size?,
         throwable: Throwable
-    ): Drawable? =
-        (request.error?.getDrawable(sketch, request, throwable)
+    ): Drawable? {
+        val stateImage =
+            if (throwable is UriInvalidException && throwable.message == uriEmptyMessage) {
+                request.uriEmpty
+            } else {
+                request.error
+            }
+        return (stateImage?.getDrawable(sketch, request, throwable)
             ?: request.placeholder?.getDrawable(sketch, request, throwable))
             ?.tryToResizeDrawable(request, resizeSize)
             ?.toSketchStateDrawable()
+    }
 
     private fun newLogKey(
         requestContext: RequestContext?,

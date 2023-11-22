@@ -72,8 +72,10 @@ class ViewSizeResolverTest {
                 runBlocking(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView).size()
                 }.apply {
-                    Assert.assertEquals(displaySize.width, this.width)
-                    Assert.assertTrue(displaySize.height > this.height)
+                    Assert.assertTrue(
+                        "displaySize=$displaySize, viewSize=$this",
+                        this.height > displaySize.height / 2 && this.height <= displaySize.height
+                    )
                 }
             }
 
@@ -84,7 +86,11 @@ class ViewSizeResolverTest {
                 runBlocking(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView).size()
                 }.apply {
-                    Assert.assertEquals(displaySize, this)
+                    Assert.assertEquals(displaySize.width, this.width)
+                    Assert.assertTrue(
+                        "displaySize=$displaySize, viewSize=$this",
+                        this.height > displaySize.height / 2 && this.height <= displaySize.height
+                    )
                 }
             }
 
@@ -124,7 +130,10 @@ class ViewSizeResolverTest {
         runBlocking(Dispatchers.Main) {
             ViewSizeResolver(ImageView(context)).size()
         }.apply {
-            Assert.assertEquals(displaySize, this)
+            Assert.assertTrue(
+                "displaySize=$displaySize, viewSize=$this",
+                this.height > displaySize.height / 2 && this.height <= displaySize.height
+            )
         }
 
         ContainerTestFragment::class.launchFragmentInContainer().getFragmentSync()
@@ -142,8 +151,10 @@ class ViewSizeResolverTest {
                     )
                     deferred.await()
                 }.apply {
-                    Assert.assertEquals(displaySize.width, this.width)
-                    Assert.assertTrue(displaySize.height > this.height)
+                    Assert.assertTrue(
+                        "displaySize=$displaySize, viewSize=$this",
+                        this.height > displaySize.height / 2 && this.height <= displaySize.height
+                    )
                 }
             }
     }

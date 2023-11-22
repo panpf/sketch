@@ -84,6 +84,7 @@
     <attr name="sketch_crossfadeFadeStart" format="boolean|reference" />
     <attr name="sketch_crossfadeAlwaysUse" format="boolean|reference" />
     <attr name="sketch_placeholder" format="color|reference" />
+    <attr name="sketch_uriEmpty" format="color|reference" />
     <attr name="sketch_error" format="color|reference" />
     <attr name="sketch_uriEmptyError" format="color|reference" />
     <attr name="sketch_src" format="color|reference" />
@@ -120,6 +121,7 @@
         <attr name="sketch_crossfadeFadeStart" />
         <attr name="sketch_crossfadeAlwaysUse" />
         <attr name="sketch_placeholder" />
+        <attr name="sketch_uriEmpty" />
         <attr name="sketch_error" />
         <attr name="sketch_uriEmptyError" />
         <attr name="sketch_src" />

@@ -357,6 +357,18 @@ interface DownloadRequest : ImageRequest {
             super.placeholder(drawableResId)
         }
 
+        override fun uriEmpty(stateImage: StateImage?): Builder = apply {
+            super.uriEmpty(stateImage)
+        }
+
+        override fun uriEmpty(drawable: Drawable): Builder = apply {
+            super.uriEmpty(drawable)
+        }
+
+        override fun uriEmpty(drawableResId: Int): Builder = apply {
+            super.uriEmpty(drawableResId)
+        }
+
         override fun error(
             defaultStateImage: StateImage?, configBlock: (ErrorStateImage.Builder.() -> Unit)?
         ): Builder = apply {
@@ -452,6 +464,7 @@ interface DownloadRequest : ImageRequest {
         override val ignoreExifOrientation: Boolean,
         override val resultCachePolicy: CachePolicy,
         override val placeholder: StateImage?,
+        override val uriEmpty: StateImage?,
         override val error: ErrorStateImage?,
         override val transitionFactory: Factory?,
         override val disallowAnimatedImage: Boolean,

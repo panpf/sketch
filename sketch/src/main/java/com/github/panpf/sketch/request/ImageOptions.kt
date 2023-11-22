@@ -199,6 +199,13 @@ interface ImageOptions {
     val placeholder: StateImage?
 
     /**
+     * Image to display when uri is empty
+     *
+     * Only works on [DisplayRequest]
+     */
+    val uriEmpty: StateImage?
+
+    /**
      * Image to display when loading fails
      *
      * Only works on [DisplayRequest]
@@ -298,6 +305,7 @@ interface ImageOptions {
                 && ignoreExifOrientation == null
                 && resultCachePolicy == null
                 && placeholder == null
+                && uriEmpty == null
                 && error == null
                 && transitionFactory == null
                 && disallowAnimatedImage == null
@@ -325,6 +333,7 @@ interface ImageOptions {
         private var resultCachePolicy: CachePolicy? = null
 
         private var placeholder: StateImage? = null
+        private var uriEmpty: StateImage? = null
         private var error: ErrorStateImage? = null
         private var transitionFactory: Transition.Factory? = null
         private var disallowAnimatedImage: Boolean? = null
@@ -357,6 +366,7 @@ interface ImageOptions {
             this.resultCachePolicy = request.resultCachePolicy
 
             this.placeholder = request.placeholder
+            this.uriEmpty = request.uriEmpty
             this.error = request.error
             this.transitionFactory = request.transitionFactory
             this.disallowAnimatedImage = request.disallowAnimatedImage
@@ -675,6 +685,25 @@ interface ImageOptions {
             placeholder(DrawableStateImage(drawableResId))
 
         /**
+         * Set placeholder image when uri is empty
+         */
+        fun uriEmpty(stateImage: StateImage?): Builder = apply {
+            this.uriEmpty = stateImage
+        }
+
+        /**
+         * Set Drawable placeholder image when uri is empty
+         */
+        fun uriEmpty(drawable: Drawable): Builder =
+            uriEmpty(DrawableStateImage(drawable))
+
+        /**
+         * Set Drawable res placeholder image when uri is empty
+         */
+        fun uriEmpty(@DrawableRes drawableResId: Int): Builder =
+            uriEmpty(DrawableStateImage(drawableResId))
+
+        /**
          * Set image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
@@ -832,6 +861,9 @@ interface ImageOptions {
             if (this.placeholder == null) {
                 this.placeholder = options.placeholder
             }
+            if (this.uriEmpty == null) {
+                this.uriEmpty = options.uriEmpty
+            }
             if (this.error == null) {
                 this.error = options.error
             }
@@ -869,6 +901,7 @@ interface ImageOptions {
             disallowReuseBitmap = disallowReuseBitmap,
             ignoreExifOrientation = ignoreExifOrientation,
             placeholder = placeholder,
+            uriEmpty = uriEmpty,
             error = error,
             transitionFactory = transitionFactory,
             disallowAnimatedImage = disallowAnimatedImage,
@@ -898,6 +931,7 @@ interface ImageOptions {
         override val ignoreExifOrientation: Boolean?,
         override val resultCachePolicy: CachePolicy?,
         override val placeholder: StateImage?,
+        override val uriEmpty: StateImage?,
         override val error: ErrorStateImage?,
         override val transitionFactory: Transition.Factory?,
         override val disallowAnimatedImage: Boolean?,
@@ -925,6 +959,7 @@ interface ImageOptions {
             if (ignoreExifOrientation != other.ignoreExifOrientation) return false
             if (resultCachePolicy != other.resultCachePolicy) return false
             if (placeholder != other.placeholder) return false
+            if (uriEmpty != other.uriEmpty) return false
             if (error != other.error) return false
             if (transitionFactory != other.transitionFactory) return false
             if (disallowAnimatedImage != other.disallowAnimatedImage) return false
@@ -953,6 +988,7 @@ interface ImageOptions {
             result = 31 * result + (ignoreExifOrientation?.hashCode() ?: 0)
             result = 31 * result + (resultCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (placeholder?.hashCode() ?: 0)
+            result = 31 * result + (uriEmpty?.hashCode() ?: 0)
             result = 31 * result + (error?.hashCode() ?: 0)
             result = 31 * result + (transitionFactory?.hashCode() ?: 0)
             result = 31 * result + (disallowAnimatedImage?.hashCode() ?: 0)
@@ -983,6 +1019,7 @@ interface ImageOptions {
                 append("ignoreExifOrientation=$ignoreExifOrientation, ")
                 append("resultCachePolicy=$resultCachePolicy, ")
                 append("placeholder=$placeholder, ")
+                append("uriEmpty=$uriEmpty, ")
                 append("error=$error, ")
                 append("transition=$transitionFactory, ")
                 append("disallowAnimatedImage=$disallowAnimatedImage, ")

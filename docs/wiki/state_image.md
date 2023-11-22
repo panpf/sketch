@@ -15,7 +15,7 @@ StateImage 用来为加载中状态和错误状态提供图片，有以下几种
 
 ### 配置
 
-[ImageRequest] 和 [ImageOptions] 都提供了 placeholder() 和 error() 方法，如下：
+[ImageRequest] 和 [ImageOptions] 都提供了 placeholder(), uriEmpty(), error() 方法，如下：
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -24,6 +24,12 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
     placeholder(ColorStateImage(IntColor(Color.RED)))
     placeholder(DrawableStateImage(R.drawable.placeholder))
     placeholder(IconStateImage(R.drawable.placeholder_icon, IntColor(Color.GRAY)))
+
+    uriEmpty(R.drawable.placeholder)
+    uriEmpty(resources.getDrawable(R.drawable.placeholder))
+    uriEmpty(ColorStateImage(IntColor(Color.RED)))
+    uriEmpty(DrawableStateImage(R.drawable.placeholder))
+    uriEmpty(IconStateImage(R.drawable.placeholder_icon, IntColor(Color.GRAY)))
 
     // error 内部用 ErrorStateImage 实现，因此多了一个可以配置具体错误情况的 lambda 函数
     // 并且 placeholder() 方法能用的 error() 也都能用

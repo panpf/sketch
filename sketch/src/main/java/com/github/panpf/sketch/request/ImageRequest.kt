@@ -200,13 +200,18 @@ interface ImageRequest {
     val placeholder: StateImage?
 
     /**
+     * Image to display when uri is empty
+     *
+     * Only works on [DisplayRequest]
+     */
+    val uriEmpty: StateImage?
+
+    /**
      * Image to display when loading fails
      *
      * Only works on [DisplayRequest]
      */
     val error: ErrorStateImage?
-
-    // todo added uriEmpty Image and with this parameter configured, no exception is thrown
 
     /**
      * How the current image and the new image transition
@@ -699,6 +704,33 @@ interface ImageRequest {
         }
 
         /**
+         * Set placeholder image when uri is empty
+         *
+         * Only works on [DisplayRequest]
+         */
+        open fun uriEmpty(stateImage: StateImage?): Builder = apply {
+            definedOptionsBuilder.uriEmpty(stateImage)
+        }
+
+        /**
+         * Set Drawable placeholder image when uri is empty
+         *
+         * Only works on [DisplayRequest]
+         */
+        open fun uriEmpty(drawable: Drawable): Builder = apply {
+            definedOptionsBuilder.uriEmpty(drawable)
+        }
+
+        /**
+         * Set Drawable res placeholder image when uri is empty
+         *
+         * Only works on [DisplayRequest]
+         */
+        open fun uriEmpty(@DrawableRes drawableResId: Int): Builder = apply {
+            definedOptionsBuilder.uriEmpty(drawableResId)
+        }
+
+        /**
          * Set image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
@@ -869,6 +901,7 @@ interface ImageRequest {
             val disallowReuseBitmap = finalOptions.disallowReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
             val placeholder = finalOptions.placeholder
+            val uriEmpty = finalOptions.uriEmpty
             val error = finalOptions.error
             val transitionFactory = finalOptions.transitionFactory
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
@@ -902,6 +935,7 @@ interface ImageRequest {
                         disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholder = placeholder,
+                        uriEmpty = uriEmpty,
                         error = error,
                         transitionFactory = transitionFactory,
                         disallowAnimatedImage = disallowAnimatedImage,
@@ -936,6 +970,7 @@ interface ImageRequest {
                         disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholder = placeholder,
+                        uriEmpty = uriEmpty,
                         error = error,
                         transitionFactory = transitionFactory,
                         disallowAnimatedImage = disallowAnimatedImage,
@@ -970,6 +1005,7 @@ interface ImageRequest {
                         disallowReuseBitmap = disallowReuseBitmap,
                         ignoreExifOrientation = ignoreExifOrientation,
                         placeholder = placeholder,
+                        uriEmpty = uriEmpty,
                         error = error,
                         transitionFactory = transitionFactory,
                         disallowAnimatedImage = disallowAnimatedImage,

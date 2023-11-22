@@ -137,6 +137,7 @@ class LoadRequestTest {
             Assert.assertFalse(this.ignoreExifOrientation)
             Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
+            Assert.assertNull(this.uriEmpty)
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertFalse(this.disallowAnimatedImage)
@@ -300,7 +301,7 @@ class LoadRequestTest {
         val context1 = getTestContext()
         val uriString1 = newAssetUri("sample.jpeg")
         var lifecycle1: Lifecycle? = null
-        val lifecycleOwner = object: LifecycleOwner {
+        val lifecycleOwner = object : LifecycleOwner {
             override val lifecycle: Lifecycle
                 get() = lifecycle1!!
         }
@@ -1192,6 +1193,40 @@ class LoadRequestTest {
             placeholder(null)
             build().apply {
                 Assert.assertNull(placeholder)
+            }
+        }
+    }
+
+    @Test
+    fun testUriEmpty() {
+        val context1 = getTestContext()
+        val uriString1 = newAssetUri("sample.jpeg")
+        LoadRequest.Builder(context1, uriString1).apply {
+            build().apply {
+                Assert.assertNull(uriEmpty)
+            }
+
+            uriEmpty(ColorStateImage(IntColor(Color.BLUE)))
+            build().apply {
+                Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), uriEmpty)
+            }
+
+            uriEmpty(ColorDrawable(Color.GREEN))
+            build().apply {
+                Assert.assertEquals(true, uriEmpty is DrawableStateImage)
+            }
+
+            uriEmpty(drawable.bottom_bar)
+            build().apply {
+                Assert.assertEquals(
+                    DrawableStateImage(drawable.bottom_bar),
+                    uriEmpty
+                )
+            }
+
+            uriEmpty(null)
+            build().apply {
+                Assert.assertNull(uriEmpty)
             }
         }
     }
