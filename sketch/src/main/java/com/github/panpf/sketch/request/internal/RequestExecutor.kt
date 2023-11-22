@@ -69,17 +69,18 @@ class RequestExecutor {
         var firstRequestKey: String? = null
 
         try {
-            val uriString = request.uriString
-            if (uriString.isEmpty() || uriString.isBlank()) {
-                throw UriInvalidException("Request uri is empty or blank")
-            }
-
             // Set up the request's lifecycle observers. Cancel the request when destroy
             requestDelegate.start()
 
             // Enqueued requests suspend until the lifecycle is started.
             if (enqueue) {
                 lifecycle.awaitStarted()
+            }
+
+            // It must be executed after requestDelegate.start(), so that the old request in requestManager will be overwritten.
+            val uriString = request.uriString
+            if (uriString.isEmpty() || uriString.isBlank()) {
+                throw UriInvalidException(uriEmptyMessage)
             }
 
             // resolve resize size
