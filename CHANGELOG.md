@@ -8,6 +8,7 @@
 * fix: Fixed a bug where other images may be displayed unexpectedly when uri is empty
 * improve: Built-in exceptions no longer print stack information
 * new: ImageRequest and ImageOptions add 'uriEmpty()' method for more convenient configuration of uri empty state image
+* improve: Now after onStart check uri is empty
 
 #### sketch-zoom:
 

@@ -79,18 +79,18 @@ class RequestExecutor {
                 lifecycle.awaitStarted()
             }
 
-            // It must be executed after requestDelegate.start(), so that the old request in requestManager will be overwritten.
-            val uriString = request.uriString
-            if (uriString.isEmpty() || uriString.isBlank()) {
-                throw UriInvalidException(uriEmptyMessage)
-            }
-
             // resolve resize size
             val resizeSize = request.resizeSizeResolver.size()
             requestContext = RequestContext(request, resizeSize)
             firstRequestKey = requestContext.key
 
             onStart(sketch, requestContext, firstRequestKey)
+
+            // It must be executed after requestDelegate.start(), so that the old request in requestManager will be overwritten.
+            val uriString = request.uriString
+            if (uriString.isEmpty() || uriString.isBlank()) {
+                throw UriInvalidException(uriEmptyMessage)
+            }
 
             val result = RequestInterceptorChain(
                 sketch = sketch,
