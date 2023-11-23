@@ -15,18 +15,20 @@
  */
 package com.github.panpf.sketch.viewability
 
+import android.content.Context
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.request.DisplayListenerProvider
-import com.github.panpf.sketch.request.DisplayRequest
 
 /**
  * Provides access services for ViewAbility registration, uninstallation, and event callbacks and properties
  */
 interface ViewAbilityContainer : DisplayListenerProvider {
+
+    fun getContext(): Context
 
     /**
      * ViewAbility List
@@ -77,9 +79,4 @@ interface ViewAbilityContainer : DisplayListenerProvider {
      * Get Drawable
      */
     fun getDrawable(): Drawable?
-
-    /**
-     * Submit an display image request
-     */
-    fun submitRequest(request: DisplayRequest)
 }

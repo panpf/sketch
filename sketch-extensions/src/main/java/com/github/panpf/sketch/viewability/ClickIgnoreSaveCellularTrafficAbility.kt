@@ -16,20 +16,29 @@
 package com.github.panpf.sketch.viewability
 
 import android.view.View
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
+import com.github.panpf.sketch.sketch
 
 /**
  * Set to enable click View to force ignore the data saving function
  */
 fun ViewAbilityContainer.setClickIgnoreSaveCellularTrafficEnabled(enable: Boolean = true) {
+    setClickIgnoreSaveCellularTrafficEnabled(getContext().sketch, enable)
+}
+
+/**
+ * Set to enable click View to force ignore the data saving function
+ */
+fun ViewAbilityContainer.setClickIgnoreSaveCellularTrafficEnabled(sketch: Sketch, enable: Boolean = true) {
     val enabled = isClickIgnoreSaveCellularTrafficEnabled
     if (enable && !enabled) {
-        addViewAbility(ClickIgnoreSaveCellularTrafficAbility())
+        addViewAbility(ClickIgnoreSaveCellularTrafficAbility(sketch))
     } else if (!enable && enabled) {
         viewAbilityList
             .find { it is ClickIgnoreSaveCellularTrafficAbility }
@@ -46,8 +55,9 @@ val ViewAbilityContainer.isClickIgnoreSaveCellularTrafficEnabled: Boolean
 /**
  * Click View to force ignoring the data saving function, generally used with [SaveCellularTrafficDisplayInterceptor]
  */
-class ClickIgnoreSaveCellularTrafficAbility
-    : ViewAbility, ClickObserver, RequestListenerObserver {
+class ClickIgnoreSaveCellularTrafficAbility(
+    val sketch: Sketch
+) : ViewAbility, ClickObserver, RequestListenerObserver {
 
     private var errorFromSaveCellularTraffic = false
     private var request: DisplayRequest? = null
@@ -59,12 +69,12 @@ class ClickIgnoreSaveCellularTrafficAbility
 
     override fun onClick(v: View): Boolean {
         if (!canIntercept) return false
-        val host = host ?: return false
+        host ?: return false
         val request = request ?: return false
         val newRequest = request.newDisplayRequest {
             ignoreSaveCellularTraffic(true)
         }
-        host.container.submitRequest(newRequest)
+        sketch.enqueue(newRequest)
         return true
     }
 

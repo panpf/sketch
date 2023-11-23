@@ -23,7 +23,6 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.view.MotionEvent
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.Edge
 import com.github.panpf.sketch.zoom.ScaleState.Initial
@@ -34,7 +33,6 @@ import kotlin.math.roundToInt
 
 internal class ScaleDragHelper constructor(
     private val context: Context,
-    private val logger: Logger,
     private val zoomerHelper: ZoomerHelper,
     val onUpdateMatrix: () -> Unit,
     val onViewDrag: (dx: Float, dy: Float) -> Unit,
@@ -124,7 +122,7 @@ internal class ScaleDragHelper constructor(
     fun onTouchEvent(event: MotionEvent): Boolean {
         /* Location operations cannot be interrupted */
         if (this.locationRunnable?.isRunning == true) {
-            logger.d(ZoomerHelper.MODULE) {
+            zoomerHelper.logger?.d(ZoomerHelper.MODULE) {
                 "onTouchEvent. requestDisallowInterceptTouchEvent true. locating"
             }
             requestDisallowInterceptTouchEvent(true)
@@ -263,7 +261,7 @@ internal class ScaleDragHelper constructor(
         val centerLocationY = (scaledLocationY - viewHeight / 2).coerceAtLeast(0)
         val startX = abs(drawRectF.left.toInt())
         val startY = abs(drawRectF.top.toInt())
-        logger.d(ZoomerHelper.MODULE) {
+        zoomerHelper.logger?.d(ZoomerHelper.MODULE) {
             "location. inDrawable=${xInDrawable}x${yInDrawable}, start=${startX}x${startY}, end=${centerLocationX}x${centerLocationY}"
         }
         if (animate) {
@@ -392,10 +390,10 @@ internal class ScaleDragHelper constructor(
     }
 
     private fun doDrag(dx: Float, dy: Float) {
-        logger.d(ZoomerHelper.MODULE) { "onDrag. dx: $dx, dy: $dy" }
+        zoomerHelper.logger?.d(ZoomerHelper.MODULE) { "onDrag. dx: $dx, dy: $dy" }
 
         if (scaleDragGestureDetector.isScaling) {
-            logger.d(ZoomerHelper.MODULE) { "onDrag. isScaling" }
+            zoomerHelper.logger?.d(ZoomerHelper.MODULE) { "onDrag. isScaling" }
             return
         }
 
@@ -408,7 +406,7 @@ internal class ScaleDragHelper constructor(
         val disallowParentInterceptOnEdge = !zoomerHelper.allowParentInterceptOnEdge
         val blockParent = blockParentIntercept
         val disallow = if (dragging || scaling || blockParent || disallowParentInterceptOnEdge) {
-            logger.d(ZoomerHelper.MODULE) {
+            zoomerHelper.logger?.d(ZoomerHelper.MODULE) {
                 "onDrag. DisallowParentIntercept. dragging=$dragging, scaling=$scaling, blockParent=$blockParent, disallowParentInterceptOnEdge=$disallowParentInterceptOnEdge"
             }
             true
@@ -421,7 +419,7 @@ internal class ScaleDragHelper constructor(
                     || (verScrollEdge == Edge.START && dy <= -slop)
                     || (verScrollEdge == Edge.END && dy >= slop)
             val type = if (result) "DisallowParentIntercept" else "AllowParentIntercept"
-            logger.d(ZoomerHelper.MODULE) {
+            zoomerHelper.logger?.d(ZoomerHelper.MODULE) {
                 "onDrag. $type. scrollEdge=${horScrollEdge}-${verScrollEdge}, d=${dx}x${dy}"
             }
             dragging = result
@@ -431,7 +429,7 @@ internal class ScaleDragHelper constructor(
     }
 
     private fun doFling(startX: Float, startY: Float, velocityX: Float, velocityY: Float) {
-        logger.d(ZoomerHelper.MODULE) {
+        zoomerHelper.logger?.d(ZoomerHelper.MODULE) {
             "fling. startX=$startX, startY=$startY, velocityX=$velocityX, velocityY=$velocityY"
         }
 
@@ -453,7 +451,7 @@ internal class ScaleDragHelper constructor(
     }
 
     private fun doScaleBegin(): Boolean {
-        logger.d(ZoomerHelper.MODULE) { "onScaleBegin" }
+        zoomerHelper.logger?.d(ZoomerHelper.MODULE) { "onScaleBegin" }
         manualScaling = true
         return true
     }
@@ -464,7 +462,7 @@ internal class ScaleDragHelper constructor(
     }
 
     internal fun doScale(scaleFactor: Float, focusX: Float, focusY: Float, dx: Float, dy: Float) {
-        logger.d(ZoomerHelper.MODULE) {
+        zoomerHelper.logger?.d(ZoomerHelper.MODULE) {
             "onScale. scaleFactor: $scaleFactor, focusX: $focusX, focusY: $focusY, dx: $dx, dy: $dy"
         }
 
@@ -502,7 +500,7 @@ internal class ScaleDragHelper constructor(
     }
 
     private fun doScaleEnd() {
-        logger.d(ZoomerHelper.MODULE) { "onScaleEnd" }
+        zoomerHelper.logger?.d(ZoomerHelper.MODULE) { "onScaleEnd" }
 //        val currentScale = scale.format(2)
 //        val overMinZoomScale = currentScale < zoomerHelper.minScale.format(2)
 //        val overMaxZoomScale = currentScale > zoomerHelper.maxScale.format(2)
@@ -513,7 +511,7 @@ internal class ScaleDragHelper constructor(
     }
 
     private fun actionDown() {
-        logger.d(ZoomerHelper.MODULE) {
+        zoomerHelper.logger?.d(ZoomerHelper.MODULE) {
             "onActionDown. disallow parent intercept touch event"
         }
 

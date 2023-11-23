@@ -9,6 +9,7 @@
 * improve: Built-in exceptions no longer print stack information
 * new: ImageRequest and ImageOptions add 'uriEmpty()' method for more convenient configuration of uri empty state image
 * improve: Now after onStart check uri is empty
+* remove: SketchImageView and SketchZoomImageView remove submitRequest method
 
 #### sketch-zoom:
 

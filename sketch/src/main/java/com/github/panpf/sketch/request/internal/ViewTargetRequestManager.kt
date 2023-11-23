@@ -18,7 +18,9 @@ package com.github.panpf.sketch.request.internal
 import android.view.View
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.R
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ViewTargetDisposable
 import com.github.panpf.sketch.util.getCompletedOrNull
 import com.github.panpf.sketch.util.isMainThread
@@ -113,6 +115,14 @@ class ViewTargetRequestManager constructor(private val view: View) : View.OnAtta
         // be cleared synchronously as part of request.restart().
         isRestart = true
         requestDelegate.restart()
+    }
+
+    internal fun getRequest(): ImageRequest? {
+        return currentRequestDelegate?.initialRequest
+    }
+
+    internal fun getSketch(): Sketch? {
+        return currentRequestDelegate?.sketch
     }
 }
 

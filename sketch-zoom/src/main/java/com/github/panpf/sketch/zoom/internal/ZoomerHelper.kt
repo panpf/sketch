@@ -48,7 +48,6 @@ import com.github.panpf.sketch.zoom.ScaleState.Factory
  */
 internal class ZoomerHelper constructor(
     private val context: Context,
-    private val logger: Logger,
     val view: View,
     scaleType: ScaleType,
 ) {
@@ -57,10 +56,10 @@ internal class ZoomerHelper constructor(
         const val MODULE = "ZoomerHelper"
     }
 
+    var logger: Logger? = null
     private val tapHelper = TapHelper(context, this)
     private val scaleDragHelper = ScaleDragHelper(
         context = context,
-        logger = logger,
         zoomerHelper = this,
         onUpdateMatrix = {
             scrollBarHelper?.onMatrixChanged()
@@ -187,7 +186,7 @@ internal class ZoomerHelper constructor(
             readModeDecider = finalReadModeDecider
         )
         scaleDragHelper.reset()
-        logger.d(MODULE) {
+        logger?.d(MODULE) {
             "reset. viewSize=$viewSize, " +
                     "imageSize=$imageSize, " +
                     "drawableSize=$drawableSize, " +

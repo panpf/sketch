@@ -102,8 +102,8 @@ internal class BaseRequestDelegate(
 
 /** A request delegate for restartable requests with a [ViewDisplayTarget]. */
 class ViewTargetRequestDelegate(
-    private val sketch: Sketch,
-    private val initialRequest: DisplayRequest,
+    internal val sketch: Sketch,
+    internal val initialRequest: DisplayRequest,
     private val target: ViewDisplayTarget<*>,
     private val lifecycle: Lifecycle,
     private val job: Job

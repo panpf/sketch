@@ -23,9 +23,11 @@ import android.os.Build.VERSION_CODES
 import android.view.View
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import com.github.panpf.sketch.R
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
+import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
 
@@ -50,6 +52,19 @@ class SketchUtils private constructor() {
          * Restart ImageRequest
          */
         fun restart(view: View) = requestManagerOrNull(view)?.restart()
+
+        /**
+         * Get the [DisplayRequest] of the most recently executed image request that's attached to this view.
+         */
+        // todo test
+        fun getRequest(view: View): DisplayRequest? =
+            requestManagerOrNull(view)?.getRequest()?.let { it as DisplayRequest }
+
+        /**
+         * Get the [Sketch] of the most recently executed image request that's attached to this view.
+         */
+        // todo test
+        fun getSketch(view: View): Sketch? = requestManagerOrNull(view)?.getSketch()
     }
 }
 

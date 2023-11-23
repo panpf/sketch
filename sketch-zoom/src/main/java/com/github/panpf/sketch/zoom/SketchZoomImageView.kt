@@ -23,10 +23,8 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.animation.Interpolator
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 import com.github.panpf.sketch.zoom.internal.ZoomAbility
@@ -286,10 +284,6 @@ open class SketchZoomImageView @JvmOverloads constructor(
         return zoomAbility.removeOnTileChangedListener(listener)
     }
 
-
-    override fun submitRequest(request: DisplayRequest) {
-        context.sketch.enqueue(request)
-    }
 
     override fun canScrollHorizontally(direction: Int): Boolean =
         zoomAbility.canScrollHorizontally(direction)

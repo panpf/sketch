@@ -26,8 +26,8 @@ import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 
@@ -61,14 +61,12 @@ open class SketchImageView @JvmOverloads constructor(
         }
     }
 
-    override fun submitRequest(request: DisplayRequest) {
-        context.sketch.enqueue(request)
-    }
-
     override fun getDisplayListener(): Listener<DisplayRequest, Success, Error>? {
         val myListeners = displayListenerList?.takeIf { it.isNotEmpty() }
         val superListener = super.getDisplayListener()
-        if (myListeners == null && superListener == null) return superListener
+        if (myListeners == null && superListener == null) {
+            return null
+        }
 
         val listenerList = (myListeners?.toMutableList() ?: mutableListOf()).apply {
             if (superListener != null) add(superListener)
@@ -79,7 +77,9 @@ open class SketchImageView @JvmOverloads constructor(
     override fun getDisplayProgressListener(): ProgressListener<DisplayRequest>? {
         val myProgressListeners = displayProgressListenerList?.takeIf { it.isNotEmpty() }
         val superProgressListener = super.getDisplayProgressListener()
-        if (myProgressListeners == null && superProgressListener == null) return superProgressListener
+        if (myProgressListeners == null && superProgressListener == null) {
+            return null
+        }
 
         val progressListenerList = (myProgressListeners?.toMutableList() ?: mutableListOf()).apply {
             if (superProgressListener != null) add(superProgressListener)

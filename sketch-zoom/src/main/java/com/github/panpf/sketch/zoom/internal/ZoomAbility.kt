@@ -34,17 +34,17 @@ import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.util.findLeafSketchDrawable
 import com.github.panpf.sketch.util.findLeafChildDrawable
+import com.github.panpf.sketch.util.findLeafSketchDrawable
 import com.github.panpf.sketch.viewability.AttachObserver
 import com.github.panpf.sketch.viewability.DrawObserver
 import com.github.panpf.sketch.viewability.DrawableObserver
@@ -113,6 +113,13 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     )
     private var lastPostResetSubsamplingHelperJob: Job? = null
 
+    private var sketch: Sketch? = null
+        set(value) {
+            if (value != field) {
+                zoomerHelper?.logger = value?.logger
+                field = value
+            }
+        }
     private var lifecycle: Lifecycle? = null
         set(value) {
             if (value != field) {
@@ -505,7 +512,6 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         }
         return ZoomerHelper(
             context = host.context,
-            logger = host.context.sketch.logger,
             view = host.view,
             scaleType = scaleType,
         ).apply {
@@ -551,22 +557,21 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     private fun newSubsamplingHelper(zoomerHelper: ZoomerHelper?): SubsamplingHelper? {
         zoomerHelper ?: return null
         val host = host ?: return null
-        val sketch = host.context.sketch
-        val logger = sketch.logger
+        val logger = sketch?.logger
 
         val viewContentSize = host.view.contentSize
         if (viewContentSize == null) {
-            logger.d(MODULE) { "Can't use Subsampling. View size error" }
+            logger?.d(MODULE) { "Can't use Subsampling. View size error" }
             return null
         }
 
         val drawable = host.container.getDrawable()
         if (drawable == null) {
-            logger.d(MODULE) { "Can't use Subsampling. Drawable is null" }
+            logger?.d(MODULE) { "Can't use Subsampling. Drawable is null" }
             return null
         }
         if (drawable.findLeafChildDrawable() is SketchStateDrawable) {
-            logger.d(MODULE) { "Can't use Subsampling. Drawable is StateDrawable" }
+            logger?.d(MODULE) { "Can't use Subsampling. Drawable is StateDrawable" }
             return null
         }
         val drawableWidth = drawable.intrinsicWidth
@@ -574,11 +579,11 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
         val sketchDrawable = drawable.findLeafSketchDrawable()
         if (sketchDrawable == null) {
-            logger.d(MODULE) { "Can't use Subsampling. Drawable is not SketchDrawable" }
+            logger?.d(MODULE) { "Can't use Subsampling. Drawable is not SketchDrawable" }
             return null
         }
         if (sketchDrawable is Animatable) {
-            logger.d(MODULE) { "Can't use Subsampling. Drawable is Animatable" }
+            logger?.d(MODULE) { "Can't use Subsampling. Drawable is Animatable" }
             return null
         }
         val imageWidth = sketchDrawable.imageInfo.width
@@ -587,7 +592,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         val requestKey = sketchDrawable.requestKey
 
         if (drawableWidth >= imageWidth && drawableHeight >= imageHeight) {
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "Don't need to use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
                     .format(
                         drawableWidth,
@@ -601,7 +606,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             return null
         }
         if (!canUseSubsampling(imageWidth, imageHeight, drawableWidth, drawableHeight)) {
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "Can't use Subsampling. drawableSize error. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
                     .format(
                         drawableWidth,
@@ -615,7 +620,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             return null
         }
         if (ImageFormat.parseMimeType(mimeType)?.supportBitmapRegionDecoder() != true) {
-            logger.d(MODULE) {
+            logger?.d(MODULE) {
                 "MimeType does not support Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
                     .format(
                         drawableWidth,
@@ -629,7 +634,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
             return null
         }
 
-        logger.d(MODULE) {
+        logger?.d(MODULE) {
             "Use Subsampling. drawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. '%s'"
                 .format(
                     drawableWidth,
@@ -653,7 +658,7 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         }
         return SubsamplingHelper(
             context = host.context,
-            sketch = sketch,
+            sketch = sketch!!,
             zoomerHelper = zoomerHelper,
             imageUri = sketchDrawable.imageUri,
             imageInfo = sketchDrawable.imageInfo,
@@ -672,6 +677,8 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
     }
 
     override fun onRequestStart(request: DisplayRequest) {
+        val view = host?.view ?: return
+        this.sketch = SketchUtils.getSketch(view)
     }
 
     override fun onRequestError(request: DisplayRequest, result: DisplayResult.Error) {
