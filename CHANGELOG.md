@@ -17,6 +17,7 @@
 * change: The `enqueue()` and `execute()` methods of DisplayRequest, LoadRequest, and DownloadRequest
   are now extended functions, requiring the import of dependencies
 * new: Split out the `sketch-core` module to provide basic functionality
+* new: SketchSingleton adds the setSketch() method, which is used to set up a singleton instance of Sketch
 
 #### sketch-zoom:
 

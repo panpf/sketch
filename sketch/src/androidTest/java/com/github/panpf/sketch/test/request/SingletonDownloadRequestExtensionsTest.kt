@@ -16,11 +16,13 @@
 package com.github.panpf.sketch.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.SketchSingleton
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.request.execute
-import com.github.panpf.sketch.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.getTestContext
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -32,20 +34,25 @@ class SingletonDownloadRequestExtensionsTest {
 
     @Test
     fun testExecuteAndEnqueue() {
-        val (context, _) = getTestContextAndNewSketch {
-            httpStack(TestHttpStack(it))
-        }
+        val context = getTestContext()
+        val downloadTestSketch = Sketch.Builder(context).apply {
+            httpStack(TestHttpStack(context))
+        }.build()
+        SketchSingleton.setSketch(downloadTestSketch)
+        try {
+            DownloadRequest(context, TestHttpStack.testImages.first().uriString).let { request ->
+                runBlocking { request.execute() }
+            }.apply {
+                Assert.assertTrue(this is DownloadResult.Success)
+            }
 
-        DownloadRequest(context, TestHttpStack.testImages.first().uriString).let { request ->
-            runBlocking { request.execute() }
-        }.apply {
-            Assert.assertTrue(this is DownloadResult.Success)
-        }
-
-        DownloadRequest(context, TestHttpStack.testImages.first().uriString).let { request ->
-            runBlocking { request.enqueue().job.await() }
-        }.apply {
-            Assert.assertTrue(this is DownloadResult.Success)
+            DownloadRequest(context, TestHttpStack.testImages.first().uriString).let { request ->
+                runBlocking { request.enqueue().job.await() }
+            }.apply {
+                Assert.assertTrue(this is DownloadResult.Success)
+            }
+        } finally {
+            SketchSingleton.reset()
         }
     }
 }

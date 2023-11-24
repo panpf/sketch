@@ -16,8 +16,8 @@
 package com.github.panpf.sketch
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
-import com.github.panpf.sketch.Sketch.Builder
 
 /**
  * Get Sketch singleton from any Context
@@ -25,11 +25,15 @@ import com.github.panpf.sketch.Sketch.Builder
 val Context.sketch: Sketch
     get() = SketchSingleton.sketch(this)
 
-internal object SketchSingleton {
+object SketchSingleton {
 
     @SuppressLint("StaticFieldLeak")
     private var sketch: Sketch? = null
+    private var sketchFactory: SketchFactory? = null
 
+    /**
+     * Get the singleton [Sketch].
+     */
     @JvmStatic
     fun sketch(context: Context): Sketch =
         sketch ?: synchronized(this) {
@@ -40,12 +44,49 @@ internal object SketchSingleton {
             }
         }
 
+    /**
+     * Set the singleton [Sketch].
+     * Prefer using `setSketch(SketchFactory)` to create the [Sketch] lazily.
+     */
+    @JvmStatic
+    @Synchronized
+    fun setSketch(sketch: Sketch) {
+        this.sketch?.shutdown()
+        this.sketch = sketch
+        this.sketchFactory = null
+    }
+
+    /**
+     * Set the [SketchFactory] that will be used to create the singleton [Sketch].
+     * The [factory] is guaranteed to be called at most once.
+     *
+     * NOTE: [factory] will take precedence over an [Application] that implements [SketchFactory].
+     */
+    @JvmStatic
+    @Synchronized
+    fun setSketch(factory: SketchFactory) {
+        this.sketch?.shutdown()
+        this.sketch = null
+        this.sketchFactory = factory
+    }
+
+    /**
+     * Clear the [Sketch] and [SketchFactory] held by this class.
+     *
+     * This method is useful for testing and its use is discouraged in production code.
+     */
+    @JvmStatic
+    @Synchronized
+    fun reset() {
+        this.sketch?.shutdown()
+        this.sketch = null
+        this.sketchFactory = null
+    }
+
     private fun createSketch(context: Context): Sketch {
         val appContext = context.applicationContext
-        return if (appContext is SketchFactory) {
-            appContext.createSketch()
-        } else {
-            Builder(appContext).build()
-        }
+        return sketchFactory?.createSketch()
+            ?: (appContext as? SketchFactory)?.createSketch()
+            ?: Sketch.Builder(appContext).build()
     }
 }

@@ -48,7 +48,9 @@
 val sketch = context.sketch
 ```
 
-单例模式如果要自定义 Sketch 的话只能在 Application 类上实现 [SketchFactory] 接口来创建并配置 Sketch ，如下：
+#### 自定义 Sketch
+
+方法 1：在 Application 类上实现 [SketchFactory] 接口来创建并配置 Sketch ，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -60,6 +62,26 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
+```
+
+方法 2：创建并配置 Sketch 然后通过 `SketchSingleton.setSketch()` 方法设置为单例，如下：
+
+```kotlin
+val sketch = Sketch.Builder(context).apply {
+    logger(Logger(DEBUG))
+    httpStack(OkHttpStack.Builder().build())
+}.build()
+
+SketchSingleton.setSketch(sketch)
+
+// 或者
+
+SketchSingleton.setSketch(SketchFactory {
+    Sketch.Builder(context).apply {
+        logger(Logger(DEBUG))
+        httpStack(OkHttpStack.Builder().build())
+    }.build()
+})
 ```
 
 ### 非单例模式
