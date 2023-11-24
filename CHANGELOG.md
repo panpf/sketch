@@ -1,23 +1,24 @@
-# v3.3.0-SNAPSHOT
+# v3.3.0-beta01
 
 #### sketch:
 
-* new: Precision adds SMALLER_SIZE enum value
+* fix: Fixed a bug where other images may be displayed unexpectedly when uri is empty
+* remove: SketchImageView and SketchZoomImageView remove submitRequest method
+* remove: Remove the `sketch_src` xml attribute of SketchImageView
 * change: With the help of View.findViewTreeLifecycleOwner() and LocalLifecycleOwner.current API,
   the latest Lifecycle can now be automatically obtained, and there is no need to actively set the
   Lifecycle.
 * change: No longer intercept requests with 'Transfer-Encoding' is 'chunked'
-* fix: Fixed a bug where other images may be displayed unexpectedly when uri is empty
+* change: The `enqueue()` and `execute()` methods of DisplayRequest, LoadRequest, and
+  DownloadRequest are now extended functions, requiring the import of dependencies
 * improve: Built-in exceptions no longer print stack information
+* improve: Now after onStart check uri is empty
+* new: Precision adds SMALLER_SIZE enum value
 * new: ImageRequest and ImageOptions add 'uriEmpty()' method for more convenient configuration of
   uri empty state image
-* improve: Now after onStart check uri is empty
-* remove: SketchImageView and SketchZoomImageView remove submitRequest method
-* remove: Remove the `sketch_src` xml attribute of SketchImageView
-* change: The `enqueue()` and `execute()` methods of DisplayRequest, LoadRequest, and DownloadRequest
-  are now extended functions, requiring the import of dependencies
 * new: Split out the `sketch-core` module to provide basic functionality
-* new: SketchSingleton adds the setSketch() method, which is used to set up a singleton instance of Sketch
+* new: SketchSingleton adds the setSketch() method, which is used to set up a singleton instance of
+  Sketch
 
 #### sketch-zoom:
 
@@ -32,9 +33,10 @@
 
 #### sketch-compose:
 
-* new: AsyncImage and SubcomposeAsyncImage add noClipContent parameter
 * improve: Synchronize coil-compose-base updates as of 2023/11/21
-* new: AsyncImage, SubcomposeAsyncImage, AsyncImagePainter added a sketch version that supports configuration
+* new: AsyncImage and SubcomposeAsyncImage add noClipContent parameter
+* new: AsyncImage, SubcomposeAsyncImage, AsyncImagePainter added a sketch version that supports
+  configuration
 * new: Split out the `sketch-compose-core` module to provide basic functionality
 
 #### other:
