@@ -140,6 +140,20 @@ fun calculateSampleSize(
 }
 
 /**
+ * Calculate the sample size, support for BitmapFactory or ImageDecoder
+ */
+fun calculateSampleSize(
+    imageSize: Size,
+    targetSize: Size,
+    mimeType: String? = null
+): Int = calculateSampleSize(
+    imageSize = imageSize,
+    targetSize = targetSize,
+    smallerSizeMode = false,
+    mimeType = mimeType
+)
+
+/**
  * Calculate the sample size, support for BitmapRegionDecoder
  */
 fun calculateSampleSizeForRegion(
@@ -168,6 +182,22 @@ fun calculateSampleSizeForRegion(
         regionSize, sampleSize, mimeType, imageSize
     )
 }
+
+/**
+ * Calculate the sample size, support for BitmapRegionDecoder
+ */
+fun calculateSampleSizeForRegion(
+    regionSize: Size,
+    targetSize: Size,
+    mimeType: String? = null,
+    imageSize: Size? = null
+): Int = calculateSampleSizeForRegion(
+    regionSize = regionSize,
+    targetSize = targetSize,
+    smallerSizeMode = false,
+    mimeType = mimeType,
+    imageSize = imageSize
+)
 
 
 /*
