@@ -13,13 +13,6 @@ android {
         consumerProguardFiles("proguard-rules.pro")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "VERSION_NAME", "\"${property("versionName").toString()}\"")
-        buildConfigField("int", "VERSION_CODE", property("versionCode").toString())
-    }
-
-    buildFeatures {
-        buildConfig = true
     }
 
     buildTypes {
@@ -44,14 +37,9 @@ android {
 }
 
 dependencies {
-    api(libs.kotlin.stdlib.jdk8)
-    api(libs.kotlinx.coroutines.android)
-    api(libs.androidx.annotation)
-    api(libs.androidx.appcompat.resources)
-    api(libs.androidx.core)
-    api(libs.androidx.exifinterface)
-    api(libs.androidx.lifecycle.runtime)
+    api(project(":sketch-core"))
 
     androidTestImplementation(libs.bundles.test)
     androidTestImplementation(libs.androidx.fragment)
+    androidTestImplementation(project(":sketch-test"))
 }

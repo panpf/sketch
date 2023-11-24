@@ -3,26 +3,38 @@
 #### sketch:
 
 * new: Precision adds SMALLER_SIZE enum value
-* change: With the help of View.findViewTreeLifecycleOwner() and LocalLifecycleOwner.current API, the latest Lifecycle can now be automatically obtained, and there is no need to actively set the Lifecycle.
+* change: With the help of View.findViewTreeLifecycleOwner() and LocalLifecycleOwner.current API,
+  the latest Lifecycle can now be automatically obtained, and there is no need to actively set the
+  Lifecycle.
 * change: No longer intercept requests with 'Transfer-Encoding' is 'chunked'
 * fix: Fixed a bug where other images may be displayed unexpectedly when uri is empty
 * improve: Built-in exceptions no longer print stack information
-* new: ImageRequest and ImageOptions add 'uriEmpty()' method for more convenient configuration of uri empty state image
+* new: ImageRequest and ImageOptions add 'uriEmpty()' method for more convenient configuration of
+  uri empty state image
 * improve: Now after onStart check uri is empty
 * remove: SketchImageView and SketchZoomImageView remove submitRequest method
+* remove: Remove the `sketch_src` xml attribute of SketchImageView
+* change: The `enqueue()` and `execute()` methods of DisplayRequest, LoadRequest, and DownloadRequest
+  are now extended functions, requiring the import of dependencies
+* new: Split out the `sketch-core` module to provide basic functionality
 
 #### sketch-zoom:
 
-* deprecated：The SketchZoomImageView component is deprecated. Please use the SketchZoomImageView component of the https://github.com/panpf/zoomimage library instead.
+* deprecated：The SketchZoomImageView component is deprecated. Please use the SketchZoomImageView
+  component of the https://github.com/panpf/zoomimage library instead.
 
 #### sketch-extensions
 
-* change: ApkIconBitmapDecoder and AppIconUriFetcher's IMAGE_MIME_TYPE changed from 'image/appicon' to 'image/png'
+* change: ApkIconBitmapDecoder and AppIconUriFetcher's IMAGE_MIME_TYPE changed from 'image/appicon'
+  to 'image/png'
+* new: Split out the `sketch-extensions-core` module to provide basic functionality
 
 #### sketch-compose:
 
 * new: AsyncImage and SubcomposeAsyncImage add noClipContent parameter
 * improve: Synchronize coil-compose-base updates as of 2023/11/21
+* new: AsyncImage, SubcomposeAsyncImage, AsyncImagePainter added a sketch version that supports configuration
+* new: Split out the `sketch-compose-core` module to provide basic functionality
 
 #### other:
 

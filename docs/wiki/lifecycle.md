@@ -34,10 +34,10 @@ imageView.displayImage("https://www.example.com/image.gif") {
 }
 ```
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ViewTargetRequestDelegate]: ../../sketch/src/main/java/com/github/panpf/sketch/request/internal/RequestDelegate.kt
+[ViewTargetRequestDelegate]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/internal/RequestDelegate.kt
 
-[GenericViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/GenericViewDisplayTarget.kt
+[GenericViewDisplayTarget]: ../../sketch-core/src/main/java/com/github/panpf/sketch/target/GenericViewDisplayTarget.kt
 
 [SketchZoomImageView]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/SketchZoomImageView.kt

@@ -49,6 +49,9 @@ Compose、GIF、SVG、视频缩略图、手势缩放、超大图采样、ExifInt
 
 ```kotlin
 dependencies {
+    // The core functionality of Sketch is provided as well as a singleton and some handy extension functions that depend on this singleton implementation, 
+    // and if you don't need a singleton, you can use the sketch-core module
+    // 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数，如果不需要单例可以使用 sketch-core 模块
     implementation("io.github.panpf.sketch3:sketch:${LAST_VERSION}")
 }
 ```
@@ -61,12 +64,17 @@ There are also optional modules to extend the functionality of sketch:
 
 ```kotlin
 dependencies {
-    // Support for Jetpack Compose
+    // Support for Jetpack Compose.
+    // It relies on the singletons provided by the sketch module, and you can use the sketch-compose-core module if you don't need the singleton pattern
     // 支持 Jetpack Compose
+    // 它依赖 sketch 模块提供的单例，如果不需要单例模式可以使用 sketch-compose-core 模块
     implementation("io.github.panpf.sketch3:sketch-compose:${LAST_VERSION}")
 
-    // Supports useful features such as download progress mask, pause loading during list swipe, save cellular traffic, image type corner marker, load apk file and installed app icon
+    // Supports useful features such as download progress mask, pause loading during list swipe, 
+    // save cellular traffic, image type corner marker, load apk file and installed app icon. 
+    // It relies on the singletons provided by the sketch module, and you can use the sketch-compose-core module if you don't need the singleton pattern
     // 支持下载进度蒙层、列表滑动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk 文件和已安装 app 图标等实用功能
+    // 它依赖 sketch 模块提供的单例，如果不需要单例模式可以使用 sketch-compose-core 模块
     implementation("io.github.panpf.sketch3:sketch-extensions:${LAST_VERSION}")
 
     // GifDrawable through Koral's android-gif-drawable library
@@ -225,7 +233,7 @@ Please review the [CHANGELOG.md] file
 * The gif module now directly depends on the [android-gif-drawable] library, no longer modified twice, and can be upgraded by itself
 * Support for Jetpack Compose
 * Support for request and decode interceptors
-* Referring to [coil] v2.2.0 and combining with the original functionality of sketch, there are the following differences compared to [coil]:
+* Referring to [coil] and combining with the original functionality of sketch, there are the following differences compared to [coil]:
   * sketch supports a minimum of API 16, while [coil] supports only API 21
   * Sketch supports bitmap reuse, while [coil] does not
   * Sketch supports more granular resizing of images
@@ -242,7 +250,7 @@ Please review the [CHANGELOG.md] file
 * gif 模块现在直接依赖 [android-gif-drawable] 库不再二次修改，可自行升级
 * 支持 Jetpack Compose
 * 支持请求和解码拦截器
-* 参考 [coil] v2.2.0 版本并结合 sketch 原有功能实现，对比 [coil] 有以下区别：
+* 参考 [coil] 并结合 sketch 原有功能实现，对比 [coil] 有以下区别：
   * sketch 最低支持 API 16，而 [coil] 最低仅支持 API 21
   * sketch 支持 bitmap 复用，而 [coil] 不支持
   * sketch 支持更加精细化的调整图片大小

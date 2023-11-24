@@ -18,12 +18,13 @@ package com.github.panpf.sketch.extensions.test
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.R
+import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.displayAppIconImage
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
+import com.github.panpf.sketch.test.utils.TestGlobalLifecycle
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import org.junit.Assert
 import org.junit.Test
@@ -37,7 +38,8 @@ class OtherImageViewExtensionsTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = ImageView(context)
 
-        imageView.displayAppIconImage(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_CODE) {
+        val versionCode = context.packageManager.getPackageInfo(context.packageName, 0).versionCode
+        imageView.displayAppIconImage(context.packageName, versionCode) {
             lifecycle(TestGlobalLifecycle)
         }
         Thread.sleep(300)
@@ -45,7 +47,7 @@ class OtherImageViewExtensionsTest {
         val request = manager.getFieldValue<ViewTargetRequestDelegate>("currentRequestDelegate")!!
             .getFieldValue<DisplayRequest>("initialRequest")!!
         Assert.assertEquals(
-            newAppIconUri(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_CODE),
+            newAppIconUri(context.packageName, versionCode),
             request.uriString
         )
     }

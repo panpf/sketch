@@ -29,10 +29,10 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 * 设备可用内存较低触发了 Application 的 onLowMemory() 方法
 * 系统整理内存触发了 Application 的 onTrimMemory(int) 方法
 
-[BitmapPool]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/BitmapPool.kt
+[BitmapPool]: ../../sketch-core/src/main/java/com/github/panpf/sketch/cache/BitmapPool.kt
 
-[LruBitmapPool]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/internal/LruBitmapPool.kt
+[LruBitmapPool]: ../../sketch-core/src/main/java/com/github/panpf/sketch/cache/internal/LruBitmapPool.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt

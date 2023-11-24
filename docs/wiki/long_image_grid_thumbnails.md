@@ -19,12 +19,12 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/main/java/com/github/panpf/sketch/Sketch.kt
 
-[Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Resize.kt
+[Resize]: ../../sketch-core/src/main/java/com/github/panpf/sketch/resize/Resize.kt
 
-[Precision]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/Precision.kt
+[Precision]: ../../sketch-core/src/main/java/com/github/panpf/sketch/resize/Precision.kt
 
-[LongImageClipPrecisionDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/PrecisionDecider.kt
+[LongImageClipPrecisionDecider]: ../../sketch-core/src/main/java/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
-[DefaultLongImageDecider]: ../../sketch/src/main/java/com/github/panpf/sketch/resize/LongImageDecider.kt
+[DefaultLongImageDecider]: ../../sketch-core/src/main/java/com/github/panpf/sketch/resize/LongImageDecider.kt

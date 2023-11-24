@@ -101,13 +101,18 @@ class LocalPhotoListPagingSource(private val context: Context) :
 
     private suspend fun urisToPhotos(uris: List<String>): List<Photo> = withToIO {
         uris.map { uri ->
+            var imageInfo: ImageInfo? = null
             val sketch = context.sketch
-            val fetcher = sketch.components.newFetcherOrThrow(LoadRequest(context, uri))
-            val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
-            val imageInfo = if (uri.endsWith(".svg")) {
-                dataSource.readImageInfoWithSVG()
-            } else {
-                dataSource.readImageInfoWithBitmapFactoryOrNull(context.prefsService.ignoreExifOrientation.value)
+            try {
+                val fetcher = sketch.components.newFetcherOrThrow(LoadRequest(context, uri))
+                val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
+                imageInfo = if (uri.endsWith(".svg")) {
+                    dataSource.readImageInfoWithSVG()
+                } else {
+                    dataSource.readImageInfoWithBitmapFactoryOrNull(context.prefsService.ignoreExifOrientation.value)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
             if (imageInfo != null) {
                 val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)

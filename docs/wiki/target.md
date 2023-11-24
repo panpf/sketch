@@ -76,30 +76,30 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 
 [getting_started]: getting_started.md
 
-[Target]: ../../sketch/src/main/java/com/github/panpf/sketch/target/Target.kt
+[Target]: ../../sketch-core/src/main/java/com/github/panpf/sketch/target/Target.kt
 
-[DisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/DisplayTarget.kt
+[DisplayTarget]: ../../sketch-core/src/main/java/com/github/panpf/sketch/target/DisplayTarget.kt
 
-[ViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ViewDisplayTarget.kt
+[ViewDisplayTarget]: ../../sketch-core/src/main/java/com/github/panpf/sketch/target/ViewDisplayTarget.kt
 
-[ImageViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ImageViewDisplayTarget.kt
+[ImageViewDisplayTarget]: ../../sketch-core/src/main/java/com/github/panpf/sketch/target/ImageViewDisplayTarget.kt
 
-[LoadTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/LoadTarget.kt
+[LoadTarget]: ../../sketch-core/src/main/java/com/github/panpf/sketch/target/LoadTarget.kt
 
-[DownloadTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/DownloadTarget.kt
+[DownloadTarget]: ../../sketch-core/src/main/java/com/github/panpf/sketch/target/DownloadTarget.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageResult]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageResult.kt
+[ImageResult]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageResult.kt
 
-[DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
+[DisplayRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
 
-[LoadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
+[LoadRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
 
-[DownloadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
+[DownloadRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
 
-[DownloadData]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadData.kt
+[DownloadData]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DownloadData.kt
 
 [RemoteViews]: https://developer.android.google.cn/reference/android/widget/RemoteViews
 
-[RemoteViewsDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/RemoteViewsDisplayTarget.kt
+[RemoteViewsDisplayTarget]: ../../sketch-core/src/main/java/com/github/panpf/sketch/target/RemoteViewsDisplayTarget.kt

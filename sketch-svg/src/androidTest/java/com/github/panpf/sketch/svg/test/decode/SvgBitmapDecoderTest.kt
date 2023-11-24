@@ -32,7 +32,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking

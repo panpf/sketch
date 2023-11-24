@@ -107,24 +107,24 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 > 缩略图的标准为宽高比一致并且没有用任何 Transformation 修改的图片
 
-[StateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/StateImage.kt
+[StateImage]: ../../sketch-core/src/main/java/com/github/panpf/sketch/stateimage/StateImage.kt
 
-[ColorStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ColorStateImage.kt
+[ColorStateImage]: ../../sketch-core/src/main/java/com/github/panpf/sketch/stateimage/ColorStateImage.kt
 
-[DrawableStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/DrawableStateImage.kt
+[DrawableStateImage]: ../../sketch-core/src/main/java/com/github/panpf/sketch/stateimage/DrawableStateImage.kt
 
-[ErrorStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
+[ErrorStateImage]: ../../sketch-core/src/main/java/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
 
-[CompositeStateImage.]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/internal/CompositeStateImage.kt
+[CompositeStateImage.]: ../../sketch-core/src/main/java/com/github/panpf/sketch/stateimage/internal/CompositeStateImage.kt
 
-[IconStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/IconStateImage.kt
+[IconStateImage]: ../../sketch-core/src/main/java/com/github/panpf/sketch/stateimage/IconStateImage.kt
 
-[MemoryCacheStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/MemoryCacheStateImage.kt
+[MemoryCacheStateImage]: ../../sketch-core/src/main/java/com/github/panpf/sketch/stateimage/MemoryCacheStateImage.kt
 
-[ThumbnailMemoryCacheStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/ThumbnailMemoryCacheStateImage.kt
+[ThumbnailMemoryCacheStateImage]: ../../sketch-core/src/main/java/com/github/panpf/sketch/stateimage/ThumbnailMemoryCacheStateImage.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
 
-[CurrentStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/stateimage/CurrentStateImage.kt
+[CurrentStateImage]: ../../sketch-core/src/main/java/com/github/panpf/sketch/stateimage/CurrentStateImage.kt

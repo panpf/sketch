@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.panpf.sketch.svg.test">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- API 16 required, otherwise your own data directory cannot be written -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

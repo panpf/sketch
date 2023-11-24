@@ -35,7 +35,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.transform.PixelOpacity
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking

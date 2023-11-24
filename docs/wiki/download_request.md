@@ -31,4 +31,4 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-[DownloadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
+[DownloadRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt

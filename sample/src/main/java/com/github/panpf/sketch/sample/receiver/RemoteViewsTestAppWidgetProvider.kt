@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.widget.RemoteViews
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.BuildConfig

@@ -56,10 +56,10 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-[RequestInterceptor]: ../../sketch/src/main/java/com/github/panpf/sketch/request/RequestInterceptor.kt
+[RequestInterceptor]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/RequestInterceptor.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageResult]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageResult.kt
+[ImageResult]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageResult.kt
 
-[ImageData]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageData.kt
+[ImageData]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageData.kt

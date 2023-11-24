@@ -13,13 +13,6 @@ android {
         consumerProguardFiles("proguard-rules.pro")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "VERSION_NAME", "\"${property("versionName").toString()}\"")
-        buildConfigField("int", "VERSION_CODE", property("versionCode").toString())
-    }
-
-    buildFeatures {
-        buildConfig = true
     }
 
     buildTypes {
@@ -45,8 +38,8 @@ android {
 
 dependencies {
     api(project(":sketch"))
-    api(project(":sketch-viewability"))
-    api(libs.androidx.recyclerview)
+    api(project(":sketch-extensions-core"))
 
     androidTestImplementation(libs.bundles.test)
+    androidTestImplementation(project(":sketch-test"))
 }

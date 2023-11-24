@@ -28,6 +28,7 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.R

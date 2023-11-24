@@ -36,18 +36,18 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 > 注意：自定义的 Transformation 不要对 transform 方法的 input Bitmap 执行 recycle() 或将其放到
 > BitmapPool 中，这会造成不可预知的错误
 
-[Transformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/Transformation.kt
+[Transformation]: ../../sketch-core/src/main/java/com/github/panpf/sketch/transform/Transformation.kt
 
-[CircleCropTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/CircleCropTransformation.kt
+[CircleCropTransformation]: ../../sketch-core/src/main/java/com/github/panpf/sketch/transform/CircleCropTransformation.kt
 
-[RotateTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/RotateTransformation.kt
+[RotateTransformation]: ../../sketch-core/src/main/java/com/github/panpf/sketch/transform/RotateTransformation.kt
 
-[RoundedCornersTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/RoundedCornersTransformation.kt
+[RoundedCornersTransformation]: ../../sketch-core/src/main/java/com/github/panpf/sketch/transform/RoundedCornersTransformation.kt
 
-[MaskTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/MaskTransformation.kt
+[MaskTransformation]: ../../sketch-core/src/main/java/com/github/panpf/sketch/transform/MaskTransformation.kt
 
-[BlurTransformation]: ../../sketch/src/main/java/com/github/panpf/sketch/transform/BlurTransformation.kt
+[BlurTransformation]: ../../sketch-core/src/main/java/com/github/panpf/sketch/transform/BlurTransformation.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt

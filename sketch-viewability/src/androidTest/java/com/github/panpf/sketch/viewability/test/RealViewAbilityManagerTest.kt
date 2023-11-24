@@ -21,8 +21,6 @@ import android.util.AttributeSet
 import android.widget.ImageView.ScaleType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ImageMatrixObserver
@@ -76,11 +74,7 @@ class RealViewAbilityManagerTest {
 
     class TestAbilityImageView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null
-    ) : AbsAbilityImageView(context, attrs) {
-        override fun submitRequest(request: DisplayRequest) {
-            context.sketch.enqueue(request)
-        }
-    }
+    ) : AbsAbilityImageView(context, attrs)
 
     class TestScaleTypeViewAbility : ViewAbility, ScaleTypeObserver {
         override var host: Host? = null

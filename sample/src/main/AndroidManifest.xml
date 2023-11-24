@@ -4,6 +4,7 @@
 
     <uses-sdk tools:overrideLibrary="
         com.github.panpf.sketch.compose,
+        com.github.panpf.sketch.compose.core,
         androidx.lifecycle.viewmodel.compose,
         androidx.compose.ui.tooling,
         androidx.activity.compose,

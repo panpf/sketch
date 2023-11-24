@@ -60,14 +60,14 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
 > 2. [LoadRequest] 和 [DownloadRequest] 同 [DisplayRequest] 用法一模一样，只是回调方法的 Request 和 Result 的类型不一样，这是因为他们需要的结果不一样
 
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[LoadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
+[LoadRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
 
-[DownloadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
+[DownloadRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
 
-[DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
+[DisplayRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
 
-[Listener]: ../../sketch/src/main/java/com/github/panpf/sketch/request/Listener.kt
+[Listener]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/Listener.kt
 
-[ProgressListener]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ProgressListener.kt
+[ProgressListener]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ProgressListener.kt

@@ -33,7 +33,7 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -99,10 +99,10 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             ResourceDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, newResourceUri(R.drawable.sample_anim)),
+                request = LoadRequest(context, newResourceUri(R.raw.sample_anim)),
                 packageName = context.packageName,
                 resources = context.resources,
-                resId = R.drawable.sample_anim
+                resId = R.raw.sample_anim
             )
         ).apply {
             Assert.assertEquals(480, width)

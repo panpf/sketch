@@ -104,37 +104,37 @@ imageView.displayImage("mypng://my.png") {
 
 [comment]: <> (class)
 
-[BitmapDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/BitmapDecoder.kt
+[BitmapDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/BitmapDecoder.kt
 
-[DefaultBitmapDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/internal/DefaultBitmapDecoder.kt
+[DefaultBitmapDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/internal/DefaultBitmapDecoder.kt
 
-[DrawableBitmapDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/internal/DrawableBitmapDecoder.kt
+[DrawableBitmapDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/internal/DrawableBitmapDecoder.kt
 
 [FFmpegVideoFrameBitmapDecoder]: ../../sketch-video-ffmpeg/src/main/java/com/github/panpf/sketch/decode/FFmpegVideoFrameBitmapDecoder.kt
 
-[ApkIconBitmapDecoder]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/decode/ApkIconBitmapDecoder.kt
+[ApkIconBitmapDecoder]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/decode/ApkIconBitmapDecoder.kt
 
-[AppIconBitmapDecoder]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/decode/AppIconBitmapDecoder.kt
+[AppIconBitmapDecoder]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/decode/AppIconBitmapDecoder.kt
 
 [VideoFrameBitmapDecoder]: ../../sketch-video/src/main/java/com/github/panpf/sketch/decode/VideoFrameBitmapDecoder.kt
 
 [SvgBitmapDecoder]: ../../sketch-svg/src/main/java/com/github/panpf/sketch/decode/SvgBitmapDecoder.kt
 
-[DrawableDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/DrawableDecoder.kt
+[DrawableDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/DrawableDecoder.kt
 
-[DefaultDrawableDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/internal/DefaultDrawableDecoder.kt
+[DefaultDrawableDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/internal/DefaultDrawableDecoder.kt
 
-[GifAnimatedDrawableDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/GifAnimatedDrawableDecoder.kt
+[GifAnimatedDrawableDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/GifAnimatedDrawableDecoder.kt
 
-[HeifAnimatedDrawableDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/HeifAnimatedDrawableDecoder.kt
+[HeifAnimatedDrawableDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/HeifAnimatedDrawableDecoder.kt
 
-[WebpAnimatedDrawableDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/WebpAnimatedDrawableDecoder.kt
+[WebpAnimatedDrawableDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/WebpAnimatedDrawableDecoder.kt
 
 [GifDrawableDrawableDecoder]: ../../sketch-gif-koral/src/main/java/com/github/panpf/sketch/decode/GifDrawableDrawableDecoder.kt
 
 [GifMovieDrawableDecoder]: ../../sketch-gif-movie/src/main/java/com/github/panpf/sketch/decode/GifMovieDrawableDecoder.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
 [wseemann]: https://github.com/wseemann
 

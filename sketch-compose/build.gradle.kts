@@ -13,14 +13,10 @@ android {
         consumerProguardFiles("proguard-rules.pro")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "VERSION_NAME", "\"${property("versionName").toString()}\"")
-        buildConfigField("int", "VERSION_CODE", property("versionCode").toString())
     }
 
     buildFeatures {
         compose = true
-        buildConfig = true
     }
 
     buildTypes {
@@ -53,8 +49,7 @@ android {
 
 dependencies {
     api(project(":sketch"))
-    api(libs.androidx.compose.foundation)
-    api(libs.google.accompanist.drawablepainter)
+    api(project(":sketch-compose-core"))
 
     androidTestImplementation(libs.bundles.test)
 }

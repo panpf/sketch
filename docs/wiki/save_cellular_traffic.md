@@ -63,14 +63,14 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
 ```
 
-[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/main/java/com/github/panpf/sketch/Sketch.kt
 
-[SketchImageView]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/SketchImageView.kt
 
-[SaveCellularTrafficDisplayInterceptor]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/request/SaveCellularTrafficDisplayInterceptor.kt
+[SaveCellularTrafficDisplayInterceptor]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/request/SaveCellularTrafficDisplayInterceptor.kt
 
-[DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
+[DisplayRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[Depth]: ../../sketch/src/main/java/com/github/panpf/sketch/request/Depth.kt
+[Depth]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/Depth.kt

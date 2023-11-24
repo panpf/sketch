@@ -67,8 +67,8 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 
 [FFmpegVideoFrameBitmapDecoder]: ../../sketch-video-ffmpeg/src/main/java/com/github/panpf/sketch/decode/FFmpegVideoFrameBitmapDecoder.kt
 
-[DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
+[DisplayRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
 
-[LoadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
+[LoadRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt

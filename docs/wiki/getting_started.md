@@ -1,4 +1,4 @@
-# 快速上手
+# 开始使用
 
 ## 支持的 URI
 
@@ -31,19 +31,24 @@
 | heif Animated | Android 11+ | _                                    |
 | video frames  | _           | sketch-video<br>sketch-video-ffmpeg  |
 
-每一种图片类型都有对应的 Decoder 对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
+每一种图片类型都有对应的 Decoder
+对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
 
 ## Sketch
 
 [Sketch] 类用来执行 [ImageRequest]，并处理图片下载、缓存、解码、转换、请求管理、内存管理等功能。
 
-[Sketch] 类是单例的，可以通过 Context 的扩展函数获取，如下：
+### 单例模式
+
+默认情况下推荐依赖 `sketch` 模块，它提供了 Sketch 的单例以及一些便捷的扩展函数
+
+单例模式下可以通过 Context 的扩展函数获取 Sketch，如下：
 
 ```kotlin
 val sketch = context.sketch
 ```
 
-可以在 Application 类上实现 [SketchFactory] 接口来创建并配置 Sketch ，如下：
+单例模式如果要自定义 Sketch 的话只能在 Application 类上实现 [SketchFactory] 接口来创建并配置 Sketch ，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -57,11 +62,23 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-更多可配置参数请参考 [Sketch].Builder 类
+### 非单例模式
+
+如果不想使用单例模式，可以依赖 `sketch-core` 模块，然后通过 [Sketch].Builder 创建一个 [Sketch]
+实例，如下：
+
+```kotlin
+val sketch = Sketch.Builder(context).apply {
+    logger(Logger(DEBUG))
+    httpStack(OkHttpStack.Builder().build())
+}.build()
+```
+
+> 更多可配置参数请参考 [Sketch].Builder 类
 
 ## ImageRequest
 
-[ImageRequest] 接口定义了显示图片所需的全部参数，例如 URI、ImageView、转换配置、调整尺寸等。
+[ImageRequest] 接口定义了显示图片所需的全部参数，例如 uri、Target、转换配置、调整尺寸等。
 
 [ImageRequest] 分为以下三种：
 
@@ -69,7 +86,7 @@ class MyApplication : Application(), SketchFactory {
 * [LoadRequest]：请求结果是 Bitmap，用于需要直接操作 Bitmap 的场景，不支持内存缓存，所有动图将会被解码成静态图
 * [DownloadRequest]：请求结果是 [DiskCache].Snapshot 或 ByteArray，用于提前下载图片或直接访问图片文件
 
-### 创建请求
+### 创建 ImageRequest
 
 `以 DisplayRequest 为例，另外两种大同小异`
 
@@ -100,27 +117,51 @@ val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
 }
 ```
 
-可以通过 DisplayRequest.Builder 提供的链式方法或同名函数提供的尾随 lambda 配置请求，更多配置参数请参考 [DisplayRequest].Builder 类
+可以通过 DisplayRequest.Builder 提供的链式方法或同名函数提供的尾随 lambda
+配置请求，更多配置参数请参考 [DisplayRequest].Builder 类
 
-### 执行请求
+### 执行 ImageRequest
 
-[ImageRequest] 创建好后调用其 enqueue() 或 execute() 方法将 [ImageRequest] 交给 [Sketch] 执行：
+#### 单例模式
 
-* enqueue()：将 [ImageRequest] 放入任务队列在后台线程上异步执行并返回一个 [Disposable]
-* execute()：在当前协程中执行 [ImageRequest] 并返回一个 [ImageResult]
-
-enqueue 示例：
+单例模式下可以通过提供的扩展函数 enqueue() 或 execute() 将 [ImageRequest] 交给 [Sketch] 执行：
 
 ```kotlin
-DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
+/*
+ * 将 ImageRequest 放入任务队列在后台线程上异步执行并返回一个 Disposable
+ */
+val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+request1.enqueue()
+
+/*
+ * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
+ */
+val request2 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+coroutineScope.launch(Dispatchers.Main) {
+    val result: DisplayResult = request2.execute()
+    imageView.setImageDrawable(result.drawable)
+}
 ```
 
-execute 示例：
+#### 非单例模式
+
+非单例模式下需要创建 Sketch 实例并通过其 enqueue() 或 execute() 方法执行请求：
 
 ```kotlin
+val sketch = Sketch.Builder(context).build()
+
+/*
+ * 将 ImageRequest 放入任务队列在后台线程上异步执行并返回一个 Disposable
+ */
+val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+sketch.enqueue(request1)
+
+/*
+ * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
+ */
+val request2 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = DisplayRequest(context, "https://www.example.com/image.jpg")
-        .execute()
+    val result: DisplayResult = sketch.execute(request2)
     imageView.setImageDrawable(result.drawable)
 }
 ```
@@ -132,25 +173,25 @@ coroutineScope.launch(Dispatchers.Main) {
 使用 enqueue() 方法执行请求时通过返回的 [Disposable].job 即可获取结果，如下:
 
 ```kotlin
-val disposable = DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
-
+val request = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+val disposable = request.enqueue()
 coroutineScope.launch(Dispatchers.Main) {
     val result: DisplayResult = disposable.job.await()
-    // ...
+    imageView.setImageDrawable(result.drawable)
 }
 ```
 
 使用 execute() 方法执行请求时可直接获取结果，如下：
 
 ```kotlin
+val request = DisplayRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = DisplayRequest(context, "https://www.example.com/image.jpg")
-        .execute()
-    // ...
+    val result: DisplayResult = request.execute()
+    imageView.setImageDrawable(result.drawable)
 }
 ```
 
-### 取消请求
+### 取消 ImageRequest
 
 #### 自动取消
 
@@ -188,6 +229,8 @@ job.cancel()
 Sketch 给 ImageView 提供了一系列的扩展，如下:
 
 ### 显示图片
+
+> 仅单例模式下可用
 
 displayImage() 扩展函数，用于将 URI 指向的图片显示到 ImageView 上
 
@@ -251,22 +294,22 @@ when (displayResult) {
 
 [comment]: <> (class)
 
-[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/main/java/com/github/panpf/sketch/Sketch.kt
 
 [SketchFactory]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchFactory.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageResult]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageResult.kt
+[ImageResult]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageResult.kt
 
-[Disposable]: ../../sketch/src/main/java/com/github/panpf/sketch/request/Disposable.kt
+[Disposable]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/Disposable.kt
 
-[DisplayRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
+[DisplayRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
 
-[LoadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
+[LoadRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/LoadRequest.kt
 
-[DownloadRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
+[DownloadRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DownloadRequest.kt
 
-[ViewDisplayTarget]: ../../sketch/src/main/java/com/github/panpf/sketch/target/ViewDisplayTarget.kt
+[ViewDisplayTarget]: ../../sketch-core/src/main/java/com/github/panpf/sketch/target/ViewDisplayTarget.kt
 
-[DiskCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/DiskCache.kt
+[DiskCache]: ../../sketch-core/src/main/java/com/github/panpf/sketch/cache/DiskCache.kt

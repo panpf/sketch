@@ -91,6 +91,7 @@ dependencies {
     implementation(project(":sketch-video"))
     implementation(project(":sketch-video-ffmpeg"))
     implementation(project(":sketch-zoom"))
+    implementation(project(":sketch-resources"))
 
     implementation(libs.kotlinx.serialization.json)
 

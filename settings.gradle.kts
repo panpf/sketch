@@ -26,14 +26,20 @@ dependencyResolutionManagement {
     }
 }
 
-include(":sample")
+include(":sample") // Private
 include(":sketch")
 include(":sketch-compose")
+include(":sketch-compose-core")
+include(":sketch-core")
 include(":sketch-extensions")
+include(":sketch-extensions-core")
 include(":sketch-gif-movie")
 include(":sketch-gif-koral")
 include(":sketch-okhttp")
+include(":sketch-resources") // Private
 include(":sketch-svg")
+include(":sketch-test") // Private
+include(":sketch-test-singleton") // Private
 include(":sketch-video")
 include(":sketch-video-ffmpeg")
 include(":sketch-viewability")

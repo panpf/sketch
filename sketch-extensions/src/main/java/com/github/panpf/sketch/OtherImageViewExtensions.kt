@@ -20,6 +20,7 @@ import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
+import com.github.panpf.sketch.request.enqueue
 
 /**
  * Load the icon of the installed app and and display it on this [ImageView]

@@ -36,7 +36,7 @@ import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.video.ffmpeg.test.utils.corners
 import com.github.panpf.tools4a.device.Devicex

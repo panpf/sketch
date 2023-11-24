@@ -214,16 +214,16 @@ val exist: Boolean = context.sketch.memoryCache.exist(memoryCacheKey)
 * 设备可用内存较低触发了 Application 的 onLowMemory() 方法
 * 系统整理内存触发了 Application 的 onTrimMemory(int) 方法
 
-[MemoryCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/MemoryCache.kt
+[MemoryCache]: ../../sketch-core/src/main/java/com/github/panpf/sketch/cache/MemoryCache.kt
 
-[LruMemoryCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/internal/LruMemoryCache.kt
+[LruMemoryCache]: ../../sketch-core/src/main/java/com/github/panpf/sketch/cache/internal/LruMemoryCache.kt
 
-[DiskCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/DiskCache.kt
+[DiskCache]: ../../sketch-core/src/main/java/com/github/panpf/sketch/cache/DiskCache.kt
 
-[LruDiskCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/internal/LruDiskCache.kt
+[LruDiskCache]: ../../sketch-core/src/main/java/com/github/panpf/sketch/cache/internal/LruDiskCache.kt
 
-[ImageRequest]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageOptions.kt
 
 [reference_article]: http://www.cnblogs.com/zhucai/p/inPreferQualityOverSpeed.html

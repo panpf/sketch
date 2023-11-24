@@ -19,6 +19,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.execute
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sketch
 import kotlinx.coroutines.Dispatchers

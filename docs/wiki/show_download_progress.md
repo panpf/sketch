@@ -51,6 +51,6 @@ sketchImageView.showRingProgressIndicator()
 > 2. 下载进度功能由 [ProgressIndicatorAbility] 实现
 
 
-[SketchImageView]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/SketchImageView.kt
 
-[ProgressIndicatorAbility]: ../../sketch-extensions/src/main/java/com/github/panpf/sketch/viewability/MimeTypeLogoAbility.kt
+[ProgressIndicatorAbility]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/viewability/MimeTypeLogoAbility.kt
