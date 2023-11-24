@@ -158,7 +158,7 @@ request1.enqueue()
 /*
  * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
  */
-val request2 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+val request2 = DisplayRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
     val result: DisplayResult = request2.execute()
     imageView.setImageDrawable(result.drawable)
@@ -181,7 +181,7 @@ sketch.enqueue(request1)
 /*
  * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
  */
-val request2 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+val request2 = DisplayRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
     val result: DisplayResult = sketch.execute(request2)
     imageView.setImageDrawable(result.drawable)
@@ -195,7 +195,7 @@ coroutineScope.launch(Dispatchers.Main) {
 使用 enqueue() 方法执行请求时通过返回的 [Disposable].job 即可获取结果，如下:
 
 ```kotlin
-val request = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+val request = DisplayRequest(context, "https://www.example.com/image.jpg")
 val disposable = request.enqueue()
 coroutineScope.launch(Dispatchers.Main) {
     val result: DisplayResult = disposable.job.await()
