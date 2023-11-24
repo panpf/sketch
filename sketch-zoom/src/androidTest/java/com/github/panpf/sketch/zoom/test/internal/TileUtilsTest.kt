@@ -179,7 +179,7 @@ class TileUtilsTest {
             findSampleSize1(imageSize, Size(9798 / 15, 6988 / 15), 1f)
         }
         assertThrow(IllegalArgumentException::class) {
-            findSampleSize1(imageSize, Size(9798 / 16, 6988 / 14), 1f)
+            findSampleSize1(imageSize, Size(9798 / 10, 6988 / 14), 1f)
         }
 
         Assert.assertEquals(16, findSampleSize1(Size(800, 800), Size(50, 50), 1f))
