@@ -42,7 +42,7 @@ class HugeImageVerPagerFragment : BindingFragment<TabPagerVerFragmentBinding>() 
             binding.tabPagerVerTabLayout,
             binding.tabPagerVerPager
         ) { tab, position ->
-            tab.text = titles[position]
+            tab.setText(titles[position])
         }.attach()
     }
 }

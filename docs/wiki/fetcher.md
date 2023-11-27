@@ -71,26 +71,26 @@ imageView.displayImage(context, "http://sample.com/sample.jpeg") {
 
 [comment]: <> (class)
 
-[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[BitmapDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/BitmapDecoder.kt
+[BitmapDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/BitmapDecoder.kt
 
-[DrawableDecoder]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/DrawableDecoder.kt
+[DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/DrawableDecoder.kt
 
-[Fetcher]: ../../sketch-core/src/main/java/com/github/panpf/sketch/fetch/Fetcher.kt
+[Fetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/Fetcher.kt
 
-[FetchResult]: ../../sketch-core/src/main/java/com/github/panpf/sketch/fetch/FetchResult.kt
+[FetchResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/FetchResult.kt
 
-[AssetUriFetcher]: ../../sketch-core/src/main/java/com/github/panpf/sketch/fetch/AssetUriFetcher.kt
+[AssetUriFetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/AssetUriFetcher.kt
 
-[Base64UriFetcher]: ../../sketch-core/src/main/java/com/github/panpf/sketch/fetch/Base64UriFetcher.kt
+[Base64UriFetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/Base64UriFetcher.kt
 
-[ContentUriFetcher]: ../../sketch-core/src/main/java/com/github/panpf/sketch/fetch/ContentUriFetcher.kt
+[ContentUriFetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/ContentUriFetcher.kt
 
-[FileUriFetcher]: ../../sketch-core/src/main/java/com/github/panpf/sketch/fetch/FileUriFetcher.kt
+[FileUriFetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/FileUriFetcher.kt
 
-[HttpUriFetcher]: ../../sketch-core/src/main/java/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
+[HttpUriFetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
 
-[ResourceUriFetcher]: ../../sketch-core/src/main/java/com/github/panpf/sketch/fetch/ResourceUriFetcher.kt
+[ResourceUriFetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/ResourceUriFetcher.kt
 
-[AppIconUriFetcher]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt
+[AppIconUriFetcher]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt

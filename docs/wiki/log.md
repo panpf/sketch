@@ -70,6 +70,6 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-[Sketch]: ../../sketch-core/src/main/java/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[Logger]: ../../sketch-core/src/main/java/com/github/panpf/sketch/util/Logger.kt
+[Logger]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/util/Logger.kt

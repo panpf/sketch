@@ -118,10 +118,10 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-[HttpStack]: ../../sketch-core/src/main/java/com/github/panpf/sketch/http/HttpStack.kt
+[HttpStack]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/http/HttpStack.kt
 
-[HurlStack]: ../../sketch-core/src/main/java/com/github/panpf/sketch/http/HurlStack.kt
+[HurlStack]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/http/HurlStack.kt
 
-[OkHttpStack]: ../../sketch-okhttp/src/main/java/com/github/panpf/sketch/http/OkHttpStack.kt
+[OkHttpStack]: ../../sketch-okhttp/src/main/kotlin/com/github/panpf/sketch/http/OkHttpStack.kt
 
-[HttpUriFetcher]: ../../sketch-core/src/main/java/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
+[HttpUriFetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt

@@ -21,6 +21,6 @@ sketchImageView.showMimeTypeLogoWithRes(
 
 > 图片类型角标功能由 [MimeTypeLogoAbility] 实现
 
-[SketchImageView]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[MimeTypeLogoAbility]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/viewability/MimeTypeLogoAbility.kt
+[MimeTypeLogoAbility]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/viewability/MimeTypeLogoAbility.kt

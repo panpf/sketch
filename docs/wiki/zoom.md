@@ -259,16 +259,16 @@ sketchZoomImageView.addOnTileChangedListener {
 }
 ```
 
-[Sketch]: ../../sketch-core/src/main/java/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
 
 [BitmapRegionDecoder]: https://developer.android.google.cn/reference/android/graphics/BitmapRegionDecoder.html
 
 [PhotoView]: https://github.com/chrisbanes/PhotoView
 
-[SketchZoomImageView]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/SketchZoomImageView.kt
+[SketchZoomImageView]: ../../sketch-zoom/src/main/kotlin/com/github/panpf/sketch/zoom/SketchZoomImageView.kt
 
-[ReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt
+[ReadModeDecider]: ../../sketch-zoom/src/main/kotlin/com/github/panpf/sketch/zoom/ReadModeDecider.kt
 
-[LongImageReadModeDecider]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ReadModeDecider.kt
+[LongImageReadModeDecider]: ../../sketch-zoom/src/main/kotlin/com/github/panpf/sketch/zoom/ReadModeDecider.kt
 
-[DisplayRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/DisplayRequest.kt
+[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt

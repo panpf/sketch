@@ -36,9 +36,9 @@
 * [显示下载进度][show_download_progress]
 * [显示图片类型角标][show_image_type]
 
-[SketchImageView]: ../../sketch-extensions-core/src/main/java/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[ViewAbilityContainer]: ../../sketch-viewability/src/main/java/com/github/panpf/sketch/viewability/ViewAbilityContainer.kt
+[ViewAbilityContainer]: ../../sketch-viewability/src/main/kotlin/com/github/panpf/sketch/viewability/ViewAbilityContainer.kt
 
 [attrs]: ../../sketch-extensions-core/src/main/res/values/attrs.xml
 

@@ -78,12 +78,12 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 }
 ```
 
-[BitmapDecodeInterceptor]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/BitmapDecodeInterceptor.kt
+[BitmapDecodeInterceptor]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/BitmapDecodeInterceptor.kt
 
-[DrawableDecodeInterceptor]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/DrawableDecodeInterceptor.kt
+[DrawableDecodeInterceptor]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/DrawableDecodeInterceptor.kt
 
-[BitmapDecodeResult]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/BitmapDecodeResult.kt
+[BitmapDecodeResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/BitmapDecodeResult.kt
 
-[DrawableDecodeResult]: ../../sketch-core/src/main/java/com/github/panpf/sketch/decode/DrawableDecodeResult.kt
+[DrawableDecodeResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/DrawableDecodeResult.kt
 
-[ImageRequest]: ../../sketch-core/src/main/java/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
