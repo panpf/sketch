@@ -1,6 +1,6 @@
-# Get Started
+# 开始使用
 
-Translations: [简体中文](getting_started_zh.md)
+翻译：[English](getting_started.md)
 
 ## 支持的 URI
 
@@ -309,46 +309,45 @@ when (displayResult) {
 }
 ```
 
-## Document
+## 文档
 
-Basic functions：
+基础功能：
 
-* [Get Started][getting_started]
 * [AnimatedImage：GIF、WEBP、HEIF][animated_image]
-* [Resize：Modify the image size][resize]
-* [Transformation：Transformation image][transformation]
-* [Transition：Display images in cool transitions][transition]
-* [StateImage：Placeholder and error images][state_image]
-* [Listener：Listen for request status and download progress][listener]
-* [Cache：Learn about downloads, results, memory caching][cache]
-* [Fetcher：Learn about Fetcher and extend new URI types][fetcher]
-* [Decoder：Learn about Decoder and expand into new image types][decoder]
-* [Target：Apply the load results to the target][target]
-* [HttpStack：Learn about the HTTP section and using okhttp][http_stack]
-* [SVG：Decode SVG still images][svg]
-* [VideoFrames：Decode video frames][video_frame]
-* [Exif：Correct the image orientation][exif]
-* [ImageOptions：Manage image configurations in a unified manner][image_options]
-* [RequestInterceptor：Intercept ImageRequest][request_interceptor]
-* [DecodeInterceptor：Intercept Bitmap or Drawable decoding][decode_interceptor]
-* [BitmapPool：Reuse Bitmap to reduce GC][bitmap_pool]
-* [DownloadRequest：Download the image to disk][download_request]
-* [LoadRequest：Load the image to get the Bitmap][load_request]
-* [Preload images into memory][preloading]
+* [Resize：修改图片尺寸][resize]
+* [Transformation：转换图片][transformation]
+* [Transition：用炫酷的过渡方式显示图片][transition]
+* [StateImage：占位图和错误图][state_image]
+* [Listener：监听请求状态和下载进度][listener]
+* [Cache：了解下载、结果、内存缓存][cache]
+* [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
+* [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
+* [Target：将加载结果应用到目标上][target]
+* [HttpStack：了解 http 部分及使用 okhttp][http_stack]
+* [SVG：解码 SVG 静态图片][svg]
+* [VideoFrames：解码视频帧][video_frame]
+* [Exif：纠正图片方向][exif]
+* [ImageOptions：统一管理图片配置][image_options]
+* [RequestInterceptor：拦截 ImageRequest][request_interceptor]
+* [DecodeInterceptor：拦截 Bitmap 或 Drawable 解码][decode_interceptor]
+* [BitmapPool：复用 Bitmap，减少 GC][bitmap_pool]
+* [DownloadRequest：下载图片到磁盘][download_request]
+* [LoadRequest：加载图片获取 Bitmap][load_request]
+* [预加载图片到内存][preloading]
 * [Lifecycle][lifecycle]
 * [Jetpack Compose][jetpack_compose]
-* [Log][log]
+* [日志][log]
 
-Featured functions：
+特色功能：
 
-* [SketchImageView：Configure the request through XML attributes][sketch_image_view]
-* [SketchZoomImageView：Gesture zoom and large image sampling][zoom]
-* [Improve the clarity of long images in grid lists][long_image_grid_thumbnails]
-* [Displays the download progress][show_download_progress]
-* [Displays the image type corner][show_image_type]
-* [Pause image downloads on cellular data to save data][save_cellular_traffic]
-* [The list slides to pause the loading of images][pause_load_when_scrolling]
-* [Displays an icon for an apk file or installed app][apk_app_icon]
+* [SketchImageView：通过 XML 属性配置请求][sketch_image_view]
+* [SketchZoomImageView：手势缩放及超大图采样][zoom]
+* [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
+* [显示下载进度][show_download_progress]
+* [显示图片类型角标][show_image_type]
+* [蜂窝数据网络下暂停下载图片节省流量][save_cellular_traffic]
+* [列表滑动中暂停加载图片][pause_load_when_scrolling]
+* [显示 APK 文件或已安装 APP 的图标][apk_app_icon]
 
 [comment]: <> (class)
 
@@ -375,68 +374,68 @@ Featured functions：
 
 [comment]: <> (wiki)
 
-[getting_started]: getting_started.md
+[getting_started]: getting_started_zh.md
 
-[fetcher]: fetcher.md
+[fetcher]: fetcher_zh.md
 
-[decoder]: decoder.md
+[decoder]: decoder_zh.md
 
-[animated_image]: animated_image.md
+[animated_image]: animated_image_zh.md
 
-[resize]: resize.md
+[resize]: resize_zh.md
 
-[transformation]: transformation.md
+[transformation]: transformation_zh.md
 
-[transition]: transition.md
+[transition]: transition_zh.md
 
-[state_image]: state_image.md
+[state_image]: state_image_zh.md
 
-[listener]: listener.md
+[listener]: listener_zh.md
 
-[cache]: cache.md
+[cache]: cache_zh.md
 
-[target]: target.md
+[target]: target_zh.md
 
-[http_stack]: http_stack.md
+[http_stack]: http_stack_zh.md
 
-[svg]: svg.md
+[svg]: svg_zh.md
 
-[video_frame]: video_frame.md
+[video_frame]: video_frame_zh.md
 
-[exif]: exif.md
+[exif]: exif_zh.md
 
-[image_options]: image_options.md
+[image_options]: image_options_zh.md
 
-[request_interceptor]: request_interceptor.md
+[request_interceptor]: request_interceptor_zh.md
 
-[decode_interceptor]: decode_interceptor.md
+[decode_interceptor]: decode_interceptor_zh.md
 
-[bitmap_pool]: bitmap_pool.md
+[bitmap_pool]: bitmap_pool_zh.md
 
-[preloading]: preloading.md
+[preloading]: preloading_zh.md
 
-[download_request]: download_request.md
+[download_request]: download_request_zh.md
 
-[load_request]: load_request.md
+[load_request]: load_request_zh.md
 
-[long_image_grid_thumbnails]: long_image_grid_thumbnails.md
+[long_image_grid_thumbnails]: long_image_grid_thumbnails_zh.md
 
-[show_image_type]: show_image_type.md
+[show_image_type]: show_image_type_zh.md
 
-[show_download_progress]: show_download_progress.md
+[show_download_progress]: show_download_progress_zh.md
 
-[sketch_image_view]: sketch_image_view.md
+[sketch_image_view]: sketch_image_view_zh.md
 
-[zoom]: zoom.md
+[zoom]: zoom_zh.md
 
-[save_cellular_traffic]: save_cellular_traffic.md
+[save_cellular_traffic]: save_cellular_traffic_zh.md
 
-[pause_load_when_scrolling]: pause_load_when_scrolling.md
+[pause_load_when_scrolling]: pause_load_when_scrolling_zh.md
 
-[apk_app_icon]: apk_app_icon.md
+[apk_app_icon]: apk_app_icon_zh.md
 
-[log]: log.md
+[log]: log_zh.md
 
-[lifecycle]: lifecycle.md
+[lifecycle]: lifecycle_zh.md
 
-[jetpack_compose]: jetpack_compose.md
+[jetpack_compose]: jetpack_compose_zh.md
