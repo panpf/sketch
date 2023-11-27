@@ -107,7 +107,7 @@ class LruBitmapPool constructor(
         // Config will be null for non public config types, which can lead to transformations naively passing in
         // null as the requested config here. See issue #194.
         return synchronized(this) {
-            strategy[width, height, config].apply {
+            strategy.get(width, height, config).apply {
                 val getCount = getCount.addAndGet(1)
                 val hitCount = if (this != null) {
                     hitCount.addAndGet(1)
