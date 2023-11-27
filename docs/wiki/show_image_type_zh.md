@@ -1,5 +1,7 @@
 # 显示图片类型角标
 
+翻译：[English](show_image_type.md)
+
 `需要导入 sketch-extensions 模块`
 
 sketch-extensions 模块提供的 [SketchImageView] 支持在 View 右下角显示图片类型角标，如下：

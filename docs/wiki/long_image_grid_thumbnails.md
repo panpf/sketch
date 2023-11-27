@@ -1,5 +1,7 @@
 # 提高长图在网格列表中的清晰度
 
+Translations: [简体中文](long_image_grid_thumbnails_zh.md)
+
 例如在 GirdLayoutManager 中 ImageView 宽高为 400x400，图片宽高为 30000x960，Sketch 自动计算出 [Resize] 为 400x400 且
 [Precision] 默认为 LESS_PIXELS，这时根据 [Resize] 计算得出的 inSampleSize 为 16，而解码得到的缩略图尺寸为
 1875x60，这张缩略图是极其模糊，无法辨别任何内容

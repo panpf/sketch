@@ -1,5 +1,7 @@
 # Resize
 
+Translations: [简体中文](resize_zh.md)
+
 [Resize] 用来在解码时以及解码后调整图片的尺寸，解码时参与计算 inSampleSize，解码后如果尺寸依然不符合 [Resize] 要求就会再次调整
 
 [Resize] 由以下几个概念构成：

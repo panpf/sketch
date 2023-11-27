@@ -1,5 +1,7 @@
 # ImageOptions
 
+Translations: [简体中文](image_options_zh.md)
+
 [ImageOptions] 用来批量定义图片配置，支持 [ImageRequest] 全部图片相关属性
 
 目前可以在两个地方使用 [ImageOptions]：

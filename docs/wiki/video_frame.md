@@ -1,5 +1,7 @@
 # Video Frame
 
+Translations: [简体中文](video_frame_zh.md)
+
 Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 
 * [VideoFrameBitmapDecoder]：使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
@@ -12,9 +14,10 @@ Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 
 ### 注册
 
-根据情况选择合适的 Decoder，然后在初始化 Sketch 时通过 components() 方法注册，这样所有的 [ImageRequest] 都可以使用，如下：
+根据情况选择合适的 Decoder，然后注册它，如下：
 
 ```kotlin
+/* 为所有 ImageRequest 注册 */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -25,11 +28,8 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* 为单个 ImageRequest 注册 */
 imageView.displayImage("file:///sdcard/sample.mp4") {
     components {
         addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())

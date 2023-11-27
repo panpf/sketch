@@ -1,5 +1,7 @@
 # SketchImageView
 
+Translations: [简体中文](sketch_image_view_zh.md)
+
 `需要导入 sketch-extensions 模块`
 
 ### XML 属性

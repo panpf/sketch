@@ -1,5 +1,7 @@
 # Transition
 
+Translations: [简体中文](transition_zh.md)
+
 [Transition] 用来配置图片显示时与旧图片的过渡方式，默认提供了 [CrossfadeTransition]：淡入淡出
 
 ### 配置

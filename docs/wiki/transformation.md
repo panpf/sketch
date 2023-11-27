@@ -1,5 +1,7 @@
 # Transformation
 
+Translations: [简体中文](transformation_zh.md)
+
 通过 [Transformation] 可以对解码得到的 Bitmap 进行转换，Sketch 内置了以下几种 [Transformation]
 
 * [CircleCropTransformation]：将图片裁剪成圆形的

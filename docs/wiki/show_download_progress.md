@@ -1,5 +1,7 @@
 # 显示下载进度
 
+Translations: [简体中文](show_download_progress_zh.md)
+
 ## 通过 Listener 实现
 
 通过 DisplayRequest 提供的 listener 和 progressListener 得到状态和进度然后显示即可，如下：

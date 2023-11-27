@@ -1,44 +1,53 @@
 # Cache
 
-Sketch 为了提高图片的加载速度引入了下载缓存、结果缓存、内存缓存
+Translations: [简体中文](cache_zh.md)
 
-## 下载缓存
+Sketch introduces download cache, result cache, and memory cache to improve the loading speed
+of images
 
-下载缓存用于将图片持久的存储在磁盘上，避免重复下载图片。
+## Download cache
 
-下载缓存由 [DiskCache] 组件提供服务，默认实现是 [LruDiskCache]：
+The download cache is used to store images on disk persistently to avoid duplicate downloads.
 
-* 根据最少使用原则清除旧的缓存
-* 默认最大容量是 300MB
-* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/download`，另外为了兼容多进程，当在非主进程使用 Sketch
-  时缓存目录名称后会加上进程名，例如 "download:push"
+The download cache is served by the [DiskCache] component, and the default implementation
+is [LruDiskCache]:
 
-> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForDownloadBuilder 创建并修改最大容量或缓存目录，然后通过 downloadCache() 方法注册
+* Purge old caches based on the principle of least use
+* The default maximum size is 300MB
+* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/download`,
+  and in order to be multi-process-compatible, Sketch is used in a non-primary process
+  When cache the directory name, the process name is appended, e.g. "download:push"
 
-#### 配置请求
+> You can do this by initializing Sketch via [LruDiskCache].ForDownloadBuilder creates and modifies
+> the maximum capacity or cache directory, and then registers it via the downloadCache() method
 
-默认开启，你可以通过 [ImageRequest] 或 [ImageOptions] 的 downloadCachePolicy 属性控制下载缓存:
+#### Configure the download cache
+
+Download cache is enabled by default, and you can control the download cache via the
+downloadCachePolicy property of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    // 禁用
+    // Disable
     downloadCachePolicy(CachePolicy.DISABLED)
-    // 只读
+    // Read Only
     downloadCachePolicy(CachePolicy.READ_ONLY)
-    // 只写
+    // Write Only
     downloadCachePolicy(CachePolicy.WRITE_ONLY)
 }
 ```
 
-#### 访问
+#### Access the download cache
 
-你可以通过 `context.sketch.downloadCache` 属性获取下载缓存实例来访问下载缓存。
+You can access the download cache by getting an instance of the download cache via
+the `context.sketch.downloadCache` property.
 
-但要注意先获取编辑锁并且上锁再访问，这样能避免在多线程下出问题，如下：
+However, it is important to obtain the edit lock first and lock it before accessing it, so as to
+avoid problems in multi-threading, as follows:
 
 ```kotlin
 val lockKey = "http://sample.com/sample.jpeg"
-val lock = context.sketch.diskCache.editLock(lockKey)
+val lock = context.sketch.downloadCache.editLock(lockKey)
 lock.lock()
 try {
     val diskCacheKey = "http://sample.com/sample.jpeg"
@@ -67,54 +76,62 @@ try {
 }
 ```
 
-更多可用方法请参考 [DiskCache]
+For more available methods, please refer to [DiskCache]
 
-#### 释放
+#### Free the download cache
 
-下载缓存会在以下几种情况下释放：
+The download cache is released in the following situations:
 
-* 主动调用 DiskCache 的 remove()、clear() 方法
-* 主动调用 DiskCache.Editor 的 abort() 方法
-* 主动调用 DiskCache.Snapshot 的 remove() 方法
-* 达到最大容量时自动释放较旧的缓存
+* Actively call the `remove()`, `clear()` methods of DiskCache
+* Proactively call the `abort()` method of DiskCache.Editor
+* The `remove()` method of DiskCache.Snapshot is actively called
+* Older caches are automatically freed when maximum capacity is reached
 
-## 结果缓存
+## Result cache
 
-结果缓存用于将转换后的图片持久的存储在磁盘上，提高加载速度。
+The result cache is used to store the converted images on disk durably, avoiding repeated
+conversions and improving loading speed.
 
-结果缓存由 [DiskCache] 组件提供服务，默认实现是 [LruDiskCache]：
+The resulting cache is served by the [DiskCache] component, and the default implementation
+is [LruDiskCache]:
 
-* 根据最少使用原则清除旧的缓存
-* 默认最大容量是 200MB
-* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/result`，另外为了兼容多进程，当在非主进程使用 Sketch
-  时缓存目录名称后会加上进程名，例如 "result:push"
+* Purge old caches based on the principle of least use
+* The default maximum size is 200MB
+* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/result`, and
+  in order to be compatible with multiple processes, it should be used in non-primary processes
+  When cache Sketch, the process name is appended to the directory name, e.g. "result:push"
 
-> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForResultBuilder 创建并修改最大容量或缓存目录，然后通过 resultCache() 方法注册
+> You can do this by initializing Sketch via [LruDiskCache]. ForResultBuilder creates and modifies
+> the maximum capacity or cache directory, and then registers it via the resultCache() method
 
-Sketch 会在以下情况将 Bitmap 缓存到磁盘缓存中：
-* Resize 不为 null 且解码后的 Bitmap 与原图尺寸不一样
-* 经过 Transformation 转换
+Sketch caches the Bitmap to the disk cache in the following situations:
 
-#### 配置请求
+* The resize is not null and the decoded bitmap is not the same size as the original image
+* After Transformation transformation
 
-默认开启，你可以通过 [ImageRequest] 或 [ImageOptions] 的 resultCachePolicy 属性控制 Bitmap 结果缓存:
+#### Configure the result cache
+
+Result cache is enabled by default, and you can control the bitmap result cache via the
+resultCachePolicy property of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    // 禁用
+    // Disable
     resultCachePolicy(CachePolicy.DISABLED)
-    // 只读
+    // Read Only
     resultCachePolicy(CachePolicy.READ_ONLY)
-    // 只写
+    // Write Only
     resultCachePolicy(CachePolicy.WRITE_ONLY)
 }
 ```
 
-#### 访问
+#### Access the result cache
 
-你可以通过 `context.sketch.resultCache` 属性获取结果缓存实例来访问结果缓存。
+You can access the results cache by getting the result cache instance via
+the `context.sketch.resultCache` property.
 
-但要注意先获取编辑锁并且上锁再访问，这样能避免在多线程下出问题，如下：
+However, it is important to obtain the edit lock first and lock it before accessing it, so as to
+avoid problems in multi-threading, as follows:
 
 ```kotlin
 val lockKey = "http://sample.com/sample.jpeg"
@@ -147,46 +164,51 @@ try {
 }
 ```
 
-更多可用方法请参考 [DiskCache]
+For more available methods, please refer to [DiskCache]
 
-#### 释放
+#### Free the result cache
 
-结果缓存会在以下几种情况下释放：
+The result cache is released in the following situations:
 
-* 主动调用 DiskCache 的 remove()、clear() 方法
-* 主动调用 DiskCache.Editor 的 abort() 方法
-* 主动调用 DiskCache.Snapshot 的 remove() 方法
-* 达到最大容量时自动释放较旧的缓存
+* Actively call the `remove()` and `clear()` methods of DiskCache
+* Actively call the `abort()` method of DiskCache.Editor
+* Actively call the `remove()` method of DiskCache.Snapshot
+* Automatically frees older caches when the maximum capacity is reached
 
-## 内存缓存
+## Memory cache
 
-内存缓存用于将 Bitmap 缓存在内存中，避免重复加载图片。
+Memory cache is used to cache bitmaps in memory to avoid reloading images.
 
-内存缓存由 [MemoryCache] 组件提供服务，默认的实现是 [LruMemoryCache]：
+The memory cache is served by the [MemoryCache] component, and the default implementation
+is [LruMemoryCache]:
 
-* 根据最少使用原则释放旧的 Bitmap
-* 最大容量是 6 个屏幕大小和最大可用内存的三分之一中的小者的三分之二
+* Release old Bitmaps according to the principle of least use
+* Maximum capacity is two-thirds of the lesser of 6 screen sizes and one-third of the maximum
+  available memory
 
-> 你可以在初始化 Sketch 时创建 [LruMemoryCache] 并修改最大容量，然后通过 memoryCache() 方法注册
+> You can create a [LruMemoryCache] when initializing Sketch and modify the maximum capacity, and
+> then register it via the memoryCache() method
 
-#### 配置请求
+#### Configure the memory cache
 
-默认开启，你可以通过 [ImageRequest] 或 [ImageOptions] 的 memoryCachePolicy 属性控制 Bitmap 内存缓存:
+Memory cache is enabled by default, and you can control the bitmap memory cache via the
+memoryCachePolicy property of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
-    // 禁用
+    // Disable
     memoryCachePolicy(CachePolicy.DISABLED)
-    // 只读
+    // Read Only
     memoryCachePolicy(CachePolicy.READ_ONLY)
-    // 只写
+    // Write Only
     memoryCachePolicy(CachePolicy.WRITE_ONLY)
 }
 ```
 
-#### 访问
+#### Access the memory cache
 
-你可以通过 `sketch.memoryCache` 属性获取内存缓存实例来访问内存缓存。
+You can access the memory cache by getting an instance of the memory cache via
+the `context.sketch.memoryCache` property.
 
 ```kotlin
 val memoryCacheKey = "http://sample.com/sample.jpeg"
@@ -202,17 +224,17 @@ val cachedBitmap: Bitmap? = context.sketch.memoryCache.get(memoryCacheKey)?.coun
 val exist: Boolean = context.sketch.memoryCache.exist(memoryCacheKey)
 ```
 
-更多可用方法请参考 [MemoryCache]
+For more available methods, please refer to [MemoryCache]
 
-#### 释放
+#### Free the memory cache
 
-内存缓存会在以下几种情况下释放：
+The memory cache is released in the following situations:
 
-* 主动调用 MemoryCache 的 trim()、clear() 方法
-* 缓存的 Bitmap 不再被引用
-* 达到最大容量时自动释放较旧的缓存
-* 设备可用内存较低触发了 Application 的 onLowMemory() 方法
-* 系统整理内存触发了 Application 的 onTrimMemory(int) 方法
+* Actively call the `trim()` and `clear()` methods of MemoryCache
+* Cached bitmaps are no longer referenced
+* Automatically frees older caches when the maximum capacity is reached
+* The low available memory of the device triggers the application's `onLowMemory()` method
+* The system trim memory triggers the application's `onTrimMemory(int)` method
 
 [MemoryCache]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/MemoryCache.kt
 

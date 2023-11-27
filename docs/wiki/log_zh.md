@@ -1,5 +1,7 @@
 # 日志
 
+翻译：[English](log.md)
+
 [Sketch] 的日志由 [Logger] 组件提供服务，默认使用 android.util.Log 输出，Tag 统一为 `Sketch`
 
 ### 修改 Level

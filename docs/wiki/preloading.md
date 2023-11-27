@@ -1,5 +1,7 @@
 # 预加载图片到内存
 
+Translations: [简体中文](preloading_zh.md)
+
 要想将图片预加载到内存中只需要不设置 target 即可，如下：
 
 ```kotlin

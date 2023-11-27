@@ -1,36 +1,38 @@
 # Decoder
 
+翻译：[English](decoder.md)
+
 Decoder 用于解码图片文件得到一个 Bitmap 或 Drawable，因此 Sketch 有两种 Decoder：
 
 * [BitmapDecoder]：用于解码图片文件并将其转成 Bitmap
     * [ApkIconBitmapDecoder][ApkIconBitmapDecoder]：解码 Apk
-      文件的图标，[点我了解如何使用](apk_app_icon.md#显示-APK-文件的图标)
+      文件的图标，[点我了解如何使用](apk_app_icon_zh.md#显示-APK-文件的图标)
     * [AppIconBitmapDecoder][AppIconBitmapDecoder]：解码已安装 App
-      的图标，[点我了解如何使用](apk_app_icon.md#显示已安装-APP-的图标)
+      的图标，[点我了解如何使用](apk_app_icon_zh.md#显示已安装-APP-的图标)
     * [DefaultBitmapDecoder][DefaultBitmapDecoder]：最后的 Bitmap 解码器，采用 Android 内置的 [BitmapFactory]
       解码图片
     * [FFmpegVideoFrameBitmapDecoder][FFmpegVideoFrameBitmapDecoder]：使用 [wseemann]
       /[FFmpegMediaMetadataRetriever-project] 库的 [FFmpegMediaMetadataRetriever]
-      类解码视频文件的帧，[点我了解如何使用](video_frame.md)
+      类解码视频文件的帧，[点我了解如何使用](video_frame_zh.md)
     * [SvgBitmapDecoder][SvgBitmapDecoder]：使用 [BigBadaboom]/[androidsvg] 库解码静态 svg
-      文件，[点我了解如何使用](svg.md)
+      文件，[点我了解如何使用](svg_zh.md)
     * [VideoFrameBitmapDecoder][VideoFrameBitmapDecoder]：使用 Android 内置的 [MediaMetadataRetriever]
-      类解码视频文件的帧，[点我了解如何使用](video_frame.md)
+      类解码视频文件的帧，[点我了解如何使用](video_frame_zh.md)
     * [DrawableBitmapDecoder][DrawableBitmapDecoder]：解码 vector、shape 等 Android 支持的 xml
       drawable 图片
 * [DrawableDecoder]： 用于解码图片文件并将其转成 Drawable
     * [DefaultDrawableDecoder][DefaultDrawableDecoder]：最后的 Drawable 解码器，调用 BitmapDecoder 得到 Bitmap
       再封装成 BitmapDrawable
     * [GifAnimatedDrawableDecoder][GifAnimatedDrawableDecoder]：使用 Android 内置的 [ImageDecoder] 类解码 gif
-      ，[点我了解如何使用](animated_image.md)
+      ，[点我了解如何使用](animated_image_zh.md)
     * [GifDrawableDrawableDecoder][GifDrawableDrawableDecoder]：使用 [koral--]/[android-gif-drawable]
-      库的 [GifDrawable] 类解码 gif 图片，[点我了解如何使用](animated_image.md)
+      库的 [GifDrawable] 类解码 gif 图片，[点我了解如何使用](animated_image_zh.md)
     * [GifMovieDrawableDecoder][GifMovieDrawableDecoder]：使用 Android 内置的 [Movie] 类解码 gif
-      图片，[点我了解如何使用](animated_image.md)
+      图片，[点我了解如何使用](animated_image_zh.md)
     * [HeifAnimatedDrawableDecoder][HeifAnimatedDrawableDecoder]：使用 Android 内置的 [ImageDecoder] 类解码
-      heif 动图，[点我了解如何使用](animated_image.md)
+      heif 动图，[点我了解如何使用](animated_image_zh.md)
     * [WebpAnimatedDrawableDecoder][WebpAnimatedDrawableDecoder]：使用 Android 内置的 [ImageDecoder] 类解码
-      webp 动图，[点我了解如何使用](animated_image.md)
+      webp 动图，[点我了解如何使用](animated_image_zh.md)
 
 [BitmapDecoder] 和 [DrawableDecoder] 各有一个 Decoder 列表，需要解码时 Sketch 会根据 [ImageRequest] 的类型依次遍历对应的
 Decoder 列表，直到找到一个能解码当前类型图片的 Decoder，然后调用其 decode 方法得到解码结果
@@ -71,9 +73,10 @@ class MyBitmapDecoder : BitmapDecoder {
 }
 ```
 
-2.然后在配置 Sketch 时通过 components 方法将其 Factory 注册到 Sketch，这样所有的 [ImageRequest] 都可以使用，如下：
+2.然后通过 addBitmapDecoder 注册，如下：
 
 ```kotlin
+/* 为所有 ImageRequest 注册 */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -84,11 +87,8 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* 为单个 ImageRequest 注册 */
 imageView.displayImage("mypng://my.png") {
     components {
         addBitmapDecoder(MyBitmapDecoder.Factory())

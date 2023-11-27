@@ -1,5 +1,7 @@
 # Fetcher
 
+Translations: [简体中文](fetcher_zh.md)
+
 [Fetcher] 用于从 uri 获取数据，返回 [FetchResult]，交由 [BitmapDecoder] 或 [DrawableDecoder] 使用。
 
 Sketch 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下几种：
@@ -13,8 +15,6 @@ Sketch 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下
 * [AppIconUriFetcher][AppIconUriFetcher]：从已安装 app 加载其图标，[点我了解如何使用](apk_app_icon.md#显示已安装-APP-的图标)
 
 ### 扩展新的 Fetcher
-
-#### 1. 定义
 
 首先需要实现 [Fetcher] 接口定义你的 [Fetcher] 和它的 Factory，如下：
 
@@ -42,11 +42,10 @@ class MyFetcher : Fetcher {
 }
 ```
 
-#### 2.使用
-
-如果要让所有的 [ImageRequest] 都使用就在配置 Sketch 时通过 components 方法注册，这样所有的 [ImageRequest] 都可以使用，如下：
+然后通过 addFetcher 方法注册，如下：
 
 ```kotlin
+/* 为所有 ImageRequest 注册 */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -57,11 +56,8 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* 为单个 ImageRequest 注册 */
 imageView.displayImage(context, "http://sample.com/sample.jpeg") {
     components {
         addFetcher(MyFetcher.Factory())

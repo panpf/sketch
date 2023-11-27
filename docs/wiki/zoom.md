@@ -1,5 +1,7 @@
 # 手势缩放
 
+Translations: [简体中文](zoom_zh.md)
+
 * 此组件不再更新，请使用 https://github.com/panpf/zoomimage 库的 SketchZoomImageView 组件代替 *
 
 `需要导入 sketch-zoom 模块`

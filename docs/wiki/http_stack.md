@@ -1,6 +1,9 @@
 # HttpStack
 
-[HttpStack] 用来发起 HTTP 网络请求并获取响应然后交由 [HttpUriFetcher] 下载图片，默认的实现是 [HurlStack]
+Translations: [简体中文](http_stack_zh.md)
+
+[HttpStack] 用来发起 HTTP 网络请求并获取响应然后交由 [HttpUriFetcher]
+下载图片，默认的实现是 [HurlStack]
 
 ### HurlStack
 
@@ -39,9 +42,8 @@ class MyApplication : Application(), SketchFactory {
 
 ### OkHttpStack
 
-Sketch 还提供了 [HttpStack] 的 [OkHttpStack] 实现，使用之前需要先导入 `sketch-okhttp` 模块，然后在初始化 Sketch 时通过
-httpStack()
-方法注册即可，如下：
+Sketch 还提供了 [HttpStack] 的 [OkHttpStack] 实现，使用之前需要先导入 `sketch-okhttp` 模块，然后在初始化
+Sketch 时通过 httpStack() 方法注册即可，如下：
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -75,7 +77,8 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-> 注意：由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app 最低版本较高，那么你可以使用较新版本的 OkHttp 自定一个 HttpStack
+> 注意：由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app
+> 最低版本较高，那么你可以使用较新版本的 OkHttp 自定一个 HttpStack
 
 ### Android 4.* TLS 1.1, 1.2 支持
 

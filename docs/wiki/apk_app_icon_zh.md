@@ -1,12 +1,15 @@
 # 显示 APK 文件或已安装 APP 的图标
 
+翻译：[English](apk_app_icon.md)
+
 `需要导入 sketch-extensions 模块`
 
 ### 显示 APK 文件的图标
 
-首先在初始化 [Sketch] 时注册 [ApkIconBitmapDecoder]，这样所有的 [ImageRequest] 都可以使用，如下：
+首先，注册 [ApkIconBitmapDecoder]，如下：
 
 ```kotlin
+/* 为所有 ImageRequest 注册 */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -17,29 +20,27 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
+
+/* 为单个 ImageRequest 注册 */
+imageView.displayImage("/sdcard/sample.apk") {
+  components {
+    supportApkIcon()
+  }
+}
 ```
 
-然后显示图片时传入 apk 文件的路径，如下：
+然后，显示图片时传入 apk 文件的路径，如下：
 
 ```kotlin
 imageView.displayImage("/sdcard/sample.apk")
 ```
 
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
-imageView.displayImage("/sdcard/sample.apk") {
-    components {
-        supportApkIcon()
-    }
-}
-```
-
 ### 显示已安装 APP 的图标
 
-首先在初始化 [Sketch] 时注册 [AppIconUriFetcher] 和 [AppIconBitmapDecoder]，这样所有的 [ImageRequest] 都可以使用，如下：
+首先，注册 [AppIconUriFetcher] 和 [AppIconBitmapDecoder]，如下：
 
 ```kotlin
+/* 为所有 ImageRequest 注册 */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -50,22 +51,19 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
+
+/* 为单个 ImageRequest 注册 */
+imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
+  components {
+    supportAppIcon()
+  }
+}
 ```
 
 然后使用 `newAppIconUri()` 函数创建专用 uri 并执行显示，如下：
 
 ```kotlin
 imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1))
-```
-
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
-imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
-    components {
-        supportAppIcon()
-    }
-}
 ```
 
 * versionCode：App 的版本号，必须传入正确的版本号。因为对图标进行修改时就会将修改后的图标缓存在磁盘上，如果只用 packageName 作为缓存 key 那么 App

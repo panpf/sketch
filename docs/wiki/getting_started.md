@@ -1,10 +1,10 @@
-# Get Started
+# Getting Started
 
 Translations: [简体中文](getting_started_zh.md)
 
-## 支持的 URI
+## Supported URIs
 
-| 协议                     | 描述               | 创建函数             |
+| Scheme                 | Description      | Create Function  |
 |:-----------------------|:-----------------|:-----------------|
 | http://, https://      | File in network  | _                |
 | /, file://             | File in SDCard   | newFileUri()     |
@@ -14,13 +14,15 @@ Translations: [简体中文](getting_started_zh.md)
 | data:image/, data:img/ | Base64           | newBase64Uri()   |
 | app.icon://            | App Icon         | newAppIconUri()  |
 
-> 上表中的 `创建函数` 列展示了 Sketch 对部分 URI 提供的便捷创建函数
+> The `Create Function` column in the table above shows the convenient creation function that Sketch
+> provides for some URIs
 
-每一种 URI 都有对应的 Fetcher 对其提供支持，[查看更多 Fetcher 介绍以及如何扩展新的 URI][fetcher]
+Each URI has its own Fetcher to support
+it, [see more about Fetcher and how to extend new URIs][fetcher]
 
-## 支持的图片类型
+## Supported Image Formats
 
-| 类型            | API 限制      | 额外依赖模块                               |
+| Format        | API Limit   | Dependency module                    |
 |:--------------|:------------|:-------------------------------------|
 | jpeg          | _           | _                                    |
 | png           | _           | _                                    |
@@ -33,26 +35,29 @@ Translations: [简体中文](getting_started_zh.md)
 | heif Animated | Android 11+ | _                                    |
 | video frames  | _           | sketch-video<br>sketch-video-ffmpeg  |
 
-每一种图片类型都有对应的 Decoder
-对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
+Each image type has a corresponding Decoder support for
+it, [see more about Decoder and how to extend new image types][decoder]
 
 ## Sketch
 
-[Sketch] 类用来执行 [ImageRequest]，并处理图片下载、缓存、解码、转换、请求管理、内存管理等功能。
+The [Sketch] class is used to execute [ImageRequest] and handle image downloading, caching,
+decoding, transformation, request management, memory management, and more.
 
-### 单例模式
+### Singleton Mode
 
-默认情况下推荐依赖 `sketch` 模块，它提供了 Sketch 的单例以及一些便捷的扩展函数
+By default, it is recommended to rely on the 'sketch' module, which provides a singleton of Sketch
+as well as some handy extension functions
 
-单例模式下可以通过 Context 的扩展函数获取 Sketch，如下：
+In singleton mode, you can get Sketch through the Context's extension function, as follows:
 
 ```kotlin
 val sketch = context.sketch
 ```
 
-#### 自定义 Sketch
+#### Customize Sketch
 
-方法 1：在 Application 类上实现 [SketchFactory] 接口来创建并配置 Sketch ，如下：
+Method 1: Implement the [SketchFactory] interface on the Application class to create and configure
+Sketch as follows:
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -66,7 +71,8 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-方法 2：创建并配置 Sketch 然后通过 `SketchSingleton.setSketch()` 方法设置为单例，如下：
+Method 2: Create and configure Sketch and set it up as a singleton via the '
+SketchSingleton.setSketch()' method, as follows:
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
@@ -76,7 +82,7 @@ val sketch = Sketch.Builder(context).apply {
 
 SketchSingleton.setSketch(sketch)
 
-// 或者
+// or
 
 SketchSingleton.setSketch(SketchFactory {
     Sketch.Builder(context).apply {
@@ -86,10 +92,10 @@ SketchSingleton.setSketch(SketchFactory {
 })
 ```
 
-### 非单例模式
+### Non Singleton Mode
 
-如果不想使用单例模式，可以依赖 `sketch-core` 模块，然后通过 [Sketch].Builder 创建一个 [Sketch]
-实例，如下：
+If you don't want to use the singleton pattern, you can rely on the 'sketch-core' module and then
+use the [Sketch]. Builder creates an instance of [Sketch] as follows:
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
@@ -98,23 +104,28 @@ val sketch = Sketch.Builder(context).apply {
 }.build()
 ```
 
-> 更多可配置参数请参考 [Sketch].Builder 类
+> For more configurable parameters, please refer to [Sketch].Builder class
 
 ## ImageRequest
 
-[ImageRequest] 接口定义了显示图片所需的全部参数，例如 uri、Target、转换配置、调整尺寸等。
+The [ImageRequest] interface defines all the parameters required to display the image, such as uri,
+target, conversion configuration, resizing, and so on.
 
-[ImageRequest] 分为以下三种：
+There are three types of [ImageRequest]:
 
-* [DisplayRequest]：请求结果是 Drawable，用于显示图片到 ImageView、RemoteViews 或 Compose Painter
-* [LoadRequest]：请求结果是 Bitmap，用于需要直接操作 Bitmap 的场景，不支持内存缓存，所有动图将会被解码成静态图
-* [DownloadRequest]：请求结果是 [DiskCache].Snapshot 或 ByteArray，用于提前下载图片或直接访问图片文件
+* [DisplayRequest]: The result of the request is Drawable, which is used to display the picture to
+  ImageView, RemoteView, or Compose Painter
+* [LoadRequest]: The result of the request is Bitmap, which is used in scenarios where Bitmap needs
+  to be manipulated directly, memory caching is not supported, and all GIFs will be decoded into
+  static images
+* [DownloadRequest]: The result of the request is [DiskCache].Snapshot or ByteArray for downloading
+  images in advance or for direct access to image files
 
-### 创建 ImageRequest
+### Build ImageRequest
 
-`以 DisplayRequest 为例，另外两种大同小异`
+`In the case of DisplayRequest, the other two are much the same`
 
-Builder 方式：
+Build with Builder:
 
 ```kotlin
 val request = DisplayRequest.Builder(context, "https://www.example.com/image.jpg")
@@ -124,7 +135,7 @@ val request = DisplayRequest.Builder(context, "https://www.example.com/image.jpg
     .build()
 ```
 
-同名函数方式：
+Build with a function of the same name:
 
 ```kotlin
 val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
@@ -133,7 +144,7 @@ val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
     target(imageView)
 }
 
-// 或者
+// or
 
 val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
     placeholder(R.drawable.image)
@@ -141,24 +152,27 @@ val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
 }
 ```
 
-可以通过 DisplayRequest.Builder 提供的链式方法或同名函数提供的尾随 lambda
-配置请求，更多配置参数请参考 [DisplayRequest].Builder 类
+This can be done through the chained method provided by DisplayRequest.Builder or the trailing
+lambda provided by the function of the same name For configuration requests, please refer
+to [DisplayRequest] for more configuration parameters. Builder class
 
-### 执行 ImageRequest
+### Execute ImageRequest
 
-#### 单例模式
+#### Singleton Mode
 
-单例模式下可以通过提供的扩展函数 enqueue() 或 execute() 将 [ImageRequest] 交给 [Sketch] 执行：
+In singleton mode, you can hand over [ImageRequest] to [Sketch] for execution via the provided
+extension function enqueue() or execute():
 
 ```kotlin
 /*
- * 将 ImageRequest 放入任务队列在后台线程上异步执行并返回一个 Disposable
+ * Put an ImageRequest into a task queue, execute asynchronously on a background thread, and return a Disposable
  */
 val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
 request1.enqueue()
 
 /*
- * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
+ * Place an ImageRequest in a task queue, execute asynchronously on a background thread, 
+ * and wait for the return result in the current coroutine
  */
 val request2 = DisplayRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
@@ -167,21 +181,23 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-#### 非单例模式
+#### Non Singleton Mode
 
-非单例模式下需要创建 Sketch 实例并通过其 enqueue() 或 execute() 方法执行请求：
+In non-singleton mode, you need to create your own Sketch instance and execute the request through
+its enqueue() or execute() method:
 
 ```kotlin
 val sketch = Sketch.Builder(context).build()
 
 /*
- * 将 ImageRequest 放入任务队列在后台线程上异步执行并返回一个 Disposable
+ * Put an ImageRequest into a task queue, execute asynchronously on a background thread, and return a Disposable
  */
 val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
 sketch.enqueue(request1)
 
 /*
- * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
+ * Place an ImageRequest in a task queue, execute asynchronously on a background thread, 
+ * and wait for the return result in the current coroutine
  */
 val request2 = DisplayRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
@@ -190,11 +206,13 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-### 获取结果
+### Get The Results
 
-[Sketch] 会将结果交给 [DisplayRequest] 的 target 去显示 Drawable，如果没有设置 target 就需要主动获取结果来处理它了
+[Sketch] will hand the result to the [DisplayRequest] target to display the Drawable, and if the
+target is not set, you will need to actively obtain the result to process it
 
-使用 enqueue() 方法执行请求时通过返回的 [Disposable].job 即可获取结果，如下:
+When a request is executed using the enqueue() method, the result can be obtained by
+returning [Disposable].job, as follows:
 
 ```kotlin
 val request = DisplayRequest(context, "https://www.example.com/image.jpg")
@@ -205,7 +223,7 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-使用 execute() 方法执行请求时可直接获取结果，如下：
+When you use the execute() method to execute a request, you can get the result directly, as follows:
 
 ```kotlin
 val request = DisplayRequest(context, "https://www.example.com/image.jpg")
@@ -215,27 +233,27 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-### 取消 ImageRequest
+### Cancel ImageRequest
 
-#### 自动取消
+#### Auto cancel
 
-[ImageRequest] 会在下列情况下自动取消:
+[ImageRequest] is automatically canceled in the following cases:
 
-* request.lifecycle 变为 DESTROYED 状态
-* request.target 是一个 [ViewDisplayTarget] 并且 view 的 onViewDetachedFromWindow() 方法被执行
+* request.lifecycle changes to DESTROYED state
+* request.target is a [ViewDisplayTarget] and view's onViewDetachedFromWindow() method is executed
 
-#### 主动取消
+#### Proactive cancellation
 
-使用 enqueue() 方法执行请求时会返回一个 [Disposable], 可以用来它取消请求，如下:
+Executing a request using the enqueue() method returns a [Disposable] that can be used to cancel the request, as follows:
 
 ```kotlin
 val disposable = DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 
-// 在需要的时候取消请求
+// Cancel the request when you need to
 disposable.dispose()
 ```
 
-使用 execute() 方法执行请求时可以通过其协程的 Job 来取消，如下：
+When a request is executed using the execute() method, it can be canceled by the job of its coroutine, as follows:
 
 ```kotlin
 val job = coroutineScope.launch(Dispatchers.Main) {
@@ -244,31 +262,31 @@ val job = coroutineScope.launch(Dispatchers.Main) {
     imageView.setImageDrawable(result.drawable)
 }
 
-// 在需要的时候取消请求
+// Cancel the request when you need to
 job.cancel()
 ```
 
-## ImageView 扩展
+## ImageView Extensions
 
-Sketch 给 ImageView 提供了一系列的扩展，如下:
+Sketch provides a series of extensions to ImageView, as follows:
 
-### 显示图片
+### Display Image
 
-> 仅单例模式下可用
+> Available only in singleton mode
 
-displayImage() 扩展函数，用于将 URI 指向的图片显示到 ImageView 上
+displayImage() extension function to display the image pointed to by the URI onto the ImageView
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.jpg")
 ```
 
-上述调用等价于：
+The above call is equivalent to:
 
 ```kotlin
 DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 ```
 
-还可以通过 displayImage 函数尾随的 lambda 配置参数：
+You can also configure parameters via the lambda trailing with the displayImage function:
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.jpg") {
@@ -278,13 +296,13 @@ imageView.displayImage("https://www.example.com/image.jpg") {
 }
 ```
 
-### 取消请求
+### Cancel The Request
 
 ```kotlin
 imageView.disposeDisplay()
 ```
 
-### 获取结果
+### Get The Results
 
 ```kotlin
 val displayResult = imageView.displayResult
@@ -311,38 +329,38 @@ when (displayResult) {
 
 ## Document
 
-Basic functions：
+Basic functions:
 
 * [Get Started][getting_started]
-* [AnimatedImage：GIF、WEBP、HEIF][animated_image]
-* [Resize：Modify the image size][resize]
-* [Transformation：Transformation image][transformation]
-* [Transition：Display images in cool transitions][transition]
-* [StateImage：Placeholder and error images][state_image]
-* [Listener：Listen for request status and download progress][listener]
-* [Cache：Learn about downloads, results, memory caching][cache]
-* [Fetcher：Learn about Fetcher and extend new URI types][fetcher]
-* [Decoder：Learn about Decoder and expand into new image types][decoder]
-* [Target：Apply the load results to the target][target]
-* [HttpStack：Learn about the HTTP section and using okhttp][http_stack]
-* [SVG：Decode SVG still images][svg]
-* [VideoFrames：Decode video frames][video_frame]
-* [Exif：Correct the image orientation][exif]
-* [ImageOptions：Manage image configurations in a unified manner][image_options]
-* [RequestInterceptor：Intercept ImageRequest][request_interceptor]
-* [DecodeInterceptor：Intercept Bitmap or Drawable decoding][decode_interceptor]
-* [BitmapPool：Reuse Bitmap to reduce GC][bitmap_pool]
-* [DownloadRequest：Download the image to disk][download_request]
-* [LoadRequest：Load the image to get the Bitmap][load_request]
+* [AnimatedImage: GIF、WEBP、HEIF][animated_image]
+* [Resize: Modify the image size][resize]
+* [Transformation: Transformation image][transformation]
+* [Transition: Display images in cool transitions][transition]
+* [StateImage: Placeholder and error images][state_image]
+* [Listener: Listen for request status and download progress][listener]
+* [Cache: Learn about downloads, results, memory caching][cache]
+* [Fetcher: Learn about Fetcher and extend new URI types][fetcher]
+* [Decoder: Learn about Decoder and expand into new image types][decoder]
+* [Target: Apply the load results to the target][target]
+* [HttpStack: Learn about the HTTP section and using okhttp][http_stack]
+* [SVG: Decode SVG still images][svg]
+* [VideoFrames: Decode video frames][video_frame]
+* [Exif: Correct the image orientation][exif]
+* [ImageOptions: Manage image configurations in a unified manner][image_options]
+* [RequestInterceptor: Intercept ImageRequest][request_interceptor]
+* [DecodeInterceptor: Intercept Bitmap or Drawable decoding][decode_interceptor]
+* [BitmapPool: Reuse Bitmap to reduce GC][bitmap_pool]
+* [DownloadRequest: Download the image to disk][download_request]
+* [LoadRequest: Load the image to get the Bitmap][load_request]
 * [Preload images into memory][preloading]
 * [Lifecycle][lifecycle]
 * [Jetpack Compose][jetpack_compose]
 * [Log][log]
 
-Featured functions：
+Featured functions:
 
-* [SketchImageView：Configure the request through XML attributes][sketch_image_view]
-* [SketchZoomImageView：Gesture zoom and large image sampling][zoom]
+* [SketchImageView: Configure the request through XML attributes][sketch_image_view]
+* [SketchZoomImageView: Gesture zoom and large image sampling][zoom]
 * [Improve the clarity of long images in grid lists][long_image_grid_thumbnails]
 * [Displays the download progress][show_download_progress]
 * [Displays the image type corner][show_image_type]

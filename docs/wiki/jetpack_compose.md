@@ -1,5 +1,7 @@
 # Jetpack Compose
 
+Translations: [简体中文](jetpack_compose_zh.md)
+
 `需要导入 sketch-compose 模块`
 
 ### AsyncImage

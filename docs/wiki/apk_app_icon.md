@@ -1,12 +1,15 @@
-# 显示 APK 文件或已安装 APP 的图标
+# Display An Icon For An Apk File Or Installed App
 
-`需要导入 sketch-extensions 模块`
+Translations: [简体中文](apk_app_icon_zh.md)
 
-### 显示 APK 文件的图标
+`The sketch-extensions module needs to be imported`
 
-首先在初始化 [Sketch] 时注册 [ApkIconBitmapDecoder]，这样所有的 [ImageRequest] 都可以使用，如下：
+### Displays an icon for the APK file
+
+First, register [ApkIconBitmapDecoder] as follows:
 
 ```kotlin
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -17,17 +20,8 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-然后显示图片时传入 apk 文件的路径，如下：
-
-```kotlin
-imageView.displayImage("/sdcard/sample.apk")
-```
-
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* Register for a single ImageRequest */
 imageView.displayImage("/sdcard/sample.apk") {
     components {
         supportApkIcon()
@@ -35,11 +29,18 @@ imageView.displayImage("/sdcard/sample.apk") {
 }
 ```
 
-### 显示已安装 APP 的图标
-
-首先在初始化 [Sketch] 时注册 [AppIconUriFetcher] 和 [AppIconBitmapDecoder]，这样所有的 [ImageRequest] 都可以使用，如下：
+Then, pass in the path of the apk file when the image is displayed, as follows:
 
 ```kotlin
+imageView.displayImage("/sdcard/sample.apk")
+```
+
+### Displays an icon for the installed app
+
+First, register [AppIconUriFetcher] and [AppIconBitmapDecoder] as follows:
+
+```kotlin
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -50,17 +51,8 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-然后使用 `newAppIconUri()` 函数创建专用 uri 并执行显示，如下：
-
-```kotlin
-imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1))
-```
-
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* Register for a single ImageRequest */
 imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
     components {
         supportAppIcon()
@@ -68,8 +60,16 @@ imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCo
 }
 ```
 
-* versionCode：App 的版本号，必须传入正确的版本号。因为对图标进行修改时就会将修改后的图标缓存在磁盘上，如果只用 packageName 作为缓存 key 那么 App
-  版本更新后图标即使改变了缓存也不会刷新
+Then use the 'newAppIconUri()' function to create a private uri and execute the display as follows:
+
+```kotlin
+imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1))
+```
+
+* versionCode：The version code of the app, which must be passed in the correct version number.
+  Because when you make a modification to the icon, the modified icon will be cached on the disk, if
+  you only use it packageName is used as the cache key, so the icon will not be refreshed even if
+  the app version is updated, even if it changes
 
 [Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
 

@@ -1,17 +1,26 @@
 # Decode Interceptor
 
-Sketch 的解码过程支持拦截器，你可以通过拦截器来拦截解码过程改变解码前后的输入和输出
+Translations: [简体中文](decode_interceptor_zh.md)
 
-Sketch 将解码分为 Drawable 和 Bitmap 两种，因此拦截也同样分为两种 [BitmapDecodeInterceptor]
-和 [DrawableDecodeInterceptor]，如下：
+Sketch's decoding process supports interceptors, which allow you to change the input and output
+before and after decoding
+
+Sketch divides decoding into two types: Drawable and Bitmap, so interception is also divided into
+two types [BitmapDecodeInterceptor]
+and [DrawableDecodeInterceptor]
+
+First, implement the [BitmapDecodeInterceptor] or [DrawableDecodeInterceptor] interface to define
+your DecodeInterceptor, as follows:
 
 ```kotlin
 class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
-    // 如果当前 BitmapDecodeInterceptor 会修改返回的结果并且仅用于部分请求，那么请给一个不重复的 key 用于构建缓存 key，否则给 null 即可
+    // If the current BitmapDecodeInterceptor modifies the returned result and is only used for partial requests, 
+    // then give a distinct key to build the cache key, otherwise null is fine
     override val key: String = "MyBitmapDecodeInterceptor"
 
-    // 用于排序，值越大在列表中越靠后。取值范围是 0 ~ 100。通常是零。只有 EngineBitmapDecodeInterceptor 可以是 100
+    // Used for sorting, the higher the value, the lower it is in the list. The value range is 0 ~ 100. 
+    // Usually zero. Only EngineBitmapDecodeInterceptor can be 100
     override val sortWeight: Int = 0
 
     @WorkerThread
@@ -27,10 +36,12 @@ class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
 class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
-    // 如果当前 DrawableDecodeInterceptor 会修改返回的结果并且仅用于部分请求，那么请给一个不重复的 key 用于构建缓存 key，否则给 null 即可
+    // If the current DrawableDecodeInterceptor modifies the returned result and is only used for part of the request, 
+    // then give a unique key to build the cache key, otherwise null is fine
     override val key: String = "MyDrawableDecodeInterceptor"
 
-    // 用于排序，值越大在列表中越靠后。取值范围是 0 ~ 100。通常是零。只有 EngineDrawableDecodeInterceptor 可以是 100
+    // Used for sorting, the higher the value, the lower it is in the list. The value range is 0 ~ 100. 
+    // Usually zero. Only EngineDrawableDecodeInterceptor can be 100
     override val sortWeight: Int = 0
 
     @WorkerThread
@@ -45,15 +56,18 @@ class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 }
 ```
 
-> 1. MyBitmapDecodeInterceptor 演示了一个将所有请求的 Bitmap.Config 改为 ARGB_4444 的案例
-> 2. MyDrawableDecodeInterceptor 演示了一个禁止所有请求解码动图的案例
-> 3. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [BitmapDecodeResult] 或 [DrawableDecodeResult] 即可
-> 4. 如果想不再执行请求只需不执行 proceed 方法即可
+> 1. MyBitmapDecodeInterceptor demonstrates an example of changing the Bitmap.Config for all
+     requests to ARGB_4444
+> 2. MyDrawableDecodeInterceptor demonstrates a case that prohibits all requests to decode GIFs
+> 3. If you want to modify the result, just intercept the result returned by the proceed method and
+     return a new [BitmapDecodeResult] or [DrawableDecodeResult].
+> 4. If you want to stop executing requests, just don't execute the proceed method
 
-然后在初始化 Sketch 时通过 addBitmapDecodeInterceptor() 和 addDrawableDecodeInterceptor() 方法注册，这样所有的
-ImageRequest 都可以使用，如下：
+Then, register your DecodeInterceptor via the addBitmapDecodeInterceptor() and
+addDrawableDecodeInterceptor() methods as follows:
 
 ```kotlin
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -65,11 +79,8 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* Register for a single ImageRequest */
 imageView.displayImage("file:///sdcard/sample.mp4") {
     components {
         addBitmapDecodeInterceptor(MyBitmapDecodeInterceptor())

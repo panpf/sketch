@@ -1,5 +1,7 @@
 # BitmapPool
 
+翻译：[English](bitmap_pool.md)
+
 Android 支持通过 BitmapFactory.Options.inBitmap 字段来复用 Bitmap，复用 Bitmap 可以在 Android 8.0 以下显著的减少 GC 进而提高
 App 的流畅度
 
@@ -24,10 +26,10 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [BitmapPool] 会在以下几种情况下释放：
 
-* 主动调用 [BitmapPool] 的 trim()、clear() 方法
+* 主动调用 [BitmapPool] 的 `trim()`、`clear()` 方法
 * 达到最大容量时自动释放较旧的 Bitmap
-* 设备可用内存较低触发了 Application 的 onLowMemory() 方法
-* 系统整理内存触发了 Application 的 onTrimMemory(int) 方法
+* 设备可用内存较低触发了 Application 的 `onLowMemory()` 方法
+* 系统整理内存触发了 Application 的 `onTrimMemory(int)` 方法
 
 [BitmapPool]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/BitmapPool.kt
 

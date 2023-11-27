@@ -1,17 +1,17 @@
 # RequestInterceptor
 
+翻译：[English](request_interceptor.md)
+
 Sketch 通过 [RequestInterceptor] 来拦截 [ImageRequest] 的执行过程，你可以借此改变执行过程的输入和输出
 
-### 定义
-
-先实现 [RequestInterceptor] 接口定义你的 RequestInterceptor：
+首先实现 [RequestInterceptor] 接口定义你的 RequestInterceptor，如下：
 
 ```kotlin
 class MyRequestInterceptor : RequestInterceptor {
-    
+
     // 如果当前 RequestInterceptor 会修改返回的结果并且仅用于部分请求，那么请给一个不重复的 key 用于构建缓存 key，否则给 null 即可
     override val key: String? = null
-    
+
     // 用于排序，值越大在列表中越靠后。取值范围是 0 ~ 100。通常是零。只有 EngineRequestInterceptor 可以是 100
     override val sortWeight: Int = 0
 
@@ -29,11 +29,10 @@ class MyRequestInterceptor : RequestInterceptor {
 > 2. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [ImageData] 即可
 > 3. 如果想不再执行请求只需不执行 proceed 方法即可
 
-### 注册
-
-然后在初始化 Sketch 时通过 addRequestInterceptor() 方法注册，这样所有的 [ImageRequest] 都可以使用，如下：
+然后注册你的 RequestInterceptor，如下：
 
 ```kotlin
+/* 为所有 ImageRequest 注册 */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -44,11 +43,8 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* 为单个 ImageRequest 注册 */
 imageView.displayImage("https://www.sample.com/image.jpg") {
     components {
         addRequestInterceptor(MyRequestInterceptor())

@@ -1,5 +1,7 @@
 # 播放动图
 
+翻译：[English](animated_image.md)
+
 Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [DrawableDecoder] 提供支持，如下：
 
 | Type          | Decoder                       | APi Limit    | Additional Module |
@@ -14,16 +16,16 @@ Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [D
 > 1. [GifMovieDrawableDecoder] 和 [GifDrawableDrawableDecoder] 需要依赖额外的模块
 > 2. GIF 提供了三种 [DrawableDecoder] 可以根据 app 支持的最低版本选择合适的
 > 3. `sketch-gif-movie` 模块使用 Android 自带的 [Movie] 类实现播放 GIF，不会额外增加包体积
-> 4. `sketch-gif-koral` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放 gif，库体积大概 250 KB
+> 4. `sketch-gif-koral` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放
+     gif，库体积大概 250 KB
 
 ## 注册动图解码器
 
-Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你主动将 [DrawableDecoder] 注册到 Sketch 才能播放动图
-
-通过在 Application 类实现 [SketchFactory] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，这样所有的
-ImageRequest 都可以使用，如下：
+Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你主动将 [DrawableDecoder] 注册到 Sketch
+才能播放动图，如下：
 
 ```kotlin
+/* 为所有 ImageRequest 注册 */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -46,27 +48,24 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* 为单个 ImageRequest 注册 */
 imageView.displayImage("https://www.example.com/image.gif") {
-    components {
-        addDrawableDecoder(
-            when {
-                VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
-                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
-                else -> GifDrawableDrawableDecoder.Factory()
-            }
-        )
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
-        }
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
-        }
-    }
+     components {
+          addDrawableDecoder(
+               when {
+                    VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
+                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
+                    else -> GifDrawableDrawableDecoder.Factory()
+               }
+          )
+          if (VERSION.SDK_INT >= VERSION_CODES.P) {
+               addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+          }
+          if (VERSION.SDK_INT >= VERSION_CODES.R) {
+               addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
+          }
+     }
 }
 ```
 
@@ -106,12 +105,13 @@ Animatable2Compat 接口
 
 #### 初始状态
 
-[GenericViewDisplayTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查 ImageRequest.lifecycle
-的状态，如果 lifecycle 的状态大于 start 就开始播放
+[GenericViewDisplayTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查
+ImageRequest.lifecycle 的状态，如果 lifecycle 的状态大于 start 就开始播放
 
 #### 自动控制
 
 [GenericViewDisplayTarget] 会监听 ImageRequest.lifecycle 的 start 和 stop 状态自动控制播放
+
 
 [koral--]: https://github.com/koral--
 

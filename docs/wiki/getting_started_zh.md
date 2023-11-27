@@ -38,7 +38,7 @@
 
 ## Sketch
 
-[Sketch] 类用来执行 [ImageRequest]，并处理图片下载、缓存、解码、转换、请求管理、内存管理等功能。
+[Sketch] 类用来执行 [ImageRequest]，并处理图片下载、缓存、解码、转换、请求管理、内存管理等工作。
 
 ### 单例模式
 
@@ -169,7 +169,7 @@ coroutineScope.launch(Dispatchers.Main) {
 
 #### 非单例模式
 
-非单例模式下需要创建 Sketch 实例并通过其 enqueue() 或 execute() 方法执行请求：
+非单例模式下需要自行创建 Sketch 实例并通过其 enqueue() 或 execute() 方法执行请求：
 
 ```kotlin
 val sketch = Sketch.Builder(context).build()

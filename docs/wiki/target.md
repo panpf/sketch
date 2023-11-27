@@ -1,5 +1,7 @@
 # Target
 
+Translations: [简体中文](target_zh.md)
+
 [Target] 用来接收 [ImageRequest] 的结果 [ImageResult]，并将结果应用到目标上
 
 从前面的 [入门][getting_started] 文档可以知道 [ImageRequest] 分为 [DisplayRequest]、[LoadRequest]、[DownloadRequest]

@@ -1,9 +1,13 @@
 # Decode Interceptor
 
-Sketch 的解码过程支持拦截器，你可以通过拦截器来拦截解码过程改变解码前后的输入和输出
+翻译：[English](decode_interceptor.md)
+
+Sketch 的解码过程支持拦截器，你可以通过拦截器来改变解码前后的输入和输出
 
 Sketch 将解码分为 Drawable 和 Bitmap 两种，因此拦截也同样分为两种 [BitmapDecodeInterceptor]
-和 [DrawableDecodeInterceptor]，如下：
+和 [DrawableDecodeInterceptor]
+
+首先，实现 [BitmapDecodeInterceptor] 或 [DrawableDecodeInterceptor] 接口定义你的 DecodeInterceptor，如下：
 
 ```kotlin
 class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
@@ -50,10 +54,10 @@ class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 > 3. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [BitmapDecodeResult] 或 [DrawableDecodeResult] 即可
 > 4. 如果想不再执行请求只需不执行 proceed 方法即可
 
-然后在初始化 Sketch 时通过 addBitmapDecodeInterceptor() 和 addDrawableDecodeInterceptor() 方法注册，这样所有的
-ImageRequest 都可以使用，如下：
+然后，通过 addBitmapDecodeInterceptor() 和 addDrawableDecodeInterceptor() 方法注册你的 DecodeInterceptor，如下：
 
 ```kotlin
+/* 为所有 ImageRequest 注册 */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -65,11 +69,8 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* 为单个 ImageRequest 注册 */
 imageView.displayImage("file:///sdcard/sample.mp4") {
     components {
         addBitmapDecodeInterceptor(MyBitmapDecodeInterceptor())

@@ -1,18 +1,24 @@
 # BitmapPool
 
-Android 支持通过 BitmapFactory.Options.inBitmap 字段来复用 Bitmap，复用 Bitmap 可以在 Android 8.0 以下显著的减少 GC 进而提高
-App 的流畅度
+Translations: [简体中文](bitmap_pool_zh.md)
 
-Sketch 的 [BitmapPool] 组件为复用 Bitmap 功能提供了 Bitmap 池服务，默认的实现是 [LruBitmapPool]：
+Android supports the reuse of Bitmaps through the BitmapFactory.Options.inBitmap field, which can
+significantly reduce GC and improve before Android 8.0 The smoothness of the app
 
-* 根据最少使用原则释放旧的 Bitmap
-* 最大容量是 6 个屏幕大小和最大可用内存的三分之一中的小者的三分之一
+Sketch's [BitmapPool] component provides a Bitmap pool service for reusing the Bitmap feature, and
+the default implementation is [LruBitmapPool]:
 
-> 你可以在初始化 Sketch 时创建 [LruBitmapPool] 并修改最大容量，然后通过 bitmapPool() 方法注册
+* Release old Bitmaps according to the principle of least use
+* The maximum capacity is one-third of the lesser of 6 screen sizes and one-third of the maximum
+  available memory
 
-### 禁用
+> You can create a [LruBitmapPool] when initializing Sketch and modify the maximum capacity, then
+> register it via the bitmapPool() method
 
-Sketch 默认开启了复用 Bitmap 功能，你可以通过 [ImageRequest] 或 [ImageOptions] 的 disallowReuseBitmap 函数禁用它:
+### Disable
+
+Sketch has the Bitmap function enabled by default, and you can disable it via the
+disallowReuseBitmap function of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -20,14 +26,14 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-### 释放
+### Free
 
-[BitmapPool] 会在以下几种情况下释放：
+[BitmapPool] will be released in the following situations:
 
-* 主动调用 [BitmapPool] 的 trim()、clear() 方法
-* 达到最大容量时自动释放较旧的 Bitmap
-* 设备可用内存较低触发了 Application 的 onLowMemory() 方法
-* 系统整理内存触发了 Application 的 onTrimMemory(int) 方法
+* Actively call the `trim()` and `clear()` methods of [BitmapPool].
+* Older bitmaps are automatically released when the maximum capacity is reached
+* The low available memory of the device triggers the application's `onLowMemory()` method
+* The system trim memory triggers the application's `onTrimMemory(int)` method
 
 [BitmapPool]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/BitmapPool.kt
 

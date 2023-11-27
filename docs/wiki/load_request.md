@@ -1,5 +1,7 @@
 # 加载图片获取 Bitmap
 
+Translations: [简体中文](load_request_zh.md)
+
 使用 [LoadRequest] 可以加载图片获得 Bitmap，如下：
 
 ```kotlin
@@ -8,7 +10,8 @@ LoadRequest(context, "https://www.sample.com/image.jpg") {
         onSuccess = { request: LoadRequest, result: LoadResult.Success ->
             val bitmap = result.bitmap
             // ...
-        }, onSuccess = { request: LoadRequest, result: LoadResult.Error ->
+        },
+        onError = { request: LoadRequest, result: LoadResult.Error ->
             val throwable: Throwable = result.throwable
             // ...
         }

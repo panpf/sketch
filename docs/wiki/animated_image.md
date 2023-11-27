@@ -1,6 +1,9 @@
-# 播放动图
+# Play Animated Image
 
-Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [DrawableDecoder] 提供支持，如下：
+Translations: [简体中文](animated_image_zh.md)
+
+Sketch supports playing GIF, WEBP, HEIF animated images, and each animated image is supported by a
+corresponding [DrawableDecoder], as follows:
 
 | Type          | Decoder                       | APi Limit    | Additional Module |
 |:--------------|:------------------------------|:-------------|:------------------|
@@ -10,20 +13,22 @@ Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [D
 | WEBP Animated | [WebPAnimatedDrawableDecoder] | Android 9+   | _                 |
 | HEIF Animated | [HeifAnimatedDrawableDecoder] | Android 11+  | _                 |
 
-> 注意：
-> 1. [GifMovieDrawableDecoder] 和 [GifDrawableDrawableDecoder] 需要依赖额外的模块
-> 2. GIF 提供了三种 [DrawableDecoder] 可以根据 app 支持的最低版本选择合适的
-> 3. `sketch-gif-movie` 模块使用 Android 自带的 [Movie] 类实现播放 GIF，不会额外增加包体积
-> 4. `sketch-gif-koral` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放 gif，库体积大概 250 KB
+> Caution:
+> 1. [GifMovieDrawableDecoder] and [GifDrawableDrawableDecoder] need to rely on additional modules
+> 2. There are three types of GIFs, [DrawableDecoder] that can be selected according to the minimum
+     version supported by the app
+> 3. The `sketch-gif-movie` module uses Android's built-in [Movie] class to play GIFs without adding
+     extra package size
+> 4. The `sketch-gif-koral` module uses the [gif--]/[android-gif-drawable] library for playback
+     gif, the library size is about 250 KB
 
-## 注册动图解码器
+## Register Decoder
 
-Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你主动将 [DrawableDecoder] 注册到 Sketch 才能播放动图
-
-通过在 Application 类实现 [SketchFactory] 接口并使用 components 函数将 [DrawableDecoder] 注册到 Sketch，这样所有的
-ImageRequest 都可以使用，如下：
+By default, Sketch does not register any [DrawableDecoder] for animated image, so you need to
+actively register [DrawableDecoder] with Sketch to play the animated image, as follows:
 
 ```kotlin
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -46,43 +51,41 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-或者在显示图片时只给当前 [ImageRequest] 注册，这样就只有当前 [ImageRequest] 可以使用，如下：
-
-```kotlin
+/* Register for a single ImageRequest */
 imageView.displayImage("https://www.example.com/image.gif") {
-    components {
-        addDrawableDecoder(
-            when {
-                VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
-                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
-                else -> GifDrawableDrawableDecoder.Factory()
-            }
-        )
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
-        }
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
-        }
-    }
+     components {
+          addDrawableDecoder(
+               when {
+                    VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
+                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
+                    else -> GifDrawableDrawableDecoder.Factory()
+               }
+          )
+          if (VERSION.SDK_INT >= VERSION_CODES.P) {
+               addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+          }
+          if (VERSION.SDK_INT >= VERSION_CODES.R) {
+               addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
+          }
+     }
 }
 ```
 
-## 配置
+## Configure
 
-[ImageRequest] 和 [ImageOptions] 都提供了相关方法用于动图相关配置，如下：
+Both [ImageRequest] and [ImageOptions] provide relevant methods for animated image configuration, as
+follows:
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.gif") {
-    // 禁用动图，会只解码动图的第一帧
+    // Disabling animated image will decode only the first frame of animated image
     disallowAnimatedImage()
 
-    // 配置动图播放 1 次就停止，默认无限循环播放
+    // Configure animated image playback to stop after 1 time, and play it in an infinite loop by default
     repeatCount(1)
 
-    // 监听动图开始和停止播放
+    // Listen for the animated image to start and stop playback
     onAnimationStart {
         // ...
     }
@@ -90,28 +93,32 @@ imageView.displayImage("https://www.example.com/image.gif") {
         // ...
     }
 
-    // 对动图的每一帧在绘制时进行修改 
+    // Modify each frame of the animated image as you draw 
     animatedTransformation { canvas ->
         // ...
     }
 }
 ```
 
-## 控制播放
+## Control playback
 
-动图相关的 [DrawableDecoder] 统一返回 [SketchAnimatableDrawable]，[SketchAnimatableDrawable] 实现了
-Animatable2Compat 接口
+The [DrawableDecoder] related to the animated image returns [SketchAnimatableDrawable] uniformly,
+and [SketchAnimatableDrawable] is implemented
+Animatable2Compat interface
 
-你可以通过 Animatable2Compat 接口的 start() 和 stop() 方法手动控制开始播放和停止播放
+You can manually control the start and stop playback via the start() and stop() methods of the
+Animatable2Compat interface
 
-#### 初始状态
+#### Initial state
 
-[GenericViewDisplayTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查 ImageRequest.lifecycle
-的状态，如果 lifecycle 的状态大于 start 就开始播放
+[GenericViewDisplayTarget] checks after [SketchAnimatableDrawable] is displayed on the ImageView
+ImageRequest.lifecycle, if the state of lifecycle is greater than start, it will start playing
 
-#### 自动控制
+#### Automatic control
 
-[GenericViewDisplayTarget] 会监听 ImageRequest.lifecycle 的 start 和 stop 状态自动控制播放
+[GenericViewDisplayTarget] listens to the start and stop states of ImageRequest.lifecycle to
+automatically control playback
+
 
 [koral--]: https://github.com/koral--
 
