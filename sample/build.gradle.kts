@@ -20,42 +20,37 @@ android {
         versionCode = property("versionCode").toString().toInt()
         versionName = property("versionName").toString()
 
-        vectorDrawables.useSupportLibrary = true    // Converting svg to png under version 21 is not allowed
+        vectorDrawables.useSupportLibrary = true
     }
 
-    val releaseSigningConfig = readReleaseSigningConfig()
     signingConfigs {
-        if (releaseSigningConfig != null) {
-            create("release") {
-                storeFile = releaseSigningConfig.storeFile
-                storePassword = releaseSigningConfig.storePassword
-                keyAlias = releaseSigningConfig.keyAlias
-                keyPassword = releaseSigningConfig.keyPassword
-            }
+        create("sample") {
+            storeFile = project.file("sample.keystore")
+            storePassword = "B027HHiiqKOMYesQ"
+            keyAlias = "panpf-sample"
+            keyPassword = "B027HHiiqKOMYesQ"
         }
     }
     buildTypes {
-        getByName("debug") {
-            if (releaseSigningConfig != null) {
-                signingConfig = signingConfigs.getByName("release")
-            }
+        debug {
             multiDexEnabled = true
+            signingConfig = signingConfigs.getByName("sample")
         }
-
-        if (releaseSigningConfig != null) {
-            getByName("release") {
-                isMinifyEnabled = true
-                isShrinkResources = true
-                proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-                signingConfig = signingConfigs.getByName("release")
-            }
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("sample")
         }
     }
 
     flavorDimensions.add("default")
 
     androidResources {
-        noCompress("bmp")
+        noCompress.add("bmp")
     }
 
     buildFeatures {
@@ -122,41 +117,3 @@ dependencies {
 
     debugImplementation(libs.leakcanary)
 }
-
-fun getGitVersion(): String =
-    Runtime.getRuntime().exec("git rev-parse --short HEAD").inputStream.use {
-        it.bufferedReader().readText().trim()
-    }
-
-fun readReleaseSigningConfig(): ReleaseSigningConfig? {
-    val localProperties = `java.util`.Properties().apply {
-        project.file("local.properties")
-            .takeIf { it.exists() }
-            ?.inputStream()?.use { this@apply.load(it) }
-    }
-    val jksFile = project.file("release.jks")
-    return if (
-        localProperties.containsKey("signing.storePassword")
-        && localProperties.containsKey("signing.keyAlias")
-        && localProperties.containsKey("signing.keyPassword")
-        && jksFile.exists()
-    ) {
-        println("hasReleaseSigningConfig: true")
-        ReleaseSigningConfig(
-            localProperties.getProperty("signing.storePassword"),
-            localProperties.getProperty("signing.keyAlias"),
-            localProperties.getProperty("signing.keyPassword"),
-            jksFile
-        )
-    } else {
-        println("hasReleaseSigningConfig: false")
-        null
-    }
-}
-
-class ReleaseSigningConfig(
-    val storePassword: String,
-    val keyAlias: String,
-    val keyPassword: String,
-    val storeFile: File,
-)
