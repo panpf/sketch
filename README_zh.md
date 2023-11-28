@@ -209,6 +209,16 @@ AsyncImage(
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
 * [BigBadaboom]/[androidsvg]: svg
 
+## 我的项目
+
+以下是我的其它开源项目，感兴趣的可以了解一下：
+
+* [zoomimage](https://github.com/panpf/zoomimage)：用于缩放图像的库，支持 Android View、Compose 以及
+  Compose Multiplatform；支持双击缩放、单指或双指手势缩放、单指拖动、惯性滑动、定位、旋转、超大图子采样等功能。
+* [assembly-adapter](https://github.com/panpf/assembly-adapter)：Android 上的一个为各种 Adapter 提供多类型
+  Item 实现的库。还顺带为 RecyclerView 提供了最强大的 divider。
+* [sticky-item-decoration](https://github.com/panpf/stickyitemdecoration)：RecyclerView 黏性 item 实现
+
 ## License
 
     Copyright (C) 2022 panpf <panpfpanpf@outlook.com>

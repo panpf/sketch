@@ -219,6 +219,20 @@ Please review the [CHANGELOG.md] file
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
 * [BigBadaboom]/[androidsvg]: svg
 
+## My Projects
+
+The following are my other open source projects. If you are interested, you can learn about them:
+
+* [zoomimage](https://github.com/panpf/zoomimage)：Library for zoom images, supported Android View,
+  Compose and Compose Multiplatform; supported double-click zoom, One or two fingers gesture zoom,
+  single-finger drag, inertial sliding, positioning, rotation, super-large image subsampling and
+  other functions.
+* [assembly-adapter](https://github.com/panpf/assembly-adapter)：A library on Android that provides
+  multi-type Item implementations for various adapters. Incidentally, it also provides the most
+  powerful divider for RecyclerView.
+* [sticky-item-decoration](https://github.com/panpf/stickyitemdecoration)：RecyclerView sticky item
+  implementation
+
 ## License
 
     Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
