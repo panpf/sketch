@@ -18,8 +18,7 @@ package com.github.panpf.sketch.resize
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.util.Size
 
-// todo add SizeResolver(size: Size)
-//fun SizeResolver(size: Size): SizeResolver = FixedSizeResolver(size)
+fun SizeResolver(size: Size): SizeResolver = FixedSizeResolver(size)
 
 /**
  * An interface for measuring the target size for an image request.

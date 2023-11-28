@@ -23,12 +23,18 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resize.ScaleDecider
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ScaleDeciderTest {
+
+    @Test
+    fun testCreateFunction() {
+        Assert.assertTrue(ScaleDecider(CENTER_CROP) is FixedScaleDecider)
+    }
 
     @Test
     fun testFixedScaleDeciderCreateFunction() {

@@ -18,7 +18,9 @@ package com.github.panpf.sketch.resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
 
-// todo add ScaleDecider(scale: Scale)
+fun ScaleDecider(scale: Scale): ScaleDecider {
+    return FixedScaleDecider(scale)
+}
 
 /**
  * Determines which scale to use dynamically based on image size and resizing
@@ -56,7 +58,7 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
 class LongImageScaleDecider constructor(
     val longImage: Scale = START_CROP,
     val otherImage: Scale = CENTER_CROP,
-    val longImageDecider: LongImageDecider = DefaultLongImageDecider(),
+    val longImageDecider: LongImageDecider = LongImageDecider(),
 ) : ScaleDecider {
 
     override val key: String by lazy { "LongImage($longImage,$otherImage),${longImageDecider.key})" }

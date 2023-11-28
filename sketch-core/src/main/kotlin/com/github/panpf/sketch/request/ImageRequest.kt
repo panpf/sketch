@@ -40,8 +40,6 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
-import com.github.panpf.sketch.resize.FixedPrecisionDecider
-import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
@@ -894,9 +892,9 @@ interface ImageRequest {
             val resizeSizeResolver = finalOptions.resizeSizeResolver
                 ?: resolveResizeSizeResolver()
             val resizePrecisionDecider = finalOptions.resizePrecisionDecider
-                ?: FixedPrecisionDecider(Precision.LESS_PIXELS)
+                ?: PrecisionDecider(Precision.LESS_PIXELS)
             val resizeScaleDecider =
-                finalOptions.resizeScaleDecider ?: FixedScaleDecider(resolveResizeScale())
+                finalOptions.resizeScaleDecider ?: ScaleDecider(resolveResizeScale())
             val transformations = finalOptions.transformations
             val disallowReuseBitmap = finalOptions.disallowReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false

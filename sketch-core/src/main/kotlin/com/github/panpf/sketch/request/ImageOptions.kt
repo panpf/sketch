@@ -37,8 +37,6 @@ import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.isNotEmpty
 import com.github.panpf.sketch.http.merged
 import com.github.panpf.sketch.merged
-import com.github.panpf.sketch.resize.FixedPrecisionDecider
-import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
@@ -524,9 +522,9 @@ interface ImageOptions {
             precision: Precision? = null,
             scale: Scale? = null
         ): Builder = resize(
-            FixedSizeResolver(size),
-            precision?.let { FixedPrecisionDecider(it) },
-            scale?.let { FixedScaleDecider(it) }
+            SizeResolver(size),
+            precision?.let { PrecisionDecider(it) },
+            scale?.let { ScaleDecider(it) }
         )
 
         /**
@@ -545,8 +543,8 @@ interface ImageOptions {
             scale: Scale? = null
         ): Builder = resize(
             FixedSizeResolver(width, height),
-            precision?.let { FixedPrecisionDecider(it) },
-            scale?.let { FixedScaleDecider(it) }
+            precision?.let { PrecisionDecider(it) },
+            scale?.let { ScaleDecider(it) }
         )
 
         /**
@@ -562,7 +560,7 @@ interface ImageOptions {
          * Set the resize size
          */
         fun resizeSize(resizeSize: Size): Builder =
-            resizeSize(FixedSizeResolver(resizeSize))
+            resizeSize(SizeResolver(resizeSize))
 
         /**
          * Set the resize size
@@ -581,7 +579,7 @@ interface ImageOptions {
          * Set the resize precision, default is [Precision.LESS_PIXELS]
          */
         fun resizePrecision(precision: Precision): Builder =
-            resizePrecision(FixedPrecisionDecider(precision))
+            resizePrecision(PrecisionDecider(precision))
 
         /**
          * Set the resize scale, default is [Scale.CENTER_CROP]
@@ -593,7 +591,7 @@ interface ImageOptions {
         /**
          * Set the resize scale, default is [Scale.CENTER_CROP]
          */
-        fun resizeScale(scale: Scale): Builder = resizeScale(FixedScaleDecider(scale))
+        fun resizeScale(scale: Scale): Builder = resizeScale(ScaleDecider(scale))
 
         /**
          * Set the list of [Transformation]s to be applied to this request.

@@ -23,12 +23,18 @@ import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
+import com.github.panpf.sketch.resize.PrecisionDecider
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class PrecisionDeciderTest {
+
+    @Test
+    fun testCreateFunction() {
+        Assert.assertTrue(PrecisionDecider(EXACTLY) is FixedPrecisionDecider)
+    }
 
     @Test
     fun testFixedPrecisionDeciderCreateFunction() {

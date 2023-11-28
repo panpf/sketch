@@ -31,13 +31,13 @@ import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
-import com.github.panpf.sketch.resize.FixedPrecisionDecider
-import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.sample.image.ImageType.LIST
 import com.github.panpf.sketch.sample.prefsService
 
@@ -78,7 +78,7 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                     resizePrecision(
                         when (val value = prefsService.resizePrecision.value) {
                             "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
-                            else -> FixedPrecisionDecider(Precision.valueOf(value))
+                            else -> PrecisionDecider(Precision.valueOf(value))
                         }
                     )
                 }
@@ -89,7 +89,7 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor {
                                 longImage = Scale.valueOf(prefsService.longImageResizeScale.value),
                                 otherImage = Scale.valueOf(prefsService.otherImageResizeScale.value)
                             )
-                            else -> FixedScaleDecider(Scale.valueOf(value))
+                            else -> ScaleDecider(Scale.valueOf(value))
                         }
                     )
                 }

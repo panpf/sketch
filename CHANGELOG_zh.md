@@ -2,6 +2,10 @@
 
 # new
 
+#### sketch:
+
+* new: 增加 LongImageDecider()、PrecisionDecider(precision: Precision)、ScaleDecider(scale: Scale)、SizeResolver(size: Size) 等函数
+
 #### sketch-compose:
 
 * change: AsyncImage 和 SubcomposeAsyncImage 的 `noClipContent` 参数改为 `clipToBounds:Boolean = true`

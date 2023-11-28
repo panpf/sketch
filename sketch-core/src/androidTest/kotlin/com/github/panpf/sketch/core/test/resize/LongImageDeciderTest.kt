@@ -17,12 +17,18 @@ package com.github.panpf.sketch.core.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
+import com.github.panpf.sketch.resize.LongImageDecider
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class LongImageDeciderTest {
+
+    @Test
+    fun testCreateFunction() {
+        Assert.assertTrue(LongImageDecider() is DefaultLongImageDecider)
+    }
 
     @Test
     fun testConstructor() {

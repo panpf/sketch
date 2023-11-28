@@ -2,6 +2,10 @@
 
 # new
 
+#### sketch:
+
+* new: Adds LongImageDecider(), PrecisionDecider(Precision), ScaleDecider(Scale), SizeResolver(Size) functions
+
 #### sketch-compose:
 
 * change: The `noClipContent` parameter of AsyncImage and SubcomposeAsyncImage is changed to `clipToBounds:Boolean = true`

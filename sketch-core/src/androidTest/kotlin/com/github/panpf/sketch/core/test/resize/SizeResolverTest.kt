@@ -17,6 +17,7 @@ package com.github.panpf.sketch.core.test.resize
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.FixedSizeResolver
+import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -24,7 +25,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class FixedSizeResolverTest {
+class SizeResolverTest {
+
+    @Test
+    fun testCreateFunction() {
+        Assert.assertTrue(SizeResolver(Size(100, 200)) is FixedSizeResolver)
+    }
 
     @Test
     fun test() {

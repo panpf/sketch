@@ -15,7 +15,9 @@
  */
 package com.github.panpf.sketch.resize
 
-// todo add PrecisionDecider(precision: Precision)
+fun PrecisionDecider(precision: Precision): PrecisionDecider {
+    return FixedPrecisionDecider(precision)
+}
 
 /**
  * Determines which precision to use dynamically based on image size and resizing
@@ -55,7 +57,7 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
 class LongImageClipPrecisionDecider constructor(
     val precision: Precision = Precision.SAME_ASPECT_RATIO,
     val otherPrecision: Precision = Precision.LESS_PIXELS,
-    val longImageDecider: LongImageDecider = DefaultLongImageDecider(),
+    val longImageDecider: LongImageDecider = LongImageDecider(),
 ) : PrecisionDecider {
 
     override val key: String by lazy { "LongImageClip($precision,$otherPrecision,${longImageDecider.key})" }

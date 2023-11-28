@@ -31,7 +31,7 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.isDefault
-import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -332,7 +332,7 @@ internal fun updateRequest(request: DisplayRequest, contentScale: ContentScale):
             }
             // If no other scale resolver is set, use the content scale.
             if (noResetScale) {
-                resizeScale(AsyncImageScaleDecider(FixedScaleDecider(contentScale.toScale())))
+                resizeScale(AsyncImageScaleDecider(ScaleDecider(contentScale.toScale())))
             }
 
             if (defaultLifecycleResolver) {

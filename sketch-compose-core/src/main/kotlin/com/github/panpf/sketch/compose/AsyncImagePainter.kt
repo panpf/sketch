@@ -32,7 +32,7 @@ import com.github.panpf.sketch.compose.internal.AsyncImageDisplayTarget
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
@@ -400,7 +400,7 @@ class AsyncImagePainter internal constructor(
             }
             if (request.definedOptions.resizeScaleDecider == null) {
                 // If no other scale resolver is set, use the content scale.
-                resizeScale(AsyncImageScaleDecider(FixedScaleDecider(contentScale.toScale())))
+                resizeScale(AsyncImageScaleDecider(ScaleDecider(contentScale.toScale())))
             }
         }
     }
