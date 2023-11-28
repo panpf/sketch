@@ -1,5 +1,11 @@
 # 更新日志
 
+# new
+
+#### sketch-compose:
+
+* change: AsyncImage 和 SubcomposeAsyncImage 的 `noClipContent` 参数改为 `clipToBounds:Boolean = true`
+
 # v3.3.0-beta01
 
 #### sketch:

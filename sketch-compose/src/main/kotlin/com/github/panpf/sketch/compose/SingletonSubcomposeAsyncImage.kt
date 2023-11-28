@@ -56,7 +56,7 @@ fun SubcomposeAsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) {
     val sketch = LocalContext.current.sketch
     SubcomposeAsyncImage(
@@ -75,7 +75,7 @@ fun SubcomposeAsyncImage(
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
-        noClipContent = noClipContent,
+        clipToBounds = clipToBounds,
     )
 }
 
@@ -174,7 +174,7 @@ fun SubcomposeAsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) {
     val sketch = LocalContext.current.sketch
     SubcomposeAsyncImage(
@@ -193,7 +193,7 @@ fun SubcomposeAsyncImage(
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
-        noClipContent = noClipContent,
+        clipToBounds = clipToBounds,
     )
 }
 

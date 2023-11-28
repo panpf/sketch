@@ -1,5 +1,11 @@
 # Change Log
 
+# new
+
+#### sketch-compose:
+
+* change: The `noClipContent` parameter of AsyncImage and SubcomposeAsyncImage is changed to `clipToBounds:Boolean = true`
+
 # v3.3.0-beta01
 
 #### sketch:

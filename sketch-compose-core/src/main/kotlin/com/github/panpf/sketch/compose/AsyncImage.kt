@@ -82,7 +82,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) {
     val request = DisplayRequest(LocalContext.current, imageUri)
     AsyncImage(
@@ -97,7 +97,7 @@ fun AsyncImage(
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
-        noClipContent = noClipContent,
+        clipToBounds = clipToBounds,
     )
 }
 
@@ -137,7 +137,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) {
     val request = DisplayRequest(LocalContext.current, imageUri)
     AsyncImage(
@@ -152,7 +152,7 @@ fun AsyncImage(
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
-        noClipContent = noClipContent,
+        clipToBounds = clipToBounds,
     )
 }
 
@@ -199,7 +199,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) = AsyncImage(
     request = request,
     contentDescription = contentDescription,
@@ -212,7 +212,7 @@ fun AsyncImage(
     alpha = alpha,
     colorFilter = colorFilter,
     filterQuality = filterQuality,
-    noClipContent = noClipContent,
+    clipToBounds = clipToBounds,
 )
 
 /**
@@ -250,7 +250,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) {
     // Create and execute the image request.
     val newRequest = updateRequest(request, contentScale)
@@ -272,7 +272,7 @@ fun AsyncImage(
         contentScale = contentScale,
         alpha = alpha,
         colorFilter = colorFilter,
-        noClipContent = noClipContent,
+        clipToBounds = clipToBounds,
     )
 }
 
@@ -286,11 +286,11 @@ internal fun Content(
     contentScale: ContentScale,
     alpha: Float,
     colorFilter: ColorFilter?,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) = Layout(
     modifier = modifier
         .contentDescription(contentDescription)
-        .let { if (!noClipContent) it.clipToBounds() else it }
+        .let { if (clipToBounds) it.clipToBounds() else it }
         .then(
             ContentPainterModifier(
                 painter = painter,

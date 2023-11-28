@@ -58,7 +58,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) {
     val sketch = LocalContext.current.sketch
     AsyncImage(
@@ -77,7 +77,7 @@ fun AsyncImage(
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
-        noClipContent = noClipContent,
+        clipToBounds = clipToBounds,
     )
 }
 
@@ -116,7 +116,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) {
     val sketch = LocalContext.current.sketch
     AsyncImage(
@@ -131,7 +131,7 @@ fun AsyncImage(
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
-        noClipContent = noClipContent,
+        clipToBounds = clipToBounds,
     )
 }
 
@@ -177,7 +177,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) {
     val sketch = LocalContext.current.sketch
     AsyncImage(
@@ -196,7 +196,7 @@ fun AsyncImage(
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
-        noClipContent = noClipContent,
+        clipToBounds = clipToBounds,
     )
 }
 
@@ -234,7 +234,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    noClipContent: Boolean = false,
+    clipToBounds: Boolean = true,
 ) {
     val sketch = LocalContext.current.sketch
     AsyncImage(
@@ -249,6 +249,6 @@ fun AsyncImage(
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
-        noClipContent = noClipContent,
+        clipToBounds = clipToBounds,
     )
 }
