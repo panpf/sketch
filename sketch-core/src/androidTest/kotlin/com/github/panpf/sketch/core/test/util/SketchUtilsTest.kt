@@ -21,11 +21,13 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
+import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.core.test.ImageViewExtensionsTest
 import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
@@ -37,6 +39,10 @@ import com.github.panpf.sketch.test.utils.InternalDrawableWrapperImpl
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.util.findLeafSketchDrawable
 import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
+import com.github.panpf.tools4a.test.ktx.getActivitySync
+import com.github.panpf.tools4a.test.ktx.launchActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -298,5 +304,35 @@ class SketchUtilsTest {
                 Assert.assertEquals(listOf<String>(), this)
             }
         }
+    }
+
+    @Test
+    fun testGetRequest() {
+        val activity = ImageViewExtensionsTest.TestActivity::class.launchActivity().getActivitySync()
+        val imageView = ImageView(activity)
+        runBlocking(Dispatchers.Main) {
+            activity.setContentView(imageView, LayoutParams(500, 500))
+        }
+        Thread.sleep(100)
+
+        Assert.assertNull(SketchUtils.getRequest(imageView))
+        imageView.displayAssetImage("sample.jpeg")
+        Thread.sleep(100)
+        Assert.assertNotNull(SketchUtils.getRequest(imageView))
+    }
+
+    @Test
+    fun testGetSketch() {
+        val activity = ImageViewExtensionsTest.TestActivity::class.launchActivity().getActivitySync()
+        val imageView = ImageView(activity)
+        runBlocking(Dispatchers.Main) {
+            activity.setContentView(imageView, LayoutParams(500, 500))
+        }
+        Thread.sleep(100)
+
+        Assert.assertNull(SketchUtils.getSketch(imageView))
+        imageView.displayAssetImage("sample.jpeg")
+        Thread.sleep(100)
+        Assert.assertNotNull(SketchUtils.getSketch(imageView))
     }
 }

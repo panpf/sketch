@@ -56,14 +56,12 @@ class SketchUtils private constructor() {
         /**
          * Get the [DisplayRequest] of the most recently executed image request that's attached to this view.
          */
-        // todo test
         fun getRequest(view: View): DisplayRequest? =
             requestManagerOrNull(view)?.getRequest()?.let { it as DisplayRequest }
 
         /**
          * Get the [Sketch] of the most recently executed image request that's attached to this view.
          */
-        // todo test
         fun getSketch(view: View): Sketch? = requestManagerOrNull(view)?.getSketch()
     }
 }
