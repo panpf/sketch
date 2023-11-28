@@ -2,13 +2,13 @@
 
 Translations: [简体中文](log_zh.md)
 
-[Sketch] 的日志由 [Logger] 组件提供服务，默认使用 android.util.Log 输出，Tag 统一为 `Sketch`
+[Sketch] logs are provided by the [Logger] component. By default, android.util.Log is used for output, and the Tag is unified to `Sketch`
 
-### 修改 Level
+### Modify Level
 
-和 android.util.Log 一样，[Logger] 也支持 Level，默认为 `INFO`
+Like android.util.Log, [Logger] also supports Level, the default is `INFO`
 
-你可以在初始化 [Sketch] 时修改，如下：
+You can modify it when initializing [Sketch], as follows:
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -21,17 +21,17 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-也可以在App 的设置中提供选项随时修改，如下：
+You can also provide options in the App settings to modify them at any time, as follows:
 
 ```kotlin
-context.sktehc.logger.level = Logger.Level.DEBUG
+context.sketch.logger.level = Logger.Level.DEBUG
 ```
 
-> 注意：过多的 Log 日志会影响 UI 流畅度，正式发布版本请将 level 设置为 INFO 及以上级别
+> Note: Excessive Log logs will affect UI fluency. Please set the level to INFO and above for the official release version.
 
-### 修改输出
+### Modify output
 
-[Logger] 默认输出到 android.util.Log，你可以实现 [Logger].Proxy 接口自定义新的输出，然后在初始化 [Sketch] 时修改，如下：
+[Logger] outputs to android.util.Log by default. You can implement the [Logger].Proxy interface to customize new output, and then modify it when initializing [Sketch], as follows:
 
 ```kotlin
 class MyProxy : Logger.Proxy {

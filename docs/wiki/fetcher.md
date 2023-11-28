@@ -2,27 +2,27 @@
 
 Translations: [简体中文](fetcher_zh.md)
 
-[Fetcher] 用于从 uri 获取数据，返回 [FetchResult]，交由 [BitmapDecoder] 或 [DrawableDecoder] 使用。
+[Fetcher] is used to get data from uri, return [FetchResult], and hand it over to [BitmapDecoder] or [DrawableDecoder] for use.
 
-Sketch 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下几种：
+Sketch has a corresponding [Fetcher] implementation for each uri supported, and there are the following types:
 
-* [AssetUriFetcher][AssetUriFetcher]：从 app 的 assets 目录加载图片
-* [Base64UriFetcher][Base64UriFetcher]：从 uri 本身加载 base 64 格式的图片
-* [ContentUriFetcher][ContentUriFetcher]：从 ContentResolver 加载图片
-* [FileUriFetcher][FileUriFetcher]：从本地文件加载图片
-* [HttpUriFetcher][HttpUriFetcher]：从 http uri 加载图片
-* [ResourceUriFetcher][ResourceUriFetcher]：从 Android Resource 中加载图片
-* [AppIconUriFetcher][AppIconUriFetcher]：从已安装 app 加载其图标，[点我了解如何使用](apk_app_icon.md#显示已安装-APP-的图标)
+* [AssetUriFetcher][AssetUriFetcher]: Load images from the app’s assets directory
+* [Base64UriFetcher][Base64UriFetcher]: Load an image in base 64 format from the uri itself
+* [ContentUriFetcher][ContentUriFetcher]: Load images from ContentResolver
+* [FileUriFetcher][FileUriFetcher]: Load images from local files
+* [HttpUriFetcher][HttpUriFetcher]: Load image from http uri
+* [ResourceUriFetcher][ResourceUriFetcher]: Load images from Android Resource
+* [AppIconUriFetcher][AppIconUriFetcher]: Load the icon from the installed app, [Learn more](apk_app_icon.md#displays-an-icon-for-the-installed-app)
 
-### 扩展新的 Fetcher
+### Extend Fetcher
 
-首先需要实现 [Fetcher] 接口定义你的 [Fetcher] 和它的 Factory，如下：
+First you need to implement the [Fetcher] interface to define your [Fetcher] and its Factory, as follows:
 
 ```kotlin
 class MyFetcher : Fetcher {
 
     override suspend fun fetch(): Result<FetchResult> {
-        // 在这里解析你的 uri，获取数据
+        // Parse your uri here and get the data
     }
 
     companion object {
@@ -32,7 +32,7 @@ class MyFetcher : Fetcher {
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): MyFetcher? {
-            return if (request.uriString.startWith(MY_SCHEME)) {
+            return if (request.uriString.startWith("$MY_SCHEME://")) {
                 MyFetcher()
             } else {
                 null
@@ -42,10 +42,10 @@ class MyFetcher : Fetcher {
 }
 ```
 
-然后通过 addFetcher 方法注册，如下：
+Then register through the addFetcher method, as follows: 
 
 ```kotlin
-/* 为所有 ImageRequest 注册 */
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -57,8 +57,8 @@ class MyApplication : Application(), SketchFactory {
     }
 }
 
-/* 为单个 ImageRequest 注册 */
-imageView.displayImage(context, "http://sample.com/sample.jpeg") {
+/* Register for a single ImageRequest */
+imageView.displayImage(context, "myUri://sample.jpeg") {
     components {
         addFetcher(MyFetcher.Factory())
     }

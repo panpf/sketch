@@ -2,9 +2,9 @@
 
 翻译：[English](image_options.md)
 
-[ImageOptions] 用来批量定义图片配置，支持 [ImageRequest] 全部图片相关属性
+[ImageOptions] 用来批量定义图片请求配置，支持 [ImageRequest] 全部图片相关属性
 
-目前可以在两个地方使用 [ImageOptions]：
+目前可以在三个地方使用 [ImageOptions]：
 
 * View
     * [SketchImageView].displayImageOptions

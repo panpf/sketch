@@ -2,32 +2,38 @@
 
 Translations: [简体中文](lifecycle_zh.md)
 
-Sketch 依赖 Lifecycle 监控页面的生命周期，用于以下功能：
+Sketch relies on Lifecycle to monitor the life cycle of the page for the following functions:
 
-1. [ViewTargetRequestDelegate] 在 onDestroy 时自动停止请求
-2. [GenericViewDisplayTarget] 在 在 onStart 和 onStop 时自动控制动图播放
-3. [SketchZoomImageView] 在 onStop 和 onStart 时自动释放或恢复碎片
+1. [ViewTargetRequestDelegate] automatically stops the request when onDestroy
+2. [GenericViewDisplayTarget] automatically controls animation playback during onStart and onStop
+3. [SketchZoomImageView] automatically releases or restores fragments during onStop and onStart
 
-### 默认值
+### Default Value
 
-如果在创建请求时没有设置 lifecycle Sketch 会按如下顺序获取 lifecycle:
+If lifecycle is not set when creating the request, Sketch will obtain lifecycle in the following
+order:
 
 view:
 
-1. 通过 view.findViewTreeLifecycleOwner() API 获取
-2. 通过 view.context 获取（如果 context 实现了 LifecycleOwner 接口，例如 Activity）
-3. 通过 ImageRequest.Builder.context 获取（如果 context 实现了 LifecycleOwner 接口，例如 Activity）
-4. 使用 GlobalLifecycle
+1. Obtained through view.findViewTreeLifecycleOwner() API
+2. Obtained through view.context (if context implements the LifecycleOwner interface, such as
+   Activity)
+3. Obtained through ImageRequest.Builder.context (if the context implements the LifecycleOwner
+   interface, such as Activity)
+4. Use GlobalLifecycle
 
 compose:
 
-1. 通过 LocalLifecycleOwner.current.lifecycle API 获取
-2. 通过 ImageRequest.Builder.context 获取（如果 context 实现了 LifecycleOwner 接口，例如 Activity）
-3. 使用 GlobalLifecycle
+1. Obtained through LocalLifecycleOwner.current.lifecycle API
+2. Obtained through ImageRequest.Builder.context (if the context implements the LifecycleOwner
+   interface, such as Activity)
+3. Use GlobalLifecycle
 
-### 配置
+### Configure
 
-如果上述默认值无法获取到 Lifecycle 或默认获取的 Lifecycle 不满足你的需求，[ImageRequest].Builder 还提供了 lifecycle() 方法用于设置 lifecycle，如下：
+If the above default value cannot obtain the Lifecycle or the default obtained Lifecycle does not
+meet your needs, [ImageRequest].Builder also provides the lifecycle() method for setting the
+lifecycle, as follows:
 
 ```kotlin
 val lifecycle = LifecycleRegistry(this)

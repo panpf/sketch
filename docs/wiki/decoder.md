@@ -7,20 +7,20 @@ decoder:
 
 * [BitmapDecoder]: Used to decode image files and convert them into Bitmap
     * [ApkIconBitmapDecoder][ApkIconBitmapDecoder]: Decode the Apk file
-      icon, [click here to learn how to use it](apk_app_icon.md#displays-an-icon-for-the-apk-file)
+      icon, [Learn More](apk_app_icon.md#displays-an-icon-for-the-apk-file)
     * [AppIconBitmapDecoder][AppIconBitmapDecoder]: Decode installed apps
-      icon, [click me to learn how to use](apk_app_icon.md#displays-an-icon-for-the-installed-app)
+      icon, [Learn More](apk_app_icon.md#displays-an-icon-for-the-installed-app)
     * [DefaultBitmapDecoder][DefaultBitmapDecoder]: The last Bitmap decoder with Android's
       built-in [BitmapFactory] Decode the image
     * [FFmpegVideoFrameBitmapDecoder][FFmpegVideoFrameBitmapDecoder]:
       Using [wseemann] /[FFmpegMediaMetadataRetriever-project] library
       for [FFmpegMediaMetadataRetriever] Class decode the frames of a video
-      file, [click here to learn how to use](video_frame.md)
+      file, [Learn More](video_frame.md)
     * [SvgBitmapDecoder][SvgBitmapDecoder]: Decode static svg using the [BigBadaboom]/[androidsvg]
-      library file, [click here to learn how to use](svg.md)
+      library file, [Learn More](svg.md)
     * [VideoFrameBitmapDecoder][VideoFrameBitmapDecoder]: Use Android's
       built-in [MediaMetadataRetriever] Class decode the frames of a video
-      file, [click here to learn how to use](video_frame.md)
+      file, [Learn More](video_frame.md)
     * [DrawableBitmapDecoder][DrawableBitmapDecoder]: Decode vector, shape, and other
       Android-supported xml drawable image
 * [DrawableDecoder]:  Used to decode image files and convert them to Drawable
@@ -28,16 +28,16 @@ decoder:
       BitmapDecoder to get the Bitmap It is then encapsulated as BitmapDrawable
     * [GifAnimatedDrawableDecoder][GifAnimatedDrawableDecoder]: Use Android's
       built-in [ImageDecoder] class to decode
-      gifs , [Click here to learn how to use](animated_image.md)
+      gifs , [Learn More](animated_image.md)
     * [GifDrawableDrawableDecoder][GifDrawableDrawableDecoder]: Use [koral--]/[android-gif-drawable]
       Library's [GifDrawable] class to decode
-      gifs, [click here to learn how to use it](animated_image.md)
+      gifs, [Learn More](animated_image.md)
     * [GifMovieDrawableDecoder][GifMovieDrawableDecoder]: Use Android's built-in [Movie] class to
-      decode gifs Picture, [Click here to learn how to use it](animated_image.md)
+      decode gifs Picture, [Learn More](animated_image.md)
     * [HeifAnimatedDrawableDecoder][HeifAnimatedDrawableDecoder]: Decode using Android's
-      built-in [ImageDecoder] class HEIF GIF, [Click here to learn how to use it](animated_image.md)
+      built-in [ImageDecoder] class HEIF GIF, [Learn More](animated_image.md)
     * [WebpAnimatedDrawableDecoder][WebpAnimatedDrawableDecoder]: Decode using Android's
-      built-in [ImageDecoder] class webp GIFs, [click here to learn how to use](animated_image.md)
+      built-in [ImageDecoder] class webp GIFs, [Learn More](animated_image.md)
 
 [BitmapDecoder] and [DrawableDecoder] each have a list of decoders, and when they need to be
 decoded, Sketch will iterate through them according to the type of [ImageRequest].
@@ -98,7 +98,7 @@ class MyApplication : Application(), SketchFactory {
 }
 
 /* Register for a single ImageRequest */
-imageView.displayImage("mypng://my.png") {
+imageView.displayImage("asset://sample.mypng") {
     components {
         addBitmapDecoder(MyBitmapDecoder.Factory())
     }

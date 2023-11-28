@@ -1,4 +1,4 @@
-# 加载图片获取 Bitmap
+# LoadRequest
 
 翻译：[English](load_request.md)
 

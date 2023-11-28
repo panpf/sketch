@@ -1,10 +1,11 @@
-# 显示图片类型角标
+# Show image type badge
 
 Translations: [简体中文](show_image_type_zh.md)
 
-`需要导入 sketch-extensions 模块`
+`Need to import sketch-extensions module`
 
-sketch-extensions 模块提供的 [SketchImageView] 支持在 View 右下角显示图片类型角标，如下：
+The [SketchImageView] provided by the sketch-extensions module supports displaying the image type
+subscript in the lower right corner of the View, as follows:
 
 ```kotlin
 sketchImageView.showMimeTypeLogoWithRes(
@@ -21,7 +22,7 @@ sketchImageView.showMimeTypeLogoWithRes(
 )
 ```
 
-> 图片类型角标功能由 [MimeTypeLogoAbility] 实现
+> The picture type logo function is implemented by [MimeTypeLogoAbility]
 
 [SketchImageView]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 

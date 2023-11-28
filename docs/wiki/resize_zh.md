@@ -2,7 +2,7 @@
 
 翻译：[English](resize.md)
 
-[Resize] 用来在解码时以及解码后调整图片的尺寸，解码时参与计算 inSampleSize，解码后如果尺寸依然不符合 [Resize] 要求就会再次调整
+[Resize] 用来调整图片的尺寸，解码时参与计算 inSampleSize，解码后如果尺寸依然不符合 [Resize] 要求就会再次调整
 
 [Resize] 由以下几个概念构成：
 
@@ -13,7 +13,7 @@
     * SAME_ASPECT_RATIO：最终 Bitmap 的宽高比和 [Resize] 的宽高比一致并且像素数一定少于 [Resize]，如果比例不一致会根据 [Scale]
       裁剪原图、优先使用 BitmapRegionDecoder 裁剪
     * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果尺寸不一致会根据 [Scale] 裁剪原图、优先使用 BitmapRegionDecoder 裁剪
-* [PrecisionDecider]：精度决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Precision]
+* [PrecisionDecider]：精度决策器。根据图片尺寸和 [Resize] 决定使用哪个 [Precision]
     * [FixedPrecisionDecider]：始终使用指定的 [Precision]
     * [LongImageClipPrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
 * [Scale]：缩放。[Precision] 为 EXACTLY 或 SAME_ASPECT_RATIO 时决定如何裁剪原图
@@ -21,7 +21,7 @@
     * CENTER_CROP：保留中间部分
     * END_CROP：保留尾部部分
     * FILL：全部保留，但会变形
-* [ScaleDecider]：缩放决策器。针对具体的图片尺寸和 [Resize] 尺寸决定使用哪个 [Scale]
+* [ScaleDecider]：缩放决策器。根据图片尺寸和 [Resize] 决定使用哪个 [Scale]
     * [FixedScaleDecider]：始终使用指定的 [Scale]
     * [LongImageScaleDecider]：指定两个 [Scale]，长图使用第一个，否则使用第二个
 

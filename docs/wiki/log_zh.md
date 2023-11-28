@@ -24,7 +24,7 @@ class MyApplication : Application(), SketchFactory {
 也可以在App 的设置中提供选项随时修改，如下：
 
 ```kotlin
-context.sktehc.logger.level = Logger.Level.DEBUG
+context.sketch.logger.level = Logger.Level.DEBUG
 ```
 
 > 注意：过多的 Log 日志会影响 UI 流畅度，正式发布版本请将 level 设置为 INFO 及以上级别

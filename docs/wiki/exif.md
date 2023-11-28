@@ -2,8 +2,9 @@
 
 Translations: [简体中文](exif_zh.md)
 
-Sketch 支持根据图片的 Exif 信息恢复图片的方向，此功能默认开启，你可以通过 [ImageRequest] 和 [ImageOptions] 提供的
-ignoreExifOrientation 属性禁用此功能，如下：
+Sketch supports restoring the orientation of images based on their Exif information. This feature is
+enabled by default. You can use [ImageRequest] and [ImageOptions] to provide The
+`ignoreExifOrientation` attribute disables this functionality, as follows:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {

@@ -2,16 +2,18 @@
 
 Translations: [简体中文](target_zh.md)
 
-[Target] 用来接收 [ImageRequest] 的结果 [ImageResult]，并将结果应用到目标上
+[Target] is used to receive the result [ImageResult] of [ImageRequest] and apply the result to the
+target
 
-从前面的 [入门][getting_started] 文档可以知道 [ImageRequest] 分为 [DisplayRequest]、[LoadRequest]、[DownloadRequest]
-三种，他们又都有不同的 [ImageResult] 实现，因此 [Target] 也有对应的三种实现：
+From the previous [Getting Started][getting_started] document, we can know that [ImageRequest] is
+divided into [DisplayRequest], [LoadRequest], [DownloadRequest] Three, they all have
+different [ImageResult] implementations, so [Target] also has three corresponding implementations:
 
-* [DisplayTarget]：接收 Drawable 类型的结果，[DisplayRequest] 专用
-* [LoadTarget]：接收 Bitmap 类型的结果，[LoadRequest] 专用
-* [DownloadTarget]：接收 [DownloadData] 类型的结果，[DownloadRequest] 专用
+* [DisplayTarget]: Receives results of Drawable type, dedicated to [DisplayRequest]
+* [LoadTarget]: Receives Bitmap type results, dedicated to [LoadRequest]
+* [DownloadTarget]: Receives results of type [DownloadData], dedicated to [DownloadRequest]
 
-下面演示创建自定义 [DisplayTarget]:
+The following demonstrates creating a custom [DisplayTarget]:
 
 ```kotlin
 DisplayRequest(context, "https://www.example.com/image.jpg") {
@@ -29,12 +31,13 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 }.enqueue(request)
 ```
 
-> LoadTarget 和 DownloadTarget 同 DisplayTarget 使用方式大同小异
+> LoadTarget and DownloadTarget are used in much the same way as DisplayTarget.
 
-[DisplayTarget] 通常用来将 Drawable 应用到 View，因此 Sketch 提供了 [ViewDisplayTarget] 和 [ImageViewDisplayTarget]
-来简化使用
+[DisplayTarget] is usually used to apply Drawable to View, so Sketch provides [ViewDisplayTarget]
+and [ImageViewDisplayTarget] to simplify use
 
-[DisplayRequest] 还提供了 target(ImageView) 方法来简化绑定到 ImageView，如下：
+[DisplayRequest] also provides the target(ImageView) method to simplify binding to ImageView, as
+follows:
 
 ```kotlin
 DisplayRequest(context, "https://www.example.com/image.jpg") {
@@ -44,7 +47,7 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 
 ### RemoteViews
 
-Sketch 提供了 [RemoteViewsDisplayTarget] 用来将图片显示到 [RemoteViews]，如下：
+Sketch provides [RemoteViewsDisplayTarget] to display images to [RemoteViews], as follows:
 
 ```kotlin
 val remoteViews =
@@ -72,9 +75,10 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 }.enqueue()
 ```
 
-1. 如上所示 [RemoteViewsDisplayTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的 setImageViewBitmap
-   方法设置 Bitmap
-2. 所以还需要你在 onUpdated 函数中刷新通知或 AppWidget 才能将 Bitmap 显示到屏幕上
+1. As shown above [RemoteViewsDisplayTarget] only converts the Drawable to Bitmap and calls the
+   setImageViewBitmap method of [RemoteViews] to set the Bitmap
+2. So you still need to refresh the notification or AppWidget in the onUpdated function to display
+   the Bitmap on the screen
 
 [getting_started]: getting_started.md
 

@@ -17,7 +17,7 @@ AsyncImage(
     modifier = Modifier.clip(CircleShape)
 )
 
-// config params
+// 配置参数
 AsyncImage(
     rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
         placeholder(R.drawable.placeholder)
@@ -79,14 +79,16 @@ AsyncImage，你可以使用 rememberAsyncImagePainter() 加载图像：
 ```kotlin
 val painter = rememberAsyncImagePainter(imageUri = "https://example.com/image.jpg")
 
-// config params
-val painter = rememberAsyncImagePainter(rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
-    placeholder(R.drawable.placeholder)
-    error(R.drawable.error)
-    transformations(BlurTransformation())
-    crossfade(true)
-    // There is a lot more...
-})
+// 配置参数
+val painter = rememberAsyncImagePainter(
+    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
+        placeholder(R.drawable.placeholder)
+        error(R.drawable.error)
+        transformations(BlurTransformation())
+        crossfade(true)
+        // There is a lot more...
+    }
+)
 ```
 
 rememberAsyncImagePainter 是一个较低级别的 API，可能无法在所有情况下都按预期运行。有关更多信息，请阅读该方法的文档。
@@ -106,12 +108,14 @@ DisplayRequest.Builder.resizeSize 为图像请求设置自定义大小。例如�
 在第一次合成期间将始终是最新的：
 
 ```kotlin
-val painter = rememberAsyncImagePainter(rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
-    resizeSize(100, 100)
-})
+val painter = rememberAsyncImagePainter(
+    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
+        resizeSize(100, 100)
+    }
+)
 
 if (painter.state is AsyncImagePainter.State.Success) {
-// 如果图像在内存缓存中，这将在第一次合成期间执行。
+    // 如果图像在内存缓存中，这将在第一次合成期间执行。
 }
 
 Image(
@@ -126,11 +130,11 @@ Image(
 
 ```kotlin
 AsyncImage(
-    imageUri = "https://example.com/image.jpg",
+    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
+        crossfade(true)
+    },
     contentDescription = null
-) {
-    crossfade(true)
-}
+)
 ```
 
 自定义过渡不适用于 AsyncImage、SubcomposeAsyncImage 或 rememberAsyncImagePainter()，因为它们需要 View

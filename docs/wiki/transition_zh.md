@@ -2,7 +2,7 @@
 
 翻译：[English](transition.md)
 
-[Transition] 用来配置图片显示时与旧图片的过渡方式，默认提供了 [CrossfadeTransition]：淡入淡出
+[Transition] 用来配置图片显示时与旧图片的过渡方式，默认提供了 [CrossfadeTransition] 支持淡入淡出的效果
 
 ### 配置
 

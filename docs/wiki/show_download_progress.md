@@ -1,10 +1,11 @@
-# 显示下载进度
+# Show download progress
 
 Translations: [简体中文](show_download_progress_zh.md)
 
-## 通过 Listener 实现
+## Implemented through Listener
 
-通过 DisplayRequest 提供的 listener 和 progressListener 得到状态和进度然后显示即可，如下：
+You can get the status and progress through the listener and progressListener provided by
+DisplayRequest and then display them, as follows:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -28,29 +29,29 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-> 注意：
-> 1. 所有方法都将在主线程回调
+> Note: All methods will be executed on the main thread
 
-## 通过 SketchImageView 实现
+## Implemented through SketchImageView
 
-`需要导入 sketch-extensions 模块`
+`Need to import sketch-extensions module`
 
-sketch-extensions 模块提供的 [SketchImageView] 支持多种样式显示下载进度，如下：
+[SketchImageView] provided by the sketch-extensions module supports multiple styles to display
+download progress, as follows:
 
 ```kotlin
-// 在 SketchImageView 最上层显示一层浅黑色半透明蒙层，蒙层随着进度的进行从上到下消失
+// A light black translucent mask layer is displayed on the top layer of SketchImageView. The mask layer disappears from top to bottom as the progress progresses.
 sketchImageView.showMaskProgressIndicator()
 
-// 在 SketchImageView 最上层显示一个扇形的进度条
+// Display a fan-shaped progress on the top layer of SketchImageView条
 sketchImageView.showSectorProgressIndicator()
 
-// 在 SketchImageView 最上层显示一个环形的进度条
+// Display a circular progress bar at the top of SketchImageView
 sketchImageView.showRingProgressIndicator()
 ```
 
-> 注意：
-> 1. 以上三种任选其一即可
-> 2. 下载进度功能由 [ProgressIndicatorAbility] 实现
+> Notice:
+> 1. You can choose any one of the above three
+> 2. Download progress function is implemented by [ProgressIndicatorAbility]
 
 
 [SketchImageView]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt

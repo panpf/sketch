@@ -2,7 +2,8 @@
 
 翻译：[English](zoom.md)
 
-* 此组件不再更新，请使用 https://github.com/panpf/zoomimage 库的 SketchZoomImageView 组件代替 *
+> [!CAUTION]
+> 此组件不再更新，请使用 https://github.com/panpf/zoomimage 库的 SketchZoomImageView 组件代替
 
 `需要导入 sketch-zoom 模块`
 
@@ -14,7 +15,7 @@ Sketch 的 [SketchZoomImageView] 提供了手势缩放以及超大图采样功�
 * 双击缩放比例：[PhotoView] 的双击缩放比例是固定的，而 [SketchZoomImageView] 是根据图片的尺寸、View 的宽高以及 ScaleType 动态计算的，体验更好
 * 边界阻尼：手动缩放超过了最小或最大比例时 [PhotoView] 直接就拉不动了，而 [SketchZoomImageView] 会有种拉橡皮筋的感觉，体验更好
 * 边界判定：[SketchZoomImageView] 优化了 scrollEdge 的判断，修复了在不能整除的缩放比例下，无法识别边缘的 BUG
-* 滑动条：[SketchZoomImageView] 增加了滑动条，可以方便的看到当前滑动的位置
+* 滚动条：[SketchZoomImageView] 增加了滚动条，可以方便的看到当前滚动的位置
 * 定位：[SketchZoomImageView] 增加了定位功能，可以指定图片上的一个点，然后以动画的方式移动到这个点
 * 阅读模式：[SketchZoomImageView] 增加了阅读模式，对于长图的阅读体验更好
 
@@ -73,15 +74,15 @@ sketchZoomImageView.location(100f, 200f, true)
 
 > 注意：通过 location 方法设置的位置只是临时性的并不会一直保持，其它任何位移行为和更新行为都会覆盖此位置
 
-### 滑动条
+### 滚动条
 
-滑动条可以让你在查看长图时清楚的知道当前的位置，[SketchZoomImageView] 默认开启滑动条功能，你也可以关闭它，如下：
+滚动条可以让你在查看长图时清楚的知道当前的位置，[SketchZoomImageView] 默认开启滚动条功能，你也可以关闭它，如下：
 
 ```kotlin
 sketchZoomImageView.scrollBarEnabled = false
 ```
 
-> 滑动时显示，无操作 800 毫秒后自动隐藏
+> 滚动时显示，无操作 800 毫秒后自动隐藏
 
 ### 阅读模式
 

@@ -1,19 +1,26 @@
-# 提高长图在网格列表中的清晰度
+# Improve the clarity of long images in grid lists
 
 Translations: [简体中文](long_image_grid_thumbnails_zh.md)
 
-例如在 GirdLayoutManager 中 ImageView 宽高为 400x400，图片宽高为 30000x960，Sketch 自动计算出 [Resize] 为 400x400 且
-[Precision] 默认为 LESS_PIXELS，这时根据 [Resize] 计算得出的 inSampleSize 为 16，而解码得到的缩略图尺寸为
-1875x60，这张缩略图是极其模糊，无法辨别任何内容
+For example, in GirdLayoutManager, the width and height of ImageView is 400x400, and the width and
+height of the image are 30000x960. Sketch automatically calculates that [Resize] is 400x400 and
+[Precision] defaults to LESS_PIXELS. In this case, the inSampleSize calculated according to [Resize]
+is 16, and the decoded thumbnail size is 1875x60, this thumbnail is extremely blurry and no content
+can be discerned
 
-针对这种情况可以用 [LongImageClipPrecisionDecider] 动态计算 [Precision]，[LongImageClipPrecisionDecider] 在遇到长图时会返回
-SAME_ASPECT_RATIO 或 EXACTLY（创建时指定），否则返回 LESS_PIXELS，这样既确保了长图有一个清晰的缩略图，又保证了非长图的快速加载
+For this situation, you can use [LongImageClipPrecisionDecider] to dynamically
+calculate [Precision]. [LongImageClipPrecisionDecider] will return when encountering a long image.
+SAME_ASPECT_RATIO or EXACTLY (specified when creating), otherwise LESS_PIXELS is returned. This not
+only ensures that long images have a clear thumbnail, but also ensures fast loading of non-long
+images.
 
-> 注意：
-> 1. 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageClipPrecisionDecider] 时使用自定义的规则
-> 2. SAME_ASPECT_RATIO 和 EXACTLY 会使用 BitmapRegionDecoder 对原图进行裁剪，因此可以得到一张较清晰的缩略图
+> Notice:
+> 1. The default implementation of long image rules is [DefaultLongImageDecider], you can also
+     create [LongImageClipPrecisionDecider] Use custom rules when
+> 2. SAME_ASPECT_RATIO and EXACTLY will use BitmapRegionDecoder to crop the original image, so you
+     can get a clearer thumbnail.
 
-### 使用
+### Use
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {

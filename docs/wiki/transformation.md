@@ -2,22 +2,28 @@
 
 Translations: [简体中文](transformation_zh.md)
 
-通过 [Transformation] 可以对解码得到的 Bitmap 进行转换，Sketch 内置了以下几种 [Transformation]
+The decoded Bitmap can be converted through [Transformation]. Sketch has the following
+built-in [Transformation]
 
-* [CircleCropTransformation]：将图片裁剪成圆形的
-* [RotateTransformation]：将图片旋转指定角度
-* [RoundedCornersTransformation]：将图片裁剪成圆角矩形的
-* [MaskTransformation]：将图片盖上一层颜色遮罩，常用于将图片作为窗口或模块的背景时将图片变暗
-* [BlurTransformation]：将图片进行模糊处理
+* [CircleCropTransformation]: Crop the image into a circle
+* [RotateTransformation]: Rotate the image by a specified angle
+* [RoundedCornersTransformation]: Crop the image into a rounded rectangle
+* [MaskTransformation]: Cover the image with a color mask, often used to darken the image when using
+  it as the background of a window or module.
+* [BlurTransformation]: Blur the image
 
-> 注意：
-> 1. [Transformation] 不支持动图，动图请使用 animatedTransformation() 函数
-> 2. 在使用 RoundedCornersTransformation 时请搭配 'resizePrecision(Precision.EXACTLY)' 使用，因为如果原图尺寸和
-     resize 尺寸不一致时，最终圆角在显示时会被缩放，导致圆角大小和期待的不一致
+> Notice:
+> 1. [Transformation] does not support animated graphics. Please use the animatedTransformation()
+     function for animated image.
+> 2. When using RoundedCornersTransformation, please use it with 'resizePrecision(
+     Precision.EXACTLY)', because if the original image size is the same as
+     When the resize size is inconsistent, the final fillet will be scaled during display, resulting
+     in the fillet size being inconsistent with expectations.
 
-### 配置
+### Configure
 
-[ImageRequest] 和 [ImageOptions] 都提供了 transformations 方法用于配置 [Transformation]
+Both [ImageRequest] and [ImageOptions] provide transformations methods for
+configuring [Transformation]
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -25,18 +31,19 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-### 自定义
+### Customize
 
-自定义 [Transformation] 时需要注意 key 属性的实现
+When customizing [Transformation], you need to pay attention to the implementation of the key
+attribute
 
-因为 key 属性用于在构建 [Transformation] 列表时去除重复的 [Transformation]，所以要保证 key
-属性的唯一性和确定性：
+Because the key attribute is used to remove duplicate [Transformation] when building
+the [Transformation] list, the uniqueness and certainty of the key attribute must be ensured:
 
-* 同一个 [Transformation] 输入相同的参数输出相同的 key
-* 同一个 [Transformation] 输入不同的参数输出不同的 key
+* The same [Transformation] inputs the same parameters and outputs the same key
+* The same [Transformation] inputs different parameters and outputs different keys.
 
-> 注意：自定义的 Transformation 不要对 transform 方法的 input Bitmap 执行 recycle() 或将其放到
-> BitmapPool 中，这会造成不可预知的错误
+> Note: For custom Transformation, do not perform recycle() on the input Bitmap of the transform
+> method or put it into a BitmapPool. This will cause unpredictable errors.
 
 [Transformation]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transform/Transformation.kt
 

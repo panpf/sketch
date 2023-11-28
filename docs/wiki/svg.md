@@ -2,14 +2,14 @@
 
 Translations: [简体中文](svg_zh.md)
 
-Sketch 支持解码 SVG 静态图片，由 [SvgBitmapDecoder] 提供支持
+Sketch supports decoding SVG static images, powered by [SvgBitmapDecoder]
 
-### 注册
+### Registered
 
-先导入 `sketch-svg` 模块，然后注册 [SvgBitmapDecoder]，如下：
+First import the `sketch-svg` module, and then register [SvgBitmapDecoder], as follows:
 
 ```kotlin
-/* 为所有 ImageRequest 注册 */
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -21,7 +21,7 @@ class MyApplication : Application(), SketchFactory {
     }
 }
 
-/* 为单个 ImageRequest 注册 */
+/* Register for a single ImageRequest */
 imageView.displayImage("https://www.example.com/image.svg") {
     components {
         addBitmapDecoder(SvgBitmapDecoder.Factory())
@@ -29,9 +29,9 @@ imageView.displayImage("https://www.example.com/image.svg") {
 }
 ```
 
-### 配置
+### Configure
 
-[DisplayRequest] 和 [LoadRequest] 支持一些 svg 相关的配置，如下：
+[DisplayRequest] and [LoadRequest] support some svg-related configurations, as follows:
 
 ```kotlin
 imageView.displayImage("https://www.example.com/image.svg") {

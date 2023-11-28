@@ -55,7 +55,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 可选. 开启点击 ImageView 忽略节省蜂窝流量并重新显示图片功能
 
-此功能需要使用 [SketchImageView]
+> 此功能需要使用 [SketchImageView]
 
 ```kotlin
 sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)

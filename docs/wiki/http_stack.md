@@ -2,12 +2,12 @@
 
 Translations: [简体中文](http_stack_zh.md)
 
-[HttpStack] 用来发起 HTTP 网络请求并获取响应然后交由 [HttpUriFetcher]
-下载图片，默认的实现是 [HurlStack]
+[HttpStack] is used to initiate HTTP network requests and obtain responses and then hand them over
+to [HttpUriFetcher] to download images. The default implementation is [HurlStack]
 
 ### HurlStack
 
-[HurlStack] 采用 HttpURLConnection 实现，支持以下配置：
+[HurlStack] is implemented using HttpURLConnection and supports the following configurations:
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -15,22 +15,22 @@ class MyApplication : Application(), SketchFactory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             httpStack(HurlStack.Builder().apply {
-                // 连接超时。默认 7000
+                // Connection timed out. Default 7000
                 connectTimeout(Int)
 
-                // 读取超时。默认 7000
+                // Read timeout. Default 7000
                 readTimeout(Int)
 
-                // User-Agent。默认 null
+                // User-Agent. Default null
                 userAgent(String)
 
-                // 添加一些不可重复的 header。默认 null
+                // Add non-repeatable headers. Default null
                 extraHeaders(Map<String, String>)
 
-                // 添加一些可重复的 header。默认 null
+                // Add repeatable headers. Default null
                 addExtraHeaders(Map<String, String>)
 
-                // HttpURLConnection 在 执行 connect 之前交由此方法处理一下。默认 null
+                // HttpURLConnection is handled by this method before executing connect. Default null
                 processRequest { url: String, connection: HttpURLConnection ->
 
                 }
@@ -42,8 +42,9 @@ class MyApplication : Application(), SketchFactory {
 
 ### OkHttpStack
 
-Sketch 还提供了 [HttpStack] 的 [OkHttpStack] 实现，使用之前需要先导入 `sketch-okhttp` 模块，然后在初始化
-Sketch 时通过 httpStack() 方法注册即可，如下：
+Sketch also provides [OkHttpStack] implementation of [HttpStack]. Before using it, you need to
+import the `sketch-okhttp` module and then initialize it.
+You can register through the `httpStack()` method when using Sketch, as follows:
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -51,25 +52,25 @@ class MyApplication : Application(), SketchFactory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             httpStack(OkHttpStack.Builder().apply {
-                // 连接超时。默认 7000
+                // Connection timed out. Default 7000
                 connectTimeout(Int)
 
-                // 读取超时。默认 7000
+                // Read timeout. Default 7000
                 readTimeout(Int)
 
-                // User-Agent。默认 null
+                // User-Agent. Default null
                 userAgent(String)
 
-                // 添加一些不可重复的 header。默认 null
+                // Add non-repeatable headers. Default null
                 extraHeaders(Map<String, String>)
 
-                // 添加一些可重复的 header。默认 null
+                // Add repeatable headers. Default null
                 addExtraHeaders(Map<String, String>)
 
-                // 拦截器。默认 null
+                // Interceptor. Default null
                 interceptors(Interceptor)
 
-                // 网络拦截器。默认 null
+                // Network blocker. Default null
                 networkInterceptors(Interceptor)
             }.build())
         }.build()
@@ -77,12 +78,13 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-> 注意：由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app
-> 最低版本较高，那么你可以使用较新版本的 OkHttp 自定一个 HttpStack
+> Note: Because it needs to be compatible with Android 4.1, the older 3.12.0 version of OkHttp is
+> used. If your app has a higher minimum version, you can use a newer version of OkHttp to customize
+> an HttpStack.
 
-### Android 4.* TLS 1.1, 1.2 支持
+### Android 4.* TLS 1.1, 1.2 supported
 
-Android 4.1 到 4.4 版本支持 TLS 1.1 和 1.2 但是默认没有开启，HurlStack 和 OkHttpStack 开启方式如下：
+Android versions 4.1 to 4.4 support TLS 1.1 and 1.2 but are not enabled by default. HurlStack and OkHttpStack are enabled as follows:
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -95,7 +97,7 @@ class MyApplication : Application(), SketchFactory {
                 }
             }.build())
 
-            // 或
+            // or
             httpStack(HurlStack.Builder().apply {
                 if (VERSION.SDK_INT <= 19) {
                     enabledTlsProtocols("TLSv1.1", "TLSv1.2")
@@ -106,9 +108,9 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-### 自定义：
+### Customize
 
-实现 [HttpStack] 接口定义自己的 HttpStack，然后在初始化 Sketch 时通过 httpStack() 方法注册即可：
+Implement the [HttpStack] interface to define your own HttpStack, and then register it through the `httpStack()` method when initializing Sketch:
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {

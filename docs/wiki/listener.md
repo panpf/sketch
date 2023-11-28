@@ -2,7 +2,8 @@
 
 Translations: [简体中文](listener_zh.md)
 
-[ImageRequest] 通过 [Listener] 和 [ProgressListener] 可以监听开始、完成、错误、取消、进度，如下：
+[ImageRequest] You can monitor start, completion, error, cancellation, and progress
+through [Listener] and [ProgressListener], as follows:
 
 ```kotlin
 DisplayRequest(context, "https://www.sample.com/image.jpg") {
@@ -26,7 +27,7 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
 }
 ```
 
-还支持 kotlin 函数方式监听状态：
+It also supports kotlin function monitoring status:
 
 ```kotlin
 DisplayRequest(context, "https://www.sample.com/image.jpg") {
@@ -47,7 +48,7 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
 }
 ```
 
-监听下载进度：
+Monitor download progress:
 
 ```kotlin
 DisplayRequest(context, "https://www.sample.com/image.jpg") {
@@ -57,9 +58,11 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
 }
 ```
 
-> 注意：
-> 1. 所有方法都将在主线程回调
-> 2. [LoadRequest] 和 [DownloadRequest] 同 [DisplayRequest] 用法一模一样，只是回调方法的 Request 和 Result 的类型不一样，这是因为他们需要的结果不一样
+> Notice:
+> 1. All methods will be execute on the main thread
+> 2. [LoadRequest] and [DownloadRequest] are used exactly the same as [DisplayRequest], except that
+     the types of Request and Result in the callback method are different. This is because they
+     require different results.
 
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt

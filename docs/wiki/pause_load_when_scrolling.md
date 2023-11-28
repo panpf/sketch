@@ -1,16 +1,16 @@
-# 列表滑动中暂停加载图片
+# Pause loading of images when list scrolling
 
 Translations: [简体中文](pause_load_when_scrolling_zh.md)
 
-列表滑动的过程中开启异步线程加载图片会降低 UI 流畅度，因此在性能较差的设备上列表滑动中暂停加载图片能显著提高 UI 流畅度
+Enabling asynchronous thread loading of images during list scrolling will reduce UI fluency.
+Therefore, pausing image loading during list scrolling can significantly improve performance on
+devices with poor performance UI fluency
 
+### Configure
 
+`Need to import sketch-extensions module`
 
-### 配置
-
-`需要导入 sketch-extensions 模块`
-
-首先在你的列表控件上添加滑动监听，如下：
+First add a scroll listener to your list control, as follows:
 
 ```kotlin
 // RecyclerView
@@ -33,15 +33,15 @@ fun ListContent() {
     }
 
     LazyColumn(state = lazyListState) {
-        // 绘制你的 item
+        // Draw your item
     }
 }
 ```
 
-然后注册 [PauseLoadWhenScrollingDrawableDecodeInterceptor] 请求拦截器，如下：
+Then register the [PauseLoadWhenScrollingDrawableDecodeInterceptor] request interceptor as follows:
 
 ```kotlin
-/* 为所有 ImageRequest 注册 */
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -53,7 +53,7 @@ class MyApplication : Application(), SketchFactory {
     }
 }
 
-/* 为单个 ImageRequest 注册 */
+/* Register for a single ImageRequest */
 imageView.displayImage("https://www.sample.com/image.jpg") {
     components {
         addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())
@@ -61,9 +61,9 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-> 注意：[PauseLoadWhenScrollingDrawableDecodeInterceptor] 仅对 [DisplayRequest] 有效
+> Note: [PauseLoadWhenScrollingDrawableDecodeInterceptor] is only valid for [DisplayRequest]
 
-最后针对单个请求开启列表滑动中暂停加载功能，如下：
+Finally, enable the pause loading function during list scrolling for a single request, as follows:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {

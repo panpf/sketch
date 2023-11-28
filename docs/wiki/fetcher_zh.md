@@ -13,7 +13,7 @@ Sketch 对支持的每一种 uri 都有对应的 [Fetcher] 实现，共有如下
 * [HttpUriFetcher][HttpUriFetcher]：从 http uri 加载图片
 * [ResourceUriFetcher][ResourceUriFetcher]：从 Android Resource 中加载图片
 * [AppIconUriFetcher][AppIconUriFetcher]：从已安装 app
-  加载其图标，[点我了解如何使用](apk_app_icon.md#显示已安装-APP-的图标)
+  加载其图标，[了解更多](apk_app_icon_zh.md#显示已安装-APP-的图标)
 
 ### 扩展新的 Fetcher
 
@@ -33,7 +33,7 @@ class MyFetcher : Fetcher {
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): MyFetcher? {
-            return if (request.uriString.startWith(MY_SCHEME)) {
+          return if (request.uriString.startWith("$MY_SCHEME://")) {
                 MyFetcher()
             } else {
                 null
@@ -59,7 +59,7 @@ class MyApplication : Application(), SketchFactory {
 }
 
 /* 为单个 ImageRequest 注册 */
-imageView.displayImage(context, "http://sample.com/sample.jpeg") {
+imageView.displayImage(context, "myUri://sample.jpeg") {
     components {
         addFetcher(MyFetcher.Factory())
     }

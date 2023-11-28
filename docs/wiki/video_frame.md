@@ -2,34 +2,38 @@
 
 Translations: [简体中文](video_frame_zh.md)
 
-Sketch 支持解码视频帧，由以下 Decoder 提供支持：
+Sketch supports decoding video frames, powered by the following Decoder:
 
-* [VideoFrameBitmapDecoder]：使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
-    * 需要先导入 `sketch-video` 模块
-    * 建议 Android 8.1 及以上版本使用，因为 8.0 及以下版本不支持读取帧的缩略图，在解码 4k 等较大的视频时将消耗大量的内存
-* [FFmpegVideoFrameBitmapDecoder]：使用 [wseemann]
-  /[FFmpegMediaMetadataRetriever-project] 库的 [FFmpegMediaMetadataRetriever] 类解码视频文件的帧
-    * 需要先导入 `sketch-video-ffmpeg` 模块
-    * 库体积大概 23MB
+* [VideoFrameBitmapDecoder]: Use Android's built-in MediaMetadataRetriever class to decode video
+  frames
+    * You need to import the `sketch-video` module first
+    * It is recommended to use Android 8.1 and above, because versions 8.0 and below do not support
+      reading frame thumbnails, which will consume a lot of memory when decoding larger videos such
+      as 4k.
+* [FFmpegVideoFrameBitmapDecoder]：Use [wseemann]
+  /[FFmpegMediaMetadataRetriever-project] Library's [FFmpegMediaMetadataRetriever] class decodes
+  frames of video files
+    * You need to import the `sketch-video-ffmpeg` module first
+    * Library size is approximately 23MB
 
-### 注册
+### Registered
 
-根据情况选择合适的 Decoder，然后注册它，如下：
+Select the appropriate Decoder according to the situation, and then register it as follows:
 
 ```kotlin
-/* 为所有 ImageRequest 注册 */
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
-          components {
-            addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
-          }
+            components {
+                addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
+            }
         }.build()
     }
 }
 
-/* 为单个 ImageRequest 注册 */
+/* Register for a single ImageRequest */
 imageView.displayImage("file:///sdcard/sample.mp4") {
     components {
         addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
@@ -37,22 +41,22 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 }
 ```
 
-### 配置
+### Configure
 
-[DisplayRequest] 和 [LoadRequest] 支持一些视频帧相关的配置，如下：
+[DisplayRequest] and [LoadRequest] support some video frame-related configurations, as follows:
 
 ```kotlin
 imageView.displayImage("file:///sdcard/sample.mp4") {
-    // 提取 1000000 微秒处的帧
+    // Extract the frame at 1000000 microseconds
     videoFrameMicros(1000000)
 
-    // 或 提取 10000 毫秒处的帧
+    // or extract the frame at 10000 ms
     videoFrameMillis(10000)
 
-    // 或 获取提取中间的帧
+    // or get the frame in the middle of the extraction
     videoFramePercentDuration(0.5f)
 
-    // 设置指定时间处无法提取帧时的处理策略
+    // Set the processing strategy when frames cannot be extracted at the specified time
     videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
 }
 ```

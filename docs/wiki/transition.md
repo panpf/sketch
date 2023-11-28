@@ -2,48 +2,54 @@
 
 Translations: [简体中文](transition_zh.md)
 
-[Transition] 用来配置图片显示时与旧图片的过渡方式，默认提供了 [CrossfadeTransition]：淡入淡出
+[Transition] is used to configure the transition method between the old picture and the picture when
+it is displayed. [CrossfadeTransition] is provided by default to support the fade-in and fade-out
+effect.
 
-### 配置
+### Configure
 
-[ImageRequest] 和 [ImageOptions] 都提供了 crossfade() 方法和 transition() 方法用于配置 [Transition]
-，如下：
+Both [ImageRequest] and [ImageOptions] provide the crossfade() method and transition() method for
+configuring [Transition]
+,as follows:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
     crossfade()
-    // 或
+    // or
     transitionFactory(CrossfadeTransition.Factory())
 }
 ```
 
-### 自定义
+### Customize
 
-请参考 [CrossfadeTransition] 的实现
+Please refer to the implementation of [CrossfadeTransition]
 
-### 实现完美过渡
+### Make the perfect transition
 
-[CrossfadeTransition] 使用 [CrossfadeDrawable] 来实现过渡，[CrossfadeDrawable] 以 placeholder 图片和
-result
-图片的最大宽高作为新 Drawable 的宽高，然后对 placeholder 图片和 result 图片进行缩放
+[CrossfadeTransition] uses [CrossfadeDrawable] to implement transition, [CrossfadeDrawable] takes
+placeholder image and The maximum width and height of the result image are used as the width and
+height of the new Drawable, and then the placeholder image and result image are scaled.
 
-#### 问题
+#### Problem
 
-如果 result 图片和 placeholder 图片的尺寸不一致，例如 result 比 placeholder 大，placeholder
-图片在过渡时就会被改变尺寸，在页面上的显示效果就是在过渡的开始时 placeholder
-图片会快速的放大，如果宽高比不一致还会变形，虽然这个过程很快，但还是容易看出来的
+If the size of the result image and the placeholder image are inconsistent, for example, the result
+is larger than the placeholder, the placeholder image will be resized during the transition. The
+display effect on the page is that the placeholder image will be quickly enlarged at the beginning
+of the transition. If the aspect ratio Inconsistencies will lead to deformation. Although this
+process is quick, it is still easy to see.
 
-#### 解决方案
+#### Solution
 
-解决这个问题的最好办法就是让 placeholder 图片和 result 图片的尺寸始终保持一致，借助 [ImageRequest]
-和 [ImageOptions] 的
-resizeApplyToDrawable 属性就可以轻松实现这个效果
+The best way to solve this problem is to keep the size of the placeholder image and the result image
+consistent. This effect can be easily achieved with the help of the resizeApplyToDrawable attribute
+of [ImageRequest] and [ImageOptions]
 
-resizeApplyToDrawable 属性会用 ResizeDrawable 将 placeholder 、error、result drawable 包一层，用 Resize
-作为新的尺寸，内部再用 Resize 的 scale 属性对 drawable
-进行缩放。[查看更多 resizeApplyToDrawable 介绍][resize]
+The resizeApplyToDrawable attribute uses ResizeDrawable to wrap the placeholder, error, and result
+drawables in a layer, uses Resize as the new size, and internally uses the scale attribute of Resize
+to scale the drawable. [View more resizeApplyToDrawable introduction][resize]
 
-因此通常建议 [CrossfadeTransition] 和 resizeApplyToDrawable 搭配使用，如下：
+Therefore, it is usually recommended to use [CrossfadeTransition] and resizeApplyToDrawable
+together, as follows:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -53,7 +59,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-> Android 自带的 TransitionDrawable 也是以 start 和 end 图片的最大尺寸作为新 Drawable 的尺寸，也有一样的问题
+> The TransitionDrawable that comes with Android also uses the maximum size of the start and end
+> images as the size of the new Drawable, which also has the same problem.
 
 [Transition]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transition/Transition.kt
 

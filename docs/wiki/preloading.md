@@ -1,8 +1,8 @@
-# 预加载图片到内存
+# Preload images into memory
 
 Translations: [简体中文](preloading_zh.md)
 
-要想将图片预加载到内存中只需要不设置 target 即可，如下：
+To preload images into memory, you only need to not set target, as follows:
 
 ```kotlin
 DisplayImage(context, "https://www.sample.com/image.jpg") {
@@ -10,4 +10,5 @@ DisplayImage(context, "https://www.sample.com/image.jpg") {
 }.enqueue()
 ```
 
-为了确保在后面使用时准确的命中缓存，需要预加载时的配置和使用时一模一样，特别是 resizeSize
+In order to ensure that the cache is accurately hit when used later, the configuration during
+preloading needs to be exactly the same as when used, especially resizeSize

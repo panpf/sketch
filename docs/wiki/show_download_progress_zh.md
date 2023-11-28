@@ -28,8 +28,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-> 注意：
-> 1. 所有方法都将在主线程回调
+> 注意：所有方法都将在主线程执行
 
 ## 通过 SketchImageView 实现
 

@@ -4,42 +4,38 @@
 
 #### sketch:
 
-* fix: Fixed a bug where other images may be displayed unexpectedly when uri is empty
-* remove: SketchImageView and SketchZoomImageView remove submitRequest method
-* remove: Remove the `sketch_src` xml attribute of SketchImageView
-* change: With the help of View.findViewTreeLifecycleOwner() and LocalLifecycleOwner.current API,
-  the latest Lifecycle can now be automatically obtained, and there is no need to actively set the
-  Lifecycle.
-* change: No longer intercept requests with 'Transfer-Encoding' is 'chunked'
-* change: The `enqueue()` and `execute()` methods of DisplayRequest, LoadRequest, and
-  DownloadRequest are now extended functions, requiring the import of dependencies
-* improve: Built-in exceptions no longer print stack information
-* improve: Now after onStart check uri is empty
-* new: Precision adds SMALLER_SIZE enum value
-* new: ImageRequest and ImageOptions add 'uriEmpty()' method for more convenient configuration of
-  uri empty state image
-* new: Split out the `sketch-core` module to provide basic functionality
-* new: SketchSingleton adds the setSketch() method, which is used to set up a singleton instance of
-  Sketch
+* fix: 修复 uri 为空时可能会意外显示其他图片的问题
+* remove: SketchImageView 和 SketchZoomImageView 删除 submitRequest() 方法
+* remove: 删除 SketchImageView 的 `sketch_src` xml 属性
+* change: 借助 View.findViewTreeLifecycleOwner() 和 LocalLifecycleOwner.current API，现在可以自动获取最近的
+  Lifecycle，无需主动设置生命周期。
+* change: 不再拦截 "Transfer-Encoding" 为 "chunked" 的下载请求
+* change: DisplayRequest、LoadRequest 和 DownloadRequest 的 `enqueue()` 和 `execute()`
+  方法现在是扩展函数，需要导入依赖
+* improve: 内置异常不再打印堆栈信息
+* improve: 现在 onStart 之后检查 uri 是否为空
+* new: Precision 添加 `SMALLER_SIZE` 枚举值
+* new: ImageRequest 和 ImageOptions 添加 `uriEmpty()` 方法，以便更方便地配置 uri 空状态图像
+* new: 拆分出 `sketch-core` 模块以提供基本功能
+* new: SketchSingleton 增加了 `setSketch()` 方法，用于设置 Sketch 的单例实例
 
 #### sketch-zoom:
 
-* deprecated：The SketchZoomImageView component is deprecated. Please use the SketchZoomImageView
-  component of the https://github.com/panpf/zoomimage library instead.
+* deprecated：`sketch-zoom` 模块以及其 `SketchZoomImageView`
+  组件已弃用。请改用 https://github.com/panpf/zoomimage 库的 `SketchZoomImageView` 组件。
 
 #### sketch-extensions
 
-* change: ApkIconBitmapDecoder and AppIconUriFetcher's IMAGE_MIME_TYPE changed from 'image/appicon'
-  to 'image/png'
-* new: Split out the `sketch-extensions-core` module to provide basic functionality
+* change: ApkIconBitmapDecoder 和 AppIconUriFetcher 的 IMAGE_MIME_TYPE 从 'image/appicon' 更改为 '
+  image/png'
+* new: 拆分出 `sketch-extensions-core` 模块以提供基本功能
 
 #### sketch-compose:
 
-* improve: Synchronize coil-compose-base updates as of 2023/11/21
-* new: AsyncImage and SubcomposeAsyncImage add noClipContent parameter
-* new: AsyncImage, SubcomposeAsyncImage, AsyncImagePainter added a sketch version that supports
-  configuration
-* new: Split out the `sketch-compose-core` module to provide basic functionality
+* improve: 同步截至 2023 年 11 月 21 日的 coil-compose-base 更新
+* new: AsyncImage 和 SubcomposeAsyncImage 添加 `noClipContent` 参数
+* new: AsyncImage、SubcomposeAsyncImage、AsyncImagePainter 添加了支持配置 sketch 参数的版本
+* new: 拆分出 `sketch-compose-core` 模块以提供基本功能
 
 #### other:
 

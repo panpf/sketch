@@ -58,7 +58,7 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
 ```
 
 > 注意：
-> 1. 所有方法都将在主线程回调
+> 1. 所有方法都将在主线程执行
 > 2. [LoadRequest] 和 [DownloadRequest] 同 [DisplayRequest] 用法一模一样，只是回调方法的 Request 和 Result 的类型不一样，这是因为他们需要的结果不一样
 
 

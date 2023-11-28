@@ -1,17 +1,19 @@
-# 节省蜂窝流量
+# Save cellular data
 
 Translations: [简体中文](save_cellular_traffic_zh.md)
 
-节省蜂窝流量功能可以在检测到当前是蜂窝流量时将 [ImageRequest] 的 depth 参数设置为 [Depth].LOCAL，这样就不会再从网络下载图片
+The cellular traffic saving function can set the depth parameter of [ImageRequest] to [Depth].LOCAL
+when detecting that current cellular traffic is present, so that images will no longer be downloaded
+from the network.
 
-### 配置
+### Configure
 
-`需要导入 sketch-extensions 模块`
+`Need to import sketch-extensions module`
 
-首先注册 [SaveCellularTrafficDisplayInterceptor] 请求拦截器，如下：
+First register the [SaveCellularTrafficDisplayInterceptor] request interceptor, as follows:
 
 ```kotlin
-/* 为所有 ImageRequest 注册 */
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -23,7 +25,7 @@ class MyApplication : Application(), SketchFactory {
     }
 }
 
-/* 为单个 ImageRequest 注册 */
+/* Register for a single ImageRequest */
 imageView.displayImage("https://www.sample.com/image.jpg") {
     components {
         addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
@@ -31,9 +33,9 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-> 注意：[SaveCellularTrafficDisplayInterceptor] 仅对 [DisplayRequest] 有效
+> Note: [SaveCellularTrafficDisplayInterceptor] is only valid for [DisplayRequest]
 
-然后针对单个请求开启节省蜂窝流量功能，如下：
+Then enable the cellular data saving function for a single request, as follows:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -41,7 +43,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-最后配置节省蜂窝流量功能专用的错误状态图片，如下：
+Finally, configure the error status picture dedicated to the cellular traffic saving function, as
+follows:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -53,9 +56,9 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-可选. 开启点击 ImageView 忽略节省蜂窝流量并重新显示图片功能
+Optional. Enable clicking ImageView to ignore cellular data and redisplay the image
 
-此功能需要使用 [SketchImageView]
+> This feature requires the use of [SketchImageView]
 
 ```kotlin
 sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)

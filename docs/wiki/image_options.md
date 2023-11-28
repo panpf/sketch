@@ -2,9 +2,10 @@
 
 Translations: [简体中文](image_options_zh.md)
 
-[ImageOptions] 用来批量定义图片配置，支持 [ImageRequest] 全部图片相关属性
+[ImageOptions] is used to define image request configurations in batches and supports all
+image-related attributes of [ImageRequest].
 
-目前可以在两个地方使用 [ImageOptions]：
+[ImageOptions] can currently be used in three places:
 
 * View
     * [SketchImageView].displayImageOptions
@@ -12,10 +13,10 @@ Translations: [简体中文](image_options_zh.md)
 * [ImageRequest].Builder.merge()/default()
 * [Sketch].globalImageOptions
 
-最终在构建 [ImageRequest] 时将以 [ImageRequest].Builder > View > [ImageRequest]
-.Builder.defaultOptions > [Sketch].globalImageOptions 的顺序构建
+Ultimately when building [ImageRequest] it will end up as [ImageRequest].Builder >
+View > [ImageRequest] Sequential build of .Builder.defaultOptions > [Sketch].globalImageOptions
 
-### 示例
+### Example
 
 Global：
 
@@ -24,11 +25,11 @@ class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
-          globalImageOptions(ImageOptions {
-            placeholer(R.drawable.placeholder)
-            error(R.drawable.error)
-            // more ...
-          })
+            globalImageOptions(ImageOptions {
+                placeholer(R.drawable.placeholder)
+                error(R.drawable.error)
+                // more ...
+            })
         }.build()
     }
 }
@@ -42,7 +43,7 @@ sketchImageView.displayImageOptions = ImageOptions {
     // more ...
 }
 
-// 在现有 ImageOptions 基础上更新
+// Update based on existing ImageOptions
 sketchImageView.updateDisplayImageOptions {
     error(R.drawable.error)
 }

@@ -1,8 +1,8 @@
-# 加载图片获取 Bitmap
+# LoadRequest
 
 Translations: [简体中文](load_request_zh.md)
 
-使用 [LoadRequest] 可以加载图片获得 Bitmap，如下：
+Use [LoadRequest] to load an image and obtain a Bitmap, as follows:
 
 ```kotlin
 LoadRequest(context, "https://www.sample.com/image.jpg") {
@@ -19,7 +19,8 @@ LoadRequest(context, "https://www.sample.com/image.jpg") {
 }.enqueue()
 ```
 
-当你需要同步获取加载结果时你可以使用 execute 方法，如下：
+When you need to obtain the loading results synchronously, you can use the execute method, as
+follows:
 
 ```kotlin
 coroutineScope.launch(Dispatchers.Main) {
@@ -34,6 +35,8 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-> 注意：LoadRequest 不会从内存缓存中获取 Bitmap，也不会将得到的 Bitmap 放入内存缓存中，因为 LoadRequest 返回的 Bitmap 完全交给用户使用，不受 Sketch 控制
+> Note: LoadRequest will not obtain the Bitmap from the memory cache, nor will it put the obtained
+> Bitmap into the memory cache, because the Bitmap returned by LoadRequest is completely handed over
+> to the user and is not controlled by Sketch.
 
 [LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt

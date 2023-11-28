@@ -2,21 +2,22 @@
 
 Translations: [简体中文](request_interceptor_zh.md)
 
-Sketch 通过 [RequestInterceptor] 来拦截 [ImageRequest] 的执行过程，你可以借此改变执行过程的输入和输出
+Sketch intercepts the execution process of [ImageRequest] through [RequestInterceptor], and you can
+use this to change the input and output of the execution process.
 
-首先实现 [RequestInterceptor] 接口定义你的 RequestInterceptor，如下：
+First implement the [RequestInterceptor] interface to define your RequestInterceptor, as follows:
 
 ```kotlin
 class MyRequestInterceptor : RequestInterceptor {
 
-    // 如果当前 RequestInterceptor 会修改返回的结果并且仅用于部分请求，那么请给一个不重复的 key 用于构建缓存 key，否则给 null 即可
+    // If the current RequestInterceptor will modify the returned results and is only used for some requests, then please give a unique key to build the cache key, otherwise give null
     override val key: String? = null
 
-    // 用于排序，值越大在列表中越靠后。取值范围是 0 ~ 100。通常是零。只有 EngineRequestInterceptor 可以是 100
+    // Used for sorting, the larger the value, the further back in the list. The value range is 0 ~ 100. Usually zero. Only EngineRequestInterceptor can be 100
     override val sortWeight: Int = 0
 
     override suspend fun intercept(chain: Chain): Result<ImageData> {
-        // 所有请求禁止使用内存缓存
+        // Disable memory caching for all requests
         val newRequest = chain.request.newRequest {
             memoryCachePolicy(CachePolicy.DISABLED)
         }
@@ -25,14 +26,16 @@ class MyRequestInterceptor : RequestInterceptor {
 }
 ```
 
-> 1. MyRequestInterceptor 演示了一个禁止所有请求使用内存缓存的案例
-> 2. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [ImageData] 即可
-> 3. 如果想不再执行请求只需不执行 proceed 方法即可
+> 1. MyRequestInterceptor demonstrates a case where all requests are prohibited from using the
+     memory cache
+> 2. If you want to modify the return result, just intercept the result returned by the proceed
+     method and return a new [ImageData]
+> 3. If you don’t want to execute the request anymore, just don’t execute the proceed method.
 
-然后注册你的 RequestInterceptor，如下：
+Then register your RequestInterceptor as follows:
 
 ```kotlin
-/* 为所有 ImageRequest 注册 */
+/* Register for all ImageRequests */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -44,7 +47,7 @@ class MyApplication : Application(), SketchFactory {
     }
 }
 
-/* 为单个 ImageRequest 注册 */
+/* Register for a single ImageRequest */
 imageView.displayImage("https://www.sample.com/image.jpg") {
     components {
         addRequestInterceptor(MyRequestInterceptor())
