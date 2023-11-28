@@ -28,6 +28,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.util.Size
 import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.pow
@@ -64,8 +65,13 @@ internal fun getPointerIndex(action: Int): Int {
     return action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT
 }
 
-internal fun Float.format(newScale: Int): Float =
-    BigDecimal(toDouble()).setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
+internal fun Float.format(newScale: Int): Float {
+    return if (this.isNaN()) {
+        this
+    } else {
+        BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
+    }
+}
 
 private val MATRIX_VALUES = FloatArray(9)
 

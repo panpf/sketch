@@ -192,8 +192,13 @@ internal fun getProcessNameSuffix(context: Context, processName: String? = null)
     }
 }
 
-internal fun Float.format(newScale: Int): Float =
-    BigDecimal(toDouble()).setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
+internal fun Float.format(newScale: Int): Float {
+    return if (this.isNaN()) {
+        this
+    } else {
+        BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
+    }
+}
 
 /**
  * Returns the formatted file length that can be displayed, up to EB

@@ -17,12 +17,19 @@ package com.github.panpf.sketch.util
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.pm.PackageInfo
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import java.math.BigDecimal
+import java.math.RoundingMode
 
-internal fun Float.format(newScale: Int): Float =
-    BigDecimal(toDouble()).setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
+internal fun Float.format(newScale: Int): Float {
+    return if (this.isNaN()) {
+        this
+    } else {
+        BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
+    }
+}
 
 internal fun Context?.findLifecycle(): Lifecycle? {
     var context: Context? = this
@@ -34,3 +41,11 @@ internal fun Context?.findLifecycle(): Lifecycle? {
         }
     }
 }
+
+@Suppress("DEPRECATION")
+internal val PackageInfo.versionCodeCompat: Int
+    get() = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+        longVersionCode.toInt()
+    } else {
+        versionCode
+    }

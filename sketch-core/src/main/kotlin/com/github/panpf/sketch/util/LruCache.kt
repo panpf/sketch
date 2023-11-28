@@ -222,7 +222,7 @@ open class LruCache<K, V>(maxSize: Int) {
      * thread calls [.put] while another is creating a value for the same
      * key.
      */
-    protected fun create(key: K): V? {
+    protected fun create(@Suppress("UNUSED_PARAMETER") key: K): V? {
         return null
     }
 

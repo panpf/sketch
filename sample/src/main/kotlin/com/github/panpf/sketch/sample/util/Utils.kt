@@ -18,9 +18,15 @@ package com.github.panpf.sketch.sample.util
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.util.Size
 import java.math.BigDecimal
+import java.math.RoundingMode
 
-internal fun Float.format(newScale: Int): Float =
-    BigDecimal(toDouble()).setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
+internal fun Float.format(newScale: Int): Float {
+    return if (this.isNaN()) {
+        this
+    } else {
+        BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
+    }
+}
 
 fun <T> safeRun(block: () -> T): T? {
     return try {

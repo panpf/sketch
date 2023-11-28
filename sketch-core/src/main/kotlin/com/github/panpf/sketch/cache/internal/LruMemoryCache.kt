@@ -43,11 +43,16 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
                 return if (bitmapSize == 0) 1 else bitmapSize
             }
 
-            override fun entryRemoved(evicted: Boolean, key: String, old: Value, new: Value?) {
+            override fun entryRemoved(
+                evicted: Boolean,
+                key: String,
+                oldValue: Value,
+                newValue: Value?
+            ) {
                 logger?.d(MODULE) {
-                    "removed. ${old.countBitmap}. ${size.formatFileSize()}"
+                    "removed. ${oldValue.countBitmap}. ${size.formatFileSize()}"
                 }
-                old.countBitmap.setIsCached(false, MODULE)
+                oldValue.countBitmap.setIsCached(false, MODULE)
             }
         }
     private val getCount = AtomicInteger()

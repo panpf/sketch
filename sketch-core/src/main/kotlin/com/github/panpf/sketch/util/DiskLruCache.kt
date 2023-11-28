@@ -711,9 +711,7 @@ class DiskLruCache private constructor(
         @Throws(IOException::class)
         fun readLine(): String {
             synchronized(`in`) {
-                if (buf == null) {
-                    throw IOException("LineReader is closed")
-                }
+                val buf = buf ?: throw IOException("LineReader is closed")
 
                 // Read more data if we are at the end of the buffered data.
                 // Though it's an error to read after an exception, we will let {@code fillBuf()}
@@ -723,9 +721,9 @@ class DiskLruCache private constructor(
                 }
                 // Try to find LF in the buffered data and return the line if successful.
                 for (i in pos until end) {
-                    if (buf!![i] == LF) {
-                        val lineEnd = if (i != pos && buf!![i - 1] == CR) i - 1 else i
-                        val res = String(buf!!, pos, lineEnd - pos, charset(charset.name()))
+                    if (buf[i] == LF) {
+                        val lineEnd = if (i != pos && buf[i - 1] == CR) i - 1 else i
+                        val res = String(buf, pos, lineEnd - pos, charset(charset.name()))
                         pos = i + 1
                         return res
                     }
@@ -749,7 +747,7 @@ class DiskLruCache private constructor(
                     fillBuf()
                     // Try to find LF in the buffered data and return the line if successful.
                     for (i in pos until end) {
-                        if (buf!![i] == LF) {
+                        if (buf[i] == LF) {
                             if (i != pos) {
                                 out.write(buf, pos, i - pos)
                             }

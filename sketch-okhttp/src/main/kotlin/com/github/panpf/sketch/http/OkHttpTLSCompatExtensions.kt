@@ -23,6 +23,7 @@ import okhttp3.TlsVersion
 fun OkHttpClient.Builder.setEnabledTlsProtocols(enabledTlsProtocols: Array<String>): OkHttpClient.Builder {
     if (enabledTlsProtocols.isNotEmpty()) {
         try {
+            @Suppress("DEPRECATION")
             sslSocketFactory(TlsCompatSocketFactory(enabledTlsProtocols))
 
             val connectionSpec = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)

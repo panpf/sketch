@@ -30,6 +30,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.util.DrawableFetcher
 import com.github.panpf.sketch.util.ifOrNull
+import com.github.panpf.sketch.util.versionCodeCompat
 
 /**
  * Adds App icon support
@@ -115,8 +116,9 @@ class AppIconUriFetcher(
             } catch (e: PackageManager.NameNotFoundException) {
                 throw Exception("Not found PackageInfo by '$packageName'", e)
             }
-            if (packageInfo.versionCode != versionCode) {
-                throw Exception("App versionCode mismatch, ${packageInfo.versionCode} != $versionCode")
+            val appVersionCode = packageInfo.versionCodeCompat
+            if (appVersionCode != versionCode) {
+                throw Exception("App versionCode mismatch, $appVersionCode != $versionCode")
             }
             return packageInfo.applicationInfo.loadIcon(packageManager)
                 ?: throw Exception("loadIcon return null '$packageName'")

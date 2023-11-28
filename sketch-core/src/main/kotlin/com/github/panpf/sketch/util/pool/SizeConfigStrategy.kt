@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.github.panpf.sketch.util.pool
 
 import android.graphics.Bitmap

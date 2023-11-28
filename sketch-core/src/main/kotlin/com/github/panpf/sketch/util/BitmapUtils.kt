@@ -31,6 +31,7 @@ internal val Bitmap.allocationByteCountCompat: Int
         else -> this.byteCount
     }
 
+@Suppress("USELESS_ELVIS")
 internal val Bitmap.safeConfig: Bitmap.Config
     get() = config ?: Bitmap.Config.ARGB_8888
 
@@ -89,7 +90,7 @@ internal fun Bitmap.scaled(
 }
 
 internal fun fastGaussianBlur(inBitmap: Bitmap, radius: Int): Bitmap {
-    val outBitmap: Bitmap? = if (inBitmap.config != null && inBitmap.isMutable) {
+    val outBitmap: Bitmap? = if (inBitmap.isMutable) {
         inBitmap
     } else {
         inBitmap.copy(inBitmap.safeConfig, true)

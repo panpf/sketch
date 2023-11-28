@@ -37,6 +37,7 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.InputStream
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 var sketchCount = 0
 
@@ -98,5 +99,10 @@ internal inline fun <R> Any.asOrThrow(): R {
     return this as R
 }
 
-internal fun Float.format(newScale: Int): Float =
-    BigDecimal(toDouble()).setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
+internal fun Float.format(newScale: Int): Float {
+    return if (this.isNaN()) {
+        this
+    } else {
+        BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
+    }
+}
