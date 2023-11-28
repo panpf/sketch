@@ -112,7 +112,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 #### Jetpack Compose
 
-`需要导入 sketch-compose 模块`
+> [!IMPORTANT]
+> 必须导入 `sketch-compose` 模块
 
 ```kotlin
 AsyncImage(

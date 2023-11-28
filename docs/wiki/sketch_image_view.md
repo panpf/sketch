@@ -2,7 +2,8 @@
 
 Translations: [简体中文](sketch_image_view_zh.md)
 
-`Need to import sketch-extensions module`
+> [!IMPORTANT]
+> Required import `sketch-extensions` module
 
 ### XML attributes
 

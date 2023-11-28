@@ -2,7 +2,8 @@
 
 翻译：[English](sketch_image_view.md)
 
-`需要导入 sketch-extensions 模块`
+> [!IMPORTANT]
+> 必须导入 `sketch-extensions` 模块
 
 ### XML 属性
 

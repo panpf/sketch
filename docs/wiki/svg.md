@@ -2,11 +2,14 @@
 
 Translations: [简体中文](svg_zh.md)
 
+> [!IMPORTANT]
+> Required import `sketch-svg` module
+
 Sketch supports decoding SVG static images, powered by [SvgBitmapDecoder]
 
 ### Registered
 
-First import the `sketch-svg` module, and then register [SvgBitmapDecoder], as follows:
+Register [SvgBitmapDecoder], as follows:
 
 ```kotlin
 /* Register for all ImageRequests */

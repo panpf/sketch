@@ -2,7 +2,8 @@
 
 Translations: [简体中文](show_image_type_zh.md)
 
-`Need to import sketch-extensions module`
+> [!IMPORTANT]
+> Required import `sketch-extensions` module
 
 The [SketchImageView] provided by the sketch-extensions module supports displaying the image type
 subscript in the lower right corner of the View, as follows:

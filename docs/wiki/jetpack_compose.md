@@ -2,7 +2,8 @@
 
 Translations: [简体中文](jetpack_compose_zh.md)
 
-`Need to import sketch-compose module`
+> [!IMPORTANT]
+> Required import `sketch-compose` module
 
 ### AsyncImage
 

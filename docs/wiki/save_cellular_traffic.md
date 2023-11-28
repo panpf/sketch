@@ -2,13 +2,14 @@
 
 Translations: [简体中文](save_cellular_traffic_zh.md)
 
+> [!IMPORTANT]
+> Required import `sketch-extensions` module
+
 The cellular traffic saving function can set the depth parameter of [ImageRequest] to [Depth].LOCAL
 when detecting that current cellular traffic is present, so that images will no longer be downloaded
 from the network.
 
 ### Configure
-
-`Need to import sketch-extensions module`
 
 First register the [SaveCellularTrafficDisplayInterceptor] request interceptor, as follows:
 

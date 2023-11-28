@@ -2,11 +2,14 @@
 
 翻译：[English](svg.md)
 
+> [!IMPORTANT]
+> 必须导入 `sketch-svg` 模块
+
 Sketch 支持解码 SVG 静态图片，由 [SvgBitmapDecoder] 提供支持
 
 ### 注册
 
-先导入 `sketch-svg` 模块，然后注册 [SvgBitmapDecoder]，如下：
+注册 [SvgBitmapDecoder]，如下：
 
 ```kotlin
 /* 为所有 ImageRequest 注册 */

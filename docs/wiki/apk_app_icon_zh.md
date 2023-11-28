@@ -2,7 +2,8 @@
 
 翻译：[English](apk_app_icon.md)
 
-`需要导入 sketch-extensions 模块`
+> [!IMPORTANT]
+> 必须导入 `sketch-extensions` 模块
 
 ### 显示 APK 文件的图标
 

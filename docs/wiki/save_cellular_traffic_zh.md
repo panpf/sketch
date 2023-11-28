@@ -2,11 +2,12 @@
 
 翻译：[English](save_cellular_traffic.md)
 
+> [!IMPORTANT]
+> 必须导入 `sketch-extensions` 模块
+
 节省蜂窝流量功能可以在检测到当前是蜂窝流量时将 [ImageRequest] 的 depth 参数设置为 [Depth].LOCAL，这样就不会再从网络下载图片
 
 ### 配置
-
-`需要导入 sketch-extensions 模块`
 
 首先注册 [SaveCellularTrafficDisplayInterceptor] 请求拦截器，如下：
 

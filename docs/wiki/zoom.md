@@ -6,7 +6,8 @@ Translations: [简体中文](zoom_zh.md)
 > This component is no longer updated, please use the SketchZoomImageView component of
 > the https://github.com/panpf/zoomimage library instead
 
-`Need to import sketch-zoom module`
+> [!IMPORTANT]
+> Required import `sketch-zoom` module
 
 Sketch's [SketchZoomImageView] provides gesture zooming and super large image sampling functions.
 Gesture zoom function reference [PhotoView] implementation

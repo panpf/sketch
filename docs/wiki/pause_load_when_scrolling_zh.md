@@ -2,12 +2,13 @@
 
 翻译：[English](pause_load_when_scrolling.md)
 
+> [!IMPORTANT]
+> 必须导入 `sketch-extensions` 模块
+
 列表滚动的过程中开启异步线程加载图片会降低 UI 流畅度，因此在性能较差的设备上列表滚动中暂停加载图片能显著提高
 UI 流畅度
 
 ### 配置
-
-`需要导入 sketch-extensions 模块`
 
 首先在你的列表控件上添加滚动监听，如下：
 

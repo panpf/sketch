@@ -32,7 +32,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 ## 通过 SketchImageView 实现
 
-`需要导入 sketch-extensions 模块`
+> [!IMPORTANT]
+> 必须导入 `sketch-extensions` 模块
 
 sketch-extensions 模块提供的 [SketchImageView] 支持多种样式显示下载进度，如下：
 

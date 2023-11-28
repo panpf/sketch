@@ -33,7 +33,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 ## Implemented through SketchImageView
 
-`Need to import sketch-extensions module`
+> [!IMPORTANT]
+> Required import `sketch-extensions` module
 
 [SketchImageView] provided by the sketch-extensions module supports multiple styles to display
 download progress, as follows:

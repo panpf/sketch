@@ -116,7 +116,8 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 #### Jetpack Compose
 
-`Need import sketch-compose module`
+> [!IMPORTANT]
+> Required import `sketch-compose` module
 
 ```kotlin
 AsyncImage(

@@ -2,7 +2,8 @@
 
 翻译：[English](jetpack_compose.md)
 
-`需要导入 sketch-compose 模块`
+> [!IMPORTANT]
+> 必须导入 `sketch-compose` 模块
 
 ### AsyncImage
 
