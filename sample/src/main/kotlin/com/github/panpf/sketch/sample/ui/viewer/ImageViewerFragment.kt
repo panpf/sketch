@@ -38,9 +38,11 @@ import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
@@ -87,8 +89,9 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             displayImage(binding, prefsService.showOriginImage.stateFlow.value)
         }
 
-        eventService.viewerPagerShareEvent.listen(viewLifecycleOwner) {
-            if (isResumed) {
+        // todo 移到 Pager
+        eventService.viewerPagerShareEvent
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                 lifecycleScope.launch {
                     val imageUri = if (prefsService.showOriginImage.value) {
                         args.originImageUri
@@ -98,22 +101,22 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
                     handleActionResult(viewModel.share(imageUri))
                 }
             }
-        }
-        eventService.viewerPagerSaveEvent.listen(viewLifecycleOwner) {
-            if (isResumed) {
+        // todo 移到 Pager
+        eventService.viewerPagerSaveEvent
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                 requestPermissionResult.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
-        }
-        eventService.viewerPagerRotateEvent.listen(viewLifecycleOwner) {
-            if (isResumed) {
-                binding.imageViewerZoomImage.rotateBy(90)
+        eventService.viewerPagerRotateEvent
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val zoomable = binding.imageViewerZoomImage.zoomable
+                    zoomable.rotate(zoomable.transformState.value.rotation.roundToInt() + 90)
+                }
             }
-        }
-        eventService.viewerPagerInfoEvent.listen(viewLifecycleOwner) {
-            if (isResumed) {
+        eventService.viewerPagerInfoEvent
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                 startImageInfoDialog(binding.imageViewerZoomImage)
             }
-        }
     }
 
     private fun displayImage(binding: ImageViewerFragmentBinding, showOriginImage: Boolean) {

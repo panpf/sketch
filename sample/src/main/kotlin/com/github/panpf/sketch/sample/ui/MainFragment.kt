@@ -84,14 +84,6 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                         navDirections = NavMainDirections.actionLocalVideoListFragment(),
                         permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     ),
-                    Link(
-                        title = "Huge Image",
-                        navDirections = NavMainDirections.actionHugeImageHomeFragment()
-                    ),
-                    Link(
-                        title = "RemoteViews",
-                        navDirections = NavMainDirections.actionRemoteViewsFragment()
-                    ),
 
                     ListSeparator("Jetpack Compose"),
                     Link(

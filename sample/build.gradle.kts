@@ -85,7 +85,7 @@ dependencies {
     implementation(project(":sketch-svg"))
     implementation(project(":sketch-video"))
     implementation(project(":sketch-video-ffmpeg"))
-    implementation(project(":sketch-zoom"))
+//    implementation(project(":sketch-zoom"))
     implementation(project(":sketch-resources"))
 
     implementation(libs.kotlinx.serialization.json)
@@ -110,6 +110,12 @@ dependencies {
     implementation(libs.panpf.tools4k)
     implementation(libs.panpf.liveevent)
     implementation(libs.panpf.activitymonitor)
+    implementation(libs.panpf.zoomimage.compose.sketch) {
+        exclude(group = "io.github.panpf.sketch3")
+    }
+    implementation(libs.panpf.zoomimage.view.sketch) {
+        exclude(group = "io.github.panpf.sketch3")
+    }
     implementation(libs.bundles.retrofit2)
     implementation(libs.tinypinyin)
     implementation(libs.okhttp3.logging)

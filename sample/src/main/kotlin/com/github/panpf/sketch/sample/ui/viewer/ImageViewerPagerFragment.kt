@@ -49,7 +49,6 @@ import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding>() {
@@ -60,6 +59,7 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
         binding: ImageViewerPagerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
+        // todo save, share
         binding.imageViewerPagerPager.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -152,19 +152,27 @@ class ImageViewerPagerFragment : BindingFragment<ImageViewerPagerFragmentBinding
         }
 
         binding.imageViewerPagerShare.setOnClickListener {
-            eventService.viewerPagerShareEvent.value = 0
+            viewLifecycleOwner.lifecycleScope.launch {
+                eventService.viewerPagerShareEvent.emit(0)
+            }
         }
 
         binding.imageViewerPagerSave.setOnClickListener {
-            eventService.viewerPagerSaveEvent.value = 0
+            viewLifecycleOwner.lifecycleScope.launch {
+                eventService.viewerPagerSaveEvent.emit(0)
+            }
         }
 
         binding.imageViewerPagerRotate.setOnClickListener {
-            eventService.viewerPagerRotateEvent.value = 0
+            viewLifecycleOwner.lifecycleScope.launch {
+                eventService.viewerPagerRotateEvent.emit(0)
+            }
         }
 
         binding.imageViewerPagerInfo.setOnClickListener {
-            eventService.viewerPagerInfoEvent.value = 0
+            viewLifecycleOwner.lifecycleScope.launch {
+                eventService.viewerPagerInfoEvent.emit(0)
+            }
         }
 
         binding.imageViewerPagerOrigin.apply {

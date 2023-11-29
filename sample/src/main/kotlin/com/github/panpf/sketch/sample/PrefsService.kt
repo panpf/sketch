@@ -99,8 +99,8 @@ class PrefsService(val context: Context) {
     val readModeEnabled by lazy {
         BooleanMmkvData(mmkv, "readModeEnabled", true)
     }
-    val showTileBoundsInHugeImagePage by lazy {
-        BooleanMmkvData(mmkv, "showTileBoundsInHugeImagePage", false)
+    val showTileBounds by lazy {
+        BooleanMmkvData(mmkv, "showTileBounds", false)
     }
 
     val logLevel by lazy {

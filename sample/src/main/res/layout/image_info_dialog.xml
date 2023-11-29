@@ -187,49 +187,5 @@
                 android:textColor="@color/text_title"
                 tools:text="http://sample.com/sample.jpeg" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/imageInfoZoomTitle"
-                android:layout_width="76dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Zoom："
-                android:textColor="@color/text_subtitle"
-                android:textSize="11dp" />
-
-            <TextView
-                android:id="@+id/imageInfoZoomContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
-                tools:text="http://sample.com/sample.jpeg" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/imageInfoTilesTitle"
-                android:layout_width="76dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Tiles："
-                android:textColor="@color/text_subtitle"
-                android:textSize="11dp" />
-
-            <TextView
-                android:id="@+id/imageInfoTilesContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
-                tools:text="http://sample.com/sample.jpeg" />
-        </LinearLayout>
     </LinearLayout>
 </ScrollView>

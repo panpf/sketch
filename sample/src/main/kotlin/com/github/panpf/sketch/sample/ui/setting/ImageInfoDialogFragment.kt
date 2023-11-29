@@ -16,12 +16,9 @@
 package com.github.panpf.sketch.sample.ui.setting
 
 import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.Rect
-import android.graphics.RectF
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.graphics.toRect
 import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.navArgs
@@ -33,10 +30,8 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.ImageInfoDialogBinding
 import com.github.panpf.sketch.sample.ui.base.BindingDialogFragment
-import com.github.panpf.sketch.sample.util.format
 import com.github.panpf.sketch.util.calculateBitmapByteCount
 import com.github.panpf.sketch.util.findLeafSketchDrawable
-import com.github.panpf.sketch.zoom.SketchZoomImageView
 import com.github.panpf.tools4j.io.ktx.formatFileSize
 import com.github.panpf.tools4k.lang.asOrThrow
 
@@ -58,8 +53,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
         binding.imageInfoDrawableContent.text = args.drawableInfo
         binding.imageInfoDataFromContent.text = args.dataFromInfo
         binding.imageInfoTransformedContent.text = args.transformedInfo
-        binding.imageInfoZoomContent.text = args.zoomInfo
-        binding.imageInfoTilesContent.text = args.tilesInfo
 
         binding.imageInfoThrowableContent.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString != null
@@ -73,10 +66,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             args.throwableString == null
         binding.imageInfoTransformedContent.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString == null
-        binding.imageInfoZoomContent.parent.asOrThrow<ViewGroup>().isVisible =
-            args.throwableString == null && args.zoomInfo != null
-        binding.imageInfoTilesContent.parent.asOrThrow<ViewGroup>().isVisible =
-            args.throwableString == null && args.tilesInfo != null
     }
 
     companion object {
@@ -91,8 +80,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             var drawableInfo: String? = null
             var dataFromInfo: String? = null
             var transformedInfo: String? = null
-            var zoomInfo: String? = null
-            var tilesInfo: String? = null
             var throwableString: String? = null
             val displayResult = imageView.displayResult
             if (displayResult is DisplayResult.Success) {
@@ -142,46 +129,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                 throwableString = displayResult.throwable.toString()
             }
 
-            if (imageView is SketchZoomImageView) {
-                zoomInfo = buildList {
-                    add("view=${imageView.width}x${imageView.height}")
-                    add("draw=${RectF().apply { imageView.getDrawRect(this) }.toRect()}")
-                    add("visible=${Rect().apply { imageView.getVisibleRect(this) }}")
-                    add(
-                        "nowScale=${imageView.scale.format(2)}(${imageView.baseScale.format(2)},${
-                            imageView.supportScale.format(2)
-                        })"
-                    )
-                    add("minScale=${imageView.minScale.format(2)}")
-                    add("maxScale=${imageView.maxScale.format(2)}")
-                    val stepScales = imageView.stepScales
-                        ?.joinToString(prefix = "[", postfix = "]") { it.format(2).toString() }
-                    add("stepScales=${stepScales}")
-                    add("rotateDegrees=${imageView.rotateDegrees}")
-                    add(
-                        "horScroll(left/right)=${imageView.canScrollHorizontally(-1)},${
-                            imageView.canScrollHorizontally(1)
-                        }"
-                    )
-                    add(
-                        "verScroll(up/down)=${imageView.canScrollVertically(-1)},${
-                            imageView.canScrollVertically(1)
-                        }"
-                    )
-                    add("ScrollEdge(hor/ver)=${imageView.horScrollEdge},${imageView.verScrollEdge}")
-                }.joinToString(separator = "\n")
-
-                tilesInfo = imageView.tileList?.takeIf { it.isNotEmpty() }?.let {
-                    buildList {
-                        add("tileCount=${it.size}")
-                        add("validTileCount=${it.count { it.bitmap != null }}")
-                        val tilesByteCount = it.sumOf { it.bitmap?.byteCount ?: 0 }
-                            .toLong().formatFileSize()
-                        add("tilesByteCount=${tilesByteCount}")
-                    }.joinToString(separator = "\n")
-                }
-            }
-
             return NavMainDirections.actionGlobalImageInfoDialogFragment(
                 uri = uri1,
                 imageInfo = imageInfo,
@@ -190,8 +137,6 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                 optionsInfo = optionsInfo,
                 dataFromInfo = dataFromInfo,
                 transformedInfo = transformedInfo,
-                zoomInfo = zoomInfo,
-                tilesInfo = tilesInfo,
                 throwableString = throwableString
             )
         }

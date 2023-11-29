@@ -1,12 +1,10 @@
 package com.github.panpf.sketch.sample
 
-import com.github.panpf.liveevent.LiveEvent
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 class EventService {
-    val viewerPagerShareEvent = LiveEvent<Int>()
-    val viewerPagerSaveEvent = LiveEvent<Int>()
-    val viewerPagerRotateEvent = LiveEvent<Int>()
-    val viewerPagerInfoEvent = LiveEvent<Int>()
-
-    val hugeViewerPageRotateEvent = LiveEvent<Int>()
+    val viewerPagerShareEvent = MutableSharedFlow<Int>()
+    val viewerPagerSaveEvent = MutableSharedFlow<Int>()
+    val viewerPagerRotateEvent = MutableSharedFlow<Int>()
+    val viewerPagerInfoEvent = MutableSharedFlow<Int>()
 }

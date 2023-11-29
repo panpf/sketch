@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.util.lifecycleOwner
 import com.github.panpf.sketch.sample.widget.MyRecyclerView
-import com.github.panpf.sketch.sample.widget.MyZoomImageView
 import com.github.panpf.sketch.util.SketchUtils
+import com.github.panpf.zoomimage.SketchZoomImageView
+import com.github.panpf.zoomimage.view.zoom.ScrollBarSpec
+import com.github.panpf.zoomimage.zoom.ReadMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.merge
@@ -60,20 +62,20 @@ class SettingsEventViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    fun observeZoomSettings(zoomImageView: MyZoomImageView) {
+    fun observeZoomSettings(zoomImageView: SketchZoomImageView) {
         zoomImageView.lifecycleOwner.lifecycleScope.launch {
             prefsService.scrollBarEnabled.stateFlow.collect {
-                zoomImageView.scrollBarEnabled = it
+                zoomImageView.scrollBar = if (it) ScrollBarSpec.Default else null
             }
         }
         zoomImageView.lifecycleOwner.lifecycleScope.launch {
             prefsService.readModeEnabled.stateFlow.collect {
-                zoomImageView.readModeEnabled = it
+                zoomImageView.zoomable.readModeState.value = if (it) ReadMode.Default else null
             }
         }
         zoomImageView.lifecycleOwner.lifecycleScope.launch {
-            prefsService.showTileBoundsInHugeImagePage.stateFlow.collect {
-                zoomImageView.showTileBounds = it
+            prefsService.showTileBounds.stateFlow.collect {
+                zoomImageView.subsampling.showTileBoundsState.value = it
             }
         }
         zoomImageView.lifecycleOwner.lifecycleScope.launch {
@@ -88,6 +90,7 @@ class SettingsEventViewModel(application: Application) : AndroidViewModel(applic
             is PagingDataAdapter<*, *> -> {
                 return this
             }
+
             is ConcatAdapter -> {
                 this.adapters.forEach {
                     it.findPagingAdapter()?.let { pagingDataAdapter ->
@@ -96,6 +99,7 @@ class SettingsEventViewModel(application: Application) : AndroidViewModel(applic
                 }
                 return null
             }
+
             else -> {
                 return null
             }

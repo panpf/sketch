@@ -57,6 +57,10 @@ class TestFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                 }, ListSeparatorItemFactory()),
                 listOf(
                     Link(
+                        title = "RemoteViews",
+                        navDirections = NavMainDirections.actionRemoteViewsFragment()
+                    ),
+                    Link(
                         title = "Fetcher",
                         navDirections = NavMainDirections.actionFetcherTestFragment(),
                         permissions = listOf(permission.READ_EXTERNAL_STORAGE)

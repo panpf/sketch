@@ -52,28 +52,6 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/hugeImageHomeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.huge.HugeImageHomeFragment"
-        android:label="HugeImageHomeFragment" />
-    <action
-        android:id="@+id/action_hugeImageHomeFragment"
-        app:destination="@id/hugeImageHomeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
-        android:id="@+id/hugeImageViewerFragment"
-        android:name="com.github.panpf.sketch.sample.ui.huge.HugeImageViewerFragment"
-        android:label="HugeImageViewerFragment">
-        <argument
-            android:name="imageUri"
-            app:argType="string"
-            app:nullable="false" />
-    </fragment>
-
-    <fragment
         android:id="@+id/remoteViewsFragment"
         android:name="com.github.panpf.sketch.sample.ui.notify.RemoteViewsFragment"
         android:label="NotificationFragment" />
@@ -102,6 +80,28 @@
     <action
         android:id="@+id/action_global_imageViewerPagerFragment"
         app:destination="@id/imageViewerPagerFragment"
+        app:enterAnim="@anim/nav_enter_from_bottom"
+        app:exitAnim="@anim/nav_exit_from_bottom"
+        app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
+        app:popExitAnim="@anim/nav_pop_exit_from_bottom" />
+
+    <fragment
+        android:id="@+id/imageViewerPagerComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.viewer.compose.ImageViewerPagerComposeFragment"
+        android:label="ImageViewerPagerFragment">
+        <argument
+            android:name="imageDetailJsonArray"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="defaultPosition"
+            android:defaultValue="0"
+            app:argType="integer"
+            app:nullable="false" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_imageViewerPagerComposeFragment"
+        app:destination="@id/imageViewerPagerComposeFragment"
         app:enterAnim="@anim/nav_enter_from_bottom"
         app:exitAnim="@anim/nav_exit_from_bottom"
         app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
@@ -380,16 +380,6 @@
             app:nullable="true" />
         <argument
             android:name="transformedInfo"
-            android:defaultValue="null"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="zoomInfo"
-            android:defaultValue="null"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="tilesInfo"
             android:defaultValue="null"
             app:argType="string"
             app:nullable="true" />

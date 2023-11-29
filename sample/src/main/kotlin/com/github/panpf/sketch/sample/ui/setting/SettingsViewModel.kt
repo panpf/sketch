@@ -75,7 +75,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             prefsService.disabledDownloadCache.sharedFlow,
             prefsService.disallowReuseBitmap.sharedFlow,
             prefsService.showDataFromLogo.sharedFlow,
-            prefsService.showTileBoundsInHugeImagePage.sharedFlow,
+            prefsService.showTileBounds.sharedFlow,
             prefsService.logLevel.sharedFlow,
         )
         viewModelScope.launch {
@@ -237,7 +237,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Show Tile Bounds",
                 desc = "Overlay the state and area of the tile on the View",
-                data = prefsService.showTileBoundsInHugeImagePage,
+                data = prefsService.showTileBounds,
             )
         )
     }

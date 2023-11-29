@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 
-fun <T> Flow<T>.repeatObserveWithLifecycle(
+fun <T> Flow<T>.repeatCollectWithLifecycle(
     owner: LifecycleOwner,
     minState: Lifecycle.State,
     collector: FlowCollector<T>
