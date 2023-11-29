@@ -41,6 +41,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.configOrNull
 import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.scaled
@@ -560,7 +561,7 @@ fun isSrcRectError(throwable: Throwable): Boolean =
     }
 
 val Bitmap.logString: String
-    get() = "Bitmap(${width}x${height},$config,@${toHexString()})"
+    get() = "Bitmap(${width}x${height},$configOrNull,@${toHexString()})"
 
 val Bitmap.sizeString: String
     get() = "${width}x${height}"

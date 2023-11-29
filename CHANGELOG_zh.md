@@ -1,14 +1,22 @@
 # 更新日志
 
+翻译：[English](CHANGELOG.md)
+
+# new
+
+* fix: 修复遇到 Bitmap.config 为 null 时崩溃的 bug
+
 # v3.3.0-beta02
 
 #### sketch:
 
-* new: 增加 LongImageDecider()、PrecisionDecider(precision: Precision)、ScaleDecider(scale: Scale)、SizeResolver(size: Size) 等函数
+* new: 增加 LongImageDecider()、PrecisionDecider(precision: Precision)、ScaleDecider(scale: Scale)
+  、SizeResolver(size: Size) 等函数
 
 #### sketch-compose:
 
-* change: AsyncImage 和 SubcomposeAsyncImage 的 `noClipContent` 参数改为 `clipToBounds:Boolean = true`
+* change: AsyncImage 和 SubcomposeAsyncImage 的 `noClipContent`
+  参数改为 `clipToBounds:Boolean = true`
 
 # v3.3.0-beta01
 

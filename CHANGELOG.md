@@ -1,14 +1,22 @@
 # Change Log
 
+Translations: [简体中文](CHANGELOG_zh.md)
+
+# new
+
+* fix: Fixed a crash bug when Bitmap.config is null
+
 # v3.3.0-beta02
 
 #### sketch:
 
-* new: Adds LongImageDecider(), PrecisionDecider(Precision), ScaleDecider(Scale), SizeResolver(Size) functions
+* new: Adds LongImageDecider(), PrecisionDecider(Precision), ScaleDecider(Scale), SizeResolver(Size)
+  functions
 
 #### sketch-compose:
 
-* change: The `noClipContent` parameter of AsyncImage and SubcomposeAsyncImage is changed to `clipToBounds:Boolean = true`
+* change: The `noClipContent` parameter of AsyncImage and SubcomposeAsyncImage is changed
+  to `clipToBounds:Boolean = true`
 
 # v3.3.0-beta01
 

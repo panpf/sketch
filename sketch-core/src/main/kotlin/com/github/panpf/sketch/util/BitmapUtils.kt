@@ -35,10 +35,14 @@ internal val Bitmap.allocationByteCountCompat: Int
 internal val Bitmap.safeConfig: Bitmap.Config
     get() = config ?: Bitmap.Config.ARGB_8888
 
-internal fun Bitmap.toInfoString(): String =
-    "Bitmap(width=${width}, height=${height}, config=$config)"
+@Suppress("USELESS_ELVIS")
+internal val Bitmap.configOrNull: Bitmap.Config?
+    get() = config ?: null
 
-internal fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"
+internal fun Bitmap.toInfoString(): String =
+    "Bitmap(width=${width}, height=${height}, config=$configOrNull)"
+
+internal fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$configOrNull)"
 
 /**
  * Gets the number of bytes occupied by a single pixel in a specified configuration

@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.calculateBitmapByteCount
+import com.github.panpf.sketch.util.configOrNull
 import java.util.Locale
 import java.util.NavigableMap
 import java.util.TreeMap
@@ -41,9 +42,9 @@ class SizeConfigStrategy : LruPoolStrategy {
 
     override fun put(bitmap: Bitmap) {
         val size = bitmap.allocationByteCountCompat
-        val key = keyPool[size, bitmap.config]
+        val key = keyPool[size, bitmap.configOrNull]
         groupedMap.put(key, bitmap)
-        val sizes = getSizesForConfig(bitmap.config)
+        val sizes = getSizesForConfig(bitmap.configOrNull)
         val current = sizes[key.size]
         sizes[key.size] = if (current == null) 1 else current + 1
     }
@@ -104,7 +105,7 @@ class SizeConfigStrategy : LruPoolStrategy {
     }
 
     private fun decrementBitmapOfSize(size: Int, removed: Bitmap) {
-        val config = removed.config
+        val config = removed.configOrNull
         val sizes = getSizesForConfig(config)
         val current = sizes[size]
         if (current == null) {
@@ -133,7 +134,7 @@ class SizeConfigStrategy : LruPoolStrategy {
 
     override fun logBitmap(bitmap: Bitmap): String {
         val size = bitmap.allocationByteCountCompat
-        return getBitmapString(size, bitmap.config)
+        return getBitmapString(size, bitmap.configOrNull)
     }
 
     override fun logBitmap(width: Int, height: Int, config: Config): String {

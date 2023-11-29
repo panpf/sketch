@@ -3,6 +3,7 @@ package com.github.panpf.sketch.util.pool
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
 import com.github.panpf.sketch.util.allocationByteCountCompat
+import com.github.panpf.sketch.util.configOrNull
 import java.util.Locale
 
 /**
@@ -14,7 +15,7 @@ class AttributeStrategy : LruPoolStrategy {
     private val groupedMap = GroupedLinkedMap<Key, Bitmap>()
 
     override fun put(bitmap: Bitmap) {
-        val key = keyPool[bitmap.width, bitmap.height, bitmap.config]
+        val key = keyPool[bitmap.width, bitmap.height, bitmap.configOrNull]
         groupedMap.put(key, bitmap)
     }
 
@@ -95,7 +96,7 @@ class AttributeStrategy : LruPoolStrategy {
 
     companion object {
         private fun getBitmapString(bitmap: Bitmap): String {
-            return getBitmapString(bitmap.width, bitmap.height, bitmap.config)
+            return getBitmapString(bitmap.width, bitmap.height, bitmap.configOrNull)
         }
 
         private fun getBitmapString(width: Int, height: Int, config: Config?): String {

@@ -22,6 +22,7 @@ import android.os.Build
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.configOrNull
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.getTrimLevelName
@@ -77,9 +78,9 @@ class LruBitmapPool constructor(
             logger?.w(MODULE, "put. reject. Immutable. $caller. ${bitmap.logString}. $bitmapKey")
             return false
         }
-        if (!allowedConfigs.contains(bitmap.config)) {
+        if (!allowedConfigs.contains(bitmap.configOrNull)) {
             logger?.w(MODULE) {
-                "put. reject. Disallowed config ${bitmap.config}. $caller. ${bitmap.logString}. $bitmapKey"
+                "put. reject. Disallowed config ${bitmap.configOrNull}. $caller. ${bitmap.logString}. $bitmapKey"
             }
             return false
         }
