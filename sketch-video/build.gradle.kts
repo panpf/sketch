@@ -10,8 +10,6 @@ android {
     defaultConfig {
         minSdk = property("minSdk").toString().toInt()
 
-        consumerProguardFiles("proguard-rules.pro")
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
