@@ -21,7 +21,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.util.createViewBinding
 
 abstract class BindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
 

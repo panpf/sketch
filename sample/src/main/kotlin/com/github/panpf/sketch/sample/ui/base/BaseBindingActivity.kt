@@ -24,7 +24,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-import com.github.panpf.sketch.sample.util.createViewBinding
 
 abstract class BaseBindingActivity<VIEW_BINDING : ViewBinding> : AppCompatActivity() {
 

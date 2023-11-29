@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.util
+package com.github.panpf.sketch.sample.ui.base
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
-import com.github.panpf.sketch.sample.ui.base.BindingDialogFragment
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.sample.util.getSuperGenericParamClass
 
 fun Class<ViewBinding>.instanceViewBinding1(
     inflater: LayoutInflater,

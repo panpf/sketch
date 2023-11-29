@@ -108,7 +108,6 @@ dependencies {
     implementation(libs.bundles.panpf.tools4a)
     implementation(libs.bundles.panpf.tools4j)
     implementation(libs.panpf.tools4k)
-    implementation(libs.panpf.liveevent)
     implementation(libs.panpf.activitymonitor)
     implementation(libs.panpf.zoomimage.compose.sketch) {
         exclude(group = "io.github.panpf.sketch3")

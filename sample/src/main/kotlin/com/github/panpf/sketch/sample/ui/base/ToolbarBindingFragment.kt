@@ -26,7 +26,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.util.createViewBinding
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 
 @Suppress("MemberVisibilityCanBePrivate")

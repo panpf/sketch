@@ -36,7 +36,6 @@ google-material = "1.6.1"
 # panpf
 panpf-activitymonitor = "1.0.0"
 panpf-assemblyadapter4 = "4.1.0"
-panpf-liveevent = "1.0.0"
 panpf-tools4a = "1.0.0"
 panpf-tools4j = "1.0.0"
 panpf-tools4k = "1.0.0"
@@ -107,7 +106,6 @@ panpf-assemblyadapter4-pager = { module = "io.github.panpf.assemblyadapter4:asse
 panpf-assemblyadapter4-pager2 = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager2", version.ref = "panpf-assemblyadapter4" }
 panpf-assemblyadapter4-recycler = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler", version.ref = "panpf-assemblyadapter4" }
 panpf-assemblyadapter4-recycler-paging = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler-paging", version.ref = "panpf-assemblyadapter4" }
-panpf-liveevent = { module = "io.github.panpf.liveevent:liveevent", version.ref = "panpf-liveevent" }
 panpf-tools4a-activity = { module = "io.github.panpf.tools4a:tools4a-activity-ktx", version.ref = "panpf-tools4a" }
 panpf-tools4a-device = { module = "io.github.panpf.tools4a:tools4a-device-ktx", version.ref = "panpf-tools4a" }
 panpf-tools4a-display = { module = "io.github.panpf.tools4a:tools4a-display-ktx", version.ref = "panpf-tools4a" }
