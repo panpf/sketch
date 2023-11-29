@@ -99,10 +99,10 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             ResourceDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, newResourceUri(R.raw.sample_anim)),
+                request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.resources.R.raw.sample_anim)),
                 packageName = context.packageName,
                 resources = context.resources,
-                resId = R.raw.sample_anim
+                resId = com.github.panpf.sketch.resources.R.raw.sample_anim
             )
         ).apply {
             Assert.assertEquals(480, width)
