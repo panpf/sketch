@@ -5,6 +5,7 @@
 # new
 
 * fix: 修复遇到 Bitmap.config 为 null 时崩溃的 bug
+* fix: 修复 ViewLifecycleResolver 导致的内存泄漏
 
 # v3.3.0-beta02
 

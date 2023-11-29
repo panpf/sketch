@@ -5,6 +5,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 # new
 
 * fix: Fixed a crash bug when Bitmap.config is null
+* fix: Fixed a memory leak caused by ViewLifecycleResolver
 
 # v3.3.0-beta02
 
