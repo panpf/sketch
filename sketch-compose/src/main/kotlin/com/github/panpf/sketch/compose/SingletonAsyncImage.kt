@@ -223,6 +223,7 @@ fun AsyncImage(
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun AsyncImage(
     request: DisplayRequest,
     contentDescription: String?,
