@@ -6,8 +6,12 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * fix: Fixed a crash bug when Bitmap.config is null
 * fix: Fixed a memory leak caused by ViewLifecycleResolver
+* fix: Fix the bug that ViewLifecycleResolver will hang permanently when it encounters a view that is discarded without attaching.
 
 # v3.3.0-beta02
+
+> [!CAUTION]
+> This version has the risk of memory leaks on the View version, please upgrade to the new version as soon as possible
 
 #### sketch:
 
@@ -20,6 +24,9 @@ Translations: [简体中文](CHANGELOG_zh.md)
   to `clipToBounds:Boolean = true`
 
 # v3.3.0-beta01
+
+> [!CAUTION]
+> This version has the risk of memory leaks on the View version, please upgrade to the new version as soon as possible
 
 #### sketch:
 

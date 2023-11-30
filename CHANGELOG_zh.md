@@ -6,8 +6,12 @@
 
 * fix: 修复遇到 Bitmap.config 为 null 时崩溃的 bug
 * fix: 修复 ViewLifecycleResolver 导致的内存泄漏
+* fix: 修复 ViewLifecycleResolver 遇到没有 attach 而直接丢弃的 view 时会永久挂起的 bug
 
 # v3.3.0-beta02
+
+> [!CAUTION]
+> 此版本在 View 版本上有内存泄露风险，请尽快升级到新版
 
 #### sketch:
 
@@ -20,6 +24,9 @@
   参数改为 `clipToBounds:Boolean = true`
 
 # v3.3.0-beta01
+
+> [!CAUTION]
+> 此版本在 View 版本上有内存泄露风险，请尽快升级到新版
 
 #### sketch:
 

@@ -64,15 +64,15 @@ class RequestExecutor {
         requiredMainThread()
 
         // Wrap the request to manage its lifecycle.
-        val lifecycle = request.lifecycleResolver.lifecycle()
-        val requestDelegate = requestDelegate(sketch, request, lifecycle, coroutineContext.job)
+        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
         requestDelegate.assertActive()
         var requestContext: RequestContext? = null
         var firstRequestKey: String? = null
 
         try {
             // Set up the request's lifecycle observers. Cancel the request when destroy
-            requestDelegate.start()
+            val lifecycle = request.lifecycleResolver.lifecycle()
+            requestDelegate.start(lifecycle)
 
             // Enqueued requests suspend until the lifecycle is started.
             if (enqueue) {

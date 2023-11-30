@@ -36,7 +36,6 @@ import kotlinx.coroutines.Job
 internal fun requestDelegate(
     sketch: Sketch,
     initialRequest: ImageRequest,
-    lifecycle: Lifecycle,
     job: Job
 ): RequestDelegate {
     return when (val target = initialRequest.target) {
@@ -44,11 +43,10 @@ internal fun requestDelegate(
             sketch = sketch,
             initialRequest = initialRequest as DisplayRequest,
             target = target,
-            lifecycle = lifecycle,
             job = job
         )
 
-        else -> BaseRequestDelegate(lifecycle, job)
+        else -> BaseRequestDelegate(job)
     }
 }
 
@@ -60,7 +58,7 @@ sealed interface RequestDelegate : LifecycleEventObserver {
 
     /** Register all lifecycle observers. */
     @MainThread
-    fun start()
+    fun start(lifecycle: Lifecycle)
 
     /** Called when this request's job is cancelled or completes successfully/unsuccessfully. */
     @MainThread
@@ -73,20 +71,22 @@ sealed interface RequestDelegate : LifecycleEventObserver {
 
 /** A request delegate for a one-shot requests with no target or a non-[ViewDisplayTarget]. */
 internal class BaseRequestDelegate(
-    private val lifecycle: Lifecycle,
     private val job: Job
 ) : RequestDelegate {
+
+    private var lifecycle: Lifecycle? = null
 
     override fun assertActive() {
         // Do nothing
     }
 
-    override fun start() {
+    override fun start(lifecycle: Lifecycle) {
+        this.lifecycle = lifecycle
         lifecycle.addObserver(this)
     }
 
     override fun finish() {
-        lifecycle.removeObserver(this)
+        lifecycle?.removeObserver(this)
     }
 
     override fun dispose() {
@@ -105,9 +105,10 @@ class ViewTargetRequestDelegate(
     internal val sketch: Sketch,
     internal val initialRequest: DisplayRequest,
     private val target: ViewDisplayTarget<*>,
-    private val lifecycle: Lifecycle,
     private val job: Job
 ) : RequestDelegate {
+
+    private var lifecycle: Lifecycle? = null
 
     override fun assertActive() {
         val view = target.view
@@ -118,10 +119,11 @@ class ViewTargetRequestDelegate(
         }
     }
 
-    override fun start() {
+    override fun start(lifecycle: Lifecycle) {
         val view = target.view ?: return
         view.requestManager.setRequest(this)
 
+        this.lifecycle = lifecycle
         lifecycle.addObserver(this)
         if (target is LifecycleObserver) {
             lifecycle.removeAndAddObserver(target)
@@ -135,9 +137,9 @@ class ViewTargetRequestDelegate(
     override fun dispose() {
         job.cancel()
         if (target is LifecycleObserver) {
-            lifecycle.removeObserver(target)
+            lifecycle?.removeObserver(target)
         }
-        lifecycle.removeObserver(this)
+        lifecycle?.removeObserver(this)
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

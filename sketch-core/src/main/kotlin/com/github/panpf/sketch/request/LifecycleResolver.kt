@@ -1,12 +1,9 @@
 package com.github.panpf.sketch.request
 
 import android.view.View
-import android.view.View.OnAttachStateChangeListener
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.github.panpf.sketch.util.findLifecycle
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.ref.WeakReference
 
 fun LifecycleResolver(lifecycle: Lifecycle): LifecycleResolver = FixedLifecycleResolver(lifecycle)
@@ -42,43 +39,14 @@ class ViewLifecycleResolver constructor(
     constructor(view: View) : this(WeakReference(view))
 
     override suspend fun lifecycle(): Lifecycle {
-        val view1 = viewReference.get() // Avoid memory leaks
-        if (view1 == null || ViewCompat.isAttachedToWindow(view1)) {
-            @Suppress("UnnecessaryVariable")    // for debug
-            val lifecycle1 = resolveLifecycle(view1)
-            return lifecycle1
-        }
-
-        return suspendCancellableCoroutine { continuation ->
-            val view2 = viewReference.get() // Avoid memory leaks
-            if (view2 != null) {
-                if (ViewCompat.isAttachedToWindow(view2)) {
-                    val lifecycle2 = resolveLifecycle(view2)
-                    continuation.resumeWith(Result.success(lifecycle2))
-                } else {
-                    val attachStateChangeListener = object : OnAttachStateChangeListener {
-                        override fun onViewAttachedToWindow(view3: View) {
-                            view3.removeOnAttachStateChangeListener(this)
-                            val lifecycle3 = resolveLifecycle(view3)
-                            continuation.resumeWith(Result.success(lifecycle3))
-                        }
-
-                        override fun onViewDetachedFromWindow(view3: View) {}
-                    }
-                    view2.addOnAttachStateChangeListener(attachStateChangeListener)
-
-                    continuation.invokeOnCancellation {
-                        val view4 = viewReference.get() // Avoid memory leaks
-                        view4?.removeOnAttachStateChangeListener(attachStateChangeListener)
-                    }
-                }
-            } else {
-                continuation.cancel()
-            }
-        }
+        // There is no need to judge whether to attach to the window here,
+        // because lifecycle() will only be executed after attached.
+        val view1 = viewReference.get()
+        return resolveLifecycle(view1)
     }
 
     private fun resolveLifecycle(view: View?): Lifecycle {
+        // findViewTreeLifecycleOwner can only return the correct Lifecycle after the view is attached to the window
         return view?.findViewTreeLifecycleOwner()?.lifecycle
             ?: view?.context.findLifecycle()
             ?: GlobalLifecycle
