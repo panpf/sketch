@@ -46,9 +46,11 @@ androidgifdrawable = "1.2.15"
 androidsvg = "1.4"
 ffmpegMediaMetadataRetriever = "1.0.16"
 junit = "4.13.2"
-leakcanary = "2.9.1"
+leakcanary = "2.12"
 mmkv = "1.2.13"
+#noinspection GradleDependency
 okhttp3 = "3.12.0"   # 3.12.0 是最后一个支持 Android 5.0 以下的版本
+#noinspection GradleDependency
 retrofit2 = "2.6.4"
 retrofit2-kotlinxSerializationConverter = "0.8.0"
 tinypinyin = "2.0.3"
