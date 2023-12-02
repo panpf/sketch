@@ -2,7 +2,7 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
-# v3.3.0-beta04-SNAPSHOT
+# v3.3.0-beta04
 
 * fix: Fixed a bug introduced from version 3.3.0-beta02 onwards where all disk cache was lost when an app was accidentally killed
 * improve: HttpUriFetcher now also verifies that readLength and contentLength are the same when disabling disk caching, and throws an exception if they are not
