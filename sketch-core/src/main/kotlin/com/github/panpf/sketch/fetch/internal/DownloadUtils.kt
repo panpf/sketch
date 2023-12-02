@@ -27,23 +27,22 @@ import java.io.InputStream
 import java.io.OutputStream
 
 @Throws(IOException::class, CancellationException::class)
-internal fun copyToWithActive(
+internal fun CoroutineScope.copyToWithActive(
     request: ImageRequest,
     inputStream: InputStream,
     outputStream: OutputStream,
-    bufferSize: Int = DEFAULT_BUFFER_SIZE,
-    coroutineScope: CoroutineScope,
     contentLength: Long,
+    bufferSize: Int = DEFAULT_BUFFER_SIZE,
 ): Long {
     var bytesCopied = 0L
     val buffer = ByteArray(bufferSize)
     var bytes = inputStream.read(buffer)
     var lastNotifyTime = 0L
     val progressListenerDelegate = request.progressListener?.let {
-        ProgressListenerDelegate(coroutineScope, it)
+        ProgressListenerDelegate(this@copyToWithActive, it)
     }
     var lastUpdateProgressBytesCopied = 0L
-    while (bytes >= 0 && coroutineScope.isActive) {
+    while (bytes >= 0 && isActive) {
         outputStream.write(buffer, 0, bytes)
         bytesCopied += bytes
         if (progressListenerDelegate != null && contentLength > 0) {
@@ -59,15 +58,14 @@ internal fun copyToWithActive(
         }
         bytes = inputStream.read(buffer)
     }
-    if (coroutineScope.isActive) {
-        if (progressListenerDelegate != null
-            && contentLength > 0
-            && lastUpdateProgressBytesCopied != bytesCopied
-        ) {
-            progressListenerDelegate.onUpdateProgress(request, contentLength, bytesCopied)
-        }
-    } else {
+    if (!isActive) {
         throw CancellationException()
+    }
+    if (progressListenerDelegate != null
+        && contentLength > 0
+        && lastUpdateProgressBytesCopied != bytesCopied
+    ) {
+        progressListenerDelegate.onUpdateProgress(request, contentLength, bytesCopied)
     }
     return bytesCopied
 }
@@ -79,7 +77,7 @@ internal fun copyToWithActive(
  * Attempt to guess a better MIME type from the file extension.
  */
 internal fun getMimeType(url: String, contentType: String?): String? {
-    if (contentType == null || contentType.isEmpty() || contentType.isBlank()) {
+    if (contentType.isNullOrEmpty() || contentType.isBlank()) {
         return getMimeTypeFromUrl(url)
     }
 

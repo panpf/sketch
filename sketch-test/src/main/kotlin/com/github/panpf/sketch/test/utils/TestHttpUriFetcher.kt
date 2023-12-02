@@ -38,7 +38,7 @@ class TestHttpUriFetcher(sketch: Sketch, request: ImageRequest, url: String) :
             val scheme = request.uriString.toUri().scheme
             return if (
                 SCHEME.equals(scheme, ignoreCase = true)
-                || SCHEME1.equals(scheme, ignoreCase = true)
+                || SCHEME_HTTPS.equals(scheme, ignoreCase = true)
             ) {
                 TestHttpUriFetcher(sketch, request, request.uriString)
             } else {

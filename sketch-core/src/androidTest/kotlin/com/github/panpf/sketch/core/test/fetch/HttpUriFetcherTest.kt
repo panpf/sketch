@@ -529,4 +529,34 @@ class HttpUriFetcherTest {
 
         Assert.assertFalse(sketch.downloadCache.exist(request.uriString))
     }
+
+    @Test
+    fun testLengthError2() {
+        val (context, sketch) = getTestContextAndNewSketch {
+            httpStack(TestHttpStack(it))
+        }
+
+        val progressList = mutableListOf<Long>()
+        val testUri = TestHttpStack.lengthErrorImage
+        val request = DownloadRequest(context, testUri.uriString) {
+            downloadCachePolicy(DISABLED)
+            progressListener { _, _, completedLength ->
+                progressList.add(completedLength)
+            }
+        }
+        sketch.downloadCache.clear()
+        runBlocking {
+            try {
+                HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
+                Assert.fail("No exception thrown")
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            delay(1000)
+        }
+        Assert.assertTrue(progressList.size > 0)
+        Assert.assertNotNull(progressList.find { it == testUri.contentLength + 1 })
+
+        Assert.assertFalse(sketch.downloadCache.exist(request.uriString))
+    }
 }

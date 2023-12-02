@@ -53,7 +53,6 @@ interface DiskCache : Closeable {
      * Returns an editor for the entry named [key], or null if another
      * edit is in progress.
      */
-    // todo I accidentally discovered that some places were not closed, causing the Editor to always return null when editing later.
     fun edit(key: String): Editor?
 
     /**

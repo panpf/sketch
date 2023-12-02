@@ -5,6 +5,7 @@
 # v3.3.0-beta04-SNAPSHOT
 
 * fix: 修复从 '3.3.0-beta02' 开始版本引入的在 App 被意外杀死时磁盘缓存全部丢失的 bug
+* improve: 现在 HttpUriFetcher 在禁用磁盘缓存时也会验证 readLength 和 contentLength 是否一样，不一样则会抛出异常
 
 # v3.3.0-beta03
 

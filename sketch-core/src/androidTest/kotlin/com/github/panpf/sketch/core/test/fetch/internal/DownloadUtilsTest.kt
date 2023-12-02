@@ -50,7 +50,6 @@ class DownloadUtilsTest {
                 inputStream = SlowInputStream(string.byteInputStream(), 100),
                 outputStream = outputStream,
                 bufferSize = ceil(string.length / 3f).toInt(),
-                coroutineScope = this@runBlocking,
                 contentLength = string.length.toLong()
             )
             delay(100)
@@ -67,7 +66,6 @@ class DownloadUtilsTest {
                 inputStream = SlowInputStream(string.byteInputStream(), 100),
                 outputStream = outputStream2,
                 bufferSize = ceil(string.length / 3f).toInt(),
-                coroutineScope = this@runBlocking,
                 contentLength = string.length.toLong()
             )
             delay(100)
@@ -86,7 +84,6 @@ class DownloadUtilsTest {
                 inputStream = SlowInputStream(string.byteInputStream(), 100),
                 outputStream = outputStream3,
                 bufferSize = ceil(string.length / 3f).toInt(),
-                coroutineScope = this@runBlocking,
                 contentLength = 0
             )
             delay(100)
@@ -105,7 +102,6 @@ class DownloadUtilsTest {
                 inputStream = SlowInputStream(string.byteInputStream(), 400),
                 outputStream = outputStream4,
                 bufferSize = ceil(string.length / 3f).toInt(),
-                coroutineScope = this@runBlocking,
                 contentLength = string.length.toLong()
             )
             delay(100)
