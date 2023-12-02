@@ -2,16 +2,25 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
+# v3.3.0-beta04-SNAPSHOT
+
+* fix: Fixed a bug introduced from version 3.3.0-beta02 onwards where all disk cache was lost when an app was accidentally killed
+
 # v3.3.0-beta03
 
+> [!CAUTION]
+> This version has a serious bug, please upgrade to the new version as soon as possible
+
 * fix: Fixed a crash bug when Bitmap.config is null
-* fix: Fixed a memory leak caused by ViewLifecycleResolver
-* fix: Fix the bug that ViewLifecycleResolver will hang permanently when it encounters a view that is discarded without attaching.
+* fix: Fixed a bug where ViewLifecycleResolver was introduced from version 3.3.0-beta01 onwards and
+  caused memory leaks
+* fix: Fixed a bug where ViewLifecycleResolver, introduced from version 3.3.0-beta01, would hang
+  permanently when encountering a view that was dropped without attaching
 
 # v3.3.0-beta02
 
 > [!CAUTION]
-> This version has the risk of memory leaks on the View version, please upgrade to the new version as soon as possible
+> This version has a serious bug, please upgrade to the new version as soon as possible
 
 #### sketch:
 
@@ -26,7 +35,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 # v3.3.0-beta01
 
 > [!CAUTION]
-> This version has the risk of memory leaks on the View version, please upgrade to the new version as soon as possible
+> This version has a serious bug, please upgrade to the new version as soon as possible
 
 #### sketch:
 

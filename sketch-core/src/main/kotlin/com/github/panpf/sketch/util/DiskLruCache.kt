@@ -572,50 +572,7 @@ class DiskLruCache private constructor(
                     + STRING_KEY_PATTERN + ": \"" + key + "\"")
         }
     }
-    //    /** A snapshot of the values for an entry. */
-    //    public final class Snapshot implements Closeable {
-    //        private final String key;
-    //        private final long sequenceNumber;
-    //        private final InputStream[] ins;
-    //        private final long[] lengths;
-    //
-    //        private Snapshot(String key, long sequenceNumber, InputStream[] ins, long[] lengths) {
-    //            this.key = key;
-    //            this.sequenceNumber = sequenceNumber;
-    //            this.ins = ins;
-    //            this.lengths = lengths;
-    //        }
-    //
-    //        /**
-    //         * Returns an editor for this snapshot's entry, or null if either the
-    //         * entry has changed since this snapshot was created or if another edit
-    //         * is in progress.
-    //         */
-    //        public Editor edit() throws IOException {
-    //            return DiskLruCache.this.edit(key, sequenceNumber);
-    //        }
-    //
-    //        /** Returns the unbuffered stream with the value for {@code index}. */
-    //        public InputStream getInputStream(int index) {
-    //            return ins[index];
-    //        }
-    //
-    //        /** Returns the string value for {@code index}. */
-    //        public String getString(int index) throws IOException {
-    //            return inputStreamToString(getInputStream(index));
-    //        }
-    //
-    //        /** Returns the byte length of the value for {@code index}. */
-    //        public long getLength(int index) {
-    //            return lengths[index];
-    //        }
-    //
-    //        public void close() {
-    //            for (InputStream in : ins) {
-    //                Util.closeQuietly(in);
-    //            }
-    //        }
-    //    }
+
     /**
      * Buffers input from an [InputStream] for reading lines.
      *
@@ -636,9 +593,6 @@ class DiskLruCache private constructor(
      * We currently check in constructor that the charset is one of US-ASCII, UTF-8 and ISO-8859-1.
      * The default charset is US_ASCII.
      *
-     *
-     * Constructs a new `LineReader` with the specified capacity and charset.
-     *
      * @param in       the `InputStream` to read data from.
      * @param capacity the capacity of the buffer.
      * @param charset  the charset used to decode data. Only US-ASCII, UTF-8 and ISO-8859-1 are
@@ -647,8 +601,7 @@ class DiskLruCache private constructor(
      * @throws IllegalArgumentException if `capacity` is negative or zero
      * or the specified charset is not supported.
      */
-    internal class StrictLineReader(`in`: InputStream?, capacity: Int, charset: Charset?) :
-        Closeable {
+    class StrictLineReader(`in`: InputStream?, capacity: Int, charset: Charset?) : Closeable {
         private val `in`: InputStream
         private val charset: Charset
 
@@ -711,7 +664,9 @@ class DiskLruCache private constructor(
         @Throws(IOException::class)
         fun readLine(): String {
             synchronized(`in`) {
-                val buf = buf ?: throw IOException("LineReader is closed")
+                if (buf == null) {
+                    throw IOException("LineReader is closed")
+                }
 
                 // Read more data if we are at the end of the buffered data.
                 // Though it's an error to read after an exception, we will let {@code fillBuf()}
@@ -721,9 +676,9 @@ class DiskLruCache private constructor(
                 }
                 // Try to find LF in the buffered data and return the line if successful.
                 for (i in pos until end) {
-                    if (buf[i] == LF) {
-                        val lineEnd = if (i != pos && buf[i - 1] == CR) i - 1 else i
-                        val res = String(buf, pos, lineEnd - pos, charset(charset.name()))
+                    if (buf!![i] == LF) {
+                        val lineEnd = if (i != pos && buf!![i - 1] == CR) i - 1 else i
+                        val res = String(buf!!, pos, lineEnd - pos, charset(charset.name()))
                         pos = i + 1
                         return res
                     }
@@ -747,7 +702,7 @@ class DiskLruCache private constructor(
                     fillBuf()
                     // Try to find LF in the buffered data and return the line if successful.
                     for (i in pos until end) {
-                        if (buf[i] == LF) {
+                        if (buf!![i] == LF) {
                             if (i != pos) {
                                 out.write(buf, pos, i - pos)
                             }

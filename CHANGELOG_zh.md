@@ -2,16 +2,23 @@
 
 翻译：[English](CHANGELOG.md)
 
+# v3.3.0-beta04-SNAPSHOT
+
+* fix: 修复从 '3.3.0-beta02' 开始版本引入的在 App 被意外杀死时磁盘缓存全部丢失的 bug
+
 # v3.3.0-beta03
 
+> [!CAUTION]
+> 此版本有严重 bug，请尽快升级到新版
+
 * fix: 修复遇到 Bitmap.config 为 null 时崩溃的 bug
-* fix: 修复 ViewLifecycleResolver 导致的内存泄漏
-* fix: 修复 ViewLifecycleResolver 遇到没有 attach 而直接丢弃的 view 时会永久挂起的 bug
+* fix: 修复从 '3.3.0-beta01' 版本开始引入的 ViewLifecycleResolver 导致内存泄漏的 bug
+* fix: 修复从 '3.3.0-beta01' 版本开始引入的 ViewLifecycleResolver 在遇到没有 attach 而直接丢弃的 view 时会永久挂起的 bug
 
 # v3.3.0-beta02
 
 > [!CAUTION]
-> 此版本在 View 版本上有内存泄露风险，请尽快升级到新版
+> 此版本有严重 bug，请尽快升级到新版
 
 #### sketch:
 
@@ -26,7 +33,7 @@
 # v3.3.0-beta01
 
 > [!CAUTION]
-> 此版本在 View 版本上有内存泄露风险，请尽快升级到新版
+> 此版本有严重 bug，请尽快升级到新版
 
 #### sketch:
 
