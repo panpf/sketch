@@ -39,7 +39,7 @@ panpf-assemblyadapter4 = "4.1.0"
 panpf-tools4a = "1.0.0"
 panpf-tools4j = "1.0.0"
 panpf-tools4k = "1.0.0"
-panpf-zoomimage = "1.0.0-beta09"
+panpf-zoomimage = "1.0.0-beta10"
 
 # other
 androidgifdrawable = "1.2.15"
