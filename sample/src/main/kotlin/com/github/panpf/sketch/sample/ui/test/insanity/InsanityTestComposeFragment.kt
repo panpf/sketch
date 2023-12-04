@@ -23,17 +23,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.image.SettingsEventViewModel
-import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoListContent
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class InsanityTestComposeFragment : ToolbarFragment() {
 
@@ -55,8 +49,7 @@ class InsanityTestComposeFragment : ToolbarFragment() {
                     photoPagingFlow = insanityTestViewModel.pagingFlow,
                     restartImageFlow = settingsEventViewModel.listRestartImageFlow,
                     reloadFlow = settingsEventViewModel.listReloadFlow
-                ) { items, _, index ->
-                    startImageDetail(items, index)
+                ) { _, _, _ ->
                 }
             }
         }
@@ -87,26 +80,5 @@ class InsanityTestComposeFragment : ToolbarFragment() {
                 }
             }
         }
-    }
-
-    private fun startImageDetail(items: List<Photo>, position: Int) {
-        val imageList = items.mapIndexedNotNull { index, photo ->
-            if (index >= position - 50 && index <= position + 50) {
-                ImageDetail(
-                    position = index,
-                    originUrl = photo.originalUrl,
-                    mediumUrl = photo.detailPreviewUrl,
-                    thumbnailUrl = photo.listThumbnailUrl,
-                )
-            } else {
-                null
-            }
-        }
-        findNavController().navigate(
-            NavMainDirections.actionGlobalImageViewerPagerFragment(
-                Json.encodeToString(imageList),
-                position,
-            ),
-        )
     }
 }

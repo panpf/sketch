@@ -19,8 +19,6 @@ import android.app.Application
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.widget.ImageView.ScaleType
-import android.widget.ImageView.ScaleType.MATRIX
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -40,6 +38,9 @@ import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.tools4j.io.ktx.formatFileSize
+import com.github.panpf.zoomimage.zoom.AlignmentCompat
+import com.github.panpf.zoomimage.zoom.ContentScaleCompat
+import com.github.panpf.zoomimage.zoom.name
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
@@ -208,14 +209,46 @@ class SettingsViewModel(application1: Application, val page: Page) :
     }
 
     private fun makeZoomMenuList(): List<Any> = buildList {
+        val contentScales = listOf(
+            ContentScaleCompat.Fit,
+            ContentScaleCompat.Crop,
+            ContentScaleCompat.Inside,
+            ContentScaleCompat.FillWidth,
+            ContentScaleCompat.FillHeight,
+            ContentScaleCompat.FillBounds,
+            ContentScaleCompat.None,
+        )
         add(
             MultiSelectMenu(
-                title = "Scale Type",
+                title = "Content Scale",
                 desc = null,
-                values = ScaleType.values().filter { it != MATRIX }.map { it.name },
-                getValue = { prefsService.scaleType.value },
+                values = contentScales.map { it.name },
+                getValue = { prefsService.contentScale.value },
                 onSelect = { _, value ->
-                    prefsService.scaleType.value = value
+                    prefsService.contentScale.value = value
+                }
+            )
+        )
+
+        val alignments = listOf(
+            AlignmentCompat.TopStart,
+            AlignmentCompat.TopCenter,
+            AlignmentCompat.TopEnd,
+            AlignmentCompat.CenterStart,
+            AlignmentCompat.Center,
+            AlignmentCompat.CenterEnd,
+            AlignmentCompat.BottomStart,
+            AlignmentCompat.BottomCenter,
+            AlignmentCompat.BottomEnd,
+        )
+        add(
+            MultiSelectMenu(
+                title = "Alignment",
+                desc = null,
+                values = alignments.map { it.name },
+                getValue = { prefsService.alignment.value },
+                onSelect = { _, value ->
+                    prefsService.alignment.value = value
                 }
             )
         )

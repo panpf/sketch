@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.ui.viewer
+package com.github.panpf.sketch.sample.ui.viewer.view
 
-import android.Manifest
 import android.os.Bundle
 import android.widget.ImageView
-import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -32,39 +29,56 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.image.ImageType.DETAIL
-import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
+import com.github.panpf.sketch.sample.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
+import com.github.panpf.zoomimage.view.zoom.ScrollBarSpec
+import com.github.panpf.zoomimage.zoom.AlignmentCompat
+import com.github.panpf.zoomimage.zoom.ContentScaleCompat
+import com.github.panpf.zoomimage.zoom.ReadMode
+import com.github.panpf.zoomimage.zoom.valueOf
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
-    private val viewModel by viewModels<ImageViewerViewModel>()
-    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
-    private val requestPermissionResult = registerForActivityResult(RequestPermission()) {
-        lifecycleScope.launch {
-            val imageUri = if (prefsService.showOriginImage.value) {
-                args.originImageUri
-            } else {
-                args.previewImageUri ?: args.originImageUri
-            }
-            handleActionResult(viewModel.save(imageUri))
-        }
-    }
 
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
         binding.root.background = null
 
         binding.imageViewerZoomImage.apply {
-            settingsEventViewModel.observeZoomSettings(this)
+            lifecycleOwner.lifecycleScope.launch {
+                prefsService.scrollBarEnabled.stateFlow.collect {
+                    scrollBar = if (it) ScrollBarSpec.Default else null
+                }
+            }
+            lifecycleOwner.lifecycleScope.launch {
+                prefsService.readModeEnabled.stateFlow.collect {
+                    zoomable.readModeState.value = if (it) ReadMode.Default else null
+                }
+            }
+            lifecycleOwner.lifecycleScope.launch {
+                prefsService.showTileBounds.stateFlow.collect {
+                    subsampling.showTileBoundsState.value = it
+                }
+            }
+            lifecycleOwner.lifecycleScope.launch {
+                prefsService.contentScale.stateFlow.collect {
+                    zoomable.contentScaleState.value = ContentScaleCompat.valueOf(it)
+                }
+            }
+            lifecycleOwner.lifecycleScope.launch {
+                prefsService.alignment.stateFlow.collect {
+                    zoomable.alignmentState.value = AlignmentCompat.valueOf(it)
+                }
+            }
 
             showSectorProgressIndicator()
 
@@ -88,24 +102,6 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
         binding.imageViewerRetryButton.setOnClickListener {
             displayImage(binding, prefsService.showOriginImage.stateFlow.value)
         }
-
-        // todo 移到 Pager
-        eventService.viewerPagerShareEvent
-            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                lifecycleScope.launch {
-                    val imageUri = if (prefsService.showOriginImage.value) {
-                        args.originImageUri
-                    } else {
-                        args.previewImageUri ?: args.originImageUri
-                    }
-                    handleActionResult(viewModel.share(imageUri))
-                }
-            }
-        // todo 移到 Pager
-        eventService.viewerPagerSaveEvent
-            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                requestPermissionResult.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            }
         eventService.viewerPagerRotateEvent
             .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                 viewLifecycleOwner.lifecycleScope.launch {

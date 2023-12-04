@@ -219,7 +219,7 @@ class LocalPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                 }
             }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageViewerPagerFragment(
+            NavMainDirections.actionGlobalImagePagerFragment(
                 Json.encodeToString(imageList),
                 position,
             ),

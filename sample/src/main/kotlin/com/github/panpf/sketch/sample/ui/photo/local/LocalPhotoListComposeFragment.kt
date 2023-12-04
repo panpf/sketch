@@ -103,7 +103,7 @@ class LocalPhotoListComposeFragment : ToolbarFragment() {
             }
         }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageViewerPagerComposeFragment(
+            NavMainDirections.actionGlobalImagePagerComposeFragment(
                 Json.encodeToString(imageList),
                 position,
             ),

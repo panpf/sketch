@@ -16,7 +16,9 @@
 package com.github.panpf.sketch.sample.ui
 
 import android.Manifest
+import android.Manifest.permission
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -105,8 +107,50 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
 
                     ListSeparator("Test"),
                     Link(
-                        title = "Test",
-                        navDirections = NavMainDirections.actionTestFragment()
+                        title = "RemoteViews",
+                        navDirections = NavMainDirections.actionRemoteViewsFragment()
+                    ),
+                    Link(
+                        title = "Fetcher",
+                        navDirections = NavMainDirections.actionFetcherTestFragment(),
+                        permissions = listOf(permission.READ_EXTERNAL_STORAGE)
+                    ),
+                    Link(
+                        title = "Decoder",
+                        navDirections = NavMainDirections.actionDecoderTestFragment()
+                    ),
+                    Link(
+                        title = "Transformation",
+                        navDirections = NavMainDirections.actionTransformationTestPagerFragment()
+                    ),
+                    Link(
+                        title = "ExifOrientation",
+                        navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
+                    ),
+                    Link(
+                        title = "ProgressIndicator",
+                        navDirections = NavMainDirections.actionProgressIndicatorTestFragment()
+                    ),
+                    Link(
+                        title = "Display Insanity",
+                        navDirections = NavMainDirections.actionInsanityTestFragment()
+                    ),
+                    Link(
+                        title = "Display Insanity (Compose)",
+                        navDirections = NavMainDirections.actionInsanityTestComposeFragment(),
+                        minSdk = VERSION_CODES.LOLLIPOP
+                    ),
+                    Link(
+                        title = "Animatable Placeholder",
+                        navDirections = NavMainDirections.actionAnimatablePlaceholder(),
+                    ),
+                    Link(
+                        title = "Animatable Placeholder (Compose)",
+                        navDirections = NavMainDirections.actionAnimatablePlaceholderCompose(),
+                    ),
+                    Link(
+                        title = "Share Element",
+                        navDirections = NavMainDirections.actionShareElementTestFragment(),
                     ),
                 )
             )

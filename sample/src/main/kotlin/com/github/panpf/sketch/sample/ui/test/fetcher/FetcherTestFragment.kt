@@ -22,7 +22,7 @@ import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
-import com.github.panpf.sketch.sample.ui.viewer.ImageFragment
+import com.github.panpf.sketch.sample.ui.viewer.view.ImageFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class FetcherTestFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {

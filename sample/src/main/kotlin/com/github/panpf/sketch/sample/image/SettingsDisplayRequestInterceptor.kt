@@ -55,6 +55,7 @@ fun ImageOptions.Builder.setApplySettings(imageType: ImageType): ImageOptions.Bu
     setParameter(APPLY_SETTINGS_KEY, imageType.name)
 }
 
+// todo 移到列表中去，因为 compose 版本列表无法重启
 class SettingsDisplayRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null

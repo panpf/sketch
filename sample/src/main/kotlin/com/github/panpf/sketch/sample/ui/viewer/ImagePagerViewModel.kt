@@ -32,7 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel(application) {
+class ImagePagerViewModel(application: Application) : LifecycleAndroidViewModel(application) {
 
     suspend fun share(imageUri: String): ActionResult {
         val application = application1

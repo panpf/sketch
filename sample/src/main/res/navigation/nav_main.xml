@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/imageFragment"
-        android:name="com.github.panpf.sketch.sample.ui.viewer.ImageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.viewer.view.ImageFragment"
         android:label="ImageFragment">
         <argument
             android:name="url"
@@ -64,9 +64,9 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/imageViewerPagerFragment"
-        android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerPagerFragment"
-        android:label="ImageViewerPagerFragment">
+        android:id="@+id/imagePagerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.viewer.view.ImagePagerFragment"
+        android:label="ImagePagerFragment">
         <argument
             android:name="imageDetailJsonArray"
             app:argType="string"
@@ -78,17 +78,17 @@
             app:nullable="false" />
     </fragment>
     <action
-        android:id="@+id/action_global_imageViewerPagerFragment"
-        app:destination="@id/imageViewerPagerFragment"
+        android:id="@+id/action_global_imagePagerFragment"
+        app:destination="@id/imagePagerFragment"
         app:enterAnim="@anim/nav_enter_from_bottom"
         app:exitAnim="@anim/nav_exit_from_bottom"
         app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
         app:popExitAnim="@anim/nav_pop_exit_from_bottom" />
 
     <fragment
-        android:id="@+id/imageViewerPagerComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.viewer.compose.ImageViewerPagerComposeFragment"
-        android:label="ImageViewerPagerFragment">
+        android:id="@+id/imagePagerComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.viewer.compose.ImagePagerComposeFragment"
+        android:label="ImagePagerFragment">
         <argument
             android:name="imageDetailJsonArray"
             app:argType="string"
@@ -100,8 +100,8 @@
             app:nullable="false" />
     </fragment>
     <action
-        android:id="@+id/action_global_imageViewerPagerComposeFragment"
-        app:destination="@id/imageViewerPagerComposeFragment"
+        android:id="@+id/action_global_imagePagerComposeFragment"
+        app:destination="@id/imagePagerComposeFragment"
         app:enterAnim="@anim/nav_enter_from_bottom"
         app:exitAnim="@anim/nav_exit_from_bottom"
         app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
@@ -109,7 +109,7 @@
 
     <fragment
         android:id="@+id/imageViewerFragment"
-        android:name="com.github.panpf.sketch.sample.ui.viewer.ImageViewerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.viewer.view.ImageViewerFragment"
         android:label="ImageViewerFragment">
         <argument
             android:name="position"
@@ -209,18 +209,6 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <!-- Test -->
-
-    <fragment
-        android:id="@+id/testFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.TestFragment"
-        android:label="TestFragment" />
-    <action
-        android:id="@+id/action_testFragment"
-        app:destination="@id/testFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
         android:id="@+id/fetcherTestFragment"

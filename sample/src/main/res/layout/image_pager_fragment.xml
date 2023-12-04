@@ -11,12 +11,12 @@
         android:scaleType="centerCrop" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/imageViewerPagerPager"
+        android:id="@+id/imagePagerPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <LinearLayout
-        android:id="@+id/imageViewerPagerTools"
+        android:id="@+id/imagePagerTools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|end"
@@ -25,7 +25,7 @@
         android:layout_marginRight="16dp">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewerPagerSettings"
+            android:id="@+id/imagePagerSettings"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_marginStart="10dp"
@@ -35,7 +35,7 @@
             app:tint="@color/text_normal" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewerPagerOrigin"
+            android:id="@+id/imagePagerOrigin"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_marginStart="10dp"
@@ -45,7 +45,7 @@
             app:tint="@color/text_normal" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewerPagerShare"
+            android:id="@+id/imagePagerShare"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_marginStart="10dp"
@@ -55,7 +55,7 @@
             app:tint="@color/text_normal" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewerPagerSave"
+            android:id="@+id/imagePagerSave"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_marginStart="10dp"
@@ -65,7 +65,7 @@
             app:tint="@color/text_normal" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewerPagerRotate"
+            android:id="@+id/imagePagerRotate"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_marginStart="10dp"
@@ -75,7 +75,7 @@
             app:tint="@color/text_normal" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewerPagerInfo"
+            android:id="@+id/imagePagerInfo"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_marginStart="10dp"
@@ -85,7 +85,7 @@
             app:tint="@color/text_normal" />
 
         <TextView
-            android:id="@+id/imageViewerPagerPageNumber"
+            android:id="@+id/imagePagerPageNumber"
             android:layout_width="wrap_content"
             android:layout_height="34dp"
             android:layout_marginStart="10dp"

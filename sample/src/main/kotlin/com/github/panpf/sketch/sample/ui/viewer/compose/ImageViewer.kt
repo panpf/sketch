@@ -17,19 +17,35 @@ import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
+import com.github.panpf.zoomimage.compose.internal.toPlatform
 import com.github.panpf.zoomimage.compose.rememberZoomState
 import com.github.panpf.zoomimage.compose.zoom.ScrollBarSpec
+import com.github.panpf.zoomimage.zoom.AlignmentCompat
+import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.ReadMode
+import com.github.panpf.zoomimage.zoom.valueOf
 import kotlin.math.roundToInt
 
 @Composable
-fun ImageViewer(imageDetail: ImageDetail, onClick: () -> Unit) {
+fun ImageViewer(imageDetail: ImageDetail, onClick: (() -> Unit)? = null) {
     val context = LocalContext.current
     val prefsService = context.prefsService
     val showOriginImage by prefsService.showOriginImage.stateFlow.collectAsState()
     val scrollBarEnabled by prefsService.scrollBarEnabled.stateFlow.collectAsState()
     val readModeEnabled by prefsService.readModeEnabled.stateFlow.collectAsState()
     val showTileBounds by prefsService.showTileBounds.stateFlow.collectAsState()
+    val contentScaleName by prefsService.contentScale.stateFlow.collectAsState()
+    val alignmentName by prefsService.alignment.stateFlow.collectAsState()
+    val contentScale by remember {
+        derivedStateOf {
+            ContentScaleCompat.valueOf(contentScaleName).toPlatform()
+        }
+    }
+    val alignment by remember {
+        derivedStateOf {
+            AlignmentCompat.valueOf(alignmentName).toPlatform()
+        }
+    }
     val zoomState = rememberZoomState().apply {
         LaunchedEffect(showTileBounds) {
             subsampling.showTileBounds = showTileBounds
@@ -67,16 +83,19 @@ fun ImageViewer(imageDetail: ImageDetail, onClick: () -> Unit) {
             if (scrollBarEnabled) ScrollBarSpec.Default else null
         }
     }
+    // todo progress, state
     SketchZoomAsyncImage(
         request = DisplayRequest(context, imageUrl) {
             setApplySettings(DETAIL)
             placeholder(ThumbnailMemoryCacheStateImage(imageDetail.thumbnailUrl))
-            crossfade()
+            crossfade(fadeStart = false)
         },
         contentDescription = "view image",
         modifier = Modifier.fillMaxSize(),
+        contentScale = contentScale,
+        alignment = alignment,
         state = zoomState,
         scrollBar = scrollBar,
-        onTap = { onClick() }
+        onTap = { onClick?.invoke() }
     )
 }

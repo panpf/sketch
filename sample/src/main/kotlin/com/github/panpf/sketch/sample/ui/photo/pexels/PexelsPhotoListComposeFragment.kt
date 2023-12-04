@@ -102,7 +102,7 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
             }
         }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageViewerPagerFragment(
+            NavMainDirections.actionGlobalImagePagerComposeFragment(
                 Json.encodeToString(imageList),
                 position,
             ),

@@ -104,7 +104,7 @@ class GiphyGifListComposeFragment : ToolbarFragment() {
             }
         }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageViewerPagerFragment(
+            NavMainDirections.actionGlobalImagePagerComposeFragment(
                 Json.encodeToString(imageList),
                 position,
             ),

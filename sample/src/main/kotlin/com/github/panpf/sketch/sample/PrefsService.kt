@@ -16,12 +16,14 @@
 package com.github.panpf.sketch.sample
 
 import android.content.Context
-import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.util.BooleanMmkvData
 import com.github.panpf.sketch.sample.util.StringMmkvData
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.zoomimage.zoom.AlignmentCompat
+import com.github.panpf.zoomimage.zoom.ContentScaleCompat
+import com.github.panpf.zoomimage.zoom.name
 import com.tencent.mmkv.MMKV
 
 class PrefsService(val context: Context) {
@@ -90,8 +92,11 @@ class PrefsService(val context: Context) {
         BooleanMmkvData(mmkv, "disallowReuseBitmap", false)
     }
 
-    val scaleType by lazy {
-        StringMmkvData(mmkv, "scaleType", ScaleType.FIT_CENTER.name)
+    val contentScale by lazy {
+        StringMmkvData(mmkv, "contentScale", ContentScaleCompat.Fit.name)
+    }
+    val alignment by lazy {
+        StringMmkvData(mmkv, "alignment", AlignmentCompat.Center.name)
     }
     val scrollBarEnabled by lazy {
         BooleanMmkvData(mmkv, "scrollBarEnabled", true)

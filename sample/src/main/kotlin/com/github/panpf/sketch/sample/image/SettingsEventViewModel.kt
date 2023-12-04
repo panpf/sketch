@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample.image
 
 import android.app.Application
-import android.widget.ImageView.ScaleType
 import androidx.core.view.descendants
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.lifecycleScope
@@ -12,9 +11,6 @@ import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.util.lifecycleOwner
 import com.github.panpf.sketch.sample.widget.MyRecyclerView
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.zoomimage.SketchZoomImageView
-import com.github.panpf.zoomimage.view.zoom.ScrollBarSpec
-import com.github.panpf.zoomimage.zoom.ReadMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.merge
@@ -58,29 +54,6 @@ class SettingsEventViewModel(application: Application) : AndroidViewModel(applic
         recyclerView.lifecycleOwner.lifecycleScope.launch {
             listReloadFlow.collect {
                 recyclerView.adapter?.findPagingAdapter()?.refresh()
-            }
-        }
-    }
-
-    fun observeZoomSettings(zoomImageView: SketchZoomImageView) {
-        zoomImageView.lifecycleOwner.lifecycleScope.launch {
-            prefsService.scrollBarEnabled.stateFlow.collect {
-                zoomImageView.scrollBar = if (it) ScrollBarSpec.Default else null
-            }
-        }
-        zoomImageView.lifecycleOwner.lifecycleScope.launch {
-            prefsService.readModeEnabled.stateFlow.collect {
-                zoomImageView.zoomable.readModeState.value = if (it) ReadMode.Default else null
-            }
-        }
-        zoomImageView.lifecycleOwner.lifecycleScope.launch {
-            prefsService.showTileBounds.stateFlow.collect {
-                zoomImageView.subsampling.showTileBoundsState.value = it
-            }
-        }
-        zoomImageView.lifecycleOwner.lifecycleScope.launch {
-            prefsService.scaleType.stateFlow.collect {
-                zoomImageView.scaleType = ScaleType.valueOf(it)
             }
         }
     }

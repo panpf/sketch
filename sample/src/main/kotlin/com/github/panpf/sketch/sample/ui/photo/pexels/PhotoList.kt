@@ -32,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -73,11 +74,14 @@ fun PhotoListContent(
         }
     }
     val context = LocalContext.current
+    val localView = LocalView.current
+    // todo from subscript
     LaunchedEffect(key1 = reloadFlow) {
         scope.launch {
             restartImageFlow.collect {
                 // todo Look for ways to actively discard the old state redraw, and then listen for restartImageFlow to perform the redraw
                 context.showLongToast("You need to scroll through the list manually to see the changes")
+                localView.postInvalidate()
             }
         }
     }
