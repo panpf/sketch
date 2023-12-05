@@ -23,13 +23,9 @@ listView.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
 @Composable
 fun ListContent() {
     val lazyListState = rememberLazyListState()
-    if (lazyListState.isScrollInProgress) {
-        DisposableEffect(Unit) {
-            PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
-            onDispose {
-                PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = false
-            }
-        }
+    LaunchedEffect(lazyGridState.isScrollInProgress) {
+        PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling =
+            lazyGridState.isScrollInProgress
     }
 
     LazyColumn(state = lazyListState) {
