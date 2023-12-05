@@ -26,8 +26,8 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +58,7 @@ import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.image.ImageType.LIST
 import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.common.compose.AppendState
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
@@ -101,13 +102,9 @@ fun PhotoListContent(
         onRefresh = { lazyPagingItems.refresh() }
     ) {
         val lazyGridState = rememberLazyGridState()
-        if (lazyGridState.isScrollInProgress) {
-            DisposableEffect(Unit) {
-                PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
-                onDispose {
-                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = false
-                }
-            }
+        LaunchedEffect(lazyGridState.isScrollInProgress) {
+            PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling =
+                lazyGridState.isScrollInProgress
         }
 
         LazyVerticalGrid(
@@ -179,46 +176,63 @@ fun PhotoContent(
     }
     var dataFrom by remember { mutableStateOf<DataFrom?>(null) }
 
+    val context = LocalContext.current
+    val showDataFromLogo by context.prefsService.showDataFromLogo.stateFlow.collectAsState()
+
     val modifier = Modifier
         .fillMaxWidth()
         .aspectRatio(1f)
         .clickable {
             onClick(photo, index)
         }
-        .onSizeChanged {
-            componentSize = it
-        }
-        .drawWithContent {
-            drawContent()
-            val dataFrom1 = dataFrom
-            if (dataFrom1 != null) {
-                val color = Color(dataFrom2Color(dataFrom1))
-                drawPath(path, color)
+        .let {
+            if (showDataFromLogo) {
+                it
+                    .onSizeChanged {
+                        componentSize = it
+                    }
+                    .drawWithContent {
+                        drawContent()
+                        val dataFrom1 = dataFrom
+                        if (dataFrom1 != null) {
+                            val color = Color(dataFrom2Color(dataFrom1))
+                            drawPath(path, color)
+                        }
+                    }
+            } else {
+                it
             }
         }
-    val request = DisplayRequest(LocalContext.current, photo.listThumbnailUrl) {
-        setApplySettings(LIST)
-        if (animatedPlaceholder) {
-            placeholder(drawable.ic_placeholder_eclipse_animated)
-        } else {
-            placeholder(IconStateImage(drawable.ic_image_outline, ResColor(color.placeholder_bg)))
-        }
-        error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg))) {
-            saveCellularTrafficError(
-                IconStateImage(drawable.ic_signal_cellular, ResColor(color.placeholder_bg))
+    // listener 会导致两次创建的 DisplayRequest equals 为 false，从而引发重组，所以这里必须用 remember
+    val request = remember(photo.listThumbnailUrl) {
+        DisplayRequest(context, photo.listThumbnailUrl) {
+            setApplySettings(LIST)
+            if (animatedPlaceholder) {
+                placeholder(drawable.ic_placeholder_eclipse_animated)
+            } else {
+                placeholder(
+                    IconStateImage(
+                        drawable.ic_image_outline,
+                        ResColor(color.placeholder_bg)
+                    )
+                )
+            }
+            error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg))) {
+                saveCellularTrafficError(
+                    IconStateImage(drawable.ic_signal_cellular, ResColor(color.placeholder_bg))
+                )
+            }
+            crossfade()
+            resizeApplyToDrawable()
+            listener(
+                onSuccess = { _, result ->
+                    dataFrom = result.dataFrom
+                },
+                onError = { _, _ ->
+                    dataFrom = null
+                }
             )
         }
-        crossfade()
-        resizeApplyToDrawable()
-        // todo 加了 listener 会导致图片在列表滑动时不停的加载，估计是 equals 的原因
-//        listener(
-//            onSuccess = { _, result ->
-//                dataFrom = result.dataFrom
-//            },
-//            onError = { _, _ ->
-//                dataFrom = null
-//            }
-//        )
     }
     when (index % 3) {
         0 -> {

@@ -142,6 +142,9 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 desc = "A black translucent mask is displayed on the ImageView surface to indicate progress"
             )
         )
+    }
+
+    private fun makeListMenuList(): List<Any> = buildList {
         add(
             SwitchMenuFlow(
                 title = "Show Data From Logo",
@@ -149,9 +152,6 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
             )
         )
-    }
-
-    private fun makeListMenuList(): List<Any> = buildList {
         add(
             SwitchMenuFlow(
                 title = "Save Cellular Traffic",
