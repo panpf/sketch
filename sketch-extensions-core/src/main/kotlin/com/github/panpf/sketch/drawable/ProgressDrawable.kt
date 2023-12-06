@@ -27,4 +27,6 @@ abstract class ProgressDrawable : Drawable() {
     abstract var onProgressEnd: (() -> Unit)?
 
     fun isActive(): Boolean = callback != null && isVisible
+
+    abstract override fun mutate(): ProgressDrawable
 }

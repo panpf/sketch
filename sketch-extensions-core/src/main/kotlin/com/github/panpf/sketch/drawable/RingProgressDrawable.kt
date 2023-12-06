@@ -193,6 +193,14 @@ class RingProgressDrawable(
 
     override fun getIntrinsicHeight(): Int = size
 
+    override fun mutate(): ProgressDrawable {
+        return RingProgressDrawable(
+            size = size,
+            ringWidth = ringWidth,
+            ringColor = ringColor
+        )
+    }
+
     private interface Helper {
         fun draw(canvas: Canvas, cx: Float, cy: Float, radius: Float)
 

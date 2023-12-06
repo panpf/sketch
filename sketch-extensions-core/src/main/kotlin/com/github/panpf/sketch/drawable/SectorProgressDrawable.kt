@@ -172,4 +172,14 @@ class SectorProgressDrawable(
     override fun getIntrinsicWidth(): Int = size
 
     override fun getIntrinsicHeight(): Int = size
+
+    override fun mutate(): ProgressDrawable {
+        return SectorProgressDrawable(
+            size = size,
+            backgroundColor = backgroundColor,
+            strokeColor = strokeColor,
+            progressColor = progressColor,
+            strokeWidth = strokeWidth
+        )
+    }
 }
