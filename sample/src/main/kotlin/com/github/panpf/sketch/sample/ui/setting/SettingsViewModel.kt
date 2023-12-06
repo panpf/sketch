@@ -93,7 +93,6 @@ class SettingsViewModel(application1: Application, val page: Page) :
             when (page) {
                 LIST -> {
                     add(ListSeparator("List"))
-                    addAll(makeRecyclerListMenuList())
                     addAll(makeListMenuList())
                     add(ListSeparator("Decode"))
                     addAll(makeDecodeMenuList())
@@ -112,7 +111,6 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 }
                 NONE -> {
                     add(ListSeparator("List"))
-                    addAll(makeRecyclerListMenuList())
                     addAll(makeListMenuList())
                     add(ListSeparator("Decode"))
                     addAll(makeDecodeMenuList())
@@ -127,7 +125,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
         })
     }
 
-    private fun makeRecyclerListMenuList(): List<Any> = buildList {
+    private fun makeListMenuList(): List<Any> = buildList {
         add(
             SwitchMenuFlow(
                 title = "MimeType Logo",
@@ -135,6 +133,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 desc = "Displays the image type in the lower right corner of the ImageView"
             )
         )
+
         add(
             SwitchMenuFlow(
                 title = "Progress Indicator",
@@ -142,12 +141,10 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 desc = "A black translucent mask is displayed on the ImageView surface to indicate progress"
             )
         )
-    }
 
-    private fun makeListMenuList(): List<Any> = buildList {
         add(
             SwitchMenuFlow(
-                title = "Show Data From Logo",
+                title = "Data From Logo",
                 data = prefsService.showDataFromLogo,
                 desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
             )

@@ -132,6 +132,10 @@ class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
                         navDirections = NavMainDirections.actionProgressIndicatorTestFragment()
                     ),
                     Link(
+                        title = "ProgressIndicator (Compose)",
+                        navDirections = NavMainDirections.actionProgressIndicatorTestComposeFragment()
+                    ),
+                    Link(
                         title = "Display Insanity",
                         navDirections = NavMainDirections.actionInsanityTestFragment()
                     ),
