@@ -29,17 +29,17 @@ import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
-import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
+import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
 import kotlinx.coroutines.launch
 
 class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
-    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val localPhotoListViewModel by viewModels<InsanityTestViewModel>()
 
     @SuppressLint("NotifyDataSetChanged")
@@ -51,7 +51,6 @@ class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
         toolbar.title = "Insanity Test"
 
         binding.recyclerRecycler.apply {
-            settingsEventViewModel.observeListSettings(this)
             layoutManager =
                 newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
                     itemSpanByItemFactory(
@@ -110,6 +109,17 @@ class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
             adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
             })
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                prefsService.listsMergedFlow.collect {
+                    adapter?.notifyDataSetChanged()
+                }
+            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                prefsService.ignoreExifOrientation.sharedFlow.collect {
+                    adapter?.findPagingAdapter()?.refresh()
+                }
+            }
         }
     }
 }

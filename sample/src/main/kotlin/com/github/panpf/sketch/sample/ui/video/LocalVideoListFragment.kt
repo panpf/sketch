@@ -25,10 +25,11 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
-import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.VideoInfo
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
+import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import kotlinx.coroutines.launch
@@ -36,7 +37,6 @@ import java.io.File
 
 class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
-    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val videoListViewModel by viewModels<LocalVideoListViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
         ToolbarMenuViewModel.Factory(
@@ -94,11 +94,21 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
         }
 
         binding.recyclerRecycler.apply {
-            settingsEventViewModel.observeListSettings(this)
             layoutManager = LinearLayoutManager(activity)
             adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
             })
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                prefsService.listsMergedFlow.collect {
+                    adapter?.notifyDataSetChanged()
+                }
+            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                prefsService.ignoreExifOrientation.sharedFlow.collect {
+                    adapter?.findPagingAdapter()?.refresh()
+                }
+            }
         }
 
         binding.recyclerRefresh.setOnRefreshListener {
@@ -112,12 +122,14 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                         binding.recyclerState.gone()
                         binding.recyclerRefresh.isRefreshing = true
                     }
+
                     is LoadState.Error -> {
                         binding.recyclerRefresh.isRefreshing = false
                         binding.recyclerState.errorWithRetry(refreshState.error) {
                             pagingAdapter.refresh()
                         }
                     }
+
                     is LoadState.NotLoading -> {
                         binding.recyclerRefresh.isRefreshing = false
                         if (pagingAdapter.itemCount <= 0) {

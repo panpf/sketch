@@ -25,19 +25,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.NavMainDirections
-import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
-import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoListContent
+import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoList
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class GiphyGifListComposeFragment : ToolbarFragment() {
 
-    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val giphyGifListViewModel by viewModels<GiphyGifListViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
         ToolbarMenuViewModel.Factory(
@@ -51,10 +49,8 @@ class GiphyGifListComposeFragment : ToolbarFragment() {
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                PhotoListContent(
+                PhotoList(
                     photoPagingFlow = giphyGifListViewModel.pagingFlow,
-                    restartImageFlow = settingsEventViewModel.listRestartImageFlow,
-                    reloadFlow = settingsEventViewModel.listReloadFlow,
                     animatedPlaceholder = true,
                 ) { items, _, index ->
                     startImageDetail(items, index)

@@ -28,9 +28,8 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
-import com.github.panpf.sketch.sample.image.ImageType.LIST
-import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
@@ -82,7 +81,6 @@ class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
         binding.imageGridItemImage.apply {
             setClickIgnoreSaveCellularTrafficEnabled(true)
             updateDisplayImageOptions {
-                setApplySettings(LIST)
                 if (animatedPlaceholder) {
                     placeholder(R.drawable.ic_placeholder_eclipse_animated)
                 } else {
@@ -134,7 +132,9 @@ class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
                 }
             }
 
-            displayImage(data.listThumbnailUrl)
+            displayImage(data.listThumbnailUrl) {
+                merge(prefsService.buildListImageOptions())
+            }
         }
     }
 }

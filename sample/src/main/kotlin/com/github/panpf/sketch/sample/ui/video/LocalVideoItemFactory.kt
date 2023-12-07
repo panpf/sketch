@@ -21,9 +21,8 @@ import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.VideoItemBinding
-import com.github.panpf.sketch.sample.image.ImageType.LIST
-import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.sample.model.VideoInfo
+import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
@@ -55,7 +54,7 @@ class LocalVideoItemFactory :
         data: VideoInfo
     ) {
         binding.videoItemIconImage.displayImage(data.path) {
-            setApplySettings(LIST)
+            merge(context.prefsService.buildListImageOptions())
         }
         binding.videoItemNameText.text = data.title
         binding.videoItemSizeText.text = data.getTempFormattedSize(context)

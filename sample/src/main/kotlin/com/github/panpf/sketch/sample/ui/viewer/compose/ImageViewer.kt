@@ -11,8 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.eventService
-import com.github.panpf.sketch.sample.image.ImageType.DETAIL
-import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
@@ -83,13 +81,20 @@ fun ImageViewer(imageDetail: ImageDetail, onClick: (() -> Unit)? = null) {
             if (scrollBarEnabled) ScrollBarSpec.Default else null
         }
     }
-    // todo progress, state
-    SketchZoomAsyncImage(
-        request = DisplayRequest(context, imageUrl) {
-            setApplySettings(DETAIL)
+
+    val viewerSettings by prefsService.viewersCombinedFlow.collectAsState(Unit)
+    // listener 会导致两次创建的 DisplayRequest equals 为 false，从而引发重组，所以这里必须用 remember
+    val request = remember(imageUrl, viewerSettings) {
+        DisplayRequest(context, imageUrl) {
+            merge(prefsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(imageDetail.thumbnailUrl))
             crossfade(fadeStart = false)
-        },
+            // progress, listener
+        }
+    }
+    // todo progress, state
+    SketchZoomAsyncImage(
+        request = request,
         contentDescription = "view image",
         modifier = Modifier.fillMaxSize(),
         contentScale = contentScale,

@@ -37,7 +37,6 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
-import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
@@ -47,6 +46,7 @@ import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
+import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
 import com.github.panpf.tools4k.lang.asOrThrow
@@ -57,7 +57,6 @@ import kotlinx.serialization.json.Json
 
 class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
-    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val giphyGifListViewModel by viewModels<GiphyGifListViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
         ToolbarMenuViewModel.Factory(
@@ -99,7 +98,6 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
         }
 
         binding.recyclerRecycler.apply {
-            settingsEventViewModel.observeListSettings(this)
             viewLifecycleOwner.lifecycleScope.launch {
                 prefsService.photoListLayoutMode.stateFlow.collect {
                     (0 until itemDecorationCount).forEach { index ->
@@ -110,6 +108,17 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
                     layoutManager = layoutManager1
                     addItemDecoration(itemDecoration)
                     this@apply.adapter = newAdapter(binding)
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                prefsService.listsMergedFlow.collect {
+                    adapter?.notifyDataSetChanged()
+                }
+            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                prefsService.ignoreExifOrientation.sharedFlow.collect {
+                    adapter?.findPagingAdapter()?.refresh()
                 }
             }
         }

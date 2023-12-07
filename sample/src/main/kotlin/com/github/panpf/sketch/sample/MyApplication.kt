@@ -33,7 +33,6 @@ import com.github.panpf.sketch.fetch.supportAppIcon
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
 import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
-import com.github.panpf.sketch.sample.image.SettingsDisplayRequestInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.tencent.mmkv.MMKV
 
@@ -57,9 +56,6 @@ class MyApplication : MultiDexApplication(), SketchFactory {
 //            }
 //        }.build())
         components {
-            // global image request config
-            addRequestInterceptor(SettingsDisplayRequestInterceptor())
-
             addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
 
             addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())

@@ -23,15 +23,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
-import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoListContent
+import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoList
 import kotlinx.coroutines.launch
 
 class InsanityTestComposeFragment : ToolbarFragment() {
 
-    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val insanityTestViewModel by viewModels<InsanityTestViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
         ToolbarMenuViewModel.Factory(
@@ -45,10 +43,8 @@ class InsanityTestComposeFragment : ToolbarFragment() {
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                PhotoListContent(
+                PhotoList(
                     photoPagingFlow = insanityTestViewModel.pagingFlow,
-                    restartImageFlow = settingsEventViewModel.listRestartImageFlow,
-                    reloadFlow = settingsEventViewModel.listReloadFlow
                 ) { _, _, _ ->
                 }
             }

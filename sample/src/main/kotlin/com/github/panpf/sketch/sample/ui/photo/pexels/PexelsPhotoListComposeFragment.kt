@@ -25,7 +25,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.NavMainDirections
-import com.github.panpf.sketch.sample.image.SettingsEventViewModel
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
@@ -36,7 +35,6 @@ import kotlinx.serialization.json.Json
 
 class PexelsPhotoListComposeFragment : ToolbarFragment() {
 
-    private val settingsEventViewModel by viewModels<SettingsEventViewModel>()
     private val pexelsPhotoListViewModel by viewModels<PexelsPhotoListViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
         ToolbarMenuViewModel.Factory(
@@ -50,10 +48,8 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                PhotoListContent(
+                PhotoList(
                     photoPagingFlow = pexelsPhotoListViewModel.pagingFlow,
-                    restartImageFlow = settingsEventViewModel.listRestartImageFlow,
-                    reloadFlow = settingsEventViewModel.listReloadFlow
                 ) { items, _, index ->
                     startImageDetail(items, index)
                 }

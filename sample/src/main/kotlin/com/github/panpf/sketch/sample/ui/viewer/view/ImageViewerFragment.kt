@@ -28,8 +28,6 @@ import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
-import com.github.panpf.sketch.sample.image.ImageType.DETAIL
-import com.github.panpf.sketch.sample.image.setApplySettings
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
@@ -93,14 +91,20 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(State.STARTED) {
                     prefsService.showOriginImage.stateFlow.collect {
-                        displayImage(binding, it)
+                        displayImage(binding)
                     }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                prefsService.viewersMergedFlow.collect {
+                    displayImage(binding)
                 }
             }
         }
 
         binding.imageViewerRetryButton.setOnClickListener {
-            displayImage(binding, prefsService.showOriginImage.stateFlow.value)
+            displayImage(binding)
         }
         eventService.viewerPagerRotateEvent
             .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
@@ -115,10 +119,11 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             }
     }
 
-    private fun displayImage(binding: ImageViewerFragmentBinding, showOriginImage: Boolean) {
+    private fun displayImage(binding: ImageViewerFragmentBinding) {
+        val showOriginImage: Boolean = prefsService.showOriginImage.stateFlow.value
         val uri = if (showOriginImage) args.originImageUri else args.previewImageUri
         binding.imageViewerZoomImage.displayImage(uri) {
-            setApplySettings(DETAIL)
+            merge(prefsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
             listener(
