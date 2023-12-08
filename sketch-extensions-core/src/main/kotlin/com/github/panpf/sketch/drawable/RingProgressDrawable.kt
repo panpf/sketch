@@ -56,7 +56,7 @@ class RingProgressDrawable(
     private var helper: Helper? = null
     private var pendingProgress: Float = 0f
 
-    private var _progress: Float = -1f
+    private var _progress: Float = 0f
         set(value) {
             field = value
             invalidateSelf()
@@ -140,6 +140,7 @@ class RingProgressDrawable(
     }
 
     override fun draw(canvas: Canvas) {
+        _progress.takeIf { it >= 0f } ?: return
         val bounds = bounds.takeIf { !it.isEmpty } ?: return
         val widthRadius = bounds.width() / 2f
         val heightRadius = bounds.height() / 2f

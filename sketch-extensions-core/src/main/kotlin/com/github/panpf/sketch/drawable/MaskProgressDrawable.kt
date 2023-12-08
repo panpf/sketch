@@ -86,7 +86,7 @@ class MaskProgressDrawable(
                 (animationStartProgress!! + ((animationTargetProgress!! - animationStartProgress!!) * percent)).toFloat()
         }
 
-        val progress = _progress.takeIf { it > 0f } ?: return
+        val progress = _progress.takeIf { it >= 0f } ?: return
         val bounds = bounds.takeIf { !it.isEmpty } ?: return
         val saveCount = canvas.save()
         canvas.drawRect(
