@@ -195,11 +195,7 @@ class RingProgressDrawable(
     override fun getIntrinsicHeight(): Int = size
 
     override fun mutate(): ProgressDrawable {
-        return RingProgressDrawable(
-            size = size,
-            ringWidth = ringWidth,
-            ringColor = ringColor
-        )
+        return this
     }
 
     private interface Helper {

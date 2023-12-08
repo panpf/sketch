@@ -135,6 +135,6 @@ class MaskProgressDrawable(
     override fun getIntrinsicHeight(): Int = -1
 
     override fun mutate(): ProgressDrawable {
-        return MaskProgressDrawable(maskColor)
+        return this
     }
 }
