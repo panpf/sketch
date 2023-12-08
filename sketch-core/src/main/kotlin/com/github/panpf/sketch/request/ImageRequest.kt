@@ -267,9 +267,11 @@ interface ImageRequest {
 
         private val context: Context
         private val uriString: String
+        // todo Support multiple listeners
         private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? = null
         private var providerListener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? =
             null
+        // todo Support multiple progressListener
         private var progressListener: ProgressListener<ImageRequest>? = null
         private var providerProgressListener: ProgressListener<ImageRequest>? = null
         private var target: Target? = null
