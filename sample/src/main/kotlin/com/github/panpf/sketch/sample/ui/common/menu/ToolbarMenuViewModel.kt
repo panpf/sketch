@@ -24,7 +24,7 @@ import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.MenuItemInfoGroup
 import com.github.panpf.sketch.sample.model.NavMenuItemInfo
 import com.github.panpf.sketch.sample.model.SwitchMenuItemInfo
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.ui.setting.Page
@@ -63,7 +63,7 @@ class ToolbarMenuViewModel(
             if (showPlayMenu) {
                 add(SwitchMenuItemInfo(
                     values = arrayOf(true, false),
-                    initValue = application1.prefsService.disallowAnimatedImageInList.value,
+                    initValue = application1.appSettingsService.disallowAnimatedImageInList.value,
                     titles = null,
                     iconResIds = arrayOf(
                         R.drawable.ic_pause,
@@ -71,7 +71,7 @@ class ToolbarMenuViewModel(
                     ),
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
                 ) { _, newValue ->
-                    application1.prefsService.disallowAnimatedImageInList.value = newValue
+                    application1.appSettingsService.disallowAnimatedImageInList.value = newValue
                     _menuFlow.value = assembleMenuList()
                 })
             }
@@ -82,7 +82,7 @@ class ToolbarMenuViewModel(
                         LayoutMode.GRID.toString(),
                         LayoutMode.STAGGERED_GRID.toString(),
                     ),
-                    initValue = application1.prefsService.photoListLayoutMode.value,
+                    initValue = application1.appSettingsService.photoListLayoutMode.value,
                     titles = null,
                     iconResIds = arrayOf(
                         R.drawable.ic_layout_grid,
@@ -90,7 +90,7 @@ class ToolbarMenuViewModel(
                     ),
                     showAsAction = MenuItem.SHOW_AS_ACTION_ALWAYS
                 ) { _, newValue ->
-                    application1.prefsService.photoListLayoutMode.value = newValue
+                    application1.appSettingsService.photoListLayoutMode.value = newValue
                     _menuFlow.value = assembleMenuList()
                 })
             }

@@ -33,6 +33,7 @@ import kotlinx.coroutines.withContext
 
 class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
 
+    // todo change MutableLiveData to MutableStateFlow
     val data = MutableLiveData<Pair<Array<String>, List<ImageDetail>>>()
 
     init {

@@ -20,19 +20,20 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle.State
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
+import com.github.panpf.sketch.sample.util.ignoreFirst
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4a.toast.ktx.showLongToast
-import kotlinx.coroutines.launch
 import java.io.File
 
 class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
@@ -53,8 +54,8 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
     ) {
         toolbar.apply {
             title = "Local Video"
-            viewLifecycleOwner.lifecycleScope.launch {
-                toolbarMenuViewModel.menuFlow.collect { list ->
+            toolbarMenuViewModel.menuFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
                     menu.clear()
                     list.forEachIndexed { groupIndex, group ->
                         group.items.forEachIndexed { index, menuItemInfo ->
@@ -71,7 +72,6 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                         }
                     }
                 }
-            }
         }
 
         val pagingAdapter = AssemblyPagingDataAdapter<VideoInfo>(listOf(
@@ -86,11 +86,10 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                 }
             }
         )).apply {
-            viewLifecycleOwner.lifecycleScope.launch {
-                videoListViewModel.pagingFlow.collect {
+            videoListViewModel.pagingFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     submitData(it)
                 }
-            }
         }
 
         binding.recyclerRecycler.apply {
@@ -99,24 +98,22 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
             })
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                prefsService.listsMergedFlow.collect {
+            appSettingsService.listsCombinedFlow.ignoreFirst()
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
-            }
-            viewLifecycleOwner.lifecycleScope.launch {
-                prefsService.ignoreExifOrientation.sharedFlow.collect {
+            appSettingsService.ignoreExifOrientation.sharedFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.findPagingAdapter()?.refresh()
                 }
-            }
         }
 
         binding.recyclerRefresh.setOnRefreshListener {
             pagingAdapter.refresh()
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            pagingAdapter.loadStateFlow.collect {
+        pagingAdapter.loadStateFlow
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                 when (val refreshState = it.refresh) {
                     is LoadState.Loading -> {
                         binding.recyclerState.gone()
@@ -140,6 +137,5 @@ class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>()
                     }
                 }
             }
-        }
     }
 }

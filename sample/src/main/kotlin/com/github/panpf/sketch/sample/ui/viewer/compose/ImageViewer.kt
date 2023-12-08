@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
 import com.github.panpf.zoomimage.compose.internal.toPlatform
@@ -27,13 +27,13 @@ import kotlin.math.roundToInt
 @Composable
 fun ImageViewer(imageDetail: ImageDetail, onClick: (() -> Unit)? = null) {
     val context = LocalContext.current
-    val prefsService = context.prefsService
-    val showOriginImage by prefsService.showOriginImage.stateFlow.collectAsState()
-    val scrollBarEnabled by prefsService.scrollBarEnabled.stateFlow.collectAsState()
-    val readModeEnabled by prefsService.readModeEnabled.stateFlow.collectAsState()
-    val showTileBounds by prefsService.showTileBounds.stateFlow.collectAsState()
-    val contentScaleName by prefsService.contentScale.stateFlow.collectAsState()
-    val alignmentName by prefsService.alignment.stateFlow.collectAsState()
+    val appSettingsService = context.appSettingsService
+    val showOriginImage by appSettingsService.showOriginImage.stateFlow.collectAsState()
+    val scrollBarEnabled by appSettingsService.scrollBarEnabled.stateFlow.collectAsState()
+    val readModeEnabled by appSettingsService.readModeEnabled.stateFlow.collectAsState()
+    val showTileBounds by appSettingsService.showTileBounds.stateFlow.collectAsState()
+    val contentScaleName by appSettingsService.contentScale.stateFlow.collectAsState()
+    val alignmentName by appSettingsService.alignment.stateFlow.collectAsState()
     val contentScale by remember {
         derivedStateOf {
             ContentScaleCompat.valueOf(contentScaleName).toPlatform()
@@ -82,11 +82,11 @@ fun ImageViewer(imageDetail: ImageDetail, onClick: (() -> Unit)? = null) {
         }
     }
 
-    val viewerSettings by prefsService.viewersCombinedFlow.collectAsState(Unit)
+    val viewerSettings by appSettingsService.viewersCombinedFlow.collectAsState(Unit)
     // listener 会导致两次创建的 DisplayRequest equals 为 false，从而引发重组，所以这里必须用 remember
     val request = remember(imageUrl, viewerSettings) {
         DisplayRequest(context, imageUrl) {
-            merge(prefsService.buildViewerImageOptions())
+            merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(imageDetail.thumbnailUrl))
             crossfade(fadeStart = false)
             // progress, listener

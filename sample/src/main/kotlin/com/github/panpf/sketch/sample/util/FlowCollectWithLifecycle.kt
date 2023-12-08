@@ -31,6 +31,12 @@ fun <T> Flow<T>.collectWithLifecycle(owner: LifecycleOwner, collector: FlowColle
     }
 }
 
+fun <T> Flow<T>.collectWithLifecycle(lifecycle: Lifecycle, collector: FlowCollector<T>) {
+    lifecycle.coroutineScope.launch {
+        collect(collector)
+    }
+}
+
 fun <T> Flow<T>.repeatCollectWithLifecycle(
     owner: LifecycleOwner,
     state: Lifecycle.State,

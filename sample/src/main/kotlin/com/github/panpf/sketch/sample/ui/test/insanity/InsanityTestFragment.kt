@@ -19,7 +19,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle.State
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
@@ -30,13 +30,14 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
-import kotlinx.coroutines.launch
+import com.github.panpf.sketch.sample.util.ignoreFirst
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
 class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
@@ -70,30 +71,31 @@ class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
             val pagingAdapter = AssemblyPagingDataAdapter<Photo>(
                 listOf(ImageGridItemFactory())
             ).apply {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    localPhotoListViewModel.pagingFlow.collect { pagingData ->
+                localPhotoListViewModel.pagingFlow
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { pagingData ->
                         submitData(pagingData)
                     }
-                }
             }
 
             binding.recyclerRefresh.setOnRefreshListener {
                 pagingAdapter.refresh()
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                pagingAdapter.loadStateFlow.collect { loadStates ->
+            pagingAdapter.loadStateFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { loadStates ->
                     when (val refreshState = loadStates.refresh) {
                         is LoadState.Loading -> {
                             binding.recyclerState.gone()
                             binding.recyclerRefresh.isRefreshing = true
                         }
+
                         is LoadState.Error -> {
                             binding.recyclerRefresh.isRefreshing = false
                             binding.recyclerState.errorWithRetry(refreshState.error) {
                                 pagingAdapter.refresh()
                             }
                         }
+
                         is LoadState.NotLoading -> {
                             binding.recyclerRefresh.isRefreshing = false
                             if (pagingAdapter.itemCount <= 0) {
@@ -104,22 +106,19 @@ class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
                         }
                     }
                 }
-            }
 
             adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
             })
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                prefsService.listsMergedFlow.collect {
+            appSettingsService.listsCombinedFlow.ignoreFirst()
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
-            }
-            viewLifecycleOwner.lifecycleScope.launch {
-                prefsService.ignoreExifOrientation.sharedFlow.collect {
+            appSettingsService.ignoreExifOrientation.sharedFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.findPagingAdapter()?.refresh()
                 }
-            }
         }
     }
 }

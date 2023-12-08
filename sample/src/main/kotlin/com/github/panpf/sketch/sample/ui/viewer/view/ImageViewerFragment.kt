@@ -20,8 +20,6 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
@@ -29,10 +27,10 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
-import com.github.panpf.sketch.sample.util.lifecycleOwner
+import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
@@ -41,7 +39,6 @@ import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
@@ -51,31 +48,38 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
         binding.root.background = null
 
+        binding.imageViewerRetryButton.setOnClickListener {
+            displayImage(binding)
+        }
+
         binding.imageViewerZoomImage.apply {
-            lifecycleOwner.lifecycleScope.launch {
-                prefsService.scrollBarEnabled.stateFlow.collect {
+            appSettingsService.scrollBarEnabled.stateFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     scrollBar = if (it) ScrollBarSpec.Default else null
                 }
+            zoomable.apply {
+                appSettingsService.readModeEnabled.stateFlow
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                        readModeState.value = if (it) ReadMode.Default else null
+                    }
+                appSettingsService.contentScale.stateFlow
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                        contentScaleState.value = ContentScaleCompat.valueOf(it)
+                    }
+                appSettingsService.alignment.stateFlow
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                        alignmentState.value = AlignmentCompat.valueOf(it)
+                    }
+                eventService.viewerPagerRotateEvent
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                        rotate(transformState.value.rotation.roundToInt() + 90)
+                    }
             }
-            lifecycleOwner.lifecycleScope.launch {
-                prefsService.readModeEnabled.stateFlow.collect {
-                    zoomable.readModeState.value = if (it) ReadMode.Default else null
-                }
-            }
-            lifecycleOwner.lifecycleScope.launch {
-                prefsService.showTileBounds.stateFlow.collect {
-                    subsampling.showTileBoundsState.value = it
-                }
-            }
-            lifecycleOwner.lifecycleScope.launch {
-                prefsService.contentScale.stateFlow.collect {
-                    zoomable.contentScaleState.value = ContentScaleCompat.valueOf(it)
-                }
-            }
-            lifecycleOwner.lifecycleScope.launch {
-                prefsService.alignment.stateFlow.collect {
-                    zoomable.alignmentState.value = AlignmentCompat.valueOf(it)
-                }
+            subsampling.apply {
+                appSettingsService.showTileBounds.stateFlow
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                        showTileBoundsState.value = it
+                    }
             }
 
             showSectorProgressIndicator()
@@ -83,47 +87,33 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             setOnClickListener {
                 findNavController().popBackStack()
             }
+
             setOnLongClickListener {
                 startImageInfoDialog(this)
                 true
             }
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewLifecycleOwner.repeatOnLifecycle(State.STARTED) {
-                    prefsService.showOriginImage.stateFlow.collect {
-                        displayImage(binding)
-                    }
+            eventService.viewerPagerInfoEvent
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    startImageInfoDialog(this)
                 }
-            }
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                prefsService.viewersMergedFlow.collect {
+            appSettingsService.viewersCombinedFlow
+                .ignoreFirst()
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     displayImage(binding)
                 }
-            }
-        }
-
-        binding.imageViewerRetryButton.setOnClickListener {
-            displayImage(binding)
-        }
-        eventService.viewerPagerRotateEvent
-            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    val zoomable = binding.imageViewerZoomImage.zoomable
-                    zoomable.rotate(zoomable.transformState.value.rotation.roundToInt() + 90)
+            appSettingsService.showOriginImage.stateFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    displayImage(binding)
                 }
-            }
-        eventService.viewerPagerInfoEvent
-            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                startImageInfoDialog(binding.imageViewerZoomImage)
-            }
+        }
     }
 
     private fun displayImage(binding: ImageViewerFragmentBinding) {
-        val showOriginImage: Boolean = prefsService.showOriginImage.stateFlow.value
+        val showOriginImage: Boolean = appSettingsService.showOriginImage.stateFlow.value
         val uri = if (showOriginImage) args.originImageUri else args.previewImageUri
         binding.imageViewerZoomImage.displayImage(uri) {
-            merge(prefsService.buildViewerImageOptions())
+            merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
             listener(

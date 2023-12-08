@@ -30,7 +30,7 @@ import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrN
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
@@ -109,7 +109,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
                 imageInfo = if (uri.endsWith(".svg")) {
                     dataSource.readImageInfoWithSVG()
                 } else {
-                    dataSource.readImageInfoWithBitmapFactoryOrNull(context.prefsService.ignoreExifOrientation.value)
+                    dataSource.readImageInfoWithBitmapFactoryOrNull(context.appSettingsService.ignoreExifOrientation.value)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

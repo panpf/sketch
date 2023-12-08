@@ -26,7 +26,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
@@ -39,7 +38,7 @@ import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
@@ -47,6 +46,7 @@ import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
 import com.github.panpf.sketch.sample.ui.viewer.view.ImageViewerFragment.ItemFactory
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenSize
@@ -183,17 +183,14 @@ class ImagePagerFragment : BindingFragment<ImagePagerFragmentBinding>() {
         }
 
         binding.imagePagerOrigin.apply {
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewLifecycleOwner.repeatOnLifecycle(State.STARTED) {
-                    prefsService.showOriginImage.stateFlow.collect {
-                        setImageResource(if (!it) R.drawable.ic_image_2 else R.drawable.ic_image_2_fill)
-                    }
+            appSettingsService.showOriginImage.stateFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    setImageResource(if (!it) R.drawable.ic_image_2 else R.drawable.ic_image_2_fill)
                 }
-            }
 
             setOnClickListener {
-                val newValue = !prefsService.showOriginImage.value
-                prefsService.showOriginImage.value = newValue
+                val newValue = !appSettingsService.showOriginImage.value
+                appSettingsService.showOriginImage.value = newValue
                 if (newValue) {
                     showLongToast("Opened View original image")
                 } else {
@@ -225,7 +222,7 @@ class ImagePagerFragment : BindingFragment<ImagePagerFragmentBinding>() {
     }
 
     private fun share(image: ImageDetail) {
-        val imageUri = if (prefsService.showOriginImage.value) {
+        val imageUri = if (appSettingsService.showOriginImage.value) {
             image.originUrl
         } else {
             image.mediumUrl ?: image.originUrl
@@ -236,7 +233,7 @@ class ImagePagerFragment : BindingFragment<ImagePagerFragmentBinding>() {
     }
 
     private fun save(image: ImageDetail) {
-        val imageUri = if (prefsService.showOriginImage.value) {
+        val imageUri = if (appSettingsService.showOriginImage.value) {
             image.originUrl
         } else {
             image.mediumUrl ?: image.originUrl

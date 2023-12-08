@@ -44,9 +44,8 @@ import com.github.panpf.zoomimage.zoom.name
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.merge
 
-class PrefsService(val context: Context) {
+class AppSettingsService(val context: Context) {
 
     private val mmkv = MMKV.defaultMMKV()
 
@@ -151,34 +150,15 @@ class PrefsService(val context: Context) {
         )
     }
 
-//    val bitmapQualityState = bitmapQuality.stateFlow.map { value ->
-//        when (value) {
-//            "LOW" -> BitmapConfig.LowQuality
-//            "HIGH" -> BitmapConfig.HighQuality
-//            else -> null
-//        }
-//    }
-
-    val bitmapQualityValue: BitmapConfig?
+    private val bitmapQualityValue: BitmapConfig?
         get() = when (bitmapQuality.value) {
             "LOW" -> BitmapConfig.LowQuality
             "HIGH" -> BitmapConfig.HighQuality
             else -> null
         }
 
-//    val colorSpaceState = colorSpace.stateFlow.map { value ->
-//        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-//            when (value) {
-//                "Default" -> null
-//                else -> ColorSpace.get(ColorSpace.Named.valueOf(value))
-//            }
-//        } else {
-//            null
-//        }
-//    }
-
     @get:RequiresApi(VERSION_CODES.O)
-    val colorSpaceValue: ColorSpace?
+    private val colorSpaceValue: ColorSpace?
         get() = if (VERSION.SDK_INT >= VERSION_CODES.O) {
             when (val value = colorSpace.value) {
                 "Default" -> null
@@ -187,27 +167,26 @@ class PrefsService(val context: Context) {
         } else {
             null
         }
-
-//    val disabledMemoryCacheState = disabledMemoryCache.stateFlow.map { value ->
-//        if(value) DISABLED else ENABLED
-//    }
-
-    val disabledMemoryCacheValue: CachePolicy
+    private val disabledMemoryCacheValue: CachePolicy
         get() = if (disabledMemoryCache.value) DISABLED else ENABLED
-
-//    val disabledDownloadCacheState = disabledDownloadCache.stateFlow.map { value ->
-//        if(value) DISABLED else ENABLED
-//    }
-
-    val disabledDownloadCacheValue: CachePolicy
+    private val disabledDownloadCacheValue: CachePolicy
         get() = if (disabledDownloadCache.value) DISABLED else ENABLED
-
-//    val disabledResultCacheState = disabledResultCache.stateFlow.map { value ->
-//        if(value) DISABLED else ENABLED
-//    }
-
-    val disabledResultCacheValue: CachePolicy
+    private val disabledResultCacheValue: CachePolicy
         get() = if (disabledResultCache.value) DISABLED else ENABLED
+    private val resizePrecisionValue: PrecisionDecider
+        get() = when (resizePrecision.value) {
+            "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
+            else -> PrecisionDecider(Precision.valueOf(resizePrecision.value))
+        }
+    private val resizeScaleValue: ScaleDecider
+        get() = when (resizeScale.value) {
+            "LongImageMode" -> LongImageScaleDecider(
+                longImage = Scale.valueOf(value = longImageResizeScale.value),
+                otherImage = Scale.valueOf(value = otherImageResizeScale.value)
+            )
+
+            else -> ScaleDecider(Scale.valueOf(value = resizeScale.value))
+        }
 
     private val listFlows = listOf(
         bitmapQuality,
@@ -229,7 +208,6 @@ class PrefsService(val context: Context) {
         disallowAnimatedImageInList,
     )
 
-    val listsMergedFlow: Flow<Any> = listFlows.map { it.sharedFlow }.merge()
     val listsCombinedFlow: Flow<Any> = combine(listFlows.map { it.stateFlow }) { it.joinToString() }
 
     private val viewerFlows = listOf(
@@ -244,51 +222,43 @@ class PrefsService(val context: Context) {
 
         ignoreExifOrientation,
     )
-    val viewersMergedFlow: Flow<Any> = viewerFlows.map { it.sharedFlow }.merge()
     val viewersCombinedFlow: Flow<Any> =
         combine(viewerFlows.map { it.stateFlow }) { it.joinToString() }
 
-    fun buildViewerImageOptions(): ImageOptions = ImageOptions {
-        memoryCachePolicy(disabledMemoryCacheValue)
-        downloadCachePolicy(disabledDownloadCacheValue)
-        disallowReuseBitmap(disallowReuseBitmap.value)
-        ignoreExifOrientation(ignoreExifOrientation.value)
-        preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed.value)
+    fun buildListImageOptions(): ImageOptions = ImageOptions {
+        pauseLoadWhenScrolling(pauseLoadWhenScrollInList.value)
+
         bitmapConfig(bitmapQualityValue)
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             colorSpace(colorSpaceValue)
         }
+        preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed.value)
+
+        memoryCachePolicy(disabledMemoryCacheValue)
+        resultCachePolicy(disabledResultCacheValue)
+        downloadCachePolicy(disabledDownloadCacheValue)
+        disallowReuseBitmap(disallowReuseBitmap.value)
+
+        resizePrecision(resizePrecisionValue)
+        resizeScale(resizeScaleValue)
+
+        ignoreExifOrientation(ignoreExifOrientation.value)
+        saveCellularTraffic(saveCellularTrafficInList.value)
+        disallowAnimatedImage(disallowAnimatedImageInList.value)
     }
 
-    fun buildListImageOptions(): ImageOptions = ImageOptions {
-        memoryCachePolicy(disabledMemoryCacheValue)
-        downloadCachePolicy(disabledDownloadCacheValue)
-        disallowReuseBitmap(disallowReuseBitmap.value)
-        ignoreExifOrientation(ignoreExifOrientation.value)
-        preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed.value)
+    fun buildViewerImageOptions(): ImageOptions = ImageOptions {
         bitmapConfig(bitmapQualityValue)
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             colorSpace(colorSpaceValue)
         }
+        preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed.value)
 
-        resizePrecision(
-            when (resizePrecision.value) {
-                "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
-                else -> PrecisionDecider(Precision.valueOf(resizePrecision.value))
-            }
-        )
-        resizeScale(
-            when (resizeScale.value) {
-                "LongImageMode" -> LongImageScaleDecider(
-                    longImage = Scale.valueOf(value = longImageResizeScale.value),
-                    otherImage = Scale.valueOf(value = otherImageResizeScale.value)
-                )
+        memoryCachePolicy(disabledMemoryCacheValue)
+        resultCachePolicy(disabledResultCacheValue)
+        downloadCachePolicy(disabledDownloadCacheValue)
+        disallowReuseBitmap(disallowReuseBitmap.value)
 
-                else -> ScaleDecider(Scale.valueOf(value = resizeScale.value))
-            }
-        )
-        disallowAnimatedImage(disallowAnimatedImageInList.value)
-        pauseLoadWhenScrolling(pauseLoadWhenScrollInList.value)
-        saveCellularTraffic(saveCellularTrafficInList.value)
+        ignoreExifOrientation(ignoreExifOrientation.value)
     }
 }

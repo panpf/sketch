@@ -20,8 +20,8 @@ import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.util.letIf
 import com.github.panpf.sketch.sample.widget.TextDrawable
 import com.github.panpf.sketch.stateimage.IconStateImage
@@ -64,10 +64,10 @@ fun PhotoItem(
     }
     val progressPainter = rememberDrawableProgressPainter(MaskProgressDrawable())
     val progressIndicatorState = rememberProgressIndicatorState(progressPainter)
-    val prefsService = context.prefsService
-    val showDataFromLogo by prefsService.showDataFromLogo.stateFlow.collectAsState()
-    val showMimeTypeLogo by prefsService.showMimeTypeLogoInLIst.stateFlow.collectAsState()
-    val showProgressIndicator by prefsService.showProgressIndicatorInList.stateFlow.collectAsState()
+    val appSettingsService = context.appSettingsService
+    val showDataFromLogo by appSettingsService.showDataFromLogo.stateFlow.collectAsState()
+    val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInLIst.stateFlow.collectAsState()
+    val showProgressIndicator by appSettingsService.showProgressIndicatorInList.stateFlow.collectAsState()
     val modifier = Modifier
         .fillMaxWidth()
         .aspectRatio(1f)
@@ -84,7 +84,7 @@ fun PhotoItem(
             it.progressIndicator(progressIndicatorState)
         }
 
-    val listSettings by prefsService.listsCombinedFlow.collectAsState(Unit)
+    val listSettings by appSettingsService.listsCombinedFlow.collectAsState(Unit)
     // listener 会导致两次创建的 DisplayRequest equals 为 false，从而引发重组，所以这里必须用 remember
     val request = remember(photo.listThumbnailUrl, listSettings) {
         DisplayRequest(context, photo.listThumbnailUrl) {
@@ -105,7 +105,7 @@ fun PhotoItem(
             }
             crossfade()
             resizeApplyToDrawable()
-            merge(prefsService.buildListImageOptions())
+            merge(appSettingsService.buildListImageOptions())
             listener(
                 onStart = { _ ->
                     dataFromLogoState.dataFrom = null

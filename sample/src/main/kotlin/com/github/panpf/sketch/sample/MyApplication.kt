@@ -44,7 +44,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
     }
 
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
-        logger(Logger(Logger.Level.valueOf(prefsService.logLevel.value)))
+        logger(Logger(Logger.Level.valueOf(appSettingsService.logLevel.value)))
         httpStack(OkHttpStack.Builder().apply {
             if (VERSION.SDK_INT <= 19) {
                 enabledTlsProtocols("TLSv1.1", "TLSv1.2")

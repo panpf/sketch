@@ -22,11 +22,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoList
-import kotlinx.coroutines.launch
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
 class InsanityTestComposeFragment : ToolbarFragment() {
 
@@ -56,8 +56,8 @@ class InsanityTestComposeFragment : ToolbarFragment() {
         toolbar.apply {
             title = "Insanity Test"
             subtitle = "Compose"
-            viewLifecycleOwner.lifecycleScope.launch {
-                toolbarMenuViewModel.menuFlow.collect { list ->
+            toolbarMenuViewModel.menuFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
                     menu.clear()
                     list.forEachIndexed { groupIndex, group ->
                         group.items.forEachIndexed { index, menuItemInfo ->
@@ -74,7 +74,6 @@ class InsanityTestComposeFragment : ToolbarFragment() {
                         }
                     }
                 }
-            }
         }
     }
 }

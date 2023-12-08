@@ -26,10 +26,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
-import com.github.panpf.sketch.sample.prefsService
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.ui.setting.Page.COMPOSE_LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
@@ -55,29 +55,29 @@ class SettingsViewModel(application1: Application, val page: Page) :
     }
 
     val menuListData = MutableLiveData<List<Any>>()
-    private val prefsService = application1.prefsService
+    private val appSettingsService = application1.appSettingsService
 
     init {
         val states = listOfNotNull(
-            prefsService.showMimeTypeLogoInLIst.sharedFlow,
-            prefsService.showProgressIndicatorInList.sharedFlow,
-            prefsService.saveCellularTrafficInList.sharedFlow,
-            prefsService.pauseLoadWhenScrollInList.sharedFlow,
-            prefsService.resizePrecision.sharedFlow,
-            prefsService.resizeScale.sharedFlow,
-            prefsService.longImageResizeScale.sharedFlow,
-            prefsService.otherImageResizeScale.sharedFlow,
-            prefsService.inPreferQualityOverSpeed.sharedFlow,
-            prefsService.bitmapQuality.sharedFlow,
-            if (VERSION.SDK_INT >= VERSION_CODES.O) prefsService.colorSpace.sharedFlow else null,
-            prefsService.ignoreExifOrientation.sharedFlow,
-            prefsService.disabledMemoryCache.sharedFlow,
-            prefsService.disabledResultCache.sharedFlow,
-            prefsService.disabledDownloadCache.sharedFlow,
-            prefsService.disallowReuseBitmap.sharedFlow,
-            prefsService.showDataFromLogo.sharedFlow,
-            prefsService.showTileBounds.sharedFlow,
-            prefsService.logLevel.sharedFlow,
+            appSettingsService.showMimeTypeLogoInLIst.sharedFlow,
+            appSettingsService.showProgressIndicatorInList.sharedFlow,
+            appSettingsService.saveCellularTrafficInList.sharedFlow,
+            appSettingsService.pauseLoadWhenScrollInList.sharedFlow,
+            appSettingsService.resizePrecision.sharedFlow,
+            appSettingsService.resizeScale.sharedFlow,
+            appSettingsService.longImageResizeScale.sharedFlow,
+            appSettingsService.otherImageResizeScale.sharedFlow,
+            appSettingsService.inPreferQualityOverSpeed.sharedFlow,
+            appSettingsService.bitmapQuality.sharedFlow,
+            if (VERSION.SDK_INT >= VERSION_CODES.O) appSettingsService.colorSpace.sharedFlow else null,
+            appSettingsService.ignoreExifOrientation.sharedFlow,
+            appSettingsService.disabledMemoryCache.sharedFlow,
+            appSettingsService.disabledResultCache.sharedFlow,
+            appSettingsService.disabledDownloadCache.sharedFlow,
+            appSettingsService.disallowReuseBitmap.sharedFlow,
+            appSettingsService.showDataFromLogo.sharedFlow,
+            appSettingsService.showTileBounds.sharedFlow,
+            appSettingsService.logLevel.sharedFlow,
         )
         viewModelScope.launch {
             merge(*states.toTypedArray()).collect {
@@ -97,18 +97,21 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     add(ListSeparator("Decode"))
                     addAll(makeDecodeMenuList())
                 }
+
                 COMPOSE_LIST -> {
                     add(ListSeparator("List"))
                     addAll(makeListMenuList())
                     add(ListSeparator("Decode"))
                     addAll(makeDecodeMenuList())
                 }
+
                 ZOOM -> {
                     add(ListSeparator("Zoom"))
                     addAll(makeZoomMenuList())
                     add(ListSeparator("Decode"))
                     addAll(makeDecodeMenuList())
                 }
+
                 NONE -> {
                     add(ListSeparator("List"))
                     addAll(makeListMenuList())
@@ -129,37 +132,35 @@ class SettingsViewModel(application1: Application, val page: Page) :
         add(
             SwitchMenuFlow(
                 title = "MimeType Logo",
-                data = prefsService.showMimeTypeLogoInLIst,
+                data = appSettingsService.showMimeTypeLogoInLIst,
                 desc = "Displays the image type in the lower right corner of the ImageView"
             )
         )
-
-        add(
-            SwitchMenuFlow(
-                title = "Progress Indicator",
-                data = prefsService.showProgressIndicatorInList,
-                desc = "A black translucent mask is displayed on the ImageView surface to indicate progress"
-            )
-        )
-
         add(
             SwitchMenuFlow(
                 title = "Data From Logo",
-                data = prefsService.showDataFromLogo,
+                data = appSettingsService.showDataFromLogo,
                 desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
             )
         )
         add(
             SwitchMenuFlow(
+                title = "Progress Indicator",
+                data = appSettingsService.showProgressIndicatorInList,
+                desc = "A black translucent mask is displayed on the ImageView surface to indicate progress"
+            )
+        )
+        add(
+            SwitchMenuFlow(
                 title = "Save Cellular Traffic",
-                data = prefsService.saveCellularTrafficInList,
+                data = appSettingsService.saveCellularTrafficInList,
                 desc = "Mobile cell traffic does not download pictures"
             )
         )
         add(
             SwitchMenuFlow(
                 title = "Pause Load When Scrolling",
-                data = prefsService.pauseLoadWhenScrollInList,
+                data = appSettingsService.pauseLoadWhenScrollInList,
                 desc = "No image is loaded during list scrolling to improve the smoothness"
             )
         )
@@ -168,8 +169,8 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 title = "Resize Precision",
                 desc = null,
                 values = Precision.values().map { it.name }.plus(listOf("LongImageClipMode")),
-                getValue = { prefsService.resizePrecision.value },
-                onSelect = { _, value -> prefsService.resizePrecision.value = value }
+                getValue = { appSettingsService.resizePrecision.value },
+                onSelect = { _, value -> appSettingsService.resizePrecision.value = value }
             )
         )
         add(
@@ -177,18 +178,18 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 title = "Resize Scale",
                 desc = null,
                 values = Scale.values().map { it.name }.plus(listOf("LongImageMode")),
-                getValue = { prefsService.resizeScale.value },
-                onSelect = { _, value -> prefsService.resizeScale.value = value }
+                getValue = { appSettingsService.resizeScale.value },
+                onSelect = { _, value -> appSettingsService.resizeScale.value = value }
             )
         )
-        if (prefsService.resizeScale.value == "LongImageMode") {
+        if (appSettingsService.resizeScale.value == "LongImageMode") {
             add(
                 MultiSelectMenu(
                     title = "Long Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
-                    getValue = { prefsService.longImageResizeScale.value },
-                    onSelect = { _, value -> prefsService.longImageResizeScale.value = value }
+                    getValue = { appSettingsService.longImageResizeScale.value },
+                    onSelect = { _, value -> appSettingsService.longImageResizeScale.value = value }
                 )
             )
             add(
@@ -196,9 +197,9 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     title = "Other Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
-                    getValue = { prefsService.otherImageResizeScale.value },
+                    getValue = { appSettingsService.otherImageResizeScale.value },
                     onSelect = { _, value ->
-                        prefsService.otherImageResizeScale.value = value
+                        appSettingsService.otherImageResizeScale.value = value
                     }
                 )
             )
@@ -220,9 +221,9 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 title = "Content Scale",
                 desc = null,
                 values = contentScales.map { it.name },
-                getValue = { prefsService.contentScale.value },
+                getValue = { appSettingsService.contentScale.value },
                 onSelect = { _, value ->
-                    prefsService.contentScale.value = value
+                    appSettingsService.contentScale.value = value
                 }
             )
         )
@@ -243,9 +244,9 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 title = "Alignment",
                 desc = null,
                 values = alignments.map { it.name },
-                getValue = { prefsService.alignment.value },
+                getValue = { appSettingsService.alignment.value },
                 onSelect = { _, value ->
-                    prefsService.alignment.value = value
+                    appSettingsService.alignment.value = value
                 }
             )
         )
@@ -253,13 +254,13 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Scroll Bar",
                 desc = null,
-                data = prefsService.scrollBarEnabled,
+                data = appSettingsService.scrollBarEnabled,
             )
         )
         add(
             SwitchMenuFlow(
                 title = "Read Mode",
-                data = prefsService.readModeEnabled,
+                data = appSettingsService.readModeEnabled,
                 desc = "Long images are displayed in full screen by default"
             )
         )
@@ -267,7 +268,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Show Tile Bounds",
                 desc = "Overlay the state and area of the tile on the View",
-                data = prefsService.showTileBounds,
+                data = appSettingsService.showTileBounds,
             )
         )
     }
@@ -278,8 +279,8 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 title = "Bitmap Quality",
                 desc = null,
                 values = listOf("Default", "LOW", "HIGH"),
-                getValue = { prefsService.bitmapQuality.value },
-                onSelect = { _, value -> prefsService.bitmapQuality.value = value }
+                getValue = { appSettingsService.bitmapQuality.value },
+                onSelect = { _, value -> appSettingsService.bitmapQuality.value = value }
             )
         )
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -289,8 +290,8 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     title = "Color Space",
                     desc = null,
                     values = items,
-                    getValue = { prefsService.colorSpace.value },
-                    onSelect = { _, value -> prefsService.colorSpace.value = value }
+                    getValue = { appSettingsService.colorSpace.value },
+                    onSelect = { _, value -> appSettingsService.colorSpace.value = value }
                 )
             )
         }
@@ -299,7 +300,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 SwitchMenuFlow(
                     title = "inPreferQualityOverSpeed",
                     desc = null,
-                    data = prefsService.inPreferQualityOverSpeed
+                    data = appSettingsService.inPreferQualityOverSpeed
                 )
             )
         }
@@ -307,7 +308,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Exif Orientation",
                 desc = null,
-                data = prefsService.ignoreExifOrientation,
+                data = appSettingsService.ignoreExifOrientation,
                 reverse = true
             )
         )
@@ -323,7 +324,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     sketch.memoryCache.size.formatFileSize(0, false, true),
                     sketch.memoryCache.maxSize.formatFileSize(0, false, true)
                 ),
-                data = prefsService.disabledMemoryCache,
+                data = appSettingsService.disabledMemoryCache,
                 reverse = true,
                 onLongClick = {
                     sketch.memoryCache.clear()
@@ -339,7 +340,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     sketch.resultCache.size.formatFileSize(0, false, true),
                     sketch.resultCache.maxSize.formatFileSize(0, false, true)
                 ),
-                data = prefsService.disabledResultCache,
+                data = appSettingsService.disabledResultCache,
                 reverse = true,
                 onLongClick = {
                     sketch.resultCache.clear()
@@ -355,7 +356,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     sketch.downloadCache.size.formatFileSize(0, false, true),
                     sketch.downloadCache.maxSize.formatFileSize(0, false, true)
                 ),
-                data = prefsService.disabledDownloadCache,
+                data = appSettingsService.disabledDownloadCache,
                 reverse = true,
                 onLongClick = {
                     sketch.downloadCache.clear()
@@ -371,7 +372,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     sketch.bitmapPool.size.formatFileSize(0, false, true),
                     sketch.bitmapPool.maxSize.formatFileSize(0, false, true)
                 ),
-                data = prefsService.disallowReuseBitmap,
+                data = appSettingsService.disallowReuseBitmap,
                 reverse = true,
                 onLongClick = {
                     sketch.bitmapPool.clear()
@@ -390,7 +391,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 getValue = { application1.sketch.logger.level.toString() },
                 onSelect = { _, value ->
                     application1.sketch.logger.level = Level.valueOf(value)
-                    prefsService.logLevel.value = value
+                    appSettingsService.logLevel.value = value
                 }
             )
         )

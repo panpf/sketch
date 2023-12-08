@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.ui.photo.pexels
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -42,13 +43,15 @@ import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
+import com.github.panpf.sketch.sample.util.ignoreFirst
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -76,8 +79,8 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
         toolbar.apply {
             title = "Pexels Photos"
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                toolbarMenuViewModel.menuFlow.collect { list ->
+            toolbarMenuViewModel.menuFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
                     menu.clear()
                     list.forEachIndexed { groupIndex, group ->
                         group.items.forEachIndexed { index, menuItemInfo ->
@@ -94,12 +97,11 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
                         }
                     }
                 }
-            }
         }
 
         binding.recyclerRecycler.apply {
-            viewLifecycleOwner.lifecycleScope.launch {
-                prefsService.photoListLayoutMode.stateFlow.collect {
+            appSettingsService.photoListLayoutMode.stateFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     (0 until itemDecorationCount).forEach { index ->
                         removeItemDecorationAt(index)
                     }
@@ -109,18 +111,15 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
                     addItemDecoration(itemDecoration)
                     this@apply.adapter = newAdapter(binding)
                 }
-            }
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                prefsService.listsMergedFlow.collect {
+            appSettingsService.listsCombinedFlow.ignoreFirst()
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
-            }
-            viewLifecycleOwner.lifecycleScope.launch {
-                prefsService.ignoreExifOrientation.sharedFlow.collect {
+            appSettingsService.ignoreExifOrientation.sharedFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.findPagingAdapter()?.refresh()
                 }
-            }
         }
     }
 
@@ -142,6 +141,7 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
                     useSideDividerAsSideHeaderAndFooterDivider()
                 }
             }
+
             STAGGERED_GRID -> {
                 layoutManager = newAssemblyStaggeredGridLayoutManager(
                     2,
@@ -187,12 +187,14 @@ class PexelsPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>(
                         binding.recyclerState.gone()
                         binding.recyclerRefresh.isRefreshing = true
                     }
+
                     is LoadState.Error -> {
                         binding.recyclerRefresh.isRefreshing = false
                         binding.recyclerState.errorWithRetry(refreshState.error) {
                             pagingAdapter.refresh()
                         }
                     }
+
                     is LoadState.NotLoading -> {
                         binding.recyclerRefresh.isRefreshing = false
                         if (pagingAdapter.itemCount <= 0) {

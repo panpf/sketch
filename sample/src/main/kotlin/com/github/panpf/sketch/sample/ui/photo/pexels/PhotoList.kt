@@ -32,7 +32,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.common.compose.AppendState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -47,7 +47,7 @@ fun PhotoList(
     val context = LocalContext.current
     val lazyPagingItems = photoPagingFlow.collectAsLazyPagingItems()
     LaunchedEffect(Unit) {
-        context.prefsService.ignoreExifOrientation.sharedFlow.collect {
+        context.appSettingsService.ignoreExifOrientation.sharedFlow.collect {
             lazyPagingItems.refresh()
         }
     }

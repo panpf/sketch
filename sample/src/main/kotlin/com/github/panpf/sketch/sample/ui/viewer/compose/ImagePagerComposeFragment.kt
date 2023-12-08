@@ -73,7 +73,7 @@ import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
@@ -123,8 +123,8 @@ class ImagePagerComposeFragment : BaseFragment() {
                         )
                     },
                     onShowOriginClick = {
-                        val newValue = !prefsService.showOriginImage.value
-                        prefsService.showOriginImage.value = newValue
+                        val newValue = !appSettingsService.showOriginImage.value
+                        appSettingsService.showOriginImage.value = newValue
                         if (newValue) {
                             showLongToast("Opened View original image")
                         } else {
@@ -156,7 +156,7 @@ class ImagePagerComposeFragment : BaseFragment() {
     }
 
     private fun share(image: ImageDetail) {
-        val imageUri = if (prefsService.showOriginImage.value) {
+        val imageUri = if (appSettingsService.showOriginImage.value) {
             image.originUrl
         } else {
             image.mediumUrl ?: image.originUrl
@@ -167,7 +167,7 @@ class ImagePagerComposeFragment : BaseFragment() {
     }
 
     private fun save(image: ImageDetail) {
-        val imageUri = if (prefsService.showOriginImage.value) {
+        val imageUri = if (appSettingsService.showOriginImage.value) {
             image.originUrl
         } else {
             image.mediumUrl ?: image.originUrl
@@ -220,7 +220,7 @@ private fun ImagePager(
             ImageViewer(imageList[index], onImageClick)
         }
 
-        val showOriginImage by LocalContext.current.prefsService.showOriginImage.stateFlow.collectAsState()
+        val showOriginImage by LocalContext.current.appSettingsService.showOriginImage.stateFlow.collectAsState()
         ImagePagerTools(
             currentItem = pagerState.currentPage,
             imageCount = imageList.size,

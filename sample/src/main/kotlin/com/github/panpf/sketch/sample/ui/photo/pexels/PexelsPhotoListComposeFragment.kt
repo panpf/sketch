@@ -22,14 +22,14 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle.State
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
-import kotlinx.coroutines.launch
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -62,8 +62,8 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
         toolbar.apply {
             title = "Pexels Photos"
             subtitle = "Compose"
-            viewLifecycleOwner.lifecycleScope.launch {
-                toolbarMenuViewModel.menuFlow.collect { list ->
+            toolbarMenuViewModel.menuFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
                     menu.clear()
                     list.forEachIndexed { groupIndex, group ->
                         group.items.forEachIndexed { index, menuItemInfo ->
@@ -80,7 +80,6 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
                         }
                     }
                 }
-            }
         }
     }
 

@@ -24,7 +24,7 @@ import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrN
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4k.coroutines.withToIO
@@ -57,7 +57,7 @@ class InsanityTestPagingSource(private val context: Context) :
             val fetcher = sketch.components.newFetcherOrThrow(LoadRequest(context, uri))
             val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
             val imageInfo =
-                dataSource.readImageInfoWithBitmapFactoryOrNull(context.prefsService.ignoreExifOrientation.value)
+                dataSource.readImageInfoWithBitmapFactoryOrNull(context.appSettingsService.ignoreExifOrientation.value)
             if (imageInfo != null) {
                 val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
                 val size =

@@ -29,7 +29,7 @@ import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.prefsService
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
@@ -133,7 +133,7 @@ class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
             }
 
             displayImage(data.listThumbnailUrl) {
-                merge(prefsService.buildListImageOptions())
+                merge(appSettingsService.buildListImageOptions())
             }
         }
     }
