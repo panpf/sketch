@@ -40,7 +40,7 @@ class GiphyGifListComposeFragment : ToolbarFragment() {
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
         ToolbarMenuViewModel.Factory(
             requireActivity().application,
-            showLayoutModeMenu = false,
+            showLayoutModeMenu = true,
             showPlayMenu = true,
             fromComposePage = true,
         )

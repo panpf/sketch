@@ -31,10 +31,11 @@ import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.google.accompanist.drawablepainter.DrawablePainter
 
 @Composable
-fun PhotoItem(
+fun PhotoGridItem(
     index: Int,
     photo: Photo,
     animatedPlaceholder: Boolean = false,
+    staggeredGridMode: Boolean = false,
     onClick: (photo: Photo, index: Int) -> Unit
 ) {
     val context = LocalContext.current
@@ -70,7 +71,15 @@ fun PhotoItem(
     val showProgressIndicator by appSettingsService.showProgressIndicatorInList.stateFlow.collectAsState()
     val modifier = Modifier
         .fillMaxWidth()
-        .aspectRatio(1f)
+        .let {
+            val photoWidth = photo.width ?: 0
+            val photoHeight = photo.height ?: 0
+            if (staggeredGridMode && photoWidth > 0 && photoHeight > 0) {
+                it.aspectRatio(photoWidth.toFloat() / photoHeight)
+            } else {
+                it.aspectRatio(1f)
+            }
+        }
         .clickable {
             onClick(photo, index)
         }

@@ -22,23 +22,12 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
-import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoList
-import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
 class InsanityTestComposeFragment : ToolbarFragment() {
 
     private val insanityTestViewModel by viewModels<InsanityTestViewModel>()
-    private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
-        ToolbarMenuViewModel.Factory(
-            requireActivity().application,
-            showLayoutModeMenu = false,
-            showPlayMenu = false,
-            fromComposePage = true,
-        )
-    }
 
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         return ComposeView(requireContext()).apply {
@@ -56,24 +45,6 @@ class InsanityTestComposeFragment : ToolbarFragment() {
         toolbar.apply {
             title = "Insanity Test"
             subtitle = "Compose"
-            toolbarMenuViewModel.menuFlow
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
-                    menu.clear()
-                    list.forEachIndexed { groupIndex, group ->
-                        group.items.forEachIndexed { index, menuItemInfo ->
-                            menu.add(groupIndex, index, index, menuItemInfo.title).apply {
-                                menuItemInfo.iconResId?.let { iconResId ->
-                                    setIcon(iconResId)
-                                }
-                                setOnMenuItemClickListener {
-                                    menuItemInfo.onClick(this@InsanityTestComposeFragment)
-                                    true
-                                }
-                                setShowAsAction(menuItemInfo.showAsAction)
-                            }
-                        }
-                    }
-                }
         }
     }
 }

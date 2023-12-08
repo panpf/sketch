@@ -39,7 +39,7 @@ class PexelsPhotoListComposeFragment : ToolbarFragment() {
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
         ToolbarMenuViewModel.Factory(
             requireActivity().application,
-            showLayoutModeMenu = false,
+            showLayoutModeMenu = true,
             showPlayMenu = false,
             fromComposePage = true,
         )
