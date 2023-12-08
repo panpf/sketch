@@ -62,7 +62,6 @@ class ProgressIndicatorTestComposeFragment : ToolbarFragment() {
         }
     }
 
-
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         toolbar.title = "ProgressIndicator（Compose）"
 
@@ -79,14 +78,17 @@ class ProgressIndicatorTestComposeFragment : ToolbarFragment() {
                         DrawablePainter(drawable)
                     }
 
+                    val maskProgressDrawable = remember { MaskProgressDrawable() }
                     val maskProgressIndicatorState = rememberProgressIndicatorState(
-                        rememberDrawableProgressPainter(MaskProgressDrawable())
+                        rememberDrawableProgressPainter(maskProgressDrawable)
                     )
+                    val sectorProgressDrawable = remember { SectorProgressDrawable() }
                     val sectorProgressIndicatorState = rememberProgressIndicatorState(
-                        rememberDrawableProgressPainter(SectorProgressDrawable())
+                        rememberDrawableProgressPainter(sectorProgressDrawable)
                     )
+                    val ringProgressDrawable = remember { RingProgressDrawable() }
                     val ringProgressIndicatorState = rememberProgressIndicatorState(
-                        rememberDrawableProgressPainter(RingProgressDrawable())
+                        rememberDrawableProgressPainter(ringProgressDrawable)
                     )
 
                     Text(text = "MaskProgressIndicator", color = Color.White)
@@ -128,7 +130,7 @@ class ProgressIndicatorTestComposeFragment : ToolbarFragment() {
 
                     LaunchedEffect(Unit) {
                         var progress = 0L
-                        ringProgressIndicatorState.progress = null
+                        ringProgressIndicatorState.progress = 0f
                         while (progress <= 100 && isActive) {
                             delay(Random.nextLong(500, 2000))
                             progress += 20

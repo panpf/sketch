@@ -16,7 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.rememberAsyncImagePainter
-import com.github.panpf.sketch.drawable.MaskProgressDrawable
+import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
@@ -63,8 +63,9 @@ fun PhotoGridItem(
             "image/heif" to DrawablePainter(newLogoDrawable("HEIF")),
         )
     }
-    val progressPainter = rememberDrawableProgressPainter(MaskProgressDrawable())
-    val progressIndicatorState = rememberProgressIndicatorState(progressPainter)
+    val progressDrawable = remember { SectorProgressDrawable() }
+    val drawableProgressPainter = rememberDrawableProgressPainter(progressDrawable)
+    val progressIndicatorState = rememberProgressIndicatorState(drawableProgressPainter)
     val appSettingsService = context.appSettingsService
     val showDataFromLogo by appSettingsService.showDataFromLogo.stateFlow.collectAsState()
     val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInLIst.stateFlow.collectAsState()
@@ -119,21 +120,24 @@ fun PhotoGridItem(
                 onStart = { _ ->
                     dataFromLogoState.dataFrom = null
                     mimeTypeLogoState.mimeType = null
-                    progressIndicatorState.progress = null
+                    Log.d("ProgressTest", "PhotoGridItem. onStart")
+                    progressIndicatorState.progress = 0f
                 },
                 onSuccess = { _, result ->
                     dataFromLogoState.dataFrom = result.dataFrom
                     mimeTypeLogoState.mimeType = result.imageInfo.mimeType
+                    progressIndicatorState.progress = -1f
                 },
                 onError = { _, _ ->
                     dataFromLogoState.dataFrom = null
                     mimeTypeLogoState.mimeType = null
-                    progressIndicatorState.progress = null
+                    Log.d("ProgressTest", "PhotoGridItem. onError")
+                    progressIndicatorState.progress = -1f
                 }
             )
             progressListener { _, totalLength: Long, completedLength: Long ->
                 val progress = if (totalLength > 0) completedLength.toFloat() / totalLength else 0f
-                Log.d("ProgressTest", "progressListener. setProgress. progress=$progress")
+                Log.d("ProgressTest", "PhotoGridItem. progress=$progress")
                 progressIndicatorState.progress = progress
             }
         }

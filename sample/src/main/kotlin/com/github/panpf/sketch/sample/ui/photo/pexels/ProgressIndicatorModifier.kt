@@ -3,9 +3,11 @@ package com.github.panpf.sketch.sample.ui.photo.pexels
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -25,23 +27,37 @@ fun Modifier.progressIndicator(state: ProgressIndicatorState): Modifier {
 
 @Composable
 fun rememberProgressIndicatorState(progressPainter: ProgressPainter): ProgressIndicatorState {
-    val progressIndicatorState = remember { ProgressIndicatorState(progressPainter) }
-    LaunchedEffect(Unit) {
+    val progressIndicatorState =
+        remember(progressPainter) { ProgressIndicatorState(progressPainter) }
+    LaunchedEffect(progressIndicatorState) {
         snapshotFlow { progressIndicatorState.progress }.collect {
-            Log.d("ProgressTest", "ProgressIndicatorState. setProgress. progress=$it")
-            progressIndicatorState.progressPainter.progress = it ?: 0f
+            progressIndicatorState.progressPainter.progress = it
         }
     }
     return progressIndicatorState
 }
 
 @Stable
-class ProgressIndicatorState(val progressPainter: ProgressPainter) {
-    var progress by mutableStateOf<Float?>(null)
+class ProgressIndicatorState(val progressPainter: ProgressPainter) : RememberObserver {
+
+    var progress by mutableFloatStateOf(0f)
+
+    override fun onAbandoned() {
+        Log.d("ProgressTest", "ProgressIndicatorState. onAbandoned")
+    }
+
+    override fun onForgotten() {
+        Log.d("ProgressTest", "ProgressIndicatorState. onForgotten")
+    }
+
+    override fun onRemembered() {
+        Log.d("ProgressTest", "ProgressIndicatorState. onRemembered")
+    }
 }
 
 abstract class ProgressPainter : Painter() {
     abstract var progress: Float
+    var drawInvalidateTick by mutableIntStateOf(0)
 }
 
 internal data class ProgressIndicatorElement(
@@ -64,11 +80,13 @@ internal class ProgressIndicatorNode(
     override fun ContentDrawScope.draw() {
         drawContent()
 
-        Log.d("ProgressTest", "ProgressIndicatorNode. draw")
         val progressPainter = state.progressPainter
+        // Reading this ensures that we invalidate when invalidateDrawable() is called
+        progressPainter.drawInvalidateTick
         val progressPainterSize = progressPainter.intrinsicSize
             .takeIf { it.isSpecified && !it.isEmpty() }
             ?: size
+        Log.d("ProgressTest", "ProgressIndicatorNode. draw")
         translate(
             left = (size.width - progressPainterSize.width) / 2,
             top = (size.height - progressPainterSize.height) / 2,

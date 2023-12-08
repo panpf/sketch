@@ -31,11 +31,10 @@ import kotlin.math.roundToInt
  *
  * Instances are usually retrieved from [rememberDrawablePainter].
  */
-class DrawableProgressPainter(
+class DrawableProgressPainter internal constructor(
     val drawable: ProgressDrawable
 ) : ProgressPainter(), RememberObserver {
 
-    private var drawInvalidateTick by mutableStateOf(0)
     private var drawableIntrinsicSize by mutableStateOf(drawable.intrinsicSize)
 
     private val callback: Drawable.Callback by lazy {
@@ -125,10 +124,7 @@ class DrawableProgressPainter(
     override fun DrawScope.onDraw() {
         if (progressEnd) return
         drawIntoCanvas { canvas ->
-
             Log.d("ProgressTest", "DrawableProgressPainter. onDraw")
-            // Reading this ensures that we invalidate when invalidateDrawable() is called
-            drawInvalidateTick
 
             // Update the Drawable's bounds
             drawable.setBounds(0, 0, size.width.roundToInt(), size.height.roundToInt())
