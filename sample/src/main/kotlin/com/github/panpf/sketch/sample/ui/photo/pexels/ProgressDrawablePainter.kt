@@ -122,7 +122,7 @@ class DrawableProgressPainter internal constructor(
     }
 
     override fun DrawScope.onDraw() {
-        if (progressEnd) return
+        if (progressEnd || !drawable.isVisible) return
         drawIntoCanvas { canvas ->
             Log.d("ProgressTest", "DrawableProgressPainter. onDraw")
 
