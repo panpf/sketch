@@ -111,6 +111,7 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
         if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
             appendQueryParameter("_preferQualityOverSpeed", true.toString())
         }
+        // todo Split into three parameters: _size, _precision, and _scale, weakening the concept of Resize
         appendQueryParameter("_resize", newResizeKey(size))
         transformations?.takeIf { it.isNotEmpty() }?.let { list ->
             appendQueryParameter(
