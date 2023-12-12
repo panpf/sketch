@@ -29,7 +29,7 @@ import kotlin.math.roundToInt
  * A [Painter] which draws an Android [Drawable] and supports [Animatable] drawables. Instances
  * should be remembered to be able to start and stop [Animatable] animations.
  *
- * Instances are usually retrieved from [rememberDrawablePainter].
+ * Instances are usually retrieved from [rememberDrawableProgressPainter].
  */
 class DrawableProgressPainter internal constructor(
     val drawable: ProgressDrawable
@@ -40,7 +40,6 @@ class DrawableProgressPainter internal constructor(
     private val callback: Drawable.Callback by lazy {
         object : Drawable.Callback {
             override fun invalidateDrawable(d: Drawable) {
-                Log.d("ProgressTest", "DrawableProgressPainter. invalidateDrawable")
                 // Update the tick so that we get re-drawn
                 drawInvalidateTick++
                 // Update our intrinsic size too
@@ -57,14 +56,14 @@ class DrawableProgressPainter internal constructor(
         }
     }
 
-    private var progressEnd: Boolean = false
+//    private var progressEnd: Boolean = false
 
     override var progress: Float
         get() = drawable.progress
         set(value) {
-            if (value >= 0) {
-                progressEnd = false
-            }
+//            if (value >= 0) {
+//                progressEnd = false
+//            }
             drawable.progress = value
         }
 
@@ -77,11 +76,11 @@ class DrawableProgressPainter internal constructor(
         }
 
         drawable.apply {
-            setVisible(false, false)
-            onProgressEnd = {
-                progressEnd = true
-                drawable.invalidateSelf()
-            }
+//            setVisible(false, false)
+//            onProgressEnd = {
+//                progressEnd = true
+//                drawable.invalidateSelf()
+//            }
         }
     }
 
@@ -122,10 +121,8 @@ class DrawableProgressPainter internal constructor(
     }
 
     override fun DrawScope.onDraw() {
-        if (progressEnd || !drawable.isVisible) return
+        if (!drawable.isVisible) return
         drawIntoCanvas { canvas ->
-            Log.d("ProgressTest", "DrawableProgressPainter. onDraw")
-
             // Update the Drawable's bounds
             drawable.setBounds(0, 0, size.width.roundToInt(), size.height.roundToInt())
 

@@ -38,21 +38,9 @@ fun rememberProgressIndicatorState(progressPainter: ProgressPainter): ProgressIn
 }
 
 @Stable
-class ProgressIndicatorState(val progressPainter: ProgressPainter) : RememberObserver {
+class ProgressIndicatorState(val progressPainter: ProgressPainter) {
 
     var progress by mutableFloatStateOf(0f)
-
-    override fun onAbandoned() {
-        Log.d("ProgressTest", "ProgressIndicatorState. onAbandoned")
-    }
-
-    override fun onForgotten() {
-        Log.d("ProgressTest", "ProgressIndicatorState. onForgotten")
-    }
-
-    override fun onRemembered() {
-        Log.d("ProgressTest", "ProgressIndicatorState. onRemembered")
-    }
 }
 
 abstract class ProgressPainter : Painter() {
@@ -86,7 +74,6 @@ internal class ProgressIndicatorNode(
         val progressPainterSize = progressPainter.intrinsicSize
             .takeIf { it.isSpecified && !it.isEmpty() }
             ?: size
-        Log.d("ProgressTest", "ProgressIndicatorNode. draw")
         translate(
             left = (size.width - progressPainterSize.width) / 2,
             top = (size.height - progressPainterSize.height) / 2,

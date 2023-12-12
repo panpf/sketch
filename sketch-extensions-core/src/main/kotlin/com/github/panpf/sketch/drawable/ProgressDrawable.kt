@@ -24,7 +24,7 @@ abstract class ProgressDrawable : Drawable() {
 
     abstract var progress: Float
 
-    abstract var onProgressEnd: (() -> Unit)?
+//    abstract var onProgressEnd: (() -> Unit)?
 
     fun isActive(): Boolean = callback != null && isVisible
 

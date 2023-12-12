@@ -15,23 +15,16 @@
  */
 package com.github.panpf.sketch.viewability
 
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Drawable.Callback
 import android.os.SystemClock
+import android.util.Log
 import android.view.View
 import androidx.annotation.ColorInt
-import androidx.core.view.ViewCompat
-import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
-import androidx.lifecycle.Lifecycle.Event.ON_RESUME
-import androidx.lifecycle.Lifecycle.State.RESUMED
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.findViewTreeLifecycleOwner
+import com.github.panpf.sketch.drawable.AbsProgressDrawable.Companion.DEFAULT_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.drawable.RingProgressDrawable
@@ -40,7 +33,6 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.findLifecycle
 
 /**
  * Display a progress indicator, [progressDrawable] is responsible for the specific style
@@ -63,26 +55,56 @@ fun ViewAbilityContainer.removeProgressIndicator() {
  * Display a sector progress indicator
  */
 fun ViewAbilityContainer.showSectorProgressIndicator(
-    size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
+    size: Int = SectorProgressDrawable.defaultSize(),
     color: Int = Color.WHITE,
     backgroundColor: Int = 0x44000000,
-) = showProgressIndicator(SectorProgressDrawable(size, backgroundColor, color, color, size * 0.02f))
+    stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
+    hideWhenCompleted: Boolean = true,
+) = showProgressIndicator(
+    SectorProgressDrawable(
+        size = size,
+        backgroundColor = backgroundColor,
+        strokeColor = color,
+        progressColor = color,
+        strokeWidth = size * 0.02f,
+        stepAnimationDuration = stepAnimationDuration,
+        hideWhenCompleted = hideWhenCompleted
+    )
+)
 
 /**
  * Displays a mask progress indicator
  */
 fun ViewAbilityContainer.showMaskProgressIndicator(
     @ColorInt maskColor: Int = MaskProgressDrawable.DEFAULT_MASK_COLOR,
-) = showProgressIndicator(MaskProgressDrawable(maskColor))
+    stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
+    hideWhenCompleted: Boolean = true,
+) = showProgressIndicator(
+    MaskProgressDrawable(
+        maskColor = maskColor,
+        stepAnimationDuration = stepAnimationDuration,
+        hideWhenCompleted = hideWhenCompleted
+    )
+)
 
 /**
  * Display a ring progress indicator
  */
 fun ViewAbilityContainer.showRingProgressIndicator(
-    size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
+    size: Int = RingProgressDrawable.defaultSize(),
     ringWidth: Float = size * 0.1f,
     @ColorInt ringColor: Int = Color.WHITE,
-) = showProgressIndicator(RingProgressDrawable(size, ringWidth, ringColor))
+    stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
+    hideWhenCompleted: Boolean = true,
+) = showProgressIndicator(
+    RingProgressDrawable(
+        size = size,
+        ringWidth = ringWidth,
+        ringColor = ringColor,
+        stepAnimationDuration = stepAnimationDuration,
+        hideWhenCompleted = hideWhenCompleted
+    )
+)
 
 /**
  * Returns true if progress indicator feature is enabled
@@ -97,47 +119,48 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
     LayoutObserver, RequestListenerObserver, RequestProgressListenerObserver,
     DrawObserver, VisibilityChangedObserver, AttachObserver, Callback {
 
-    private var lifecycle: Lifecycle? = null
-        set(value) {
-            if (value != field) {
-                unregisterLifecycleObserver()
-                field = value
-                registerLifecycleObserver()
-            }
-        }
+    //    private var lifecycle: Lifecycle? = null
+//        set(value) {
+//            if (value != field) {
+//                unregisterLifecycleObserver()
+//                field = value
+//                registerLifecycleObserver()
+//            }
+//        }
     override var host: Host? = null
 
-    private var requestRunning = false
-    private var isAttachedToWindow = false
-    private val lifecycleObserver = LifecycleEventObserver { _, event ->
-        if (event == ON_RESUME) {
-            startAnimation()
-        } else if (event == ON_PAUSE) {
-            stopAnimation()
-        }
-    }
+    //    private var requestRunning = false
+//    private var isAttachedToWindow = false
+//    private val lifecycleObserver = LifecycleEventObserver { _, event ->
+//        if (event == ON_RESUME) {
+//            startAnimation()
+//        } else if (event == ON_PAUSE) {
+//            stopAnimation()
+//        }
+//    }
 
     init {
         progressDrawable.apply {
-            setVisible(false, false)
+//            setVisible(false, false)
             callback = this@ProgressIndicatorAbility
-            onProgressEnd = {
-                requestRunning = false
-                resetDrawableVisible()
-            }
+//            onProgressEnd = {
+//                requestRunning = false
+//                resetDrawableVisible()
+//            }
         }
     }
 
     override fun onAttachedToWindow() {
-        isAttachedToWindow = true
-        lifecycle = host?.view?.findViewTreeLifecycleOwner()?.lifecycle
-            ?: host?.context.findLifecycle()
-        registerLifecycleObserver()
-        resetDrawableVisible()
+//        isAttachedToWindow = true
+//        lifecycle = host?.view?.findViewTreeLifecycleOwner()?.lifecycle
+//            ?: host?.context.findLifecycle()
+//        registerLifecycleObserver()
+//        resetDrawableVisible()
+        if (progressDrawable is Animatable) progressDrawable.start()
     }
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
-        resetDrawableVisible()
+//        resetDrawableVisible()
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -156,31 +179,33 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
 
     override fun onDetachedFromWindow() {
         // Because the View.isAttachedToWindow () method still returns true when execute here
-        isAttachedToWindow = false
-        unregisterLifecycleObserver()
-        resetDrawableVisible()
+//        isAttachedToWindow = false
+//        unregisterLifecycleObserver()
+//        resetDrawableVisible()
+        if (progressDrawable is Animatable) progressDrawable.stop()
     }
 
-    private fun registerLifecycleObserver() {
-        val view = host?.view ?: return
-        if (ViewCompat.isAttachedToWindow(view)) {
-            lifecycle?.addObserver(lifecycleObserver)
-        }
-    }
-
-    private fun unregisterLifecycleObserver() {
-        this.lifecycle?.removeObserver(lifecycleObserver)
-    }
+//    private fun registerLifecycleObserver() {
+//        val view = host?.view ?: return
+//        if (ViewCompat.isAttachedToWindow(view)) {
+//            lifecycle?.addObserver(lifecycleObserver)
+//        }
+//    }
+//
+//    private fun unregisterLifecycleObserver() {
+//        this.lifecycle?.removeObserver(lifecycleObserver)
+//    }
 
     override fun onRequestStart(request: DisplayRequest) {
-        requestRunning = true
+//        requestRunning = true
         progressDrawable.progress = 0f
-        resetDrawableVisible()
+//        resetDrawableVisible()
     }
 
     override fun onRequestError(request: DisplayRequest, result: Error) {
-        requestRunning = false
-        resetDrawableVisible()
+//        requestRunning = false
+        progressDrawable.progress = -1f
+//        resetDrawableVisible()
     }
 
     override fun onUpdateRequestProgress(
@@ -194,11 +219,11 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
         progressDrawable.progress = 1f
     }
 
-    private fun resetDrawableVisible() {
-        val view = host?.view ?: return
-        val visible = isAttachedToWindow && view.isVisible && requestRunning
-        progressDrawable.setVisible(visible, false)
-    }
+//    private fun resetDrawableVisible() {
+//        val view = host?.view ?: return
+//        val visible = isAttachedToWindow && view.isVisible && requestRunning
+//        progressDrawable.setVisible(visible, false)
+//    }
 
     private fun updateDrawableBounds() {
         val view = host?.view ?: return
@@ -227,23 +252,23 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
         progressDrawable.setBounds(left, top, right, bottom)
     }
 
-    private fun startAnimation() {
-        val lifecycle = lifecycle
-        val progressDrawable = progressDrawable
-        if (progressDrawable is Animatable
-            && progressDrawable.isVisible
-            && (lifecycle == null || lifecycle.currentState >= RESUMED)
-        ) {
-            progressDrawable.start()
-        }
-    }
-
-    private fun stopAnimation() {
-        val progressDrawable = progressDrawable
-        if (progressDrawable is Animatable) {
-            progressDrawable.stop()
-        }
-    }
+//    private fun startAnimation() {
+//        val lifecycle = lifecycle
+//        val progressDrawable = progressDrawable
+//        if (progressDrawable is Animatable
+//            && progressDrawable.isVisible
+//            && (lifecycle == null || lifecycle.currentState >= RESUMED)
+//        ) {
+//            progressDrawable.start()
+//        }
+//    }
+//
+//    private fun stopAnimation() {
+//        val progressDrawable = progressDrawable
+//        if (progressDrawable is Animatable) {
+//            progressDrawable.stop()
+//        }
+//    }
 
     override fun invalidateDrawable(who: Drawable) {
         host?.view?.invalidate()

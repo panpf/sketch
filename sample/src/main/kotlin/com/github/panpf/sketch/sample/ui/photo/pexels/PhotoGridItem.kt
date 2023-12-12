@@ -141,26 +141,23 @@ fun PhotoGridItem(
                 onStart = { _ ->
                     dataFromLogoState.dataFrom = null
                     mimeTypeLogoState.mimeType = null
-                    Log.d("ProgressTest", "PhotoGridItem. onStart")
                     progressIndicatorState.progress = 0f
                 },
                 onSuccess = { _, result ->
                     dataFromLogoState.dataFrom = result.dataFrom
                     mimeTypeLogoState.mimeType = result.imageInfo.mimeType
-                    progressIndicatorState.progress = -1f
+                    progressIndicatorState.progress = 1f
                     displayResult = result
                 },
                 onError = { _, _ ->
                     dataFromLogoState.dataFrom = null
                     mimeTypeLogoState.mimeType = null
-                    Log.d("ProgressTest", "PhotoGridItem. onError")
                     progressIndicatorState.progress = -1f
                     displayResult = null
                 }
             )
             progressListener { _, totalLength: Long, completedLength: Long ->
                 val progress = if (totalLength > 0) completedLength.toFloat() / totalLength else 0f
-                Log.d("ProgressTest", "PhotoGridItem. progress=$progress")
                 progressIndicatorState.progress = progress
             }
         }
