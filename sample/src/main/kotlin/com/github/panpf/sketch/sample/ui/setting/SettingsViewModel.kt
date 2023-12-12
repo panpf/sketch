@@ -16,10 +16,9 @@
 package com.github.panpf.sketch.sample.ui.setting
 
 import android.app.Application
-import android.graphics.ColorSpace
+import android.graphics.ColorSpace.Named
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -41,6 +40,8 @@ import com.github.panpf.tools4j.io.ktx.formatFileSize
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.name
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
@@ -54,8 +55,10 @@ class SettingsViewModel(application1: Application, val page: Page) :
         }
     }
 
-    val menuListData = MutableLiveData<List<Any>>()
     private val appSettingsService = application1.appSettingsService
+
+    private val _menuListData = MutableStateFlow<List<Any>>(emptyList())
+    val menuListData: StateFlow<List<Any>> = _menuListData
 
     init {
         val states = listOfNotNull(
@@ -89,7 +92,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
     }
 
     private fun updateList() {
-        menuListData.postValue(buildList {
+        _menuListData.value = buildList {
             when (page) {
                 LIST -> {
                     add(ListSeparator("List"))
@@ -125,7 +128,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             addAll(makeCacheMenuList())
             add(ListSeparator("Other"))
             addAll(makeOtherMenuList())
-        })
+        }
     }
 
     private fun makeListMenuList(): List<Any> = buildList {
@@ -168,7 +171,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             MultiSelectMenu(
                 title = "Resize Precision",
                 desc = null,
-                values = Precision.values().map { it.name }.plus(listOf("LongImageClipMode")),
+                values = Precision.entries.map { it.name }.plus(listOf("LongImageClipMode")),
                 getValue = { appSettingsService.resizePrecision.value },
                 onSelect = { _, value -> appSettingsService.resizePrecision.value = value }
             )
@@ -177,7 +180,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             MultiSelectMenu(
                 title = "Resize Scale",
                 desc = null,
-                values = Scale.values().map { it.name }.plus(listOf("LongImageMode")),
+                values = Scale.entries.map { it.name }.plus(listOf("LongImageMode")),
                 getValue = { appSettingsService.resizeScale.value },
                 onSelect = { _, value -> appSettingsService.resizeScale.value = value }
             )
@@ -187,7 +190,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 MultiSelectMenu(
                     title = "Long Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
-                    values = Scale.values().map { it.name },
+                    values = Scale.entries.map { it.name },
                     getValue = { appSettingsService.longImageResizeScale.value },
                     onSelect = { _, value -> appSettingsService.longImageResizeScale.value = value }
                 )
@@ -196,7 +199,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 MultiSelectMenu(
                     title = "Other Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
-                    values = Scale.values().map { it.name },
+                    values = Scale.entries.map { it.name },
                     getValue = { appSettingsService.otherImageResizeScale.value },
                     onSelect = { _, value ->
                         appSettingsService.otherImageResizeScale.value = value
@@ -284,7 +287,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             )
         )
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            val items = listOf("Default").plus(ColorSpace.Named.values().map { it.name })
+            val items = listOf("Default").plus(Named.entries.map { it.name })
             add(
                 MultiSelectMenu(
                     title = "Color Space",
@@ -321,8 +324,14 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Memory Cache",
                 desc = "%s/%s（Long Click Clean）".format(
-                    sketch.memoryCache.size.formatFileSize(0, false, true),
-                    sketch.memoryCache.maxSize.formatFileSize(0, false, true)
+                    sketch.memoryCache.size.formatFileSize(0,
+                        decimalPlacesFillZero = false,
+                        compact = true
+                    ),
+                    sketch.memoryCache.maxSize.formatFileSize(0,
+                        decimalPlacesFillZero = false,
+                        compact = true
+                    )
                 ),
                 data = appSettingsService.disabledMemoryCache,
                 reverse = true,
@@ -337,8 +346,14 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Result Cache",
                 desc = "%s/%s（Long Click Clean）".format(
-                    sketch.resultCache.size.formatFileSize(0, false, true),
-                    sketch.resultCache.maxSize.formatFileSize(0, false, true)
+                    sketch.resultCache.size.formatFileSize(0,
+                        decimalPlacesFillZero = false,
+                        compact = true
+                    ),
+                    sketch.resultCache.maxSize.formatFileSize(0,
+                        decimalPlacesFillZero = false,
+                        compact = true
+                    )
                 ),
                 data = appSettingsService.disabledResultCache,
                 reverse = true,
@@ -353,8 +368,14 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Download Cache",
                 desc = "%s/%s（Long Click Clean）".format(
-                    sketch.downloadCache.size.formatFileSize(0, false, true),
-                    sketch.downloadCache.maxSize.formatFileSize(0, false, true)
+                    sketch.downloadCache.size.formatFileSize(0,
+                        decimalPlacesFillZero = false,
+                        compact = true
+                    ),
+                    sketch.downloadCache.maxSize.formatFileSize(0,
+                        decimalPlacesFillZero = false,
+                        compact = true
+                    )
                 ),
                 data = appSettingsService.disabledDownloadCache,
                 reverse = true,
@@ -369,8 +390,14 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Bitmap Pool",
                 desc = "%s/%s（Long Click Clean）".format(
-                    sketch.bitmapPool.size.formatFileSize(0, false, true),
-                    sketch.bitmapPool.maxSize.formatFileSize(0, false, true)
+                    sketch.bitmapPool.size.formatFileSize(0,
+                        decimalPlacesFillZero = false,
+                        compact = true
+                    ),
+                    sketch.bitmapPool.maxSize.formatFileSize(0,
+                        decimalPlacesFillZero = false,
+                        compact = true
+                    )
                 ),
                 data = appSettingsService.disallowReuseBitmap,
                 reverse = true,
@@ -387,7 +414,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             MultiSelectMenu(
                 title = "Logger Level",
                 desc = if (application1.sketch.logger.level <= Level.DEBUG) "DEBUG and below will reduce UI fluency" else "",
-                values = Level.values().map { it.name },
+                values = Level.entries.map { it.name },
                 getValue = { application1.sketch.logger.level.toString() },
                 onSelect = { _, value ->
                     application1.sketch.logger.level = Level.valueOf(value)

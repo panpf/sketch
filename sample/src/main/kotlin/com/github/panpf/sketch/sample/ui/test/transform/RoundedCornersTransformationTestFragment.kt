@@ -18,11 +18,13 @@ package com.github.panpf.sketch.sample.ui.test.transform
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.RoundedCornersTransformationTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 
 class RoundedCornersTransformationTestFragment :
@@ -34,7 +36,7 @@ class RoundedCornersTransformationTestFragment :
         binding: RoundedCornersTransformationTestFragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.radiusData.observe(viewLifecycleOwner) {
+        viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             binding.roundedCornersTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
@@ -47,12 +49,12 @@ class RoundedCornersTransformationTestFragment :
 
         binding.roundedCornersTransformationTestSeekBar.apply {
             max = 100
-            progress = viewModel.radiusData.value!!
+            progress = viewModel.radiusData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
 
-                override fun onStopTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
                 }
 
                 override fun onProgressChanged(

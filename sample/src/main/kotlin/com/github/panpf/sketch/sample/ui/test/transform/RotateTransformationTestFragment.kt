@@ -17,11 +17,13 @@ package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.os.Bundle
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.RotateTransformationTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RotateTransformation
 
 class RotateTransformationTestFragment :
@@ -34,10 +36,10 @@ class RotateTransformationTestFragment :
         savedInstanceState: Bundle?
     ) {
         binding.rotateTransformationTestButton.setOnClickListener {
-            viewModel.changeRotate(viewModel.rotateData.value!! + 45)
+            viewModel.changeRotate(viewModel.rotateData.value + 45)
         }
 
-        viewModel.rotateData.observe(viewLifecycleOwner) {
+        viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             binding.rotateTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)

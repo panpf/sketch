@@ -16,20 +16,23 @@
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class BlurTransformationTestViewModel(application1: Application) :
     LifecycleAndroidViewModel(application1) {
 
-    val radiusData = MutableLiveData(30)
-    val maskColorData = MutableLiveData<Int?>()
+    private val _radiusData = MutableStateFlow(30)
+    val radiusData: StateFlow<Int> = _radiusData
+    private val _maskColorData = MutableStateFlow<Int?>(null)
+    val maskColorData: StateFlow<Int?> = _maskColorData
 
     fun changeRadius(radius: Int) {
-        radiusData.postValue(radius)
+        _radiusData.value = radius
     }
 
     fun changeMaskColor(color: Int?) {
-        maskColorData.postValue(color)
+        _maskColorData.value = color
     }
 }

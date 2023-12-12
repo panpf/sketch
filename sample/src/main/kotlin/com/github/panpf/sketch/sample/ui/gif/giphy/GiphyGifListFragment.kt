@@ -37,13 +37,13 @@ import com.github.panpf.assemblyadapter.recycler.newAssemblyStaggeredGridLayoutM
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
@@ -143,7 +143,7 @@ class GiphyGifListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
             STAGGERED_GRID -> {
                 layoutManager = newAssemblyStaggeredGridLayoutManager(
-                    2,
+                    3,
                     StaggeredGridLayoutManager.VERTICAL
                 ) {
                     fullSpanByItemFactory(LoadStateItemFactory::class)

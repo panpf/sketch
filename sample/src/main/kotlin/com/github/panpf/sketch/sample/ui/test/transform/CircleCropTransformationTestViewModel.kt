@@ -16,16 +16,18 @@
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class CircleCropTransformationTestViewModel(application1: Application) :
     LifecycleAndroidViewModel(application1) {
 
-    val scaleData = MutableLiveData(Scale.CENTER_CROP)
+    private val _scaleData = MutableStateFlow(Scale.CENTER_CROP)
+    val scaleData: StateFlow<Scale> = _scaleData
 
-    fun changeRotate(scale: Scale) {
-        scaleData.postValue(scale)
+    fun changeScale(scale: Scale) {
+        _scaleData.value = scale
     }
 }

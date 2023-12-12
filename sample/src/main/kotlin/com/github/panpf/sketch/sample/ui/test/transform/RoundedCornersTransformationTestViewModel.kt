@@ -16,15 +16,17 @@
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class RoundedCornersTransformationTestViewModel(application1: Application) :
     LifecycleAndroidViewModel(application1) {
 
-    val radiusData = MutableLiveData(30)
+    private val _radiusData = MutableStateFlow(30)
+    val radiusData: StateFlow<Int> = _radiusData
 
     fun changeRadius(radius: Int) {
-        radiusData.postValue(radius)
+        _radiusData.value = radius
     }
 }

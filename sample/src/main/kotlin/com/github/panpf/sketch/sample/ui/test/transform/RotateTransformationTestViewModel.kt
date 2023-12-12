@@ -16,15 +16,17 @@
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class RotateTransformationTestViewModel(application1: Application) :
     LifecycleAndroidViewModel(application1) {
 
-    val rotateData = MutableLiveData(30)
+    private val _rotateData = MutableStateFlow(30)
+    val rotateData: StateFlow<Int> = _rotateData
 
     fun changeRotate(rotate: Int) {
-        rotateData.postValue(rotate)
+        _rotateData.value = rotate
     }
 }

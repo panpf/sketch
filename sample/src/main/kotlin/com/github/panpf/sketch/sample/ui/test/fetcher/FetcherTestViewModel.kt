@@ -22,20 +22,23 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.MediaStore
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import com.github.panpf.sketch.sample.util.versionCodeCompat
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FetcherTestViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
 
-    val data = MutableLiveData<ImageFromData>()
+    private val _data = MutableStateFlow<ImageFromData?>(null)
+    val data: StateFlow<ImageFromData?> = _data
 
     init {
         load()
@@ -47,7 +50,7 @@ class FetcherTestViewModel(application1: Application) : LifecycleAndroidViewMode
             val localSecondPhotoUri = loadLocalSecondPhotoUri()
             val headerUserPackageInfo = loadUserAppPackageInfo(true)
             val datas = ArrayList<Pair<String, String>>().apply {
-                add("HTTP" to "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg")
+                add("HTTP" to "http://img.panpengfei.com/sample_antelope.jpg")
                 add("HTTPS" to "https://images.unsplash.com/photo-1431440869543-efaf3388c585?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=8b00971a3e4a84fb43403797126d1991%22")
                 if (localSecondPhotoUri != null) {
                     add("CONTENT" to localSecondPhotoUri.toString())
@@ -61,14 +64,14 @@ class FetcherTestViewModel(application1: Application) : LifecycleAndroidViewMode
                 add(
                     "APP_ICON" to newAppIconUri(
                         headerUserPackageInfo.packageName,
-                        headerUserPackageInfo.versionCode
+                        headerUserPackageInfo.versionCodeCompat
                     )
                 )
                 add("BASE64" to BASE64_IMAGE)
             }
             val uris = datas.map { it.second }.toTypedArray()
             val titles = datas.map { it.first }.toTypedArray()
-            data.postValue(ImageFromData(titles, uris))
+            _data.value = ImageFromData(titles, uris)
         }
     }
 
@@ -90,7 +93,7 @@ class FetcherTestViewModel(application1: Application) : LifecycleAndroidViewMode
 
     private suspend fun loadLocalFirstPhotoPath(): String? {
         return withContext(Dispatchers.IO) {
-            @Suppress("DEPRECATION") val cursor = application1.contentResolver.query(
+            val cursor = application1.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 arrayOf(MediaStore.Images.Media.DATA),
                 null,
@@ -100,7 +103,6 @@ class FetcherTestViewModel(application1: Application) : LifecycleAndroidViewMode
             var imagePath: String? = null
             cursor?.use {
                 if (cursor.moveToNext()) {
-                    @Suppress("DEPRECATION")
                     imagePath =
                         cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
                 }

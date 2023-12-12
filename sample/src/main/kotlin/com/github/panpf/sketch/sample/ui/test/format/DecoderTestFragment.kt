@@ -18,10 +18,12 @@ package com.github.panpf.sketch.sample.ui.test.format
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.viewer.view.ImageFragment
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
 
 class DecoderTestFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {
@@ -35,8 +37,8 @@ class DecoderTestFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {
     ) {
         toolbar.title = "Decoder"
 
-        viewModel.data.observe(viewLifecycleOwner) {
-            it ?: return@observe
+        viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            it ?: return@repeatCollectWithLifecycle
             binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
                 fragment = this,
                 itemFactoryList = listOf(ImageFragment.ItemFactory()),

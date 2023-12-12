@@ -19,7 +19,6 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.newResourceUri
@@ -27,14 +26,17 @@ import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import com.github.panpf.sketch.sample.util.versionCodeCompat
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
 
-    // todo change MutableLiveData to MutableStateFlow
-    val data = MutableLiveData<Pair<Array<String>, List<ImageDetail>>>()
+    private val _data = MutableStateFlow<Pair<Array<String>, List<ImageDetail>>?>(null)
+    val data: StateFlow<Pair<Array<String>, List<ImageDetail>>?> = _data
 
     init {
         load()
@@ -52,7 +54,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                     footerUserPackageInfo.applicationInfo.publicSourceDir,
                     newAppIconUri(
                         headerUserPackageInfo.packageName,
-                        headerUserPackageInfo.versionCode
+                        headerUserPackageInfo.versionCodeCompat
                     )
                 )
             ).mapIndexed { index, s ->
@@ -74,7 +76,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                     "APP_ICON",
                 )
             ).toTypedArray()
-            data.postValue(titles to imageDetails)
+            _data.value = titles to imageDetails
         }
     }
 

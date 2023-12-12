@@ -21,11 +21,13 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.sample.databinding.ImageFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.showDataFromLogo
+import com.github.panpf.sketch.viewability.showProgressIndicator
 
 class ImageFragment : BindingFragment<ImageFragmentBinding>() {
 
@@ -34,6 +36,7 @@ class ImageFragment : BindingFragment<ImageFragmentBinding>() {
     override fun onViewCreated(binding: ImageFragmentBinding, savedInstanceState: Bundle?) {
         binding.imageImage.apply {
             showDataFromLogo()
+            showProgressIndicator(SectorProgressDrawable())
             displayImage(args.url) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)

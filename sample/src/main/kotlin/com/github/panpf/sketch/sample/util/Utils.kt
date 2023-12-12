@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.util
 
+import android.content.pm.PackageInfo
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -25,3 +26,11 @@ internal fun Float.format(newScale: Int): Float {
         BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
     }
 }
+
+@Suppress("DEPRECATION")
+internal val PackageInfo.versionCodeCompat: Int
+    get() = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+        longVersionCode.toInt()
+    } else {
+        versionCode
+    }

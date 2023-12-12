@@ -17,6 +17,7 @@ package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.os.Bundle
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -26,6 +27,7 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.CircleCropTransformationTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.CircleCropTransformation
 
 class CircleCropTransformationTestFragment :
@@ -37,7 +39,7 @@ class CircleCropTransformationTestFragment :
         binding: CircleCropTransformationTestFragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.scaleData.observe(viewLifecycleOwner) {
+        viewModel.scaleData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             binding.circleCropTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
@@ -47,20 +49,20 @@ class CircleCropTransformationTestFragment :
         }
 
         binding.circleCropTransformationTestStartButton.setOnClickListener {
-            viewModel.scaleData.postValue(START_CROP)
+            viewModel.changeScale(START_CROP)
         }
 
         binding.circleCropTransformationTestCenterButton.isChecked = true
         binding.circleCropTransformationTestCenterButton.setOnClickListener {
-            viewModel.scaleData.postValue(CENTER_CROP)
+            viewModel.changeScale(CENTER_CROP)
         }
 
         binding.circleCropTransformationTestEndButton.setOnClickListener {
-            viewModel.scaleData.postValue(END_CROP)
+            viewModel.changeScale(END_CROP)
         }
 
         binding.circleCropTransformationTestFillButton.setOnClickListener {
-            viewModel.scaleData.postValue(FILL)
+            viewModel.changeScale(FILL)
         }
     }
 }

@@ -19,11 +19,13 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.MaskTransformationTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
 
@@ -35,7 +37,7 @@ class MaskTransformationTestFragment : BindingFragment<MaskTransformationTestFra
         binding: MaskTransformationTestFragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.maskColorData.observe(viewLifecycleOwner) {
+        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             binding.maskTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)

@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.ui.setting
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
@@ -26,6 +27,7 @@ import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.InfoMenuItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.MultiSelectMenuItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.SwitchMenuItemFactory
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
 class SettingsFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
 
@@ -54,7 +56,7 @@ class SettingsFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
                     ListSeparatorItemFactory(),
                 )
             ).apply {
-                viewModel.menuListData.observe(viewLifecycleOwner) {
+                viewModel.menuListData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     submitList(it)
                 }
             }

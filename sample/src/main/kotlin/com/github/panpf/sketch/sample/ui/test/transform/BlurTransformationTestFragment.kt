@@ -20,11 +20,13 @@ import android.os.Bundle
 import android.widget.SeekBar
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.BlurTransformationTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
 
 class BlurTransformationTestFragment : BindingFragment<BlurTransformationTestFragmentBinding>() {
@@ -35,7 +37,7 @@ class BlurTransformationTestFragment : BindingFragment<BlurTransformationTestFra
         binding: BlurTransformationTestFragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.radiusData.observe(viewLifecycleOwner) {
+        viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             update(binding, it, viewModel.maskColorData.value)
 
             binding.blurTransformationTestValueText.text =
@@ -44,12 +46,12 @@ class BlurTransformationTestFragment : BindingFragment<BlurTransformationTestFra
 
         binding.blurTransformationTestSeekBar.apply {
             max = 100
-            progress = viewModel.radiusData.value!!
+            progress = viewModel.radiusData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
 
-                override fun onStopTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
                 }
 
                 override fun onProgressChanged(
@@ -59,8 +61,8 @@ class BlurTransformationTestFragment : BindingFragment<BlurTransformationTestFra
                 }
             })
         }
-        viewModel.maskColorData.observe(viewLifecycleOwner) {
-            update(binding, viewModel.radiusData.value!!, it)
+        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            update(binding, viewModel.radiusData.value, it)
         }
 
         binding.blurTransformationTestRedButton.setOnClickListener {
