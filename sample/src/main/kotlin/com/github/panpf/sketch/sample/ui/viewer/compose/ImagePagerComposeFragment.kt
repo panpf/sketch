@@ -62,28 +62,34 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseFragment
+import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.toast.ktx.showLongToast
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
@@ -97,6 +103,7 @@ class ImagePagerComposeFragment : BaseFragment() {
     private val viewModel by viewModels<ImagePagerViewModel>()
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
+    private val showInfoEvent = MutableSharedFlow<DisplayResult?>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,6 +124,7 @@ class ImagePagerComposeFragment : BaseFragment() {
                 ImagePager(
                     imageList = imageList,
                     initialItem = initialItem,
+                    showInfoEvent = showInfoEvent,
                     onSettingsClick = {
                         findNavController().navigate(
                             MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.ZOOM.name)
@@ -144,7 +152,7 @@ class ImagePagerComposeFragment : BaseFragment() {
                     },
                     onInfoClick = {
                         viewLifecycleOwner.lifecycleScope.launch {
-                            eventService.viewerPagerInfoEvent.emit(0)
+                            eventService.viewerPagerInfoEvent.emit(it)
                         }
                     },
                     onImageClick = {
@@ -152,6 +160,15 @@ class ImagePagerComposeFragment : BaseFragment() {
                     },
                 )
             }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        showInfoEvent.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { displayResult ->
+            findNavController()
+                .navigate(ImageInfoDialogFragment.createNavDirections(displayResult))
         }
     }
 
@@ -188,12 +205,13 @@ class ImagePagerComposeFragment : BaseFragment() {
 private fun ImagePager(
     imageList: List<ImageDetail>,
     initialItem: Int,
+    showInfoEvent: MutableSharedFlow<DisplayResult?>,
     onSettingsClick: (() -> Unit)? = null,
     onShowOriginClick: (() -> Unit)? = null,
     onShareClick: ((ImageDetail) -> Unit)? = null,
     onSaveClick: ((ImageDetail) -> Unit)? = null,
     onRotateClick: (() -> Unit)? = null,
-    onInfoClick: (() -> Unit)? = null,
+    onInfoClick: ((Int) -> Unit)? = null,
     onImageClick: (() -> Unit)? = null,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -217,7 +235,7 @@ private fun ImagePager(
             beyondBoundsPageCount = 0,
             modifier = Modifier.fillMaxSize()
         ) { index ->
-            ImageViewer(imageList[index], onImageClick)
+            ImageViewer(index, imageList[index], showInfoEvent, onImageClick)
         }
 
         val showOriginImage by LocalContext.current.appSettingsService.showOriginImage.stateFlow.collectAsState()
@@ -235,7 +253,9 @@ private fun ImagePager(
                 onSaveClick?.invoke(imageList[pagerState.currentPage])
             },
             onRotateClick = onRotateClick,
-            onInfoClick = onInfoClick,
+            onInfoClick = {
+                onInfoClick?.invoke(pagerState.currentPage)
+            },
         )
     }
 }

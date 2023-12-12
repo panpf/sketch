@@ -6,13 +6,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.navigation.findNavController
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
 import com.github.panpf.zoomimage.compose.internal.toPlatform
@@ -22,10 +28,15 @@ import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlin.math.roundToInt
 
 @Composable
-fun ImageViewer(imageDetail: ImageDetail, onClick: (() -> Unit)? = null) {
+fun ImageViewer(
+    index: Int, imageDetail: ImageDetail,
+    showInfoEvent: MutableSharedFlow<DisplayResult?>,
+    onClick: (() -> Unit)? = null
+) {
     val context = LocalContext.current
     val appSettingsService = context.appSettingsService
     val showOriginImage by appSettingsService.showOriginImage.stateFlow.collectAsState()
@@ -62,9 +73,12 @@ fun ImageViewer(imageDetail: ImageDetail, onClick: (() -> Unit)? = null) {
             }
         }
     }
+    var displayResult: DisplayResult? by remember { mutableStateOf(null) }
     LaunchedEffect(Unit) {
         context.eventService.viewerPagerInfoEvent.collect {
-            // todo info
+            if (index == it) {
+                showInfoEvent.emit(displayResult)
+            }
         }
     }
     val imageUrl by remember {
@@ -89,9 +103,18 @@ fun ImageViewer(imageDetail: ImageDetail, onClick: (() -> Unit)? = null) {
             merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(imageDetail.thumbnailUrl))
             crossfade(fadeStart = false)
+            listener(
+                onSuccess = { _, result ->
+                    displayResult = result
+                },
+                onError = { _, _ ->
+                    displayResult = null
+                }
+            )
             // progress, listener
         }
     }
+    val view = LocalView.current
     // todo progress, state
     SketchZoomAsyncImage(
         request = request,
@@ -101,6 +124,14 @@ fun ImageViewer(imageDetail: ImageDetail, onClick: (() -> Unit)? = null) {
         alignment = alignment,
         state = zoomState,
         scrollBar = scrollBar,
-        onTap = { onClick?.invoke() }
+        onTap = { onClick?.invoke() },
+        onLongPress = {
+            val displayResult1 = displayResult
+            if (displayResult1 != null) {
+                view
+                    .findNavController()
+                    .navigate(ImageInfoDialogFragment.createNavDirections(displayResult1))
+            }
+        }
     )
 }

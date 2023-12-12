@@ -20,14 +20,16 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.displayResult
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.ignoreFirst
@@ -128,13 +130,9 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
     }
 
     private fun startImageInfoDialog(imageView: ImageView) {
-        val arguments1 =
-            ImageInfoDialogFragment.createDirectionsFromImageView(imageView, null).arguments
-        childFragmentManager.beginTransaction()
-            .add(ImageInfoDialogFragment().apply {
-                arguments = arguments1
-            }, null)
-            .commit()
+        val displayResult = imageView.displayResult
+        findNavController()
+            .navigate(ImageInfoDialogFragment.createNavDirections(displayResult))
     }
 
     class ItemFactory : FragmentItemFactory<ImageDetail>(ImageDetail::class) {

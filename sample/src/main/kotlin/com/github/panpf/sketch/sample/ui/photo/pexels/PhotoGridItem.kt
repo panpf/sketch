@@ -4,24 +4,31 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.navigation.findNavController
 import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.letIf
 import com.github.panpf.sketch.sample.widget.TextDrawable
 import com.github.panpf.sketch.stateimage.IconStateImage
@@ -70,6 +77,10 @@ fun PhotoGridItem(
     val showDataFromLogo by appSettingsService.showDataFromLogo.stateFlow.collectAsState()
     val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInLIst.stateFlow.collectAsState()
     val showProgressIndicator by appSettingsService.showProgressIndicatorInList.stateFlow.collectAsState()
+
+    var displayResult: DisplayResult? by remember { mutableStateOf(null) }
+    val view = LocalView.current
+
     val modifier = Modifier
         .fillMaxWidth()
         .let {
@@ -81,8 +92,18 @@ fun PhotoGridItem(
                 it.aspectRatio(1f)
             }
         }
-        .clickable {
-            onClick(photo, index)
+        .pointerInput(Unit) {
+            detectTapGestures(
+                onTap = { onClick(photo, index) },
+                onLongPress = {
+                    val displayResult1 = displayResult
+                    if (displayResult1 != null) {
+                        view
+                            .findNavController()
+                            .navigate(ImageInfoDialogFragment.createNavDirections(displayResult1))
+                    }
+                }
+            )
         }
         .letIf(showDataFromLogo) {
             it.dataFromLogo(dataFromLogoState)
@@ -127,12 +148,14 @@ fun PhotoGridItem(
                     dataFromLogoState.dataFrom = result.dataFrom
                     mimeTypeLogoState.mimeType = result.imageInfo.mimeType
                     progressIndicatorState.progress = -1f
+                    displayResult = result
                 },
                 onError = { _, _ ->
                     dataFromLogoState.dataFrom = null
                     mimeTypeLogoState.mimeType = null
                     Log.d("ProgressTest", "PhotoGridItem. onError")
                     progressIndicatorState.progress = -1f
+                    displayResult = null
                 }
             )
             progressListener { _, totalLength: Long, completedLength: Long ->

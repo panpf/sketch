@@ -19,6 +19,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.navigation.findNavController
 import com.github.panpf.sketch.SketchImageView
+import com.github.panpf.sketch.displayResult
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 
 open class MyImageView @JvmOverloads constructor(
@@ -27,9 +28,9 @@ open class MyImageView @JvmOverloads constructor(
 
     init {
         setOnLongClickListener {
-            findNavController().navigate(
-                ImageInfoDialogFragment.createDirectionsFromImageView(this@MyImageView, null)
-            )
+            val displayResult = this@MyImageView.displayResult
+            findNavController()
+                .navigate(ImageInfoDialogFragment.createNavDirections(displayResult))
             true
         }
     }

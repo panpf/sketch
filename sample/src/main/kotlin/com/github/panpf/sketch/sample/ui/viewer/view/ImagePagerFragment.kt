@@ -33,12 +33,12 @@ import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.ImagePagerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BindingFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
@@ -70,7 +70,6 @@ class ImagePagerFragment : BindingFragment<ImagePagerFragmentBinding>() {
         binding: ImagePagerFragmentBinding,
         savedInstanceState: Bundle?
     ) {
-        // todo save, share
         binding.imagePagerPager.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -178,7 +177,7 @@ class ImagePagerFragment : BindingFragment<ImagePagerFragmentBinding>() {
 
         binding.imagePagerInfo.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                eventService.viewerPagerInfoEvent.emit(0)
+                eventService.viewerPagerInfoEvent.emit(binding.imagePagerPager.currentItem)
             }
         }
 

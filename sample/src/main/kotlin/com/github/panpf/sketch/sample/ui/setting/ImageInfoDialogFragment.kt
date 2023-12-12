@@ -18,12 +18,10 @@ package com.github.panpf.sketch.sample.ui.setting
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.os.Bundle
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.displayResult
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.request.DisplayResult
@@ -31,17 +29,12 @@ import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.ImageInfoDialogBinding
 import com.github.panpf.sketch.sample.ui.base.BindingDialogFragment
 import com.github.panpf.sketch.util.calculateBitmapByteCount
-import com.github.panpf.sketch.util.findLeafSketchDrawable
 import com.github.panpf.tools4j.io.ktx.formatFileSize
 import com.github.panpf.tools4k.lang.asOrThrow
 
 class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() {
 
     private val args by navArgs<ImageInfoDialogFragmentArgs>()
-
-    init {
-        dialogHeightRatio = 0.7f
-    }
 
     override fun onViewCreated(binding: ImageInfoDialogBinding, savedInstanceState: Bundle?) {
         binding.imageInfoUriContent.text = args.uri
@@ -69,11 +62,9 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
     }
 
     companion object {
-        fun createDirectionsFromImageView(
-            imageView: ImageView,
-            uri: String?,
-        ): NavDirections {
-            var uri1: String? = uri
+
+        fun createNavDirections(displayResult: DisplayResult?): NavDirections {
+            val uri: String? = displayResult?.request?.uriString
             var optionsInfo: String? = null
             var imageInfo: String? = null
             var bitmapInfo: String? = null
@@ -81,16 +72,13 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
             var dataFromInfo: String? = null
             var transformedInfo: String? = null
             var throwableString: String? = null
-            val displayResult = imageView.displayResult
             if (displayResult is DisplayResult.Success) {
-                val sketchDrawable = displayResult.drawable.findLeafSketchDrawable()!!
-                uri1 = sketchDrawable.imageUri
-                imageInfo = sketchDrawable.imageInfo.run {
+                imageInfo = displayResult.imageInfo.run {
                     "${width}x${height}, ${mimeType}, ${exifOrientationName(exifOrientation)}"
                 }
 
-                optionsInfo = sketchDrawable.requestKey
-                    .replace(sketchDrawable.imageUri, "")
+                optionsInfo = displayResult.requestKey
+                    .replace(displayResult.request.uriString, "")
                     .let { if (it.startsWith("?")) it.substring(1) else it }
                     .split("&")
                     .joinToString(separator = "\n")
@@ -117,20 +105,18 @@ class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() 
                     "${it.intrinsicWidth}x${it.intrinsicHeight}"
                 }
 
-                dataFromInfo = sketchDrawable.dataFrom.name
+                dataFromInfo = displayResult.dataFrom.name
 
-                transformedInfo = sketchDrawable.transformedList
+                transformedInfo = displayResult.transformedList
                     ?.joinToString(separator = "\n") { transformed ->
                         transformed.replace("Transformed", "")
                     }
             } else if (displayResult is DisplayResult.Error) {
-                uri1 = displayResult.request.uriString
-
                 throwableString = displayResult.throwable.toString()
             }
 
             return NavMainDirections.actionGlobalImageInfoDialogFragment(
-                uri = uri1,
+                uri = uri,
                 imageInfo = imageInfo,
                 bitmapInfo = bitmapInfo,
                 drawableInfo = drawableInfo,
