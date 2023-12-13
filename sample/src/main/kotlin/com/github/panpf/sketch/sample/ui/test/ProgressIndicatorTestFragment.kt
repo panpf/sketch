@@ -84,6 +84,9 @@ class ProgressIndicatorTestFragment :
         binding.testIndicatorTestCheckBox1.setOnCheckedChangeListener { _, _ ->
             setupProgressIndicator(binding)
         }
+        binding.testIndicatorTestCheckBox2.setOnCheckedChangeListener { _, _ ->
+            setupProgressIndicator(binding)
+        }
 
         setupProgressIndicator(binding)
         step(binding)
@@ -94,19 +97,23 @@ class ProgressIndicatorTestFragment :
         binding.testIndicatorTestImage2.removeProgressIndicator()
         binding.testIndicatorTestImage3.removeProgressIndicator()
 
-        val hideWhenCompleted = binding.testIndicatorTestCheckBox1.isChecked
-        val shortSteps = binding.testIndicatorTestCheckBox2.isChecked
+        val hiddenWhenIndeterminate = binding.testIndicatorTestCheckBox1.isChecked
+        val hiddenWhenCompleted = binding.testIndicatorTestCheckBox2.isChecked
+        val shortSteps = binding.testIndicatorTestCheckBox3.isChecked
         val stepAnimationDuration = if (shortSteps) 1000 else 300
         binding.testIndicatorTestImage1.showMaskProgressIndicator(
-            hideWhenCompleted = hideWhenCompleted,
+            hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+            hiddenWhenCompleted = hiddenWhenCompleted,
             stepAnimationDuration = stepAnimationDuration
         )
         binding.testIndicatorTestImage2.showSectorProgressIndicator(
-            hideWhenCompleted = hideWhenCompleted,
+            hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+            hiddenWhenCompleted = hiddenWhenCompleted,
             stepAnimationDuration = stepAnimationDuration
         )
         binding.testIndicatorTestImage3.showRingProgressIndicator(
-            hideWhenCompleted = hideWhenCompleted,
+            hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+            hiddenWhenCompleted = hiddenWhenCompleted,
             stepAnimationDuration = stepAnimationDuration
         )
     }

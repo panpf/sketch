@@ -21,7 +21,6 @@ import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Drawable.Callback
 import android.os.SystemClock
-import android.util.Log
 import android.view.View
 import androidx.annotation.ColorInt
 import com.github.panpf.sketch.drawable.AbsProgressDrawable.Companion.DEFAULT_STEP_ANIMATION_DURATION
@@ -58,8 +57,9 @@ fun ViewAbilityContainer.showSectorProgressIndicator(
     size: Int = SectorProgressDrawable.defaultSize(),
     color: Int = Color.WHITE,
     backgroundColor: Int = 0x44000000,
+    hiddenWhenIndeterminate: Boolean = false,
+    hiddenWhenCompleted: Boolean = true,
     stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
-    hideWhenCompleted: Boolean = true,
 ) = showProgressIndicator(
     SectorProgressDrawable(
         size = size,
@@ -67,8 +67,9 @@ fun ViewAbilityContainer.showSectorProgressIndicator(
         strokeColor = color,
         progressColor = color,
         strokeWidth = size * 0.02f,
+        hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+        hiddenWhenCompleted = hiddenWhenCompleted,
         stepAnimationDuration = stepAnimationDuration,
-        hideWhenCompleted = hideWhenCompleted
     )
 )
 
@@ -77,13 +78,15 @@ fun ViewAbilityContainer.showSectorProgressIndicator(
  */
 fun ViewAbilityContainer.showMaskProgressIndicator(
     @ColorInt maskColor: Int = MaskProgressDrawable.DEFAULT_MASK_COLOR,
+    hiddenWhenIndeterminate: Boolean = false,
+    hiddenWhenCompleted: Boolean = true,
     stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
-    hideWhenCompleted: Boolean = true,
 ) = showProgressIndicator(
     MaskProgressDrawable(
         maskColor = maskColor,
+        hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+        hiddenWhenCompleted = hiddenWhenCompleted,
         stepAnimationDuration = stepAnimationDuration,
-        hideWhenCompleted = hideWhenCompleted
     )
 )
 
@@ -94,15 +97,17 @@ fun ViewAbilityContainer.showRingProgressIndicator(
     size: Int = RingProgressDrawable.defaultSize(),
     ringWidth: Float = size * 0.1f,
     @ColorInt ringColor: Int = Color.WHITE,
+    hiddenWhenIndeterminate: Boolean = false,
+    hiddenWhenCompleted: Boolean = true,
     stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
-    hideWhenCompleted: Boolean = true,
 ) = showProgressIndicator(
     RingProgressDrawable(
         size = size,
         ringWidth = ringWidth,
         ringColor = ringColor,
+        hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+        hiddenWhenCompleted = hiddenWhenCompleted,
         stepAnimationDuration = stepAnimationDuration,
-        hideWhenCompleted = hideWhenCompleted
     )
 )
 
@@ -119,52 +124,43 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
     LayoutObserver, RequestListenerObserver, RequestProgressListenerObserver,
     DrawObserver, VisibilityChangedObserver, AttachObserver, Callback {
 
-    //    private var lifecycle: Lifecycle? = null
-//        set(value) {
-//            if (value != field) {
-//                unregisterLifecycleObserver()
-//                field = value
-//                registerLifecycleObserver()
-//            }
-//        }
     override var host: Host? = null
 
-    //    private var requestRunning = false
-//    private var isAttachedToWindow = false
-//    private val lifecycleObserver = LifecycleEventObserver { _, event ->
-//        if (event == ON_RESUME) {
-//            startAnimation()
-//        } else if (event == ON_PAUSE) {
-//            stopAnimation()
-//        }
-//    }
-
-    init {
-        progressDrawable.apply {
-//            setVisible(false, false)
-            callback = this@ProgressIndicatorAbility
-//            onProgressEnd = {
-//                requestRunning = false
-//                resetDrawableVisible()
-//            }
-        }
-    }
-
     override fun onAttachedToWindow() {
-//        isAttachedToWindow = true
-//        lifecycle = host?.view?.findViewTreeLifecycleOwner()?.lifecycle
-//            ?: host?.context.findLifecycle()
-//        registerLifecycleObserver()
-//        resetDrawableVisible()
+        progressDrawable.callback = this@ProgressIndicatorAbility
+        progressDrawable.setVisible(true, true)
         if (progressDrawable is Animatable) progressDrawable.start()
     }
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
-//        resetDrawableVisible()
+        progressDrawable.setVisible(visibility == View.VISIBLE, false)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        updateDrawableBounds()
+        val view = host?.view ?: return
+        val availableWidth = view.width - view.paddingLeft - view.paddingRight
+        val availableHeight = view.height - view.paddingTop - view.paddingBottom
+        val drawableWidth = progressDrawable.intrinsicWidth
+        val drawableHeight = progressDrawable.intrinsicHeight
+        val boundsLeft: Int
+        val boundsRight: Int
+        val boundsTop: Int
+        val boundsBottom: Int
+        if (drawableWidth > 0) {
+            boundsLeft = view.paddingLeft + ((availableWidth - drawableWidth) / 2f).toInt()
+            boundsRight = boundsLeft + drawableWidth
+        } else {
+            boundsLeft = view.paddingLeft
+            boundsRight = view.width - view.paddingRight
+        }
+        if (drawableHeight > 0) {
+            boundsTop = view.paddingTop + ((availableHeight - drawableHeight) / 2f).toInt()
+            boundsBottom = boundsTop + drawableHeight
+        } else {
+            boundsTop = view.paddingTop
+            boundsBottom = view.height - view.paddingBottom
+        }
+        progressDrawable.setBounds(boundsLeft, boundsTop, boundsRight, boundsBottom)
     }
 
     override fun onDrawBefore(canvas: Canvas) {
@@ -178,34 +174,13 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
     }
 
     override fun onDetachedFromWindow() {
-        // Because the View.isAttachedToWindow () method still returns true when execute here
-//        isAttachedToWindow = false
-//        unregisterLifecycleObserver()
-//        resetDrawableVisible()
         if (progressDrawable is Animatable) progressDrawable.stop()
+        progressDrawable.setVisible(false, false)
+        progressDrawable.callback = null
     }
-
-//    private fun registerLifecycleObserver() {
-//        val view = host?.view ?: return
-//        if (ViewCompat.isAttachedToWindow(view)) {
-//            lifecycle?.addObserver(lifecycleObserver)
-//        }
-//    }
-//
-//    private fun unregisterLifecycleObserver() {
-//        this.lifecycle?.removeObserver(lifecycleObserver)
-//    }
 
     override fun onRequestStart(request: DisplayRequest) {
-//        requestRunning = true
         progressDrawable.progress = 0f
-//        resetDrawableVisible()
-    }
-
-    override fun onRequestError(request: DisplayRequest, result: Error) {
-//        requestRunning = false
-        progressDrawable.progress = -1f
-//        resetDrawableVisible()
     }
 
     override fun onUpdateRequestProgress(
@@ -219,56 +194,9 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
         progressDrawable.progress = 1f
     }
 
-//    private fun resetDrawableVisible() {
-//        val view = host?.view ?: return
-//        val visible = isAttachedToWindow && view.isVisible && requestRunning
-//        progressDrawable.setVisible(visible, false)
-//    }
-
-    private fun updateDrawableBounds() {
-        val view = host?.view ?: return
-        val availableWidth = view.width - view.paddingLeft - view.paddingRight
-        val availableHeight = view.height - view.paddingTop - view.paddingBottom
-        val drawableWidth = progressDrawable.intrinsicWidth
-        val drawableHeight = progressDrawable.intrinsicHeight
-        val left: Int
-        val right: Int
-        val top: Int
-        val bottom: Int
-        if (drawableWidth > 0) {
-            left = view.paddingLeft + ((availableWidth - drawableWidth) / 2f).toInt()
-            right = left + drawableWidth
-        } else {
-            left = view.paddingLeft
-            right = view.width - view.paddingRight
-        }
-        if (drawableHeight > 0) {
-            top = view.paddingTop + ((availableHeight - drawableHeight) / 2f).toInt()
-            bottom = top + drawableHeight
-        } else {
-            top = view.paddingTop
-            bottom = view.height - view.paddingBottom
-        }
-        progressDrawable.setBounds(left, top, right, bottom)
+    override fun onRequestError(request: DisplayRequest, result: Error) {
+        progressDrawable.progress = -1f
     }
-
-//    private fun startAnimation() {
-//        val lifecycle = lifecycle
-//        val progressDrawable = progressDrawable
-//        if (progressDrawable is Animatable
-//            && progressDrawable.isVisible
-//            && (lifecycle == null || lifecycle.currentState >= RESUMED)
-//        ) {
-//            progressDrawable.start()
-//        }
-//    }
-//
-//    private fun stopAnimation() {
-//        val progressDrawable = progressDrawable
-//        if (progressDrawable is Animatable) {
-//            progressDrawable.stop()
-//        }
-//    }
 
     override fun invalidateDrawable(who: Drawable) {
         host?.view?.invalidate()

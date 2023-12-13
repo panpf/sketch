@@ -85,8 +85,8 @@
         android:id="@+id/testIndicatorTestCheckBox1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="HideWhenCompleted"
+        android:checked="false"
+        android:text="Hidden(0f)"
         app:layout_constraintBottom_toTopOf="@id/testIndicatorTestButton"
         app:layout_constraintEnd_toStartOf="@id/testIndicatorTestCheckBox2"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -98,9 +98,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
+        android:text="Hidden(1f)"
+        android:checked="true"
+        app:layout_constraintEnd_toStartOf="@id/testIndicatorTestCheckBox3"
+        app:layout_constraintStart_toEndOf="@id/testIndicatorTestCheckBox1"
+        app:layout_constraintTop_toTopOf="@id/testIndicatorTestCheckBox1" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/testIndicatorTestCheckBox3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="ShortStep"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/testIndicatorTestCheckBox1"
+        app:layout_constraintStart_toEndOf="@id/testIndicatorTestCheckBox2"
         app:layout_constraintTop_toTopOf="@id/testIndicatorTestCheckBox1" />
 
     <com.google.android.material.button.MaterialButton
@@ -122,7 +133,7 @@
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:text="0f .. 1f"
+        android:text="0f -> 1f"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/testIndicatorTestButton"

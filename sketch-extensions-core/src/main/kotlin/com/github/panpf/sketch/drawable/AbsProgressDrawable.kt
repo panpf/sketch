@@ -21,12 +21,13 @@ import androidx.annotation.FloatRange
 import com.github.panpf.sketch.util.format
 
 abstract class AbsProgressDrawable(
+    private val hiddenWhenIndeterminate: Boolean = false,
+    private val hiddenWhenCompleted: Boolean = true,
     private val stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
-    private val hideWhenCompleted: Boolean = true,
 ) : ProgressDrawable() {
 
     companion object {
-        const val DEFAULT_STEP_ANIMATION_DURATION = 300
+        const val DEFAULT_STEP_ANIMATION_DURATION = 150
     }
 
     private var stepAnimationRunning: Boolean = false
@@ -34,27 +35,27 @@ abstract class AbsProgressDrawable(
     private var stepAnimationProgress: Float? = null
     private var stepAnimationEndProgress: Float? = null
     private var stepAnimationStartTimeMillis = 0L
-    private var hide = false
+    private var hidden = false
 
     final override var progress: Float = 0f
         set(value) {
             val oldValue = field
-            val newValue = value.format(1).coerceIn(-1f, 1f)
+            val newValue = value.coerceIn(-1f, 1f).format(1)
             field = newValue
             if (newValue != oldValue) {
-                hide = false
-                if (oldValue == -1f) {
+                hidden = false
+                if (oldValue < 0f) {
                     // Show new progress now
                     stepAnimationRunning = false
                     stepAnimationProgress = null
-                } else if (newValue == -1f) {
+                } else if (newValue < 0f) {
                     // Hide content now
                     stepAnimationRunning = false
                     stepAnimationProgress = null
-                } else if (oldValue == 0f && newValue == 1f && hideWhenCompleted) {
-                    // The progress goes directly from 0 to 1f, and hide the content after completion,
-                    // skip the animation and hide the content directly.
-                    hide = true
+                } else if (oldValue == 0f && newValue == 1f && hiddenWhenCompleted) {
+                    // The progress goes directly from 0 to 1f, and hidden the content after completion,
+                    // skip the animation and hidden the content directly.
+                    hidden = true
                     stepAnimationRunning = false
                     stepAnimationProgress = null
                 } else if (newValue > oldValue) {
@@ -77,14 +78,14 @@ abstract class AbsProgressDrawable(
         }
 
     override fun draw(canvas: Canvas) {
-        if (hide) return
+        if (hidden || (hiddenWhenIndeterminate && progress == 0f)) return
 
         val stepAnimationDone: Boolean
         val drawProgress: Float
         if (stepAnimationRunning) {
             val elapsedTime = SystemClock.uptimeMillis() - stepAnimationStartTimeMillis
             val stepProgress = (elapsedTime / stepAnimationDuration.toDouble()).coerceIn(0.0, 1.0)
-            stepAnimationDone = stepProgress >= 1
+            stepAnimationDone = stepProgress >= 1.0
             val animationStartProgress = stepAnimationStartProgress!!
             val animationEndProgress = stepAnimationEndProgress!!
             val addDrawProgress =
@@ -97,9 +98,7 @@ abstract class AbsProgressDrawable(
             stepAnimationProgress = null
         }
 
-        // todo Displayed only when support progress is greater than 0
-        @Suppress("ConvertTwoComparisonsToRangeCheck")
-        if (drawProgress >= 0f && drawProgress <= 1f) {
+        if (drawProgress in 0f..1f) {
             drawProgress(canvas, drawProgress)
         }
 
@@ -112,8 +111,8 @@ abstract class AbsProgressDrawable(
             }
         }
 
-        if (!stepAnimationRunning && drawProgress >= 1f && hideWhenCompleted) {
-            hide = true
+        if (!stepAnimationRunning && drawProgress >= 1f && hiddenWhenCompleted) {
+            hidden = true
             invalidateSelf()
         }
     }
