@@ -19,6 +19,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.drawable.internal.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.DrawableFetcher
@@ -63,14 +64,35 @@ class IconStateImage private constructor(
         sketch: Sketch,
         request: ImageRequest,
         throwable: Throwable?
-    ): Drawable {
-        val icon = icon.getDrawable(request.context)
-        val bgDrawable = when (bg) {
-            is DrawableFetcher -> bg.getDrawable(request.context)
-            is ColorFetcher -> ColorDrawable(bg.getColor(request.context))
-            else -> null
+    ): Drawable? {
+        return try {
+            val icon = icon.getDrawable(request.context).apply {
+                if (intrinsicWidth <= 0 || intrinsicHeight <= 0) {
+                    if (icon is ResDrawable) {
+                        val resources = icon.resources ?: sketch.context.resources
+                        val resId = icon.resId
+                        val resourceName = resources.getResourceName(resId)
+                        throw ImageInvalidException(
+                            "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0. resId=$resId, resName=$resourceName"
+                        )
+                    } else {
+                        throw ImageInvalidException(
+                            "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0."
+                        )
+                    }
+                }
+            }
+            val bgDrawable = when (bg) {
+                is DrawableFetcher -> bg.getDrawable(request.context)
+                is ColorFetcher -> ColorDrawable(bg.getColor(request.context))
+                else -> null
+            }
+            IconDrawable(icon, bgDrawable)
+        } catch (e: Throwable) {
+            sketch.logger.w("IconStateImage", "getDrawable error. ${e.message}")
+            e.printStackTrace()
+            null
         }
-        return IconDrawable(icon, bgDrawable)
     }
 
     override fun equals(other: Any?): Boolean {

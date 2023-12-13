@@ -34,9 +34,9 @@ interface DrawableFetcher {
  * Get Drawable from resource
  */
 class ResDrawable constructor(
-    private val packageName: String? = null,
-    private val resources: Resources? = null,
-    @DrawableRes private val resId: Int
+    val packageName: String? = null,
+    val resources: Resources? = null,
+    @DrawableRes val resId: Int
 ) : DrawableFetcher {
 
     constructor(@DrawableRes resId: Int) : this(null, null, resId)
@@ -49,12 +49,6 @@ class ResDrawable constructor(
         } else {
             // getDrawableCompat can only load vector resources that are in the current package.
             context.getDrawableCompat(resId)
-        }.apply {
-            if (intrinsicWidth <= 0 || intrinsicHeight <= 0) {
-                throw ImageInvalidException(
-                    "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
-                )
-            }
         }
     }
 

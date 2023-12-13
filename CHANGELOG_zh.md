@@ -2,6 +2,11 @@
 
 翻译：[English](CHANGELOG.md)
 
+# new
+
+* fix: 修复 StateImage 获取 Drawable 失败时请求中断的 bug
+* improve: 改进 ProgressDrawable
+
 # v3.3.0-beta04
 
 * fix: 修复从 '3.3.0-beta02' 开始版本引入的在 App 被意外杀死时磁盘缓存全部丢失的 bug

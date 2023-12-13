@@ -2,6 +2,11 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
+# new
+
+* fix: Fix the bug of request interruption when StateImage fails to obtain Drawable
+* improve: Improve ProgressDrawable
+
 # v3.3.0-beta04
 
 * fix: Fixed a bug introduced from version 3.3.0-beta02 onwards where all disk cache was lost when an app was accidentally killed

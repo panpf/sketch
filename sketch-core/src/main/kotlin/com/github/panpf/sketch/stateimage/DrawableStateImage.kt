@@ -40,7 +40,15 @@ class DrawableStateImage : StateImage {
 
     override fun getDrawable(
         sketch: Sketch, request: ImageRequest, throwable: Throwable?
-    ): Drawable = drawableFetcher.getDrawable(request.context)
+    ): Drawable? {
+        return try {
+            drawableFetcher.getDrawable(request.context)
+        } catch (e: Throwable) {
+            sketch.logger.w("DrawableStateImage", "getDrawable error. ${e.message}")
+            e.printStackTrace()
+            null
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
