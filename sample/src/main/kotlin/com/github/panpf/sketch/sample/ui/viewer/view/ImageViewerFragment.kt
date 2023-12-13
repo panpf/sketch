@@ -96,7 +96,9 @@ class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
             }
             eventService.viewerPagerInfoEvent
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    startImageInfoDialog(this)
+                    if (it == args.position) {
+                        startImageInfoDialog(this)
+                    }
                 }
 
             appSettingsService.viewersCombinedFlow

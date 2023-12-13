@@ -136,6 +136,7 @@ fun PhotoGridItem(
             crossfade()
             resizeApplyToDrawable()
             merge(appSettingsService.buildListImageOptions())
+            // todo Reconstruct AsyncImage using AsyncImageState to pursue a more elegant way of using listener
             listener(
                 onStart = { _ ->
                     dataFromLogoState.dataFrom = null

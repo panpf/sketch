@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.ui.viewer.compose
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +20,11 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
+import com.github.panpf.sketch.sample.ui.common.compose.LoadResult
+import com.github.panpf.sketch.sample.ui.common.compose.LoadResult.ERROR
+import com.github.panpf.sketch.sample.ui.common.compose.LoadResult.LOADING
+import com.github.panpf.sketch.sample.ui.common.compose.LoadResult.SUCCESS
+import com.github.panpf.sketch.sample.ui.common.compose.LoadState
 import com.github.panpf.sketch.sample.ui.photo.pexels.progressIndicator
 import com.github.panpf.sketch.sample.ui.photo.pexels.rememberDrawableProgressPainter
 import com.github.panpf.sketch.sample.ui.photo.pexels.rememberProgressIndicatorState
@@ -105,6 +111,7 @@ fun ImageViewer(
     val drawableProgressPainter = rememberDrawableProgressPainter(progressDrawable)
     val progressIndicatorState = rememberProgressIndicatorState(drawableProgressPainter)
 
+    var loadResult by remember { mutableStateOf(LoadResult.INITIALIZED) }
     val viewerSettings by appSettingsService.viewersCombinedFlow.collectAsState(Unit)
     // listener 会导致两次创建的 DisplayRequest equals 为 false，从而引发重组，所以这里必须用 remember
     val request = remember(imageUrl, viewerSettings) {
@@ -112,17 +119,22 @@ fun ImageViewer(
             merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(imageDetail.thumbnailUrl))
             crossfade(fadeStart = false)
+            // todo Reconstruct AsyncImage using AsyncImageState to pursue a more elegant way of using listener
             listener(
                 onStart = {
+                    displayResult = null
                     progressIndicatorState.progress = 0f
+                    loadResult = LOADING
                 },
                 onSuccess = { _, result ->
                     displayResult = result
                     progressIndicatorState.progress = 1f
+                    loadResult = SUCCESS
                 },
-                onError = { _, _ ->
-                    displayResult = null
+                onError = { _, result ->
+                    displayResult = result
                     progressIndicatorState.progress = -1f
+                    loadResult = ERROR
                 }
             )
             progressListener { _, totalLength: Long, completedLength: Long ->
@@ -131,26 +143,33 @@ fun ImageViewer(
             }
         }
     }
-    val view = LocalView.current
-    // todo state
-    SketchZoomAsyncImage(
-        request = request,
-        contentDescription = "view image",
-        modifier = Modifier
-            .fillMaxSize()
-            .progressIndicator(progressIndicatorState),
-        contentScale = contentScale,
-        alignment = alignment,
-        state = zoomState,
-        scrollBar = scrollBar,
-        onTap = { onClick?.invoke() },
-        onLongPress = {
-            val displayResult1 = displayResult
-            if (displayResult1 != null) {
-                view
-                    .findNavController()
-                    .navigate(ImageInfoDialogFragment.createNavDirections(displayResult1))
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        val view = LocalView.current
+        SketchZoomAsyncImage(
+            request = request,
+            contentDescription = "view image",
+            modifier = Modifier
+                .fillMaxSize()
+                .progressIndicator(progressIndicatorState),
+            contentScale = contentScale,
+            alignment = alignment,
+            state = zoomState,
+            scrollBar = scrollBar,
+            onTap = { onClick?.invoke() },
+            onLongPress = {
+                val displayResult1 = displayResult
+                if (displayResult1 != null) {
+                    view
+                        .findNavController()
+                        .navigate(ImageInfoDialogFragment.createNavDirections(displayResult1))
+                }
             }
-        }
-    )
+        )
+
+        LoadState(
+            modifier = Modifier.align(androidx.compose.ui.Alignment.Center),
+            result = loadResult
+        )
+    }
 }
