@@ -13,11 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.navigation.findNavController
+import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
+import com.github.panpf.sketch.sample.ui.photo.pexels.progressIndicator
+import com.github.panpf.sketch.sample.ui.photo.pexels.rememberDrawableProgressPainter
+import com.github.panpf.sketch.sample.ui.photo.pexels.rememberProgressIndicatorState
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
@@ -96,6 +100,11 @@ fun ImageViewer(
         }
     }
 
+
+    val progressDrawable = remember { SectorProgressDrawable() }
+    val drawableProgressPainter = rememberDrawableProgressPainter(progressDrawable)
+    val progressIndicatorState = rememberProgressIndicatorState(drawableProgressPainter)
+
     val viewerSettings by appSettingsService.viewersCombinedFlow.collectAsState(Unit)
     // listener 会导致两次创建的 DisplayRequest equals 为 false，从而引发重组，所以这里必须用 remember
     val request = remember(imageUrl, viewerSettings) {
@@ -104,22 +113,32 @@ fun ImageViewer(
             placeholder(ThumbnailMemoryCacheStateImage(imageDetail.thumbnailUrl))
             crossfade(fadeStart = false)
             listener(
+                onStart = {
+                    progressIndicatorState.progress = 0f
+                },
                 onSuccess = { _, result ->
                     displayResult = result
+                    progressIndicatorState.progress = 1f
                 },
                 onError = { _, _ ->
                     displayResult = null
+                    progressIndicatorState.progress = -1f
                 }
             )
-            // progress, listener
+            progressListener { _, totalLength: Long, completedLength: Long ->
+                val progress = if (totalLength > 0) completedLength.toFloat() / totalLength else 0f
+                progressIndicatorState.progress = progress
+            }
         }
     }
     val view = LocalView.current
-    // todo progress, state
+    // todo state
     SketchZoomAsyncImage(
         request = request,
         contentDescription = "view image",
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .progressIndicator(progressIndicatorState),
         contentScale = contentScale,
         alignment = alignment,
         state = zoomState,

@@ -16,6 +16,11 @@
 package com.github.panpf.sketch.sample.util
 
 import android.content.pm.PackageInfo
+import android.content.res.Resources
+import android.content.res.Resources.Theme
+import android.graphics.drawable.Drawable
+import androidx.annotation.DrawableRes
+import androidx.core.content.res.ResourcesCompat
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -34,3 +39,9 @@ internal val PackageInfo.versionCodeCompat: Int
     } else {
         versionCode
     }
+
+fun Resources.getDrawableCompat(@DrawableRes id: Int, theme: Theme? = null): Drawable {
+    return checkNotNull(ResourcesCompat.getDrawable(this, id, theme)) {
+        "Can't find drawable by id=$id"
+    }
+}

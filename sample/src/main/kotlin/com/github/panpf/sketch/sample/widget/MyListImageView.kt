@@ -61,20 +61,20 @@ class MyListImageView @JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        appSettingsService.showProgressIndicatorInList.stateFlow.collectWithLifecycle(lifecycleOwner) {
-            setShowProgressIndicator(it)
+        appSettingsService.showProgressIndicatorInList.stateFlow.collectWithLifecycle(lifecycleOwner) { show ->
+            setShowProgressIndicator(show = show)
         }
-        appSettingsService.showMimeTypeLogoInLIst.stateFlow.collectWithLifecycle(lifecycleOwner) {
-            setShowMimeTypeLogo(it)
+        appSettingsService.showMimeTypeLogoInLIst.stateFlow.collectWithLifecycle(lifecycleOwner) { show ->
+            setShowMimeTypeLogo(show = show)
         }
-        appSettingsService.showDataFromLogo.stateFlow.collectWithLifecycle(lifecycleOwner) {
-            setShowDataFromLogo(it)
+        appSettingsService.showDataFromLogo.stateFlow.collectWithLifecycle(lifecycleOwner) { show ->
+            setShowDataFromLogo(show = show)
         }
     }
 
     private fun setShowProgressIndicator(show: Boolean) {
         if (show) {
-            showSectorProgressIndicator()
+            showSectorProgressIndicator(hiddenWhenIndeterminate = true)
         } else {
             removeProgressIndicator()
         }

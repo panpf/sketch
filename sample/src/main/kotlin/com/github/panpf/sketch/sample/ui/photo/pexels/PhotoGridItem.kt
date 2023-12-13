@@ -2,7 +2,6 @@ package com.github.panpf.sketch.sample.ui.photo.pexels
 
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.aspectRatio
@@ -70,7 +69,7 @@ fun PhotoGridItem(
             "image/heif" to DrawablePainter(newLogoDrawable("HEIF")),
         )
     }
-    val progressDrawable = remember { SectorProgressDrawable() }
+    val progressDrawable = remember { SectorProgressDrawable(hiddenWhenIndeterminate = true) }
     val drawableProgressPainter = rememberDrawableProgressPainter(progressDrawable)
     val progressIndicatorState = rememberProgressIndicatorState(drawableProgressPainter)
     val appSettingsService = context.appSettingsService

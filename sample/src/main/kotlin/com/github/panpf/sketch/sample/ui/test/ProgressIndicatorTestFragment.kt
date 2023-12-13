@@ -15,38 +15,30 @@
  */
 package com.github.panpf.sketch.sample.ui.test
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import androidx.exifinterface.media.ExifInterface
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import androidx.transition.TransitionInflater
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ProgressIndicatorTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.viewability.ProgressIndicatorAbility
 import com.github.panpf.sketch.viewability.ViewAbilityContainer
 import com.github.panpf.sketch.viewability.removeProgressIndicator
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
 import com.github.panpf.sketch.viewability.showRingProgressIndicator
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlin.random.Random
+import kotlinx.coroutines.flow.combine
 
 class ProgressIndicatorTestFragment :
     ToolbarBindingFragment<ProgressIndicatorTestFragmentBinding>() {
 
-    private var stepRunningJob: Job? = null
-    private var fastRunningJob: Job? = null
+    private val viewModel by viewModels<ProgressIndicatorTestViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,23 +65,91 @@ class ProgressIndicatorTestFragment :
             binding.testIndicatorTestImage3.setImageResource(R.drawable.im_placeholder_noicon)
         }
 
-        binding.testIndicatorTestButton.setOnClickListener {
-            step(binding)
+        binding.testIndicatorTestActionButton.setOnClickListener {
+            viewModel.action()
         }
 
-        binding.testIndicatorTestButton2.setOnClickListener {
-            fast(binding)
+        viewModel.modelState.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            setupModel(binding, it)
+        }
+        binding.testIndicatorTestProgressRadioButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                viewModel.changeModel(Model.Progress)
+            }
+        }
+        binding.testIndicatorTestCompletedRadioButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                viewModel.changeModel(Model.DirectlyComplete)
+            }
+        }
+        binding.testIndicatorTestErrorRadioButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                viewModel.changeModel(Model.Error)
+            }
         }
 
-        binding.testIndicatorTestCheckBox1.setOnCheckedChangeListener { _, _ ->
+        combine(
+            flows = listOf(
+                viewModel.hiddenWhenIndeterminateState,
+                viewModel.hiddenWhenCompletedState,
+                viewModel.shortStepState
+            ),
+            transform = { it.joinToString() }
+        ).repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             setupProgressIndicator(binding)
         }
-        binding.testIndicatorTestCheckBox2.setOnCheckedChangeListener { _, _ ->
-            setupProgressIndicator(binding)
+        binding.testIndicatorTestHiddenIndeterminateCheckBox.apply {
+            viewModel.hiddenWhenIndeterminateState
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    isChecked = it
+                }
+            setOnCheckedChangeListener { _, isChecked ->
+                viewModel.changeHiddenWhenIndeterminate(isChecked)
+            }
+        }
+        binding.testIndicatorTestHiddenCompletedCheckBox.apply {
+            viewModel.hiddenWhenCompletedState
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    isChecked = it
+                }
+            setOnCheckedChangeListener { _, isChecked ->
+                viewModel.changeHiddenWhenCompleted(isChecked)
+            }
+        }
+        binding.testIndicatorTestShortStepCheckBox.apply {
+            viewModel.shortStepState
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    isChecked = it
+                }
+            setOnCheckedChangeListener { _, isChecked ->
+                viewModel.changeShortStep(isChecked)
+            }
         }
 
-        setupProgressIndicator(binding)
-        step(binding)
+        viewModel.runningState.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            binding.testIndicatorTestActionButton.text = if (it) "Stop" else "Start"
+        }
+
+        viewModel.progressState.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.STARTED
+        ) { progress ->
+            val request = DisplayRequest(requireContext(), "http://sample.com/sample.jpeg")
+            val totalLength: Long = 100
+            val completedLength = (progress * totalLength).toLong()
+            binding.testIndicatorTestImage1.progressIndicatorAbility
+                .onUpdateRequestProgress(request, totalLength, completedLength)
+            binding.testIndicatorTestImage2.progressIndicatorAbility
+                .onUpdateRequestProgress(request, totalLength, completedLength)
+            binding.testIndicatorTestImage3.progressIndicatorAbility
+                .onUpdateRequestProgress(request, totalLength, completedLength)
+        }
+    }
+
+    private fun setupModel(binding: ProgressIndicatorTestFragmentBinding, model: Model) {
+        binding.testIndicatorTestProgressRadioButton.isChecked = model == Model.Progress
+        binding.testIndicatorTestCompletedRadioButton.isChecked = model == Model.DirectlyComplete
+        binding.testIndicatorTestErrorRadioButton.isChecked = model == Model.Error
     }
 
     private fun setupProgressIndicator(binding: ProgressIndicatorTestFragmentBinding) {
@@ -97,10 +157,10 @@ class ProgressIndicatorTestFragment :
         binding.testIndicatorTestImage2.removeProgressIndicator()
         binding.testIndicatorTestImage3.removeProgressIndicator()
 
-        val hiddenWhenIndeterminate = binding.testIndicatorTestCheckBox1.isChecked
-        val hiddenWhenCompleted = binding.testIndicatorTestCheckBox2.isChecked
-        val shortSteps = binding.testIndicatorTestCheckBox3.isChecked
-        val stepAnimationDuration = if (shortSteps) 1000 else 300
+        val hiddenWhenIndeterminate = viewModel.hiddenWhenIndeterminateState.value
+        val hiddenWhenCompleted = viewModel.hiddenWhenCompletedState.value
+        val shortStep = viewModel.shortStepState.value
+        val stepAnimationDuration = if (shortStep) 1000 else 300
         binding.testIndicatorTestImage1.showMaskProgressIndicator(
             hiddenWhenIndeterminate = hiddenWhenIndeterminate,
             hiddenWhenCompleted = hiddenWhenCompleted,
@@ -116,105 +176,6 @@ class ProgressIndicatorTestFragment :
             hiddenWhenCompleted = hiddenWhenCompleted,
             stepAnimationDuration = stepAnimationDuration
         )
-    }
-
-    private fun step(binding: ProgressIndicatorTestFragmentBinding) {
-        fastRunningJob?.cancel()
-        binding.testIndicatorTestButton2.isClickable = true
-
-        val stepRunningJob = this.stepRunningJob
-        if (stepRunningJob != null && stepRunningJob.isActive) {
-            stepRunningJob.cancel()
-            binding.testIndicatorTestButton.text = "Start"
-        } else {
-            binding.testIndicatorTestButton.text = "Stop"
-            this.stepRunningJob = viewLifecycleOwner.lifecycleScope.launch {
-                var progress = 0L
-                val request = DisplayRequest(requireContext(), "http://sample.com/sample.jpeg")
-                binding.testIndicatorTestImage1.progressIndicatorAbility
-                    .onRequestStart(request)
-                binding.testIndicatorTestImage2.progressIndicatorAbility
-                    .onRequestStart(request)
-                binding.testIndicatorTestImage3.progressIndicatorAbility
-                    .onRequestStart(request)
-
-                val shortSteps = binding.testIndicatorTestCheckBox2.isChecked
-                while (progress < 100 && isActive) {
-                    if (shortSteps) {
-                        delay(500)
-                    } else {
-                        delay(Random.nextLong(150, 1000))
-                    }
-                    progress = (progress + 20).coerceAtMost(100)
-                    binding.testIndicatorTestImage1.progressIndicatorAbility
-                        .onUpdateRequestProgress(request, 100, progress)
-                    binding.testIndicatorTestImage2.progressIndicatorAbility
-                        .onUpdateRequestProgress(request, 100, progress)
-                    binding.testIndicatorTestImage3.progressIndicatorAbility
-                        .onUpdateRequestProgress(request, 100, progress)
-                }
-
-                val result = DisplayResult.Success(
-                    request = request,
-                    requestKey = "",
-                    requestCacheKey = "",
-                    drawable = ColorDrawable(Color.WHITE),
-                    imageInfo = ImageInfo(100, 100, "", ExifInterface.ORIENTATION_NORMAL),
-                    dataFrom = LOCAL,
-                    transformedList = null,
-                    extras = null
-                )
-                binding.testIndicatorTestImage1.progressIndicatorAbility
-                    .onRequestSuccess(request, result)
-                binding.testIndicatorTestImage2.progressIndicatorAbility
-                    .onRequestSuccess(request, result)
-                binding.testIndicatorTestImage3.progressIndicatorAbility
-                    .onRequestSuccess(request, result)
-
-                binding.testIndicatorTestButton.text = "Start"
-            }
-        }
-    }
-
-    private fun fast(binding: ProgressIndicatorTestFragmentBinding) {
-        binding.testIndicatorTestButton2.isClickable = false
-        this.fastRunningJob = viewLifecycleOwner.lifecycleScope.launch {
-            val request = DisplayRequest(requireContext(), "http://sample.com/sample.jpeg")
-            binding.testIndicatorTestImage1.progressIndicatorAbility
-                .onRequestStart(request)
-            binding.testIndicatorTestImage2.progressIndicatorAbility
-                .onRequestStart(request)
-            binding.testIndicatorTestImage3.progressIndicatorAbility
-                .onRequestStart(request)
-
-            delay(2000)
-
-            binding.testIndicatorTestImage1.progressIndicatorAbility
-                .onUpdateRequestProgress(request, 100, 100)
-            binding.testIndicatorTestImage2.progressIndicatorAbility
-                .onUpdateRequestProgress(request, 100, 100)
-            binding.testIndicatorTestImage3.progressIndicatorAbility
-                .onUpdateRequestProgress(request, 100, 100)
-
-            val result = DisplayResult.Success(
-                request = request,
-                requestKey = "",
-                requestCacheKey = "",
-                drawable = ColorDrawable(Color.WHITE),
-                imageInfo = ImageInfo(100, 100, "", ExifInterface.ORIENTATION_NORMAL),
-                dataFrom = LOCAL,
-                transformedList = null,
-                extras = null
-            )
-            binding.testIndicatorTestImage1.progressIndicatorAbility
-                .onRequestSuccess(request, result)
-            binding.testIndicatorTestImage2.progressIndicatorAbility
-                .onRequestSuccess(request, result)
-            binding.testIndicatorTestImage3.progressIndicatorAbility
-                .onRequestSuccess(request, result)
-
-            binding.testIndicatorTestButton2.isClickable = true
-        }
     }
 
     private val ViewAbilityContainer.progressIndicatorAbility: ProgressIndicatorAbility
