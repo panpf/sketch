@@ -13,6 +13,8 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.Scale
 import com.google.accompanist.drawablepainter.DrawablePainter
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlin.math.roundToInt
 import com.github.panpf.sketch.util.Size as SketchSize
 
@@ -154,3 +156,15 @@ internal val ContentScale.name: String
         ContentScale.None -> "None"
         else -> "Unknown ContentScale: $this"
     }
+
+fun <T> Flow<T>.ignoreFirst(): Flow<T> {
+    var first = true
+    return filter {
+        if (first) {
+            first = false
+            false
+        } else {
+            true
+        }
+    }
+}

@@ -75,7 +75,9 @@ fun rememberAsyncImagePainter2(
 ): AsyncImagePainter2 {
     val inspectionMode = LocalInspectionMode.current
     val painter = remember(state, inspectionMode) {
-        Log.d("NewAsyncImageTest", "rememberAsyncImagePainter2. new. ${state.request.uriString}")
+        state.sketch.logger.d("NewAsyncImageTest") {
+            "rememberAsyncImagePainter2. new. ${state.request.uriString}"
+        }
         AsyncImagePainter2(state, inspectionMode)
     }
     state.contentScale = contentScale
@@ -83,6 +85,7 @@ fun rememberAsyncImagePainter2(
     painter.onState = onState
     painter.contentScale = contentScale
     painter.filterQuality = filterQuality
+    painter.onRemembered() // Invoke this manually so `painter.state` is set to `Loading` immediately.
     return painter
 }
 
@@ -98,7 +101,6 @@ class AsyncImagePainter2 internal constructor(
     val logModule = "AsyncImagePainter2@${Integer.toHexString(hashCode())}"
 
     private var coroutineScope: CoroutineScope? = null
-//    private val drawSize = MutableStateFlow(Size.Zero)
 
     private var painter: Painter? by mutableStateOf(null)
     private var alpha: Float by mutableFloatStateOf(DefaultAlpha)
@@ -133,10 +135,9 @@ class AsyncImagePainter2 internal constructor(
         // Update the draw scope's current size.
         val drawSize = size.toIntSizeOrNull()
         if (drawSize != null && drawSize != imageState.size) {
-            Log.d(
-                "NewAsyncImageTest",
+            imageState.sketch.logger.d("NewAsyncImageTest") {
                 "$logModule. onSizeChanged: ${imageState.size} -> $drawSize. ${imageState.request.uriString}"
-            )
+            }
             imageState.size = drawSize
         }
 
@@ -148,7 +149,9 @@ class AsyncImagePainter2 internal constructor(
         // onRemembered will be executed multiple times
         if (coroutineScope != null) return
 
-        Log.d("NewAsyncImageTest", "$logModule. onRemembered. ${imageState.request.uriString}")
+        imageState.sketch.logger.d("NewAsyncImageTest") {
+            "$logModule. onRemembered. ${imageState.request.uriString}"
+        }
         // Create a new scope to observe state and execute requests while we're remembered.
         coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
@@ -169,6 +172,9 @@ class AsyncImagePainter2 internal constructor(
 
         coroutineScope?.launch {
             snapshotFlow { imageState.painterState }.filterNotNull().collect {
+                imageState.sketch.logger.d("NewAsyncImageTest") {
+                    "$logModule. updateState. $it. ${imageState.request.uriString}"
+                }
                 updateState(it)
             }
         }

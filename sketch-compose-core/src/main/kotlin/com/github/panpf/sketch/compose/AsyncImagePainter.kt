@@ -224,7 +224,12 @@ fun rememberAsyncImagePainter(
     filterQuality: FilterQuality = DefaultFilterQuality,
 ): AsyncImagePainter {
     validateRequest(request)
-    val painter = remember { AsyncImagePainter(request, sketch) }
+    val painter = remember {
+        sketch.logger.d("NewAsyncImageTest") {
+            "rememberAsyncImagePainter. new. ${request.uriString}"
+        }
+        AsyncImagePainter(request, sketch)
+    }
     painter.transform = transform
     painter.onState = onState
     painter.contentScale = contentScale
@@ -391,6 +396,9 @@ class AsyncImagePainter internal constructor(
                 override val supportDisplayCount: Boolean = true
 
                 override fun onStart(placeholder: Drawable?) {
+                    sketch.logger.d("NewAsyncImageTest") {
+                        "AsyncImagePainter. updateState Loading. ${request.uriString}"
+                    }
                     updateState(State.Loading(placeholder?.toPainter()))
                 }
             }))

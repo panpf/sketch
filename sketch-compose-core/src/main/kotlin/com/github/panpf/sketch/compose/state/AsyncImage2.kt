@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.compose.state
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
@@ -13,6 +12,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQ
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -59,33 +59,31 @@ fun AsyncImage2(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) {
-    Log.d(
-        "NewAsyncImageTest",
+    state.sketch.logger.d("NewAsyncImageTest") {
         "AsyncImage2. setContentScale: ${state.contentScale?.name} -> ${contentScale.name}. ${state.request.uriString}"
+    }
+    state.contentScale = contentScale
+    val painter = rememberAsyncImagePainter2(
+        state, transform, onState, contentScale, filterQuality
     )
-//    state.contentScale = contentScale
-//    val painter = rememberAsyncImagePainter2(
-//        state, transform, onState, contentScale, filterQuality
-//    )
-//    // Draw the content without a parent composable or subcomposition.
-//    Content(
-//        modifier = modifier.onSizeChanged { size ->
-//            if (size != state.size) {
-//                Log.d(
-//                    "NewAsyncImageTest",
-//                    "AsyncImage2. onSizeChanged: ${state.size} -> $size. ${state.request.uriString}"
-//                )
-//                state.size = size
-//            }
-//        },
-//        painter = painter,
-//        contentDescription = contentDescription,
-//        alignment = alignment,
-//        contentScale = contentScale,
-//        alpha = alpha,
-//        colorFilter = colorFilter,
-//        clipToBounds = clipToBounds,
-//    )
+    // Draw the content without a parent composable or subcomposition.
+    Content(
+        modifier = modifier.onSizeChanged { size ->
+            if (size != state.size) {
+                state.sketch.logger.d("NewAsyncImageTest") {
+                    "AsyncImage2. onSizeChanged: ${state.size} -> $size. ${state.request.uriString}"
+                }
+                state.size = size
+            }
+        },
+        painter = painter,
+        contentDescription = contentDescription,
+        alignment = alignment,
+        contentScale = contentScale,
+        alpha = alpha,
+        colorFilter = colorFilter,
+        clipToBounds = clipToBounds,
+    )
 }
 
 /** Draws the current image content. */

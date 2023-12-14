@@ -19,6 +19,7 @@
 //import androidx.compose.ui.platform.LocalView
 //import androidx.compose.ui.unit.dp
 //import androidx.navigation.findNavController
+//import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 //import com.github.panpf.sketch.compose.state.rememberAsyncImagePainter2
 //import com.github.panpf.sketch.compose.state.rememberAsyncImageState
 //import com.github.panpf.sketch.drawable.SectorProgressDrawable
@@ -165,7 +166,8 @@
 //        }
 //    }
 //    val imageState = rememberAsyncImageState(request = request, sketch = context.sketch)
-////    when (index % 2) {
+////    when (index % 3) {
+////    when (2) {
 ////        0 -> {
 ////            com.github.panpf.sketch.compose.state.AsyncImage2(
 ////                state = imageState,
@@ -174,7 +176,7 @@
 ////                contentDescription = "photo",
 ////            )
 ////        }
-//
+////
 ////        1 -> {
 ////            com.github.panpf.sketch.compose.SubcomposeAsyncImage(
 ////                request = request,
@@ -183,7 +185,19 @@
 ////                contentDescription = "photo",
 ////            )
 ////        }
-//
+////
+////        2 -> {
+////            Image(
+////                painter = rememberAsyncImagePainter(
+////                    request = request,
+////                    contentScale = ContentScale.Crop
+////                ),
+////                modifier = modifier,
+////                contentScale = ContentScale.Crop,
+////                contentDescription = "photo"
+////            )
+////        }
+////
 ////        else -> {
 //            Image(
 //                painter = rememberAsyncImagePainter2(
