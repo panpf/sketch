@@ -1,7 +1,9 @@
 package com.github.panpf.sketch.compose
 
+import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Constraints
@@ -10,7 +12,9 @@ import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransf
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.Scale
+import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlin.math.roundToInt
+import com.github.panpf.sketch.util.Size as SketchSize
 
 ///** Create an [ImageRequest] from the [model]. */
 //@Composable
@@ -41,6 +45,7 @@ internal fun transformOf(
                 } else {
                     if (error != null) state.copy(painter = error) else state
                 }
+
                 else -> state
             }
         }
@@ -81,6 +86,7 @@ internal fun ContentScale.toScale(): Scale {
         ContentScale.FillBounds,
         ContentScale.FillWidth,
         ContentScale.FillHeight -> Scale.FILL
+
         ContentScale.Fit -> Scale.CENTER_CROP
         ContentScale.Crop -> Scale.CENTER_CROP
         ContentScale.Inside -> Scale.CENTER_CROP
@@ -99,4 +105,52 @@ internal inline fun Float.takeOrElse(block: () -> Float) = if (isFinite()) this 
 
 internal fun Size.toIntSize() = IntSize(width.roundToInt(), height.roundToInt())
 
+private val Size.isPositive get() = width >= 0.5 && height >= 0.5
+
+internal fun Size.toIntSizeOrNull() =
+    when {
+        isUnspecified -> null
+        isPositive && width.isFinite() && height.isFinite() -> IntSize(
+            width.roundToInt(),
+            height.roundToInt()
+        )
+
+        else -> null
+    }
+
 internal val ZeroConstraints = Constraints.fixed(0, 0)
+
+internal fun IntSize.isEmpty(): Boolean = width <= 0 || height <= 0
+
+internal fun IntSize.toSketchSize(): SketchSize = SketchSize(width, height)
+
+/**
+ * Convert this [Drawable] into a [Painter] using Compose primitives if possible.
+ *
+ * Very important, updateDisplayed() needs to set setIsDisplayed to keep SketchDrawable, SketchStateDrawable
+ */
+internal fun Drawable.toPainter() = DrawablePainter(mutate())
+//        when (this) {
+//        is SketchDrawable -> DrawablePainter(mutate())
+//        is SketchStateDrawable -> DrawablePainter(mutate())
+//        is BitmapDrawable -> BitmapPainter(bitmap.asImageBitmap(), filterQuality = filterQuality)
+//        is ColorDrawable -> ColorPainter(Color(color))
+//        else -> DrawablePainter(mutate())
+//    }
+
+
+/**
+ * Returns the name of [ContentScaleCompat], which can also be converted back via the [valueOf] method
+ */
+@Stable
+internal val ContentScale.name: String
+    get() = when (this) {
+        ContentScale.FillWidth -> "FillWidth"
+        ContentScale.FillHeight -> "FillHeight"
+        ContentScale.FillBounds -> "FillBounds"
+        ContentScale.Fit -> "Fit"
+        ContentScale.Crop -> "Crop"
+        ContentScale.Inside -> "Inside"
+        ContentScale.None -> "None"
+        else -> "Unknown ContentScale: $this"
+    }
