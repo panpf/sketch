@@ -130,11 +130,9 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
                 }
             })
 
-            val currentItem =
-                imageList.indexOfFirst { it.position == args.defaultPosition }.takeIf { it != -1 }
-                    ?: 0
             post {
-                setCurrentItem(currentItem, false)
+                val initialItem = args.initialPosition - args.startPosition
+                setCurrentItem(initialItem, false)
             }
         }
 
@@ -147,18 +145,18 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
         }
 
         binding.imagePagerPageNumber.apply {
-            text = "%d/%d".format(
-                args.defaultPosition + 1,
-                binding.imagePagerPager.adapter!!.itemCount
-            )
+            val updateCurrentPageNumber: () -> Unit = {
+                val pageNumber = args.startPosition + binding.imagePagerPager.currentItem + 1
+                text = "$pageNumber/${args.totalCount}"
+            }
             binding.imagePagerPager.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    text = "%d/%d"
-                        .format(position + 1, binding.imagePagerPager.adapter!!.itemCount)
+                    updateCurrentPageNumber()
                 }
             })
+            updateCurrentPageNumber()
         }
 
         binding.imagePagerShare.setOnClickListener {

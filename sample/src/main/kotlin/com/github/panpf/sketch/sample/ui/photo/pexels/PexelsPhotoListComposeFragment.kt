@@ -84,22 +84,24 @@ class PexelsPhotoListComposeFragment : BaseToolbarFragment() {
     }
 
     private fun startImageDetail(items: List<Photo>, position: Int) {
-        val imageList = items.mapIndexedNotNull { index, photo ->
-            if (index >= position - 50 && index <= position + 50) {
+        val totalCount = items.size
+        val startPosition = (position - 50).coerceAtLeast(0)
+        val endPosition = (position + 50).coerceAtMost(totalCount - 1)
+        val imageList = items.asSequence()
+            .filterIndexed { index, _ -> index in startPosition..endPosition }
+            .map {
                 ImageDetail(
-                    position = index,
-                    originUrl = photo.originalUrl,
-                    mediumUrl = photo.detailPreviewUrl,
-                    thumbnailUrl = photo.listThumbnailUrl,
+                    originUrl = it.originalUrl,
+                    mediumUrl = it.detailPreviewUrl,
+                    thumbnailUrl = it.listThumbnailUrl,
                 )
-            } else {
-                null
-            }
-        }
+            }.toList()
         findNavController().navigate(
             NavMainDirections.actionGlobalImagePagerComposeFragment(
-                Json.encodeToString(imageList),
-                position,
+                imageDetailJsonArray = Json.encodeToString(imageList),
+                totalCount = totalCount,
+                startPosition = startPosition,
+                initialPosition = position
             ),
         )
     }

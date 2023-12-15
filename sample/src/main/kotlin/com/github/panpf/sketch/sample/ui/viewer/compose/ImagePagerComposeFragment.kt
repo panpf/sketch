@@ -110,8 +110,6 @@ class ImagePagerComposeFragment : BaseFragment() {
         parent: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val initialItem = imageList.indexOfFirst { it.position == args.defaultPosition }
-            .takeIf { it != -1 } ?: 0
         return ComposeView(requireContext()).apply {
             setBackgroundColor(
                 ResourcesCompat.getColor(
@@ -123,7 +121,9 @@ class ImagePagerComposeFragment : BaseFragment() {
             setContent {
                 ImagePager(
                     imageList = imageList,
-                    initialItem = initialItem,
+                    totalCount = args.totalCount,
+                    startPosition = args.startPosition,
+                    initialPosition = args.initialPosition,
                     showInfoEvent = showInfoEvent,
                     onSettingsClick = {
                         findNavController().navigate(
@@ -204,7 +204,9 @@ class ImagePagerComposeFragment : BaseFragment() {
 @Composable
 private fun ImagePager(
     imageList: List<ImageDetail>,
-    initialItem: Int,
+    initialPosition: Int,
+    startPosition: Int,
+    totalCount: Int,
     showInfoEvent: MutableSharedFlow<DisplayResult?>,
     onSettingsClick: (() -> Unit)? = null,
     onShowOriginClick: (() -> Unit)? = null,
@@ -215,7 +217,7 @@ private fun ImagePager(
     onImageClick: (() -> Unit)? = null,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val pagerState = rememberPagerState(initialPage = initialItem) {
+        val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
             imageList.size
         }
 
@@ -240,8 +242,8 @@ private fun ImagePager(
 
         val showOriginImage by LocalContext.current.appSettingsService.showOriginImage.stateFlow.collectAsState()
         ImagePagerTools(
-            currentItem = pagerState.currentPage,
-            imageCount = imageList.size,
+            pageNumber = startPosition + pagerState.currentPage + 1,
+            pageCount = totalCount,
             showOriginImage = showOriginImage,
             buttonBgColorState = buttonBgColorState,
             onSettingsClick = onSettingsClick,
@@ -311,8 +313,8 @@ private fun PagerBgImage(
 
 @Composable
 private fun ImagePagerTools(
-    currentItem: Int,
-    imageCount: Int,
+    pageNumber: Int,
+    pageCount: Int,
     showOriginImage: Boolean,
     buttonBgColorState: MutableState<Int?>,
     onSettingsClick: (() -> Unit)? = null,
@@ -443,7 +445,7 @@ private fun ImagePagerTools(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "${currentItem + 1}/$imageCount",
+                text = "${pageNumber}/$pageCount",
                 textAlign = TextAlign.Center,
                 color = buttonTextColor,
                 style = TextStyle(lineHeight = 12.sp),
@@ -460,8 +462,8 @@ fun ImagePagerToolsPreview() {
         mutableStateOf<Int?>(null)
     }
     ImagePagerTools(
-        currentItem = 9,
-        imageCount = 99,
+        pageNumber = 9,
+        pageCount = 99,
         showOriginImage = false,
         buttonBgColorState = buttonBgColorState,
     )
