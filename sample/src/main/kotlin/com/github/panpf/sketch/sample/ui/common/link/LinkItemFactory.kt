@@ -16,14 +16,11 @@
 package com.github.panpf.sketch.sample.ui.common.link
 
 import android.content.Context
-import android.os.Build
-import android.widget.Toast
-import androidx.navigation.findNavController
 import com.github.panpf.sketch.sample.databinding.LinkItemBinding
 import com.github.panpf.sketch.sample.model.Link
-import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
-class LinkItemFactory : MyBindingItemFactory<Link, LinkItemBinding>(Link::class) {
+class LinkItemFactory : BaseBindingItemFactory<Link, LinkItemBinding>(Link::class) {
 
     override fun initItem(
         context: Context,

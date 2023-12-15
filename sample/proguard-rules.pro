@@ -113,3 +113,19 @@
 -keepclassmembers class com.github.panpf.sketch.sample.<1>$Companion {
     kotlinx.serialization.KSerializer serializer(...);
 }
+
+# ################### for createViewBinding - start ###################
+-keep class com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
+-keep class com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
+-keep class com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+-keep class com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+-keep class com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+-keep class * implements androidx.viewbinding.ViewBinding{
+    public *;
+}
+# ################### for createViewBinding - end ###################

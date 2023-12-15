@@ -77,6 +77,7 @@ fun PhotoGridItem(
     val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInLIst.stateFlow.collectAsState()
     val showProgressIndicator by appSettingsService.showProgressIndicatorInList.stateFlow.collectAsState()
 
+
     var displayResult: DisplayResult? by remember { mutableStateOf(null) }
     val view = LocalView.current
 

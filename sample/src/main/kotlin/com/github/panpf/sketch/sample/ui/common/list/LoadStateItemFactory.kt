@@ -19,9 +19,10 @@ import android.content.Context
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import com.github.panpf.sketch.sample.databinding.LoadStateItemBinding
+import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class LoadStateItemFactory :
-    MyBindingItemFactory<LoadState, LoadStateItemBinding>(LoadState::class) {
+    BaseBindingItemFactory<LoadState, LoadStateItemBinding>(LoadState::class) {
 
     override fun initItem(
         context: Context,

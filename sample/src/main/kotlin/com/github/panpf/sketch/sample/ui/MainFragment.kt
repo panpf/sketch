@@ -32,11 +32,11 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.MainFragmentBinding
 import com.github.panpf.sketch.sample.model.Link
 import com.github.panpf.sketch.sample.model.ListSeparator
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 
-class MainFragment : ToolbarBindingFragment<MainFragmentBinding>() {
+class MainFragment : BaseToolbarBindingFragment<MainFragmentBinding>() {
 
     private var pendingStartLink: Link? = null
     private val permissionLauncher =

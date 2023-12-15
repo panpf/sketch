@@ -27,11 +27,11 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.AnimatablePlaceholderTestFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import kotlinx.coroutines.delay
 
 class AnimatablePlaceholderTestFragment :
-    ToolbarBindingFragment<AnimatablePlaceholderTestFragmentBinding>() {
+    BaseToolbarBindingFragment<AnimatablePlaceholderTestFragmentBinding>() {
 
     private var urlIndex = 0
 

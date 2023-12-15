@@ -33,9 +33,10 @@ package com.github.panpf.sketch.sample.ui.common.list
 import android.content.Context
 import com.github.panpf.sketch.sample.databinding.ListSeparatorItemBinding
 import com.github.panpf.sketch.sample.model.ListSeparator
+import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class ListSeparatorItemFactory :
-    MyBindingItemFactory<ListSeparator, ListSeparatorItemBinding>(ListSeparator::class) {
+    BaseBindingItemFactory<ListSeparator, ListSeparatorItemBinding>(ListSeparator::class) {
 
     override fun initItem(
         context: Context,

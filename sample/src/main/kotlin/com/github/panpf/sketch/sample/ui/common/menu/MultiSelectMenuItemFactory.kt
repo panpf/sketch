@@ -22,10 +22,10 @@ import androidx.core.view.isVisible
 import com.github.panpf.activity.monitor.ActivityMonitor
 import com.github.panpf.sketch.sample.databinding.MultiSelectMenuItemBinding
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
-import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
-    MyBindingItemFactory<MultiSelectMenu, MultiSelectMenuItemBinding>(MultiSelectMenu::class) {
+    BaseBindingItemFactory<MultiSelectMenu, MultiSelectMenuItemBinding>(MultiSelectMenu::class) {
 
     override fun initItem(
         context: Context,

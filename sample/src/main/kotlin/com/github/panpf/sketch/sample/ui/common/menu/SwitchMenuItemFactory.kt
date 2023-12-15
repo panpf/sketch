@@ -20,11 +20,11 @@ import android.util.TypedValue
 import androidx.core.view.isVisible
 import com.github.panpf.sketch.sample.databinding.SwitchMenuItemBinding
 import com.github.panpf.sketch.sample.model.SwitchMenu
-import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class SwitchMenuItemFactory(
     private val compactModel: Boolean = false,
-) : MyBindingItemFactory<SwitchMenu, SwitchMenuItemBinding>(SwitchMenu::class) {
+) : BaseBindingItemFactory<SwitchMenu, SwitchMenuItemBinding>(SwitchMenu::class) {
 
     override fun initItem(
         context: Context,

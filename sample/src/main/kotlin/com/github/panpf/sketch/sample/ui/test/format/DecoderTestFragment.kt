@@ -21,12 +21,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.viewer.view.ImageFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
 
-class DecoderTestFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {
+class DecoderTestFragment : BaseToolbarBindingFragment<TabPagerFragmentBinding>() {
 
     private val viewModel by viewModels<DecoderTestViewModel>()
 

@@ -30,7 +30,7 @@ import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -43,7 +43,7 @@ import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
 import kotlin.math.roundToInt
 
-class ImageViewerFragment : BindingFragment<ImageViewerFragmentBinding>() {
+class ImageViewerFragment : BaseBindingFragment<ImageViewerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
 

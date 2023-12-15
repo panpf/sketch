@@ -27,7 +27,7 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
@@ -36,7 +36,7 @@ import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import java.io.File
 
-class LocalVideoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
+class LocalVideoListFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>() {
 
     private val videoListViewModel by viewModels<LocalVideoListViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {

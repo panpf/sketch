@@ -30,7 +30,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
@@ -39,7 +39,7 @@ import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
 class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
-    MyBindingItemFactory<Photo, ImageGridItemBinding>(Photo::class) {
+    BaseBindingItemFactory<Photo, ImageGridItemBinding>(Photo::class) {
 
     private var itemSize: Point? = null
 

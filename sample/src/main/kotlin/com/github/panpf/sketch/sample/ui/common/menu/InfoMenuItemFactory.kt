@@ -19,10 +19,10 @@ import android.content.Context
 import android.util.TypedValue
 import com.github.panpf.sketch.sample.databinding.InfoMenuItemBinding
 import com.github.panpf.sketch.sample.model.InfoMenu
-import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class InfoMenuItemFactory(private val compactModel: Boolean = false) :
-    MyBindingItemFactory<InfoMenu, InfoMenuItemBinding>(InfoMenu::class) {
+    BaseBindingItemFactory<InfoMenu, InfoMenuItemBinding>(InfoMenu::class) {
 
     override fun initItem(
         context: Context,

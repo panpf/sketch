@@ -22,13 +22,13 @@ import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.test.transform.ExifOrientationTestFragment
 import com.github.panpf.sketch.sample.ui.test.transform.ExifOrientationTestPagerViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ExifOrientationTestPagerFragment : ToolbarBindingFragment<TabPagerFragmentBinding>() {
+class ExifOrientationTestPagerFragment : BaseToolbarBindingFragment<TabPagerFragmentBinding>() {
 
     private val viewModel by viewModels<ExifOrientationTestPagerViewModel>()
 

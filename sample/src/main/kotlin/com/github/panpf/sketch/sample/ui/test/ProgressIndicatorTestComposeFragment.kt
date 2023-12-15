@@ -58,7 +58,7 @@ import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.drawable
-import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
 import com.github.panpf.sketch.sample.ui.photo.pexels.progressIndicator
 import com.github.panpf.sketch.sample.ui.photo.pexels.rememberDrawableProgressPainter
 import com.github.panpf.sketch.sample.ui.photo.pexels.rememberProgressIndicatorState
@@ -68,7 +68,7 @@ import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Mod
 import com.github.panpf.sketch.sample.util.getDrawableCompat
 import com.google.accompanist.drawablepainter.DrawablePainter
 
-class ProgressIndicatorTestComposeFragment : ToolbarFragment() {
+class ProgressIndicatorTestComposeFragment : BaseToolbarFragment() {
 
     private val viewModel by viewModels<ProgressIndicatorTestViewModel>()
 

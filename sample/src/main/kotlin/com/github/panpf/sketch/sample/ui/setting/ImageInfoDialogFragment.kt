@@ -27,12 +27,12 @@ import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.ImageInfoDialogBinding
-import com.github.panpf.sketch.sample.ui.base.BindingDialogFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
 import com.github.panpf.sketch.util.calculateBitmapByteCount
 import com.github.panpf.tools4j.io.ktx.formatFileSize
 import com.github.panpf.tools4k.lang.asOrThrow
 
-class ImageInfoDialogFragment : BindingDialogFragment<ImageInfoDialogBinding>() {
+class ImageInfoDialogFragment : BaseBindingDialogFragment<ImageInfoDialogBinding>() {
 
     private val args by navArgs<ImageInfoDialogFragmentArgs>()
 

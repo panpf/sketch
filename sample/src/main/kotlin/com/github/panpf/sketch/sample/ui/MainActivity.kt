@@ -21,11 +21,12 @@ import androidx.lifecycle.lifecycleScope
 import com.github.panpf.sketch.sample.databinding.MainActivityBinding
 import com.github.panpf.sketch.sample.service.NotificationService
 import com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
+import kotlinx.coroutines.launch
 
 class MainActivity : BaseBindingActivity<MainActivityBinding>() {
 
     override fun onCreate(binding: MainActivityBinding, savedInstanceState: Bundle?) {
-        lifecycleScope.launchWhenResumed {
+        lifecycleScope.launch {
             startService(Intent(this@MainActivity, NotificationService::class.java))
         }
     }

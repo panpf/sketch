@@ -23,12 +23,12 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.RoundedCornersTransformationTestFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 
 class RoundedCornersTransformationTestFragment :
-    BindingFragment<RoundedCornersTransformationTestFragmentBinding>() {
+    BaseBindingFragment<RoundedCornersTransformationTestFragmentBinding>() {
 
     private val viewModel by viewModels<RoundedCornersTransformationTestViewModel>()
 

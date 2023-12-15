@@ -24,7 +24,7 @@ import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ProgressIndicatorTestFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.viewability.ProgressIndicatorAbility
@@ -36,7 +36,7 @@ import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.flow.combine
 
 class ProgressIndicatorTestFragment :
-    ToolbarBindingFragment<ProgressIndicatorTestFragmentBinding>() {
+    BaseToolbarBindingFragment<ProgressIndicatorTestFragmentBinding>() {
 
     private val viewModel by viewModels<ProgressIndicatorTestViewModel>()
 
