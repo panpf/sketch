@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.compose
 
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -226,10 +225,6 @@ fun rememberAsyncImagePainter(
 ): AsyncImagePainter {
     validateRequest(request)
     val painter = remember {
-        Log.d(
-            "AsyncImageTest",
-            "AsyncImagePainter. new. ${request.uriString}"
-        )
         AsyncImagePainter(request, sketch)
     }
     painter.transform = transform
@@ -294,19 +289,6 @@ class AsyncImagePainter internal constructor(
         get() = painter?.intrinsicSize ?: Size.Unspecified
 
     override fun DrawScope.onDraw() {
-        if (drawSize.value == Size.Zero) {
-            Log.d(
-                "AsyncImageTest",
-                "AsyncImagePainter2. onDraw. size null. ${request?.uriString}"
-            )
-        } else if (painter == null) {
-            Log.d(
-                "AsyncImageTest",
-                "AsyncImagePainter2. onDraw. painter null. ${request?.uriString}"
-            )
-        } else {
-            Log.d("AsyncImageTest", "AsyncImagePainter2. onDraw. ok. ${request?.uriString}")
-        }
         // Update the draw scope's current size.
         drawSize.value = size
 

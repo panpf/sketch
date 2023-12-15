@@ -63,7 +63,7 @@ fun AsyncImage2(
         request, sketch, state, transform, onPainterState, contentScale, filterQuality
     )
     Content(
-        modifier = modifier.onSizeChanged { size -> state.size = size },
+        modifier = modifier.onSizeChanged { size -> state.setSize(size) },
         painter = painter,
         contentDescription = contentDescription,
         alignment = alignment,

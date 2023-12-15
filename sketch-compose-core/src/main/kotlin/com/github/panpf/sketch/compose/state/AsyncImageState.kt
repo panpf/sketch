@@ -41,7 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
@@ -72,28 +72,32 @@ class AsyncImageState internal constructor(
 
     private val listener = MyListener()
     private val target = AsyncImageDisplayTarget(MyAsyncImageDisplayTarget())
-    private val sizeResolver = ComposeSizeResolver(snapshotFlow { size })
     private val progressListener = MyProgressListener()
     private var coroutineScope: CoroutineScope? = null
     private var loadImageJob: Job? = null
     private var _painterState: PainterState = PainterState.Empty
-        private set(value) {
+        set(value) {
             field = value
             painterState = value
         }
     private var _painter: Painter? = null
-        private set(value) {
+        set(value) {
             field = value
             painter = value
         }
 
-    internal var sketch: Sketch? by mutableStateOf(null)
-    internal var request: DisplayRequest? by mutableStateOf(null)
+    var sketch: Sketch? by mutableStateOf(null)
+        internal set
+    var request: DisplayRequest? by mutableStateOf(null)
+        internal set
     var size: IntSize? by mutableStateOf(null)
-    internal var contentScale: ContentScale? by mutableStateOf(null)
+        private set
+    var contentScale: ContentScale? by mutableStateOf(null)
+        internal set
     internal var transform = DefaultTransform
     internal var onPainterState: ((PainterState) -> Unit)? = null
     internal var filterQuality = DrawScope.DefaultFilterQuality
+    private val sizeResolver = ComposeSizeResolver(size)
 
     var loadState: LoadState? by mutableStateOf(null)
         private set
@@ -103,6 +107,11 @@ class AsyncImageState internal constructor(
         private set
     var painter: Painter? by mutableStateOf(null)
         private set
+
+    internal fun setSize(size: IntSize) {
+        this.size = size
+        this.sizeResolver.sizeState.value = size
+    }
 
     override fun onRemembered() {
         // onRemembered will be executed multiple times, but we only need execute it once
@@ -321,10 +330,16 @@ class AsyncImageState internal constructor(
         }
     }
 
-    private class ComposeSizeResolver(val sizeFlow: Flow<IntSize?>) : SizeResolver {
+    private class ComposeSizeResolver(size: IntSize?) : SizeResolver {
+
+        // MutableStateFlow must be used here
+        // Previously, due to the use of snapshotFlow { size }, the response to changes in size was slow.
+        // When using the combination of Image plus AsyncImagePainter, the placeholder is not ready when the component is displayed.
+        // The user sees the process of the component going from blank to displaying the placeholder.
+        val sizeState: MutableStateFlow<IntSize?> = MutableStateFlow(size)
 
         override suspend fun size(): SketchSize {
-            return sizeFlow
+            return sizeState
                 .filterNotNull()
                 .filter { !it.isEmpty() }
                 .mapNotNull { it.toSketchSize() }

@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.compose.state
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -65,10 +64,6 @@ fun rememberAsyncImagePainter2(
     state.onPainterState = onPainterState
     state.filterQuality = filterQuality
     return remember(state) {
-        Log.d(
-            "AsyncImageTest",
-            "AsyncImagePainter2. new. ${state.request?.uriString}"
-        )
         AsyncImagePainter2(state)
     }
 }
@@ -88,21 +83,8 @@ class AsyncImagePainter2 internal constructor(
         get() = state.painter?.intrinsicSize ?: Size.Unspecified
 
     override fun DrawScope.onDraw() {
-        if (state.size == null) {
-            Log.d(
-                "AsyncImageTest",
-                "AsyncImagePainter2. onDraw. size null. ${state.request?.uriString}"
-            )
-        } else if (state.painter == null) {
-            Log.d(
-                "AsyncImageTest",
-                "AsyncImagePainter2. onDraw. painter null. ${state.request?.uriString}"
-            )
-        } else {
-            Log.d("AsyncImageTest", "AsyncImagePainter2. onDraw. ok. ${state.request?.uriString}")
-        }
         // Update the draw scope's current size. It plays a decisive role when using AsyncImagePainter without AsyncImage
-        state.size = this@onDraw.size.toIntSizeOrNull()
+        this@onDraw.size.toIntSizeOrNull()?.let { state.setSize(it) }
 
         // Draw the current painter.
         state.painter?.apply { draw(size, alpha, colorFilter) }
