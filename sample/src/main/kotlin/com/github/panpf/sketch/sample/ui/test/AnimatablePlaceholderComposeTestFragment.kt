@@ -33,12 +33,12 @@ import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.databinding.AnimatablePlaceholderComposeTestFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class AnimatablePlaceholderComposeTestFragment :
-    ToolbarBindingFragment<AnimatablePlaceholderComposeTestFragmentBinding>() {
+    BaseToolbarBindingFragment<AnimatablePlaceholderComposeTestFragmentBinding>() {
 
     private val urlIndexFlow = MutableStateFlow(0)
 

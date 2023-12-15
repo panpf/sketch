@@ -40,7 +40,7 @@ import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
 import com.github.panpf.sketch.sample.ui.viewer.view.ImageViewerFragment.ItemFactory
@@ -56,7 +56,7 @@ import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-class ImagePagerFragment : BindingFragment<ImagePagerFragmentBinding>() {
+class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
 
     private val args by navArgs<ImagePagerFragmentArgs>()
     private val imageList by lazy {

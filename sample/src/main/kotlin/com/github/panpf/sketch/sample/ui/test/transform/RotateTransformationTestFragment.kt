@@ -22,12 +22,12 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.RotateTransformationTestFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RotateTransformation
 
 class RotateTransformationTestFragment :
-    BindingFragment<RotateTransformationTestFragmentBinding>() {
+    BaseBindingFragment<RotateTransformationTestFragmentBinding>() {
 
     private val viewModel by viewModels<RotateTransformationTestViewModel>()
 

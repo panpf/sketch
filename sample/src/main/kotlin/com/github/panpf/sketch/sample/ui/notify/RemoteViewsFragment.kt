@@ -33,11 +33,11 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.RemoteViewsTestFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.target.RemoteViewsDisplayTarget
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
-class RemoteViewsFragment : ToolbarBindingFragment<RemoteViewsTestFragmentBinding>() {
+class RemoteViewsFragment : BaseToolbarBindingFragment<RemoteViewsTestFragmentBinding>() {
 
     private var notificationHelper: NotificationHelper? = null
 

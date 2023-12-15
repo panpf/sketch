@@ -27,13 +27,13 @@ import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class PexelsPhotoListComposeFragment : ToolbarFragment() {
+class PexelsPhotoListComposeFragment : BaseToolbarFragment() {
 
     private val pexelsPhotoListViewModel by viewModels<PexelsPhotoListViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {

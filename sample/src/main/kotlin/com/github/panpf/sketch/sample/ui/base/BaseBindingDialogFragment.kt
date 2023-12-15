@@ -28,7 +28,7 @@ import com.github.panpf.tools4a.display.ktx.getScreenHeight
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
-abstract class BindingDialogFragment<VIEW_BINDING : ViewBinding> : DialogFragment() {
+abstract class BaseBindingDialogFragment<VIEW_BINDING : ViewBinding> : DialogFragment() {
 
     protected var binding: VIEW_BINDING? = null
     protected var dialogWidthRatio: Float = 0.85f
@@ -44,7 +44,7 @@ abstract class BindingDialogFragment<VIEW_BINDING : ViewBinding> : DialogFragmen
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = (createViewBinding(inflater, container) as VIEW_BINDING).apply {
-        this@BindingDialogFragment.binding = this
+        this@BaseBindingDialogFragment.binding = this
     }.root
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

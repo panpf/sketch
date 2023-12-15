@@ -23,13 +23,13 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.VideoItemBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
-import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
+import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 
 class LocalVideoItemFactory :
-    MyBindingItemFactory<VideoInfo, VideoItemBinding>(VideoInfo::class) {
+    BaseBindingItemFactory<VideoInfo, VideoItemBinding>(VideoInfo::class) {
 
     override fun initItem(
         context: Context,

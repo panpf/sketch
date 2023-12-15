@@ -19,11 +19,11 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.databinding.ExifOrientationTestFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import java.io.File
 
 class ExifOrientationTestFragment :
-    BindingFragment<ExifOrientationTestFragmentBinding>() {
+    BaseBindingFragment<ExifOrientationTestFragmentBinding>() {
 
     companion object {
         fun create(file: File): ExifOrientationTestFragment = ExifOrientationTestFragment().apply {

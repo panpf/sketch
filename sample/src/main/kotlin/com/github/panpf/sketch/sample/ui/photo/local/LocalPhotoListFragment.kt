@@ -44,7 +44,7 @@ import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class LocalPhotoListFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
+class LocalPhotoListFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>() {
 
     private val localPhotoListViewModel by viewModels<LocalPhotoListViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {

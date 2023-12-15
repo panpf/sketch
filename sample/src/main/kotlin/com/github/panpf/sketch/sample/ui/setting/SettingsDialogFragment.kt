@@ -22,14 +22,14 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.BindingDialogFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.InfoMenuItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.MultiSelectMenuItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.SwitchMenuItemFactory
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
-class SettingsDialogFragment : BindingDialogFragment<RecyclerFragmentBinding>() {
+class SettingsDialogFragment : BaseBindingDialogFragment<RecyclerFragmentBinding>() {
 
     private val args by navArgs<SettingsDialogFragmentArgs>()
     private val viewModel by viewModels<SettingsViewModel> {

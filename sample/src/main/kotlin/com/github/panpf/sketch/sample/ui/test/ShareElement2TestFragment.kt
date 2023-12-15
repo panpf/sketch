@@ -24,10 +24,10 @@ import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.displayAssetImage
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.TestShareElement2FragmentBinding
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
-class ShareElement2TestFragment : BindingFragment<TestShareElement2FragmentBinding>() {
+class ShareElement2TestFragment : BaseBindingFragment<TestShareElement2FragmentBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

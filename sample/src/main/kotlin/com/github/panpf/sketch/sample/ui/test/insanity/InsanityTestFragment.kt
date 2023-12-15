@@ -31,7 +31,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
@@ -39,7 +39,7 @@ import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
-class InsanityTestFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
+class InsanityTestFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>() {
 
     private val localPhotoListViewModel by viewModels<InsanityTestViewModel>()
 

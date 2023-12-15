@@ -18,58 +18,58 @@ package com.github.panpf.sketch.sample.ui.base
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import com.github.panpf.sketch.sample.ui.common.list.MyBindingItemFactory
-import com.github.panpf.sketch.sample.util.getSuperGenericParamClass
+import com.github.panpf.sketch.sample.util.getSuperGenericParam
 
-fun Class<ViewBinding>.instanceViewBinding1(
+/*
+ * You need to keep the following 'BaseBinding*' classes unchanged in the 'proguard-rules.pro' configuration
+ */
+
+fun BaseBindingActivity<*>.createViewBinding(
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+): ViewBinding = createViewBinding(this::class.java, inflater, parent)
+
+fun BaseBindingDialogFragment<*>.createViewBinding(
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+): ViewBinding = createViewBinding(this::class.java, inflater, parent)
+
+fun BaseBindingFragment<*>.createViewBinding(
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+): ViewBinding = createViewBinding(this::class.java, inflater, parent)
+
+fun BaseToolbarBindingFragment<*>.createViewBinding(
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+): ViewBinding = createViewBinding(this::class.java, inflater, parent)
+
+fun BaseBindingItemFactory<*, *>.createViewBinding(
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+): ViewBinding = createViewBinding(this::class.java, inflater, parent)
+
+private fun createViewBinding(
+    clazz: Class<*>,
     inflater: LayoutInflater,
     parent: ViewGroup?
 ): ViewBinding {
-    val method = this.getMethod(
+    @Suppress("UNCHECKED_CAST")
+    val viewBindingGenericParamClass =
+        clazz.getSuperGenericParam(ViewBinding::class.java) as Class<ViewBinding>
+    return instanceViewBindingClass(viewBindingGenericParamClass, inflater, parent)
+}
+
+private fun instanceViewBindingClass(
+    viewBindingClass: Class<ViewBinding>,
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+): ViewBinding {
+    val inflateMethod = viewBindingClass.getMethod(
         "inflate",
         LayoutInflater::class.java,
         ViewGroup::class.java,
         Boolean::class.java
     )
-    return method.invoke(null, inflater, parent, false) as ViewBinding
-}
-
-fun BaseBindingActivity<*>.createViewBinding(
-    inflater: LayoutInflater,
-    parent: ViewGroup?
-): ViewBinding {
-    val firstGenericParamClass = this::class.java.getSuperGenericParamClass(0) as Class<ViewBinding>
-    return firstGenericParamClass.instanceViewBinding1(inflater, parent)
-}
-
-fun BindingDialogFragment<*>.createViewBinding(
-    inflater: LayoutInflater,
-    parent: ViewGroup?
-): ViewBinding {
-    val firstGenericParamClass = this::class.java.getSuperGenericParamClass(0) as Class<ViewBinding>
-    return firstGenericParamClass.instanceViewBinding1(inflater, parent)
-}
-
-fun BindingFragment<*>.createViewBinding(
-    inflater: LayoutInflater,
-    parent: ViewGroup?
-): ViewBinding {
-    val firstGenericParamClass = this::class.java.getSuperGenericParamClass(0) as Class<ViewBinding>
-    return firstGenericParamClass.instanceViewBinding1(inflater, parent)
-}
-
-fun ToolbarBindingFragment<*>.createViewBinding(
-    inflater: LayoutInflater,
-    parent: ViewGroup?
-): ViewBinding {
-    val firstGenericParamClass = this::class.java.getSuperGenericParamClass(0) as Class<ViewBinding>
-    return firstGenericParamClass.instanceViewBinding1(inflater, parent)
-}
-
-fun MyBindingItemFactory<*, *>.createViewBinding(
-    inflater: LayoutInflater,
-    parent: ViewGroup?
-): ViewBinding {
-    val firstGenericParamClass = this::class.java.getSuperGenericParamClass(1) as Class<ViewBinding>
-    return firstGenericParamClass.instanceViewBinding1(inflater, parent)
+    return inflateMethod.invoke(null, inflater, parent, false) as ViewBinding
 }

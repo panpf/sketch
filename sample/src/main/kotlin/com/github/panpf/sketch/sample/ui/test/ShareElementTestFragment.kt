@@ -21,10 +21,10 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.commit
 import com.github.panpf.sketch.displayAssetImage
 import com.github.panpf.sketch.sample.databinding.TestShareElement1FragmentBinding
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
-class ShareElementTestFragment : BindingFragment<TestShareElement1FragmentBinding>() {
+class ShareElementTestFragment : BaseBindingFragment<TestShareElement1FragmentBinding>() {
 
     override fun onViewCreated(
         binding: TestShareElement1FragmentBinding,

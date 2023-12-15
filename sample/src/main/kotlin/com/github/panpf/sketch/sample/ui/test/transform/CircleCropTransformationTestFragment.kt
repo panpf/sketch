@@ -26,12 +26,12 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.databinding.CircleCropTransformationTestFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.CircleCropTransformation
 
 class CircleCropTransformationTestFragment :
-    BindingFragment<CircleCropTransformationTestFragmentBinding>() {
+    BaseBindingFragment<CircleCropTransformationTestFragmentBinding>() {
 
     val viewModel by viewModels<CircleCropTransformationTestViewModel>()
 

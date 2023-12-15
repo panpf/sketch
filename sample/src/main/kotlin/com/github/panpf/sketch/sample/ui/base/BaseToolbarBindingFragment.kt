@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,13 +24,15 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
+import androidx.viewbinding.ViewBinding
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 
 @Suppress("MemberVisibilityCanBePrivate")
-abstract class ToolbarFragment : BaseFragment() {
+abstract class BaseToolbarBindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
 
     protected var toolbar: Toolbar? = null
+    protected var binding: VIEW_BINDING? = null
 
     final override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,10 +44,11 @@ abstract class ToolbarFragment : BaseFragment() {
 
         setTransparentStatusBar(toolbar)
 
-        val view = createView(toolbar, inflater, contentContainer)
-        contentContainer.addView(view)
+        val binding = createViewBinding(inflater, contentContainer) as VIEW_BINDING
+        contentContainer.addView(binding.root)
 
-        this@ToolbarFragment.toolbar = toolbar
+        this@BaseToolbarBindingFragment.toolbar = toolbar
+        this@BaseToolbarBindingFragment.binding = binding
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -60,25 +63,21 @@ abstract class ToolbarFragment : BaseFragment() {
         }
     }
 
-    protected abstract fun createView(
-        toolbar: Toolbar,
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): View
-
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onViewCreated(this.toolbar!!, savedInstanceState)
+        onViewCreated(this.toolbar!!, this.binding!!, savedInstanceState)
     }
 
     protected open fun onViewCreated(
         toolbar: Toolbar,
+        binding: VIEW_BINDING,
         savedInstanceState: Bundle?
     ) {
 
     }
 
     override fun onDestroyView() {
+        this.binding = null
         this.toolbar = null
         super.onDestroyView()
     }

@@ -24,12 +24,12 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.sample.databinding.ImageFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.ui.base.BindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.showDataFromLogo
 import com.github.panpf.sketch.viewability.showProgressIndicator
 
-class ImageFragment : BindingFragment<ImageFragmentBinding>() {
+class ImageFragment : BaseBindingFragment<ImageFragmentBinding>() {
 
     private val args by navArgs<ImageFragmentArgs>()
 

@@ -22,14 +22,14 @@ import androidx.lifecycle.Lifecycle.State
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
-import com.github.panpf.sketch.sample.ui.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.InfoMenuItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.MultiSelectMenuItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.SwitchMenuItemFactory
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
-class SettingsFragment : ToolbarBindingFragment<RecyclerFragmentBinding>() {
+class SettingsFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>() {
 
     private val viewModel by viewModels<SettingsViewModel> {
         SettingsViewModel.Factory(requireActivity().application, Page.NONE)

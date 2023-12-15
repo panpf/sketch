@@ -22,10 +22,10 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
-import com.github.panpf.sketch.sample.ui.base.ToolbarFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
 import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoList
 
-class InsanityTestComposeFragment : ToolbarFragment() {
+class InsanityTestComposeFragment : BaseToolbarFragment() {
 
     private val insanityTestViewModel by viewModels<InsanityTestViewModel>()
 
