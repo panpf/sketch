@@ -119,7 +119,7 @@ class Sketch private constructor(
     val memoryCache: MemoryCache
 
     /** Reuse Bitmap */
-    val bitmapPool: BitmapPool
+    val bitmapPool: BitmapPool  // todo 4.0 no longer supports inBitmap
 
     /** Disk caching of http downloads images */
     val downloadCache: DiskCache =
