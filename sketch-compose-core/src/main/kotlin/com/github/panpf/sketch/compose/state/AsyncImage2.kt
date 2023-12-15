@@ -17,10 +17,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.ContentPainterModifier
-import com.github.panpf.sketch.compose.name
-import com.github.panpf.sketch.compose.state.AsyncImagePainter2.Companion.DefaultTransform
-import com.github.panpf.sketch.compose.state.AsyncImagePainter2.State
 import com.github.panpf.sketch.request.DisplayRequest
 
 /**
@@ -31,9 +29,9 @@ import com.github.panpf.sketch.request.DisplayRequest
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
- * @param transform A callback to transform a new [State] before it's applied to the
+ * @param transform A callback to transform a new [PainterState] before it's applied to the
  *  [AsyncImagePainter2]. Typically this is used to modify the state's [Painter].
- * @param onState Called when the state of this painter changes.
+ * @param onPainterState Called when the state of this painter changes.
  * @param alignment Optional alignment parameter used to place the [AsyncImagePainter2] in the given
  *  bounds defined by the width and height.
  * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
@@ -47,11 +45,13 @@ import com.github.panpf.sketch.request.DisplayRequest
  */
 @Composable
 fun AsyncImage2(
-    state: AsyncImageState,
+    request: DisplayRequest,
+    sketch: Sketch,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    transform: (State) -> State = DefaultTransform,
-    onState: ((State) -> Unit)? = null,
+    state: AsyncImageState = rememberAsyncImageState(),
+    transform: (PainterState) -> PainterState = AsyncImageState.DefaultTransform,
+    onPainterState: ((PainterState) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
@@ -59,23 +59,11 @@ fun AsyncImage2(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) {
-    state.sketch.logger.d("NewAsyncImageTest") {
-        "AsyncImage2. setContentScale: ${state.contentScale?.name} -> ${contentScale.name}. ${state.request.uriString}"
-    }
-    state.contentScale = contentScale
     val painter = rememberAsyncImagePainter2(
-        state, transform, onState, contentScale, filterQuality
+        request, sketch, state, transform, onPainterState, contentScale, filterQuality
     )
-    // Draw the content without a parent composable or subcomposition.
     Content(
-        modifier = modifier.onSizeChanged { size ->
-            if (size != state.size) {
-                state.sketch.logger.d("NewAsyncImageTest") {
-                    "AsyncImage2. onSizeChanged: ${state.size} -> $size. ${state.request.uriString}"
-                }
-                state.size = size
-            }
-        },
+        modifier = modifier.onSizeChanged { size -> state.size = size },
         painter = painter,
         contentDescription = contentDescription,
         alignment = alignment,

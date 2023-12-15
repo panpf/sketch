@@ -3,6 +3,7 @@
 //import android.graphics.Color
 //import android.graphics.drawable.Drawable
 //import androidx.compose.foundation.Image
+//import androidx.compose.foundation.background
 //import androidx.compose.foundation.gestures.detectTapGestures
 //import androidx.compose.foundation.layout.aspectRatio
 //import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,6 @@
 //import androidx.compose.ui.platform.LocalView
 //import androidx.compose.ui.unit.dp
 //import androidx.navigation.findNavController
-//import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 //import com.github.panpf.sketch.compose.state.rememberAsyncImagePainter2
 //import com.github.panpf.sketch.compose.state.rememberAsyncImageState
 //import com.github.panpf.sketch.drawable.SectorProgressDrawable
@@ -94,6 +94,7 @@
 //                it.aspectRatio(1f)
 //            }
 //        }
+//        .background(androidx.compose.ui.graphics.Color.Red)
 //        .pointerInput(Unit) {
 //            detectTapGestures(
 //                onTap = { onClick(photo, index) },
@@ -165,12 +166,12 @@
 ////            }
 //        }
 //    }
-//    val imageState = rememberAsyncImageState(request = request, sketch = context.sketch)
 ////    when (index % 3) {
 ////    when (2) {
 ////        0 -> {
-////            com.github.panpf.sketch.compose.state.AsyncImage2(
-////                state = imageState,
+////            com.github.panpf.sketch.compose.AsyncImage(
+////                request = request,
+////                sketch = context.sketch,
 ////                modifier = modifier,
 ////                contentScale = ContentScale.Crop,
 ////                contentDescription = "photo",
@@ -186,7 +187,7 @@
 ////            )
 ////        }
 ////
-////        2 -> {
+////        else -> {
 ////            Image(
 ////                painter = rememberAsyncImagePainter(
 ////                    request = request,
@@ -197,17 +198,44 @@
 ////                contentDescription = "photo"
 ////            )
 ////        }
-////
-////        else -> {
+////    }
+//
+////    when (index % 3) {
+//    when (2) {
+//        0 -> {
+//            com.github.panpf.sketch.compose.state.AsyncImage2(
+//                request = request,
+//                sketch = context.sketch,
+//                modifier = modifier,
+//                contentScale = ContentScale.Crop,
+//                contentDescription = "photo",
+//            )
+//        }
+//
+//        1 -> {
+//            com.github.panpf.sketch.compose.SubcomposeAsyncImage(
+//                request = request,
+//                modifier = modifier,
+//                contentScale = ContentScale.Crop,
+//                contentDescription = "photo",
+//            )
+//        }
+//
+//        else -> {
+//            val imageState = rememberAsyncImageState()
 //            Image(
 //                painter = rememberAsyncImagePainter2(
+//                    request = request,
 //                    state = imageState,
+//                    sketch = context.sketch,
 //                    contentScale = ContentScale.Crop
 //                ),
-//                modifier = modifier,
+//                modifier = modifier
+////                    .onSizeChanged { imageState.size = it }
+//                ,
 //                contentScale = ContentScale.Crop,
 //                contentDescription = "photo"
 //            )
-////        }
-////    }
+//        }
+//    }
 //}
