@@ -21,13 +21,9 @@ android {
     }
 
     buildTypes {
-        getByName("debug") {
+        debug {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
-        }
-        getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
 
