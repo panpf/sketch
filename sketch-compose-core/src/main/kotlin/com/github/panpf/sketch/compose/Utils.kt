@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.compose
 
-import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
@@ -10,9 +9,9 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.AsyncImagePainter.State
+import com.github.panpf.sketch.compose.state.PainterState
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.Scale
-import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlin.math.roundToInt
@@ -126,20 +125,6 @@ internal fun IntSize.isEmpty(): Boolean = width <= 0 || height <= 0
 
 internal fun IntSize.toSketchSize(): SketchSize = SketchSize(width, height)
 
-/**
- * Convert this [Drawable] into a [Painter] using Compose primitives if possible.
- *
- * Very important, updateDisplayed() needs to set setIsDisplayed to keep SketchDrawable, SketchStateDrawable
- */
-internal fun Drawable.toPainter() = DrawablePainter(mutate())
-//        when (this) {
-//        is SketchDrawable -> DrawablePainter(mutate())
-//        is SketchStateDrawable -> DrawablePainter(mutate())
-//        is BitmapDrawable -> BitmapPainter(bitmap.asImageBitmap(), filterQuality = filterQuality)
-//        is ColorDrawable -> ColorPainter(Color(color))
-//        else -> DrawablePainter(mutate())
-//    }
-
 
 /**
  * Returns the name of [ContentScaleCompat], which can also be converted back via the [valueOf] method
@@ -168,3 +153,12 @@ fun <T> Flow<T>.ignoreFirst(): Flow<T> {
         }
     }
 }
+
+val PainterState.name: String
+    get() = when (this) {
+        is PainterState.Loading -> "Loading"
+        is PainterState.Success -> "Success"
+        is PainterState.Error -> "Error"
+        is PainterState.Empty -> "Empty"
+        else -> "Unknown State: $this"
+    }
