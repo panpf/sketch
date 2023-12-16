@@ -75,6 +75,26 @@ internal fun onStateOf(
     }
 }
 
+@Stable
+internal fun onStateOf2(
+    onLoading: ((PainterState.Loading) -> Unit)?,
+    onSuccess: ((PainterState.Success) -> Unit)?,
+    onError: ((PainterState.Error) -> Unit)?,
+): ((PainterState) -> Unit)? {
+    return if (onLoading != null || onSuccess != null || onError != null) {
+        { state ->
+            when (state) {
+                is PainterState.Loading -> onLoading?.invoke(state)
+                is PainterState.Success -> onSuccess?.invoke(state)
+                is PainterState.Error -> onError?.invoke(state)
+                is PainterState.Empty -> {}
+            }
+        }
+    } else {
+        null
+    }
+}
+
 //@Stable
 //internal fun ContentScale.toScale(): Scale = when (this) {
 //    ContentScale.Fit, ContentScale.Inside -> Scale.FIT
@@ -121,13 +141,29 @@ internal fun Size.toIntSizeOrNull() =
 
 internal val ZeroConstraints = Constraints.fixed(0, 0)
 
+@Stable
 internal fun IntSize.isEmpty(): Boolean = width <= 0 || height <= 0
 
+@Stable
 internal fun IntSize.toSketchSize(): SketchSize = SketchSize(width, height)
+
+@Stable
+internal fun Constraints.toSketchSizeOrNull(): SketchSize? = when {
+    isZero -> null
+    hasBoundedWidth && hasBoundedHeight -> SketchSize(maxWidth, maxHeight)
+    else -> null
+}
+
+@Stable
+internal fun Constraints.toIntSizeOrNull(): IntSize? = when {
+    isZero -> null
+    hasBoundedWidth && hasBoundedHeight -> IntSize(maxWidth, maxHeight)
+    else -> null
+}
 
 
 /**
- * Returns the name of [ContentScaleCompat], which can also be converted back via the [valueOf] method
+ * Returns the name of [ContentScale], which can also be converted back via the [valueOf] method
  */
 @Stable
 internal val ContentScale.name: String

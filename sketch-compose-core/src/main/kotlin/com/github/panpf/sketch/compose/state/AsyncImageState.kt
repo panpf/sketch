@@ -358,10 +358,22 @@ sealed interface LoadState {
     data object Canceled : LoadState
 }
 
+val LoadState.name: String
+    get() = when (this) {
+        LoadState.Started -> "Started"
+        is LoadState.Success -> "Success"
+        is LoadState.Error -> "Error"
+        LoadState.Canceled -> "Canceled"
+    }
+
 /**
  * The current download progress of the [DisplayRequest].
  */
-data class Progress(val totalLength: Long, val completedLength: Long)
+data class Progress(val totalLength: Long, val completedLength: Long) {
+    val decimalProgress: Float by lazy {
+        if (totalLength > 0) completedLength.toFloat() / totalLength else 0f
+    }
+}
 
 /**
  * The current painter state of the [AsyncImageState].

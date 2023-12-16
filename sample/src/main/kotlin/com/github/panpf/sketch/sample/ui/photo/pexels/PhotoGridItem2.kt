@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.navigation.findNavController
 import com.github.panpf.sketch.compose.state.rememberAsyncImagePainter2
+import com.github.panpf.sketch.compose.state.rememberAsyncImageState
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
@@ -47,8 +48,8 @@ fun PhotoGridItem2(
     onClick: (photo: Photo, index: Int) -> Unit
 ) {
     val context = LocalContext.current
-    val dataFromLogoState = rememberDataFromLogoState()
-    val mimeTypeLogoState = rememberMimeTypeLogoState {
+    val imageState = rememberAsyncImageState()
+    val mimeTypeLogoMap = remember {
         val newLogoDrawable: (String) -> Drawable = {
             TextDrawable.builder()
                 .beginConfig()
@@ -73,7 +74,7 @@ fun PhotoGridItem2(
     }
     val progressDrawable = remember { SectorProgressDrawable(hiddenWhenIndeterminate = true) }
     val drawableProgressPainter = rememberDrawableProgressPainter(progressDrawable)
-    val progressIndicatorState = rememberProgressIndicatorState(drawableProgressPainter)
+//    val progressIndicatorState = rememberProgressIndicatorState(drawableProgressPainter)
     val appSettingsService = context.appSettingsService
     val showDataFromLogo by appSettingsService.showDataFromLogo.stateFlow.collectAsState()
     val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInLIst.stateFlow.collectAsState()
@@ -108,13 +109,13 @@ fun PhotoGridItem2(
             )
         }
         .letIf(showDataFromLogo) {
-            it.dataFromLogo(dataFromLogoState)
+            it.dataFromLogo2(imageState)
         }
         .letIf(showMimeTypeLogo) {
-            it.mimeTypeLogo(mimeTypeLogoState, margin = 4.dp)
+            it.mimeTypeLogo2(imageState, mimeTypeLogoMap, margin = 4.dp)
         }
         .letIf(showProgressIndicator) {
-            it.progressIndicator(progressIndicatorState)
+            it.progressIndicator2(imageState, drawableProgressPainter)
         }
 
     val listSettings by appSettingsService.listsCombinedFlow.collectAsState(Unit)
@@ -170,6 +171,7 @@ fun PhotoGridItem2(
             com.github.panpf.sketch.compose.state.AsyncImage2(
                 request = request,
                 sketch = context.sketch,
+                state = imageState,
                 modifier = modifier,
                 contentScale = ContentScale.Crop,
                 contentDescription = "photo",
@@ -177,8 +179,10 @@ fun PhotoGridItem2(
         }
 
         1 -> {
-            com.github.panpf.sketch.compose.SubcomposeAsyncImage(
+            com.github.panpf.sketch.compose.state.SubcomposeAsyncImage2(
                 request = request,
+                sketch = context.sketch,
+                state = imageState,
                 modifier = modifier,
                 contentScale = ContentScale.Crop,
                 contentDescription = "photo",
@@ -190,6 +194,7 @@ fun PhotoGridItem2(
                 painter = rememberAsyncImagePainter2(
                     request = request,
                     sketch = context.sketch,
+                    state = imageState,
                     contentScale = ContentScale.Crop
                 ),
                 modifier = modifier,

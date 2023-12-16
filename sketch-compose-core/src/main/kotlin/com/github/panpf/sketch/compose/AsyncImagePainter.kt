@@ -398,7 +398,7 @@ class AsyncImagePainter internal constructor(
             }))
             if (request.definedOptions.resizeSizeResolver == null) {
                 // If no other size resolver is set, suspend until the canvas size is positive.
-                resizeSize { drawSize.mapNotNull { it.toSizeOrNull() }.first() }
+                resizeSize { drawSize.mapNotNull { it.toSketchSizeOrNull() }.first() }
             }
             if (request.definedOptions.resizeScaleDecider == null) {
                 // If no other scale resolver is set, use the content scale.
@@ -557,7 +557,7 @@ private val Size.isPositive get() = width >= 0.5 && height >= 0.5
 //    else -> null
 //}
 
-private fun Size.toSizeOrNull(): SketchSize? = when {
+private fun Size.toSketchSizeOrNull(): SketchSize? = when {
     isUnspecified -> null
     isPositive && width.isFinite() && height.isFinite() -> SketchSize(
         width.roundToInt(),

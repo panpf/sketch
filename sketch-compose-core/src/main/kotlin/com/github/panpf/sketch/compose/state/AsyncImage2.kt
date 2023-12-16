@@ -63,7 +63,10 @@ fun AsyncImage2(
         request, sketch, state, transform, onPainterState, contentScale, filterQuality
     )
     Content(
-        modifier = modifier.onSizeChanged { size -> state.setSize(size) },
+        modifier = modifier.onSizeChanged { size ->
+            // Ensure images are prepared before content is drawn when in-memory cache exists
+            state.setSize(size)
+        },
         painter = painter,
         contentDescription = contentDescription,
         alignment = alignment,
