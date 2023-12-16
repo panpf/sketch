@@ -48,7 +48,7 @@ class PexelsPhotoListComposeFragment : BaseToolbarFragment() {
     override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                PhotoList2(
+                PhotoList(
                     photoPagingFlow = pexelsPhotoListViewModel.pagingFlow,
                 ) { items, _, index ->
                     startImageDetail(items, index)

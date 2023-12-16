@@ -16,12 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.compose.AsyncImageState
+import com.github.panpf.sketch.compose.LoadState.Error
+import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.ui.common.compose.LoadResult.ERROR
 
 @Composable
-fun LoadState(result: LoadResult, modifier: Modifier = Modifier) {
-    if (result == ERROR) {
+fun LoadState(imageState: AsyncImageState, modifier: Modifier = Modifier) {
+    if (imageState.loadState == Error) {
         Column(
             modifier = modifier
                 .size(200.dp)
@@ -41,7 +43,7 @@ fun LoadState(result: LoadResult, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.size(24.dp))
             Button(
                 onClick = {
-                    // todo Retry cannot be implemented because AsyncImage does not support
+                    imageState.restart()
                 },
                 shape = RoundedCornerShape(50)
             ) {
@@ -54,12 +56,5 @@ fun LoadState(result: LoadResult, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun LoadStatePreview() {
-    LoadState(result = ERROR)
-}
-
-enum class LoadResult {
-    INITIALIZED,
-    LOADING,
-    ERROR,
-    SUCCESS
+    LoadState(rememberAsyncImageState())
 }

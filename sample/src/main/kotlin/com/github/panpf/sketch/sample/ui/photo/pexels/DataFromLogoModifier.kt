@@ -1,11 +1,5 @@
 package com.github.panpf.sketch.sample.ui.photo.pexels
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -16,27 +10,20 @@ import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.currentValueOf
 import androidx.compose.ui.node.invalidateDraw
+import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.compose.AsyncImageState
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.request.DisplayResult
 
 // todo Move to separate module
-fun Modifier.dataFromLogo(state: DataFromLogoState): Modifier {
+fun Modifier.dataFromLogo(state: AsyncImageState): Modifier {
     return this.then(DataFromLogoElement(state))
 }
 
-@Composable
-fun rememberDataFromLogoState(): DataFromLogoState {
-    return remember { DataFromLogoState() }
-}
-
-@Stable
-class DataFromLogoState {
-    var dataFrom by mutableStateOf<DataFrom?>(null)
-}
-
 internal data class DataFromLogoElement(
-    val state: DataFromLogoState
+    val state: AsyncImageState
 ) : ModifierNodeElement<DataFromLogoNode>() {
 
     override fun create(): DataFromLogoNode {
@@ -46,10 +33,19 @@ internal data class DataFromLogoElement(
     override fun update(node: DataFromLogoNode) {
         node.update(state)
     }
+
+    override fun InspectorInfo.inspectableProperties() {
+        name = "DataFromLogo"
+        properties["dataFrom"] = state.result
+            ?.let { it as? DisplayResult.Success }
+            ?.dataFrom?.name
+            ?: "null"
+        properties["loadState"] = state.loadState?.name ?: "null"
+    }
 }
 
 internal class DataFromLogoNode(
-    private var state: DataFromLogoState,
+    private var state: AsyncImageState,
 ) : Modifier.Node(), DrawModifierNode, CompositionLocalConsumerModifierNode {
 
     private var drawSize: Size? = null
@@ -88,15 +84,16 @@ internal class DataFromLogoNode(
     override fun ContentDrawScope.draw() {
         drawContent()
 
-        val dataFrom1 = state.dataFrom
-        if (dataFrom1 != null) {
+        val result = state.result
+        if (result is DisplayResult.Success) {
             val path = getPath(size)
-            val color = Color(dataFrom2Color(dataFrom1))
+            val dataFrom = result.dataFrom
+            val color = Color(dataFrom2Color(dataFrom))
             drawPath(path, color)
         }
     }
 
-    fun update(state: DataFromLogoState) {
+    fun update(state: AsyncImageState) {
         this.state = state
         invalidateDraw()
     }

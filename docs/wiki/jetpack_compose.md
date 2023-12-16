@@ -73,14 +73,14 @@ Subcompose do not perform as well as regular compositions, so this composition m
 for parts of the UI where performance is critical (such as lists).
 
 > If you use DisplayRequest.Builder.resizeSize to set a custom size for a DisplayRequest (e.g.
-> resizeSize(100, 100)), SubcomposeAsyncImage will not use subcomposition because it does not need to
+> resizeSize(100, 100)), SubcomposeAsyncImage will not use subcomposition because it does not need
+> to
 > resolve composable constraints.
 
 ### AsyncImagePainter
 
 AsyncImage and SubcomposeAsyncImage use AsyncImagePainter to load images. If you need Painter and
-can't use
-AsyncImage, you can use rememberAsyncImagePainter() to load the image:
+can't use AsyncImage, you can use rememberAsyncImagePainter() to load the image:
 
 ```kotlin
 val painter = rememberAsyncImagePainter(imageUri = "https://example.com/image.jpg")
@@ -104,28 +104,84 @@ For more information, read the documentation for this method.
 > also set it in rememberAsyncImagePainter. It is necessary to determine the correct size of the
 > loaded image.
 
-### Observing AsyncImagePainter.state
+### AsyncImageState
 
-The image request requires a size to determine the dimensions of the output image. By default,
-AsyncImage and AsyncImagePainter After compositing occurs, the requested size is parsed before the
-first frame is drawn. It's solved this way to maximize performance.
+AsyncImageState is the core dependency of AsyncImagePainter. AsyncImagePainter is only responsible
+for reading from AsyncImageState
+painter parameter and then draw it
 
-This means that AsyncImagePainter.state will be loaded for the first composition - even though the
-image exists in the memory cache and it will be drawn on the first frame.
-
-If you need AsyncImagePainter.state to stay up to date during the first composition, use
-SubcomposeAsyncImage or use
-DisplayRequest.Builder.resizeSize sets a custom size for image requests. For example, in this
-example, AsyncImagePainter.state Will always be up to date during the first composition:
+AsyncImageState is responsible for loading images and converting the loading results into Painter.
+It is also responsible for saving the status, progress, painter and
+The state of the painter, you can also reload the image through its restart method
 
 ```kotlin
+val state = rememberAsyncImageState()
+AsyncImage(
+    imageUri = "https://example.com/image.jpg",
+    contentDescription = stringResource(R.string.description),
+    contentScale = ContentScale.Crop,
+    modifier = Modifier.clip(CircleShape),
+    state = state,
+)
+
+val result: DisplayResult? = state.result
+val loadState: LoadState? = state.loadState
+when (loadState) {
+    Started -> {}
+    Success -> {}
+    Error -> {}
+    Canceled -> {}
+}
+val progress: Progress? = state.progress
+val painterState: PainterState = state.painterState
+when (painterState) {
+    is Loading -> {}
+    is Success -> {}
+    is Error -> {}
+    is Empty -> {}
+}
+val painter: Painter? = state.painter
+
+// Reload image
+state.restart()
+```
+
+### listener/ProgressListener/target
+
+AsyncImage, AsyncImagePainter, and SubcomposeAsyncImage are not allowed to use the listener,
+ProgressListener, and target properties of DisplayRequest. If they are not null, an exception will
+be thrown.
+
+The reason is that the attributes listener, ProgressListener, and target are usually directly new
+when used. Now, when DisplayRequest is used as a parameter of AsyncImage and SubcomposeAsyncImage,
+reorganization is triggered because its equals result is false.
+
+Therefore you must pass AsyncImageState instead of listener, ProgressListener, target attributes
+
+### Observing AsyncImageState.painterState
+
+The image request requires a size to determine the dimensions of the output image. By default,
+AsyncImage and AsyncImagePainter parse the requested size before drawing the first frame after
+compositing occurs. It's solved this way to maximize performance.
+
+This means that AsyncImageState.painterState will be loaded for the first composition - even though
+the image exists in the memory cache and it will be drawn on the first frame.
+
+If you need AsyncImageState.painterState to stay current during the first composition, use
+SubcomposeAsyncImage or use DisplayRequest.Builder.resizeSize to set a custom size for the image
+request. For example, in this example, AsyncImageState.painterState will always be up to date during
+the first composition:
+
+```kotlin
+val state = rememberAsyncImageState()
 val painter = rememberAsyncImagePainter(
     rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
         resizeSize(100, 100)
-    }
+    },
+    state = state,
 )
 
-if (painter.state is AsyncImagePainter.State.Success) {
+if (state.painterState is PainterState.Success) {
     // If the image is in the memory cache, this will be performed during the first composition.
 }
 

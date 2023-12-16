@@ -4,8 +4,21 @@
 
 # new
 
+#### sketch:
+
 * fix: 修复 StateImage 获取 Drawable 失败时请求中断的 bug
 * improve: 改进 ProgressDrawable
+
+#### sketch-compose:
+
+> [!CAUTION]
+> 如果你在使用 AsyncImage、AsyncImagePainter、SubcomposeAsyncImage 时有以下两种情况，那么你需要修改你的代码：
+> * 使用了他们的 onState 参数
+> * 使用了 DisplayRequest 的 listener、progressListener、target 属性
+
+* change: 重构
+  AsyncImage、AsyncImagePainter、SubcomposeAsyncImage，给他们增加了一个 `state: AsyncImageState` 参数，通过
+  AsyncImageState 可以观察图像加载状态和结果以及重启加载
 
 # v3.3.0-beta04
 
@@ -19,7 +32,8 @@
 
 * fix: 修复遇到 Bitmap.config 为 null 时崩溃的 bug
 * fix: 修复从 '3.3.0-beta01' 版本开始引入的 ViewLifecycleResolver 导致内存泄漏的 bug
-* fix: 修复从 '3.3.0-beta01' 版本开始引入的 ViewLifecycleResolver 在遇到没有 attach 而直接丢弃的 view 时会永久挂起的 bug
+* fix: 修复从 '3.3.0-beta01' 版本开始引入的 ViewLifecycleResolver 在遇到没有 attach 而直接丢弃的
+  view 时会永久挂起的 bug
 
 # v3.3.0-beta02
 

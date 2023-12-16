@@ -1,14 +1,7 @@
 package com.github.panpf.sketch.sample.ui.photo.pexels
 
-import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.RememberObserver
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -20,27 +13,16 @@ import androidx.compose.ui.node.CompositionLocalConsumerModifierNode
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.invalidateDraw
+import androidx.compose.ui.platform.InspectorInfo
+import com.github.panpf.sketch.compose.AsyncImageState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-fun Modifier.progressIndicator(state: ProgressIndicatorState): Modifier {
-    return this.then(ProgressIndicatorElement(state))
-}
-
-@Composable
-fun rememberProgressIndicatorState(progressPainter: ProgressPainter): ProgressIndicatorState {
-    val progressIndicatorState =
-        remember(progressPainter) { ProgressIndicatorState(progressPainter) }
-    LaunchedEffect(progressIndicatorState) {
-        snapshotFlow { progressIndicatorState.progress }.collect {
-            progressIndicatorState.progressPainter.progress = it
-        }
-    }
-    return progressIndicatorState
-}
-
-@Stable
-class ProgressIndicatorState(val progressPainter: ProgressPainter) {
-
-    var progress by mutableFloatStateOf(0f)
+fun Modifier.progressIndicator(
+    state: AsyncImageState,
+    progressPainter: ProgressPainter
+): Modifier {
+    return this.then(ProgressIndicatorElement(state, progressPainter))
 }
 
 abstract class ProgressPainter : Painter() {
@@ -49,26 +31,41 @@ abstract class ProgressPainter : Painter() {
 }
 
 internal data class ProgressIndicatorElement(
-    val state: ProgressIndicatorState,
+    val state: AsyncImageState,
+    val progressPainter: ProgressPainter,
 ) : ModifierNodeElement<ProgressIndicatorNode>() {
 
     override fun create(): ProgressIndicatorNode {
-        return ProgressIndicatorNode(state)
+        return ProgressIndicatorNode(state, progressPainter)
     }
 
     override fun update(node: ProgressIndicatorNode) {
-        node.update(state)
+        node.update(state, progressPainter)
+    }
+
+    override fun InspectorInfo.inspectableProperties() {
+        name = "ProgressIndicator"
+        properties["progress"] = progressPainter.progress
+        properties["loadState"] = state.loadState?.name ?: "null"
     }
 }
 
 internal class ProgressIndicatorNode(
-    var state: ProgressIndicatorState,
+    private var state: AsyncImageState,
+    private var progressPainter: ProgressPainter,
 ) : Modifier.Node(), DrawModifierNode, CompositionLocalConsumerModifierNode {
+
+    private var lastJob: Job? = null
+
+    override fun onAttach() {
+        super.onAttach()
+        againCollectProgress()
+    }
 
     override fun ContentDrawScope.draw() {
         drawContent()
 
-        val progressPainter = state.progressPainter
+        val progressPainter = progressPainter
         // Reading this ensures that we invalidate when invalidateDrawable() is called
         progressPainter.drawInvalidateTick
         val progressPainterSize = progressPainter.intrinsicSize
@@ -84,8 +81,21 @@ internal class ProgressIndicatorNode(
         }
     }
 
-    fun update(state: ProgressIndicatorState) {
+    fun update(state: AsyncImageState, progressPainter: ProgressPainter) {
         this.state = state
+        this.progressPainter = progressPainter
+        if (isAttached) {
+            againCollectProgress()
+        }
         invalidateDraw()
+    }
+
+    private fun againCollectProgress() {
+        lastJob?.cancel()
+        lastJob = coroutineScope.launch {
+            snapshotFlow { state.progress }.collect {
+                progressPainter.progress = it?.decimalProgress ?: -1f
+            }
+        }
     }
 }

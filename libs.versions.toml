@@ -125,6 +125,7 @@ panpf-tools4j-reflect = { module = "io.github.panpf.tools4j:tools4j-reflect-ktx"
 panpf-tools4j-security = { module = "io.github.panpf.tools4j:tools4j-security-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4k = { module = "io.github.panpf.tools4k:tools4k", version.ref = "panpf-tools4k" }
 panpf-zoomimage-view-sketch = { module = "io.github.panpf.zoomimage:zoomimage-view-sketch", version.ref = "panpf-zoomimage" }
+panpf-zoomimage-compose = { module = "io.github.panpf.zoomimage:zoomimage-compose", version.ref = "panpf-zoomimage" }
 panpf-zoomimage-compose-sketch = { module = "io.github.panpf.zoomimage:zoomimage-compose-sketch", version.ref = "panpf-zoomimage" }
 
 # other

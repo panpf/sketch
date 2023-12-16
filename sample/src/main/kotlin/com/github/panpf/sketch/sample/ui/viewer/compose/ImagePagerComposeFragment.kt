@@ -40,11 +40,13 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,6 +70,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.compose.AsyncImage
+import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
@@ -166,7 +169,10 @@ class ImagePagerComposeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showInfoEvent.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { displayResult ->
+        showInfoEvent.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.STARTED
+        ) { displayResult ->
             findNavController()
                 .navigate(ImageInfoDialogFragment.createNavDirections(displayResult))
         }
@@ -268,6 +274,21 @@ private fun PagerBgImage(
     buttonBgColorState: MutableState<Int?>,
     screenSize: IntSize,
 ) {
+    val imageState = rememberAsyncImageState()
+    LaunchedEffect(Unit) {
+        snapshotFlow { imageState.result }.collect {
+            if (it is DisplayResult.Success) {
+                val simplePalette = it.simplePalette
+                buttonBgColorState.value = simplePalette?.dominantSwatch?.rgb
+                    ?: simplePalette?.lightVibrantSwatch?.rgb
+                            ?: simplePalette?.vibrantSwatch?.rgb
+                            ?: simplePalette?.lightMutedSwatch?.rgb
+                            ?: simplePalette?.mutedSwatch?.rgb
+                            ?: simplePalette?.darkVibrantSwatch?.rgb
+                            ?: simplePalette?.darkMutedSwatch?.rgb
+            }
+        }
+    }
     AsyncImage(
         request = DisplayRequest(LocalContext.current, imageUri) {
             resize(
@@ -287,24 +308,8 @@ private fun PagerBgImage(
             components {
                 addBitmapDecodeInterceptor(PaletteBitmapDecoderInterceptor())
             }
-            listener(
-                onSuccess = { _, result ->
-                    val simplePalette = result.simplePalette
-                    val accentColor =
-                        simplePalette?.dominantSwatch?.rgb
-                            ?: simplePalette?.lightVibrantSwatch?.rgb
-                            ?: simplePalette?.vibrantSwatch?.rgb
-                            ?: simplePalette?.lightMutedSwatch?.rgb
-                            ?: simplePalette?.mutedSwatch?.rgb
-                            ?: simplePalette?.darkVibrantSwatch?.rgb
-                            ?: simplePalette?.darkMutedSwatch?.rgb
-                    buttonBgColorState.value = accentColor
-                },
-                onError = { _, _ ->
-                    buttonBgColorState.value = null
-                }
-            )
         },
+        state = imageState,
         contentDescription = "Background",
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()

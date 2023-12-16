@@ -97,25 +97,77 @@ rememberAsyncImagePainter 是一个较低级别的 API，可能无法在所有�
 > 如果在呈现 AsyncImagePainter 的图像上设置自定义 ContentScale，则还应该在 rememberAsyncImagePainter
 > 中设置它。有必要确定加载图像的正确尺寸。
 
-### Observing AsyncImagePainter.state
+### AsyncImageState
+
+AsyncImageState 是 AsyncImagePainter 依赖的核心，AsyncImagePainter 只负责从 AsyncImageState 读取
+painter 参数，然后绘制它
+
+AsyncImageState 负责加载图像并将加载结果转换为 Painter，他还负责保存请求的状态、进度、painter 以及
+painter 的状态，你还可以通过其 restart 方法重新加载图像
+
+```kotlin
+val state = rememberAsyncImageState()
+AsyncImage(
+    imageUri = "https://example.com/image.jpg",
+    contentDescription = stringResource(R.string.description),
+    contentScale = ContentScale.Crop,
+    modifier = Modifier.clip(CircleShape),
+    state = state,
+)
+
+val result: DisplayResult? = state.result
+val loadState: LoadState? = state.loadState
+when (loadState) {
+    Started -> {}
+    Success -> {}
+    Error -> {}
+    Canceled -> {}
+}
+val progress: Progress? = state.progress
+val painterState: PainterState = state.painterState
+when (painterState) {
+    is Loading -> {}
+    is Success -> {}
+    is Error -> {}
+    is Empty -> {}
+}
+val painter: Painter? = state.painter
+
+// 重新加载图像
+state.restart()
+```
+
+### listener/ProgressListener/target
+
+AsyncImage、AsyncImagePainter、SubcomposeAsyncImage 不允许使用 DisplayRequest 的
+listener、ProgressListener、target 属性，检测到不为 null 就会抛异常
+
+原因是 listener、ProgressListener、target 这几个属性通常在使用的时候时都是直接 new 一个，这会儿导致
+DisplayRequest 会作为 AsyncImage 和 SubcomposeAsyncImage 的参数时会因为其 equals 结果是 false 而触发重组
+
+因此你必须通过 AsyncImageState 来代替 listener、ProgressListener、target 属性
+
+### Observing AsyncImageState.painterState
 
 图像请求需要一个大小来确定输出图像的尺寸。默认情况下，AsyncImage 和 AsyncImagePainter
 在合成发生后，在绘制第一帧之前解析请求的大小。它以这种方式解决以最大限度地提高性能。
 
-这意味着 AsyncImagePainter.state 将为第一个合成加载 - 即使图像存在于内存缓存中并且它将在第一帧中绘制。
+这意味着 AsyncImageState.painterState 将为第一个合成加载 - 即使图像存在于内存缓存中并且它将在第一帧中绘制。
 
-如果你需要 AsyncImagePainter.state 在第一次合成期间保持最新，请使用 SubcomposeAsyncImage 或使用
-DisplayRequest.Builder.resizeSize 为图像请求设置自定义大小。例如，在此示例中，AsyncImagePainter.state
+如果你需要 AsyncImageState.painterState 在第一次合成期间保持最新，请使用 SubcomposeAsyncImage 或使用
+DisplayRequest.Builder.resizeSize 为图像请求设置自定义大小。例如，在此示例中，AsyncImageState.painterState
 在第一次合成期间将始终是最新的：
 
 ```kotlin
+val state = rememberAsyncImageState()
 val painter = rememberAsyncImagePainter(
     rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
         resizeSize(100, 100)
-    }
+    },
+    state = state,
 )
 
-if (painter.state is AsyncImagePainter.State.Success) {
+if (state.painterState is PainterState.Success) {
     // 如果图像在内存缓存中，这将在第一次合成期间执行。
 }
 

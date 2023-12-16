@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.RememberObserver
@@ -56,14 +55,9 @@ class DrawableProgressPainter internal constructor(
         }
     }
 
-//    private var progressEnd: Boolean = false
-
     override var progress: Float
         get() = drawable.progress
         set(value) {
-//            if (value >= 0) {
-//                progressEnd = false
-//            }
             drawable.progress = value
         }
 
@@ -73,14 +67,6 @@ class DrawableProgressPainter internal constructor(
         if (drawable.intrinsicWidth >= 0 && drawable.intrinsicHeight >= 0) {
             // Update the drawable's bounds to match the intrinsic size
             drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-        }
-
-        drawable.apply {
-//            setVisible(false, false)
-//            onProgressEnd = {
-//                progressEnd = true
-//                drawable.invalidateSelf()
-//            }
         }
     }
 
@@ -155,8 +141,6 @@ private val Drawable.intrinsicSize: Size
  *
  * This function tries to dispatch lifecycle events to [drawable] as much as possible from
  * within Compose.
- *
- * @sample com.google.accompanist.sample.drawablepainter.BasicSample
  */
 @Composable
 fun rememberDrawableProgressPainter(drawable: ProgressDrawable?): ProgressPainter =

@@ -1,4 +1,19 @@
-package com.github.panpf.sketch.compose.state
+/*
+ * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.github.panpf.sketch.compose
 
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Composable
@@ -17,12 +32,15 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.compose.CrossfadePainter
+import com.github.panpf.sketch.compose.LoadState.Canceled
+import com.github.panpf.sketch.compose.LoadState.Started
+import com.github.panpf.sketch.compose.PainterState.Empty
+import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.internal.AsyncImageDisplayTarget
-import com.github.panpf.sketch.compose.isEmpty
-import com.github.panpf.sketch.compose.state.PainterState.Loading
-import com.github.panpf.sketch.compose.toScale
-import com.github.panpf.sketch.compose.toSketchSize
+import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
+import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
+import com.github.panpf.sketch.compose.internal.CrossfadePainter
+import com.github.panpf.sketch.compose.internal.toScale
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.DisplayResult.Error
@@ -30,7 +48,7 @@ import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.isDefault
-import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
@@ -41,14 +59,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
-import com.github.panpf.sketch.util.Size as SketchSize
 
 @Composable
 fun rememberAsyncImageState(): AsyncImageState {
@@ -63,19 +76,12 @@ class AsyncImageState internal constructor(
     private val inspectionMode: Boolean,
 ) : RememberObserver {
 
-    companion object {
-        /**
-         * A state transform that does not modify the state.
-         */
-        val DefaultTransform: (PainterState) -> PainterState = { it }
-    }
-
     private val listener = MyListener()
     private val target = AsyncImageDisplayTarget(MyAsyncImageDisplayTarget())
     private val progressListener = MyProgressListener()
     private var coroutineScope: CoroutineScope? = null
     private var loadImageJob: Job? = null
-    private var _painterState: PainterState = PainterState.Empty
+    private var _painterState: PainterState = Empty
         set(value) {
             field = value
             painterState = value
@@ -97,18 +103,20 @@ class AsyncImageState internal constructor(
     internal var transform = DefaultTransform
     internal var onPainterState: ((PainterState) -> Unit)? = null
     internal var filterQuality = DrawScope.DefaultFilterQuality
-    private val sizeResolver = ComposeSizeResolver(size)
+    private val sizeResolver = AsyncImageSizeResolver(size)
 
     var loadState: LoadState? by mutableStateOf(null)
         private set
+    var result: DisplayResult? by mutableStateOf(null)
+        private set
     var progress: Progress? by mutableStateOf(null)
         private set
-    var painterState: PainterState by mutableStateOf(PainterState.Empty)
+    var painterState: PainterState by mutableStateOf(Empty)
         private set
     var painter: Painter? by mutableStateOf(null)
         private set
 
-    internal fun setSize(size: IntSize) {
+    fun setSize(size: IntSize) {
         this.size = size
         this.sizeResolver.sizeState.value = size
     }
@@ -180,7 +188,7 @@ class AsyncImageState internal constructor(
                 resizeSize(sizeResolver)
             }
             if (noSetScale && contentScale != null) {
-                resizeScale(contentScale.toScale())
+                resizeScale(AsyncImageScaleDecider(ScaleDecider(contentScale.toScale())))
             }
             if (defaultLifecycleResolver) {
                 lifecycle(lifecycle)
@@ -274,6 +282,7 @@ class AsyncImageState internal constructor(
         val sketch = sketch ?: return
         val contentScale = contentScale ?: return
         cancelLoadImageJob()
+        // todo After the pexels page shuts down the network, it is observed that the restart request is automatically canceled.
         loadImage(sketch, request, contentScale)
     }
 
@@ -290,26 +299,31 @@ class AsyncImageState internal constructor(
         coroutineScope?.cancel()
         coroutineScope = null
         (_painterState.painter as? RememberObserver)?.onForgotten()
-        updateState(PainterState.Empty)
+        updateState(Empty)
     }
 
     private inner class MyListener : Listener<DisplayRequest, Success, Error> {
         override fun onStart(request: DisplayRequest) {
-            loadState = LoadState.Started
+            this@AsyncImageState.result = null
+            this@AsyncImageState.progress = null
+            this@AsyncImageState.loadState = Started
         }
 
         override fun onSuccess(request: DisplayRequest, result: Success) {
-            loadState = LoadState.Success(result)
+            this@AsyncImageState.result = result
+            this@AsyncImageState.loadState = LoadState.Success
             updateState(PainterState.Success(result.drawable.toPainter(), result))
         }
 
         override fun onError(request: DisplayRequest, result: Error) {
-            loadState = LoadState.Error(result)
+            this@AsyncImageState.result = result
+            this@AsyncImageState.loadState = LoadState.Error
             updateState(PainterState.Error(result.drawable?.toPainter(), result))
         }
 
         override fun onCancel(request: DisplayRequest) {
-            loadState = LoadState.Canceled
+            this@AsyncImageState.result = null
+            this@AsyncImageState.loadState = Canceled
         }
     }
 
@@ -330,41 +344,20 @@ class AsyncImageState internal constructor(
         }
     }
 
-    private class ComposeSizeResolver(size: IntSize?) : SizeResolver {
-
-        // MutableStateFlow must be used here
-        // Previously, due to the use of snapshotFlow { size }, the response to changes in size was slow.
-        // When using the combination of Image plus AsyncImagePainter, the placeholder is not ready when the component is displayed.
-        // The user sees the process of the component going from blank to displaying the placeholder.
-        val sizeState: MutableStateFlow<IntSize?> = MutableStateFlow(size)
-
-        override suspend fun size(): SketchSize {
-            return sizeState
-                .filterNotNull()
-                .filter { !it.isEmpty() }
-                .mapNotNull { it.toSketchSize() }
-                .first()
-        }
+    companion object {
+        /**
+         * A state transform that does not modify the state.
+         */
+        val DefaultTransform: (PainterState) -> PainterState = { it }
     }
 }
 
 /**
  * The current state of the [DisplayRequest].
  */
-sealed interface LoadState {
-    data object Started : LoadState
-    data class Success(val result: DisplayResult.Success) : LoadState
-    data class Error(val result: DisplayResult.Error) : LoadState
-    data object Canceled : LoadState
+enum class LoadState {
+    Started, Success, Error, Canceled
 }
-
-val LoadState.name: String
-    get() = when (this) {
-        LoadState.Started -> "Started"
-        is LoadState.Success -> "Success"
-        is LoadState.Error -> "Error"
-        LoadState.Canceled -> "Canceled"
-    }
 
 /**
  * The current download progress of the [DisplayRequest].
@@ -378,32 +371,32 @@ data class Progress(val totalLength: Long, val completedLength: Long) {
 /**
  * The current painter state of the [AsyncImageState].
  */
-sealed class PainterState {
+sealed interface PainterState {
 
-    /** The current painter being drawn by [AsyncImagePainter2]. */
-    abstract val painter: Painter?
+    /** The current painter being drawn by [AsyncImagePainter]. */
+    val painter: Painter?
 
     /** The request has not been started. */
-    data object Empty : PainterState() {
+    data object Empty : PainterState {
         override val painter: Painter? get() = null
     }
 
     /** The request is in-progress. */
     data class Loading(
         override val painter: Painter?,
-    ) : PainterState()
+    ) : PainterState
 
     /** The request was successful. */
     data class Success(
         override val painter: Painter,
         val result: DisplayResult.Success,
-    ) : PainterState()
+    ) : PainterState
 
     /** The request failed due to [DisplayResult.Error.throwable]. */
     data class Error(
         override val painter: Painter?,
         val result: DisplayResult.Error,
-    ) : PainterState()
+    ) : PainterState
 }
 
 private val fakeTransitionTarget = object : TransitionDisplayTarget {
