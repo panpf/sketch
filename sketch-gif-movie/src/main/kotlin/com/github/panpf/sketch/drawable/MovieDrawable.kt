@@ -1,6 +1,19 @@
-@file:Suppress("DEPRECATION", "unused")
-
 /*
+ * Copyright 2023 Coil Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * ------------------------------------------------------------------------
  * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +47,7 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.SystemClock
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
@@ -47,7 +61,7 @@ import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class MovieDrawable constructor(
     private val movie: Movie,
-    private val config: Bitmap.Config = Bitmap.Config.ARGB_8888,
+    val config: Bitmap.Config = Bitmap.Config.ARGB_8888,
 ) : Drawable(), Animatable2Compat {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
@@ -87,13 +101,10 @@ class MovieDrawable constructor(
         // Update the scaling properties and draw the current frame.
         if (isSoftwareScalingEnabled) {
             updateBounds(canvas.bounds)
-            val checkpoint = canvas.save()
-            try {
+            canvas.withSave {
                 val scale = 1 / softwareScale
-                canvas.scale(scale, scale)
+                scale(scale, scale)
                 drawFrame(canvas)
-            } finally {
-                canvas.restoreToCount(checkpoint)
             }
         } else {
             updateBounds(bounds)
@@ -142,23 +153,17 @@ class MovieDrawable constructor(
         softwareCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
 
         // Draw onto a software canvas first.
-        val checkpoint = softwareCanvas.save()
-        try {
-            softwareCanvas.scale(softwareScale, softwareScale)
-            movie.draw(softwareCanvas, 0f, 0f, paint)
-            animatedTransformationPicture?.draw(softwareCanvas)
-        } finally {
-            softwareCanvas.restoreToCount(checkpoint)
+        softwareCanvas.withSave {
+            scale(softwareScale, softwareScale)
+            movie.draw(this, 0f, 0f, paint)
+            animatedTransformationPicture?.draw(this)
         }
 
         // Draw onto the input canvas (may or may not be hardware).
-        val checkpoint1 = canvas.save()
-        try {
-            canvas.translate(hardwareDx, hardwareDy)
-            canvas.scale(hardwareScale, hardwareScale)
-            canvas.drawBitmap(softwareBitmap, 0f, 0f, paint)
-        } finally {
-            canvas.restoreToCount(checkpoint1)
+        canvas.withSave {
+            translate(hardwareDx, hardwareDy)
+            scale(hardwareScale, hardwareScale)
+            drawBitmap(softwareBitmap, 0f, 0f, paint)
         }
     }
 
@@ -214,8 +219,10 @@ class MovieDrawable constructor(
     }
 
     @Deprecated("Deprecated in Java")
+    @Suppress("DEPRECATION")
     override fun getOpacity(): Int {
-        return if (paint.alpha == 255 && (pixelOpacity == OPAQUE || (pixelOpacity == UNCHANGED && movie.isOpaque))) {
+        return if (paint.alpha == 255 &&
+            (pixelOpacity == OPAQUE || (pixelOpacity == UNCHANGED && movie.isOpaque))) {
             PixelFormat.OPAQUE
         } else {
             PixelFormat.TRANSLUCENT

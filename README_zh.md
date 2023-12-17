@@ -202,7 +202,7 @@ AsyncImage(
 
 ## 特别感谢
 
-* [coil-kt]/[coil]: framework、compose
+* [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose、sketch-gif-movie 部分
 * [bumptech]/[glide]: BitmapPool
 * [chrisbanes]/[PhotoView]: Zoom
 * [koral--]/[android-gif-drawable]: gif-koral
@@ -221,19 +221,7 @@ AsyncImage(
 
 ## License
 
-    Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [comment]: <> (header)
 
