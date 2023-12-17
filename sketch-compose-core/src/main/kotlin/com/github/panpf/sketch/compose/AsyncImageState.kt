@@ -81,6 +81,7 @@ class AsyncImageState internal constructor(
     private val progressListener = MyProgressListener()
     private var coroutineScope: CoroutineScope? = null
     private var loadImageJob: Job? = null
+    private var rememberedCount = 0
     private var _painterState: PainterState = Empty
         set(value) {
             field = value
@@ -121,13 +122,22 @@ class AsyncImageState internal constructor(
         this.sizeResolver.sizeState.value = size
     }
 
+    /**
+     * Note: When using AsyncImageState externally,
+     * do not actively call its onRemembered method because this will destroy the rememberedCount count.
+     */
     override fun onRemembered() {
-        // onRemembered will be executed multiple times, but we only need execute it once
-        if (coroutineScope != null) return
-        this.coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        // Since AsyncImageState is annotated with @Stable, onRemembered will be executed multiple times,
+        // but we only need execute it once
+        rememberedCount++
+        if (rememberedCount > 1) return
+
+        if (this.coroutineScope != null) return
+        val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        this.coroutineScope = coroutineScope
 
         if (inspectionMode) {
-            coroutineScope!!.launch {
+            coroutineScope.launch {
                 combine(
                     flows = listOf(
                         snapshotFlow { request }.filterNotNull(),
@@ -146,7 +156,7 @@ class AsyncImageState internal constructor(
                 }
             }
         } else {
-            coroutineScope!!.launch {
+            coroutineScope.launch {
                 combine(
                     flows = listOf(
                         snapshotFlow { request }.filterNotNull(),
@@ -165,6 +175,11 @@ class AsyncImageState internal constructor(
     }
 
     private fun validateRequest(request: DisplayRequest) {
+        /*
+         * Why are listener, progressListener, and target not allowed?
+         * Because they are usually created directly when used, this will cause the equals result to be false when DisplayRequest is repeatedly created in compose.
+         * Then DisplayRequest will eventually cause AsyncImage to be reorganized when used as a parameter of AsyncImage
+         */
         require(request.listener == null) {
             "listener is not supported in compose, please use AsyncImageState.loadState instead"
         }
@@ -177,6 +192,7 @@ class AsyncImageState internal constructor(
     }
 
     private fun loadImage(sketch: Sketch, request: DisplayRequest, contentScale: ContentScale?) {
+        val coroutineScope = coroutineScope ?: return
         val noSetSize = request.definedOptions.resizeSizeResolver == null
         val noSetScale = request.definedOptions.resizeScaleDecider == null
         val defaultLifecycleResolver = request.lifecycleResolver.isDefault()
@@ -198,7 +214,7 @@ class AsyncImageState internal constructor(
             progressListener(progressListener)
         }
         cancelLoadImageJob()
-        loadImageJob = coroutineScope!!.launch {
+        loadImageJob = coroutineScope.launch {
             sketch.execute(fullRequest)
         }
     }
@@ -281,8 +297,8 @@ class AsyncImageState internal constructor(
         val request = request ?: return
         val sketch = sketch ?: return
         val contentScale = contentScale ?: return
+        coroutineScope ?: return
         cancelLoadImageJob()
-        // todo After the pexels page shuts down the network, it is observed that the restart request is automatically canceled.
         loadImage(sketch, request, contentScale)
     }
 
@@ -295,9 +311,15 @@ class AsyncImageState internal constructor(
 
     override fun onAbandoned() = onForgotten()
     override fun onForgotten() {
+        // Since AsyncImageState is annotated with @Stable, onForgotten will be executed multiple times,
+        // but we only need execute it once
+        rememberedCount--
+        if (rememberedCount > 0) return
+
+        val coroutineScope = this.coroutineScope ?: return
         cancelLoadImageJob()
-        coroutineScope?.cancel()
-        coroutineScope = null
+        coroutineScope.cancel()
+        this.coroutineScope = null
         (_painterState.painter as? RememberObserver)?.onForgotten()
         updateState(Empty)
     }

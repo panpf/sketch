@@ -229,7 +229,6 @@ fun rememberAsyncImagePainter(
     state.transform = transform
     state.onPainterState = onPainterState
     state.filterQuality = filterQuality
-    state.onRemembered() // Invoke this manually so `state.painterState` is set to `Loading` immediately.
     return remember(state) {
         AsyncImagePainter(state)
     }
