@@ -15,40 +15,26 @@
  */
 package com.github.panpf.sketch.sample.ui.test
 
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.compose.AsyncImage
-import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.AssetImages
-import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.databinding.AnimatablePlaceholderComposeTestFragmentBinding
+import com.github.panpf.sketch.sample.image.DelayBitmapDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class AnimatablePlaceholderComposeTestFragment :
     BaseToolbarBindingFragment<AnimatablePlaceholderComposeTestFragmentBinding>() {
 
     private val urlIndexFlow = MutableStateFlow(0)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            sharedElementEnterTransition = TransitionInflater.from(requireContext())
-                .inflateTransition(R.transition.my_move)
-        }
-    }
 
     override fun onViewCreated(
         toolbar: androidx.appcompat.widget.Toolbar,
@@ -62,25 +48,16 @@ class AnimatablePlaceholderComposeTestFragment :
 
             val urlIndexState = urlIndexFlow.collectAsState()
             val uriString = AssetImages.STATICS[urlIndexState.value % AssetImages.STATICS.size]
+            val request = DisplayRequest(LocalContext.current, uriString) {
+                memoryCachePolicy(CachePolicy.DISABLED)
+                resultCachePolicy(CachePolicy.DISABLED)
+                placeholder(drawable.ic_placeholder_eclipse_animated)
+                components {
+                    addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
+                }
+            }
             AsyncImage(
-                request = DisplayRequest(LocalContext.current, uriString) {
-                    memoryCachePolicy(CachePolicy.DISABLED)
-                    resultCachePolicy(CachePolicy.DISABLED)
-                    placeholder(drawable.ic_placeholder_eclipse_animated)
-                    components {
-                        addBitmapDecodeInterceptor(object : BitmapDecodeInterceptor {
-                            override val key: String?
-                                get() = null
-                            override val sortWeight: Int
-                                get() = 0
-
-                            override suspend fun intercept(chain: BitmapDecodeInterceptor.Chain): Result<BitmapDecodeResult> {
-                                delay(5000)
-                                return chain.proceed()
-                            }
-                        })
-                    }
-                },
+                request = request,
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()

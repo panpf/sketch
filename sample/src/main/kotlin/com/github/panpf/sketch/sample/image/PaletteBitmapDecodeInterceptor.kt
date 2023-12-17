@@ -8,10 +8,10 @@ import com.github.panpf.sketch.decode.BitmapDecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.LoadResult
-import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor.Companion.simplePaletteFromJSONObject
+import com.github.panpf.sketch.sample.image.PaletteBitmapDecodeInterceptor.Companion.simplePaletteFromJSONObject
 import org.json.JSONObject
 
-class PaletteBitmapDecoderInterceptor : BitmapDecodeInterceptor {
+class PaletteBitmapDecodeInterceptor : BitmapDecodeInterceptor {
 
     override val key: String? = null
     override val sortWeight: Int = 0

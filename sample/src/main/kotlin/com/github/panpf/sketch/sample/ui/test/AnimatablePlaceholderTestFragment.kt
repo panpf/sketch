@@ -15,10 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.test
 
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor.Chain
@@ -34,14 +31,6 @@ class AnimatablePlaceholderTestFragment :
     BaseToolbarBindingFragment<AnimatablePlaceholderTestFragmentBinding>() {
 
     private var urlIndex = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            sharedElementEnterTransition = TransitionInflater.from(requireContext())
-                .inflateTransition(R.transition.my_move)
-        }
-    }
 
     override fun onViewCreated(
         toolbar: androidx.appcompat.widget.Toolbar,

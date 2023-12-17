@@ -15,6 +15,8 @@ import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.platform.InspectorInfo
 import com.github.panpf.sketch.compose.AsyncImageState
+import com.github.panpf.sketch.compose.LoadState
+import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -55,7 +57,8 @@ internal class ProgressIndicatorNode(
     private var progressPainter: ProgressPainter,
 ) : Modifier.Node(), DrawModifierNode, CompositionLocalConsumerModifierNode {
 
-    private var lastJob: Job? = null
+    private var lastJob1: Job? = null
+    private var lastJob2: Job? = null
 
     override fun onAttach() {
         super.onAttach()
@@ -91,10 +94,27 @@ internal class ProgressIndicatorNode(
     }
 
     private fun againCollectProgress() {
-        lastJob?.cancel()
-        lastJob = coroutineScope.launch {
+        lastJob1?.cancel()
+        lastJob1 = coroutineScope.launch {
             snapshotFlow { state.progress }.collect {
-                progressPainter.progress = it?.decimalProgress ?: -1f
+                if (state.loadState == LoadState.Started || state.loadState == LoadState.Success) {
+                    progressPainter.progress = it?.decimalProgress ?: -1f
+                } else {
+                    progressPainter.progress = -1f
+                }
+            }
+        }
+
+        lastJob2?.cancel()
+        lastJob2 = coroutineScope.launch {
+            snapshotFlow { state.loadState }.ignoreFirst().collect {
+                when (it) {
+                    LoadState.Started -> progressPainter.progress = 0f
+                    LoadState.Success -> progressPainter.progress = 1f
+                    LoadState.Error -> progressPainter.progress = -1f
+                    LoadState.Canceled -> progressPainter.progress = -1f
+                    else -> {}
+                }
             }
         }
     }

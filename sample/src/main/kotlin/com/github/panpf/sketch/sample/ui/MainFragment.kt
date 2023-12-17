@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.sample.ui
 
-import android.Manifest
 import android.Manifest.permission
 import android.os.Build
 import android.os.Build.VERSION_CODES
@@ -27,6 +26,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
+import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.MainFragmentBinding
@@ -63,103 +63,118 @@ class MainFragment : BaseToolbarBindingFragment<MainFragmentBinding>() {
         binding.mainRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = AssemblyRecyclerAdapter(
-                listOf(LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
+                itemFactoryList = listOf(LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
                     startLink(data)
                 }, ListSeparatorItemFactory()),
-                listOf(
-                    ListSeparator("Samples"),
-                    Link(
-                        title = "Local Photos",
-                        navDirections = NavMainDirections.actionLocalPhotoListFragment(),
-                        permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    ),
-                    Link(
-                        title = "Pexels Photos",
-                        navDirections = NavMainDirections.actionPexelsPhotoListFragment()
-                    ),
-                    Link(
-                        title = "Giphy GIFs",
-                        navDirections = NavMainDirections.actionGiphyGifListFragment()
-                    ),
-                    Link(
-                        title = "Local Videos",
-                        navDirections = NavMainDirections.actionLocalVideoListFragment(),
-                        permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    ),
-
-                    ListSeparator("Jetpack Compose"),
-                    Link(
-                        title = "Local Photos (Compose)",
-                        navDirections = NavMainDirections.actionLocalPhotoListComposeFragment(),
-                        minSdk = Build.VERSION_CODES.LOLLIPOP,
-                        permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    ),
-                    Link(
-                        title = "Pexels Photos (Compose)",
-                        navDirections = NavMainDirections.actionPexelsPhotoListComposeFragment(),
-                        minSdk = Build.VERSION_CODES.LOLLIPOP
-                    ),
-                    Link(
-                        title = "Giphy GIFs (Compose)",
-                        navDirections = NavMainDirections.actionGiphyGifListComposeFragment(),
-                        minSdk = Build.VERSION_CODES.LOLLIPOP
-                    ),
-
-                    ListSeparator("Test"),
-                    Link(
-                        title = "RemoteViews",
-                        navDirections = NavMainDirections.actionRemoteViewsFragment()
-                    ),
-                    Link(
-                        title = "Fetcher",
-                        navDirections = NavMainDirections.actionFetcherTestFragment(),
-                        permissions = listOf(permission.READ_EXTERNAL_STORAGE)
-                    ),
-                    Link(
-                        title = "Decoder",
-                        navDirections = NavMainDirections.actionDecoderTestFragment()
-                    ),
-                    Link(
-                        title = "Transformation",
-                        navDirections = NavMainDirections.actionTransformationTestPagerFragment()
-                    ),
-                    Link(
-                        title = "ExifOrientation",
-                        navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
-                    ),
-                    Link(
-                        title = "ProgressIndicator",
-                        navDirections = NavMainDirections.actionProgressIndicatorTestFragment()
-                    ),
-                    Link(
-                        title = "ProgressIndicator (Compose)",
-                        navDirections = NavMainDirections.actionProgressIndicatorTestComposeFragment()
-                    ),
-                    Link(
-                        title = "Display Insanity",
-                        navDirections = NavMainDirections.actionInsanityTestFragment()
-                    ),
-                    Link(
-                        title = "Display Insanity (Compose)",
-                        navDirections = NavMainDirections.actionInsanityTestComposeFragment(),
-                        minSdk = VERSION_CODES.LOLLIPOP
-                    ),
-                    Link(
-                        title = "Animatable Placeholder",
-                        navDirections = NavMainDirections.actionAnimatablePlaceholder(),
-                    ),
-                    Link(
-                        title = "Animatable Placeholder (Compose)",
-                        navDirections = NavMainDirections.actionAnimatablePlaceholderCompose(),
-                    ),
-                    Link(
-                        title = "Share Element",
-                        navDirections = NavMainDirections.actionShareElementTestFragment(),
-                    ),
-                )
+                initDataList = pageList()
             )
         }
     }
+
+    private fun pageList(): List<Any> = listOf(
+        ListSeparator("Samples"),
+        Link(
+            title = "Local Photos",
+            navDirections = NavMainDirections.actionLocalPhotoListFragment(),
+            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
+        ),
+        Link(
+            title = "Pexels Photos",
+            navDirections = NavMainDirections.actionPexelsPhotoListFragment()
+        ),
+        Link(
+            title = "Giphy GIFs",
+            navDirections = NavMainDirections.actionGiphyGifListFragment()
+        ),
+        Link(
+            title = "Local Videos",
+            navDirections = NavMainDirections.actionLocalVideoListFragment(),
+            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
+        ),
+
+        ListSeparator("Jetpack Compose"),
+        Link(
+            title = "Local Photos (Compose)",
+            navDirections = NavMainDirections.actionLocalPhotoListComposeFragment(),
+            minSdk = VERSION_CODES.LOLLIPOP,
+            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
+        ),
+        Link(
+            title = "Pexels Photos (Compose)",
+            navDirections = NavMainDirections.actionPexelsPhotoListComposeFragment(),
+            minSdk = VERSION_CODES.LOLLIPOP
+        ),
+        Link(
+            title = "Giphy GIFs (Compose)",
+            navDirections = NavMainDirections.actionGiphyGifListComposeFragment(),
+            minSdk = VERSION_CODES.LOLLIPOP
+        ),
+
+        ListSeparator("Test"),
+        Link(
+            title = "RemoteViews",
+            navDirections = NavMainDirections.actionRemoteViewsFragment()
+        ),
+        Link(
+            title = "Fetcher",
+            navDirections = NavMainDirections.actionFetcherTestFragment(),
+            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
+        ),
+        Link(
+            title = "Decoder",
+            navDirections = NavMainDirections.actionDecoderTestFragment()
+        ),
+        Link(
+            title = "Transformation",
+            navDirections = NavMainDirections.actionTransformationTestPagerFragment()
+        ),
+        Link(
+            title = "ExifOrientation",
+            navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
+        ),
+        Link(
+            title = "ProgressIndicator",
+            navDirections = NavMainDirections.actionProgressIndicatorTestFragment()
+        ),
+        Link(
+            title = "ProgressIndicator (Compose)",
+            navDirections = NavMainDirections.actionProgressIndicatorTestComposeFragment()
+        ),
+        Link(
+            title = "Display Insanity",
+            navDirections = NavMainDirections.actionInsanityTestFragment()
+        ),
+        Link(
+            title = "Display Insanity (Compose)",
+            navDirections = NavMainDirections.actionInsanityTestComposeFragment(),
+            minSdk = VERSION_CODES.LOLLIPOP
+        ),
+        Link(
+            title = "Animatable Placeholder",
+            navDirections = NavMainDirections.actionAnimatablePlaceholder(),
+        ),
+        Link(
+            title = "Animatable Placeholder (Compose)",
+            navDirections = NavMainDirections.actionAnimatablePlaceholderCompose(),
+        ),
+        Link(
+            title = "Share Element",
+            navDirections = NavMainDirections.actionShareElementTestFragment(),
+        ),
+    ).let {
+        if (BuildConfig.DEBUG) {
+            it.plus(debugPageList())
+        } else {
+            it
+        }
+    }
+
+    private fun debugPageList(): List<Link> = listOf(
+        Link(
+            title = "Temp Test (Compose)",
+            navDirections = NavMainDirections.actionTempTestComposeFragment(),
+        ),
+    )
 
     private fun startLink(data: Link) {
         if (data.minSdk == null || Build.VERSION.SDK_INT >= data.minSdk) {

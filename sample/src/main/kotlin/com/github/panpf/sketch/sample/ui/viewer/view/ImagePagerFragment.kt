@@ -36,7 +36,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.ImagePagerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
-import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
+import com.github.panpf.sketch.sample.image.PaletteBitmapDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
@@ -104,7 +104,7 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
                         disallowAnimatedImage()
                         crossfade(alwaysUse = true, durationMillis = 400)
                         components {
-                            addBitmapDecodeInterceptor(PaletteBitmapDecoderInterceptor())
+                            addBitmapDecodeInterceptor(PaletteBitmapDecodeInterceptor())
                         }
                         listener(
                             onSuccess = { _, result ->
