@@ -40,11 +40,13 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,13 +70,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.compose.AsyncImage
+import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.eventService
-import com.github.panpf.sketch.sample.image.PaletteBitmapDecoderInterceptor
+import com.github.panpf.sketch.sample.image.PaletteBitmapDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
@@ -110,8 +113,6 @@ class ImagePagerComposeFragment : BaseFragment() {
         parent: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val initialItem = imageList.indexOfFirst { it.position == args.defaultPosition }
-            .takeIf { it != -1 } ?: 0
         return ComposeView(requireContext()).apply {
             setBackgroundColor(
                 ResourcesCompat.getColor(
@@ -123,7 +124,9 @@ class ImagePagerComposeFragment : BaseFragment() {
             setContent {
                 ImagePager(
                     imageList = imageList,
-                    initialItem = initialItem,
+                    totalCount = args.totalCount,
+                    startPosition = args.startPosition,
+                    initialPosition = args.initialPosition,
                     showInfoEvent = showInfoEvent,
                     onSettingsClick = {
                         findNavController().navigate(
@@ -166,7 +169,10 @@ class ImagePagerComposeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showInfoEvent.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { displayResult ->
+        showInfoEvent.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.STARTED
+        ) { displayResult ->
             findNavController()
                 .navigate(ImageInfoDialogFragment.createNavDirections(displayResult))
         }
@@ -204,7 +210,9 @@ class ImagePagerComposeFragment : BaseFragment() {
 @Composable
 private fun ImagePager(
     imageList: List<ImageDetail>,
-    initialItem: Int,
+    initialPosition: Int,
+    startPosition: Int,
+    totalCount: Int,
     showInfoEvent: MutableSharedFlow<DisplayResult?>,
     onSettingsClick: (() -> Unit)? = null,
     onShowOriginClick: (() -> Unit)? = null,
@@ -215,7 +223,7 @@ private fun ImagePager(
     onImageClick: (() -> Unit)? = null,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val pagerState = rememberPagerState(initialPage = initialItem) {
+        val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
             imageList.size
         }
 
@@ -240,8 +248,8 @@ private fun ImagePager(
 
         val showOriginImage by LocalContext.current.appSettingsService.showOriginImage.stateFlow.collectAsState()
         ImagePagerTools(
-            currentItem = pagerState.currentPage,
-            imageCount = imageList.size,
+            pageNumber = startPosition + pagerState.currentPage + 1,
+            pageCount = totalCount,
             showOriginImage = showOriginImage,
             buttonBgColorState = buttonBgColorState,
             onSettingsClick = onSettingsClick,
@@ -266,6 +274,21 @@ private fun PagerBgImage(
     buttonBgColorState: MutableState<Int?>,
     screenSize: IntSize,
 ) {
+    val imageState = rememberAsyncImageState()
+    LaunchedEffect(Unit) {
+        snapshotFlow { imageState.result }.collect {
+            if (it is DisplayResult.Success) {
+                val simplePalette = it.simplePalette
+                buttonBgColorState.value = simplePalette?.dominantSwatch?.rgb
+                    ?: simplePalette?.lightVibrantSwatch?.rgb
+                            ?: simplePalette?.vibrantSwatch?.rgb
+                            ?: simplePalette?.lightMutedSwatch?.rgb
+                            ?: simplePalette?.mutedSwatch?.rgb
+                            ?: simplePalette?.darkVibrantSwatch?.rgb
+                            ?: simplePalette?.darkMutedSwatch?.rgb
+            }
+        }
+    }
     AsyncImage(
         request = DisplayRequest(LocalContext.current, imageUri) {
             resize(
@@ -283,26 +306,10 @@ private fun PagerBgImage(
             disallowAnimatedImage()
             crossfade(alwaysUse = true, durationMillis = 400)
             components {
-                addBitmapDecodeInterceptor(PaletteBitmapDecoderInterceptor())
+                addBitmapDecodeInterceptor(PaletteBitmapDecodeInterceptor())
             }
-            listener(
-                onSuccess = { _, result ->
-                    val simplePalette = result.simplePalette
-                    val accentColor =
-                        simplePalette?.dominantSwatch?.rgb
-                            ?: simplePalette?.lightVibrantSwatch?.rgb
-                            ?: simplePalette?.vibrantSwatch?.rgb
-                            ?: simplePalette?.lightMutedSwatch?.rgb
-                            ?: simplePalette?.mutedSwatch?.rgb
-                            ?: simplePalette?.darkVibrantSwatch?.rgb
-                            ?: simplePalette?.darkMutedSwatch?.rgb
-                    buttonBgColorState.value = accentColor
-                },
-                onError = { _, _ ->
-                    buttonBgColorState.value = null
-                }
-            )
         },
+        state = imageState,
         contentDescription = "Background",
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()
@@ -311,8 +318,8 @@ private fun PagerBgImage(
 
 @Composable
 private fun ImagePagerTools(
-    currentItem: Int,
-    imageCount: Int,
+    pageNumber: Int,
+    pageCount: Int,
     showOriginImage: Boolean,
     buttonBgColorState: MutableState<Int?>,
     onSettingsClick: (() -> Unit)? = null,
@@ -443,7 +450,7 @@ private fun ImagePagerTools(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "${currentItem + 1}/$imageCount",
+                text = "${pageNumber}/$pageCount",
                 textAlign = TextAlign.Center,
                 color = buttonTextColor,
                 style = TextStyle(lineHeight = 12.sp),
@@ -460,8 +467,8 @@ fun ImagePagerToolsPreview() {
         mutableStateOf<Int?>(null)
     }
     ImagePagerTools(
-        currentItem = 9,
-        imageCount = 99,
+        pageNumber = 9,
+        pageCount = 99,
         showOriginImage = false,
         buttonBgColorState = buttonBgColorState,
     )

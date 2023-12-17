@@ -4,8 +4,21 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
+#### sketch
+
 * fix: Fix the bug of request interruption when StateImage fails to obtain Drawable
 * improve: Improve ProgressDrawable
+
+#### sketch-compose:
+
+> [!CAUTION]
+> If you have the following two situations when using AsyncImage, AsyncImagePainter, or SubcomposeAsyncImage, then you need to modify your code:
+> * using their onState parameter
+> * Using the listener, progressListener, and target properties of DisplayRequest
+
+* change: Refactor
+  AsyncImage, AsyncImagePainter, SubcomposeAsyncImage, add a `state: AsyncImageState` parameter to them, through
+  AsyncImageState can observe image loading state and results and restart loading
 
 # v3.3.0-beta04
 

@@ -41,7 +41,7 @@ class FetcherTestFragment : BaseToolbarBindingFragment<TabPagerFragmentBinding>(
         viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { data ->
             val imageFromData = data ?: return@repeatCollectWithLifecycle
             val images = imageFromData.uris.mapIndexed { index, s ->
-                ImageDetail(index, s, s, s)
+                ImageDetail(s, s, s)
             }
             val titles = imageFromData.titles
 

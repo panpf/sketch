@@ -96,7 +96,7 @@ class ImageViewerFragment : BaseBindingFragment<ImageViewerFragmentBinding>() {
             }
             eventService.viewerPagerInfoEvent
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    if (it == args.position) {
+                    if (it == args.itemIndex) {
                         startImageInfoDialog(this)
                     }
                 }
@@ -145,7 +145,7 @@ class ImageViewerFragment : BaseBindingFragment<ImageViewerFragmentBinding>() {
             data: ImageDetail
         ): Fragment = ImageViewerFragment().apply {
             arguments = ImageViewerFragmentArgs(
-                position = data.position,
+                itemIndex = bindingAdapterPosition,
                 originImageUri = data.originUrl,
                 previewImageUri = data.mediumUrl,
                 thumbnailImageUrl = data.thumbnailUrl,

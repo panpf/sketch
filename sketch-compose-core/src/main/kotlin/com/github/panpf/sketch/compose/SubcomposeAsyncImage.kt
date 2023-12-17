@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.panpf.sketch.compose
 
 import androidx.compose.foundation.layout.Box
@@ -17,8 +32,14 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.compose.AsyncImagePainter.Companion.DefaultTransform
-import com.github.panpf.sketch.compose.AsyncImagePainter.State
+import com.github.panpf.sketch.compose.AsyncImageState.Companion.DefaultTransform
+import com.github.panpf.sketch.compose.PainterState.Empty
+import com.github.panpf.sketch.compose.PainterState.Error
+import com.github.panpf.sketch.compose.PainterState.Loading
+import com.github.panpf.sketch.compose.PainterState.Success
+import com.github.panpf.sketch.compose.internal.AsyncImageContent
+import com.github.panpf.sketch.compose.internal.onPainterStateOf
+import com.github.panpf.sketch.compose.internal.toIntSizeOrNull
 import com.github.panpf.sketch.request.DisplayRequest
 
 /**
@@ -28,7 +49,9 @@ import com.github.panpf.sketch.request.DisplayRequest
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
+ * @param sketch The [Sketch] that will be used to execute the request.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
+ * @param state [AsyncImageState] that will be used to store the state of the request.
  * @param loading An optional callback to overwrite what's drawn while the image request is loading.
  * @param success An optional callback to overwrite what's drawn when the image request succeeds.
  * @param error An optional callback to overwrite what's drawn when the image request fails.
@@ -52,34 +75,33 @@ fun SubcomposeAsyncImage(
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
-    loading: @Composable (SubcomposeAsyncImageScope.(State.Loading) -> Unit)? = null,
-    success: @Composable (SubcomposeAsyncImageScope.(State.Success) -> Unit)? = null,
-    error: @Composable (SubcomposeAsyncImageScope.(State.Error) -> Unit)? = null,
-    onLoading: ((State.Loading) -> Unit)? = null,
-    onSuccess: ((State.Success) -> Unit)? = null,
-    onError: ((State.Error) -> Unit)? = null,
+    state: AsyncImageState = rememberAsyncImageState(),
+    loading: @Composable (SubcomposeAsyncImageScope.(Loading) -> Unit)? = null,
+    success: @Composable (SubcomposeAsyncImageScope.(Success) -> Unit)? = null,
+    error: @Composable (SubcomposeAsyncImageScope.(Error) -> Unit)? = null,
+    onLoading: ((Loading) -> Unit)? = null,
+    onSuccess: ((Success) -> Unit)? = null,
+    onError: ((Error) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
-) {
-    val request = DisplayRequest(LocalContext.current, imageUri)
-    SubcomposeAsyncImage(
-        request = request,
-        contentDescription = contentDescription,
-        sketch = sketch,
-        modifier = modifier,
-        onState = onStateOf(onLoading, onSuccess, onError),
-        alignment = alignment,
-        contentScale = contentScale,
-        alpha = alpha,
-        colorFilter = colorFilter,
-        filterQuality = filterQuality,
-        content = contentOf(loading, success, error, clipToBounds),
-    )
-}
+) = SubcomposeAsyncImage(
+    request = DisplayRequest(LocalContext.current, imageUri),
+    contentDescription = contentDescription,
+    sketch = sketch,
+    modifier = modifier,
+    state = state,
+    onPainterState = onPainterStateOf(onLoading, onSuccess, onError),
+    alignment = alignment,
+    contentScale = contentScale,
+    alpha = alpha,
+    colorFilter = colorFilter,
+    filterQuality = filterQuality,
+    content = contentOf(loading, success, error, clipToBounds),
+)
 
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
@@ -88,10 +110,12 @@ fun SubcomposeAsyncImage(
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
+ * @param sketch The [Sketch] that will be used to execute the request.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
- * @param transform A callback to transform a new [State] before it's applied to the
+ * @param state [AsyncImageState] that will be used to store the state of the request.
+ * @param transform A callback to transform a new [PainterState] before it's applied to the
  *  [AsyncImagePainter]. Typically this is used to modify the state's [Painter].
- * @param onState Called when the state of this painter changes.
+ * @param onPainterState Called when the painterState changes.
  * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
  *  bounds defined by the width and height.
  * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
@@ -110,31 +134,30 @@ fun SubcomposeAsyncImage(
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
-    transform: (State) -> State = DefaultTransform,
-    onState: ((State) -> Unit)? = null,
+    state: AsyncImageState = rememberAsyncImageState(),
+    transform: (PainterState) -> PainterState = DefaultTransform,
+    onPainterState: ((PainterState) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
     content: @Composable SubcomposeAsyncImageScope.() -> Unit,
-) {
-    val request = DisplayRequest(LocalContext.current, imageUri)
-    SubcomposeAsyncImage(
-        request = request,
-        contentDescription = contentDescription,
-        sketch = sketch,
-        modifier = modifier,
-        transform = transform,
-        onState = onState,
-        alignment = alignment,
-        contentScale = contentScale,
-        alpha = alpha,
-        colorFilter = colorFilter,
-        filterQuality = filterQuality,
-        content = content
-    )
-}
+) = SubcomposeAsyncImage(
+    request = DisplayRequest(LocalContext.current, imageUri),
+    contentDescription = contentDescription,
+    sketch = sketch,
+    modifier = modifier,
+    state = state,
+    transform = transform,
+    onPainterState = onPainterState,
+    alignment = alignment,
+    contentScale = contentScale,
+    alpha = alpha,
+    colorFilter = colorFilter,
+    filterQuality = filterQuality,
+    content = content
+)
 
 /**
  * A composable that executes an [DisplayRequest] asynchronously and renders the result.
@@ -143,7 +166,9 @@ fun SubcomposeAsyncImage(
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
+ * @param sketch The [Sketch] that will be used to execute the request.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
+ * @param state [AsyncImageState] that will be used to store the state of the request.
  * @param loading An optional callback to overwrite what's drawn while the image request is loading.
  * @param success An optional callback to overwrite what's drawn when the image request succeeds.
  * @param error An optional callback to overwrite what's drawn when the image request fails.
@@ -167,12 +192,13 @@ fun SubcomposeAsyncImage(
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
-    loading: @Composable (SubcomposeAsyncImageScope.(State.Loading) -> Unit)? = null,
-    success: @Composable (SubcomposeAsyncImageScope.(State.Success) -> Unit)? = null,
-    error: @Composable (SubcomposeAsyncImageScope.(State.Error) -> Unit)? = null,
-    onLoading: ((State.Loading) -> Unit)? = null,
-    onSuccess: ((State.Success) -> Unit)? = null,
-    onError: ((State.Error) -> Unit)? = null,
+    state: AsyncImageState = rememberAsyncImageState(),
+    loading: @Composable (SubcomposeAsyncImageScope.(Loading) -> Unit)? = null,
+    success: @Composable (SubcomposeAsyncImageScope.(Success) -> Unit)? = null,
+    error: @Composable (SubcomposeAsyncImageScope.(Error) -> Unit)? = null,
+    onLoading: ((Loading) -> Unit)? = null,
+    onSuccess: ((Success) -> Unit)? = null,
+    onError: ((Error) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
@@ -184,7 +210,8 @@ fun SubcomposeAsyncImage(
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
-    onState = onStateOf(onLoading, onSuccess, onError),
+    state = state,
+    onPainterState = onPainterStateOf(onLoading, onSuccess, onError),
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
@@ -200,10 +227,12 @@ fun SubcomposeAsyncImage(
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
+ * @param sketch The [Sketch] that will be used to execute the request.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
- * @param transform A callback to transform a new [State] before it's applied to the
+ * @param state [AsyncImageState] that will be used to store the state of the request.
+ * @param transform A callback to transform a new [PainterState] before it's applied to the
  *  [AsyncImagePainter]. Typically this is used to modify the state's [Painter].
- * @param onState Called when the state of this painter changes.
+ * @param onPainterState Called when the painterState changes.
  * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
  *  bounds defined by the width and height.
  * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
@@ -222,8 +251,9 @@ fun SubcomposeAsyncImage(
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
-    transform: (State) -> State = DefaultTransform,
-    onState: ((State) -> Unit)? = null,
+    state: AsyncImageState = rememberAsyncImageState(),
+    transform: (PainterState) -> PainterState = DefaultTransform,
+    onPainterState: ((PainterState) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
@@ -231,14 +261,10 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     content: @Composable SubcomposeAsyncImageScope.() -> Unit,
 ) {
-    // Create and execute the image request.
-    val newRequest = updateRequest(request, contentScale)
     val painter = rememberAsyncImagePainter(
-        newRequest, sketch, transform, onState, contentScale, filterQuality
+        request, sketch, state, transform, onPainterState, contentScale, filterQuality
     )
-
-    val sizeResolver = newRequest.resizeSizeResolver
-    if (sizeResolver is ConstraintsSizeResolver) {
+    if (request.definedOptions.resizeSizeResolver == null) {
         // Slow path: draw the content with subcomposition as we need to resolve the constraints
         // before calling `content`.
         BoxWithConstraints(
@@ -246,13 +272,12 @@ fun SubcomposeAsyncImage(
             contentAlignment = alignment,
             propagateMinConstraints = true
         ) {
-            // Ensure `painter.state` is up to date immediately. Resolving the constraints
-            // synchronously is necessary to ensure that images from the memory cache are resolved
-            // and `painter.state` is updated to `Success` before invoking `content`.
-            sizeResolver.setConstraints(constraints)
+            // Ensure images are prepared before content is drawn when in-memory cache exists
+            constraints.toIntSizeOrNull()?.let { state.setSize(it) }
 
             RealSubcomposeAsyncImageScope(
                 parentScope = this,
+                state = state,
                 painter = painter,
                 contentDescription = contentDescription,
                 alignment = alignment,
@@ -262,8 +287,7 @@ fun SubcomposeAsyncImage(
             ).content()
         }
     } else {
-        // Fast path: draw the content without subcomposition as we don't need to resolve the
-        // constraints.
+        // Fast path: draw the content without subcomposition as we don't need to resolve the constraints.
         Box(
             modifier = modifier,
             contentAlignment = alignment,
@@ -271,6 +295,7 @@ fun SubcomposeAsyncImage(
         ) {
             RealSubcomposeAsyncImageScope(
                 parentScope = this,
+                state = state,
                 painter = painter,
                 contentDescription = contentDescription,
                 alignment = alignment,
@@ -288,6 +313,11 @@ fun SubcomposeAsyncImage(
 @LayoutScopeMarker
 @Immutable
 interface SubcomposeAsyncImageScope : BoxScope {
+
+    /**
+     * SubcomposeAsyncImageContent can read its painter or painterState parameters to draw
+     */
+    val state: AsyncImageState
 
     /** The painter that is drawn by [SubcomposeAsyncImageContent]. */
     val painter: AsyncImagePainter
@@ -324,7 +354,7 @@ fun SubcomposeAsyncImageScope.SubcomposeAsyncImageContent(
     alpha: Float = this.alpha,
     colorFilter: ColorFilter? = this.colorFilter,
     clipToBounds: Boolean = true,
-) = Content(
+) = AsyncImageContent(
     modifier = modifier,
     painter = painter,
     contentDescription = contentDescription,
@@ -337,19 +367,28 @@ fun SubcomposeAsyncImageScope.SubcomposeAsyncImageContent(
 
 @Stable
 private fun contentOf(
-    loading: @Composable (SubcomposeAsyncImageScope.(State.Loading) -> Unit)?,
-    success: @Composable (SubcomposeAsyncImageScope.(State.Success) -> Unit)?,
-    error: @Composable (SubcomposeAsyncImageScope.(State.Error) -> Unit)?,
+    loading: @Composable (SubcomposeAsyncImageScope.(Loading) -> Unit)?,
+    success: @Composable (SubcomposeAsyncImageScope.(Success) -> Unit)?,
+    error: @Composable (SubcomposeAsyncImageScope.(Error) -> Unit)?,
     clipToBounds: Boolean = true,
 ): @Composable SubcomposeAsyncImageScope.() -> Unit {
     return if (loading != null || success != null || error != null) {
         {
             var draw = true
-            when (val state = painter.state) {
-                is State.Loading -> if (loading != null) loading(state).also { draw = false }
-                is State.Success -> if (success != null) success(state).also { draw = false }
-                is State.Error -> if (error != null) error(state).also { draw = false }
-                is State.Empty -> {} // Skipped if rendering on the main thread.
+            when (val painterState = state.painterState) {
+                is Loading -> if (loading != null) loading(painterState).also {
+                    draw = false
+                }
+
+                is Success -> if (success != null) success(painterState).also {
+                    draw = false
+                }
+
+                is Error -> if (error != null) error(painterState).also {
+                    draw = false
+                }
+
+                is Empty -> {} // Skipped if rendering on the main thread.
             }
             if (draw) SubcomposeAsyncImageContent(clipToBounds = clipToBounds)
         }
@@ -360,6 +399,7 @@ private fun contentOf(
 
 private data class RealSubcomposeAsyncImageScope(
     private val parentScope: BoxScope,
+    override val state: AsyncImageState,
     override val painter: AsyncImagePainter,
     override val contentDescription: String?,
     override val alignment: Alignment,

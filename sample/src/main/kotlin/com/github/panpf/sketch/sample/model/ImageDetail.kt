@@ -23,7 +23,6 @@ import kotlinx.serialization.Serializable
 @Parcelize
 @Serializable
 data class ImageDetail constructor(
-    @SerialName("position") val position: Int,
     @SerialName("originUrl") val originUrl: String,
     @SerialName("mediumUrl") val mediumUrl: String?,
     @SerialName("thumbnailUrl") val thumbnailUrl: String?,

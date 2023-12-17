@@ -214,25 +214,29 @@ class LocalPhotoListFragment : BaseToolbarBindingFragment<RecyclerFragmentBindin
     }
 
     private fun startImageDetail(binding: RecyclerFragmentBinding, position: Int) {
-        val imageList = binding.recyclerRecycler
+        val items = binding.recyclerRecycler
             .adapter!!.asOrThrow<ConcatAdapter>()
             .adapters.first().asOrThrow<AssemblyPagingDataAdapter<Photo>>()
-            .currentList.mapIndexedNotNull { index, photo ->
-                if (index >= position - 50 && index <= position + 50) {
-                    ImageDetail(
-                        position = index,
-                        originUrl = photo!!.originalUrl,
-                        mediumUrl = photo.detailPreviewUrl,
-                        thumbnailUrl = photo.listThumbnailUrl,
-                    )
-                } else {
-                    null
-                }
-            }
+            .currentList
+        val totalCount = items.size
+        val startPosition = (position - 50).coerceAtLeast(0)
+        val endPosition = (position + 50).coerceAtMost(totalCount - 1)
+        val imageList = items.asSequence()
+            .filterNotNull()
+            .filterIndexed { index, _ -> index in startPosition..endPosition }
+            .map {
+                ImageDetail(
+                    originUrl = it.originalUrl,
+                    mediumUrl = it.detailPreviewUrl,
+                    thumbnailUrl = it.listThumbnailUrl,
+                )
+            }.toList()
         findNavController().navigate(
             NavMainDirections.actionGlobalImagePagerFragment(
-                Json.encodeToString(imageList),
-                position,
+                imageDetailJsonArray = Json.encodeToString(imageList),
+                totalCount = totalCount,
+                startPosition = startPosition,
+                initialPosition = position
             ),
         )
     }

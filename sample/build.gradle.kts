@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -109,7 +111,10 @@ dependencies {
     implementation(libs.bundles.panpf.tools4j)
     implementation(libs.panpf.tools4k)
     implementation(libs.panpf.activitymonitor)
-    implementation(libs.panpf.zoomimage.compose.sketch) {
+//    implementation(libs.panpf.zoomimage.compose.sketch) {
+//        exclude(group = "io.github.panpf.sketch3")
+//    }
+    implementation(libs.panpf.zoomimage.compose) {
         exclude(group = "io.github.panpf.sketch3")
     }
     implementation(libs.panpf.zoomimage.view.sketch) {

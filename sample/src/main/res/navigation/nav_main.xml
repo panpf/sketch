@@ -72,8 +72,15 @@
             app:argType="string"
             app:nullable="false" />
         <argument
-            android:name="defaultPosition"
-            android:defaultValue="0"
+            android:name="totalCount"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="startPosition"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="initialPosition"
             app:argType="integer"
             app:nullable="false" />
     </fragment>
@@ -94,8 +101,15 @@
             app:argType="string"
             app:nullable="false" />
         <argument
-            android:name="defaultPosition"
-            android:defaultValue="0"
+            android:name="totalCount"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="startPosition"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="initialPosition"
             app:argType="integer"
             app:nullable="false" />
     </fragment>
@@ -112,7 +126,7 @@
         android:name="com.github.panpf.sketch.sample.ui.viewer.view.ImageViewerFragment"
         android:label="ImageViewerFragment">
         <argument
-            android:name="position"
+            android:name="itemIndex"
             app:argType="integer"
             app:nullable="false" />
         <argument
@@ -337,6 +351,18 @@
     <action
         android:id="@+id/action_shareElementTestFragment"
         app:destination="@id/shareElementTestFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
+        android:id="@+id/tempTestComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.TempTestComposeFragment"
+        android:label="TempTestComposeFragment" />
+    <action
+        android:id="@+id/action_tempTestComposeFragment"
+        app:destination="@id/tempTestComposeFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

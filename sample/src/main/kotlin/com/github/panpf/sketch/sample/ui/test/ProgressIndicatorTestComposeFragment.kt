@@ -53,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.transition.TransitionInflater
+import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
@@ -61,7 +62,6 @@ import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
 import com.github.panpf.sketch.sample.ui.photo.pexels.progressIndicator
 import com.github.panpf.sketch.sample.ui.photo.pexels.rememberDrawableProgressPainter
-import com.github.panpf.sketch.sample.ui.photo.pexels.rememberProgressIndicatorState
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.DirectlyComplete
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.Error
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.Progress
@@ -114,7 +114,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
         val hiddenWhenIndeterminate by viewModel.hiddenWhenIndeterminateState.collectAsState()
         val hiddenWhenCompleted by viewModel.hiddenWhenCompletedState.collectAsState()
         val shortStep by viewModel.shortStepState.collectAsState()
-        val maskProgressDrawable =
+        val maskProgressPainter = rememberDrawableProgressPainter(
             remember(hiddenWhenIndeterminate, hiddenWhenCompleted, shortStep) {
                 val stepAnimationDuration = if (shortStep) 1000 else 300
                 MaskProgressDrawable(
@@ -123,10 +123,8 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     stepAnimationDuration = stepAnimationDuration
                 )
             }
-        val maskProgressIndicatorState = rememberProgressIndicatorState(
-            rememberDrawableProgressPainter(maskProgressDrawable)
         )
-        val sectorProgressDrawable =
+        val sectorProgressPainter = rememberDrawableProgressPainter(
             remember(hiddenWhenIndeterminate, hiddenWhenCompleted, shortStep) {
                 val stepAnimationDuration = if (shortStep) 1000 else 300
                 SectorProgressDrawable(
@@ -134,11 +132,8 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     hiddenWhenCompleted = hiddenWhenCompleted,
                     stepAnimationDuration = stepAnimationDuration
                 )
-            }
-        val sectorProgressIndicatorState = rememberProgressIndicatorState(
-            rememberDrawableProgressPainter(sectorProgressDrawable)
-        )
-        val ringProgressDrawable =
+            })
+        val ringProgressPainter = rememberDrawableProgressPainter(
             remember(hiddenWhenIndeterminate, hiddenWhenCompleted, shortStep) {
                 val stepAnimationDuration = if (shortStep) 1000 else 300
                 RingProgressDrawable(
@@ -146,17 +141,15 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     hiddenWhenCompleted = hiddenWhenCompleted,
                     stepAnimationDuration = stepAnimationDuration
                 )
-            }
-        val ringProgressIndicatorState = rememberProgressIndicatorState(
-            rememberDrawableProgressPainter(ringProgressDrawable)
-        )
+            })
         val progress by viewModel.progressState.collectAsState()
         LaunchedEffect(progress) {
-            maskProgressIndicatorState.progress = progress
-            sectorProgressIndicatorState.progress = progress
-            ringProgressIndicatorState.progress = progress
+            maskProgressPainter.progress = progress
+            sectorProgressPainter.progress = progress
+            ringProgressPainter.progress = progress
         }
 
+        val imageState = rememberAsyncImageState()
         Text(text = "MaskProgressIndicator", color = Color.White)
         Spacer(modifier = Modifier.size(4.dp))
         Image(
@@ -165,7 +158,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f)
-                .progressIndicator(maskProgressIndicatorState)
+                .progressIndicator(imageState, maskProgressPainter)
         )
 
         Spacer(modifier = Modifier.size(20.dp))
@@ -178,7 +171,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f)
-                .progressIndicator(sectorProgressIndicatorState)
+                .progressIndicator(imageState, sectorProgressPainter)
         )
 
         Spacer(modifier = Modifier.size(20.dp))
@@ -191,7 +184,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f)
-                .progressIndicator(ringProgressIndicatorState)
+                .progressIndicator(imageState, ringProgressPainter)
         )
 
         Spacer(modifier = Modifier.size(20.dp))
