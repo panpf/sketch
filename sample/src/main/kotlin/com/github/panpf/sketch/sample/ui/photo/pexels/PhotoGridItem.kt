@@ -66,7 +66,6 @@ fun PhotoGridItem(
                 it.aspectRatio(1f)
             }
         }
-        .background(androidx.compose.ui.graphics.Color.Red)
         .pointerInput(photo, index) {
             detectTapGestures(
                 onTap = { onClick(photo, index) },
