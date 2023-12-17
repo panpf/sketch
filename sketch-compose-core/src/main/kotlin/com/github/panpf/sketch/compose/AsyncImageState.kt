@@ -313,7 +313,7 @@ class AsyncImageState internal constructor(
     override fun onForgotten() {
         // Since AsyncImageState is annotated with @Stable, onForgotten will be executed multiple times,
         // but we only need execute it once
-        rememberedCount--
+        rememberedCount = (rememberedCount - 1).coerceAtLeast(0)
         if (rememberedCount > 0) return
 
         val coroutineScope = this.coroutineScope ?: return
