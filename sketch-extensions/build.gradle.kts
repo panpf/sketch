@@ -20,20 +20,22 @@ android {
         }
     }
 
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        targetSdk = property("targetSdk").toString().toInt()
+    }
+
     // Set both the Java and Kotlin compilers to target Java 8.
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
 }
 
 dependencies {
-    api(project(":sketch"))
-    api(project(":sketch-extensions-core"))
-
-    androidTestImplementation(libs.bundles.test)
-    androidTestImplementation(project(":sketch-test"))
+    api(project(":sketch-extensions-view"))
 }

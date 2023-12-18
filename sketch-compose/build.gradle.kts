@@ -24,6 +24,11 @@ android {
         }
     }
 
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        targetSdk = property("targetSdk").toString().toInt()
+    }
+
     // Set both the Java and Kotlin compilers to target Java 8.
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

@@ -20,11 +20,17 @@ android {
         }
     }
 
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        targetSdk = property("targetSdk").toString().toInt()
+    }
+
     // Set both the Java and Kotlin compilers to target Java 8.
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -32,8 +38,6 @@ android {
 
 dependencies {
     api(project(":sketch-core"))
-    api(project(":sketch-viewability"))
-    api(libs.androidx.recyclerview)
 
     androidTestImplementation(libs.bundles.test)
     androidTestImplementation(project(":sketch-resources"))
