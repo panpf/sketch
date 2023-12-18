@@ -9,6 +9,7 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
     repositories {
 //        maven { setUrl("https://maven.aliyun.com/repository/public") }  // central、jcenter
 //        maven { setUrl("https://maven.aliyun.com/repository/google") }  // google
@@ -36,6 +37,7 @@ include(":sketch-extensions-core")
 include(":sketch-extensions-compose")
 include(":sketch-extensions-view")
 include(":sketch-extensions-view-core")
+include(":sketch-gif")
 include(":sketch-gif-movie")
 include(":sketch-gif-koral")
 include(":sketch-okhttp")

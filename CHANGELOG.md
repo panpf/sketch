@@ -12,23 +12,41 @@ Translations: [简体中文](CHANGELOG_zh.md)
 #### sketch-compose:
 
 > [!CAUTION]
-> If you have the following two situations when using AsyncImage, AsyncImagePainter, or SubcomposeAsyncImage, then you need to modify your code:
+> If you have the following two situations when using AsyncImage, AsyncImagePainter, or
+> SubcomposeAsyncImage, then you need to modify your code:
 > * using their onState parameter
 > * Using the listener, progressListener, and target properties of DisplayRequest
 
 * change: Refactor
-  AsyncImage, AsyncImagePainter, SubcomposeAsyncImage, add a `state: AsyncImageState` parameter to them, through
+  AsyncImage, AsyncImagePainter, SubcomposeAsyncImage, add a `state: AsyncImageState` parameter to
+  them, through
   AsyncImageState can observe image loading state and results and restart loading
 
 #### sketch-extensions:
 
-* new: Added `sketch-extensions-view` and `sketch-extensions-compose` modules to provide extension functions for view and compose respectively
+* new: Added `sketch-extensions-view` and `sketch-extensions-compose` modules to provide extension
+  functions for view and compose respectively
 * new: Provide MimeType logo, DataFrom logo, and progress indicator functions for compose
+* deprecated: The `sketch-extensions` module is deprecated and kept for now, now it only depends on
+  the `sketch-extensions-view` module
+
+#### sketch-gif:
+
+> [!CAUTION]
+> If you use the gif-related classes or functions of the `sketch` module, now you need to
+> additionally depend on the `sketch-gif` module
+
+* new: Add the `sketch-gif` module and move the gif-related code in the `sketch-gif-movie`
+  and `sketch` modules to this module
+* deprecated: Deprecated `sketch-gif-movie` module, retained for now, now it only depends
+  on `sketch-gif` module
 
 # v3.3.0-beta04
 
-* fix: Fixed a bug introduced from version 3.3.0-beta02 onwards where all disk cache was lost when an app was accidentally killed
-* improve: HttpUriFetcher now also verifies that readLength and contentLength are the same when disabling disk caching, and throws an exception if they are not
+* fix: Fixed a bug introduced from version 3.3.0-beta02 onwards where all disk cache was lost when
+  an app was accidentally killed
+* improve: HttpUriFetcher now also verifies that readLength and contentLength are the same when
+  disabling disk caching, and throws an exception if they are not
 
 # v3.3.0-beta03
 

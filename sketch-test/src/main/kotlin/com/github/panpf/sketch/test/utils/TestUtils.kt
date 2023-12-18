@@ -106,3 +106,10 @@ internal fun Float.format(newScale: Int): Float {
         BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
     }
 }
+
+/**
+ * Convert to the type specified by the generic, if this is null or cannot be converted return null
+ */
+inline fun <reified R> Any?.asOrNull(): R? {
+    return if (this != null && this is R) this else null
+}

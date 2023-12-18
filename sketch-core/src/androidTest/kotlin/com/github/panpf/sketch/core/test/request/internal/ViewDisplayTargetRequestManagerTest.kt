@@ -115,7 +115,7 @@ class ViewDisplayTargetRequestManagerTest {
         }
         Assert.assertFalse(ViewCompat.isAttachedToWindow(imageView))
         Assert.assertNull(imageView.drawable)
-        Assert.assertNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
+        Assert.assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
         // Automatically restart tasks when attached to a window
         runBlocking {

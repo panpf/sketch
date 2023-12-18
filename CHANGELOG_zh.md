@@ -22,8 +22,18 @@
 
 #### sketch-extensions:
 
-* new: 新增 `sketch-extensions-view` 和 `sketch-extensions-compose` 模块分别为 view 和 compose 提供扩展功能
+* new: 新增 `sketch-extensions-view` 和 `sketch-extensions-compose` 模块分别为 view 和 compose
+  提供扩展功能
 * new: 为 compose 提供 MimeType 角标、DataFrom 角标、进度指示器功能
+* deprecated: 弃用 `sketch-extensions` 模块，暂时保留，现在它仅依赖 `sketch-extensions-view` 模块
+
+#### sketch-gif:
+
+> [!CAUTION]
+> 如果你使用了 `sketch` 模块的 gif 相关的类或函数现在你需要额外依赖 `sketch-gif` 模块 ：
+
+* new: 新增 `sketch-gif` 模块，并将 `sketch-gif-movie` 和 `sketch` 模块里的 gif 相关的代码移到此模块
+* deprecated: 弃用 `sketch-gif-movie` 模块，暂时保留，现在它仅依赖 `sketch-gif` 模块
 
 # v3.3.0-beta04
 

@@ -23,11 +23,9 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
-import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
-import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -126,30 +124,6 @@ class BitmapRegionDecoderTest {
             ImageDecodeCompatibility(
                 assetName = "sample.heic",
                 size = Size(750, 932),
-                minAPI = 28,
-                inSampleSizeMinAPI = 28,
-                inBitmapMinAPI = 28,
-                inSampleSizeOnInBitmapMinAPI = 28,
-            ),
-            ImageDecodeCompatibility(
-                assetName = "sample_anim.gif",
-                size = Size(480, 480),
-                minAPI = -1,
-                inSampleSizeMinAPI = -1,
-                inBitmapMinAPI = -1,
-                inSampleSizeOnInBitmapMinAPI = -1,
-            ),
-            ImageDecodeCompatibility(
-                assetName = "sample_anim.webp",
-                size = Size(480, 270),
-                minAPI = 26,
-                inSampleSizeMinAPI = 26,
-                inBitmapMinAPI = 26,
-                inSampleSizeOnInBitmapMinAPI = 26,
-            ),
-            ImageDecodeCompatibility(
-                assetName = "sample_anim.heif",
-                size = Size(256, 144),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = 28,
@@ -317,23 +291,8 @@ class BitmapRegionDecoderTest {
             }
         } else {
             /* minAPI not support */
-            val bytes = Bytes(
-                ByteArray(1024).apply {
-                    context.assets.open(image.assetName).use { it.read(this) }
-                }
-            )
-            if (bytes.isAnimatedWebP()) {
-                when (Build.VERSION.SDK_INT) {
-                    16 -> assertThrow(IOException::class) {
-                        decodeWithInBitmap(options)
-                    }
-                    17 -> Assert.assertNotNull(decodeWithInBitmap(options))
-                    else -> Assert.assertNull(decodeWithInBitmap(options))
-                }
-            } else {
-                assertThrow(IOException::class) {
-                    decodeWithInBitmap(options)
-                }
+            assertThrow(IOException::class) {
+                decodeWithInBitmap(options)
             }
         }
     }

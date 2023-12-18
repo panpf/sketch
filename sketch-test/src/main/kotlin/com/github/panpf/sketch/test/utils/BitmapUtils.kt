@@ -32,3 +32,9 @@ fun Bitmap.corners(block: Bitmap.() -> List<Int>): List<Int> {
 }
 
 fun Bitmap.corners(): List<Int> = listOf(cornerA, cornerB, cornerC, cornerD)
+
+@Suppress("USELESS_ELVIS")
+val Bitmap.configOrNull: Bitmap.Config?
+    get() = config ?: null
+
+fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$configOrNull)"

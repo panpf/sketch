@@ -22,18 +22,18 @@ it, [see more about Fetcher and how to extend new URIs][fetcher]
 
 ## Supported Image Formats
 
-| Format        | API Limit   | Dependency module                    |
-|:--------------|:------------|:-------------------------------------|
-| jpeg          | _           | _                                    |
-| png           | _           | _                                    |
-| bmp           | _           | _                                    |
-| webp          | _           | _                                    |
-| svg           | _           | sketch-svg                           |
-| heif          | Android 9+  | _                                    |
-| gif           | _           | sketch-gif-movie<br>sketch-gif-koral |
-| webp Animated | Android 9+  | _                                    |
-| heif Animated | Android 11+ | _                                    |
-| video frames  | _           | sketch-video<br>sketch-video-ffmpeg  |
+| Format        | API Limit   | Dependency module                   |
+|:--------------|:------------|:------------------------------------|
+| jpeg          | _           | _                                   |
+| png           | _           | _                                   |
+| bmp           | _           | _                                   |
+| webp          | _           | _                                   |
+| svg           | _           | sketch-svg                          |
+| heif          | Android 9+  | _                                   |
+| gif           | _           | sketch-gif<br>sketch-gif-koral      |
+| webp Animated | Android 9+  | _                                   |
+| heif Animated | Android 11+ | _                                   |
+| video frames  | _           | sketch-video<br>sketch-video-ffmpeg |
 
 Each image type has a corresponding Decoder support for
 it, [see more about Decoder and how to extend new image types][decoder]

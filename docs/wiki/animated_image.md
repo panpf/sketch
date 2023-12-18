@@ -7,19 +7,18 @@ corresponding [DrawableDecoder], as follows:
 
 | Type          | Decoder                       | APi Limit    | Additional Module |
 |:--------------|:------------------------------|:-------------|:------------------|
-| GIF           | [GifAnimatedDrawableDecoder]  | Android 9+   | _                 |
-| GIF           | [GifMovieDrawableDecoder]     | Android 4.4+ | sketch-gif-movie  |
+| GIF           | [GifAnimatedDrawableDecoder]  | Android 9+   | sketch-gif        |
+| GIF           | [GifMovieDrawableDecoder]     | Android 4.4+ | sketch-gif        |
 | GIF           | [GifDrawableDrawableDecoder]  | Android 4.1+ | sketch-gif-koral  |
-| WEBP Animated | [WebPAnimatedDrawableDecoder] | Android 9+   | _                 |
-| HEIF Animated | [HeifAnimatedDrawableDecoder] | Android 11+  | _                 |
+| WEBP Animated | [WebPAnimatedDrawableDecoder] | Android 9+   | sketch-gif        |
+| HEIF Animated | [HeifAnimatedDrawableDecoder] | Android 11+  | sketch-gif        |
 
 > Caution:
-> 1. [GifMovieDrawableDecoder] and [GifDrawableDrawableDecoder] need to rely on additional modules
-> 2. There are three types of GIFs, [DrawableDecoder] that can be selected according to the minimum
+> 1. There are three types of GIFs, [DrawableDecoder] that can be selected according to the minimum
      version supported by the app
-> 3. The `sketch-gif-movie` module uses Android's built-in [Movie] class to play GIFs without adding
-     extra package size
-> 4. The `sketch-gif-koral` module uses the [gif--]/[android-gif-drawable] library for playback
+> 2. The `sketch-gif` module uses Android's built-in [ImageDecoder] and [Movie] classes to implement
+     GIF, WEBP, and HEIF playback without additional increase in package size.
+> 3. The `sketch-gif-koral` module uses the [gif--]/[android-gif-drawable] library for playback
      gif, the library size is about 250 KB
 
 ## Register Decoder
@@ -54,21 +53,21 @@ class MyApplication : Application(), SketchFactory {
 
 /* Register for a single ImageRequest */
 imageView.displayImage("https://www.example.com/image.gif") {
-     components {
-          addDrawableDecoder(
-               when {
-                    VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
-                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
-                    else -> GifDrawableDrawableDecoder.Factory()
-               }
-          )
-          if (VERSION.SDK_INT >= VERSION_CODES.P) {
-               addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
-          }
-          if (VERSION.SDK_INT >= VERSION_CODES.R) {
-               addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
-          }
-     }
+    components {
+        addDrawableDecoder(
+            when {
+                VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
+                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
+                else -> GifDrawableDrawableDecoder.Factory()
+            }
+        )
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
+        }
+    }
 }
 ```
 
@@ -128,15 +127,15 @@ automatically control playback
 
 [DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/DrawableDecoder.kt
 
-[GifAnimatedDrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDrawableDecoder.kt
+[GifAnimatedDrawableDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDrawableDecoder.kt
 
-[HeifAnimatedDrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDrawableDecoder.kt
+[HeifAnimatedDrawableDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDrawableDecoder.kt
 
-[WebpAnimatedDrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDrawableDecoder.kt
+[WebpAnimatedDrawableDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDrawableDecoder.kt
 
 [GifDrawableDrawableDecoder]: ../../sketch-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDrawableDecoder.kt
 
-[GifMovieDrawableDecoder]: ../../sketch-gif-movie/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDrawableDecoder.kt
+[GifMovieDrawableDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDrawableDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
@@ -144,7 +143,9 @@ automatically control playback
 
 [SketchAnimatableDrawable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/drawable/SketchAnimatableDrawable.kt
 
-[Movie]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/kotlin/android/graphics/Movie.java
+[Movie]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/Movie.java
+
+[ImageDecoder]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/ImageDecoder.java
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 

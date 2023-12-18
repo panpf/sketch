@@ -55,11 +55,11 @@ dependencies {
     // 为 Compose 提供下载进度、列表滑动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk 文件和已安装 app 图标等实用功能
     implementation("io.github.panpf.sketch3:sketch-extensions-compose:${LAST_VERSION}")
 
+    // 通过 Android 内置的 ImageDecoder 和 Movie 类实现 gif 播放
+    implementation("io.github.panpf.sketch3:sketch-gif:${LAST_VERSION}")
+
     // 通过 koral 的 android-gif-drawable 库的 GifDrawable 实现 gif 播放
     implementation("io.github.panpf.sketch3:sketch-gif-koral:${LAST_VERSION}")
-
-    // 通过 Android 内置的 Movie 类实现 gif 播放
-    implementation("io.github.panpf.sketch3:sketch-gif-movie:${LAST_VERSION}")
 
     // 支持 OkHttp
     implementation("io.github.panpf.sketch3:sketch-okhttp:${LAST_VERSION}")

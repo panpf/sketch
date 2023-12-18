@@ -24,7 +24,6 @@ import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
@@ -48,15 +47,10 @@ import com.github.panpf.sketch.decode.internal.createSubsamplingTransformed
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
-import com.github.panpf.sketch.decode.internal.isAnimatedHeif
-import com.github.panpf.sketch.decode.internal.isAnimatedWebP
-import com.github.panpf.sketch.decode.internal.isGif
-import com.github.panpf.sketch.decode.internal.isHeif
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
 import com.github.panpf.sketch.decode.internal.isSupportInBitmap
 import com.github.panpf.sketch.decode.internal.isSupportInBitmapForRegion
-import com.github.panpf.sketch.decode.internal.isWebP
 import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSize
 import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSizeForRegion
 import com.github.panpf.sketch.decode.internal.maxBitmapSize
@@ -80,7 +74,6 @@ import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -1489,16 +1482,17 @@ class DecodeUtilsTest {
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
         }
 
-        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files().forEach {
-            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
-                .readImageInfoWithBitmapFactory().apply {
-                    Assert.assertEquals(it.exifOrientation, exifOrientation)
-                }
-            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
-                .readImageInfoWithBitmapFactory(true).apply {
-                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-                }
-        }
+        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files()
+            .forEach {
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                    .readImageInfoWithBitmapFactory().apply {
+                        Assert.assertEquals(it.exifOrientation, exifOrientation)
+                    }
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                    .readImageInfoWithBitmapFactory(true).apply {
+                        Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+                    }
+            }
     }
 
     @Test
@@ -1534,16 +1528,17 @@ class DecodeUtilsTest {
             ).readImageInfoWithBitmapFactoryOrThrow()
         }
 
-        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files().forEach {
-            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
-                .readImageInfoWithBitmapFactoryOrThrow().apply {
-                    Assert.assertEquals(it.exifOrientation, exifOrientation)
-                }
-            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
-                .readImageInfoWithBitmapFactoryOrThrow(true).apply {
-                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-                }
-        }
+        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files()
+            .forEach {
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                    .readImageInfoWithBitmapFactoryOrThrow().apply {
+                        Assert.assertEquals(it.exifOrientation, exifOrientation)
+                    }
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                    .readImageInfoWithBitmapFactoryOrThrow(true).apply {
+                        Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+                    }
+            }
     }
 
     @Test
@@ -1580,16 +1575,17 @@ class DecodeUtilsTest {
             ).readImageInfoWithBitmapFactoryOrNull()
         )
 
-        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files().forEach {
-            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
-                .readImageInfoWithBitmapFactoryOrNull()!!.apply {
-                    Assert.assertEquals(it.exifOrientation, exifOrientation)
-                }
-            FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
-                .readImageInfoWithBitmapFactoryOrNull(true)!!.apply {
-                    Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-                }
-        }
+        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files()
+            .forEach {
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                    .readImageInfoWithBitmapFactoryOrNull()!!.apply {
+                        Assert.assertEquals(it.exifOrientation, exifOrientation)
+                    }
+                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                    .readImageInfoWithBitmapFactoryOrNull(true)!!.apply {
+                        Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
+                    }
+            }
     }
 
     @Test
@@ -1752,170 +1748,5 @@ class DecodeUtilsTest {
         Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmapForRegion("image/heic"))
         Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmapForRegion("image/heif"))
         Assert.assertEquals(VERSION.SDK_INT >= 32, isSupportInBitmapForRegion("image/svg"))
-    }
-
-    @Test
-    fun testIsWebP() {
-        val context = getTestContext()
-
-        Bytes(context.assets.open("sample.webp").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertTrue(isWebP())
-        }
-        Bytes(context.assets.open("sample_anim.webp").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertTrue(isWebP())
-        }
-
-        Bytes(context.assets.open("sample.webp").use {
-            ByteArray(1024).apply { it.read(this) }.apply {
-                set(8, 'V'.code.toByte())
-            }
-        }).apply {
-            Assert.assertFalse(isWebP())
-        }
-        Bytes(context.assets.open("sample.jpeg").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isWebP())
-        }
-    }
-
-    @Test
-    fun testIsAnimatedWebP() {
-        val context = getTestContext()
-
-        Bytes(context.assets.open("sample_anim.webp").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertTrue(isAnimatedWebP())
-        }
-
-        // test_error_webp_anim.webp is not animated webp, must use the RiffAnimChunk function to judge
-        Bytes(context.assets.open("test_error_webp_anim.webp").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isAnimatedWebP())
-        }
-
-        Bytes(context.assets.open("sample_anim.webp").use {
-            ByteArray(1024).apply { it.read(this) }.apply {
-                set(12, 'X'.code.toByte())
-            }
-        }).apply {
-            Assert.assertFalse(isAnimatedWebP())
-        }
-        Bytes(context.assets.open("sample_anim.webp").use {
-            ByteArray(1024).apply { it.read(this) }.apply {
-                set(16, 0)
-            }
-        }).apply {
-            Assert.assertFalse(isAnimatedWebP())
-        }
-        Bytes(context.assets.open("sample.webp").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isAnimatedWebP())
-        }
-        Bytes(context.assets.open("sample.jpeg").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isAnimatedWebP())
-        }
-    }
-
-    @Test
-    fun testIsHeif() {
-        val context = getTestContext()
-
-        Bytes(context.assets.open("sample.heic").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertTrue(isHeif())
-        }
-
-        Bytes(context.assets.open("sample_anim.webp").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isHeif())
-        }
-        Bytes(context.assets.open("sample.jpeg").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isHeif())
-        }
-    }
-
-    @Test
-    fun testIsAnimatedHeif() {
-        val context = getTestContext()
-
-        Bytes(context.assets.open("sample_anim.heif").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertTrue(isAnimatedHeif())
-        }
-        Bytes(context.assets.open("sample_anim.heif").use {
-            ByteArray(1024).apply { it.read(this) }.apply {
-                set(8, 'h'.code.toByte())
-                set(9, 'e'.code.toByte())
-                set(10, 'v'.code.toByte())
-                set(11, 'c'.code.toByte())
-            }
-        }).apply {
-            Assert.assertTrue(isAnimatedHeif())
-        }
-        Bytes(context.assets.open("sample_anim.heif").use {
-            ByteArray(1024).apply { it.read(this) }.apply {
-                set(8, 'h'.code.toByte())
-                set(9, 'e'.code.toByte())
-                set(10, 'v'.code.toByte())
-                set(11, 'x'.code.toByte())
-            }
-        }).apply {
-            Assert.assertTrue(isAnimatedHeif())
-        }
-
-        Bytes(context.assets.open("sample.heic").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isAnimatedHeif())
-        }
-        Bytes(context.assets.open("sample_anim.webp").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isAnimatedHeif())
-        }
-        Bytes(context.assets.open("sample.jpeg").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isAnimatedHeif())
-        }
-    }
-
-    @Test
-    fun testIsGif() {
-        val context = getTestContext()
-
-        Bytes(context.assets.open("sample_anim.gif").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertTrue(isGif())
-        }
-        Bytes(context.assets.open("sample_anim.gif").use {
-            ByteArray(1024).apply { it.read(this) }.apply {
-                set(4, '7'.code.toByte())
-            }
-        }).apply {
-            Assert.assertTrue(isGif())
-        }
-
-        Bytes(context.assets.open("sample_anim.webp").use {
-            ByteArray(1024).apply { it.read(this) }
-        }).apply {
-            Assert.assertFalse(isGif())
-        }
     }
 }

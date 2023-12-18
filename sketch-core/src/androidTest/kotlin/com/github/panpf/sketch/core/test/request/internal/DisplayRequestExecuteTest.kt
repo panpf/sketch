@@ -43,12 +43,13 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.core.test.newSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.resultCacheDataKey
-import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
@@ -62,7 +63,6 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.LifecycleResolver
-import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -72,12 +72,10 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.stateimage.internal.SketchStateNormalDrawable
 import com.github.panpf.sketch.target.DisplayTarget
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
-import com.github.panpf.sketch.core.test.newSketch
+import com.github.panpf.sketch.test.singleton.request.execute
+import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
 import com.github.panpf.sketch.test.utils.DisplayProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
@@ -1083,47 +1081,48 @@ class DisplayRequestExecuteTest {
     fun testIgnoreExifOrientation() {
         val context = getTestContext()
         val sketch = newSketch()
-        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files().forEach {
-            Assert.assertNotEquals(ExifInterface.ORIENTATION_UNDEFINED, it.exifOrientation)
+        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files()
+            .forEach {
+                Assert.assertNotEquals(ExifInterface.ORIENTATION_UNDEFINED, it.exifOrientation)
 
-            DisplayRequest(context, it.file.path)
-                .let { runBlocking { sketch.execute(it) } }
-                .asOrNull<DisplayResult.Success>()!!
-                .drawable.asOrNull<SketchDrawable>()!!
-                .apply {
-                    Assert.assertEquals(it.exifOrientation, imageInfo.exifOrientation)
-                    Assert.assertEquals(Size(1500, 750), imageInfo.size)
-                }
-
-            DisplayRequest(context, it.file.path) {
-                ignoreExifOrientation(true)
-            }.let { runBlocking { sketch.execute(it) } }
-                .asOrNull<DisplayResult.Success>()!!
-                .drawable.asOrNull<SketchDrawable>()!!
-                .apply {
-                    Assert.assertEquals(
-                        ExifInterface.ORIENTATION_UNDEFINED,
-                        imageInfo.exifOrientation
-                    )
-                    if (it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
-                        || it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
-                        || it.exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
-                        || it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE
-                    ) {
-                        Assert.assertEquals(
-                            exifOrientationName(it.exifOrientation),
-                            Size(750, 1500),
-                            imageInfo.size
-                        )
-                    } else {
-                        Assert.assertEquals(
-                            exifOrientationName(it.exifOrientation),
-                            Size(1500, 750),
-                            imageInfo.size
-                        )
+                DisplayRequest(context, it.file.path)
+                    .let { runBlocking { sketch.execute(it) } }
+                    .asOrNull<DisplayResult.Success>()!!
+                    .drawable.asOrNull<SketchDrawable>()!!
+                    .apply {
+                        Assert.assertEquals(it.exifOrientation, imageInfo.exifOrientation)
+                        Assert.assertEquals(Size(1500, 750), imageInfo.size)
                     }
-                }
-        }
+
+                DisplayRequest(context, it.file.path) {
+                    ignoreExifOrientation(true)
+                }.let { runBlocking { sketch.execute(it) } }
+                    .asOrNull<DisplayResult.Success>()!!
+                    .drawable.asOrNull<SketchDrawable>()!!
+                    .apply {
+                        Assert.assertEquals(
+                            ExifInterface.ORIENTATION_UNDEFINED,
+                            imageInfo.exifOrientation
+                        )
+                        if (it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
+                            || it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
+                            || it.exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
+                            || it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE
+                        ) {
+                            Assert.assertEquals(
+                                exifOrientationName(it.exifOrientation),
+                                Size(750, 1500),
+                                imageInfo.size
+                            )
+                        } else {
+                            Assert.assertEquals(
+                                exifOrientationName(it.exifOrientation),
+                                Size(1500, 750),
+                                imageInfo.size
+                            )
+                        }
+                    }
+            }
 
         DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
             .let { runBlocking { sketch.execute(it) } }
@@ -1374,47 +1373,6 @@ class DisplayRequestExecuteTest {
             transitionFactory(CrossfadeTransition.Factory())
         }.let { runBlocking { sketch.enqueue(it).job.join() } }
         Assert.assertTrue(testTarget.drawable!! is CrossfadeDrawable)
-    }
-
-    @Test
-    fun testDisallowAnimatedImage() {
-        if (VERSION.SDK_INT < VERSION_CODES.P) return
-
-        val context = getTestContext()
-        val sketch = newSketch {
-            components {
-                addDrawableDecoder(GifAnimatedDrawableDecoder.Factory())
-            }
-            httpStack(TestHttpStack(context))
-        }
-        val imageUri = TestAssets.SAMPLE_ANIM_GIF_URI
-        val request = DisplayRequest(context, imageUri)
-
-        request.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!.apply {
-                Assert.assertTrue(drawable is SketchAnimatableDrawable)
-            }
-
-        request.newDisplayRequest {
-            disallowAnimatedImage(false)
-        }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!.apply {
-                Assert.assertTrue(drawable is SketchAnimatableDrawable)
-            }
-
-        request.newDisplayRequest {
-            disallowAnimatedImage(null)
-        }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!.apply {
-                Assert.assertTrue(drawable is SketchAnimatableDrawable)
-            }
-
-        request.newDisplayRequest {
-            disallowAnimatedImage(true)
-        }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!.apply {
-                Assert.assertFalse(drawable is SketchAnimatableDrawable)
-            }
     }
 
     @Test

@@ -37,7 +37,7 @@ android {
 }
 
 dependencies {
-    api(project(":sketch-core"))
+    api(project(":sketch-gif"))
 
     androidTestImplementation(libs.bundles.test)
     androidTestImplementation(project(":sketch-resources"))

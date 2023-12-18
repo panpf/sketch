@@ -24,10 +24,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.size
-import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
 import org.junit.Assert
@@ -142,30 +140,6 @@ class BitmapFactoryTest {
                 inSampleSizeMinAPI = 28,
                 inBitmapMinAPI = -1,
                 inSampleSizeOnInBitmapMinAPI = -1,
-            ),
-            ImageDecodeCompatibility(
-                assetName = "sample_anim.gif",
-                size = Size(480, 480),
-                minAPI = 16,
-                inSampleSizeMinAPI = 21,
-                inBitmapMinAPI = 19,
-                inSampleSizeOnInBitmapMinAPI = 21,
-            ),
-            ImageDecodeCompatibility(
-                assetName = "sample_anim.webp",
-                size = Size(480, 270),
-                minAPI = 26,
-                inSampleSizeMinAPI = 26,
-                inBitmapMinAPI = 26,
-                inSampleSizeOnInBitmapMinAPI = 26,
-            ),
-            ImageDecodeCompatibility(
-                assetName = "sample_anim.heif",
-                size = Size(256, 144),
-                minAPI = 28,
-                inSampleSizeMinAPI = 28,
-                inBitmapMinAPI = 28,
-                inSampleSizeOnInBitmapMinAPI = 28,
             ),
         ).forEach {
             testDecodeImage(image = it, enabledInBitmap = false, sampleSize = 1)
@@ -291,14 +265,7 @@ class BitmapFactoryTest {
             } catch (e: IllegalArgumentException) {
                 throw Exception(message, e)
             }
-            val bytes = Bytes(
-                ByteArray(1024).apply { context.assets.open(image.assetName).use { it.read(this) } }
-            )
-            if (bytes.isAnimatedWebP() && Build.VERSION.SDK_INT == 17) {
-                Assert.assertNotNull(message, bitmap)
-            } else {
-                Assert.assertNull(message, bitmap)
-            }
+            Assert.assertNull(message, bitmap)
         }
     }
 }

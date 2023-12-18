@@ -63,11 +63,11 @@ dependencies {
     // image type corner icons, loading apk files and installed app icons, etc.
     implementation("io.github.panpf.sketch3:sketch-extensions-compose:${LAST_VERSION}")
 
+    // GIF playback is achieved through Android's built-in ImageDecoder and Movie class
+    implementation("io.github.panpf.sketch3:sketch-gif:${LAST_VERSION}")
+
     // GifDrawable through Koral's android-gif-drawable library
     implementation("io.github.panpf.sketch3:sketch-gif-koral:${LAST_VERSION}")
-
-    // GIF playback is achieved through Android's built-in Movie class
-    implementation("io.github.panpf.sketch3:sketch-gif-movie:${LAST_VERSION}")
 
     // Support for OkHttp
     implementation("io.github.panpf.sketch3:sketch-okhttp:${LAST_VERSION}")
