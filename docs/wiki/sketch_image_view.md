@@ -36,7 +36,7 @@ val sketchImageView = SketchImageView(context)
 
 // collect state
 scope.launch {
-    sketchImageView.loadState.collect {
+    sketchImageView.requestState.loadState.collect {
         when (it) {
             is LoadState.Started -> {
                 val request: DisplayRequest = it.request
@@ -61,7 +61,7 @@ scope.launch {
 
 // collect result
 scope.launch {
-    sketchImageView.resultState.collect {
+    sketchImageView.requestState.resultState.collect {
         when (it) {
             is DisplayResult.Success -> {
             }
@@ -76,7 +76,7 @@ scope.launch {
 
 // collect progress
 scope.launch {
-    sketchImageView.progressState.collect {
+    sketchImageView.requestState.progressState.collect {
         if (it != null) {
             val totalLength: Long = it.totalLength
             val completedLength: Long = it.completedLength
