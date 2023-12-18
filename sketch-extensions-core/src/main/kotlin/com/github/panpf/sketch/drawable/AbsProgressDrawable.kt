@@ -44,18 +44,18 @@ abstract class AbsProgressDrawable(
             field = newValue
             if (newValue != oldValue) {
                 hidden = false
-                if (oldValue < 0f) {
-                    // Show new progress now
+                if (oldValue <= 0f && newValue == 1f && hiddenWhenCompleted) {
+                    // The progress goes directly from 0 to 1f, and hidden the content after completion,
+                    // skip the animation and hidden the content directly.
+                    hidden = true
                     stepAnimationRunning = false
                     stepAnimationProgress = null
                 } else if (newValue < 0f) {
                     // Hide content now
                     stepAnimationRunning = false
                     stepAnimationProgress = null
-                } else if (oldValue == 0f && newValue == 1f && hiddenWhenCompleted) {
-                    // The progress goes directly from 0 to 1f, and hidden the content after completion,
-                    // skip the animation and hidden the content directly.
-                    hidden = true
+                } else if (oldValue < 0f) {
+                    // Show new progress now
                     stepAnimationRunning = false
                     stepAnimationProgress = null
                 } else if (newValue > oldValue) {
