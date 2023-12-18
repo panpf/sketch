@@ -37,7 +37,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -195,8 +197,15 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     viewModel.changeHiddenWhenIndeterminate(!hiddenWhenIndeterminate)
                 }
             ) {
-                Checkbox(checked = hiddenWhenIndeterminate, enabled = false, onCheckedChange = {})
-                Text(text = "Hidden(0f)")
+                Checkbox(
+                    checked = hiddenWhenIndeterminate,
+                    onCheckedChange = { viewModel.changeHiddenWhenIndeterminate(!hiddenWhenIndeterminate) },
+                    colors = CheckboxDefaults.colors(
+                        checkmarkColor = Color.Black,
+                        uncheckedColor = Color.White
+                    )
+                )
+                Text(text = "Hidden(0f)", color = Color.White)
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -205,8 +214,15 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     viewModel.changeHiddenWhenCompleted(!hiddenWhenCompleted)
                 }
             ) {
-                Checkbox(checked = hiddenWhenCompleted, enabled = false, onCheckedChange = {})
-                Text(text = "Hidden(1f)")
+                Checkbox(
+                    checked = hiddenWhenCompleted,
+                    onCheckedChange = { viewModel.changeHiddenWhenCompleted(!hiddenWhenCompleted) },
+                    colors = CheckboxDefaults.colors(
+                        checkmarkColor = Color.Black,
+                        uncheckedColor = Color.White
+                    )
+                )
+                Text(text = "Hidden(1f)", color = Color.White)
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -215,8 +231,15 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     viewModel.changeShortStep(!shortStep)
                 }
             ) {
-                Checkbox(checked = shortStep, enabled = false, onCheckedChange = {})
-                Text(text = "ShortStep")
+                Checkbox(
+                    checked = shortStep,
+                    onCheckedChange = { viewModel.changeShortStep(!shortStep) },
+                    colors = CheckboxDefaults.colors(
+                        checkmarkColor = Color.Black,
+                        uncheckedColor = Color.White
+                    )
+                )
+                Text(text = "ShortStep", color = Color.White)
             }
         }
 
@@ -227,24 +250,36 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable { viewModel.changeModel(Progress) }
             ) {
-                RadioButton(selected = model == Progress, enabled = false, onClick = {})
-                Text(text = "Progress")
+                RadioButton(
+                    selected = model == Progress,
+                    onClick = { viewModel.changeModel(Progress) },
+                    colors = RadioButtonDefaults.colors(unselectedColor = Color.White)
+                )
+                Text(text = "Progress", color = Color.White)
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable { viewModel.changeModel(DirectlyComplete) }
             ) {
-                RadioButton(selected = model == DirectlyComplete, enabled = false, onClick = {})
-                Text(text = "DirectlyComplete")
+                RadioButton(
+                    selected = model == DirectlyComplete,
+                    onClick = { viewModel.changeModel(DirectlyComplete) },
+                    colors = RadioButtonDefaults.colors(unselectedColor = Color.White)
+                )
+                Text(text = "DirectlyComplete", color = Color.White)
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable { viewModel.changeModel(Error) }
             ) {
-                RadioButton(selected = model == Error, enabled = false, onClick = {})
-                Text(text = "Error")
+                RadioButton(
+                    selected = model == Error,
+                    onClick = { viewModel.changeModel(Error) },
+                    colors = RadioButtonDefaults.colors(unselectedColor = Color.White)
+                )
+                Text(text = "Error", color = Color.White)
             }
         }
 
