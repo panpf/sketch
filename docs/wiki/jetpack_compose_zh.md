@@ -145,7 +145,7 @@ state.restart()
 AsyncImage、AsyncImagePainter、SubcomposeAsyncImage 不允许使用 DisplayRequest 的
 listener、ProgressListener、target 属性，检测到不为 null 就会抛异常
 
-原因是 listener、ProgressListener、target 这几个属性通常在使用的时候时都是直接 new 一个，这会儿导致
+原因是 listener、ProgressListener、target 这几个属性通常在使用的时候时都是直接 new 一个，这会导致
 DisplayRequest 会作为 AsyncImage 和 SubcomposeAsyncImage 的参数时会因为其 equals 结果是 false 而触发重组
 
 因此你必须通过 AsyncImageState 来代替 listener、ProgressListener、target 属性
