@@ -118,10 +118,13 @@ AsyncImage(
 val result: DisplayResult? = state.result
 val loadState: LoadState? = state.loadState
 when (loadState) {
-    Started -> {}
-    Success -> {}
-    Error -> {}
-    Canceled -> {}
+    is Started -> {}
+    is Success -> {}
+    is Error -> {}
+    is Canceled -> {}
+    else -> { 
+        // null
+    }
 }
 val progress: Progress? = state.progress
 val painterState: PainterState = state.painterState
