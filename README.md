@@ -33,7 +33,8 @@ sampling, ExifInterface and other functions.
 
 ```kotlin
 dependencies {
-    // The core functionality of Sketch is provided as well as a singleton and some handy extension functions that depend on this singleton implementation, 
+    // The core functionality of Sketch is provided as well as a singleton and some 
+    // handy extension functions that depend on this singleton implementation, 
     // and if you don't need a singleton, you can use the sketch-core module
     implementation("io.github.panpf.sketch3:sketch:${LAST_VERSION}")
 }
@@ -46,13 +47,21 @@ There are also optional modules to extend the functionality of sketch:
 ```kotlin
 dependencies {
     // Support for Jetpack Compose.
-    // It relies on the singletons provided by the sketch module, and you can use the sketch-compose-core module if you don't need the singleton pattern
+    // It relies on the singletons provided by the sketch module, 
+    // and you can use the sketch-compose-core module if you don't need the singleton pattern
     implementation("io.github.panpf.sketch3:sketch-compose:${LAST_VERSION}")
 
-    // Supports useful features such as download progress mask, pause loading during list swipe, 
-    // save cellular traffic, image type corner marker, load apk file and installed app icon. 
-    // It relies on the singletons provided by the sketch module, and you can use the sketch-compose-core module if you don't need the singleton pattern
-    implementation("io.github.panpf.sketch3:sketch-extensions:${LAST_VERSION}")
+    // Provides View with practical functions such as download progress, 
+    // pausing loading during list sliding, saving cellular data, 
+    // image type corner icons, loading apk files and installed app icons, etc.
+    // It relies on the singleton provided by the sketch module. 
+    // If you do not need the singleton mode, you can use the sketch-view-core module.
+    implementation("io.github.panpf.sketch3:sketch-extensions-view:${LAST_VERSION}")
+
+    // Provide Compose with practical functions such as download progress, 
+    // pausing loading during list sliding, saving cellular data, 
+    // image type corner icons, loading apk files and installed app icons, etc.
+    implementation("io.github.panpf.sketch3:sketch-extensions-compose:${LAST_VERSION}")
 
     // GifDrawable through Koral's android-gif-drawable library
     implementation("io.github.panpf.sketch3:sketch-gif-koral:${LAST_VERSION}")
@@ -177,8 +186,8 @@ Featured functions：
 * [SketchImageView：Configure the request through XML attributes][sketch_image_view]
 * [SketchZoomImageView：Gesture zoom and large image sampling][zoom]
 * [Improve the clarity of long images in grid lists][long_image_grid_thumbnails]
-* [Displays the download progress][show_download_progress]
-* [Displays the image type corner][show_image_type]
+* [Displays the download progress][download_progress_indicator]
+* [Displays the image type corner][mime_type_logo]
 * [Pause image downloads on cellular data to save data][save_cellular_traffic]
 * [The list slides to pause the loading of images][pause_load_when_scrolling]
 * [Displays an icon for an apk file or installed app][apk_app_icon]
@@ -306,9 +315,9 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [long_image_grid_thumbnails]: docs/wiki/long_image_grid_thumbnails.md
 
-[show_image_type]: docs/wiki/show_image_type.md
+[mime_type_logo]: docs/wiki/mime_type_logo.md
 
-[show_download_progress]: docs/wiki/show_download_progress.md
+[download_progress_indicator]: docs/wiki/download_progress_indicator.md
 
 [sketch_image_view]: docs/wiki/sketch_image_view.md
 

@@ -420,9 +420,9 @@ when (displayResult) {
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails_zh.md
 
-[show_image_type]: show_image_type_zh.md
+[show_image_type]: mime_type_logo_zh.md
 
-[show_download_progress]: show_download_progress_zh.md
+[show_download_progress]: download_progress_indicator_zh.md
 
 [sketch_image_view]: sketch_image_view_zh.md
 

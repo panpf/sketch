@@ -3,7 +3,7 @@
 翻译：[English](apk_app_icon.md)
 
 > [!IMPORTANT]
-> 必须导入 `sketch-extensions` 模块
+> 必须导入 `sketch-extensions-view` 或 `sketch-extensions-compose` 模块
 
 ### 显示 APK 文件的图标
 

@@ -3,7 +3,7 @@
 Translations: [简体中文](pause_load_when_scrolling_zh.md)
 
 > [!IMPORTANT]
-> Required import `sketch-extensions` module
+> Required import `sketch-extensions-view` or `sketch-extensions-compose` module
 
 Enabling asynchronous thread loading of images during list scrolling will reduce UI fluency.
 Therefore, pausing image loading during list scrolling can significantly improve performance on

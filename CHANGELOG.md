@@ -20,6 +20,11 @@ Translations: [简体中文](CHANGELOG_zh.md)
   AsyncImage, AsyncImagePainter, SubcomposeAsyncImage, add a `state: AsyncImageState` parameter to them, through
   AsyncImageState can observe image loading state and results and restart loading
 
+#### sketch-extensions:
+
+* new: Added `sketch-extensions-view` and `sketch-extensions-compose` modules to provide extension functions for view and compose respectively
+* new: Provide MimeType logo, DataFrom logo, and progress indicator functions for compose
+
 # v3.3.0-beta04
 
 * fix: Fixed a bug introduced from version 3.3.0-beta02 onwards where all disk cache was lost when an app was accidentally killed

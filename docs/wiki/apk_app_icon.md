@@ -3,7 +3,7 @@
 Translations: [简体中文](apk_app_icon_zh.md)
 
 > [!IMPORTANT]
-> Required import `sketch-extensions` module
+> Required import `sketch-extensions-view` or `sketch-extensions-compose` module
 
 ### Displays an icon for the APK file
 

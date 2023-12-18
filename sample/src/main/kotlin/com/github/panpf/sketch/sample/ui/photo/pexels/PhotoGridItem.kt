@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample.ui.photo.pexels
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.findNavController
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.SubcomposeAsyncImage
+import com.github.panpf.sketch.compose.ability.dataFromLogo
+import com.github.panpf.sketch.compose.ability.mimeTypeLogo
+import com.github.panpf.sketch.compose.ability.progressIndicator
+import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.drawable.SectorProgressDrawable

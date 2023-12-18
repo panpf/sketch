@@ -3,7 +3,7 @@
 翻译：[English](save_cellular_traffic.md)
 
 > [!IMPORTANT]
-> 必须导入 `sketch-extensions` 模块
+> 必须导入 `sketch-extensions-view` 或 `sketch-extensions-compose` 模块
 
 节省蜂窝流量功能可以在检测到当前是蜂窝流量时将 [ImageRequest] 的 depth 参数设置为 [Depth].LOCAL，这样就不会再从网络下载图片
 
@@ -64,7 +64,7 @@ sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
 
 [Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[SketchImageView]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
 [SaveCellularTrafficDisplayInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/SaveCellularTrafficDisplayInterceptor.kt
 

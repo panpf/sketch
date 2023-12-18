@@ -30,7 +30,11 @@ class MaskProgressDrawable(
     hiddenWhenIndeterminate: Boolean = false,
     hiddenWhenCompleted: Boolean = true,
     stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
-) : AbsProgressDrawable(hiddenWhenIndeterminate, hiddenWhenCompleted, stepAnimationDuration) {
+) : AbsProgressDrawable(
+    hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+    hiddenWhenCompleted = hiddenWhenCompleted,
+    stepAnimationDuration = stepAnimationDuration
+) {
 
     companion object {
         const val DEFAULT_MASK_COLOR = 0x22000000

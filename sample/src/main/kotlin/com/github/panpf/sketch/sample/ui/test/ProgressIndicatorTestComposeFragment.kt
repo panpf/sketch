@@ -55,6 +55,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.transition.TransitionInflater
+import com.github.panpf.sketch.compose.ability.progressIndicator
+import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.RingProgressDrawable
@@ -62,8 +64,6 @@ import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
-import com.github.panpf.sketch.sample.ui.photo.pexels.progressIndicator
-import com.github.panpf.sketch.sample.ui.photo.pexels.rememberDrawableProgressPainter
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.DirectlyComplete
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.Error
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.Progress

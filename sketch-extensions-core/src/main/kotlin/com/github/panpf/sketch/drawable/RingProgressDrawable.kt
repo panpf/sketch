@@ -40,7 +40,11 @@ class RingProgressDrawable(
     hiddenWhenIndeterminate: Boolean = false,
     hiddenWhenCompleted: Boolean = true,
     stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
-) : AbsProgressDrawable(hiddenWhenIndeterminate, hiddenWhenCompleted, stepAnimationDuration) {
+) : AbsProgressDrawable(
+    hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+    hiddenWhenCompleted = hiddenWhenCompleted,
+    stepAnimationDuration = stepAnimationDuration
+) {
 
     companion object {
         fun defaultSize(): Int {

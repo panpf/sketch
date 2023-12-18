@@ -3,7 +3,7 @@
 Translations: [简体中文](save_cellular_traffic_zh.md)
 
 > [!IMPORTANT]
-> Required import `sketch-extensions` module
+> Required import `sketch-extensions-view` or `sketch-extensions-compose` module
 
 The cellular traffic saving function can set the depth parameter of [ImageRequest] to [Depth].LOCAL
 when detecting that current cellular traffic is present, so that images will no longer be downloaded
@@ -67,7 +67,7 @@ sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
 
 [Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[SketchImageView]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
 [SaveCellularTrafficDisplayInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/SaveCellularTrafficDisplayInterceptor.kt
 

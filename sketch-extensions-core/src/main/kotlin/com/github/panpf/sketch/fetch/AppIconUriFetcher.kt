@@ -26,11 +26,10 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
+import com.github.panpf.sketch.internal.versionCodeCompat
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.util.DrawableFetcher
-import com.github.panpf.sketch.util.ifOrNull
-import com.github.panpf.sketch.util.versionCodeCompat
 
 /**
  * Adds App icon support
@@ -79,7 +78,7 @@ class AppIconUriFetcher(
 
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
             val uri = request.uriString.toUri()
-            return ifOrNull(SCHEME.equals(uri.scheme, ignoreCase = true)) {
+            return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val packageName = uri.authority
                     ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
                     ?: throw UriInvalidException("App icon uri 'packageName' part invalid: ${request.uriString}")
@@ -88,6 +87,8 @@ class AppIconUriFetcher(
                     ?.toIntOrNull()
                     ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: ${request.uriString}")
                 AppIconUriFetcher(sketch, request, packageName, versionCode)
+            } else {
+                null
             }
         }
 

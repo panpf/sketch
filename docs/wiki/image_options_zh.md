@@ -67,6 +67,6 @@ DisplayRequest(context, "http://sample.com/sample.jpeg") {
 
 [ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[SketchImageView]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
 [SketchZoomImageView]: ../../sketch-zoom/src/main/kotlin/com/github/panpf/sketch/zoom/SketchZoomImageView.kt

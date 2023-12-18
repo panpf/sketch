@@ -18,7 +18,6 @@ package com.github.panpf.sketch.request
 import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.DrawableDecodeResult
-import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -27,7 +26,6 @@ import kotlinx.coroutines.flow.first
  * Pause loading new images while the list is scrolling
  *
  * @see DisplayRequest.Builder.pauseLoadWhenScrolling
- * @see PauseLoadWhenScrollingMixedScrollListener
  */
 class PauseLoadWhenScrollingDrawableDecodeInterceptor(override val sortWeight: Int = 0) : DrawableDecodeInterceptor {
 

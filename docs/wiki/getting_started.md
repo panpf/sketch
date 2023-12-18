@@ -439,9 +439,9 @@ Featured functions:
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails.md
 
-[show_image_type]: show_image_type.md
+[show_image_type]: mime_type_logo.md
 
-[show_download_progress]: show_download_progress.md
+[show_download_progress]: download_progress_indicator.md
 
 [sketch_image_view]: sketch_image_view.md
 

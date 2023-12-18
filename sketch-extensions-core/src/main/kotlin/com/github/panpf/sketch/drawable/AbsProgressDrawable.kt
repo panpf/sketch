@@ -18,7 +18,7 @@ package com.github.panpf.sketch.drawable
 import android.graphics.Canvas
 import android.os.SystemClock
 import androidx.annotation.FloatRange
-import com.github.panpf.sketch.util.format
+import com.github.panpf.sketch.internal.format
 
 abstract class AbsProgressDrawable(
     private val hiddenWhenIndeterminate: Boolean = false,

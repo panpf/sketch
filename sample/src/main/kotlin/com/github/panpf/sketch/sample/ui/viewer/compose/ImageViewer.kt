@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.navigation.findNavController
+import com.github.panpf.sketch.compose.ability.progressIndicator
+import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
@@ -21,8 +23,6 @@ import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.common.compose.LoadState
 import com.github.panpf.sketch.sample.ui.common.zoom.SketchZoomAsyncImage
-import com.github.panpf.sketch.sample.ui.photo.pexels.progressIndicator
-import com.github.panpf.sketch.sample.ui.photo.pexels.rememberDrawableProgressPainter
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage

@@ -1,5 +1,3 @@
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
-
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -81,6 +79,7 @@ dependencies {
     implementation(project(":sketch"))
     implementation(project(":sketch-compose"))
     implementation(project(":sketch-extensions"))
+    implementation(project(":sketch-extensions-compose"))
     implementation(project(":sketch-gif-movie"))
     implementation(project(":sketch-gif-koral"))
     implementation(project(":sketch-okhttp"))

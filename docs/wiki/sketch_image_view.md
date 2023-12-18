@@ -3,7 +3,7 @@
 Translations: [简体中文](sketch_image_view_zh.md)
 
 > [!IMPORTANT]
-> Required import `sketch-extensions` module
+> Required import `sketch-extensions-view` module
 
 ### XML attributes
 
@@ -35,12 +35,12 @@ supports the following functions:
 * [Show download progress][show_download_progress]
 * [Show image type badge][show_image_type]
 
-[SketchImageView]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
 [ViewAbilityContainer]: ../../sketch-viewability/src/main/kotlin/com/github/panpf/sketch/viewability/ViewAbilityContainer.kt
 
-[attrs]: ../../sketch-extensions-core/src/main/res/values/attrs.xml
+[attrs]: ../../sketch-extensions-view-core/src/main/res/values/attrs.xml
 
-[show_download_progress]: show_download_progress.md
+[show_download_progress]: download_progress_indicator.md
 
-[show_image_type]: show_image_type.md
+[show_image_type]: mime_type_logo.md

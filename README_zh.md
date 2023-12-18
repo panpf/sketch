@@ -32,7 +32,8 @@ Compose、GIF、SVG、视频缩略图、手势缩放、超大图采样、ExifInt
 
 ```kotlin
 dependencies {
-    // 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数，如果不需要单例可以使用 sketch-core 模块
+    // 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数，
+    // 如果不需要单例可以使用 sketch-core 模块
     implementation("io.github.panpf.sketch3:sketch:${LAST_VERSION}")
 }
 ```
@@ -47,9 +48,12 @@ dependencies {
     // 它依赖 sketch 模块提供的单例，如果不需要单例模式可以使用 sketch-compose-core 模块
     implementation("io.github.panpf.sketch3:sketch-compose:${LAST_VERSION}")
 
-    // 支持下载进度蒙层、列表滑动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk 文件和已安装 app 图标等实用功能
-    // 它依赖 sketch 模块提供的单例，如果不需要单例模式可以使用 sketch-compose-core 模块
-    implementation("io.github.panpf.sketch3:sketch-extensions:${LAST_VERSION}")
+    // 为 View 提供下载进度、列表滑动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk 文件和已安装 app 图标等实用功能
+    // 它依赖 sketch 模块提供的单例，如果不需要单例模式可以使用 sketch-view-core 模块
+    implementation("io.github.panpf.sketch3:sketch-extensions-view:${LAST_VERSION}")
+
+    // 为 Compose 提供下载进度、列表滑动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk 文件和已安装 app 图标等实用功能
+    implementation("io.github.panpf.sketch3:sketch-extensions-compose:${LAST_VERSION}")
 
     // 通过 koral 的 android-gif-drawable 库的 GifDrawable 实现 gif 播放
     implementation("io.github.panpf.sketch3:sketch-gif-koral:${LAST_VERSION}")
@@ -173,8 +177,8 @@ AsyncImage(
 * [SketchImageView：通过 XML 属性配置请求][sketch_image_view]
 * [SketchZoomImageView：手势缩放及超大图采样][zoom]
 * [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
-* [显示下载进度][show_download_progress]
-* [显示图片类型角标][show_image_type]
+* [显示下载进度][download_progress_indicator]
+* [显示图片类型角标][mime_type_logo]
 * [蜂窝数据网络下暂停下载图片节省流量][save_cellular_traffic]
 * [列表滑动中暂停加载图片][pause_load_when_scrolling]
 * [显示 APK 文件或已安装 APP 的图标][apk_app_icon]
@@ -292,9 +296,9 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [long_image_grid_thumbnails]: docs/wiki/long_image_grid_thumbnails_zh.md
 
-[show_image_type]: docs/wiki/show_image_type_zh.md
+[mime_type_logo]: docs/wiki/mime_type_logo_zh.md
 
-[show_download_progress]: docs/wiki/show_download_progress_zh.md
+[download_progress_indicator]: docs/wiki/download_progress_indicator_zh.md
 
 [sketch_image_view]: docs/wiki/sketch_image_view_zh.md
 

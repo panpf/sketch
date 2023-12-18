@@ -26,6 +26,7 @@
         com.google.accompanist.drawablepainter
         com.github.panpf.sketch.compose,
         com.github.panpf.sketch.compose.core,
+        com.github.panpf.sketch.extensions.compose,
         com.github.panpf.zoomimage.compose.sketch,
         com.github.panpf.zoomimage.compose.sketch.core,
     " />

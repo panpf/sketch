@@ -37,10 +37,9 @@ class MyRecyclerView @JvmOverloads constructor(
     }
 
     private fun setEnabledPauseLoadWhenScrolling(enabled: Boolean) {
+        removeOnScrollListener(scrollListener)
         if (enabled) {
             addOnScrollListener(scrollListener)
-        } else {
-            removeOnScrollListener(scrollListener)
         }
     }
 }

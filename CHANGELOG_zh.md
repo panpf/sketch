@@ -20,6 +20,11 @@
   AsyncImage、AsyncImagePainter、SubcomposeAsyncImage，给他们增加了一个 `state: AsyncImageState` 参数，通过
   AsyncImageState 可以观察图像加载状态和结果以及重启加载
 
+#### sketch-extensions:
+
+* new: 新增 `sketch-extensions-view` 和 `sketch-extensions-compose` 模块分别为 view 和 compose 提供扩展功能
+* new: 为 compose 提供 MimeType 角标、DataFrom 角标、进度指示器功能
+
 # v3.3.0-beta04
 
 * fix: 修复从 '3.3.0-beta02' 开始版本引入的在 App 被意外杀死时磁盘缓存全部丢失的 bug
