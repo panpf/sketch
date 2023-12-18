@@ -60,6 +60,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
             ).mapIndexed { index, s ->
                 ImageDetail(s, s, s)
             }
+            // todo Add GifAnimatedDrawableDecoder, GifMovieDrawableDecoder, GifDrawableDrawableDecoder tests
             val titles = AssetImages.STATICS.plus(AssetImages.ANIMATEDS).map { uri ->
                 uri.substring(uri.lastIndexOf(".") + 1).uppercase().let { suffix ->
                     if (uri.endsWith("anim.webp") || uri.endsWith("anim.heif")) {
