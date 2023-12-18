@@ -19,13 +19,17 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ProgressListener
 
 class CombinedProgressListener<REQUEST : ImageRequest>(
-    val fromProviderProgressListener: ProgressListener<REQUEST>,
+    val fromProviderProgressListener: ProgressListener<REQUEST>?,
     val fromBuilderProgressListener: ProgressListener<REQUEST>?,
+    val fromBuilderProgressListeners: List<ProgressListener<REQUEST>>? = null,
 ) : ProgressListener<REQUEST> {
 
     override fun onUpdateProgress(request: REQUEST, totalLength: Long, completedLength: Long) {
-        fromProviderProgressListener.onUpdateProgress(request, totalLength, completedLength)
+        fromProviderProgressListener?.onUpdateProgress(request, totalLength, completedLength)
         fromBuilderProgressListener?.onUpdateProgress(request, totalLength, completedLength)
+        fromBuilderProgressListeners?.forEach {
+            it.onUpdateProgress(request, totalLength, completedLength)
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -34,16 +38,22 @@ class CombinedProgressListener<REQUEST : ImageRequest>(
         other as CombinedProgressListener<*>
         if (fromProviderProgressListener != other.fromProviderProgressListener) return false
         if (fromBuilderProgressListener != other.fromBuilderProgressListener) return false
+        if (fromBuilderProgressListeners != other.fromBuilderProgressListeners) return false
         return true
     }
 
     override fun hashCode(): Int {
         var result = fromProviderProgressListener.hashCode()
         result = 31 * result + (fromBuilderProgressListener?.hashCode() ?: 0)
+        result = 31 * result + (fromBuilderProgressListeners?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "CombinedProgressListener(fromProvider=$fromProviderProgressListener, fromBuilder=$fromBuilderProgressListener)"
+        return "CombinedProgressListener(" +
+                "fromProvider=$fromProviderProgressListener, " +
+                "fromBuilder=$fromBuilderProgressListener, " +
+                "fromBuilderProgressListeners=$fromBuilderProgressListeners" +
+                ")"
     }
 }

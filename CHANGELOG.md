@@ -8,6 +8,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * fix: Fix the bug of request interruption when StateImage fails to obtain Drawable
 * improve: Improve ProgressDrawable
+* new: Add addListener(), removeListener(), addProgressListener(), removeProgressListener() methods
+  for DisplayRequest.Builder, DisplayRequest.Builder, DisplayRequest.Builder
 
 #### sketch-compose:
 

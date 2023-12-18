@@ -101,11 +101,12 @@ interface DownloadRequest : ImageRequest {
         /**
          * Set the [Listener]
          */
-        fun listener(listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                super.listener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?)
-            }
+        fun listener(
+            listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>?
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.listener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?)
+        }
 
         /**
          * Convenience function to create and set the [Listener].
@@ -119,12 +120,55 @@ interface DownloadRequest : ImageRequest {
             Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
             override fun onStart(request: DownloadRequest) = onStart(request)
             override fun onCancel(request: DownloadRequest) = onCancel(request)
-            override fun onError(request: DownloadRequest, result: DownloadResult.Error) =
-                onError(request, result)
+            override fun onError(
+                request: DownloadRequest, result: DownloadResult.Error
+            ) = onError(request, result)
 
-            override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) =
-                onSuccess(request, result)
+            override fun onSuccess(
+                request: DownloadRequest, result: DownloadResult.Success
+            ) = onSuccess(request, result)
         })
+
+        /**
+         * Add the [Listener] to set
+         */
+        fun addListener(
+            listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.addListener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>)
+        }
+
+        /**
+         * Add the [Listener] to set
+         */
+        inline fun addListener(
+            crossinline onStart: (request: DownloadRequest) -> Unit = {},
+            crossinline onCancel: (request: DownloadRequest) -> Unit = {},
+            crossinline onError: (request: DownloadRequest, result: DownloadResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: DownloadRequest, result: DownloadResult.Success) -> Unit = { _, _ -> }
+        ): Builder = addListener(object :
+            Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
+            override fun onStart(request: DownloadRequest) = onStart(request)
+            override fun onCancel(request: DownloadRequest) = onCancel(request)
+            override fun onError(
+                request: DownloadRequest, result: DownloadResult.Error
+            ) = onError(request, result)
+
+            override fun onSuccess(
+                request: DownloadRequest, result: DownloadResult.Success
+            ) = onSuccess(request, result)
+        })
+
+        /**
+         * Remove the [Listener] from set
+         */
+        fun removeListener(
+            listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.removeListener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>)
+        }
 
         /**
          * Set the [ProgressListener]
@@ -134,6 +178,26 @@ interface DownloadRequest : ImageRequest {
         ): Builder = apply {
             @Suppress("UNCHECKED_CAST")
             super.progressListener(progressListener as ProgressListener<ImageRequest>?)
+        }
+
+        /**
+         * Add the [ProgressListener] to set
+         */
+        fun addProgressListener(
+            progressListener: ProgressListener<DownloadRequest>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.addProgressListener(progressListener as ProgressListener<ImageRequest>)
+        }
+
+        /**
+         * Remove the [ProgressListener] from set
+         */
+        fun removeProgressListener(
+            progressListener: ProgressListener<DownloadRequest>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.removeProgressListener(progressListener as ProgressListener<ImageRequest>)
         }
 
         /**

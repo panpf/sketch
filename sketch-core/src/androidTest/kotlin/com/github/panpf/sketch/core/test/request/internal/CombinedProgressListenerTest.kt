@@ -38,15 +38,23 @@ class CombinedProgressListenerTest {
         val listener2 = ProgressListener<DownloadRequest> { _, _, _ ->
             listenerCallbackList.add("onUpdateProgress2")
         }
+        val listener3 = ProgressListener<DownloadRequest> { _, _, _ ->
+            listenerCallbackList.add("onUpdateProgress3")
+        }
 
         val context = getTestContext()
         val request = DownloadRequest(context, "http://sample.com/sample.jpeg")
 
-        val combinedProgressListener = CombinedProgressListener(listener1, listener2)
+        val combinedProgressListener = CombinedProgressListener(
+            fromProviderProgressListener = listener1,
+            fromBuilderProgressListener = listener2,
+            fromBuilderProgressListeners = listOf(listener3)
+        )
         Assert.assertSame(listener1, combinedProgressListener.fromProviderProgressListener)
         Assert.assertSame(listener2, combinedProgressListener.fromBuilderProgressListener)
+        Assert.assertSame(listener3, combinedProgressListener.fromBuilderProgressListeners!!.first())
 
         combinedProgressListener.onUpdateProgress(request, 10000, 2000)
-        Assert.assertEquals(listOf("onUpdateProgress1", "onUpdateProgress2"), listenerCallbackList)
+        Assert.assertEquals(listOf("onUpdateProgress1", "onUpdateProgress2", "onUpdateProgress3"), listenerCallbackList)
     }
 }

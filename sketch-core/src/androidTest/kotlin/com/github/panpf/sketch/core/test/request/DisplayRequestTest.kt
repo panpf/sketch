@@ -39,6 +39,8 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
@@ -54,7 +56,9 @@ import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
+import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.ViewLifecycleResolver
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.CombinedListener
@@ -94,8 +98,6 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestListenerImageView
 import com.github.panpf.sketch.test.utils.TestOptionsImageView
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -1496,6 +1498,7 @@ class DisplayRequestTest {
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(listener)
+                Assert.assertNull(target)
             }
 
             listener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
@@ -1558,11 +1561,13 @@ class DisplayRequestTest {
             target(TestListenerImageView(context1))
             build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
                 Assert.assertNull(fromBuilderListener)
+                Assert.assertNull(fromBuilderListeners)
                 Assert.assertNotNull(fromProviderListener)
                 Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
             }
             build().newDisplayRequest().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
                 Assert.assertNull(fromBuilderListener)
+                Assert.assertNull(fromBuilderListeners)
                 Assert.assertNotNull(fromProviderListener)
                 Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
             }
@@ -1570,12 +1575,56 @@ class DisplayRequestTest {
             listener(onSuccess = { _, _ -> })
             build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
                 Assert.assertNotNull(fromBuilderListener)
+                Assert.assertNull(fromBuilderListeners)
                 Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
                 Assert.assertNotNull(fromProviderListener)
                 Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
             }
             build().newDisplayRequest().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
                 Assert.assertNotNull(fromBuilderListener)
+                Assert.assertNull(fromBuilderListeners)
+                Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromProviderListener)
+                Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
+            }
+
+            val listener2 =
+                object : Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {}
+            val listener3 =
+                object : Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {}
+            addListener(listener2)
+            addListener(listener3)
+            addListener(listener2)
+            build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNotNull(fromBuilderListener)
+                Assert.assertNotNull(fromBuilderListeners)
+                Assert.assertTrue(fromBuilderListeners!!.size == 2)
+                Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromProviderListener)
+                Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
+            }
+            build().newDisplayRequest().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNotNull(fromBuilderListener)
+                Assert.assertNotNull(fromBuilderListeners)
+                Assert.assertTrue(fromBuilderListeners!!.size == 2)
+                Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromProviderListener)
+                Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
+            }
+
+            removeListener(listener2)
+            build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNotNull(fromBuilderListener)
+                Assert.assertNotNull(fromBuilderListeners)
+                Assert.assertTrue(fromBuilderListeners!!.size == 1)
+                Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
+                Assert.assertNotNull(fromProviderListener)
+                Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
+            }
+            build().newDisplayRequest().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNotNull(fromBuilderListener)
+                Assert.assertNotNull(fromBuilderListeners)
+                Assert.assertTrue(fromBuilderListeners!!.size == 1)
                 Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
                 Assert.assertNotNull(fromProviderListener)
                 Assert.assertTrue(fromProviderListener !is CombinedListener<*, *, *>)
@@ -1590,6 +1639,7 @@ class DisplayRequestTest {
         DisplayRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(progressListener)
+                Assert.assertNull(target)
             }
 
             progressListener { _, _, _ -> }
@@ -1628,12 +1678,14 @@ class DisplayRequestTest {
             target(TestListenerImageView(context1))
             build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
                 Assert.assertNull(fromBuilderProgressListener)
+                Assert.assertNull(fromBuilderProgressListeners)
                 Assert.assertNotNull(fromProviderProgressListener)
                 Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
             }
             build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>()
                 .apply {
                     Assert.assertNull(fromBuilderProgressListener)
+                    Assert.assertNull(fromBuilderProgressListeners)
                     Assert.assertNotNull(fromProviderProgressListener)
                     Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
                 }
@@ -1641,6 +1693,7 @@ class DisplayRequestTest {
             progressListener { _, _, _ -> }
             build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
                 Assert.assertNotNull(fromBuilderProgressListener)
+                Assert.assertNull(fromBuilderProgressListeners)
                 Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
                 Assert.assertNotNull(fromProviderProgressListener)
                 Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
@@ -1648,6 +1701,49 @@ class DisplayRequestTest {
             build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>()
                 .apply {
                     Assert.assertNotNull(fromBuilderProgressListener)
+                    Assert.assertNull(fromBuilderProgressListeners)
+                    Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
+                    Assert.assertNotNull(fromProviderProgressListener)
+                    Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
+                }
+
+            val progressListener2 = ProgressListener<DisplayRequest> { _, _, _ -> }
+            val progressListener3 = ProgressListener<DisplayRequest> { _, _, _ -> }
+            addProgressListener(progressListener2)
+            addProgressListener(progressListener3)
+            addProgressListener(progressListener2)
+            build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
+                Assert.assertNotNull(fromBuilderProgressListener)
+                Assert.assertNotNull(fromBuilderProgressListeners)
+                Assert.assertTrue(fromBuilderProgressListeners!!.size == 2)
+                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
+                Assert.assertNotNull(fromProviderProgressListener)
+                Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
+            }
+            build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>()
+                .apply {
+                    Assert.assertNotNull(fromBuilderProgressListener)
+                    Assert.assertNotNull(fromBuilderProgressListeners)
+                    Assert.assertTrue(fromBuilderProgressListeners!!.size == 2)
+                    Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
+                    Assert.assertNotNull(fromProviderProgressListener)
+                    Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
+                }
+
+            removeProgressListener(progressListener2)
+            build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
+                Assert.assertNotNull(fromBuilderProgressListener)
+                Assert.assertNotNull(fromBuilderProgressListeners)
+                Assert.assertTrue(fromBuilderProgressListeners!!.size == 1)
+                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
+                Assert.assertNotNull(fromProviderProgressListener)
+                Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)
+            }
+            build().newDisplayRequest().progressListener!!.asOrThrow<CombinedProgressListener<*>>()
+                .apply {
+                    Assert.assertNotNull(fromBuilderProgressListener)
+                    Assert.assertNotNull(fromBuilderProgressListeners)
+                    Assert.assertTrue(fromBuilderProgressListeners!!.size == 1)
                     Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
                     Assert.assertNotNull(fromProviderProgressListener)
                     Assert.assertTrue(fromProviderProgressListener !is CombinedProgressListener<*>)

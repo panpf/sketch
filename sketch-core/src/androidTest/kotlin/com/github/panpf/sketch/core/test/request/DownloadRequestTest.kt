@@ -36,6 +36,8 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
@@ -51,7 +53,9 @@ import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
+import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
@@ -86,14 +90,13 @@ import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.runBlocking
@@ -1407,6 +1410,29 @@ class DownloadRequestTest {
             build().apply {
                 Assert.assertNull(listener)
             }
+
+            listener(onSuccess = { _, _ -> })
+            val listener2 =
+                object : Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {}
+            val listener3 =
+                object : Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {}
+            addListener(listener2)
+            addListener(listener3)
+            addListener(listener2)
+            build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNotNull(fromBuilderListener)
+                Assert.assertNotNull(fromBuilderListeners)
+                Assert.assertTrue(fromBuilderListeners!!.size == 2)
+                Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
+            }
+
+            removeListener(listener2)
+            build().listener!!.asOrThrow<CombinedListener<*, *, *>>().apply {
+                Assert.assertNotNull(fromBuilderListener)
+                Assert.assertNotNull(fromBuilderListeners)
+                Assert.assertTrue(fromBuilderListeners!!.size == 1)
+                Assert.assertTrue(fromBuilderListener !is CombinedListener<*, *, *>)
+            }
         }
     }
 
@@ -1432,6 +1458,32 @@ class DownloadRequestTest {
             progressListener(null)
             build().apply {
                 Assert.assertNull(progressListener)
+            }
+
+            progressListener(null)
+            build().apply {
+                Assert.assertNull(progressListener)
+            }
+
+            progressListener { _, _, _ -> }
+            val progressListener2 = ProgressListener<DownloadRequest> { _, _, _ -> }
+            val progressListener3 = ProgressListener<DownloadRequest> { _, _, _ -> }
+            addProgressListener(progressListener2)
+            addProgressListener(progressListener3)
+            addProgressListener(progressListener2)
+            build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
+                Assert.assertNotNull(fromBuilderProgressListener)
+                Assert.assertNotNull(fromBuilderProgressListeners)
+                Assert.assertTrue(fromBuilderProgressListeners!!.size == 2)
+                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
+            }
+
+            removeProgressListener(progressListener2)
+            build().progressListener!!.asOrThrow<CombinedProgressListener<*>>().apply {
+                Assert.assertNotNull(fromBuilderProgressListener)
+                Assert.assertNotNull(fromBuilderProgressListeners)
+                Assert.assertTrue(fromBuilderProgressListeners!!.size == 1)
+                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener<*>)
             }
         }
     }

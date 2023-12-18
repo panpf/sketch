@@ -20,28 +20,41 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 
 class CombinedListener<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult.Success, ERROR_RESULT : ImageResult.Error>(
-    val fromProviderListener: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>,
+    val fromProviderListener: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>?,
     val fromBuilderListener: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>?,
+    val fromBuilderListeners: List<Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>>? = null,
 ) : Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT> {
 
     override fun onStart(request: REQUEST) {
-        fromProviderListener.onStart(request)
+        fromProviderListener?.onStart(request)
         fromBuilderListener?.onStart(request)
+        fromBuilderListeners?.forEach {
+            it.onStart(request)
+        }
     }
 
     override fun onCancel(request: REQUEST) {
-        fromProviderListener.onCancel(request)
+        fromProviderListener?.onCancel(request)
         fromBuilderListener?.onCancel(request)
+        fromBuilderListeners?.forEach {
+            it.onCancel(request)
+        }
     }
 
     override fun onError(request: REQUEST, result: ERROR_RESULT) {
-        fromProviderListener.onError(request, result)
+        fromProviderListener?.onError(request, result)
         fromBuilderListener?.onError(request, result)
+        fromBuilderListeners?.forEach {
+            it.onError(request, result)
+        }
     }
 
     override fun onSuccess(request: REQUEST, result: SUCCESS_RESULT) {
-        fromProviderListener.onSuccess(request, result)
+        fromProviderListener?.onSuccess(request, result)
         fromBuilderListener?.onSuccess(request, result)
+        fromBuilderListeners?.forEach {
+            it.onSuccess(request, result)
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -50,16 +63,22 @@ class CombinedListener<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult.Succ
         other as CombinedListener<*, *, *>
         if (fromProviderListener != other.fromProviderListener) return false
         if (fromBuilderListener != other.fromBuilderListener) return false
+        if (fromBuilderListeners != other.fromBuilderListeners) return false
         return true
     }
 
     override fun hashCode(): Int {
         var result = fromProviderListener.hashCode()
         result = 31 * result + (fromBuilderListener?.hashCode() ?: 0)
+        result = 31 * result + (fromBuilderListeners?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "CombinedListener(fromProvider=$fromProviderListener, fromBuilder=$fromBuilderListener)"
+        return "CombinedListener(" +
+                "fromProvider=$fromProviderListener, " +
+                "fromBuilder=$fromBuilderListener, " +
+                "fromBuilderListeners=$fromBuilderListeners" +
+                ")"
     }
 }

@@ -146,6 +146,47 @@ interface DisplayRequest : ImageRequest {
         })
 
         /**
+         * Add the [Listener] to set
+         */
+        fun addListener(
+            listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.addListener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>)
+        }
+
+        /**
+         * Add the [Listener] to set
+         */
+        inline fun addListener(
+            crossinline onStart: (request: DisplayRequest) -> Unit = {},
+            crossinline onCancel: (request: DisplayRequest) -> Unit = {},
+            crossinline onError: (request: DisplayRequest, result: DisplayResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: DisplayRequest, result: DisplayResult.Success) -> Unit = { _, _ -> }
+        ): Builder = addListener(object :
+            Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {
+            override fun onStart(request: DisplayRequest) = onStart(request)
+            override fun onCancel(request: DisplayRequest) = onCancel(request)
+            override fun onError(
+                request: DisplayRequest, result: DisplayResult.Error
+            ) = onError(request, result)
+
+            override fun onSuccess(
+                request: DisplayRequest, result: DisplayResult.Success
+            ) = onSuccess(request, result)
+        })
+
+        /**
+         * Remove the [Listener] from set
+         */
+        fun removeListener(
+            listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.removeListener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>)
+        }
+
+        /**
          * Set the [ProgressListener]
          */
         fun progressListener(
@@ -153,6 +194,26 @@ interface DisplayRequest : ImageRequest {
         ): Builder = apply {
             @Suppress("UNCHECKED_CAST")
             super.progressListener(progressListener as ProgressListener<ImageRequest>?)
+        }
+
+        /**
+         * Add the [ProgressListener] to set
+         */
+        fun addProgressListener(
+            progressListener: ProgressListener<DisplayRequest>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.addProgressListener(progressListener as ProgressListener<ImageRequest>)
+        }
+
+        /**
+         * Remove the [ProgressListener] from set
+         */
+        fun removeProgressListener(
+            progressListener: ProgressListener<DisplayRequest>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.removeProgressListener(progressListener as ProgressListener<ImageRequest>)
         }
 
         /**

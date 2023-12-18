@@ -23,6 +23,24 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
         override fun onCancel(request: DisplayRequest) {
             // ...
         }
+    }) 
+    // or
+    addListener(object : Listener {
+        override fun onStart(request: DisplayRequest) {
+            // ...
+        }
+
+        override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) {
+            // ...
+        }
+
+        override fun onError(request: DisplayRequest, result: DisplayResult.Error) {
+            // ...
+        }
+
+        override fun onCancel(request: DisplayRequest) {
+            // ...
+        }
     })
 }
 ```
@@ -44,6 +62,21 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
         onCancel = { request: DisplayRequest ->
             // ...
         },
+    ) 
+    // or
+    addListener(
+        onStart = { request: DisplayRequest ->
+            // ...
+        },
+        onSuccess = { request: DisplayRequest, result: DisplayResult.Success ->
+            // ...
+        },
+        onError = { request: DisplayRequest, result: DisplayResult.Error ->
+            // ...
+        },
+        onCancel = { request: DisplayRequest ->
+            // ...
+        },
     )
 }
 ```
@@ -53,6 +86,10 @@ Monitor download progress:
 ```kotlin
 DisplayRequest(context, "https://www.sample.com/image.jpg") {
     progressListener { request: DisplayRequest, totalLength: Long, completedLength: Long ->
+        // ...
+    }
+    // 或 
+    addProgressListener { request: DisplayRequest, totalLength: Long, completedLength: Long ->
         // ...
     }
 }

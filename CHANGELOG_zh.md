@@ -8,6 +8,8 @@
 
 * fix: 修复 StateImage 获取 Drawable 失败时请求中断的 bug
 * improve: 改进 ProgressDrawable
+* new: DisplayRequest.Builder、DisplayRequest.Builder、DisplayRequest.Builder 新增 addListener()、removeListener()
+  addProgressListener()、removeProgressListener() 方法
 
 #### sketch-compose:
 

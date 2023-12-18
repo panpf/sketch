@@ -102,11 +102,12 @@ interface LoadRequest : ImageRequest {
         /**
          * Set the [Listener]
          */
-        fun listener(listener: Listener<LoadRequest, LoadResult.Success, LoadResult.Error>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                super.listener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?)
-            }
+        fun listener(
+            listener: Listener<LoadRequest, LoadResult.Success, LoadResult.Error>?
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.listener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?)
+        }
 
         /**
          * Convenience function to create and set the [Listener].
@@ -116,17 +117,59 @@ interface LoadRequest : ImageRequest {
             crossinline onCancel: (request: LoadRequest) -> Unit = {},
             crossinline onError: (request: LoadRequest, result: LoadResult.Error) -> Unit = { _, _ -> },
             crossinline onSuccess: (request: LoadRequest, result: LoadResult.Success) -> Unit = { _, _ -> }
-        ): Builder =
-            listener(object :
-                Listener<LoadRequest, LoadResult.Success, LoadResult.Error> {
-                override fun onStart(request: LoadRequest) = onStart(request)
-                override fun onCancel(request: LoadRequest) = onCancel(request)
-                override fun onError(request: LoadRequest, result: LoadResult.Error) =
-                    onError(request, result)
+        ): Builder = listener(object :
+            Listener<LoadRequest, LoadResult.Success, LoadResult.Error> {
+            override fun onStart(request: LoadRequest) = onStart(request)
+            override fun onCancel(request: LoadRequest) = onCancel(request)
+            override fun onError(
+                request: LoadRequest, result: LoadResult.Error
+            ) = onError(request, result)
 
-                override fun onSuccess(request: LoadRequest, result: LoadResult.Success) =
-                    onSuccess(request, result)
-            })
+            override fun onSuccess(
+                request: LoadRequest, result: LoadResult.Success
+            ) = onSuccess(request, result)
+        })
+
+        /**
+         * Add the [Listener] to set
+         */
+        fun addListener(
+            listener: Listener<LoadRequest, LoadResult.Success, LoadResult.Error>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.addListener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>)
+        }
+
+        /**
+         * Add the [Listener] to set
+         */
+        inline fun addListener(
+            crossinline onStart: (request: LoadRequest) -> Unit = {},
+            crossinline onCancel: (request: LoadRequest) -> Unit = {},
+            crossinline onError: (request: LoadRequest, result: LoadResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: LoadRequest, result: LoadResult.Success) -> Unit = { _, _ -> }
+        ): Builder = addListener(object :
+            Listener<LoadRequest, LoadResult.Success, LoadResult.Error> {
+            override fun onStart(request: LoadRequest) = onStart(request)
+            override fun onCancel(request: LoadRequest) = onCancel(request)
+            override fun onError(
+                request: LoadRequest, result: LoadResult.Error
+            ) = onError(request, result)
+
+            override fun onSuccess(
+                request: LoadRequest, result: LoadResult.Success
+            ) = onSuccess(request, result)
+        })
+
+        /**
+         * Remove the [Listener] from set
+         */
+        fun removeListener(
+            listener: Listener<LoadRequest, LoadResult.Success, LoadResult.Error>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.removeListener(listener as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>)
+        }
 
         /**
          * Set the [ProgressListener]
@@ -136,6 +179,26 @@ interface LoadRequest : ImageRequest {
         ): Builder = apply {
             @Suppress("UNCHECKED_CAST")
             super.progressListener(progressListener as ProgressListener<ImageRequest>?)
+        }
+
+        /**
+         * Add the [ProgressListener] to set
+         */
+        fun addProgressListener(
+            progressListener: ProgressListener<LoadRequest>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.addProgressListener(progressListener as ProgressListener<ImageRequest>)
+        }
+
+        /**
+         * Remove the [ProgressListener] from set
+         */
+        fun removeProgressListener(
+            progressListener: ProgressListener<LoadRequest>
+        ): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            super.removeProgressListener(progressListener as ProgressListener<ImageRequest>)
         }
 
         /**

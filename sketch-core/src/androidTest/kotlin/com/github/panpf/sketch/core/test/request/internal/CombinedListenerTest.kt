@@ -79,20 +79,47 @@ class CombinedListenerTest {
                     listenerCallbackList.add("onCancel2")
                 }
             }
+        val listener3 =
+            object : Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
+                override fun onStart(request: DownloadRequest) {
+                    super.onStart(request)
+                    listenerCallbackList.add("onStart3")
+                }
+
+                override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) {
+                    super.onSuccess(request, result)
+                    listenerCallbackList.add("onSuccess3")
+                }
+
+                override fun onError(request: DownloadRequest, result: DownloadResult.Error) {
+                    super.onError(request, result)
+                    listenerCallbackList.add("onError3")
+                }
+
+                override fun onCancel(request: DownloadRequest) {
+                    super.onCancel(request)
+                    listenerCallbackList.add("onCancel3")
+                }
+            }
 
         val context = getTestContext()
         val request = DownloadRequest(context, "http://sample.com/sample.jpeg")
 
-        val combinedListener = CombinedListener(listener1, listener2)
+        val combinedListener = CombinedListener(
+            fromProviderListener = listener1,
+            fromBuilderListener = listener2,
+            fromBuilderListeners = listOf(listener3)
+        )
         Assert.assertSame(listener1, combinedListener.fromProviderListener)
         Assert.assertSame(listener2, combinedListener.fromBuilderListener)
+        Assert.assertSame(listener3, combinedListener.fromBuilderListeners!!.first())
 
         combinedListener.onStart(request)
-        Assert.assertEquals(listOf("onStart1", "onStart2"), listenerCallbackList)
+        Assert.assertEquals(listOf("onStart1", "onStart2", "onStart3"), listenerCallbackList)
 
         combinedListener.onError(request, DownloadResult.Error(request, Exception("")))
         Assert.assertEquals(
-            listOf("onStart1", "onStart2", "onError1", "onError2"),
+            listOf("onStart1", "onStart2", "onStart3", "onError1", "onError2", "onError3"),
             listenerCallbackList
         )
 
@@ -101,10 +128,13 @@ class CombinedListenerTest {
             listOf(
                 "onStart1",
                 "onStart2",
+                "onStart3",
                 "onError1",
                 "onError2",
+                "onError3",
                 "onCancel1",
-                "onCancel2"
+                "onCancel2",
+                "onCancel3",
             ), listenerCallbackList
         )
 
@@ -116,12 +146,16 @@ class CombinedListenerTest {
             listOf(
                 "onStart1",
                 "onStart2",
+                "onStart3",
                 "onError1",
                 "onError2",
+                "onError3",
                 "onCancel1",
                 "onCancel2",
+                "onCancel3",
                 "onSuccess1",
-                "onSuccess2"
+                "onSuccess2",
+                "onSuccess3",
             ), listenerCallbackList
         )
     }

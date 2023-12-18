@@ -64,13 +64,36 @@ import com.github.panpf.sketch.util.ifOrNull
  */
 interface ImageRequest {
 
+    /** App Context */
     val context: Context
+
+    /** The uri of the image to be loaded. */
     val uriString: String
+
+    /**
+     * The [Lifecycle] resolver for this request.
+     * The request will be started when Lifecycle is in [Lifecycle.State.STARTED]
+     * and canceled when Lifecycle is in [Lifecycle.State.DESTROYED].
+     *
+     * When [Lifecycle] is not actively set,
+     * Sketch first obtains the Lifecycle at the nearest location through `view.findViewTreeLifecycleOwner()` and `LocalLifecycleOwner.current.lifecycle` APIs
+     * Secondly, get the [Lifecycle] of Activity through context, and finally use [GlobalLifecycle]
+     */
     val lifecycleResolver: LifecycleResolver
+
+    /** [Target] is used to receive Drawable and draw it */
     val target: Target?
+
+    /** [Listener] is used to receive the state and result of the request */
     val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
+
+    /** [ProgressListener] is used to receive the download progress of the request */
     val progressListener: ProgressListener<ImageRequest>?
+
+    /** User-provided ImageOptions */
     val definedOptions: ImageOptions
+
+    /** Default ImageOptions */
     val defaultOptions: ImageOptions?
 
     /** The processing depth of the request. */
@@ -267,11 +290,13 @@ interface ImageRequest {
 
         private val context: Context
         private val uriString: String
-        // todo Support multiple listeners
+
+        private var listeners: MutableSet<Listener<ImageRequest, ImageResult.Success, ImageResult.Error>>? =
+            null
         private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? = null
         private var providerListener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? =
             null
-        // todo Support multiple progressListener
+        private var progressListeners: MutableSet<ProgressListener<ImageRequest>>? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
         private var providerProgressListener: ProgressListener<ImageRequest>? = null
         private var target: Target? = null
@@ -292,17 +317,22 @@ interface ImageRequest {
             val oldListener = request.listener
             if (oldListener is CombinedListener<ImageRequest, ImageResult.Success, ImageResult.Error>) {
                 this.listener = oldListener.fromBuilderListener
+                this.listeners = oldListener.fromBuilderListeners?.toMutableSet()
                 this.providerListener = oldListener.fromProviderListener
             } else {
                 this.listener = oldListener
+                this.listeners = null
                 this.providerListener = null
             }
             val oldProgressListener = request.progressListener
             if (oldProgressListener is CombinedProgressListener<ImageRequest>) {
                 this.progressListener = oldProgressListener.fromBuilderProgressListener
+                this.progressListeners =
+                    oldProgressListener.fromBuilderProgressListeners?.toMutableSet()
                 this.providerProgressListener = oldProgressListener.fromProviderProgressListener
             } else {
                 this.progressListener = oldProgressListener
+                this.progressListeners = null
                 this.providerProgressListener = null
             }
             this.target = request.target
@@ -314,10 +344,33 @@ interface ImageRequest {
         /**
          * Set the [Listener]
          */
-        protected fun listener(listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?): Builder =
-            apply {
-                this.listener = listener
-            }
+        protected fun listener(
+            listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
+        ): Builder = apply {
+            this.listener = listener
+        }
+
+        /**
+         * Add the [Listener] to set
+         */
+        protected fun addListener(
+            listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>
+        ): Builder = apply {
+            val listeners = listeners
+                ?: mutableSetOf<Listener<ImageRequest, ImageResult.Success, ImageResult.Error>>().apply {
+                    this@Builder.listeners = this
+                }
+            listeners.add(listener)
+        }
+
+        /**
+         * Remove the [Listener] from set
+         */
+        protected fun removeListener(
+            listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>
+        ): Builder = apply {
+            listeners?.remove(listener)
+        }
 
         /**
          * Set the [ProgressListener]
@@ -326,6 +379,28 @@ interface ImageRequest {
             progressListener: ProgressListener<ImageRequest>?
         ): Builder = apply {
             this.progressListener = progressListener
+        }
+
+        /**
+         * Add the [ProgressListener] to set
+         */
+        protected fun addProgressListener(
+            progressListener: ProgressListener<ImageRequest>
+        ): Builder = apply {
+            val progressListeners =
+                progressListeners ?: mutableSetOf<ProgressListener<ImageRequest>>().apply {
+                    this@Builder.progressListeners = this
+                }
+            progressListeners.add(progressListener)
+        }
+
+        /**
+         * Remove the [ProgressListener] from set
+         */
+        protected fun removeProgressListener(
+            progressListener: ProgressListener<ImageRequest>
+        ): Builder = apply {
+            progressListeners?.remove(progressListener)
         }
 
         /**
@@ -878,7 +953,8 @@ interface ImageRequest {
         open fun build(): ImageRequest {
             val listener = combinationListener()
             val progressListener = combinationProgressListener()
-            val lifecycleResolver = lifecycleResolver ?: DefaultLifecycleResolver(resolveLifecycleResolver())
+            val lifecycleResolver =
+                lifecycleResolver ?: DefaultLifecycleResolver(resolveLifecycleResolver())
             val definedOptions = definedOptionsBuilder.merge(viewTargetOptions).build()
             val finalOptions = definedOptions.merged(defaultOptions)
             val depth = finalOptions.depth ?: Depth.NETWORK
@@ -1059,12 +1135,17 @@ interface ImageRequest {
         private fun combinationListener(): Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? {
             val target = target
             val listener = listener
+            val listeners = listeners?.takeIf { it.isNotEmpty() }?.toList()
             val providerListener = providerListener
                 ?: target.asOrNull<ViewDisplayTarget<*>>()
                     ?.view?.asOrNull<DisplayListenerProvider>()
                     ?.getDisplayListener() as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
-            return if (providerListener != null) {
-                CombinedListener(providerListener, listener)
+            return if (listeners != null || providerListener != null) {
+                CombinedListener(
+                    fromProviderListener = providerListener,
+                    fromBuilderListener = listener,
+                    fromBuilderListeners = listeners
+                )
             } else {
                 listener
             }
@@ -1074,12 +1155,17 @@ interface ImageRequest {
         private fun combinationProgressListener(): ProgressListener<ImageRequest>? {
             val target = target
             val progressListener = progressListener
+            val progressListeners = progressListeners?.takeIf { it.isNotEmpty() }?.toList()
             val providerProgressListener = providerProgressListener
                 ?: target.asOrNull<ViewDisplayTarget<*>>()
                     ?.view?.asOrNull<DisplayListenerProvider>()
                     ?.getDisplayProgressListener() as ProgressListener<ImageRequest>?
-            return if (providerProgressListener != null) {
-                CombinedProgressListener(providerProgressListener, progressListener)
+            return if (progressListeners != null || providerProgressListener != null) {
+                CombinedProgressListener(
+                    fromProviderProgressListener = providerProgressListener,
+                    fromBuilderProgressListener = progressListener,
+                    fromBuilderProgressListeners = progressListeners
+                )
             } else {
                 progressListener
             }
