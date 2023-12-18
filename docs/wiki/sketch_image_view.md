@@ -27,6 +27,66 @@ as follows:
 
 For more supported attributes, please refer to the [attrs][attrs] file.
 
+### RequestState
+
+[SketchImageView] provides a flow method to monitor the status and results of requests, as follows:
+
+```kotlin
+val sketchImageView = SketchImageView(context)
+
+// collect state
+scope.launch {
+    sketchImageView.loadState.collect {
+        when (it) {
+            is LoadState.Started -> {
+                val request: DisplayRequest = it.request
+            }
+            is LoadState.Success -> {
+                val request: DisplayRequest = it.request
+                val result: DisplayResult.Success = it.result
+            }
+            is LoadState.Error -> {
+                val request: DisplayRequest = it.request
+                val result: DisplayResult.Error = it.result
+            }
+            is LoadState.Canceled -> {
+                val request: DisplayRequest = it.request
+            }
+            else -> {
+                // null
+            }
+        }
+    }
+}
+
+// collect result
+scope.launch {
+    sketchImageView.resultState.collect {
+        when (it) {
+            is DisplayResult.Success -> {
+            }
+            is DisplayResult.Error -> {
+            }
+            else -> {
+                // null
+            }
+        }
+    }
+}
+
+// collect progress
+scope.launch {
+    sketchImageView.progressState.collect {
+        if (it != null) {
+            val totalLength: Long = it.totalLength
+            val completedLength: Long = it.completedLength
+        } else {
+            // null
+        }
+    }
+}
+```
+
 ### Other Functions
 
 Thanks to the implementation of the [ViewAbilityContainer] interface, [SketchImageView] also

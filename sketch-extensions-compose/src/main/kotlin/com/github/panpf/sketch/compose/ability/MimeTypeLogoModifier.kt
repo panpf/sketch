@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.AsyncImageState
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.name
 
 /**
  * Display a MimeType logo in the lower right corner of the component. The icon is provided by [mimeTypeIconMap]

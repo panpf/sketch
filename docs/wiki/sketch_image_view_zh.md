@@ -32,6 +32,66 @@
 
 更多支持的属性请参考 [attrs][attrs] 文件
 
+### RequestState
+
+[SketchImageView] 提供了 flow 的方式来监听请求的状态和结果，如下：
+
+```kotlin
+val sketchImageView = SketchImageView(context)
+
+// 收集状态
+scope.launch {
+    sketchImageView.loadState.collect {
+        when (it) {
+            is LoadState.Started -> {
+                val request: DisplayRequest = it.request
+            }
+            is LoadState.Success -> {
+                val request: DisplayRequest = it.request
+                val result: DisplayResult.Success = it.result
+            }
+            is LoadState.Error -> {
+                val request: DisplayRequest = it.request
+                val result: DisplayResult.Error = it.result
+            }
+            is LoadState.Canceled -> {
+                val request: DisplayRequest = it.request
+            }
+            else -> {
+                // null
+            }
+        }
+    }
+}
+
+// 收集结果
+scope.launch {
+    sketchImageView.resultState.collect {
+        when (it) {
+            is DisplayResult.Success -> {
+            }
+            is DisplayResult.Error -> {
+            }
+            else -> {
+                // null
+            }
+        }
+    }
+}
+
+// 收集进度
+scope.launch {
+    sketchImageView.progressState.collect {
+        if (it != null) {
+            val totalLength: Long = it.totalLength
+            val completedLength: Long = it.completedLength
+        } else {
+            // null
+        }
+    }
+}
+```
+
 ### 其它功能
 
 得益于实现了 [ViewAbilityContainer] 接口，[SketchImageView] 还支持以下功能：

@@ -19,6 +19,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.github.panpf.sketch.internal.parseImageXmlAttributes
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DisplayRequestState
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.ImageOptions
@@ -37,9 +38,12 @@ open class SketchImageView @JvmOverloads constructor(
     private var displayListenerList: MutableList<Listener<DisplayRequest, Success, Error>>? = null
     private var displayProgressListenerList: MutableList<ProgressListener<DisplayRequest>>? = null
 
+    val requestState = DisplayRequestState()
+
     init {
         @Suppress("LeakingThis")
         displayImageOptions = parseImageXmlAttributes(context, attrs)
+        registerDisplayListener(requestState)
     }
 
     override fun getDisplayListener(): Listener<DisplayRequest, Success, Error>? {

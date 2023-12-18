@@ -17,14 +17,17 @@ package com.github.panpf.sketch.sample.ui.viewer.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
+import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.databinding.ImageFragmentBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.showDataFromLogo
 import com.github.panpf.sketch.viewability.showProgressIndicator
@@ -41,17 +44,20 @@ class ImageFragment : BaseBindingFragment<ImageFragmentBinding>() {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 downloadCachePolicy(DISABLED)
-                listener(
-                    onStart = {
-                        binding.imageState.gone()
-                    },
-                    onError = { _, _ ->
-                        binding.imageState.errorWithRetry {
-                            SketchUtils.restart(this@apply)
-                        }
-                    }
-                )
             }
+        }
+
+        binding.imageState.apply {
+            binding.imageImage.requestState.loadState
+                .repeatCollectWithLifecycle(viewLifecycleOwner, Lifecycle.State.STARTED) {
+                    if (it is Error) {
+                        errorWithRetry {
+                            SketchUtils.restart(binding.imageImage)
+                        }
+                    } else {
+                        gone()
+                    }
+                }
         }
     }
 

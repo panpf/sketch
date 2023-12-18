@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.AsyncImageState
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.name
 
 fun Modifier.dataFromLogo(state: AsyncImageState): Modifier {
     return this.then(DataFromLogoElement(state))

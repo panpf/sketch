@@ -31,6 +31,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
@@ -106,26 +107,6 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
                         components {
                             addBitmapDecodeInterceptor(PaletteBitmapDecodeInterceptor())
                         }
-                        listener(
-                            onSuccess = { _, result ->
-                                val simplePalette = result.simplePalette
-                                val accentColor =
-                                    simplePalette?.dominantSwatch?.rgb
-                                        ?: simplePalette?.lightVibrantSwatch?.rgb
-                                        ?: simplePalette?.vibrantSwatch?.rgb
-                                        ?: simplePalette?.lightMutedSwatch?.rgb
-                                        ?: simplePalette?.mutedSwatch?.rgb
-                                        ?: simplePalette?.darkVibrantSwatch?.rgb
-                                        ?: simplePalette?.darkMutedSwatch?.rgb
-                                changeButtonBg(
-                                    binding,
-                                    accentColor ?: Color.parseColor("#bf5660")
-                                )
-                            },
-                            onError = { _, _ ->
-                                changeButtonBg(binding, Color.parseColor("#bf5660"))
-                            }
-                        )
                     }
                 }
             })
@@ -133,6 +114,29 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
             post {
                 val initialItem = args.initialPosition - args.startPosition
                 setCurrentItem(initialItem, false)
+            }
+        }
+
+        binding.imageViewerBgImage.requestState.loadState.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.STARTED
+        ) {
+            if (it is LoadState.Success) {
+                val simplePalette = it.result.simplePalette
+                val accentColor =
+                    simplePalette?.dominantSwatch?.rgb
+                        ?: simplePalette?.lightVibrantSwatch?.rgb
+                        ?: simplePalette?.vibrantSwatch?.rgb
+                        ?: simplePalette?.lightMutedSwatch?.rgb
+                        ?: simplePalette?.mutedSwatch?.rgb
+                        ?: simplePalette?.darkVibrantSwatch?.rgb
+                        ?: simplePalette?.darkMutedSwatch?.rgb
+                changeButtonBg(
+                    binding,
+                    accentColor ?: Color.parseColor("#bf5660")
+                )
+            } else if (it is LoadState.Error) {
+                changeButtonBg(binding, Color.parseColor("#bf5660"))
             }
         }
 

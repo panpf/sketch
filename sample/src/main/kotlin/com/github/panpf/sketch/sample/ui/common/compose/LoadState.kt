@@ -17,13 +17,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.AsyncImageState
-import com.github.panpf.sketch.compose.LoadState.Error
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.sample.R
 
 @Composable
 fun LoadState(imageState: AsyncImageState, modifier: Modifier = Modifier) {
-    if (imageState.loadState == Error) {
+    if (imageState.loadState is Error) {
         Column(
             modifier = modifier
                 .size(200.dp)

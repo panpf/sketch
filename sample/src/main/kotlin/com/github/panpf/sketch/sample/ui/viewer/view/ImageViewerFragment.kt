@@ -26,6 +26,8 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResult
+import com.github.panpf.sketch.request.DisplayRequestState
+import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
 import com.github.panpf.sketch.sample.eventService
@@ -46,6 +48,7 @@ import kotlin.math.roundToInt
 class ImageViewerFragment : BaseBindingFragment<ImageViewerFragmentBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
+    private val requestState = DisplayRequestState()
 
     override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
         binding.root.background = null
@@ -120,14 +123,16 @@ class ImageViewerFragment : BaseBindingFragment<ImageViewerFragmentBinding>() {
             merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
-            listener(
-                onStart = {
-                    binding.imageViewerErrorLayout.isVisible = false
-                },
-                onError = { _, _ ->
-                    binding.imageViewerErrorLayout.isVisible = true
+            listener(requestState)
+            progressListener(requestState)
+        }
+
+        // todo SketchZoomImageView add requestState
+        binding.imageViewerErrorLayout.apply {
+            requestState.loadState
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    isVisible = it is LoadState.Error
                 }
-            )
         }
     }
 

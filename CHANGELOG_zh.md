@@ -28,6 +28,7 @@
   提供扩展功能
 * new: 为 compose 提供 MimeType 角标、DataFrom 角标、进度指示器功能
 * deprecated: 弃用 `sketch-extensions` 模块，暂时保留，现在它仅依赖 `sketch-extensions-view` 模块
+* new: SketchImageView 新增 requestState 属性，可以使用 flow 的方式监听请求的状态、结果和进度
 
 #### sketch-gif:
 

@@ -32,8 +32,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.compose.LoadState.Canceled
-import com.github.panpf.sketch.compose.LoadState.Started
 import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.internal.AsyncImageDisplayTarget
@@ -46,6 +44,8 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
+import com.github.panpf.sketch.request.LoadState
+import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.isDefault
 import com.github.panpf.sketch.resize.ScaleDecider
@@ -328,24 +328,23 @@ class AsyncImageState internal constructor(
         override fun onStart(request: DisplayRequest) {
             this@AsyncImageState.result = null
             this@AsyncImageState.progress = null
-            this@AsyncImageState.loadState = Started
+            this@AsyncImageState.loadState = LoadState.Started(request)
         }
 
         override fun onSuccess(request: DisplayRequest, result: Success) {
             this@AsyncImageState.result = result
-            this@AsyncImageState.loadState = LoadState.Success
+            this@AsyncImageState.loadState = LoadState.Success(request, result)
             updateState(PainterState.Success(result.drawable.toPainter(), result))
         }
 
         override fun onError(request: DisplayRequest, result: Error) {
             this@AsyncImageState.result = result
-            this@AsyncImageState.loadState = LoadState.Error
+            this@AsyncImageState.loadState = LoadState.Error(request, result)
             updateState(PainterState.Error(result.drawable?.toPainter(), result))
         }
 
         override fun onCancel(request: DisplayRequest) {
-            this@AsyncImageState.result = null
-            this@AsyncImageState.loadState = Canceled
+            this@AsyncImageState.loadState = LoadState.Canceled(request)
         }
     }
 
@@ -371,22 +370,6 @@ class AsyncImageState internal constructor(
          * A state transform that does not modify the state.
          */
         val DefaultTransform: (PainterState) -> PainterState = { it }
-    }
-}
-
-/**
- * The current state of the [DisplayRequest].
- */
-enum class LoadState {
-    Started, Success, Error, Canceled
-}
-
-/**
- * The current download progress of the [DisplayRequest].
- */
-data class Progress(val totalLength: Long, val completedLength: Long) {
-    val decimalProgress: Float by lazy {
-        if (totalLength > 0) completedLength.toFloat() / totalLength else 0f
     }
 }
 

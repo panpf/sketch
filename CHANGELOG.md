@@ -31,6 +31,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: Provide MimeType logo, DataFrom logo, and progress indicator functions for compose
 * deprecated: The `sketch-extensions` module is deprecated and kept for now, now it only depends on
   the `sketch-extensions-view` module
+* new: SketchImageView adds a new requestState attribute, which can use flow to monitor the status, results and progress of the request.
 
 #### sketch-gif:
 
