@@ -182,7 +182,7 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
         binding.imagePagerOrigin.apply {
             appSettingsService.showOriginImage.stateFlow
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    setImageResource(if (!it) R.drawable.ic_image_2 else R.drawable.ic_image_2_fill)
+                    setImageResource(if (it) R.drawable.ic_image_2_fill else R.drawable.ic_image_2)
                 }
 
             setOnClickListener {
