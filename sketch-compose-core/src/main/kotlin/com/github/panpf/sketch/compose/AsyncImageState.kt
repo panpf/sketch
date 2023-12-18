@@ -130,45 +130,44 @@ class AsyncImageState internal constructor(
         // Since AsyncImageState is annotated with @Stable, onRemembered will be executed multiple times,
         // but we only need execute it once
         rememberedCount++
-        if (rememberedCount > 1) return
+        if (rememberedCount == 1) {
+            val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+            this.coroutineScope = coroutineScope
 
-        if (this.coroutineScope != null) return
-        val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-        this.coroutineScope = coroutineScope
-
-        if (inspectionMode) {
-            coroutineScope.launch {
-                combine(
-                    flows = listOf(
-                        snapshotFlow { request }.filterNotNull(),
-                        snapshotFlow { sketch }.filterNotNull(),
-                    ),
-                    transform = { it }
-                ).collect {
-                    val request = (it[0] as DisplayRequest).apply { validateRequest(this) }
-                    val sketch = it[1] as Sketch
-                    val globalImageOptions = sketch.globalImageOptions
-                    val mergedOptions = request.defaultOptions?.merged(globalImageOptions)
-                    val updatedRequest = request.newBuilder().default(mergedOptions).build()
-                    val placeholderDrawable = updatedRequest.placeholder
-                        ?.getDrawable(sketch, updatedRequest, null)
-                    painterState = Loading(placeholderDrawable?.toPainter())
+            if (inspectionMode) {
+                coroutineScope.launch {
+                    combine(
+                        flows = listOf(
+                            snapshotFlow { request }.filterNotNull(),
+                            snapshotFlow { sketch }.filterNotNull(),
+                        ),
+                        transform = { it }
+                    ).collect {
+                        val request = (it[0] as DisplayRequest).apply { validateRequest(this) }
+                        val sketch = it[1] as Sketch
+                        val globalImageOptions = sketch.globalImageOptions
+                        val mergedOptions = request.defaultOptions?.merged(globalImageOptions)
+                        val updatedRequest = request.newBuilder().default(mergedOptions).build()
+                        val placeholderDrawable = updatedRequest.placeholder
+                            ?.getDrawable(sketch, updatedRequest, null)
+                        painterState = Loading(placeholderDrawable?.toPainter())
+                    }
                 }
-            }
-        } else {
-            coroutineScope.launch {
-                combine(
-                    flows = listOf(
-                        snapshotFlow { request }.filterNotNull(),
-                        snapshotFlow { sketch }.filterNotNull(),
-                        snapshotFlow { contentScale }
-                    ),
-                    transform = { it }
-                ).collect {
-                    val request = (it[0] as DisplayRequest).apply { validateRequest(this) }
-                    val sketch = it[1] as Sketch
-                    val contentScale = it[2] as ContentScale
-                    loadImage(sketch, request, contentScale)
+            } else {
+                coroutineScope.launch {
+                    combine(
+                        flows = listOf(
+                            snapshotFlow { request }.filterNotNull(),
+                            snapshotFlow { sketch }.filterNotNull(),
+                            snapshotFlow { contentScale }
+                        ),
+                        transform = { it }
+                    ).collect {
+                        val request = (it[0] as DisplayRequest).apply { validateRequest(this) }
+                        val sketch = it[1] as Sketch
+                        val contentScale = it[2] as ContentScale
+                        loadImage(sketch, request, contentScale)
+                    }
                 }
             }
         }
@@ -313,15 +312,16 @@ class AsyncImageState internal constructor(
     override fun onForgotten() {
         // Since AsyncImageState is annotated with @Stable, onForgotten will be executed multiple times,
         // but we only need execute it once
-        rememberedCount = (rememberedCount - 1).coerceAtLeast(0)
-        if (rememberedCount > 0) return
-
-        val coroutineScope = this.coroutineScope ?: return
-        cancelLoadImageJob()
-        coroutineScope.cancel()
-        this.coroutineScope = null
-        (_painterState.painter as? RememberObserver)?.onForgotten()
-        updateState(Empty)
+        if (rememberedCount <= 0) return
+        rememberedCount--
+        if (rememberedCount == 0) {
+            val coroutineScope = this.coroutineScope ?: return
+            cancelLoadImageJob()
+            coroutineScope.cancel()
+            this.coroutineScope = null
+            (_painterState.painter as? RememberObserver)?.onForgotten()
+            updateState(Empty)
+        }
     }
 
     private inner class MyListener : Listener<DisplayRequest, Success, Error> {
