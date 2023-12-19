@@ -28,9 +28,9 @@ import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.sample.AssetImages
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.util.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
@@ -57,9 +57,9 @@ class LocalPhotoListPagingSource(private val context: Context) :
     }
 
     private suspend fun readAssetPhotos(): List<String> = withToIO {
-        AssetImages.STATICS
-            .plus(AssetImages.ANIMATEDS)
-            .plus(AssetImages.HUGES).toList()
+        AssetImages.statics
+            .plus(AssetImages.anims)
+            .toList()
     }
 
     private suspend fun readExifPhotos(): List<String> = withToIO {

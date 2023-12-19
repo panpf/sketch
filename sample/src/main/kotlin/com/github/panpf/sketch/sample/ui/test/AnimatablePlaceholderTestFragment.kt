@@ -21,7 +21,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.AnimatablePlaceholderTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
@@ -48,7 +48,7 @@ class AnimatablePlaceholderTestFragment :
     }
 
     private fun displayImage(binding: AnimatablePlaceholderTestFragmentBinding) {
-        val urlString = AssetImages.STATICS[urlIndex % AssetImages.STATICS.size]
+        val urlString = AssetImages.statics[urlIndex % AssetImages.statics.size]
         binding.animatablePlaceholderTestImage.displayImage(urlString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)

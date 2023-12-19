@@ -21,7 +21,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.MultiTransformationTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -61,7 +61,7 @@ class MultiTransformationTestFragment :
         }
 
         rotateViewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.multiTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
+            binding.multiTransformationTestImage.displayImage(AssetImages.statics.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(
@@ -72,7 +72,7 @@ class MultiTransformationTestFragment :
         }
 
         roundedCornersViewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.multiTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
+            binding.multiTransformationTestImage.displayImage(AssetImages.statics.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(

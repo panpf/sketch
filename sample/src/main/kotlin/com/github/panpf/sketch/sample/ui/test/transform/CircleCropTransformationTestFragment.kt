@@ -24,7 +24,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.CircleCropTransformationTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -40,7 +40,7 @@ class CircleCropTransformationTestFragment :
         savedInstanceState: Bundle?
     ) {
         viewModel.scaleData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.circleCropTransformationTestImage.displayImage(AssetImages.STATICS.first()) {
+            binding.circleCropTransformationTestImage.displayImage(AssetImages.statics.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 resizeScale(it)

@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.databinding.AnimatablePlaceholderComposeTestFragmentBinding
 import com.github.panpf.sketch.sample.image.DelayBitmapDecodeInterceptor
@@ -47,7 +47,7 @@ class AnimatablePlaceholderComposeTestFragment :
             // todo AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above api 29
 
             val urlIndexState = urlIndexFlow.collectAsState()
-            val uriString = AssetImages.STATICS[urlIndexState.value % AssetImages.STATICS.size]
+            val uriString = AssetImages.statics[urlIndexState.value % AssetImages.statics.size]
             val request = DisplayRequest(LocalContext.current, uriString) {
                 memoryCachePolicy(CachePolicy.DISABLED)
                 resultCachePolicy(CachePolicy.DISABLED)

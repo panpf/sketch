@@ -30,7 +30,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.RemoteViewsTestFragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
@@ -71,9 +71,9 @@ class RemoteViewsFragment : BaseToolbarBindingFragment<RemoteViewsTestFragmentBi
         private val notificationManager = NotificationManagerCompat.from(context)
 
         private val imageUris = arrayOf(
-            AssetImages.STATICS[0],
-            AssetImages.STATICS[2],
-            AssetImages.STATICS[3]
+            AssetImages.statics[0],
+            AssetImages.statics[2],
+            AssetImages.statics[3]
         )
         private var imageUriIndex = 0
 

@@ -19,7 +19,7 @@ import android.content.Context
 import android.provider.MediaStore
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.tools4k.coroutines.withToIO
 import java.text.SimpleDateFormat
@@ -38,7 +38,7 @@ class LocalVideoListPagingSource(private val context: Context) :
 
         val assetVideos = if (startPosition == 0) {
             withToIO {
-                AssetImages.VIDEOS.map {
+                AssetImages.videos.map {
                     val simpleDateFormat =
                         SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     VideoInfo(

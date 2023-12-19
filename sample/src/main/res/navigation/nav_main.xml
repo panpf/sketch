@@ -52,6 +52,23 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
+        android:id="@+id/decoderTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.format.DecoderTestFragment"
+        android:label="DecoderTestFragment">
+        <argument
+            android:name="position"
+            app:argType="integer"
+            app:nullable="false" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_decoderTestFragment"
+        app:destination="@id/decoderTestFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
         android:id="@+id/remoteViewsFragment"
         android:name="com.github.panpf.sketch.sample.ui.notify.RemoteViewsFragment"
         android:label="NotificationFragment" />

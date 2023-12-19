@@ -25,7 +25,7 @@ import android.provider.MediaStore
 import androidx.lifecycle.viewModelScope
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.versionCodeCompat
@@ -58,7 +58,7 @@ class FetcherTestViewModel(application1: Application) : LifecycleAndroidViewMode
                 if (localFirstPhotoPath != null) {
                     add("FILE" to localFirstPhotoPath)
                 }
-                add("ASSET" to AssetImages.STATICS.first())
+                add("ASSET" to AssetImages.statics.first())
                 add("RES_ID" to newResourceUri(R.mipmap.ic_launcher))
                 add("RES_NAME" to newResourceUri("drawable", "bg_circle_accent"))
                 add(

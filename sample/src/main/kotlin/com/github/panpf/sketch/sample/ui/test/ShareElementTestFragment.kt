@@ -20,6 +20,7 @@ import android.util.Log
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.commit
 import com.github.panpf.sketch.displayAssetImage
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.TestShareElement1FragmentBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -34,7 +35,7 @@ class ShareElementTestFragment : BaseBindingFragment<TestShareElement1FragmentBi
             ViewCompat.setTransitionName(this, "transition_app_icon")
             Log.i("ShareElementTest", "$id. displayImage")
             postponeEnterTransition(100, MILLISECONDS)
-            displayAssetImage("sample_huge_world.jpg") {
+            displayAssetImage(AssetImages.jpeg) {
                 listener(
                     onSuccess = { _, _ ->
                         startPostponedEnterTransition()
