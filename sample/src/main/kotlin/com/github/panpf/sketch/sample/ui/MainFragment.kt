@@ -29,14 +29,14 @@ import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.MainFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.model.Link
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 
-class MainFragment : BaseToolbarBindingFragment<MainFragmentBinding>() {
+class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private var pendingStartLink: Link? = null
     private val permissionLauncher =
@@ -48,7 +48,7 @@ class MainFragment : BaseToolbarBindingFragment<MainFragmentBinding>() {
 
     override fun onViewCreated(
         toolbar: Toolbar,
-        binding: MainFragmentBinding,
+        binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.menu.add(0, 0, 0, "Settings").apply {
@@ -60,7 +60,7 @@ class MainFragment : BaseToolbarBindingFragment<MainFragmentBinding>() {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
         }
 
-        binding.mainRecycler.apply {
+        binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = AssemblyRecyclerAdapter(
                 itemFactoryList = listOf(LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
@@ -72,7 +72,7 @@ class MainFragment : BaseToolbarBindingFragment<MainFragmentBinding>() {
     }
 
     private fun pageList(): List<Any> = listOf(
-        ListSeparator("Samples"),
+        ListSeparator("View"),
         Link(
             title = "Local Photos",
             navDirections = NavMainDirections.actionLocalPhotoListFragment(),
@@ -85,11 +85,6 @@ class MainFragment : BaseToolbarBindingFragment<MainFragmentBinding>() {
         Link(
             title = "Giphy GIFs",
             navDirections = NavMainDirections.actionGiphyGifListFragment()
-        ),
-        Link(
-            title = "Local Videos",
-            navDirections = NavMainDirections.actionLocalVideoListFragment(),
-            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
         ),
 
         ListSeparator("Jetpack Compose"),
@@ -112,6 +107,11 @@ class MainFragment : BaseToolbarBindingFragment<MainFragmentBinding>() {
 
         ListSeparator("Test"),
         Link(
+            title = "Local Videos",
+            navDirections = NavMainDirections.actionLocalVideoListFragment(),
+            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
+        ),
+        Link(
             title = "RemoteViews",
             navDirections = NavMainDirections.actionRemoteViewsFragment()
         ),
@@ -122,7 +122,7 @@ class MainFragment : BaseToolbarBindingFragment<MainFragmentBinding>() {
         ),
         Link(
             title = "Decoder",
-            navDirections = NavMainDirections.actionDecoderTestFragment()
+            navDirections = NavMainDirections.actionDecoderTestPagerFragment()
         ),
         Link(
             title = "Transformation",

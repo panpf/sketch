@@ -25,10 +25,16 @@ import kotlinx.coroutines.flow.StateFlow
 class MaskTransformationTestViewModel(application1: Application) :
     LifecycleAndroidViewModel(application1) {
 
-    private val _maskColorData = MutableStateFlow(ColorUtils.setAlphaComponent(Color.RED, 128))
-    val maskColorData: StateFlow<Int> = _maskColorData
+    private val _maskColorData = MutableStateFlow(MaskColor.RED)
+    val maskColorData: StateFlow<MaskColor> = _maskColorData
 
-    fun changeMaskColor(color: Int) {
-        _maskColorData.value = color
+    fun changeMaskColor(maskColor: MaskColor) {
+        _maskColorData.value = maskColor
+    }
+
+    enum class MaskColor(val colorInt: Int) {
+        RED(ColorUtils.setAlphaComponent(Color.RED, 128)),
+        GREEN(ColorUtils.setAlphaComponent(Color.GREEN, 128)),
+        BLUE(ColorUtils.setAlphaComponent(Color.BLUE, 128))
     }
 }

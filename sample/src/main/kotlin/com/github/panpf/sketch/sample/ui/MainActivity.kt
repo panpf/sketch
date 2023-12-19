@@ -18,14 +18,14 @@ package com.github.panpf.sketch.sample.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import com.github.panpf.sketch.sample.databinding.MainActivityBinding
+import com.github.panpf.sketch.sample.databinding.ActivityMainBinding
 import com.github.panpf.sketch.sample.service.NotificationService
 import com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
 import kotlinx.coroutines.launch
 
-class MainActivity : BaseBindingActivity<MainActivityBinding>() {
+class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
 
-    override fun onCreate(binding: MainActivityBinding, savedInstanceState: Bundle?) {
+    override fun onCreate(binding: ActivityMainBinding, savedInstanceState: Bundle?) {
         lifecycleScope.launch {
             startService(Intent(this@MainActivity, NotificationService::class.java))
         }

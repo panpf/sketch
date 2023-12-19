@@ -52,25 +52,8 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/decoderTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.format.DecoderTestFragment"
-        android:label="DecoderTestFragment">
-        <argument
-            android:name="position"
-            app:argType="integer"
-            app:nullable="false" />
-    </fragment>
-    <action
-        android:id="@+id/action_global_decoderTestFragment"
-        app:destination="@id/decoderTestFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
         android:id="@+id/remoteViewsFragment"
-        android:name="com.github.panpf.sketch.sample.ui.notify.RemoteViewsFragment"
+        android:name="com.github.panpf.sketch.sample.ui.notify.RemoteViewsTestFragment"
         android:label="NotificationFragment" />
     <action
         android:id="@+id/action_remoteViewsFragment"
@@ -254,12 +237,29 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/decoderTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.format.DecoderTestFragment"
-        android:label="DecoderTestFragment" />
+        android:id="@+id/decoderTestPagerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.decoder.DecoderTestPagerFragment"
+        android:label="DecoderTestPagerFragment" />
     <action
-        android:id="@+id/action_decoderTestFragment"
-        app:destination="@id/decoderTestFragment"
+        android:id="@+id/action_decoderTestPagerFragment"
+        app:destination="@id/decoderTestPagerFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
+        android:id="@+id/decoderTestImageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.decoder.DecoderTestImageFragment"
+        android:label="DecoderTestImageFragment">
+        <argument
+            android:name="position"
+            app:argType="integer"
+            app:nullable="false" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_decoderTestImageFragment"
+        app:destination="@id/decoderTestImageFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

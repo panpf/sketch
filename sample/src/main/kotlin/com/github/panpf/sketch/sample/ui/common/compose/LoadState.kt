@@ -18,11 +18,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.AsyncImageState
 import com.github.panpf.sketch.compose.rememberAsyncImageState
+import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.sample.R
 
 @Composable
 fun LoadState(imageState: AsyncImageState, modifier: Modifier = Modifier) {
-    if (imageState.loadState is Error) {
+    if (imageState.loadState is LoadState.Error) {
         Column(
             modifier = modifier
                 .size(200.dp)

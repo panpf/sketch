@@ -24,7 +24,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.SmallStateViewBinding
+import com.github.panpf.sketch.sample.databinding.ViewSmallStateBinding
 import com.github.panpf.tools4a.network.ktx.isNetworkConnected
 import org.apache.http.conn.ConnectTimeoutException
 import java.io.FileNotFoundException
@@ -35,21 +35,21 @@ class SmallStateView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
 
-    private val binding = SmallStateViewBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding = ViewSmallStateBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
         if (isInEditMode) {
-            binding.smallStateLoading.isVisible = true
-            binding.smallStateLoading.alpha = 0.3f
-            binding.smallStateError.isVisible = false
+            binding.loadingLayout.isVisible = true
+            binding.loadingLayout.alpha = 0.3f
+            binding.errorLayout.isVisible = false
         } else {
             isVisible = false
         }
     }
 
     fun loading() {
-        binding.smallStateError.isVisible = false
-        binding.smallStateLoading.isVisible = true
+        binding.errorLayout.isVisible = false
+        binding.loadingLayout.isVisible = true
         isVisible = true
     }
 
@@ -59,8 +59,8 @@ class SmallStateView @JvmOverloads constructor(
             message(message ?: "Load failed")
             block?.invoke(this)
         }
-        binding.smallStateLoading.isVisible = false
-        binding.smallStateError.isVisible = true
+        binding.loadingLayout.isVisible = false
+        binding.errorLayout.isVisible = true
         isVisible = true
     }
 
@@ -121,8 +121,8 @@ class SmallStateView @JvmOverloads constructor(
             message(message ?: "No content")
             block?.invoke(this)
         }
-        binding.smallStateLoading.isVisible = false
-        binding.smallStateError.isVisible = true
+        binding.loadingLayout.isVisible = false
+        binding.errorLayout.isVisible = true
         isVisible = true
     }
 
@@ -135,53 +135,53 @@ class SmallStateView @JvmOverloads constructor(
     }
 
     fun gone() {
-        binding.smallStateLoading.isVisible = false
-        binding.smallStateError.isVisible = false
+        binding.loadingLayout.isVisible = false
+        binding.errorLayout.isVisible = false
         isVisible = false
     }
 
-    class ErrorConfig(private val binding: SmallStateViewBinding) {
+    class ErrorConfig(private val binding: ViewSmallStateBinding) {
 
         init {
-            binding.smallStateErrorIcon.isVisible = false
-            binding.smallStateErrorText.isVisible = false
-            binding.smallStateErrorAction.isVisible = false
+            binding.errorIconImage.isVisible = false
+            binding.errorMessageText.isVisible = false
+            binding.errorActionButton.isVisible = false
         }
 
         fun icon(drawable: Drawable) {
-            binding.smallStateErrorIcon.setImageDrawable(drawable)
-            binding.smallStateErrorIcon.isVisible = true
+            binding.errorIconImage.setImageDrawable(drawable)
+            binding.errorIconImage.isVisible = true
         }
 
         fun icon(@DrawableRes resId: Int) {
-            binding.smallStateErrorIcon.setImageResource(resId)
-            binding.smallStateErrorIcon.isVisible = true
+            binding.errorIconImage.setImageResource(resId)
+            binding.errorIconImage.isVisible = true
         }
 
         fun message(name: String) {
-            binding.smallStateErrorText.text = name
-            binding.smallStateErrorText.isVisible = true
+            binding.errorMessageText.text = name
+            binding.errorMessageText.isVisible = true
         }
 
         fun message(@StringRes nameResId: Int) {
-            binding.smallStateErrorText.setText(nameResId)
-            binding.smallStateErrorText.isVisible = true
+            binding.errorMessageText.setText(nameResId)
+            binding.errorMessageText.isVisible = true
         }
 
         fun action(name: String, onClick: () -> Unit) {
-            binding.smallStateErrorAction.text = name
-            binding.smallStateErrorAction.setOnClickListener {
+            binding.errorActionButton.text = name
+            binding.errorActionButton.setOnClickListener {
                 onClick()
             }
-            binding.smallStateErrorAction.isVisible = true
+            binding.errorActionButton.isVisible = true
         }
 
         fun action(@StringRes nameResId: Int, onClick: () -> Unit) {
-            binding.smallStateErrorAction.setText(nameResId)
-            binding.smallStateErrorAction.setOnClickListener {
+            binding.errorActionButton.setText(nameResId)
+            binding.errorActionButton.setOnClickListener {
                 onClick()
             }
-            binding.smallStateErrorAction.isVisible = true
+            binding.errorActionButton.isVisible = true
         }
     }
 }

@@ -31,28 +31,28 @@
 package com.github.panpf.sketch.sample.ui.common.list
 
 import android.content.Context
-import com.github.panpf.sketch.sample.databinding.ListSeparatorItemBinding
+import com.github.panpf.sketch.sample.databinding.ListItemSeparatorBinding
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class ListSeparatorItemFactory :
-    BaseBindingItemFactory<ListSeparator, ListSeparatorItemBinding>(ListSeparator::class) {
+    BaseBindingItemFactory<ListSeparator, ListItemSeparatorBinding>(ListSeparator::class) {
 
     override fun initItem(
         context: Context,
-        binding: ListSeparatorItemBinding,
-        item: BindingItem<ListSeparator, ListSeparatorItemBinding>
+        binding: ListItemSeparatorBinding,
+        item: BindingItem<ListSeparator, ListItemSeparatorBinding>
     ) {
     }
 
     override fun bindItemData(
         context: Context,
-        binding: ListSeparatorItemBinding,
-        item: BindingItem<ListSeparator, ListSeparatorItemBinding>,
+        binding: ListItemSeparatorBinding,
+        item: BindingItem<ListSeparator, ListItemSeparatorBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: ListSeparator
     ) {
-        binding.listSeparatorItemTitleText.text = data.title
+        binding.titleText.text = data.title
     }
 }

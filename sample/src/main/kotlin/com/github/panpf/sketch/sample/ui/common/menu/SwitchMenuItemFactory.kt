@@ -18,28 +18,28 @@ package com.github.panpf.sketch.sample.ui.common.menu
 import android.content.Context
 import android.util.TypedValue
 import androidx.core.view.isVisible
-import com.github.panpf.sketch.sample.databinding.SwitchMenuItemBinding
+import com.github.panpf.sketch.sample.databinding.ListItemMenuSwitchBinding
 import com.github.panpf.sketch.sample.model.SwitchMenu
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class SwitchMenuItemFactory(
     private val compactModel: Boolean = false,
-) : BaseBindingItemFactory<SwitchMenu, SwitchMenuItemBinding>(SwitchMenu::class) {
+) : BaseBindingItemFactory<SwitchMenu, ListItemMenuSwitchBinding>(SwitchMenu::class) {
 
     override fun initItem(
         context: Context,
-        binding: SwitchMenuItemBinding,
-        item: BindingItem<SwitchMenu, SwitchMenuItemBinding>
+        binding: ListItemMenuSwitchBinding,
+        item: BindingItem<SwitchMenu, ListItemMenuSwitchBinding>
     ) {
         binding.root.setOnClickListener {
-            binding.switchMenuItemSwitch.isChecked = !binding.switchMenuItemSwitch.isChecked
+            binding.switchView.isChecked = !binding.switchView.isChecked
         }
         binding.root.setOnLongClickListener {
             val data = item.dataOrThrow
             data.onLongClick?.invoke()
             true
         }
-        binding.switchMenuItemSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.switchView.setOnCheckedChangeListener { _, isChecked ->
             val data = item.dataOrThrow
             if (data.isChecked != isChecked) {
                 data.isChecked = isChecked
@@ -47,22 +47,22 @@ class SwitchMenuItemFactory(
         }
 
         if (compactModel) {
-            binding.switchMenuItemTitleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-            binding.switchMenuItemDescText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            binding.titleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            binding.descText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
         }
     }
 
     override fun bindItemData(
         context: Context,
-        binding: SwitchMenuItemBinding,
-        item: BindingItem<SwitchMenu, SwitchMenuItemBinding>,
+        binding: ListItemMenuSwitchBinding,
+        item: BindingItem<SwitchMenu, ListItemMenuSwitchBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: SwitchMenu
     ) {
-        binding.switchMenuItemTitleText.text = data.title
-        binding.switchMenuItemSwitch.isChecked = data.isChecked
-        binding.switchMenuItemDescText.text = data.desc
-        binding.switchMenuItemDescText.isVisible = data.desc?.isNotEmpty() == true
+        binding.titleText.text = data.title
+        binding.switchView.isChecked = data.isChecked
+        binding.descText.text = data.desc
+        binding.descText.isVisible = data.desc?.isNotEmpty() == true
     }
 }

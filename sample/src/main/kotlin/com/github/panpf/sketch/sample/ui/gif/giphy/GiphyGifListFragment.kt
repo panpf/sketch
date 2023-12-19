@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.gif.giphy
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
@@ -38,7 +39,7 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
@@ -58,7 +59,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class GiphyGifListFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>() {
+class GiphyGifListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefreshBinding>() {
 
     private val giphyGifListViewModel by viewModels<GiphyGifListViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
@@ -71,9 +72,10 @@ class GiphyGifListFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>
     private var pagingFlowCollectJob: Job? = null
     private var loadStateFlowCollectJob: Job? = null
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(
         toolbar: Toolbar,
-        binding: RecyclerFragmentBinding,
+        binding: FragmentRecyclerRefreshBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.apply {
@@ -98,7 +100,7 @@ class GiphyGifListFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>
                 }
         }
 
-        binding.recyclerRecycler.apply {
+        binding.myRecycler.apply {
             appSettingsService.photoListLayoutMode.stateFlow
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     (0 until itemDecorationCount).forEach { index ->
@@ -161,9 +163,9 @@ class GiphyGifListFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>
         return layoutManager to itemDecoration
     }
 
-    private fun newAdapter(binding: RecyclerFragmentBinding): RecyclerView.Adapter<*> {
+    private fun newAdapter(binding: FragmentRecyclerRefreshBinding): RecyclerView.Adapter<*> {
         val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
-            ImageGridItemFactory(animatedPlaceholder = true).setOnViewClickListener(R.id.imageGridItemImage) { _, _, _, absoluteAdapterPosition, _ ->
+            ImageGridItemFactory(animatedPlaceholder = true).setOnViewClickListener(R.id.myListImage) { _, _, _, absoluteAdapterPosition, _ ->
                 startImageDetail(binding, absoluteAdapterPosition)
             }
         )).apply {
@@ -175,7 +177,7 @@ class GiphyGifListFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>
             }
         }
 
-        binding.recyclerRefresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             pagingAdapter.refresh()
         }
         loadStateFlowCollectJob?.cancel()
@@ -184,23 +186,23 @@ class GiphyGifListFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>
                 pagingAdapter.loadStateFlow.collect { loadStates ->
                     when (val refreshState = loadStates.refresh) {
                         is LoadState.Loading -> {
-                            binding.recyclerState.gone()
-                            binding.recyclerRefresh.isRefreshing = true
+                            binding.state.gone()
+                            binding.swipeRefresh.isRefreshing = true
                         }
 
                         is LoadState.Error -> {
-                            binding.recyclerRefresh.isRefreshing = false
-                            binding.recyclerState.errorWithRetry(refreshState.error) {
+                            binding.swipeRefresh.isRefreshing = false
+                            binding.state.errorWithRetry(refreshState.error) {
                                 pagingAdapter.refresh()
                             }
                         }
 
                         is LoadState.NotLoading -> {
-                            binding.recyclerRefresh.isRefreshing = false
+                            binding.swipeRefresh.isRefreshing = false
                             if (pagingAdapter.itemCount <= 0) {
-                                binding.recyclerState.empty("No Photos")
+                                binding.state.empty("No Photos")
                             } else {
-                                binding.recyclerState.gone()
+                                binding.state.gone()
                             }
                         }
                     }
@@ -213,8 +215,8 @@ class GiphyGifListFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>
         return pagingAdapter.withLoadStateFooter(loadStateAdapter)
     }
 
-    private fun startImageDetail(binding: RecyclerFragmentBinding, position: Int) {
-        val items = binding.recyclerRecycler
+    private fun startImageDetail(binding: FragmentRecyclerRefreshBinding, position: Int) {
+        val items = binding.myRecycler
             .adapter!!.asOrThrow<ConcatAdapter>()
             .adapters.first().asOrThrow<AssemblyPagingDataAdapter<Photo>>()
             .currentList

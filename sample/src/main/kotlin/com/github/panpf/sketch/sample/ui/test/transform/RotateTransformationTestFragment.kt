@@ -21,26 +21,26 @@ import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.databinding.RotateTransformationTestFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationRotateBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RotateTransformation
 
 class RotateTransformationTestFragment :
-    BaseBindingFragment<RotateTransformationTestFragmentBinding>() {
+    BaseBindingFragment<FragmentTestTransformationRotateBinding>() {
 
     private val viewModel by viewModels<RotateTransformationTestViewModel>()
 
     override fun onViewCreated(
-        binding: RotateTransformationTestFragmentBinding,
+        binding: FragmentTestTransformationRotateBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.rotateTransformationTestButton.setOnClickListener {
+        binding.rotateButton.setOnClickListener {
             viewModel.changeRotate(viewModel.rotateData.value + 45)
         }
 
         viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.rotateTransformationTestImage.displayImage(AssetImages.statics.first()) {
+            binding.myImage.displayImage(AssetImages.statics.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RotateTransformation(it))

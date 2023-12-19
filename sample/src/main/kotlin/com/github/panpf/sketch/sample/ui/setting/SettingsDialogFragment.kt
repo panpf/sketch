@@ -21,7 +21,7 @@ import androidx.lifecycle.Lifecycle.State
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
-import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.InfoMenuItemFactory
@@ -29,7 +29,7 @@ import com.github.panpf.sketch.sample.ui.common.menu.MultiSelectMenuItemFactory
 import com.github.panpf.sketch.sample.ui.common.menu.SwitchMenuItemFactory
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
-class SettingsDialogFragment : BaseBindingDialogFragment<RecyclerFragmentBinding>() {
+class SettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBinding>() {
 
     private val args by navArgs<SettingsDialogFragmentArgs>()
     private val viewModel by viewModels<SettingsViewModel> {
@@ -40,12 +40,8 @@ class SettingsDialogFragment : BaseBindingDialogFragment<RecyclerFragmentBinding
         dialogHeightRatio = 0.7f
     }
 
-    override fun onViewCreated(binding: RecyclerFragmentBinding, savedInstanceState: Bundle?) {
-        binding.recyclerRefresh.isEnabled = false
-
-        binding.recyclerState.gone()
-
-        binding.recyclerRecycler.apply {
+    override fun onViewCreated(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+        binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = AssemblyRecyclerAdapter<Any>(
                 listOf(
@@ -55,7 +51,10 @@ class SettingsDialogFragment : BaseBindingDialogFragment<RecyclerFragmentBinding
                     ListSeparatorItemFactory(),
                 )
             ).apply {
-                viewModel.menuListData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                viewModel.menuListData.repeatCollectWithLifecycle(
+                    owner = viewLifecycleOwner,
+                    state = State.STARTED
+                ) {
                     submitList(it)
                 }
             }

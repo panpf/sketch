@@ -21,17 +21,17 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.commit
 import com.github.panpf.sketch.displayAssetImage
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.databinding.TestShareElement1FragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestShareElementBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
-class ShareElementTestFragment : BaseBindingFragment<TestShareElement1FragmentBinding>() {
+class ShareElementTestFragment : BaseBindingFragment<FragmentTestShareElementBinding>() {
 
     override fun onViewCreated(
-        binding: TestShareElement1FragmentBinding,
+        binding: FragmentTestShareElementBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.testShareElement1Image.apply {
+        binding.myImage.apply {
             ViewCompat.setTransitionName(this, "transition_app_icon")
             Log.i("ShareElementTest", "$id. displayImage")
             postponeEnterTransition(100, MILLISECONDS)
@@ -48,7 +48,7 @@ class ShareElementTestFragment : BaseBindingFragment<TestShareElement1FragmentBi
             setOnClickListener {
                 requireParentFragment().childFragmentManager.commit {
                     setReorderingAllowed(true)
-                    addSharedElement(binding.testShareElement1Image, "transition_app_icon")
+                    addSharedElement(binding.myImage, "transition_app_icon")
                     replace(this@ShareElementTestFragment.id, ShareElement2TestFragment())
                     addToBackStack(null)
                 }

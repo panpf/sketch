@@ -20,44 +20,44 @@ import android.util.TypedValue
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.github.panpf.activity.monitor.ActivityMonitor
-import com.github.panpf.sketch.sample.databinding.MultiSelectMenuItemBinding
+import com.github.panpf.sketch.sample.databinding.ListItemMenuMultiSelectBinding
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
-    BaseBindingItemFactory<MultiSelectMenu, MultiSelectMenuItemBinding>(MultiSelectMenu::class) {
+    BaseBindingItemFactory<MultiSelectMenu, ListItemMenuMultiSelectBinding>(MultiSelectMenu::class) {
 
     override fun initItem(
         context: Context,
-        binding: MultiSelectMenuItemBinding,
-        item: BindingItem<MultiSelectMenu, MultiSelectMenuItemBinding>
+        binding: ListItemMenuMultiSelectBinding,
+        item: BindingItem<MultiSelectMenu, ListItemMenuMultiSelectBinding>
     ) {
         binding.root.setOnClickListener {
             val data = item.dataOrThrow
             showDialog(data) {
-                binding.multiSelectMenuItemInfoText.text = data.getValue()
+                binding.infoText.text = data.getValue()
             }
         }
 
         if (compactModel) {
-            binding.multiSelectMenuItemTitleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-            binding.multiSelectMenuItemDescText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
-            binding.multiSelectMenuItemInfoText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            binding.titleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            binding.descText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            binding.infoText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
         }
     }
 
     override fun bindItemData(
         context: Context,
-        binding: MultiSelectMenuItemBinding,
-        item: BindingItem<MultiSelectMenu, MultiSelectMenuItemBinding>,
+        binding: ListItemMenuMultiSelectBinding,
+        item: BindingItem<MultiSelectMenu, ListItemMenuMultiSelectBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: MultiSelectMenu
     ) {
-        binding.multiSelectMenuItemTitleText.text = data.title
-        binding.multiSelectMenuItemInfoText.text = data.getValue()
-        binding.multiSelectMenuItemDescText.text = data.desc
-        binding.multiSelectMenuItemDescText.isVisible = data.desc?.isNotEmpty() == true
+        binding.titleText.text = data.title
+        binding.infoText.text = data.getValue()
+        binding.descText.text = data.desc
+        binding.descText.isVisible = data.desc?.isNotEmpty() == true
     }
 
     private fun showDialog(data: MultiSelectMenu, after: () -> Unit) {

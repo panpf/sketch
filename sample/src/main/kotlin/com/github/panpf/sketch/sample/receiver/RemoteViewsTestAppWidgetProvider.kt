@@ -80,9 +80,9 @@ class RemoteViewsTestAppWidgetProvider : AppWidgetProvider() {
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun update(context: Context, appWidgetId: Int) {
         val nextImageUri = imageUris[imageUriIndex++ % imageUris.size]
-        val remoteViews = RemoteViews(context.packageName, R.layout.remote_views_appwidget).apply {
+        val remoteViews = RemoteViews(context.packageName, R.layout.appwidget_remote_views).apply {
             setOnClickPendingIntent(
-                R.id.remoteViewsAppWidgetImage2,
+                R.id.image2,
                 PendingIntent.getBroadcast(
                     context,
                     0,
@@ -99,7 +99,7 @@ class RemoteViewsTestAppWidgetProvider : AppWidgetProvider() {
             target(
                 RemoteViewsDisplayTarget(
                     remoteViews = remoteViews,
-                    imageViewId = R.id.remoteViewsAppWidgetImage1,
+                    imageViewId = R.id.image1,
                     ignoreNullDrawable = true,
                     onUpdated = {
                         AppWidgetManager.getInstance(context)!!

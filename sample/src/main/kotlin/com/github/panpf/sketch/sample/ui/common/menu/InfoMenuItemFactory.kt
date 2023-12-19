@@ -17,17 +17,17 @@ package com.github.panpf.sketch.sample.ui.common.menu
 
 import android.content.Context
 import android.util.TypedValue
-import com.github.panpf.sketch.sample.databinding.InfoMenuItemBinding
+import com.github.panpf.sketch.sample.databinding.ListItemMenuInfoBinding
 import com.github.panpf.sketch.sample.model.InfoMenu
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class InfoMenuItemFactory(private val compactModel: Boolean = false) :
-    BaseBindingItemFactory<InfoMenu, InfoMenuItemBinding>(InfoMenu::class) {
+    BaseBindingItemFactory<InfoMenu, ListItemMenuInfoBinding>(InfoMenu::class) {
 
     override fun initItem(
         context: Context,
-        binding: InfoMenuItemBinding,
-        item: BindingItem<InfoMenu, InfoMenuItemBinding>
+        binding: ListItemMenuInfoBinding,
+        item: BindingItem<InfoMenu, ListItemMenuInfoBinding>
     ) {
         binding.root.setOnClickListener {
             val data = item.dataOrThrow
@@ -40,22 +40,22 @@ class InfoMenuItemFactory(private val compactModel: Boolean = false) :
         }
 
         if (compactModel) {
-            binding.infoMenuItemTitleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-            binding.infoMenuItemDescText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
-            binding.infoMenuItemInfoText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            binding.titleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            binding.descText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            binding.infoText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
         }
     }
 
     override fun bindItemData(
         context: Context,
-        binding: InfoMenuItemBinding,
-        item: BindingItem<InfoMenu, InfoMenuItemBinding>,
+        binding: ListItemMenuInfoBinding,
+        item: BindingItem<InfoMenu, ListItemMenuInfoBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: InfoMenu
     ) {
-        binding.infoMenuItemTitleText.text = data.title
-        binding.infoMenuItemInfoText.text = data.info
-        binding.infoMenuItemDescText.text = data.desc
+        binding.titleText.text = data.title
+        binding.infoText.text = data.info
+        binding.descText.text = data.desc
     }
 }

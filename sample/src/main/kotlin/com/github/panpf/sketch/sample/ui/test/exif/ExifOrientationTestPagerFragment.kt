@@ -21,20 +21,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.test.transform.ExifOrientationTestFragment
 import com.github.panpf.sketch.sample.ui.test.transform.ExifOrientationTestPagerViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ExifOrientationTestPagerFragment : BaseToolbarBindingFragment<TabPagerFragmentBinding>() {
+class ExifOrientationTestPagerFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
 
     private val viewModel by viewModels<ExifOrientationTestPagerViewModel>()
 
     override fun onViewCreated(
         toolbar: Toolbar,
-        binding: TabPagerFragmentBinding,
+        binding: FragmentTabPagerBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "ExifOrientation"
@@ -43,9 +43,9 @@ class ExifOrientationTestPagerFragment : BaseToolbarBindingFragment<TabPagerFrag
             val titles = list.map { exifOrientationName(it.exifOrientation) }
             val fragments = list.map { ExifOrientationTestFragment.create(it.file) }
 
-            binding.tabPagerPager.adapter = ArrayFragmentStateAdapter(this, fragments)
+            binding.pager.adapter = ArrayFragmentStateAdapter(this, fragments)
 
-            TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->
+            TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
                 tab.text = titles[position]
             }.attach()
         }

@@ -18,11 +18,6 @@ package com.github.panpf.sketch.sample.ui.test
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
-import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +44,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,14 +57,14 @@ import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.drawable
-import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.DirectlyComplete
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.Error
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.Progress
 import com.github.panpf.sketch.sample.util.getDrawableCompat
 import com.google.accompanist.drawablepainter.DrawablePainter
 
-class ProgressIndicatorTestComposeFragment : BaseToolbarFragment() {
+class ProgressIndicatorTestComposeFragment : BaseToolbarComposeFragment() {
 
     private val viewModel by viewModels<ProgressIndicatorTestViewModel>()
 
@@ -82,15 +76,9 @@ class ProgressIndicatorTestComposeFragment : BaseToolbarFragment() {
         }
     }
 
-    override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        toolbar.title = "ProgressIndicator（Compose）"
-
-        return ComposeView(requireContext()).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-            setContent {
-                Content(viewModel)
-            }
-        }
+    @Composable
+    override fun DrawContent() {
+        Content(viewModel)
     }
 }
 

@@ -27,9 +27,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.ImageGridItemBinding
-import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
+import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
@@ -39,7 +39,7 @@ import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
 class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
-    BaseBindingItemFactory<Photo, ImageGridItemBinding>(Photo::class) {
+    BaseBindingItemFactory<Photo, GridItemImageBinding>(Photo::class) {
 
     private var itemSize: Point? = null
 
@@ -47,7 +47,7 @@ class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
         context: Context,
         inflater: LayoutInflater,
         parent: ViewGroup
-    ): ImageGridItemBinding {
+    ): GridItemImageBinding {
         if (itemSize == null && parent is RecyclerView) {
             val screenWidth = context.getScreenWidth()
             val gridDivider = context.resources.getDimensionPixelSize(R.dimen.grid_divider)
@@ -74,11 +74,10 @@ class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
 
     override fun initItem(
         context: Context,
-        binding: ImageGridItemBinding,
-        item: BindingItem<Photo, ImageGridItemBinding>
+        binding: GridItemImageBinding,
+        item: BindingItem<Photo, GridItemImageBinding>
     ) {
-
-        binding.imageGridItemImage.apply {
+        binding.myListImage.apply {
             setClickIgnoreSaveCellularTrafficEnabled(true)
             updateDisplayImageOptions {
                 if (animatedPlaceholder) {
@@ -107,13 +106,13 @@ class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
 
     override fun bindItemData(
         context: Context,
-        binding: ImageGridItemBinding,
-        item: BindingItem<Photo, ImageGridItemBinding>,
+        binding: GridItemImageBinding,
+        item: BindingItem<Photo, GridItemImageBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: Photo
     ) {
-        binding.imageGridItemImage.apply {
+        binding.myListImage.apply {
             updateLayoutParams<LayoutParams> {
                 val photoWidth = data.width
                 val photoHeight = data.height

@@ -24,27 +24,28 @@ import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.databinding.BlurTransformationTestFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationBlurBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
 
-class BlurTransformationTestFragment : BaseBindingFragment<BlurTransformationTestFragmentBinding>() {
+class BlurTransformationTestFragment :
+    BaseBindingFragment<FragmentTestTransformationBlurBinding>() {
 
     private val viewModel by viewModels<BlurTransformationTestViewModel>()
 
     override fun onViewCreated(
-        binding: BlurTransformationTestFragmentBinding,
+        binding: FragmentTestTransformationBlurBinding,
         savedInstanceState: Bundle?
     ) {
         viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             update(binding, it, viewModel.maskColorData.value)
 
-            binding.blurTransformationTestValueText.text =
-                "%d/%d".format(it, binding.blurTransformationTestSeekBar.max)
+            binding.valueText.text =
+                "%d/%d".format(it, binding.seekBar.max)
         }
 
-        binding.blurTransformationTestSeekBar.apply {
+        binding.seekBar.apply {
             max = 100
             progress = viewModel.radiusData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -65,31 +66,31 @@ class BlurTransformationTestFragment : BaseBindingFragment<BlurTransformationTes
             update(binding, viewModel.radiusData.value, it)
         }
 
-        binding.blurTransformationTestRedButton.setOnClickListener {
+        binding.redButton.setOnClickListener {
             viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.RED, 128))
         }
 
-        binding.blurTransformationTestGreenButton.setOnClickListener {
+        binding.greenButton.setOnClickListener {
             viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.GREEN, 128))
         }
 
-        binding.blurTransformationTestBlueButton.setOnClickListener {
+        binding.blueButton.setOnClickListener {
             viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.BLUE, 128))
         }
 
-        binding.blurTransformationTestNoneButton.setOnClickListener {
+        binding.noneButton.setOnClickListener {
             viewModel.changeMaskColor(null)
         }
 
-        binding.blurTransformationTestNoneButton.isChecked = true
+        binding.noneButton.isChecked = true
     }
 
     private fun update(
-        binding: BlurTransformationTestFragmentBinding,
+        binding: FragmentTestTransformationBlurBinding,
         radius: Int,
         maskColor: Int?
     ) {
-        binding.blurTransformationTestImage.displayImage(AssetImages.statics.first()) {
+        binding.myImage.displayImage(AssetImages.statics.first()) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             addTransformations(BlurTransformation(radius, maskColor = maskColor))

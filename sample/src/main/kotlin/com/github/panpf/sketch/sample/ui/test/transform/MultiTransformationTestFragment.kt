@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.test.transform
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
@@ -22,23 +23,24 @@ import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.databinding.MultiTransformationTestFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationMultiBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 
 class MultiTransformationTestFragment :
-    BaseBindingFragment<MultiTransformationTestFragmentBinding>() {
+    BaseBindingFragment<FragmentTestTransformationMultiBinding>() {
 
     private val rotateViewModel by viewModels<RotateTransformationTestViewModel>()
     private val roundedCornersViewModel by viewModels<RoundedCornersTransformationTestViewModel>()
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(
-        binding: MultiTransformationTestFragmentBinding,
+        binding: FragmentTestTransformationMultiBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.multiTransformationTestSeekBar.apply {
+        binding.seekBar.apply {
             max = 100
             progress = roundedCornersViewModel.radiusData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -56,12 +58,12 @@ class MultiTransformationTestFragment :
             })
         }
 
-        binding.multiTransformationTestButton.setOnClickListener {
+        binding.rotateButton.setOnClickListener {
             rotateViewModel.changeRotate(rotateViewModel.rotateData.value + 45)
         }
 
         rotateViewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.multiTransformationTestImage.displayImage(AssetImages.statics.first()) {
+            binding.myImage.displayImage(AssetImages.statics.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(
@@ -71,8 +73,11 @@ class MultiTransformationTestFragment :
             }
         }
 
-        roundedCornersViewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.multiTransformationTestImage.displayImage(AssetImages.statics.first()) {
+        roundedCornersViewModel.radiusData.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.STARTED
+        ) {
+            binding.myImage.displayImage(AssetImages.statics.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(
@@ -81,8 +86,7 @@ class MultiTransformationTestFragment :
                 )
             }
 
-            binding.multiTransformationTestValueText.text =
-                "%d/%d".format(it, binding.multiTransformationTestSeekBar.max)
+            binding.radiusText.text = "${it}/${binding.seekBar.max}"
         }
     }
 }

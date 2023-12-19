@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.test.transform
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
@@ -22,32 +23,32 @@ import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.databinding.RoundedCornersTransformationTestFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationRoundedCornersBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 
 class RoundedCornersTransformationTestFragment :
-    BaseBindingFragment<RoundedCornersTransformationTestFragmentBinding>() {
+    BaseBindingFragment<FragmentTestTransformationRoundedCornersBinding>() {
 
     private val viewModel by viewModels<RoundedCornersTransformationTestViewModel>()
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(
-        binding: RoundedCornersTransformationTestFragmentBinding,
+        binding: FragmentTestTransformationRoundedCornersBinding,
         savedInstanceState: Bundle?
     ) {
         viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.roundedCornersTransformationTestImage.displayImage(AssetImages.statics.first()) {
+            binding.myImage.displayImage(AssetImages.statics.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RoundedCornersTransformation(it.toFloat()))
             }
 
-            binding.roundedCornersTransformationTestValueText.text =
-                "%d/%d".format(it, binding.roundedCornersTransformationTestSeekBar.max)
+            binding.radiusText.text = "${it}/${binding.seekBar.max}"
         }
 
-        binding.roundedCornersTransformationTestSeekBar.apply {
+        binding.seekBar.apply {
             max = 100
             progress = viewModel.radiusData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

@@ -18,12 +18,12 @@ package com.github.panpf.sketch.sample.ui.test.transform
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.sample.databinding.ExifOrientationTestFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestExifOrientationBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import java.io.File
 
 class ExifOrientationTestFragment :
-    BaseBindingFragment<ExifOrientationTestFragmentBinding>() {
+    BaseBindingFragment<FragmentTestExifOrientationBinding>() {
 
     companion object {
         fun create(file: File): ExifOrientationTestFragment = ExifOrientationTestFragment().apply {
@@ -32,16 +32,16 @@ class ExifOrientationTestFragment :
     }
 
     override fun onViewCreated(
-        binding: ExifOrientationTestFragmentBinding,
+        binding: FragmentTestExifOrientationBinding,
         savedInstanceState: Bundle?
     ) {
         val filePath = arguments?.getString("filePath")
 
-        binding.exifOrientationTestImage.displayImage(filePath) {
+        binding.myImage.displayImage(filePath) {
             ignoreExifOrientation(true)
         }
 
-        binding.exifOrientationTestImage2.displayImage(filePath) {
+        binding.myImage2.displayImage(filePath) {
             ignoreExifOrientation(false)
         }
     }

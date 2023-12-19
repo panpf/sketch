@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.sample.ui.viewer.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -35,7 +36,7 @@ import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.databinding.ImagePagerFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.image.PaletteBitmapDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
@@ -57,7 +58,7 @@ import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
+class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
 
     private val args by navArgs<ImagePagerFragmentArgs>()
     private val imageList by lazy {
@@ -67,11 +68,12 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(
-        binding: ImagePagerFragmentBinding,
+        binding: FragmentImagePagerBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.imagePagerPager.apply {
+        binding.pager.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 updateLayoutParams<ViewGroup.MarginLayoutParams> {
                     topMargin += requireContext().getStatusBarHeight()
@@ -88,26 +90,7 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
                     super.onPageSelected(position)
                     val imageUrl =
                         imageList[position].let { it.thumbnailUrl ?: it.mediumUrl ?: it.originUrl }
-                    binding.imageViewerBgImage.displayImage(imageUrl) {
-                        val screenSize = requireContext().getScreenSize()
-                        resize(
-                            width = screenSize.x / 4,
-                            height = screenSize.y / 4,
-                            precision = LESS_PIXELS
-                        )
-                        addTransformations(
-                            BlurTransformation(
-                                radius = 20,
-                                maskColor = ColorUtils.setAlphaComponent(Color.BLACK, 100)
-                            )
-                        )
-                        placeholder(CurrentStateImage())
-                        disallowAnimatedImage()
-                        crossfade(alwaysUse = true, durationMillis = 400)
-                        components {
-                            addBitmapDecodeInterceptor(PaletteBitmapDecodeInterceptor())
-                        }
-                    }
+                    loadBgImage(binding, imageUrl)
                 }
             })
 
@@ -117,7 +100,7 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
             }
         }
 
-        binding.imageViewerBgImage.requestState.loadState.repeatCollectWithLifecycle(
+        binding.bgImage.requestState.loadState.repeatCollectWithLifecycle(
             viewLifecycleOwner,
             State.STARTED
         ) {
@@ -140,7 +123,7 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
             }
         }
 
-        binding.imagePagerTools.apply {
+        binding.toolsLayout.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 updateLayoutParams<ViewGroup.MarginLayoutParams> {
                     topMargin += requireContext().getStatusBarHeight()
@@ -148,12 +131,12 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
             }
         }
 
-        binding.imagePagerPageNumber.apply {
+        binding.pageNumberText.apply {
             val updateCurrentPageNumber: () -> Unit = {
-                val pageNumber = args.startPosition + binding.imagePagerPager.currentItem + 1
+                val pageNumber = args.startPosition + binding.pager.currentItem + 1
                 text = "$pageNumber/${args.totalCount}"
             }
-            binding.imagePagerPager.registerOnPageChangeCallback(object :
+            binding.pager.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
@@ -163,27 +146,27 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
             updateCurrentPageNumber()
         }
 
-        binding.imagePagerShare.setOnClickListener {
-            share(imageList[binding.imagePagerPager.currentItem])
+        binding.shareImage.setOnClickListener {
+            share(imageList[binding.pager.currentItem])
         }
 
-        binding.imagePagerSave.setOnClickListener {
-            save(imageList[binding.imagePagerPager.currentItem])
+        binding.saveImage.setOnClickListener {
+            save(imageList[binding.pager.currentItem])
         }
 
-        binding.imagePagerRotate.setOnClickListener {
+        binding.rotateImage.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 eventService.viewerPagerRotateEvent.emit(0)
             }
         }
 
-        binding.imagePagerInfo.setOnClickListener {
+        binding.infoImage.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                eventService.viewerPagerInfoEvent.emit(binding.imagePagerPager.currentItem)
+                eventService.viewerPagerInfoEvent.emit(binding.pager.currentItem)
             }
         }
 
-        binding.imagePagerOrigin.apply {
+        binding.originImage.apply {
             appSettingsService.showOriginImage.stateFlow
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     setImageResource(if (it) R.drawable.ic_image_2_fill else R.drawable.ic_image_2)
@@ -200,23 +183,46 @@ class ImagePagerFragment : BaseBindingFragment<ImagePagerFragmentBinding>() {
             }
         }
 
-        binding.imagePagerSettings.setOnClickListener {
+        binding.settingsImage.setOnClickListener {
             findNavController().navigate(
                 MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.ZOOM.name)
             )
         }
     }
 
-    private fun changeButtonBg(binding: ImagePagerFragmentBinding, color: Int) {
+    private fun loadBgImage(binding: FragmentImagePagerBinding, imageUrl: String) {
+        binding.bgImage.displayImage(imageUrl) {
+            val screenSize = requireContext().getScreenSize()
+            resize(
+                width = screenSize.x / 4,
+                height = screenSize.y / 4,
+                precision = LESS_PIXELS
+            )
+            addTransformations(
+                BlurTransformation(
+                    radius = 20,
+                    maskColor = ColorUtils.setAlphaComponent(Color.BLACK, 100)
+                )
+            )
+            placeholder(CurrentStateImage())
+            disallowAnimatedImage()
+            crossfade(alwaysUse = true, durationMillis = 400)
+            components {
+                addBitmapDecodeInterceptor(PaletteBitmapDecodeInterceptor())
+            }
+        }
+    }
+
+    private fun changeButtonBg(binding: FragmentImagePagerBinding, color: Int) {
         val finalInt = ColorUtils.setAlphaComponent(color, 160)
         listOf(
-            binding.imagePagerSettings,
-            binding.imagePagerOrigin,
-            binding.imagePagerShare,
-            binding.imagePagerSave,
-            binding.imagePagerRotate,
-            binding.imagePagerInfo,
-            binding.imagePagerPageNumber,
+            binding.settingsImage,
+            binding.originImage,
+            binding.shareImage,
+            binding.saveImage,
+            binding.rotateImage,
+            binding.infoImage,
+            binding.pageNumberText,
         ).forEach {
             it.background.asOrThrow<GradientDrawable>().setColor(finalInt)
         }

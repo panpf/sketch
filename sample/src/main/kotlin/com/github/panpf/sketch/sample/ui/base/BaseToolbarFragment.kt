@@ -15,19 +15,17 @@
  */
 package com.github.panpf.sketch.sample.ui.base
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
-import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.databinding.FragmentToolbarPageBinding
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
+import kotlinx.serialization.json.JsonNull.content
 
-@Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseToolbarFragment : BaseFragment() {
 
     protected var toolbar: Toolbar? = null
@@ -36,21 +34,17 @@ abstract class BaseToolbarFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.toolbar_fragment, container, false).apply {
-        val toolbar = findViewById<Toolbar>(R.id.toolbarToolbar)
-        val contentContainer = findViewById<FrameLayout>(R.id.toolbarContent)
-
+    ): View = FragmentToolbarPageBinding.inflate(inflater, container, false).apply {
         setTransparentStatusBar(toolbar)
-
-        val view = createView(toolbar, inflater, contentContainer)
-        contentContainer.addView(view)
-
         this@BaseToolbarFragment.toolbar = toolbar
-    }
 
-    @SuppressLint("ObsoleteSdkInt")
+        val view = createView(toolbar, inflater, content)
+        content.addView(view)
+    }.root
+
     private fun setTransparentStatusBar(toolbar: Toolbar) {
         val window = requireActivity().window
+        @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
             && window.decorView.systemUiVisibility == View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         ) {

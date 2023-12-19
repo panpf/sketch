@@ -20,38 +20,38 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
-import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.viewer.view.ImageFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
 
-class FetcherTestFragment : BaseToolbarBindingFragment<TabPagerFragmentBinding>() {
+class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
 
     private val viewModel by viewModels<FetcherTestViewModel>()
 
     override fun onViewCreated(
         toolbar: Toolbar,
-        binding: TabPagerFragmentBinding,
+        binding: FragmentTabPagerBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Fetcher"
 
         viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { data ->
             val imageFromData = data ?: return@repeatCollectWithLifecycle
-            val images = imageFromData.uris.mapIndexed { index, s ->
+            val images = imageFromData.uris.map { s ->
                 ImageDetail(s, s, s)
             }
             val titles = imageFromData.titles
 
-            binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
+            binding.pager.adapter = AssemblyFragmentStateAdapter(
                 fragment = this,
                 itemFactoryList = listOf(ImageFragment.ItemFactory()),
                 initDataList = images
             )
 
-            TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->
+            TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
                 tab.text = titles[position]
             }.attach()
         }

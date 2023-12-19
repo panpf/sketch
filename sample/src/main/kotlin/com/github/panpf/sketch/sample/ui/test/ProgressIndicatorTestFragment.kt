@@ -23,7 +23,7 @@ import androidx.lifecycle.Lifecycle.State
 import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.ProgressIndicatorTestFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestProgressIndicatorBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -36,7 +36,7 @@ import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import kotlinx.coroutines.flow.combine
 
 class ProgressIndicatorTestFragment :
-    BaseToolbarBindingFragment<ProgressIndicatorTestFragmentBinding>() {
+    BaseToolbarBindingFragment<FragmentTestProgressIndicatorBinding>() {
 
     private val viewModel by viewModels<ProgressIndicatorTestViewModel>()
 
@@ -50,39 +50,39 @@ class ProgressIndicatorTestFragment :
 
     override fun onViewCreated(
         toolbar: androidx.appcompat.widget.Toolbar,
-        binding: ProgressIndicatorTestFragmentBinding,
+        binding: FragmentTestProgressIndicatorBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "ProgressIndicator"
 
         if (VERSION.SDK_INT >= 21) {
-            binding.testIndicatorTestImage1.setImageResource(R.drawable.im_placeholder)
-            binding.testIndicatorTestImage2.setImageResource(R.drawable.im_placeholder)
-            binding.testIndicatorTestImage3.setImageResource(R.drawable.im_placeholder)
+            binding.image1.setImageResource(R.drawable.im_placeholder)
+            binding.image2.setImageResource(R.drawable.im_placeholder)
+            binding.image3.setImageResource(R.drawable.im_placeholder)
         } else {
-            binding.testIndicatorTestImage1.setImageResource(R.drawable.im_placeholder_noicon)
-            binding.testIndicatorTestImage2.setImageResource(R.drawable.im_placeholder_noicon)
-            binding.testIndicatorTestImage3.setImageResource(R.drawable.im_placeholder_noicon)
+            binding.image1.setImageResource(R.drawable.im_placeholder_noicon)
+            binding.image2.setImageResource(R.drawable.im_placeholder_noicon)
+            binding.image3.setImageResource(R.drawable.im_placeholder_noicon)
         }
 
-        binding.testIndicatorTestActionButton.setOnClickListener {
+        binding.actionButton.setOnClickListener {
             viewModel.action()
         }
 
         viewModel.modelState.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             setupModel(binding, it)
         }
-        binding.testIndicatorTestProgressRadioButton.setOnCheckedChangeListener { _, isChecked ->
+        binding.progressRadioButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.changeModel(Model.Progress)
             }
         }
-        binding.testIndicatorTestCompletedRadioButton.setOnCheckedChangeListener { _, isChecked ->
+        binding.completedRadioButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.changeModel(Model.DirectlyComplete)
             }
         }
-        binding.testIndicatorTestErrorRadioButton.setOnCheckedChangeListener { _, isChecked ->
+        binding.errorRadioButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.changeModel(Model.Error)
             }
@@ -98,7 +98,7 @@ class ProgressIndicatorTestFragment :
         ).repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             setupProgressIndicator(binding)
         }
-        binding.testIndicatorTestHiddenIndeterminateCheckBox.apply {
+        binding.hiddenIndeterminateCheckBox.apply {
             viewModel.hiddenWhenIndeterminateState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     isChecked = it
@@ -107,7 +107,7 @@ class ProgressIndicatorTestFragment :
                 viewModel.changeHiddenWhenIndeterminate(isChecked)
             }
         }
-        binding.testIndicatorTestHiddenCompletedCheckBox.apply {
+        binding.hiddenCompletedCheckBox.apply {
             viewModel.hiddenWhenCompletedState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     isChecked = it
@@ -116,7 +116,7 @@ class ProgressIndicatorTestFragment :
                 viewModel.changeHiddenWhenCompleted(isChecked)
             }
         }
-        binding.testIndicatorTestShortStepCheckBox.apply {
+        binding.shortStepCheckBox.apply {
             viewModel.shortStepState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     isChecked = it
@@ -127,7 +127,7 @@ class ProgressIndicatorTestFragment :
         }
 
         viewModel.runningState.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.testIndicatorTestActionButton.text = if (it) "Stop" else "Start"
+            binding.actionButton.text = if (it) "Stop" else "Start"
         }
 
         viewModel.progressState.repeatCollectWithLifecycle(
@@ -137,41 +137,41 @@ class ProgressIndicatorTestFragment :
             val request = DisplayRequest(requireContext(), "http://sample.com/sample.jpeg")
             val totalLength: Long = 100
             val completedLength = (progress * totalLength).toLong()
-            binding.testIndicatorTestImage1.progressIndicatorAbility
+            binding.image1.progressIndicatorAbility
                 .onUpdateRequestProgress(request, totalLength, completedLength)
-            binding.testIndicatorTestImage2.progressIndicatorAbility
+            binding.image2.progressIndicatorAbility
                 .onUpdateRequestProgress(request, totalLength, completedLength)
-            binding.testIndicatorTestImage3.progressIndicatorAbility
+            binding.image3.progressIndicatorAbility
                 .onUpdateRequestProgress(request, totalLength, completedLength)
         }
     }
 
-    private fun setupModel(binding: ProgressIndicatorTestFragmentBinding, model: Model) {
-        binding.testIndicatorTestProgressRadioButton.isChecked = model == Model.Progress
-        binding.testIndicatorTestCompletedRadioButton.isChecked = model == Model.DirectlyComplete
-        binding.testIndicatorTestErrorRadioButton.isChecked = model == Model.Error
+    private fun setupModel(binding: FragmentTestProgressIndicatorBinding, model: Model) {
+        binding.progressRadioButton.isChecked = model == Model.Progress
+        binding.completedRadioButton.isChecked = model == Model.DirectlyComplete
+        binding.errorRadioButton.isChecked = model == Model.Error
     }
 
-    private fun setupProgressIndicator(binding: ProgressIndicatorTestFragmentBinding) {
-        binding.testIndicatorTestImage1.removeProgressIndicator()
-        binding.testIndicatorTestImage2.removeProgressIndicator()
-        binding.testIndicatorTestImage3.removeProgressIndicator()
+    private fun setupProgressIndicator(binding: FragmentTestProgressIndicatorBinding) {
+        binding.image1.removeProgressIndicator()
+        binding.image2.removeProgressIndicator()
+        binding.image3.removeProgressIndicator()
 
         val hiddenWhenIndeterminate = viewModel.hiddenWhenIndeterminateState.value
         val hiddenWhenCompleted = viewModel.hiddenWhenCompletedState.value
         val shortStep = viewModel.shortStepState.value
         val stepAnimationDuration = if (shortStep) 1000 else 300
-        binding.testIndicatorTestImage1.showMaskProgressIndicator(
+        binding.image1.showMaskProgressIndicator(
             hiddenWhenIndeterminate = hiddenWhenIndeterminate,
             hiddenWhenCompleted = hiddenWhenCompleted,
             stepAnimationDuration = stepAnimationDuration
         )
-        binding.testIndicatorTestImage2.showSectorProgressIndicator(
+        binding.image2.showSectorProgressIndicator(
             hiddenWhenIndeterminate = hiddenWhenIndeterminate,
             hiddenWhenCompleted = hiddenWhenCompleted,
             stepAnimationDuration = stepAnimationDuration
         )
-        binding.testIndicatorTestImage3.showRingProgressIndicator(
+        binding.image3.showRingProgressIndicator(
             hiddenWhenIndeterminate = hiddenWhenIndeterminate,
             hiddenWhenCompleted = hiddenWhenCompleted,
             stepAnimationDuration = stepAnimationDuration

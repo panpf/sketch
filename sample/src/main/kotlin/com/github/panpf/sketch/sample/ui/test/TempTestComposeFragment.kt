@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,15 +43,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class TempTestComposeFragment : BaseToolbarFragment() {
-
-    override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                DrawContent()
-            }
-        }
-    }
+class TempTestComposeFragment : BaseToolbarComposeFragment() {
 
     override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {
         super.onViewCreated(toolbar, savedInstanceState)
@@ -58,7 +51,7 @@ class TempTestComposeFragment : BaseToolbarFragment() {
     }
 
     @Composable
-    private fun DrawContent() {
+    override fun DrawContent() {
         Log.i("RememberObserverTest", "DrawContent. start")
         val state = rememberTestState()
         Component1(state)

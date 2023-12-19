@@ -26,38 +26,38 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.NavMainDirections
-import com.github.panpf.sketch.sample.databinding.ImageInfoDialogBinding
+import com.github.panpf.sketch.sample.databinding.DialogImageInfoBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
 import com.github.panpf.sketch.util.calculateBitmapByteCount
 import com.github.panpf.tools4j.io.ktx.formatFileSize
 import com.github.panpf.tools4k.lang.asOrThrow
 
-class ImageInfoDialogFragment : BaseBindingDialogFragment<ImageInfoDialogBinding>() {
+class ImageInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding>() {
 
     private val args by navArgs<ImageInfoDialogFragmentArgs>()
 
-    override fun onViewCreated(binding: ImageInfoDialogBinding, savedInstanceState: Bundle?) {
-        binding.imageInfoUriContent.text = args.uri
-        binding.imageInfoOptionsContent.text = args.optionsInfo
+    override fun onViewCreated(binding: DialogImageInfoBinding, savedInstanceState: Bundle?) {
+        binding.uriText.text = args.uri
+        binding.optionsText.text = args.optionsInfo
 
-        binding.imageInfoThrowableContent.text = args.throwableString
-        binding.imageInfoImageContent.text = args.imageInfo
-        binding.imageInfoBitmapContent.text = args.bitmapInfo
-        binding.imageInfoDrawableContent.text = args.drawableInfo
-        binding.imageInfoDataFromContent.text = args.dataFromInfo
-        binding.imageInfoTransformedContent.text = args.transformedInfo
+        binding.throwableText.text = args.throwableString
+        binding.imageInfoText.text = args.imageInfo
+        binding.bitmapInfoText.text = args.bitmapInfo
+        binding.drawableInfoText.text = args.drawableInfo
+        binding.dataFromText.text = args.dataFromInfo
+        binding.transformedText.text = args.transformedInfo
 
-        binding.imageInfoThrowableContent.parent.asOrThrow<ViewGroup>().isVisible =
+        binding.throwableText.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString != null
-        binding.imageInfoImageContent.parent.asOrThrow<ViewGroup>().isVisible =
+        binding.imageInfoText.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString == null
-        binding.imageInfoBitmapContent.parent.asOrThrow<ViewGroup>().isVisible =
+        binding.bitmapInfoText.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString == null
-        binding.imageInfoDrawableContent.parent.asOrThrow<ViewGroup>().isVisible =
+        binding.drawableInfoText.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString == null
-        binding.imageInfoDataFromContent.parent.asOrThrow<ViewGroup>().isVisible =
+        binding.dataFromText.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString == null
-        binding.imageInfoTransformedContent.parent.asOrThrow<ViewGroup>().isVisible =
+        binding.transformedText.parent.asOrThrow<ViewGroup>().isVisible =
             args.throwableString == null
     }
 

@@ -16,27 +16,27 @@
 package com.github.panpf.sketch.sample.ui.common.link
 
 import android.content.Context
-import com.github.panpf.sketch.sample.databinding.LinkItemBinding
+import com.github.panpf.sketch.sample.databinding.ListItemLinkBinding
 import com.github.panpf.sketch.sample.model.Link
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
-class LinkItemFactory : BaseBindingItemFactory<Link, LinkItemBinding>(Link::class) {
+class LinkItemFactory : BaseBindingItemFactory<Link, ListItemLinkBinding>(Link::class) {
 
     override fun initItem(
         context: Context,
-        binding: LinkItemBinding,
-        item: BindingItem<Link, LinkItemBinding>
+        binding: ListItemLinkBinding,
+        item: BindingItem<Link, ListItemLinkBinding>
     ) {
     }
 
     override fun bindItemData(
         context: Context,
-        binding: LinkItemBinding,
-        item: BindingItem<Link, LinkItemBinding>,
+        binding: ListItemLinkBinding,
+        item: BindingItem<Link, ListItemLinkBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: Link
     ) {
-        binding.linkItemTitleText.text = data.title
+        binding.linkTitleText.text = data.title
     }
 }

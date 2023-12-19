@@ -51,7 +51,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -66,7 +65,6 @@ import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.compose.AsyncImage
@@ -81,7 +79,7 @@ import com.github.panpf.sketch.sample.image.PaletteBitmapDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
-import com.github.panpf.sketch.sample.ui.base.BaseFragment
+import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
@@ -97,7 +95,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
-class ImagePagerComposeFragment : BaseFragment() {
+class ImagePagerComposeFragment : BaseComposeFragment() {
 
     private val args by navArgs<ImagePagerComposeFragmentArgs>()
     private val imageList by lazy {
@@ -110,10 +108,10 @@ class ImagePagerComposeFragment : BaseFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
-        parent: ViewGroup?,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return ComposeView(requireContext()).apply {
+        return super.onCreateView(inflater, container, savedInstanceState).apply {
             setBackgroundColor(
                 ResourcesCompat.getColor(
                     requireContext().resources,
@@ -121,49 +119,51 @@ class ImagePagerComposeFragment : BaseFragment() {
                     null
                 )
             )
-            setContent {
-                ImagePager(
-                    imageList = imageList,
-                    totalCount = args.totalCount,
-                    startPosition = args.startPosition,
-                    initialPosition = args.initialPosition,
-                    showInfoEvent = showInfoEvent,
-                    onSettingsClick = {
-                        findNavController().navigate(
-                            MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.ZOOM.name)
-                        )
-                    },
-                    onShowOriginClick = {
-                        val newValue = !appSettingsService.showOriginImage.value
-                        appSettingsService.showOriginImage.value = newValue
-                        if (newValue) {
-                            showLongToast("Opened View original image")
-                        } else {
-                            showLongToast("Closed View original image")
-                        }
-                    },
-                    onShareClick = {
-                        share(it)
-                    },
-                    onSaveClick = {
-                        save(it)
-                    },
-                    onRotateClick = {
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            eventService.viewerPagerRotateEvent.emit(0)
-                        }
-                    },
-                    onInfoClick = {
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            eventService.viewerPagerInfoEvent.emit(it)
-                        }
-                    },
-                    onImageClick = {
-                        findNavController().popBackStack()
-                    },
-                )
-            }
         }
+    }
+
+    @Composable
+    override fun DrawContent() {
+        ImagePager(
+            imageList = imageList,
+            totalCount = args.totalCount,
+            startPosition = args.startPosition,
+            initialPosition = args.initialPosition,
+            showInfoEvent = showInfoEvent,
+            onSettingsClick = {
+                findNavController().navigate(
+                    MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.ZOOM.name)
+                )
+            },
+            onShowOriginClick = {
+                val newValue = !appSettingsService.showOriginImage.value
+                appSettingsService.showOriginImage.value = newValue
+                if (newValue) {
+                    showLongToast("Opened View original image")
+                } else {
+                    showLongToast("Closed View original image")
+                }
+            },
+            onShareClick = {
+                share(it)
+            },
+            onSaveClick = {
+                save(it)
+            },
+            onRotateClick = {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    eventService.viewerPagerRotateEvent.emit(0)
+                }
+            },
+            onInfoClick = {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    eventService.viewerPagerInfoEvent.emit(it)
+                }
+            },
+            onImageClick = {
+                findNavController().popBackStack()
+            },
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

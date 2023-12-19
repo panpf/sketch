@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialLayout="@layout/remote_views_appwidget"
+    android:initialLayout="@layout/appwidget_remote_views"
     android:minWidth="200dp"
     android:minHeight="200dp"
     android:updatePeriodMillis="86400000" />

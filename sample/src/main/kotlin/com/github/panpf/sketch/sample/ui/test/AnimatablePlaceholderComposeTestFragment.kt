@@ -16,72 +16,80 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import android.os.Bundle
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R.drawable
-import com.github.panpf.sketch.sample.databinding.AnimatablePlaceholderComposeTestFragmentBinding
 import com.github.panpf.sketch.sample.image.DelayBitmapDecodeInterceptor
-import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class AnimatablePlaceholderComposeTestFragment :
-    BaseToolbarBindingFragment<AnimatablePlaceholderComposeTestFragmentBinding>() {
+class AnimatablePlaceholderComposeTestFragment : BaseToolbarComposeFragment() {
 
     private val urlIndexFlow = MutableStateFlow(0)
 
+    @Composable
+    override fun DrawContent() {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(2f)
+            ) {
+                val urlIndexState = urlIndexFlow.collectAsState()
+                val uriString = AssetImages.statics[urlIndexState.value % AssetImages.statics.size]
+                val request = DisplayRequest(LocalContext.current, uriString) {
+                    memoryCachePolicy(CachePolicy.DISABLED)
+                    resultCachePolicy(CachePolicy.DISABLED)
+                    // todo AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above api 29
+                    placeholder(drawable.ic_placeholder_eclipse_animated)
+                    components {
+                        addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
+                    }
+                }
+                AsyncImage(
+                    request = request,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(200.dp)
+                        .align(Alignment.Center)
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                Button(
+                    onClick = { urlIndexFlow.value = urlIndexFlow.value + 1 },
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Text(text = "Next")
+                }
+            }
+        }
+    }
+
     override fun onViewCreated(
         toolbar: androidx.appcompat.widget.Toolbar,
-        binding: AnimatablePlaceholderComposeTestFragmentBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "AnimatablePlaceholder (Compose)"
-
-        binding.animatablePlaceholderComposeTestCompose.setContent {
-            // todo AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above api 29
-
-            val urlIndexState = urlIndexFlow.collectAsState()
-            val uriString = AssetImages.statics[urlIndexState.value % AssetImages.statics.size]
-            val request = DisplayRequest(LocalContext.current, uriString) {
-                memoryCachePolicy(CachePolicy.DISABLED)
-                resultCachePolicy(CachePolicy.DISABLED)
-                placeholder(drawable.ic_placeholder_eclipse_animated)
-                components {
-                    addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
-                }
-            }
-            AsyncImage(
-                request = request,
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-
-//            val context = LocalContext.current
-//            val painter = remember {
-////                val resources = context.resources
-////                val drawable = ResourcesCompat
-////                    .getDrawable(resources, R.drawable.ic_placeholder_eclipse_animated, null)
-//                val drawable = AnimatedVectorDrawableCompat
-//                    .create(context, R.drawable.ic_placeholder_eclipse_animated)
-//                DrawablePainter(drawable!!)
-//            }
-//            Image(
-//                painter = painter,
-//                contentDescription = "",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier.fillMaxSize()
-//            )
-        }
-
-        binding.animatablePlaceholderComposeTestButton.setOnClickListener {
-            urlIndexFlow.value = urlIndexFlow.value + 1
-        }
     }
 }

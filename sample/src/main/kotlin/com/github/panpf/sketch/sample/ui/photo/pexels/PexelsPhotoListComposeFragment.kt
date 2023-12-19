@@ -16,24 +16,21 @@
 package com.github.panpf.sketch.sample.ui.photo.pexels
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
 import com.github.panpf.sketch.sample.ui.common.menu.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class PexelsPhotoListComposeFragment : BaseToolbarFragment() {
+class PexelsPhotoListComposeFragment : BaseToolbarComposeFragment() {
 
     private val pexelsPhotoListViewModel by viewModels<PexelsPhotoListViewModel>()
     private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
@@ -45,15 +42,12 @@ class PexelsPhotoListComposeFragment : BaseToolbarFragment() {
         )
     }
 
-    override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                PhotoList(
-                    photoPagingFlow = pexelsPhotoListViewModel.pagingFlow,
-                ) { items, _, index ->
-                    startImageDetail(items, index)
-                }
-            }
+    @Composable
+    override fun DrawContent() {
+        PhotoList(
+            photoPagingFlow = pexelsPhotoListViewModel.pagingFlow,
+        ) { items, _, index ->
+            startImageDetail(items, index)
         }
     }
 

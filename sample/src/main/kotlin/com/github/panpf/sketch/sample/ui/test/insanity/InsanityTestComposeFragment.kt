@@ -16,27 +16,21 @@
 package com.github.panpf.sketch.sample.ui.test.insanity
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
-import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
 import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoList
 
-class InsanityTestComposeFragment : BaseToolbarFragment() {
+class InsanityTestComposeFragment : BaseToolbarComposeFragment() {
 
     private val insanityTestViewModel by viewModels<InsanityTestViewModel>()
 
-    override fun createView(toolbar: Toolbar, inflater: LayoutInflater, parent: ViewGroup?): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                PhotoList(
-                    photoPagingFlow = insanityTestViewModel.pagingFlow,
-                ) { _, _, _ ->
-                }
-            }
+    @Composable
+    override fun DrawContent() {
+        PhotoList(
+            photoPagingFlow = insanityTestViewModel.pagingFlow,
+        ) { _, _, _ ->
         }
     }
 

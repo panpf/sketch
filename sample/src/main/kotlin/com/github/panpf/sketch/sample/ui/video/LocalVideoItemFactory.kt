@@ -21,7 +21,7 @@ import com.github.panpf.sketch.request.updateDisplayImageOptions
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.databinding.VideoItemBinding
+import com.github.panpf.sketch.sample.databinding.ListItemVideoBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
@@ -29,14 +29,14 @@ import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 
 class LocalVideoItemFactory :
-    BaseBindingItemFactory<VideoInfo, VideoItemBinding>(VideoInfo::class) {
+    BaseBindingItemFactory<VideoInfo, ListItemVideoBinding>(VideoInfo::class) {
 
     override fun initItem(
         context: Context,
-        binding: VideoItemBinding,
-        item: BindingItem<VideoInfo, VideoItemBinding>
+        binding: ListItemVideoBinding,
+        item: BindingItem<VideoInfo, ListItemVideoBinding>
     ) {
-        binding.videoItemIconImage.updateDisplayImageOptions {
+        binding.thumbnailImage.updateDisplayImageOptions {
             val bg = ResColor(R.color.placeholder_bg)
             placeholder(IconStateImage(R.drawable.ic_image_outline, bg))
             error(IconStateImage(R.drawable.ic_error, bg)) {
@@ -49,18 +49,18 @@ class LocalVideoItemFactory :
 
     override fun bindItemData(
         context: Context,
-        binding: VideoItemBinding,
-        item: BindingItem<VideoInfo, VideoItemBinding>,
+        binding: ListItemVideoBinding,
+        item: BindingItem<VideoInfo, ListItemVideoBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: VideoInfo
     ) {
-        binding.videoItemIconImage.displayImage(data.path) {
+        binding.thumbnailImage.displayImage(data.path) {
             merge(context.appSettingsService.buildListImageOptions())
         }
-        binding.videoItemNameText.text = data.title
-        binding.videoItemSizeText.text = data.getTempFormattedSize(context)
-        binding.videoItemDateText.text = data.tempFormattedDate
-        binding.videoItemDurationText.text = data.tempFormattedDuration
+        binding.nameText.text = data.title
+        binding.sizeText.text = data.getTempFormattedSize(context)
+        binding.dateText.text = data.tempFormattedDate
+        binding.durationText.text = data.tempFormattedDuration
     }
 }

@@ -24,11 +24,11 @@ import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.TestShareElement2FragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestShareElement2Binding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
-class ShareElement2TestFragment : BaseBindingFragment<TestShareElement2FragmentBinding>() {
+class ShareElement2TestFragment : BaseBindingFragment<FragmentTestShareElement2Binding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +39,10 @@ class ShareElement2TestFragment : BaseBindingFragment<TestShareElement2FragmentB
     }
 
     override fun onViewCreated(
-        binding: TestShareElement2FragmentBinding,
+        binding: FragmentTestShareElement2Binding,
         savedInstanceState: Bundle?
     ) {
-        binding.testShareElement2Image.apply {
+        binding.zoomImage.apply {
             ViewCompat.setTransitionName(this, "transition_app_icon")
             Log.i("ShareElementTest", "$id. displayImage")
             postponeEnterTransition(100, MILLISECONDS)

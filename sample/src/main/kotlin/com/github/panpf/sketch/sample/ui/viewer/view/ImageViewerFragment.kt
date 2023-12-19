@@ -17,7 +17,6 @@ package com.github.panpf.sketch.sample.ui.viewer.view
 
 import android.os.Bundle
 import android.widget.ImageView
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State
 import androidx.navigation.findNavController
@@ -27,9 +26,9 @@ import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResult
 import com.github.panpf.sketch.request.DisplayRequestState
-import com.github.panpf.sketch.request.LoadState
+import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.databinding.ImageViewerFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
@@ -37,6 +36,7 @@ import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
+import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.showSectorProgressIndicator
 import com.github.panpf.zoomimage.view.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
@@ -45,19 +45,15 @@ import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
 import kotlin.math.roundToInt
 
-class ImageViewerFragment : BaseBindingFragment<ImageViewerFragmentBinding>() {
+class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
     private val requestState = DisplayRequestState()
 
-    override fun onViewCreated(binding: ImageViewerFragmentBinding, savedInstanceState: Bundle?) {
+    override fun onViewCreated(binding: FragmentImageViewerBinding, savedInstanceState: Bundle?) {
         binding.root.background = null
 
-        binding.imageViewerRetryButton.setOnClickListener {
-            displayImage(binding)
-        }
-
-        binding.imageViewerZoomImage.apply {
+        binding.zoomImage.apply {
             appSettingsService.scrollBarEnabled.stateFlow
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     scrollBar = if (it) ScrollBarSpec.Default else null
@@ -116,10 +112,10 @@ class ImageViewerFragment : BaseBindingFragment<ImageViewerFragmentBinding>() {
         }
     }
 
-    private fun displayImage(binding: ImageViewerFragmentBinding) {
+    private fun displayImage(binding: FragmentImageViewerBinding) {
         val showOriginImage: Boolean = appSettingsService.showOriginImage.stateFlow.value
         val uri = if (showOriginImage) args.originImageUri else args.previewImageUri
-        binding.imageViewerZoomImage.displayImage(uri) {
+        binding.zoomImage.displayImage(uri) {
             merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
@@ -128,10 +124,16 @@ class ImageViewerFragment : BaseBindingFragment<ImageViewerFragmentBinding>() {
         }
 
         // todo SketchZoomImageView add requestState
-        binding.imageViewerErrorLayout.apply {
+        binding.smallState.apply {
             requestState.loadState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    isVisible = it is LoadState.Error
+                    if (it is Error) {
+                        errorWithRetry {
+                            SketchUtils.restart(binding.zoomImage)
+                        }
+                    } else {
+                        gone()
+                    }
                 }
         }
     }

@@ -25,22 +25,27 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.databinding.CircleCropTransformationTestFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationCircleCropBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.CircleCropTransformation
 
 class CircleCropTransformationTestFragment :
-    BaseBindingFragment<CircleCropTransformationTestFragmentBinding>() {
+    BaseBindingFragment<FragmentTestTransformationCircleCropBinding>() {
 
     val viewModel by viewModels<CircleCropTransformationTestViewModel>()
 
     override fun onViewCreated(
-        binding: CircleCropTransformationTestFragmentBinding,
+        binding: FragmentTestTransformationCircleCropBinding,
         savedInstanceState: Bundle?
     ) {
         viewModel.scaleData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.circleCropTransformationTestImage.displayImage(AssetImages.statics.first()) {
+            binding.startButton.isChecked = it == START_CROP
+            binding.centerButton.isChecked = it == CENTER_CROP
+            binding.endButton.isChecked = it == END_CROP
+            binding.fillButton.isChecked = it == FILL
+
+            binding.myImage.displayImage(AssetImages.statics.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 resizeScale(it)
@@ -48,20 +53,19 @@ class CircleCropTransformationTestFragment :
             }
         }
 
-        binding.circleCropTransformationTestStartButton.setOnClickListener {
+        binding.startButton.setOnClickListener {
             viewModel.changeScale(START_CROP)
         }
 
-        binding.circleCropTransformationTestCenterButton.isChecked = true
-        binding.circleCropTransformationTestCenterButton.setOnClickListener {
+        binding.centerButton.setOnClickListener {
             viewModel.changeScale(CENTER_CROP)
         }
 
-        binding.circleCropTransformationTestEndButton.setOnClickListener {
+        binding.endButton.setOnClickListener {
             viewModel.changeScale(END_CROP)
         }
 
-        binding.circleCropTransformationTestFillButton.setOnClickListener {
+        binding.fillButton.setOnClickListener {
             viewModel.changeScale(FILL)
         }
     }

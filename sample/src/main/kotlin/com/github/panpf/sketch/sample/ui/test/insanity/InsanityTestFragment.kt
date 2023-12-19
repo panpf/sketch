@@ -28,7 +28,7 @@ import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerI
 import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.RecyclerFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
@@ -39,19 +39,19 @@ import com.github.panpf.sketch.sample.ui.photo.ImageGridItemFactory
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
-class InsanityTestFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>() {
+class InsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerRefreshBinding>() {
 
     private val localPhotoListViewModel by viewModels<InsanityTestViewModel>()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(
         toolbar: Toolbar,
-        binding: RecyclerFragmentBinding,
+        binding: FragmentRecyclerRefreshBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Insanity Test"
 
-        binding.recyclerRecycler.apply {
+        binding.myRecycler.apply {
             layoutManager =
                 newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
                     itemSpanByItemFactory(
@@ -77,7 +77,7 @@ class InsanityTestFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>
                     }
             }
 
-            binding.recyclerRefresh.setOnRefreshListener {
+            binding.swipeRefresh.setOnRefreshListener {
                 pagingAdapter.refresh()
             }
 
@@ -85,23 +85,23 @@ class InsanityTestFragment : BaseToolbarBindingFragment<RecyclerFragmentBinding>
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { loadStates ->
                     when (val refreshState = loadStates.refresh) {
                         is LoadState.Loading -> {
-                            binding.recyclerState.gone()
-                            binding.recyclerRefresh.isRefreshing = true
+                            binding.state.gone()
+                            binding.swipeRefresh.isRefreshing = true
                         }
 
                         is LoadState.Error -> {
-                            binding.recyclerRefresh.isRefreshing = false
-                            binding.recyclerState.errorWithRetry(refreshState.error) {
+                            binding.swipeRefresh.isRefreshing = false
+                            binding.state.errorWithRetry(refreshState.error) {
                                 pagingAdapter.refresh()
                             }
                         }
 
                         is LoadState.NotLoading -> {
-                            binding.recyclerRefresh.isRefreshing = false
+                            binding.swipeRefresh.isRefreshing = false
                             if (pagingAdapter.itemCount <= 0) {
-                                binding.recyclerState.empty("No Photos")
+                                binding.state.empty("No Photos")
                             } else {
-                                binding.recyclerState.gone()
+                                binding.state.gone()
                             }
                         }
                     }

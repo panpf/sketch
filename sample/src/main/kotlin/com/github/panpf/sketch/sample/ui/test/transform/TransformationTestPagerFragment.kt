@@ -18,20 +18,20 @@ package com.github.panpf.sketch.sample.ui.test.transform
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
-import com.github.panpf.sketch.sample.databinding.TabPagerFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class TransformationTestPagerFragment : BaseToolbarBindingFragment<TabPagerFragmentBinding>() {
+class TransformationTestPagerFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
 
     override fun onViewCreated(
         toolbar: Toolbar,
-        binding: TabPagerFragmentBinding,
+        binding: FragmentTabPagerBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Transformation"
 
-        binding.tabPagerPager.adapter = ArrayFragmentStateAdapter(
+        binding.pager.adapter = ArrayFragmentStateAdapter(
             fragment = this,
             arrayOf(
                 RoundedCornersTransformationTestFragment(),
@@ -44,7 +44,7 @@ class TransformationTestPagerFragment : BaseToolbarBindingFragment<TabPagerFragm
         )
 
         val titles = arrayOf("ROUNDED_CORNERS", "CIRCLE", "ROTATE", "BLUR", "MASK", "MULTI")
-        TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->
+        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
             tab.text = titles[position]
         }.attach()
     }

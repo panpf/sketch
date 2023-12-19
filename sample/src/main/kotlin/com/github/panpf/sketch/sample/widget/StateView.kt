@@ -24,7 +24,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.StateViewBinding
+import com.github.panpf.sketch.sample.databinding.ViewStateBinding
 import com.github.panpf.tools4a.network.ktx.isNetworkConnected
 import org.apache.http.conn.ConnectTimeoutException
 import java.io.FileNotFoundException
@@ -35,21 +35,21 @@ class StateView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
 
-    private val binding = StateViewBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding = ViewStateBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
         if (isInEditMode) {
-            binding.stateLoading.isVisible = true
-            binding.stateLoading.alpha = 0.3f
-            binding.stateError.isVisible = false
+            binding.loadingLayout.isVisible = true
+            binding.loadingLayout.alpha = 0.3f
+            binding.errorLayout.isVisible = false
         } else {
             isVisible = false
         }
     }
 
     fun loading() {
-        binding.stateError.isVisible = false
-        binding.stateLoading.isVisible = true
+        binding.errorLayout.isVisible = false
+        binding.loadingLayout.isVisible = true
         isVisible = true
     }
 
@@ -59,8 +59,8 @@ class StateView @JvmOverloads constructor(
             message(message ?: "Load failed")
             block?.invoke(this)
         }
-        binding.stateLoading.isVisible = false
-        binding.stateError.isVisible = true
+        binding.loadingLayout.isVisible = false
+        binding.errorLayout.isVisible = true
         isVisible = true
     }
 
@@ -121,8 +121,8 @@ class StateView @JvmOverloads constructor(
             message(message ?: "No content")
             block?.invoke(this)
         }
-        binding.stateLoading.isVisible = false
-        binding.stateError.isVisible = true
+        binding.loadingLayout.isVisible = false
+        binding.errorLayout.isVisible = true
         isVisible = true
     }
 
@@ -135,53 +135,53 @@ class StateView @JvmOverloads constructor(
     }
 
     fun gone() {
-        binding.stateLoading.isVisible = false
-        binding.stateError.isVisible = false
+        binding.loadingLayout.isVisible = false
+        binding.errorLayout.isVisible = false
         isVisible = false
     }
 
-    class ErrorConfig(private val binding: StateViewBinding) {
+    class ErrorConfig(private val binding: ViewStateBinding) {
 
         init {
-            binding.stateErrorIcon.isVisible = false
-            binding.stateErrorText.isVisible = false
-            binding.stateErrorAction.isVisible = false
+            binding.errorIconImage.isVisible = false
+            binding.errorMessageText.isVisible = false
+            binding.errorActionButton.isVisible = false
         }
 
         fun icon(drawable: Drawable) {
-            binding.stateErrorIcon.setImageDrawable(drawable)
-            binding.stateErrorIcon.isVisible = true
+            binding.errorIconImage.setImageDrawable(drawable)
+            binding.errorIconImage.isVisible = true
         }
 
         fun icon(@DrawableRes resId: Int) {
-            binding.stateErrorIcon.setImageResource(resId)
-            binding.stateErrorIcon.isVisible = true
+            binding.errorIconImage.setImageResource(resId)
+            binding.errorIconImage.isVisible = true
         }
 
         fun message(name: String) {
-            binding.stateErrorText.text = name
-            binding.stateErrorText.isVisible = true
+            binding.errorMessageText.text = name
+            binding.errorMessageText.isVisible = true
         }
 
         fun message(@StringRes nameResId: Int) {
-            binding.stateErrorText.setText(nameResId)
-            binding.stateErrorText.isVisible = true
+            binding.errorMessageText.setText(nameResId)
+            binding.errorMessageText.isVisible = true
         }
 
         fun action(name: String, onClick: () -> Unit) {
-            binding.stateErrorAction.text = name
-            binding.stateErrorAction.setOnClickListener {
+            binding.errorActionButton.text = name
+            binding.errorActionButton.setOnClickListener {
                 onClick()
             }
-            binding.stateErrorAction.isVisible = true
+            binding.errorActionButton.isVisible = true
         }
 
         fun action(@StringRes nameResId: Int, onClick: () -> Unit) {
-            binding.stateErrorAction.setText(nameResId)
-            binding.stateErrorAction.setOnClickListener {
+            binding.errorActionButton.setText(nameResId)
+            binding.errorActionButton.setOnClickListener {
                 onClick()
             }
-            binding.stateErrorAction.isVisible = true
+            binding.errorActionButton.isVisible = true
         }
     }
 }

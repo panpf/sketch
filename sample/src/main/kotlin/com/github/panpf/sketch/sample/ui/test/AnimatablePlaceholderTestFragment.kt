@@ -23,33 +23,33 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.AnimatablePlaceholderTestFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestAnimatablePlaceholderBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import kotlinx.coroutines.delay
 
 class AnimatablePlaceholderTestFragment :
-    BaseToolbarBindingFragment<AnimatablePlaceholderTestFragmentBinding>() {
+    BaseToolbarBindingFragment<FragmentTestAnimatablePlaceholderBinding>() {
 
     private var urlIndex = 0
 
     override fun onViewCreated(
         toolbar: androidx.appcompat.widget.Toolbar,
-        binding: AnimatablePlaceholderTestFragmentBinding,
+        binding: FragmentTestAnimatablePlaceholderBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "AnimatablePlaceholder"
 
         displayImage(binding)
 
-        binding.animatablePlaceholderTestButton.setOnClickListener {
+        binding.retryButton.setOnClickListener {
             urlIndex++
             displayImage(binding)
         }
     }
 
-    private fun displayImage(binding: AnimatablePlaceholderTestFragmentBinding) {
+    private fun displayImage(binding: FragmentTestAnimatablePlaceholderBinding) {
         val urlString = AssetImages.statics[urlIndex % AssetImages.statics.size]
-        binding.animatablePlaceholderTestImage.displayImage(urlString) {
+        binding.myImage.displayImage(urlString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(R.drawable.ic_placeholder_eclipse_animated)

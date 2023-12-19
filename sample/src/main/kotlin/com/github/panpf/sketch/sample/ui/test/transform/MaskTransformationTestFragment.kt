@@ -15,48 +15,49 @@
  */
 package com.github.panpf.sketch.sample.ui.test.transform
 
-import android.graphics.Color
 import android.os.Bundle
-import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.databinding.MaskTransformationTestFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationMaskBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
 
-class MaskTransformationTestFragment : BaseBindingFragment<MaskTransformationTestFragmentBinding>() {
+class MaskTransformationTestFragment :
+    BaseBindingFragment<FragmentTestTransformationMaskBinding>() {
 
     private val viewModel by viewModels<MaskTransformationTestViewModel>()
 
     override fun onViewCreated(
-        binding: MaskTransformationTestFragmentBinding,
+        binding: FragmentTestTransformationMaskBinding,
         savedInstanceState: Bundle?
     ) {
         viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.maskTransformationTestImage.displayImage(AssetImages.statics.first()) {
+            binding.redButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.RED
+            binding.greenButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.GREEN
+            binding.blueButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.BLUE
+
+            binding.myImage.displayImage(AssetImages.statics.first()) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
-                addTransformations(CircleCropTransformation(), MaskTransformation(it))
+                addTransformations(CircleCropTransformation(), MaskTransformation(it.colorInt))
             }
         }
 
-        binding.maskTransformationTestRedButton.isChecked = true
-
-        binding.maskTransformationTestRedButton.setOnClickListener {
-            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.RED, 128))
+        binding.redButton.setOnClickListener {
+            viewModel.changeMaskColor(MaskTransformationTestViewModel.MaskColor.RED)
         }
 
-        binding.maskTransformationTestGreenButton.setOnClickListener {
-            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.GREEN, 128))
+        binding.greenButton.setOnClickListener {
+            viewModel.changeMaskColor(MaskTransformationTestViewModel.MaskColor.GREEN)
         }
 
-        binding.maskTransformationTestBlueButton.setOnClickListener {
-            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.BLUE, 128))
+        binding.blueButton.setOnClickListener {
+            viewModel.changeMaskColor(MaskTransformationTestViewModel.MaskColor.BLUE)
         }
     }
 }

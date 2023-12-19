@@ -24,7 +24,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.LoadState.Error
-import com.github.panpf.sketch.sample.databinding.ImageFragmentBinding
+import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -32,12 +32,12 @@ import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.showDataFromLogo
 import com.github.panpf.sketch.viewability.showProgressIndicator
 
-class ImageFragment : BaseBindingFragment<ImageFragmentBinding>() {
+class ImageFragment : BaseBindingFragment<FragmentImageBinding>() {
 
     private val args by navArgs<ImageFragmentArgs>()
 
-    override fun onViewCreated(binding: ImageFragmentBinding, savedInstanceState: Bundle?) {
-        binding.imageImage.apply {
+    override fun onViewCreated(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
+        binding.myImage.apply {
             showDataFromLogo()
             showProgressIndicator(SectorProgressDrawable())
             displayImage(args.url) {
@@ -47,12 +47,12 @@ class ImageFragment : BaseBindingFragment<ImageFragmentBinding>() {
             }
         }
 
-        binding.imageState.apply {
-            binding.imageImage.requestState.loadState
+        binding.smallState.apply {
+            binding.myImage.requestState.loadState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, Lifecycle.State.STARTED) {
                     if (it is Error) {
                         errorWithRetry {
-                            SketchUtils.restart(binding.imageImage)
+                            SketchUtils.restart(binding.myImage)
                         }
                     } else {
                         gone()

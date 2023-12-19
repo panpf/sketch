@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.github.panpf.zoomimage.SketchZoomImageView
+        android:id="@+id/zoomImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/app_name"
+        tools:src="@mipmap/ic_launcher" />
+
+    <com.github.panpf.sketch.sample.widget.SmallStateView
+        android:id="@+id/smallState"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>
