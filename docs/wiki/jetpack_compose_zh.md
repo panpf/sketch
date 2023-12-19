@@ -150,29 +150,19 @@ DisplayRequest 会作为 AsyncImage 和 SubcomposeAsyncImage 的参数时会因�
 
 因此你必须通过 AsyncImageState 来代替 listener、ProgressListener、target 属性
 
-### Observing AsyncImageState.painterState
+### Size
 
-图像请求需要一个大小来确定输出图像的尺寸。默认情况下，AsyncImage 和 AsyncImagePainter
-在合成发生后，在绘制第一帧之前解析请求的大小。它以这种方式解决以最大限度地提高性能。
+图像请求需要一个大小来确定输出图像的尺寸。默认情况下，AsyncImage 在确定尺寸时解析请求的大小，而单独使用 AsyncImagePainter
+在将绘制第一帧时解析请求的大小。它以这种方式解决以最大限度地提高性能。
 
-这意味着 AsyncImageState.painterState 将为第一个合成加载 - 即使图像存在于内存缓存中并且它将在第一帧中绘制。
-
-如果你需要 AsyncImageState.painterState 在第一次合成期间保持最新，请使用 SubcomposeAsyncImage 或使用
-DisplayRequest.Builder.resizeSize 为图像请求设置自定义大小。例如，在此示例中，AsyncImageState.painterState
-在第一次合成期间将始终是最新的：
+你可以主动设置 resizeSize 避免图像请求等待确定组件大小来进一步提高性能，如下：
 
 ```kotlin
-val state = rememberAsyncImageState()
 val painter = rememberAsyncImagePainter(
     rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
         resizeSize(100, 100)
-    },
-    state = state,
+    }
 )
-
-if (state.painterState is PainterState.Success) {
-    // 如果图像在内存缓存中，这将在第一次合成期间执行。
-}
 
 Image(
     painter = painter,

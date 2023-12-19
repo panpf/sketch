@@ -131,7 +131,7 @@ when (loadState) {
     is Success -> {}
     is Error -> {}
     is Canceled -> {}
-    else -> { 
+    else -> {
         // null
     }
 }
@@ -161,32 +161,22 @@ reorganization is triggered because its equals result is false.
 
 Therefore you must pass AsyncImageState instead of listener, ProgressListener, target attributes
 
-### Observing AsyncImageState.painterState
+### Size
 
 The image request requires a size to determine the dimensions of the output image. By default,
-AsyncImage and AsyncImagePainter parse the requested size before drawing the first frame after
-compositing occurs. It's solved this way to maximize performance.
+AsyncImage resolves the requested size when determining dimensions, whereas AsyncImagePainter alone
+resolves the requested size when the first frame will be drawn. It's solved this way to maximize
+performance.
 
-This means that AsyncImageState.painterState will be loaded for the first composition - even though
-the image exists in the memory cache and it will be drawn on the first frame.
-
-If you need AsyncImageState.painterState to stay current during the first composition, use
-SubcomposeAsyncImage or use DisplayRequest.Builder.resizeSize to set a custom size for the image
-request. For example, in this example, AsyncImageState.painterState will always be up to date during
-the first composition:
+You can further improve performance by proactively setting resizeSize to avoid image requests
+waiting to determine component size, as follows:
 
 ```kotlin
-val state = rememberAsyncImageState()
 val painter = rememberAsyncImagePainter(
     rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
         resizeSize(100, 100)
-    },
-    state = state,
+    }
 )
-
-if (state.painterState is PainterState.Success) {
-    // If the image is in the memory cache, this will be performed during the first composition.
-}
 
 Image(
     painter = painter,
