@@ -28,6 +28,7 @@ import android.widget.ImageView.ScaleType
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
@@ -62,6 +63,7 @@ import com.github.panpf.sketch.util.ifOrNull
  * An immutable image request that contains all the required parameters,
  * you need to use its three concrete implementations [DisplayRequest], [LoadRequest], [DownloadRequest]
  */
+@Stable
 interface ImageRequest {
 
     /** App Context */

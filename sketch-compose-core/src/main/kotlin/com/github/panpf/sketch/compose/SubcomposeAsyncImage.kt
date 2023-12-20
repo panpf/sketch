@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.LayoutScopeMarker
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -85,6 +86,7 @@ import com.github.panpf.sketch.request.DisplayRequest
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun SubcomposeAsyncImage(
     imageUri: String?,
     contentDescription: String?,
@@ -144,6 +146,7 @@ fun SubcomposeAsyncImage(
  * @param content A callback to draw the content inside an [SubcomposeAsyncImageScope].
  */
 @Composable
+@NonRestartableComposable
 fun SubcomposeAsyncImage(
     imageUri: String?,
     contentDescription: String?,
@@ -202,6 +205,7 @@ fun SubcomposeAsyncImage(
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun SubcomposeAsyncImage(
     request: DisplayRequest,
     contentDescription: String?,

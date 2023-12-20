@@ -19,6 +19,7 @@ import android.content.ComponentCallbacks2
 import android.content.Context
 import android.net.ConnectivityManager.NetworkCallback
 import androidx.annotation.AnyThread
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.DiskCache
@@ -90,6 +91,7 @@ import kotlin.math.roundToLong
  * Sketch is designed to be sharable and works best when the same instance is used throughout the
  * application via the built-in extension function `Context.sketch`
  */
+@Stable
 class Sketch private constructor(
     _context: Context,
     _logger: Logger?,

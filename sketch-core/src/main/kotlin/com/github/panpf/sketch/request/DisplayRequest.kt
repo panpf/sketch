@@ -23,6 +23,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
@@ -72,6 +73,7 @@ fun DisplayRequest(
  *
  * [Target] can only be [DisplayTarget], [ImageResult] can only be [DisplayResult]
  */
+@Stable
 interface DisplayRequest : ImageRequest {
 
     override fun newBuilder(

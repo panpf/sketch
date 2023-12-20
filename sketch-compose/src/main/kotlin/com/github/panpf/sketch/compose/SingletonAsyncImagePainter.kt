@@ -19,6 +19,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
 import androidx.compose.ui.graphics.painter.Painter
@@ -57,6 +58,7 @@ import com.github.panpf.sketch.sketch
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun rememberAsyncImagePainter(
     imageUri: String?,
     state: AsyncImageState = rememberAsyncImageState(),
@@ -106,6 +108,7 @@ fun rememberAsyncImagePainter(
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun rememberAsyncImagePainter(
     imageUri: String?,
     state: AsyncImageState = rememberAsyncImageState(),
@@ -151,6 +154,7 @@ fun rememberAsyncImagePainter(
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun rememberAsyncImagePainter(
     request: DisplayRequest,
     state: AsyncImageState = rememberAsyncImageState(),
@@ -201,6 +205,7 @@ fun rememberAsyncImagePainter(
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun rememberAsyncImagePainter(
     request: DisplayRequest,
     state: AsyncImageState = rememberAsyncImageState(),

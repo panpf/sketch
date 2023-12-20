@@ -23,6 +23,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
   AsyncImage, AsyncImagePainter, SubcomposeAsyncImage, add a `state: AsyncImageState` parameter to
   them, through
   AsyncImageState can observe image loading state and results and restart loading
+* improve: To improve performance, mark DisplayRequest and Sketch as @Stable and overloaded composable functions as @NonRestartableComposable
 
 #### sketch-extensions:
 

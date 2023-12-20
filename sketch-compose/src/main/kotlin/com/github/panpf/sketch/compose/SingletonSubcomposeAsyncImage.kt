@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -56,6 +57,7 @@ import com.github.panpf.sketch.sketch
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun SubcomposeAsyncImage(
     imageUri: String?,
     contentDescription: String?,
@@ -118,6 +120,7 @@ fun SubcomposeAsyncImage(
  * @param content A callback to draw the content inside an [SubcomposeAsyncImageScope].
  */
 @Composable
+@NonRestartableComposable
 fun SubcomposeAsyncImage(
     imageUri: String?,
     contentDescription: String?,
@@ -174,6 +177,7 @@ fun SubcomposeAsyncImage(
  *  destination.
  */
 @Composable
+@NonRestartableComposable
 fun SubcomposeAsyncImage(
     request: DisplayRequest,
     contentDescription: String?,
@@ -236,6 +240,7 @@ fun SubcomposeAsyncImage(
  * @param content A callback to draw the content inside an [SubcomposeAsyncImageScope].
  */
 @Composable
+@NonRestartableComposable
 fun SubcomposeAsyncImage(
     request: DisplayRequest,
     contentDescription: String?,

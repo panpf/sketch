@@ -21,6 +21,7 @@
 * change: 重构
   AsyncImage、AsyncImagePainter、SubcomposeAsyncImage，给他们增加了一个 `state: AsyncImageState` 参数，通过
   AsyncImageState 可以观察图像加载状态和结果以及重启加载
+* improve: 提高性能，将 DisplayRequest 和 Sketch 标记为 @Stable，重载可组合函数标记为 @NonRestartableComposable  
 
 #### sketch-extensions:
 

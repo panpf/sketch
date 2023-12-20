@@ -51,6 +51,7 @@ dependencies {
     api(libs.androidx.core)
     api(libs.androidx.exifinterface)
     api(libs.androidx.lifecycle.runtime)
+    compileOnly(libs.composeStableMarker)
 
     androidTestImplementation(libs.bundles.test)
     androidTestImplementation(libs.androidx.fragment)
