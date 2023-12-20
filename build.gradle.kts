@@ -32,3 +32,30 @@ allprojects {
         }
     }
 }
+
+/**
+ * Run the `./gradlew assembleRelease -PcomposeCompilerReports=true` command to generate a report,
+ * which is located in the `project/module/build/compose_compiler` directory.
+ *
+ * Interpretation of the report: https://developer.android.com/jetpack/compose/performance/stability/diagnose#kotlin
+ */
+subprojects {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            // Enable Compose Compiler Report
+            if (project.findProperty("composeCompilerReports") == "true") {
+                freeCompilerArgs += listOf(
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.buildDir.absolutePath}/compose_compiler"
+                )
+            }
+            // Enable Compose Compiler Metrics
+            if (project.findProperty("composeCompilerMetrics") == "true") {
+                freeCompilerArgs += listOf(
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.buildDir.absolutePath}/compose_compiler"
+                )
+            }
+        }
+    }
+}
