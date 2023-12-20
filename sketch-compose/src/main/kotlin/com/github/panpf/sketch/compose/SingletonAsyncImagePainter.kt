@@ -71,6 +71,7 @@ fun rememberAsyncImagePainter(
 ): AsyncImagePainter = rememberAsyncImagePainter(
     imageUri = imageUri,
     sketch = LocalContext.current.sketch,
+    state = state,
     placeholder = placeholder,
     uriEmpty = uriEmpty,
     onLoading = onLoading,
@@ -115,6 +116,7 @@ fun rememberAsyncImagePainter(
 ): AsyncImagePainter = rememberAsyncImagePainter(
     imageUri = imageUri,
     sketch = LocalContext.current.sketch,
+    state = state,
     transform = transform,
     onPainterState = onPainterState,
     contentScale = contentScale,
@@ -163,6 +165,7 @@ fun rememberAsyncImagePainter(
 ): AsyncImagePainter = rememberAsyncImagePainter(
     request = request,
     sketch = LocalContext.current.sketch,
+    state = state,
     placeholder = placeholder,
     error = error,
     uriEmpty = uriEmpty,
@@ -208,6 +211,7 @@ fun rememberAsyncImagePainter(
 ): AsyncImagePainter = rememberAsyncImagePainter(
     request = request,
     sketch = LocalContext.current.sketch,
+    state = state,
     transform = transform,
     onPainterState = onPainterState,
     contentScale = contentScale,
