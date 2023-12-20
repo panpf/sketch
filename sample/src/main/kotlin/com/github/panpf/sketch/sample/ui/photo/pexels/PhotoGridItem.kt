@@ -32,7 +32,6 @@ import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.createMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.letIf
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
@@ -119,7 +118,6 @@ fun PhotoGridItem(
         0 -> {
             AsyncImage(
                 request = request,
-                sketch = context.sketch,
                 state = imageState,
                 modifier = modifier,
                 contentScale = ContentScale.Crop,
@@ -130,7 +128,6 @@ fun PhotoGridItem(
         1 -> {
             SubcomposeAsyncImage(
                 request = request,
-                sketch = context.sketch,
                 state = imageState,
                 modifier = modifier,
                 contentScale = ContentScale.Crop,
@@ -142,7 +139,6 @@ fun PhotoGridItem(
             Image(
                 painter = rememberAsyncImagePainter(
                     request = request,
-                    sketch = context.sketch,
                     state = imageState,
                     contentScale = ContentScale.Crop
                 ),
