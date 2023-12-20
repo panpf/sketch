@@ -21,14 +21,14 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
-import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.tools4a.test.ktx.getActivitySync
-import com.github.panpf.tools4a.test.ktx.launchActivity
 import com.github.panpf.sketch.displayAssetImage
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResourceImage
 import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.tools4a.test.ktx.getActivitySync
+import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -74,7 +74,7 @@ class SingletonImageViewExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayImage(R.drawable.ic_launcher).job.join()
+            imageView.displayImage(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
@@ -91,7 +91,7 @@ class SingletonImageViewExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayResourceImage(R.drawable.test).job.join()
+            imageView.displayResourceImage(com.github.panpf.sketch.test.utils.R.drawable.test).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
@@ -108,7 +108,10 @@ class SingletonImageViewExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayResourceImage(context.packageName, R.drawable.test).job.join()
+            imageView.displayResourceImage(
+                context.packageName,
+                com.github.panpf.sketch.test.utils.R.drawable.test
+            ).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
 

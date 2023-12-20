@@ -60,38 +60,40 @@ open class DrawableBitmapDecoder constructor(
             )
         }
         val resizeSize = requestContext.resizeSize
-        val dstWidth: Int
-        val dstHeight: Int
         var transformedList: List<String>? = null
-        if (drawable is BitmapDrawable || request.resizeSizeResolver is DisplaySizeResolver) {
-            val imageSize = Size(imageWidth, imageHeight)
-            val precision = request.resizePrecisionDecider.get(
-                imageWidth = imageSize.width,
-                imageHeight = imageSize.height,
-                resizeWidth = resizeSize.width,
-                resizeHeight = resizeSize.height
-            )
-            val inSampleSize = calculateSampleSize(
-                imageSize = imageSize,
-                targetSize = resizeSize,
-                smallerSizeMode = precision.isSmallerSizeMode(),
-                mimeType = null
-            )
-            dstWidth = (imageWidth / inSampleSize.toFloat()).roundToInt()
-            dstHeight = (imageHeight / inSampleSize.toFloat()).roundToInt()
-            if (inSampleSize > 1) {
-                transformedList = listOf(createInSampledTransformed(inSampleSize))
+        val dstSize =
+            if (drawable is BitmapDrawable || request.resizeSizeResolver is DisplaySizeResolver) {
+                val imageSize = Size(imageWidth, imageHeight)
+                val precision = request.resizePrecisionDecider.get(
+                    imageWidth = imageSize.width,
+                    imageHeight = imageSize.height,
+                    resizeWidth = resizeSize.width,
+                    resizeHeight = resizeSize.height
+                )
+                val inSampleSize = calculateSampleSize(
+                    imageSize = imageSize,
+                    targetSize = resizeSize,
+                    smallerSizeMode = precision.isSmallerSizeMode(),
+                    mimeType = null
+                )
+                if (inSampleSize > 1) {
+                    transformedList = listOf(createInSampledTransformed(inSampleSize))
+                }
+                calculateSampledBitmapSize(imageSize, inSampleSize, mimeType)
+            } else {
+                val scale: Float = min(
+                    resizeSize.width / imageWidth.toFloat(),
+                    resizeSize.height / imageHeight.toFloat()
+                )
+                if (scale != 1f) {
+                    transformedList = listOf(createScaledTransformed(scale))
+                }
+                Size(
+                    width = (imageWidth * scale).roundToInt(),
+                    height = (imageHeight * scale).roundToInt()
+                )
             }
-        } else {
-            val scale: Float =
-                min(resizeSize.width / imageWidth.toFloat(), resizeSize.height / imageHeight.toFloat())
-            dstWidth = (imageWidth * scale).roundToInt()
-            dstHeight = (imageHeight * scale).roundToInt()
-            if (scale != 1f) {
-                transformedList = listOf(createScaledTransformed(scale))
-            }
-        }
-        val targetSize = Size(width = dstWidth, height = dstHeight)
+        val targetSize = Size(width = dstSize.width, height = dstSize.height)
         val bitmap = drawable.toNewBitmap(
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = request.disallowReuseBitmap,

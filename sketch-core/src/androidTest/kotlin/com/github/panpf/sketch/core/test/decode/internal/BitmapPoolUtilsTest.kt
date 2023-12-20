@@ -23,12 +23,11 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.setInBitmap
 import com.github.panpf.sketch.decode.internal.setInBitmapForRegion
-import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
@@ -372,7 +371,7 @@ class BitmapPoolUtilsTest {
         Assert.assertEquals(0, bitmapPool.size)
 
         val resources = getTestContext().resources
-        bitmapPool.freeBitmap(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher))
+        bitmapPool.freeBitmap(BitmapFactory.decodeResource(resources, com.github.panpf.sketch.test.utils.R.drawable.ic_launcher))
         Thread.sleep(100)
         Assert.assertEquals(0, bitmapPool.size)
 

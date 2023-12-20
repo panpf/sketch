@@ -18,6 +18,8 @@ package com.github.panpf.sketch.core.test.fetch
 import android.content.res.Resources
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
@@ -25,9 +27,6 @@ import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -103,7 +102,7 @@ class ResourceUriFetcherTest {
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
         val androidResUriByName = newResourceUri(testAppPackage, "drawable", "ic_launcher")
-        val androidResUriById = newResourceUri(testAppPackage, R.drawable.ic_launcher)
+        val androidResUriById = newResourceUri(testAppPackage, com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
@@ -157,7 +156,7 @@ class ResourceUriFetcherTest {
         }
         assertNoThrow {
             runBlocking {
-                newResourceUri(R.drawable.ic_launcher).let {
+                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
@@ -172,7 +171,7 @@ class ResourceUriFetcherTest {
         }
         assertNoThrow {
             runBlocking {
-                newResourceUri(context.packageName, R.drawable.ic_launcher).let {
+                newResourceUri(context.packageName, com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
@@ -187,7 +186,7 @@ class ResourceUriFetcherTest {
         }
         assertNoThrow {
             runBlocking {
-                context.newResourceUri(R.drawable.ic_launcher).let {
+                context.newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
@@ -235,14 +234,14 @@ class ResourceUriFetcherTest {
 
         Assert.assertTrue(
             runBlocking {
-                newResourceUri(R.drawable.ic_launcher).let {
+                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow().dataSource is DrawableDataSource
         )
         Assert.assertTrue(
             runBlocking {
-                newResourceUri(R.raw.sample).let {
+                newResourceUri(com.github.panpf.sketch.test.utils.R.raw.sample).let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow().dataSource is ResourceDataSource

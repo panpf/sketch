@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.panpf.sketch.test"
+    namespace = "com.github.panpf.sketch.test.utils"
     compileSdk = property("compileSdk").toString().toInt()
 
     defaultConfig {

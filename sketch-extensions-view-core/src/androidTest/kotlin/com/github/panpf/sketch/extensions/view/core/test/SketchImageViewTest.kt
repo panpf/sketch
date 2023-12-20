@@ -36,9 +36,9 @@ import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
-import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyCondition
+import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
@@ -132,7 +132,10 @@ class SketchImageViewTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketchImageView = SketchImageView(context)
 
-        Assert.assertNull(sketchImageView.getDisplayListener())
+        sketchImageView.getDisplayListener().apply {
+            Assert.assertTrue(this is Listeners)
+            Assert.assertEquals(listOf(sketchImageView.requestState), (this as Listeners).listenerList)
+        }
 
         val listener1 = object : Listener<DisplayRequest, Success, Error> {}
         val listener2 = object : Listener<DisplayRequest, Success, Error> {}
@@ -140,19 +143,19 @@ class SketchImageViewTest {
         sketchImageView.registerDisplayListener(listener1)
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(listOf(listener1), (this as Listeners).listenerList)
+            Assert.assertEquals(listOf(sketchImageView.requestState, listener1), (this as Listeners).listenerList)
         }
 
         sketchImageView.unregisterDisplayListener(listener2)
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(listOf(listener1), (this as Listeners).listenerList)
+            Assert.assertEquals(listOf(sketchImageView.requestState, listener1), (this as Listeners).listenerList)
         }
 
         sketchImageView.registerDisplayListener(listener2)
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(listOf(listener1, listener2), (this as Listeners).listenerList)
+            Assert.assertEquals(listOf(sketchImageView.requestState, listener1, listener2), (this as Listeners).listenerList)
         }
 
         sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(context.sketch, true)
@@ -162,7 +165,7 @@ class SketchImageViewTest {
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
-                listOf(listener1, listener2, viewAbilityDisplayListener),
+                listOf(sketchImageView.requestState, listener1, listener2, viewAbilityDisplayListener),
                 (this as Listeners).listenerList
             )
         }
@@ -171,7 +174,7 @@ class SketchImageViewTest {
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
-                listOf(listener2, viewAbilityDisplayListener),
+                listOf(sketchImageView.requestState, listener2, viewAbilityDisplayListener),
                 (this as Listeners).listenerList
             )
         }
@@ -180,13 +183,16 @@ class SketchImageViewTest {
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
-                listOf(viewAbilityDisplayListener),
+                listOf(sketchImageView.requestState, viewAbilityDisplayListener),
                 (this as Listeners).listenerList
             )
         }
 
         sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(context.sketch, false)
-        Assert.assertNull(sketchImageView.getDisplayListener())
+        sketchImageView.getDisplayListener().apply {
+            Assert.assertTrue(this is Listeners)
+            Assert.assertEquals(listOf(sketchImageView.requestState), (this as Listeners).listenerList)
+        }
     }
 
     @Test

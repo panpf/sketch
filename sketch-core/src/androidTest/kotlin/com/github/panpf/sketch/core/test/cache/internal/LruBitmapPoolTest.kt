@@ -25,7 +25,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
-import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
@@ -57,18 +56,21 @@ class LruBitmapPoolTest {
                         allowedConfigs.toString()
                     )
                 }
+
                 VERSION.SDK_INT >= 26 -> {
                     Assert.assertEquals(
                         "[null, ALPHA_8, RGB_565, ARGB_4444, ARGB_8888, RGBA_F16, HARDWARE]",
                         allowedConfigs.toString()
                     )
                 }
+
                 VERSION.SDK_INT >= 19 -> {
                     Assert.assertEquals(
                         "[null, ALPHA_8, RGB_565, ARGB_4444, ARGB_8888]",
                         allowedConfigs.toString()
                     )
                 }
+
                 else -> {
                     Assert.assertEquals(
                         "[ALPHA_8, RGB_565, ARGB_4444, ARGB_8888]",
@@ -121,7 +123,14 @@ class LruBitmapPoolTest {
 
             // !bitmap.isMutable
             val resources = getTestContext().resources
-            Assert.assertFalse(put(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)))
+            Assert.assertFalse(
+                put(
+                    BitmapFactory.decodeResource(
+                        resources,
+                        com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+                    )
+                )
+            )
             Assert.assertEquals("3MB", size.formatFileSize())
 
             // bitmapSize > maxSize

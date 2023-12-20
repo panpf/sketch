@@ -23,8 +23,8 @@ import android.graphics.drawable.VectorDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.getDrawableCompat
@@ -73,7 +73,7 @@ class ContextsTest {
 
         context.getXmlDrawableCompat(
             context.resources,
-            com.github.panpf.sketch.test.R.drawable.ic_cloudy
+            com.github.panpf.sketch.test.utils.R.drawable.ic_cloudy
         ).apply {
             if (Build.VERSION.SDK_INT >= 24) {
                 Assert.assertTrue(this is VectorDrawable)
@@ -84,7 +84,7 @@ class ContextsTest {
 
         context.getXmlDrawableCompat(
             context.resources,
-            com.github.panpf.sketch.test.R.drawable.test_error
+            com.github.panpf.sketch.test.utils.R.drawable.test_error
         ).apply {
             Assert.assertTrue(this is GradientDrawable)
         }
@@ -92,7 +92,7 @@ class ContextsTest {
         if (Build.VERSION.SDK_INT >= 24) {
             context.getXmlDrawableCompat(
                 context.resources,
-                com.github.panpf.sketch.test.R.drawable.ic_launcher
+                com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
             ).apply {
                 Assert.assertTrue(this is BitmapDrawable)
             }
@@ -100,7 +100,7 @@ class ContextsTest {
             assertThrow(Resources.NotFoundException::class) {
                 context.getXmlDrawableCompat(
                     context.resources,
-                    com.github.panpf.sketch.test.R.drawable.ic_launcher
+                    com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
                 )
             }
         }

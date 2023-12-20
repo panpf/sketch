@@ -20,6 +20,8 @@ import android.graphics.Rect
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
+import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
@@ -36,15 +38,12 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.singleton.sketch
-import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
 import com.github.panpf.sketch.test.utils.cornerB
 import com.github.panpf.sketch.test.utils.cornerC
 import com.github.panpf.sketch.test.utils.cornerD
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
@@ -82,25 +81,29 @@ class ExifOrientationHelperTest {
             ).readExifOrientation()
         )
 
-        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files().forEach {
-            Assert.assertEquals(
-                it.exifOrientation,
-                FileDataSource(
-                    sketch,
-                    LoadRequest(context, it.file.path),
-                    it.file
-                ).readExifOrientation()
-            )
-        }
+        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files()
+            .forEach {
+                Assert.assertEquals(
+                    it.exifOrientation,
+                    FileDataSource(
+                        sketch,
+                        LoadRequest(context, it.file.path),
+                        it.file
+                    ).readExifOrientation()
+                )
+            }
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                LoadRequest(
+                    context,
+                    newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
+                ),
                 packageName = context.packageName,
                 context.resources,
-                R.xml.network_security_config
+                com.github.panpf.sketch.test.utils.R.xml.network_security_config
             ).readExifOrientation()
         )
     }
@@ -133,27 +136,31 @@ class ExifOrientationHelperTest {
             ).readExifOrientationWithMimeType("image/webp")
         )
 
-        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files().forEach {
-            Assert.assertEquals(
-                it.exifOrientation,
-                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
-                    .readExifOrientationWithMimeType("image/jpeg")
-            )
-            Assert.assertEquals(
-                ExifInterface.ORIENTATION_UNDEFINED,
-                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
-                    .readExifOrientationWithMimeType("image/bmp")
-            )
-        }
+        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files()
+            .forEach {
+                Assert.assertEquals(
+                    it.exifOrientation,
+                    FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                        .readExifOrientationWithMimeType("image/jpeg")
+                )
+                Assert.assertEquals(
+                    ExifInterface.ORIENTATION_UNDEFINED,
+                    FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                        .readExifOrientationWithMimeType("image/bmp")
+                )
+            }
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                LoadRequest(
+                    context,
+                    newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
+                ),
                 packageName = context.packageName,
                 context.resources,
-                R.xml.network_security_config
+                com.github.panpf.sketch.test.utils.R.xml.network_security_config
             ).readExifOrientationWithMimeType("image/jpeg")
         )
     }

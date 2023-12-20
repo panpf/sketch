@@ -31,7 +31,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.test.singleton.sketch
-import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.dimen.ktx.dp2px
@@ -55,7 +54,7 @@ class DrawableBitmapDecoderTest {
         Assert.assertEquals("DrawableBitmapDecoder", factory.toString())
 
         // normal
-        LoadRequest(context, newResourceUri(R.drawable.test)).let {
+        LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)).let {
             val fetcher = sketch.components.newFetcherOrThrow(it)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             factory.create(sketch, it.toRequestContext(), fetchResult)
@@ -140,7 +139,7 @@ class DrawableBitmapDecoderTest {
 //            Assert.assertNull(transformedList)
 //        }
 
-        LoadRequest(context, newResourceUri(R.drawable.test)) {
+        LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)) {
             resize(imageWidth / 2, imageWidth / 2)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
@@ -157,7 +156,7 @@ class DrawableBitmapDecoderTest {
                 "Bitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888)",
                 bitmap.toShortInfoString()
             )
-            Assert.assertEquals(listOf(createScaledTransformed(0.5f)), transformedList)
+            Assert.assertEquals(listOf(createScaledTransformed(scale)), transformedList)
             Assert.assertEquals(
                 "ImageInfo(${imageWidth}x${imageHeight},'text/xml',UNDEFINED)",
                 imageInfo.toShortString()
@@ -165,7 +164,7 @@ class DrawableBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
         }
 
-        LoadRequest(context, newResourceUri(R.drawable.test)) {
+        LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)) {
             resize(imageWidth * 2, imageWidth * 2)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(this)

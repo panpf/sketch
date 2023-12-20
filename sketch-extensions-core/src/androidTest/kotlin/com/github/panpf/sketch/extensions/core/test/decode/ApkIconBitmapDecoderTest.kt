@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.extensions.core.test.decode
 
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ComponentRegistry
@@ -24,6 +25,7 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
+import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportApkIcon
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -42,6 +44,9 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.math.ceil
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 @RunWith(AndroidJUnit4::class)
 class ApkIconBitmapDecoderTest {
@@ -206,20 +211,33 @@ class ApkIconBitmapDecoderTest {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }.getOrThrow()
         }.apply {
-            val bitmapSize = samplingByTarget(iconDrawable.intrinsicSize, Size(100, 100))
-            Assert.assertEquals(
-                "Bitmap(${bitmapSize.height}x${bitmapSize.height},ARGB_8888)",
-                bitmap.toShortInfoString()
-            )
+            if (iconDrawable is BitmapDrawable) {
+                val bitmapSize =
+                    samplingByTarget(iconDrawable.intrinsicSize, Size(100, 100), imageInfo.mimeType)
+                Assert.assertEquals(
+                    "Bitmap(${bitmapSize.height}x${bitmapSize.height},ARGB_8888)",
+                    bitmap.toShortInfoString()
+                )
+                Assert.assertEquals(
+                    listOf(createInSampledTransformed(2)),
+                    transformedList
+                )
+            } else {
+                val scale = min(
+                    100 / iconDrawable.intrinsicWidth.toFloat(),
+                    100 / iconDrawable.intrinsicHeight.toFloat()
+                )
+                Assert.assertEquals(
+                    "Bitmap(${(iconDrawable.intrinsicWidth * scale).roundToInt()}x${(iconDrawable.intrinsicHeight * scale).roundToInt()},ARGB_8888)",
+                    bitmap.toShortInfoString()
+                )
+                Assert.assertEquals(listOf(createScaledTransformed(scale)), transformedList)
+            }
             Assert.assertEquals(
                 "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png',UNDEFINED)",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(
-                listOf(createInSampledTransformed(2)),
-                transformedList
-            )
         }
 
         LoadRequest(context, apkFilePath) {
@@ -232,7 +250,7 @@ class ApkIconBitmapDecoderTest {
             }.getOrThrow()
         }.apply {
             Assert.assertEquals(
-                "Bitmap(${iconDrawable.intrinsicWidth/2}x${iconDrawable.intrinsicHeight},ARGB_8888)",
+                "Bitmap(${ceil(iconDrawable.intrinsicWidth / 2f).toInt()}x${iconDrawable.intrinsicHeight},ARGB_8888)",
                 bitmap.toShortInfoString()
             )
             Assert.assertEquals(
@@ -241,7 +259,16 @@ class ApkIconBitmapDecoderTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
-                listOf(createResizeTransformed(Resize(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight * 2, SAME_ASPECT_RATIO, CENTER_CROP))),
+                listOf(
+                    createResizeTransformed(
+                        Resize(
+                            iconDrawable.intrinsicWidth,
+                            iconDrawable.intrinsicHeight * 2,
+                            SAME_ASPECT_RATIO,
+                            CENTER_CROP
+                        )
+                    )
+                ),
                 transformedList
             )
         }

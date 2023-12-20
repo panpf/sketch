@@ -17,12 +17,11 @@ package com.github.panpf.sketch.core.test.datasource
 
 import android.content.res.Resources
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.R
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -34,17 +33,17 @@ class ResourceDataSourceTest {
     @Test
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher))
+        val request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher))
         ResourceDataSource(
             sketch = sketch,
             request = request,
             packageName = context.packageName,
             resources = context.resources,
-            resId = R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertEquals(R.drawable.ic_launcher, this.resId)
+            Assert.assertEquals(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher, this.resId)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
         }
     }
@@ -54,10 +53,10 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
+            request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)),
             packageName = context.packageName,
             resources = context.resources,
-            resId = R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
         ).apply {
             newInputStream().close()
         }
@@ -80,10 +79,10 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
+            request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)),
             packageName = context.packageName,
             resources = context.resources,
-            resId = R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
         ).apply {
             val file = getFile()
             Assert.assertEquals("d8613eafa03919093537960a44c4f919.0", file.name)
@@ -95,13 +94,13 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newResourceUri(R.drawable.ic_launcher)),
+            request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)),
             packageName = context.packageName,
             resources = context.resources,
-            resId = R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
         ).apply {
             Assert.assertEquals(
-                "ResourceDataSource(${R.drawable.ic_launcher})",
+                "ResourceDataSource(${com.github.panpf.sketch.test.utils.R.drawable.ic_launcher})",
                 toString()
             )
         }

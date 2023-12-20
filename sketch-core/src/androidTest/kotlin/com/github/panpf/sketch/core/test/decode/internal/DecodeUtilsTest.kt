@@ -67,7 +67,6 @@ import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssets
@@ -1471,10 +1470,13 @@ class DecodeUtilsTest {
 
         ResourceDataSource(
             sketch,
-            LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+            LoadRequest(
+                context,
+                newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
+            ),
             packageName = context.packageName,
             context.resources,
-            R.xml.network_security_config
+            com.github.panpf.sketch.test.utils.R.xml.network_security_config
         ).readImageInfoWithBitmapFactory().apply {
             Assert.assertEquals(-1, width)
             Assert.assertEquals(-1, height)
@@ -1521,10 +1523,13 @@ class DecodeUtilsTest {
         assertThrow(ImageInvalidException::class) {
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                LoadRequest(
+                    context,
+                    newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
+                ),
                 packageName = context.packageName,
                 context.resources,
-                R.xml.network_security_config
+                com.github.panpf.sketch.test.utils.R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrThrow()
         }
 
@@ -1568,10 +1573,13 @@ class DecodeUtilsTest {
         Assert.assertNull(
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                LoadRequest(
+                    context,
+                    newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
+                ),
                 packageName = context.packageName,
                 context.resources,
-                R.xml.network_security_config
+                com.github.panpf.sketch.test.utils.R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrNull()
         )
 
@@ -1614,10 +1622,13 @@ class DecodeUtilsTest {
         Assert.assertNull(
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                LoadRequest(
+                    context,
+                    newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
+                ),
                 packageName = context.packageName,
                 context.resources,
-                R.xml.network_security_config
+                com.github.panpf.sketch.test.utils.R.xml.network_security_config
             ).decodeBitmap()
         )
     }
@@ -1650,10 +1661,13 @@ class DecodeUtilsTest {
         assertThrow(IOException::class) {
             ResourceDataSource(
                 sketch,
-                LoadRequest(context, newResourceUri(R.xml.network_security_config)),
+                LoadRequest(
+                    context,
+                    newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
+                ),
                 packageName = context.packageName,
                 context.resources,
-                R.xml.network_security_config
+                com.github.panpf.sketch.test.utils.R.xml.network_security_config
             ).decodeRegionBitmap(Rect(500, 500, 600, 600))
         }
     }
