@@ -43,6 +43,8 @@ import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
+import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
 import com.github.panpf.sketch.sample.ui.viewer.view.ImageViewerFragment.ItemFactory
@@ -67,6 +69,8 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
     private val viewModel by viewModels<ImagePagerViewModel>()
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
+
+    override var statusBarTextStyle: StatusBarTextStyle? = White
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(

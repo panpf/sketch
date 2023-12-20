@@ -32,6 +32,8 @@ import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
+import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -50,9 +52,10 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
     private val args by navArgs<ImageViewerFragmentArgs>()
     private val requestState = DisplayRequestState()
 
-    override fun onViewCreated(binding: FragmentImageViewerBinding, savedInstanceState: Bundle?) {
-        binding.root.background = null
+    override var statusBarTextStyle: StatusBarTextStyle? = White
+    override var isPage = false
 
+    override fun onViewCreated(binding: FragmentImageViewerBinding, savedInstanceState: Bundle?) {
         binding.zoomImage.apply {
             appSettingsService.scrollBarEnabled.stateFlow
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {

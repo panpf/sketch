@@ -51,6 +51,9 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
+        toolbar.title = getString(R.string.app_name)
+        toolbar.subtitle = BuildConfig.VERSION_NAME
+
         toolbar.menu.add(0, 0, 0, "Settings").apply {
             setIcon(R.drawable.ic_settings)
             setOnMenuItemClickListener {

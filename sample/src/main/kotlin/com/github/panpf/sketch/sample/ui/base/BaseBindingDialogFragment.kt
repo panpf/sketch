@@ -39,6 +39,7 @@ abstract class BaseBindingDialogFragment<VIEW_BINDING : ViewBinding> : DialogFra
         setStyle(STYLE_NO_TITLE, 0)
     }
 
+    @Suppress("UNCHECKED_CAST")
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

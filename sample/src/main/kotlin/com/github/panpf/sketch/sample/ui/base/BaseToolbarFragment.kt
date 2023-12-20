@@ -24,7 +24,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
 import com.github.panpf.sketch.sample.databinding.FragmentToolbarPageBinding
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
-import kotlinx.serialization.json.JsonNull.content
 
 abstract class BaseToolbarFragment : BaseFragment() {
 
@@ -35,18 +34,18 @@ abstract class BaseToolbarFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentToolbarPageBinding.inflate(inflater, container, false).apply {
-        setTransparentStatusBar(toolbar)
+        compatibleTransparentStatusBar(toolbar)
         this@BaseToolbarFragment.toolbar = toolbar
 
         val view = createView(toolbar, inflater, content)
         content.addView(view)
     }.root
 
-    private fun setTransparentStatusBar(toolbar: Toolbar) {
+    private fun compatibleTransparentStatusBar(toolbar: Toolbar) {
         val window = requireActivity().window
         @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-            && window.decorView.systemUiVisibility == View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            && (window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) != 0
         ) {
             toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 topMargin += requireContext().getStatusBarHeight()
@@ -57,7 +56,7 @@ abstract class BaseToolbarFragment : BaseFragment() {
     protected abstract fun createView(
         toolbar: Toolbar,
         inflater: LayoutInflater,
-        parent: ViewGroup?
+        container: ViewGroup
     ): View
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

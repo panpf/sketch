@@ -9,7 +9,7 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
-        android:background="@drawable/bg_dialog_translucent"
+        android:background="@drawable/bg_dialog"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -17,8 +17,7 @@
             android:id="@+id/errorIconImage"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@drawable/ic_error"
-            app:tint="@android:color/white" />
+            app:srcCompat="@drawable/ic_error"/>
 
         <TextView
             android:id="@+id/errorMessageText"
@@ -28,17 +27,14 @@
             android:gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="Display failure"
-            android:textColor="@android:color/white" />
+            android:text="Display failure" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/errorActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Retry"
-            android:textColor="@android:color/white"
-            app:backgroundTint="@color/colorAccent" />
+            android:text="Retry" />
     </LinearLayout>
 
     <FrameLayout

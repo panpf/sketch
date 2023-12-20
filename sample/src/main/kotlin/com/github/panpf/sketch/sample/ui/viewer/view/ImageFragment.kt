@@ -36,6 +36,8 @@ class ImageFragment : BaseBindingFragment<FragmentImageBinding>() {
 
     private val args by navArgs<ImageFragmentArgs>()
 
+    override var isPage = false
+
     override fun onViewCreated(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         binding.myImage.apply {
             showDataFromLogo()

@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.ComposeView
 
 abstract class BaseComposeFragment : BaseFragment() {
 
-    override fun onCreateView(
+    final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?

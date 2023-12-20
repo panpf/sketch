@@ -21,7 +21,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:text="@string/text_loading"
-            android:textColor="@color/text_normal"
             android:textSize="12sp"
             tools:ignore="RtlHardcoded" />
     </LinearLayout>
@@ -33,7 +32,6 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/text_load_error"
-        android:textColor="@color/text_normal"
         android:textSize="12sp" />
 
     <TextView
@@ -43,6 +41,5 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/text_load_end"
-        android:textColor="@color/text_normal"
         android:textSize="12sp" />
 </FrameLayout>

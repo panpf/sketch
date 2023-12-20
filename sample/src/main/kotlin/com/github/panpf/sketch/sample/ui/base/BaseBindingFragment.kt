@@ -20,21 +20,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import com.github.panpf.sketch.sample.R
 
 abstract class BaseBindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
 
     private var binding: VIEW_BINDING? = null
 
+    @Suppress("UNCHECKED_CAST")
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = (createViewBinding(inflater, container) as VIEW_BINDING).apply {
         this@BaseBindingFragment.binding = this
-        if (root.background == null) {
-            root.setBackgroundResource(R.color.windowBackground)
-        }
     }.root
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

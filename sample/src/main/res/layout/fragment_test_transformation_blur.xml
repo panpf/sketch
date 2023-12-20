@@ -23,14 +23,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/text_blur_radius"
-            android:textColor="@color/text_normal" />
+            android:text="@string/text_blur_radius"/>
 
         <TextView
             android:id="@+id/valueText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_normal"
             tools:text="34" />
     </LinearLayout>
 
@@ -38,8 +36,8 @@
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp" />
 
@@ -49,8 +47,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:text="Translucent Mask: "
-        android:textColor="@android:color/white" />
+        android:text="Translucent Mask: "/>
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -65,9 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:text="RED"
-            android:textColor="#FFFFFF"
-            app:buttonTint="#FFFFFF" />
+            android:text="RED"/>
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/greenButton"
@@ -75,9 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:text="GREEN"
-            android:textColor="#FFFFFF"
-            app:buttonTint="#FFFFFF" />
+            android:text="GREEN"/>
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/blueButton"
@@ -85,9 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:text="BLUE"
-            android:textColor="#FFFFFF"
-            app:buttonTint="#FFFFFF" />
+            android:text="BLUE"/>
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/noneButton"
@@ -95,8 +86,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:text="NONE"
-            android:textColor="#FFFFFF"
-            app:buttonTint="#FFFFFF" />
+            android:text="NONE"/>
     </RadioGroup>
 </LinearLayout>

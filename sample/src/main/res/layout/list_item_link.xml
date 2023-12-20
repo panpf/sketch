@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_item">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/linkTitleText"
@@ -16,7 +15,6 @@
         android:paddingEnd="20dp"
         android:paddingRight="20dp"
         android:paddingBottom="16dp"
-        android:textColor="@color/text_title"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

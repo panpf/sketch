@@ -22,14 +22,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="URI："
-                android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
                 android:id="@+id/uriText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
                 tools:text="http://sample.com/sample.jpeg" />
         </LinearLayout>
 
@@ -43,14 +41,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Options："
-                android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
                 android:id="@+id/optionsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
                 tools:text="http://sample.com/sample.jpeg" />
         </LinearLayout>
 
@@ -64,14 +60,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Throwable："
-                android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
                 android:id="@+id/throwableText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
                 tools:text="http://sample.com/sample.jpeg" />
         </LinearLayout>
 
@@ -85,14 +79,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Image："
-                android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
                 android:id="@+id/imageInfoText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
                 tools:text="http://sample.com/sample.jpeg" />
         </LinearLayout>
 
@@ -106,14 +98,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Bitmap："
-                android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
                 android:id="@+id/bitmapInfoText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
                 tools:text="http://sample.com/sample.jpeg" />
         </LinearLayout>
 
@@ -127,14 +117,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Drawable："
-                android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
                 android:id="@+id/drawableInfoText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
                 tools:text="http://sample.com/sample.jpeg" />
         </LinearLayout>
 
@@ -148,14 +136,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="DataFrom："
-                android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
                 android:id="@+id/dataFromText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
                 tools:text="http://sample.com/sample.jpeg" />
         </LinearLayout>
 
@@ -169,14 +155,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Transformed："
-                android:textColor="@color/text_subtitle"
                 android:textSize="11dp" />
 
             <TextView
                 android:id="@+id/transformedText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_title"
                 tools:text="http://sample.com/sample.jpeg" />
         </LinearLayout>
     </LinearLayout>

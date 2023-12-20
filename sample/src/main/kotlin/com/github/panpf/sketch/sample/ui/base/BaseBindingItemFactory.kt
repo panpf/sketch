@@ -25,6 +25,7 @@ import kotlin.reflect.KClass
 abstract class BaseBindingItemFactory<DATA : Any, VIEW_BINDING : ViewBinding>(dataClass: KClass<DATA>) :
     BindingItemFactory<DATA, VIEW_BINDING>(dataClass) {
 
+    @Suppress("UNCHECKED_CAST")
     override fun createItemViewBinding(
         context: Context,
         inflater: LayoutInflater,

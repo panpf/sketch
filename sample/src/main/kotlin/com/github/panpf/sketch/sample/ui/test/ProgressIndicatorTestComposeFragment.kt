@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.ui.test
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -74,6 +75,11 @@ class ProgressIndicatorTestComposeFragment : BaseToolbarComposeFragment() {
             sharedElementEnterTransition = TransitionInflater.from(requireContext())
                 .inflateTransition(R.transition.my_move)
         }
+    }
+
+    override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {
+        super.onViewCreated(toolbar, savedInstanceState)
+        toolbar.title = "ProgressIndicator (Compose)"
     }
 
     @Composable

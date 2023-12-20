@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Text" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/text_subtitle</item>
-    </style>
-
     <style name="Settings_Item">
         <item name="android:minHeight">50dp</item>
         <item name="android:paddingLeft">20dp</item>

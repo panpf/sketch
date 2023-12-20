@@ -3,15 +3,9 @@
     <color name="colorPrimary">#2E3440</color>
     <color name="colorPrimaryDark">#2E3440</color>
     <color name="colorAccent">#bf5660</color>
-    <color name="windowBackground">#121212</color>
     <color name="dialogBackground">#2E2E2E</color>
     <color name="dialogBackground_translucent">#EE2E2E2E</color>
 
-    <color name="text_normal">#DDFFFFFF</color>
-    <color name="text_title">#DDFFFFFF</color>
-    <color name="text_subtitle">#99FFFFFF</color>
-
-    <color name="list_item_background_pressed">#33000000</color>
     <color name="placeholder_bg">#393939</color>
     <color name="placeholder_icon">#676767</color>
 </resources>

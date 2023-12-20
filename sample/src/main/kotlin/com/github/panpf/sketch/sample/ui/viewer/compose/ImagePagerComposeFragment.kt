@@ -18,9 +18,7 @@ package com.github.panpf.sketch.sample.ui.viewer.compose
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -60,7 +58,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
@@ -80,6 +77,8 @@ import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
+import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
+import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
@@ -106,21 +105,7 @@ class ImagePagerComposeFragment : BaseComposeFragment() {
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
     private val showInfoEvent = MutableSharedFlow<DisplayResult?>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return super.onCreateView(inflater, container, savedInstanceState).apply {
-            setBackgroundColor(
-                ResourcesCompat.getColor(
-                    requireContext().resources,
-                    R.color.windowBackground,
-                    null
-                )
-            )
-        }
-    }
+    override var statusBarTextStyle: StatusBarTextStyle? = White
 
     @Composable
     override fun DrawContent() {
@@ -289,6 +274,7 @@ private fun PagerBgImage(
             }
         }
     }
+    // todo When the background is switched, it will appear white
     AsyncImage(
         request = DisplayRequest(LocalContext.current, imageUri) {
             resize(

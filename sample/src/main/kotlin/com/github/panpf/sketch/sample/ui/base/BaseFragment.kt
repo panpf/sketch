@@ -15,11 +15,32 @@
  */
 package com.github.panpf.sketch.sample.ui.base
 
+import android.graphics.Color
+import android.os.Bundle
+import android.view.View
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
+import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.Black
+import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.common.ActionResult
+import com.github.panpf.sketch.sample.ui.theme.getWindowBackground
+import com.github.panpf.sketch.sample.ui.theme.isNightMode
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 
 abstract class BaseFragment : Fragment() {
+
+    protected open var statusBarTextStyle: StatusBarTextStyle? = null
+    protected open var isPage: Boolean = true
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (isPage) {
+            view.isClickable = true
+            if (view.background == null) {
+                view.setBackgroundColor(view.context.getWindowBackground())
+            }
+        }
+    }
 
     fun handleActionResult(result: ActionResult): Boolean =
         when (result) {
@@ -27,9 +48,31 @@ abstract class BaseFragment : Fragment() {
                 result.message?.let { showLongToast(it) }
                 true
             }
+
             is ActionResult.Error -> {
                 showLongToast(result.message)
                 false
             }
         }
+
+    override fun onResume() {
+        super.onResume()
+        setupStatusBarTextStyle()
+    }
+
+    private fun setupStatusBarTextStyle() {
+        val insetsController =
+            WindowCompat.getInsetsController(requireActivity().window, requireView())
+        val statusBarTextStyle =
+            statusBarTextStyle ?: if (requireContext().isNightMode()) White else Black
+        requireActivity().window.decorView.apply {
+            insetsController.isAppearanceLightStatusBars = statusBarTextStyle == Black
+//            val textStyleFlag = if (statusBarTextStyle == Black) {
+//                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+//            } else {
+//                View.SYSTEM_UI_FLAG_VISIBLE
+//            }
+//            systemUiVisibility = systemUiVisibility or textStyleFlag
+        }
+    }
 }
