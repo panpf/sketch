@@ -500,11 +500,6 @@ interface DisplayRequest : ImageRequest {
             }
     }
 
-    // todo Consider whether the listener should participate in equals, will trigger recompose in compose
-    // The listener should not participate in equals.
-    // In compose, it will cause equals of DisplayRequest created twice to be false, causing reloading.
-    // Because listeners are generally created using the object keyword,
-    // the DisplayRequest equals obtained by executing the same creation function twice is false.
     data class DisplayRequestImpl internal constructor(
         override val context: Context,
         override val uriString: String,
