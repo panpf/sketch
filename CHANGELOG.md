@@ -2,7 +2,7 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
-# new
+# v3.3.0-beta05
 
 #### sketch
 
@@ -27,11 +27,11 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 #### sketch-extensions:
 
+* deprecated: The `sketch-extensions` module is deprecated and kept for now, now it only depends on
+  the `sketch-extensions-view` module
 * new: Added `sketch-extensions-view` and `sketch-extensions-compose` modules to provide extension
   functions for view and compose respectively
 * new: Provide MimeType logo, DataFrom logo, and progress indicator functions for compose
-* deprecated: The `sketch-extensions` module is deprecated and kept for now, now it only depends on
-  the `sketch-extensions-view` module
 * new: SketchImageView adds a new requestState attribute, which can use flow to monitor the status, results and progress of the request.
 
 #### sketch-gif:
@@ -40,10 +40,10 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > If you use the gif-related classes or functions of the `sketch` module, now you need to
 > additionally depend on the `sketch-gif` module
 
-* new: Add the `sketch-gif` module and move the gif-related code in the `sketch-gif-movie`
-  and `sketch` modules to this module
 * deprecated: Deprecated `sketch-gif-movie` module, retained for now, now it only depends
   on `sketch-gif` module
+* new: Add the `sketch-gif` module and move the gif-related code in the `sketch-gif-movie`
+  and `sketch` modules to this module
 
 # v3.3.0-beta04
 
