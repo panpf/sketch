@@ -26,10 +26,6 @@ object AssetImages {
     val animGif = "asset://sample_anim.gif"
     val animWebp = "asset://sample_anim.webp"
     val animHeif = "asset://sample_anim.heif"
-    val hugeWorld = "asset://sample_huge_world.jpg"
-    val hugeCard = "asset://sample_huge_card.png"
-    val longQmsht = "asset://sample_long_qmsht.jpg"
-    val longComic = "asset://sample_long_comic.jpg"
     val mp4 = "asset://sample.mp4"
     val number1 = "asset://number_1.png"
     val number2 = "asset://number_2.png"
@@ -43,8 +39,14 @@ object AssetImages {
 
     val statics = arrayOf(jpeg, png, webp, bmp, svg, heic)
     val anims = arrayOf(animGif, animWebp, animHeif)
-    val huges = arrayOf(hugeWorld, hugeCard, longQmsht, longComic)
     val videos = arrayOf(mp4)
     val numbers =
         arrayOf(number1, number2, number3, number4, number5, number6, number7, number8, number9)
+
+    // todo add clock_hor.jpeg
+    // todo add clock_ver.jpeg
+    // todo Add Item
+    class Item (val fileName: String) {
+        val imageUri: String by lazy { "asset://$fileName" }
+    }
 }
