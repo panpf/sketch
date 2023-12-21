@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 
 
-fun Context.getWindowBackground(): Int {
+fun Context.getWindowBackgroundColor(): Int {
     val array = theme.obtainStyledAttributes(
         intArrayOf(android.R.attr.windowBackground)
     )

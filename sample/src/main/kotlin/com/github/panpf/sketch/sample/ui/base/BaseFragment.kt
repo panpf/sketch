@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.Black
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.common.ActionResult
-import com.github.panpf.sketch.sample.ui.theme.getWindowBackground
+import com.github.panpf.sketch.sample.ui.theme.getWindowBackgroundColor
 import com.github.panpf.sketch.sample.ui.theme.isNightMode
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 
@@ -43,7 +43,7 @@ abstract class BaseFragment : Fragment() {
         if (isPage) {
             view.isClickable = true
             if (view.background == null) {
-                view.setBackgroundColor(view.context.getWindowBackground())
+                view.setBackgroundColor(view.context.getWindowBackgroundColor())
             }
         }
     }
