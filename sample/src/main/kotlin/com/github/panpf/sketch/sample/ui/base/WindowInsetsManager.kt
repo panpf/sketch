@@ -6,11 +6,11 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 
-class WindowsInsetsManager private constructor(window: Window) {
+class WindowInsetsManager private constructor(window: Window) {
 
     companion object {
-        fun get(window: Window): WindowsInsetsManager {
-            return WindowsInsetsManager(window)
+        fun get(window: Window): WindowInsetsManager {
+            return WindowInsetsManager(window)
         }
     }
 

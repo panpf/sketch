@@ -3,19 +3,19 @@ package com.github.panpf.sketch.sample.ui.base
 import android.view.Window
 
 // todo Complete WindowInsetStyle
-fun setupWindowInsetStyle(window: Window, windowInsetStyle: WindowInsetStyle) {
-    WindowInsetStyleApplier.get(window, windowInsetStyle).apply()
+fun setupWindowInsetsStyle(window: Window, windowInsetsStyle: WindowInsetsStyle) {
+    WindowInsetsStyleApplier.get(window, windowInsetsStyle).apply()
 }
 
 /**
  * 一个配置当前窗口的 Inset 的样式，支持 状态栏和导航栏
  */
 
-sealed interface WindowInsetStyle {
+sealed interface WindowInsetsStyle {
 
     // todo 支持 model
     // todo 支持 behavior
-    data object FullScreen : WindowInsetStyle
+    data object FullScreen : WindowInsetsStyle
 
     enum class FullScreenMode {
         // systemBars
@@ -29,7 +29,7 @@ sealed interface WindowInsetStyle {
 //    val navigationBarStyle: Style
 //    val navigationBarMode: Mode
         // fullScreen
-    ) : WindowInsetStyle {
+    ) : WindowInsetsStyle {
 
         enum class Mode {
             /**

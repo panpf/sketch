@@ -4,25 +4,25 @@ import android.os.Build
 import android.view.Window
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.ColorUtils
-import com.github.panpf.sketch.sample.ui.base.WindowInsetStyle.NonFullScreen.Style.TextColor
+import com.github.panpf.sketch.sample.ui.base.WindowInsetsStyle.NonFullScreen.Style.TextColor
 import com.github.panpf.sketch.sample.ui.theme.getWindowBackgroundColor
 
-class WindowInsetStyleApplier private constructor(
+class WindowInsetsStyleApplier private constructor(
     window: Window,
-    windowInsetStyle: WindowInsetStyle
+    windowInsetsStyle: WindowInsetsStyle
 ) {
 
     companion object {
-        fun get(window: Window, windowInsetStyle: WindowInsetStyle): WindowInsetStyleApplier {
-            return WindowInsetStyleApplier(window, windowInsetStyle)
+        fun get(window: Window, windowInsetsStyle: WindowInsetsStyle): WindowInsetsStyleApplier {
+            return WindowInsetsStyleApplier(window, windowInsetsStyle)
         }
     }
 
     private val impl: Impl = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> Impl23(window, windowInsetStyle)
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> Impl21(window, windowInsetStyle)
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> Impl19(window, windowInsetStyle)
-        else -> Impl(window, windowInsetStyle)    // Jelly Bean
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> Impl23(window, windowInsetsStyle)
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> Impl21(window, windowInsetsStyle)
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> Impl19(window, windowInsetsStyle)
+        else -> Impl(window, windowInsetsStyle)    // Jelly Bean
     }
 
     fun apply() {
@@ -32,14 +32,14 @@ class WindowInsetStyleApplier private constructor(
     // Jelly Bean
     open class Impl(
         val window: Window,
-        val windowInsetStyle: WindowInsetStyle,
+        val windowInsetsStyle: WindowInsetsStyle,
     ) {
 
-        val insetsManager = WindowsInsetsManager.get(window)
+        val insetsManager = WindowInsetsManager.get(window)
 
         open fun apply() {
-            when (windowInsetStyle) {
-                is WindowInsetStyle.FullScreen -> {
+            when (windowInsetsStyle) {
+                is WindowInsetsStyle.FullScreen -> {
                     // 全屏文档在此：
                     // 新 API：https://developer.android.com/develop/ui/views/layout/immersive
                     // 旧 API：https://developer.android.com/training/system-ui/immersive?hl=zh-cn
@@ -49,7 +49,7 @@ class WindowInsetStyleApplier private constructor(
                     // todo behavior
                 }
 
-                is WindowInsetStyle.NonFullScreen -> {
+                is WindowInsetsStyle.NonFullScreen -> {
                     // Not support
                 }
             }
@@ -58,12 +58,12 @@ class WindowInsetStyleApplier private constructor(
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     class Impl19(
-        window: Window, windowInsetStyle: WindowInsetStyle
-    ) : Impl(window, windowInsetStyle) {
+        window: Window, windowInsetsStyle: WindowInsetsStyle
+    ) : Impl(window, windowInsetsStyle) {
 
         override fun apply() {
-            when (windowInsetStyle) {
-                is WindowInsetStyle.FullScreen -> {
+            when (windowInsetsStyle) {
+                is WindowInsetsStyle.FullScreen -> {
                     // 全屏文档在此：
                     // 新 API：https://developer.android.com/develop/ui/views/layout/immersive
                     // 旧 API：https://developer.android.com/training/system-ui/immersive?hl=zh-cn
@@ -73,13 +73,13 @@ class WindowInsetStyleApplier private constructor(
                     // todo behavior
                 }
 
-                is WindowInsetStyle.NonFullScreen -> {
-                    when (windowInsetStyle.statusBarMode) {
-                        WindowInsetStyle.NonFullScreen.Mode.Linear -> {
+                is WindowInsetsStyle.NonFullScreen -> {
+                    when (windowInsetsStyle.statusBarMode) {
+                        WindowInsetsStyle.NonFullScreen.Mode.Linear -> {
                             // Nothing needs to be done
                         }
 
-                        WindowInsetStyle.NonFullScreen.Mode.Floating -> {
+                        WindowInsetsStyle.NonFullScreen.Mode.Floating -> {
                             // KITKAT cannot modify the background color and text color,
                             // so you only need to set the status bar background to translucent (default is black translucent)
                             insetsManager.setTranslucentStatus(true)
@@ -92,12 +92,12 @@ class WindowInsetStyleApplier private constructor(
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     open class Impl21(
-        window: Window, windowInsetStyle: WindowInsetStyle
-    ) : Impl(window, windowInsetStyle) {
+        window: Window, windowInsetsStyle: WindowInsetsStyle
+    ) : Impl(window, windowInsetsStyle) {
 
         override fun apply() {
-            when (windowInsetStyle) {
-                is WindowInsetStyle.FullScreen -> {
+            when (windowInsetsStyle) {
+                is WindowInsetsStyle.FullScreen -> {
                     // 全屏文档在此：
                     // 新 API：https://developer.android.com/develop/ui/views/layout/immersive
                     // 旧 API：https://developer.android.com/training/system-ui/immersive?hl=zh-cn
@@ -107,7 +107,7 @@ class WindowInsetStyleApplier private constructor(
                     // todo behavior
                 }
 
-                is WindowInsetStyle.NonFullScreen -> {
+                is WindowInsetsStyle.NonFullScreen -> {
 
 
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -124,14 +124,14 @@ class WindowInsetStyleApplier private constructor(
 //    requireActivity().window.decorView.apply {
 //        insetsController.isAppearanceLightStatusBars = statusBarTextStyle == Black
 //    }
-                    when (windowInsetStyle.statusBarMode) {
-                        WindowInsetStyle.NonFullScreen.Mode.Linear -> {
+                    when (windowInsetsStyle.statusBarMode) {
+                        WindowInsetsStyle.NonFullScreen.Mode.Linear -> {
                             // todo Waiting implemented
                         }
 
-                        WindowInsetStyle.NonFullScreen.Mode.Floating -> {
+                        WindowInsetsStyle.NonFullScreen.Mode.Floating -> {
                             insetsManager.setLayoutFullscreen(true)
-                            val statusBarStyle = windowInsetStyle.statusBarStyle
+                            val statusBarStyle = windowInsetsStyle.statusBarStyle
                             val backgroundColor = statusBarStyle.backgroundColor
                             if (backgroundColor != null) {
                                 // You can't set the status bar to be translucent because it has a higher priority than the statusBarColor property
@@ -150,12 +150,12 @@ class WindowInsetStyleApplier private constructor(
 
     @RequiresApi(Build.VERSION_CODES.M)
     class Impl23(
-        window: Window, windowInsetStyle: WindowInsetStyle
-    ) : Impl21(window, windowInsetStyle) {
+        window: Window, windowInsetsStyle: WindowInsetsStyle
+    ) : Impl21(window, windowInsetsStyle) {
 
         override fun apply() {
-            when (windowInsetStyle) {
-                is WindowInsetStyle.FullScreen -> {
+            when (windowInsetsStyle) {
+                is WindowInsetsStyle.FullScreen -> {
                     // 全屏文档在此：
                     // 新 API：https://developer.android.com/develop/ui/views/layout/immersive
                     // 旧 API：https://developer.android.com/training/system-ui/immersive?hl=zh-cn
@@ -165,13 +165,13 @@ class WindowInsetStyleApplier private constructor(
                     // todo behavior
                 }
 
-                is WindowInsetStyle.NonFullScreen -> {
-                    applyStatusBarTextColor(windowInsetStyle.statusBarStyle)
+                is WindowInsetsStyle.NonFullScreen -> {
+                    applyStatusBarTextColor(windowInsetsStyle.statusBarStyle)
                 }
             }
         }
 
-        private fun applyStatusBarTextColor(statusBarStyle: WindowInsetStyle.NonFullScreen.Style) {
+        private fun applyStatusBarTextColor(statusBarStyle: WindowInsetsStyle.NonFullScreen.Style) {
             val backgroundColor = statusBarStyle.backgroundColor
             if (backgroundColor != null) {
                 val textColor = statusBarStyle.textColor

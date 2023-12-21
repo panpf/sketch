@@ -30,7 +30,7 @@ abstract class BaseFragment : Fragment() {
 
     protected open var statusBarTextStyle: StatusBarTextStyle? = null
     protected open var isPage: Boolean = true
-//    protected open var windowInsetStyle: WindowInsetStyle = WindowInsetStyle.NonFullScreen(
+//    protected open var windowInsetsStyle: WindowInsetsStyle = WindowInsetsStyle.NonFullScreen(
 //        statusBarMode = Floating,
 //        statusBarStyle = Style(
 //            backgroundColor = Color.parseColor("#40000000"),
