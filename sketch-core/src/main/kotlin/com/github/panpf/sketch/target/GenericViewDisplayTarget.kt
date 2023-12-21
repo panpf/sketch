@@ -36,7 +36,9 @@ import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
+import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.util.asOrNull
 
 /**
@@ -75,9 +77,18 @@ abstract class GenericViewDisplayTarget<T : View> : ViewDisplayTarget<T>, Transi
     /** Replace the [ImageView]'s current drawable with [drawable]. */
     @Suppress("MemberVisibilityCanBePrivate")
     protected fun updateDrawable(drawable: Drawable?) {
-        this.drawable.asOrNull<Animatable>()?.stop()
-        this.drawable = drawable
-        updateAnimation()
+        // 'drawable != null' is important.
+        // It makes it easier to implement crossfade animation between old and new drawables.
+        // com.github.panpf.sketch.sample.ui.viewer.view.ImagePagerFragment.loadBgImage() is an example.
+        val view = view as View?
+        if (view != null) {
+            val request = SketchUtils.getRequest(view)
+            if (drawable != null || (request?.allowSetNullDrawable == true)) {
+                this.drawable.asOrNull<Animatable>()?.stop()
+                this.drawable = drawable
+                updateAnimation()
+            }
+        }
     }
 
     /** Start/stop the current [Drawable]'s animation based on the current lifecycle state. */
