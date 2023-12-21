@@ -2,13 +2,26 @@
 
 翻译：[English](CHANGELOG.md)
 
+# new
+
+#### sketch:
+
+* change: 现在默认不再将 null 的 placeholder 或 error drawable 设置到 ImageView
+* new: DisplayRequest 新增 allowSetNullDrawable(Boolean) 方法，它可以设置是否允许将 null 的 Drawable
+  设置到 ImageView 或 AsyncImagePainter
+
+#### sketch-compose:
+
+* change: 现在默认不再将 null 的 placeholder 或 error painter 设置到 AsyncImagePainter
+
 # v3.3.0-beta05
 
 #### sketch:
 
 * fix: 修复 StateImage 获取 Drawable 失败时请求中断的 bug
 * improve: 改进 ProgressDrawable
-* new: DisplayRequest.Builder、DisplayRequest.Builder、DisplayRequest.Builder 新增 addListener()、removeListener()
+* new: DisplayRequest.Builder、DisplayRequest.Builder、DisplayRequest.Builder 新增 addListener()
+  、removeListener()
   addProgressListener()、removeProgressListener() 方法
 
 #### sketch-compose:
@@ -21,7 +34,8 @@
 * change: 重构
   AsyncImage、AsyncImagePainter、SubcomposeAsyncImage，给他们增加了一个 `state: AsyncImageState` 参数，通过
   AsyncImageState 可以观察图像加载状态和结果以及重启加载
-* improve: 提高性能，将 DisplayRequest 和 Sketch 标记为 @Stable，重载可组合函数标记为 @NonRestartableComposable  
+* improve: 提高性能，将 DisplayRequest 和 Sketch 标记为 @Stable，重载可组合函数标记为
+  @NonRestartableComposable
 
 #### sketch-extensions:
 

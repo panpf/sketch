@@ -47,6 +47,7 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.isDefault
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.target.DisplayTarget
@@ -219,41 +220,54 @@ class AsyncImageState internal constructor(
     }
 
     private fun updateState(input: PainterState) {
-        val previous = _painterState
-        val current = transform(input)
-        _painterState = current
-        _painter = maybeNewCrossfadePainter(previous, current) ?: current.painter
+        val oldPainterState = _painterState
+        val newPainterState = transform(input)
+        _painterState = newPainterState
 
-        // Manually forget and remember the old/new painters if we're already remembered.
-        if (coroutineScope != null && previous.painter !== current.painter) {
-            (previous.painter as? RememberObserver)?.onForgotten()
-            (current.painter as? RememberObserver)?.onRemembered()
-            updateDisplayed(previous.painter, current.painter)
+        val oldPainter = _painter
+        val newPainter = newPainterState.painter
+        // 'newPainter != null' is important.
+        // It makes it easier to implement crossfade animation between old and new painters.
+        // com.github.panpf.sketch.sample.ui.viewer.compose.ImagePagerComposeFragment#PagerBgImage() is an example.
+        if (newPainter != null || (request?.allowSetNullDrawable == true)) {
+            val crossfadePainter = maybeNewCrossfadePainter(
+                oldPainter = oldPainter,
+                newPainter = newPainter,
+                newPainterState = newPainterState
+            )
+            _painter = crossfadePainter ?: newPainter
+
+            // Manually forget and remember the old/new painters if we're already remembered.
+            if (coroutineScope != null && oldPainterState.painter !== newPainterState.painter) {
+                (oldPainterState.painter as? RememberObserver)?.onForgotten()
+                (newPainterState.painter as? RememberObserver)?.onRemembered()
+                updateDisplayed(oldPainterState.painter, newPainterState.painter)
+            }
         }
 
         // Notify the state listener.
-        onPainterState?.invoke(current)
+        onPainterState?.invoke(newPainterState)
     }
 
     /** Create and return a [CrossfadePainter] if requested. */
     private fun maybeNewCrossfadePainter(
-        previous: PainterState,
-        current: PainterState
+        oldPainter: Painter?,
+        newPainter: Painter?,
+        newPainterState: PainterState
     ): CrossfadePainter? {
-        // We can only invoke the transition factory if the state is success or error.
-        val result = when (current) {
-            is PainterState.Success -> current.result
-            is PainterState.Error -> current.result
-            else -> return null
-        }
+        val result = when (newPainterState) {
+            is PainterState.Success -> newPainterState.result
+            is PainterState.Error -> newPainterState.result
+            else -> null
+        } ?: return null
 
         // Invoke the transition factory and wrap the painter in a `CrossfadePainter` if it returns a `CrossfadeTransformation`.
         val transition =
             result.request.transitionFactory?.create(fakeTransitionTarget, result, true)
         return if (transition is CrossfadeTransition) {
             CrossfadePainter(
-                start = previous.painter.takeIf { previous is Loading },
-                end = current.painter,
+                start = oldPainter,
+                end = newPainter,
                 contentScale = contentScale!!,
                 durationMillis = transition.durationMillis,
                 fadeStart = transition.fadeStart,

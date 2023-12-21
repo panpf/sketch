@@ -2,6 +2,18 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
+# new
+
+#### sketch:
+
+* change: A null placeholder or error drawable is now no longer set to an ImageView by default
+* new: DisplayRequest adds the allowSetNullDrawable(Boolean) method, which can set whether to allow
+  null Drawables to be set to ImageView or AsyncImagePainter
+
+#### sketch-compose:
+
+* change: A null placeholder or error painter is now no longer set to AsyncImagePainter by default
+
 # v3.3.0-beta05
 
 #### sketch
@@ -23,7 +35,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   AsyncImage, AsyncImagePainter, SubcomposeAsyncImage, add a `state: AsyncImageState` parameter to
   them, through
   AsyncImageState can observe image loading state and results and restart loading
-* improve: To improve performance, mark DisplayRequest and Sketch as @Stable and overloaded composable functions as @NonRestartableComposable
+* improve: To improve performance, mark DisplayRequest and Sketch as @Stable and overloaded
+  composable functions as @NonRestartableComposable
 
 #### sketch-extensions:
 
@@ -32,7 +45,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: Added `sketch-extensions-view` and `sketch-extensions-compose` modules to provide extension
   functions for view and compose respectively
 * new: Provide MimeType logo, DataFrom logo, and progress indicator functions for compose
-* new: SketchImageView adds a new requestState attribute, which can use flow to monitor the status, results and progress of the request.
+* new: SketchImageView adds a new requestState attribute, which can use flow to monitor the status,
+  results and progress of the request.
 
 #### sketch-gif:
 
