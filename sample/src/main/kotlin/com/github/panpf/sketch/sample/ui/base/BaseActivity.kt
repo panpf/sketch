@@ -15,21 +15,27 @@
  */
 package com.github.panpf.sketch.sample.ui.base
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.viewbinding.ViewBinding
+import android.view.View
+import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 
-abstract class BaseBindingActivity<VIEW_BINDING : ViewBinding> : BaseActivity() {
+abstract class BaseActivity : AppCompatActivity() {
 
-    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val content: ViewGroup = findViewById(android.R.id.content)
-        val binding = createViewBinding(LayoutInflater.from(this), content) as VIEW_BINDING
-        setContentView(binding.root)
-        onCreate(binding, savedInstanceState)
+        setTransparentStatusBar()
     }
 
-    protected abstract fun onCreate(binding: VIEW_BINDING, savedInstanceState: Bundle?)
+    private fun setTransparentStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window = window
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = Color.TRANSPARENT
+        }
+    }
 }

@@ -8,4 +8,5 @@
 
     <color name="placeholder_bg">#393939</color>
     <color name="placeholder_icon">#676767</color>
+    <color name="divider">#676767</color>
 </resources>

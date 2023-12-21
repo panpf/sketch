@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.sample.ui.base
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.WindowCompat
@@ -31,6 +30,13 @@ abstract class BaseFragment : Fragment() {
 
     protected open var statusBarTextStyle: StatusBarTextStyle? = null
     protected open var isPage: Boolean = true
+//    protected open var windowInsetStyle: WindowInsetStyle = WindowInsetStyle.NonFullScreen(
+//        statusBarMode = Floating,
+//        statusBarStyle = Style(
+//            backgroundColor = Color.parseColor("#40000000"),
+//            textColor = Style.TextColor.White
+//        )
+//    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,6 +67,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     private fun setupStatusBarTextStyle() {
+//        setupWindowInsetStyle(requireActivity().window, windowInsetStyle)
         val insetsController =
             WindowCompat.getInsetsController(requireActivity().window, requireView())
         val statusBarTextStyle =

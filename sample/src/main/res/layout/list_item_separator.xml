@@ -31,9 +31,9 @@
         <View
             android:layout_width="0dp"
             android:layout_height="0.5dp"
-            android:background="?android:textColorPrimary"
+            android:background="@color/divider"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
