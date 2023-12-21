@@ -49,7 +49,6 @@ import com.github.panpf.sketch.sample.ui.viewer.view.ImageViewerFragment.ItemFac
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenSize
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
@@ -204,7 +203,6 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
                     maskColor = ColorUtils.setAlphaComponent(Color.BLACK, 100)
                 )
             )
-            placeholder(CurrentStateImage())
             disallowAnimatedImage()
             crossfade(alwaysUse = true, durationMillis = 400)
             components {

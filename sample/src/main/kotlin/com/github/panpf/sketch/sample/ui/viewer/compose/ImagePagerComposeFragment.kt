@@ -86,7 +86,6 @@ import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.toast.ktx.showLongToast
@@ -302,7 +301,6 @@ private fun PagerBgImage(
                     maskColor = ColorUtils.setAlphaComponent(Color.Black.value.toInt(), 100)
                 )
             )
-            placeholder(CurrentStateImage())
             disallowAnimatedImage()
             crossfade(alwaysUse = true, durationMillis = 400)
             components {
