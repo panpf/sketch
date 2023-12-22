@@ -166,3 +166,13 @@ internal val PainterState.name: String
         is Empty -> "Empty"
         else -> "Unknown PainterState: $this"
     }
+
+internal fun Painter.findLeafChildPainter(): Painter?{
+    return when (val painter = this) {
+        is CrossfadePainter -> {
+            painter.end?.findLeafChildPainter()
+        }
+
+        else -> painter
+    }
+}
