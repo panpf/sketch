@@ -56,7 +56,7 @@ class AnimatablePlaceholderComposeTestFragment : BaseToolbarComposeFragment() {
                 val request = DisplayRequest(LocalContext.current, uriString) {
                     memoryCachePolicy(CachePolicy.DISABLED)
                     resultCachePolicy(CachePolicy.DISABLED)
-                    // todo AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above api 29
+                    // TODO AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above api 29
                     placeholder(drawable.ic_placeholder_eclipse_animated)
                     components {
                         addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))

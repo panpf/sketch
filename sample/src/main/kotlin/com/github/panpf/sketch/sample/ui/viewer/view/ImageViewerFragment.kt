@@ -123,7 +123,7 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
             progressListener(requestState)
         }
 
-        // todo SketchZoomImageView add requestState
+        // TODO SketchZoomImageView add requestState
         binding.smallState.apply {
             requestState.loadState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
