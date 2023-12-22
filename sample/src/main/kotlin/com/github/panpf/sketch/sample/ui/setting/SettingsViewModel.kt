@@ -171,7 +171,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             MultiSelectMenu(
                 title = "Resize Precision",
                 desc = null,
-                values = Precision.entries.map { it.name }.plus(listOf("LongImageClipMode")),
+                values = Precision.values().map { it.name }.plus(listOf("LongImageClipMode")),
                 getValue = { appSettingsService.resizePrecision.value },
                 onSelect = { _, value -> appSettingsService.resizePrecision.value = value }
             )
@@ -180,7 +180,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             MultiSelectMenu(
                 title = "Resize Scale",
                 desc = null,
-                values = Scale.entries.map { it.name }.plus(listOf("LongImageMode")),
+                values = Scale.values().map { it.name }.plus(listOf("LongImageMode")),
                 getValue = { appSettingsService.resizeScale.value },
                 onSelect = { _, value -> appSettingsService.resizeScale.value = value }
             )
@@ -190,7 +190,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 MultiSelectMenu(
                     title = "Long Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
-                    values = Scale.entries.map { it.name },
+                    values = Scale.values().map { it.name },
                     getValue = { appSettingsService.longImageResizeScale.value },
                     onSelect = { _, value -> appSettingsService.longImageResizeScale.value = value }
                 )
@@ -199,7 +199,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 MultiSelectMenu(
                     title = "Other Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
-                    values = Scale.entries.map { it.name },
+                    values = Scale.values().map { it.name },
                     getValue = { appSettingsService.otherImageResizeScale.value },
                     onSelect = { _, value ->
                         appSettingsService.otherImageResizeScale.value = value
@@ -287,7 +287,8 @@ class SettingsViewModel(application1: Application, val page: Page) :
             )
         )
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            val items = listOf("Default").plus(Named.entries.map { it.name })
+            // Cannot use Named.entries, crashes on versions lower than O
+            val items = listOf("Default").plus(Named.values().map { it.name })
             add(
                 MultiSelectMenu(
                     title = "Color Space",
@@ -414,7 +415,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             MultiSelectMenu(
                 title = "Logger Level",
                 desc = if (application1.sketch.logger.level <= Level.DEBUG) "DEBUG and below will reduce UI fluency" else "",
-                values = Level.entries.map { it.name },
+                values = Level.values().map { it.name },
                 getValue = { application1.sketch.logger.level.toString() },
                 onSelect = { _, value ->
                     application1.sketch.logger.level = Level.valueOf(value)
