@@ -2,7 +2,7 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
-# new
+# v3.3.0-beta06
 
 #### sketch:
 
