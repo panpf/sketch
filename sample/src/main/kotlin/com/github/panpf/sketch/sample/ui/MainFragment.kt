@@ -138,7 +138,8 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
         ),
         Link(
             title = "ProgressIndicator (Compose)",
-            navDirections = NavMainDirections.actionProgressIndicatorTestComposeFragment()
+            navDirections = NavMainDirections.actionProgressIndicatorTestComposeFragment(),
+                    minSdk = VERSION_CODES.LOLLIPOP
         ),
         Link(
             title = "Display Insanity",
@@ -156,6 +157,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
         Link(
             title = "Animatable Placeholder (Compose)",
             navDirections = NavMainDirections.actionAnimatablePlaceholderCompose(),
+            minSdk = VERSION_CODES.LOLLIPOP
         ),
         Link(
             title = "Share Element",
@@ -173,6 +175,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
         Link(
             title = "Temp Test (Compose)",
             navDirections = NavMainDirections.actionTempTestComposeFragment(),
+            minSdk = VERSION_CODES.LOLLIPOP
         ),
     )
 

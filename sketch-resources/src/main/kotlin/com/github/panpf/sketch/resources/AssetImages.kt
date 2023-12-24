@@ -43,9 +43,9 @@ object AssetImages {
     val numbers =
         arrayOf(number1, number2, number3, number4, number5, number6, number7, number8, number9)
 
-    // todo add clock_hor.jpeg
-    // todo add clock_ver.jpeg
-    // todo Add Item
+    // TODO add clock_hor.jpeg
+    // TODO add clock_ver.jpeg
+    // TODO Add Item
     class Item (val fileName: String) {
         val imageUri: String by lazy { "asset://$fileName" }
     }

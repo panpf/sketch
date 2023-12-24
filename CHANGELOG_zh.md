@@ -2,7 +2,7 @@
 
 翻译：[English](CHANGELOG.md)
 
-# new
+# v3.3.0-beta06
 
 #### sketch:
 
