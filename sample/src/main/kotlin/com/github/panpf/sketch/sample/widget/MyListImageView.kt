@@ -35,6 +35,12 @@ class MyListImageView @JvmOverloads constructor(
 
     private val mimeTypeLogoMap by lazy { createMimeTypeLogoMap() }
 
+    init {
+        // When the first request is executed, it has not yet reached onAttachedToWindow,
+        // so it must be initialized here in advance to ensure that the first request can also display progress.
+        setShowProgressIndicator(show = appSettingsService.showProgressIndicatorInList.value)
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 

@@ -38,6 +38,7 @@ import com.github.panpf.sketch.compose.internal.AsyncImageDisplayTarget
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.compose.internal.CrossfadePainter
+import com.github.panpf.sketch.compose.internal.findLeafChildPainter
 import com.github.panpf.sketch.compose.internal.toScale
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
@@ -265,8 +266,9 @@ class AsyncImageState internal constructor(
         val transition =
             result.request.transitionFactory?.create(fakeTransitionTarget, result, true)
         return if (transition is CrossfadeTransition) {
+            val startPainter = oldPainter?.findLeafChildPainter() ?: oldPainter
             CrossfadePainter(
-                start = oldPainter,
+                start = startPainter,
                 end = newPainter,
                 contentScale = contentScale!!,
                 durationMillis = transition.durationMillis,

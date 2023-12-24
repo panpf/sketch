@@ -76,7 +76,7 @@ interface MemoryCache {
 
     class Value constructor(
         val countBitmap: CountBitmap,
-        // todo In 4.0, a Map<String, Any> will be created to store these metadata.
+        // TODO In 4.0, a Map<String, Any> will be created to store these metadata.
         val imageUri: String,
         val requestKey: String,
         val requestCacheKey: String,

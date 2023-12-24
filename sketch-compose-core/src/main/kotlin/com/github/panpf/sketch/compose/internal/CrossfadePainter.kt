@@ -43,8 +43,8 @@ import kotlin.math.max
  */
 @Stable
 internal class CrossfadePainter(
-    private var start: Painter?,
-    private val end: Painter?,
+    var start: Painter?,
+    val end: Painter?,
     private val contentScale: ContentScale,
     private val durationMillis: Int,
     private val fadeStart: Boolean,
