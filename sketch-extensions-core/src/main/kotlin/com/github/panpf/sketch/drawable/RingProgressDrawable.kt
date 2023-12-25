@@ -37,6 +37,7 @@ class RingProgressDrawable(
     private val size: Int = defaultSize(),
     private val ringWidth: Float = size * 0.1f,
     @ColorInt private val ringColor: Int = Color.WHITE,
+    @ColorInt private val backgroundColor: Int = ColorUtils.setAlphaComponent(ringColor, 60),
     hiddenWhenIndeterminate: Boolean = false,
     hiddenWhenCompleted: Boolean = true,
     stepAnimationDuration: Int = DEFAULT_STEP_ANIMATION_DURATION,
@@ -54,7 +55,7 @@ class RingProgressDrawable(
 
     private val backgroundPaint = Paint().apply {
         isAntiAlias = true
-        color = ColorUtils.setAlphaComponent(ringColor, 60)
+        color = this@RingProgressDrawable.backgroundColor
         strokeWidth = this@RingProgressDrawable.ringWidth
         style = STROKE
     }

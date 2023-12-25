@@ -2,6 +2,12 @@
 
 翻译：[English](CHANGELOG.md)
 
+# new
+
+#### sketch-extensions:
+
+* new: RingProgressDrawable 的构造函数增加 backgroundColor 参数
+
 # v3.3.0-beta06
 
 #### sketch:
