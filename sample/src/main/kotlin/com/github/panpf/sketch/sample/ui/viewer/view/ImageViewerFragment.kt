@@ -134,8 +134,10 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
             requestState.loadState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     if (it is Error) {
-                        errorWithRetry {
-                            SketchUtils.restart(binding.zoomImage)
+                        error {
+                            retryAction {
+                                SketchUtils.restart(binding.zoomImage)
+                            }
                         }
                     } else {
                         gone()

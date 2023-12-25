@@ -16,14 +16,11 @@
 package com.github.panpf.sketch.sample.widget
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
-import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ViewStateBinding
 import com.github.panpf.tools4a.network.ktx.isNetworkConnected
 import org.apache.http.conn.ConnectTimeoutException
@@ -41,6 +38,7 @@ class StateView @JvmOverloads constructor(
         if (isInEditMode) {
             binding.loadingLayout.isVisible = true
             binding.loadingLayout.alpha = 0.3f
+            binding.emptyLayout.isVisible = false
             binding.errorLayout.isVisible = false
         } else {
             isVisible = false
@@ -48,124 +46,97 @@ class StateView @JvmOverloads constructor(
     }
 
     fun loading() {
-        binding.errorLayout.isVisible = false
         binding.loadingLayout.isVisible = true
+        binding.emptyLayout.isVisible = false
+        binding.errorLayout.isVisible = false
         isVisible = true
-    }
-
-    fun error(message: String? = null, block: (ErrorConfig.() -> Unit)? = null) {
-        ErrorConfig(binding).apply {
-            icon(R.drawable.ic_error)
-            message(message ?: "Load failed")
-            block?.invoke(this)
-        }
-        binding.loadingLayout.isVisible = false
-        binding.errorLayout.isVisible = true
-        isVisible = true
-    }
-
-    fun error(@StringRes messageResId: Int? = null, block: (ErrorConfig.() -> Unit)? = null) {
-        error(messageResId?.let { resources.getString(it) }, block)
-    }
-
-    fun error(e: Throwable, block: (ErrorConfig.() -> Unit)? = null) {
-        val message = when (e) {
-            is SecurityException -> "Network permission error：${e.message}"
-            is UnknownHostException -> if (context.isNetworkConnected()) "Unknown Host error" else "No network connection"
-            is SocketTimeoutException, is ConnectTimeoutException -> "Network connection timeout"
-            is FileNotFoundException -> "Incorrect URL"
-            else -> "Unknown error: ${e.message}"
-        }
-        error(message, block)
     }
 
     fun error(block: (ErrorConfig.() -> Unit)? = null) {
-        error(null as String?, block)
-    }
-
-    fun errorWithRetry(message: String? = null, onClick: () -> Unit) {
-        error(message) {
-            action("Retry") {
-                onClick()
-            }
-        }
-    }
-
-    fun errorWithRetry(@StringRes messageResId: Int? = null, onClick: () -> Unit) {
-        error(messageResId) {
-            action("Retry") {
-                onClick()
-            }
-        }
-    }
-
-    fun errorWithRetry(e: Throwable, onClick: () -> Unit) {
-        error(e) {
-            action("Retry") {
-                onClick()
-            }
-        }
-    }
-
-    fun errorWithRetry(onClick: () -> Unit) {
-        error {
-            action("Retry") {
-                onClick()
-            }
-        }
-    }
-
-    fun empty(message: String? = null, block: (ErrorConfig.() -> Unit)? = null) {
         ErrorConfig(binding).apply {
-            icon(R.drawable.ic_cloudy)
-            message(message ?: "No content")
+            message("Load failed")
             block?.invoke(this)
         }
         binding.loadingLayout.isVisible = false
+        binding.emptyLayout.isVisible = false
         binding.errorLayout.isVisible = true
         isVisible = true
     }
 
-    fun empty(@StringRes messageResId: Int? = null, block: (ErrorConfig.() -> Unit)? = null) {
-        empty(messageResId?.let { resources.getString(it) }, block)
-    }
-
-    fun empty(block: (ErrorConfig.() -> Unit)? = null) {
-        empty(null as String?, block)
+    fun empty(block: (EmptyConfig.() -> Unit)? = null) {
+        EmptyConfig(binding).apply {
+            message("No Content")
+            block?.invoke(this)
+        }
+        binding.loadingLayout.isVisible = false
+        binding.emptyLayout.isVisible = true
+        binding.errorLayout.isVisible = false
+        isVisible = true
     }
 
     fun gone() {
         binding.loadingLayout.isVisible = false
+        binding.emptyLayout.isVisible = false
         binding.errorLayout.isVisible = false
         isVisible = false
+    }
+
+    class EmptyConfig(private val binding: ViewStateBinding) {
+
+        init {
+            binding.emptyMessageText.isVisible = false
+            binding.emptyActionButton.isVisible = false
+        }
+
+        fun message(name: String) {
+            binding.emptyMessageText.text = name
+            binding.emptyMessageText.isVisible = true
+        }
+
+        fun message(@StringRes resId: Int) {
+            message(binding.root.context.resources.getString(resId))
+        }
+
+        fun action(name: String, onClick: () -> Unit) {
+            binding.emptyActionButton.text = name
+            binding.emptyActionButton.setOnClickListener {
+                onClick()
+            }
+            binding.emptyActionButton.isVisible = true
+        }
+
+        fun action(@StringRes resId: Int, onClick: () -> Unit) {
+            action(binding.root.context.resources.getString(resId), onClick)
+        }
     }
 
     class ErrorConfig(private val binding: ViewStateBinding) {
 
         init {
-            binding.errorIconImage.isVisible = false
             binding.errorMessageText.isVisible = false
             binding.errorActionButton.isVisible = false
         }
 
-        fun icon(drawable: Drawable) {
-            binding.errorIconImage.setImageDrawable(drawable)
-            binding.errorIconImage.isVisible = true
-        }
-
-        fun icon(@DrawableRes resId: Int) {
-            binding.errorIconImage.setImageResource(resId)
-            binding.errorIconImage.isVisible = true
-        }
-
-        fun message(name: String) {
-            binding.errorMessageText.text = name
+        fun message(message: String) {
+            binding.errorMessageText.text = message
             binding.errorMessageText.isVisible = true
         }
 
-        fun message(@StringRes nameResId: Int) {
-            binding.errorMessageText.setText(nameResId)
-            binding.errorMessageText.isVisible = true
+        fun message(@StringRes resId: Int) {
+            message(binding.root.context.resources.getString(resId))
+        }
+
+        fun message(e: Throwable) {
+            val message = when (e) {
+                is SecurityException -> "Network permission error：${e.message}"
+                is UnknownHostException -> if (binding.root.context.isNetworkConnected())
+                    "Unknown Host error" else "No network connection"
+
+                is SocketTimeoutException, is ConnectTimeoutException -> "Network connection timeout"
+                is FileNotFoundException -> "Incorrect URL"
+                else -> "Unknown error: ${e.message}"
+            }
+            message(message)
         }
 
         fun action(name: String, onClick: () -> Unit) {
@@ -176,12 +147,12 @@ class StateView @JvmOverloads constructor(
             binding.errorActionButton.isVisible = true
         }
 
-        fun action(@StringRes nameResId: Int, onClick: () -> Unit) {
-            binding.errorActionButton.setText(nameResId)
-            binding.errorActionButton.setOnClickListener {
-                onClick()
-            }
-            binding.errorActionButton.isVisible = true
+        fun action(@StringRes resId: Int, onClick: () -> Unit) {
+            action(binding.root.context.resources.getString(resId), onClick)
+        }
+
+        fun retryAction(onClick: () -> Unit) {
+            action("Retry", onClick)
         }
     }
 }

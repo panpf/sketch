@@ -23,12 +23,12 @@ import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.common.createMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.letIf
@@ -51,7 +51,7 @@ fun PhotoGridItem(
     val mimeTypeLogoMap =
         remember { createMimeTypeLogoMap().mapValues { DrawablePainter(it.value) } }
     val progressPainter = rememberDrawableProgressPainter(remember {
-        SectorProgressDrawable(hiddenWhenIndeterminate = true)
+        createDayNightSectorProgressDrawable(context, hiddenWhenIndeterminate = true)
     })
     val appSettingsService = context.appSettingsService
     val showDataFromLogo by appSettingsService.showDataFromLogo.stateFlow.collectAsState()
@@ -104,7 +104,7 @@ fun PhotoGridItem(
                     )
                 )
             }
-            error(IconStateImage(drawable.ic_error, ResColor(color.placeholder_bg))) {
+            error(IconStateImage(drawable.ic_error_baseline, ResColor(color.placeholder_bg))) {
                 saveCellularTrafficError(
                     IconStateImage(drawable.ic_signal_cellular, ResColor(color.placeholder_bg))
                 )

@@ -39,7 +39,7 @@ class LocalVideoItemFactory :
         binding.thumbnailImage.updateDisplayImageOptions {
             val bg = ResColor(R.color.placeholder_bg)
             placeholder(IconStateImage(R.drawable.ic_image_outline, bg))
-            error(IconStateImage(R.drawable.ic_error, bg)) {
+            error(IconStateImage(R.drawable.ic_error_baseline, bg)) {
                 saveCellularTrafficError(R.drawable.im_save_cellular_traffic)
             }
             crossfade()

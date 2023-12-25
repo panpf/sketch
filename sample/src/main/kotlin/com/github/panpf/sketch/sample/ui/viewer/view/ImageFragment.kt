@@ -53,8 +53,10 @@ class ImageFragment : BaseBindingFragment<FragmentImageBinding>() {
             binding.myImage.requestState.loadState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, Lifecycle.State.STARTED) {
                     if (it is Error) {
-                        errorWithRetry {
-                            SketchUtils.restart(binding.myImage)
+                        error {
+                            retryAction {
+                                SketchUtils.restart(binding.myImage)
+                            }
                         }
                     } else {
                         gone()

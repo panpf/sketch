@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.compose.ability.progressIndicator
@@ -198,7 +199,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     checked = hiddenWhenIndeterminate,
                     onCheckedChange = { viewModel.changeHiddenWhenIndeterminate(!hiddenWhenIndeterminate) },
                 )
-                Text(text = "Hidden(0f)")
+                Text(text = "Hidden(0f)", fontSize = 14.sp)
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -211,7 +212,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     checked = hiddenWhenCompleted,
                     onCheckedChange = { viewModel.changeHiddenWhenCompleted(!hiddenWhenCompleted) },
                 )
-                Text(text = "Hidden(1f)")
+                Text(text = "Hidden(1f)", fontSize = 14.sp)
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -224,7 +225,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     checked = shortStep,
                     onCheckedChange = { viewModel.changeShortStep(!shortStep) },
                 )
-                Text(text = "ShortStep")
+                Text(text = "ShortStep", fontSize = 14.sp)
             }
         }
 
@@ -239,7 +240,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     selected = model == Progress,
                     onClick = { viewModel.changeModel(Progress) },
                 )
-                Text(text = "Progress")
+                Text(text = "Progress", fontSize = 14.sp)
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -250,7 +251,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     selected = model == DirectlyComplete,
                     onClick = { viewModel.changeModel(DirectlyComplete) },
                 )
-                Text(text = "DirectlyComplete")
+                Text(text = "FastComplete", fontSize = 14.sp)
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -261,7 +262,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                     selected = model == Error,
                     onClick = { viewModel.changeModel(Error) },
                 )
-                Text(text = "Error")
+                Text(text = "Error", fontSize = 14.sp)
             }
         }
 

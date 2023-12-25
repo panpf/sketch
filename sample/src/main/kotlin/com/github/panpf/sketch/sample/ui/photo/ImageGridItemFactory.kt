@@ -90,7 +90,7 @@ class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
                         )
                     )
                 }
-                error(IconStateImage(R.drawable.ic_error, ResColor(R.color.placeholder_bg))) {
+                error(IconStateImage(R.drawable.ic_error_baseline, ResColor(R.color.placeholder_bg))) {
                     saveCellularTrafficError(
                         IconStateImage(
                             R.drawable.ic_signal_cellular,

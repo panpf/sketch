@@ -192,15 +192,20 @@ class LocalPhotoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
 
                     is LoadState.Error -> {
                         binding.swipeRefresh.isRefreshing = false
-                        binding.state.errorWithRetry(refreshState.error) {
-                            pagingAdapter.refresh()
+                        binding.state.error {
+                            message(refreshState.error)
+                            retryAction {
+                                pagingAdapter.refresh()
+                            }
                         }
                     }
 
                     is LoadState.NotLoading -> {
                         binding.swipeRefresh.isRefreshing = false
                         if (pagingAdapter.itemCount <= 0) {
-                            binding.state.empty("No Photos")
+                            binding.state.empty{
+                                message("No Photos")
+                            }
                         } else {
                             binding.state.gone()
                         }

@@ -72,8 +72,10 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
                                 Lifecycle.State.STARTED
                             ) {
                                 if (it is Error) {
-                                    errorWithRetry {
-                                        SketchUtils.restart(binding.myImage)
+                                    error {
+                                        retryAction {
+                                            SketchUtils.restart(binding.myImage)
+                                        }
                                     }
                                 } else {
                                     gone()
@@ -81,7 +83,9 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
                             }
                     }
                 } else {
-                    binding.smallState.error(message = "This format requires API ${item.minAPI} or higher")
+                    binding.smallState.error {
+                        message("This format requires API ${item.minAPI} or higher")
+                    }
                 }
             }
     }

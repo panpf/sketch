@@ -15,13 +15,13 @@ import androidx.navigation.findNavController
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.common.compose.LoadState
+import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.common.zoom.SketchZoomAsyncImage
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sketch
@@ -101,7 +101,8 @@ fun ImageViewer(
         }
     }
 
-    val progressPainter = rememberDrawableProgressPainter(remember { SectorProgressDrawable() })
+    val progressPainter =
+        rememberDrawableProgressPainter(remember { createDayNightSectorProgressDrawable(context) })
 
     val viewerSettings by appSettingsService.viewersCombinedFlow.collectAsState(Unit)
     val request = remember(imageUrl, viewerSettings) {

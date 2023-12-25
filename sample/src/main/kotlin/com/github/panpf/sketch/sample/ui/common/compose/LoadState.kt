@@ -32,7 +32,7 @@ fun LoadState(imageState: AsyncImageState, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_error),
+                painter = painterResource(id = R.drawable.ic_error_baseline),
                 contentDescription = "icon",
                 tint = Color.White
             )

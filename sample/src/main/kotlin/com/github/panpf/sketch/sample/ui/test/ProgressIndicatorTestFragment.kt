@@ -61,9 +61,9 @@ class ProgressIndicatorTestFragment :
             binding.image2.setImageResource(R.drawable.im_placeholder)
             binding.image3.setImageResource(R.drawable.im_placeholder)
         } else {
-            binding.image1.setImageResource(R.drawable.im_placeholder_noicon)
-            binding.image2.setImageResource(R.drawable.im_placeholder_noicon)
-            binding.image3.setImageResource(R.drawable.im_placeholder_noicon)
+            binding.image1.setImageResource(R.drawable.im_placeholder_bg)
+            binding.image2.setImageResource(R.drawable.im_placeholder_bg)
+            binding.image3.setImageResource(R.drawable.im_placeholder_bg)
         }
 
         binding.actionButton.setOnClickListener {

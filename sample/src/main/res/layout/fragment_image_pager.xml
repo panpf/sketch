@@ -41,7 +41,7 @@
             android:layout_marginStart="10dp"
             android:background="@drawable/bg_circle_accent"
             android:padding="8dp"
-            app:srcCompat="@drawable/ic_image_2"
+            app:srcCompat="@drawable/ic_image2_outline"
             app:tint="@android:color/white" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -81,7 +81,7 @@
             android:layout_marginStart="10dp"
             android:background="@drawable/bg_circle_accent"
             android:padding="8dp"
-            app:srcCompat="@drawable/ic_info"
+            app:srcCompat="@drawable/ic_info_baseline"
             app:tint="@android:color/white" />
 
         <TextView
