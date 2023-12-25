@@ -9,7 +9,7 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
-        android:background="@drawable/bg_dialog"
+        android:background="@drawable/bg_tertiary_container_rounded"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -17,7 +17,8 @@
             android:id="@+id/errorIconImage"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@drawable/ic_error"/>
+            app:srcCompat="@drawable/ic_error"
+            app:tint="@color/md_theme_onTertiaryContainer" />
 
         <TextView
             android:id="@+id/errorMessageText"
@@ -27,7 +28,8 @@
             android:gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="Display failure" />
+            android:text="Display failure"
+            android:textColor="@color/md_theme_onTertiaryContainer" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/errorActionButton"

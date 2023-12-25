@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -25,9 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:text="START"
-            android:textColor="#FFFFFF"
-            app:buttonTint="#FFFFFF" />
+            android:text="START" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/centerButton"
@@ -35,9 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:text="CENTER"
-            android:textColor="#FFFFFF"
-            app:buttonTint="#FFFFFF" />
+            android:text="CENTER" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/endButton"
@@ -45,9 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:text="END"
-            android:textColor="#FFFFFF"
-            app:buttonTint="#FFFFFF" />
+            android:text="END" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/fillButton"
@@ -55,8 +48,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:text="FILL"
-            android:textColor="#FFFFFF"
-            app:buttonTint="#FFFFFF" />
+            android:text="FILL" />
     </RadioGroup>
 </LinearLayout>

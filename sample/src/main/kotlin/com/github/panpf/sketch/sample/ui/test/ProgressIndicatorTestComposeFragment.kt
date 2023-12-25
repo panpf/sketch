@@ -31,12 +31,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,7 +42,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,15 +50,16 @@ import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.drawable.MaskProgressDrawable
-import com.github.panpf.sketch.drawable.RingProgressDrawable
-import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
+import com.github.panpf.sketch.sample.ui.common.createDayNightMaskProgressDrawable
+import com.github.panpf.sketch.sample.ui.common.createDayNightRingProgressDrawable
+import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.DirectlyComplete
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.Error
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model.Progress
+import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.util.getDrawableCompat
 import com.google.accompanist.drawablepainter.DrawablePainter
 
@@ -88,10 +86,12 @@ class ProgressIndicatorTestComposeFragment : BaseToolbarComposeFragment() {
     }
 }
 
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 private fun ContentPreview() {
-    Content(ProgressIndicatorTestViewModel())
+    AppTheme {
+        Content(ProgressIndicatorTestViewModel())
+    }
 }
 
 @Composable
@@ -113,7 +113,8 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
         val maskProgressPainter = rememberDrawableProgressPainter(
             remember(hiddenWhenIndeterminate, hiddenWhenCompleted, shortStep) {
                 val stepAnimationDuration = if (shortStep) 1000 else 300
-                MaskProgressDrawable(
+                createDayNightMaskProgressDrawable(
+                    context = context,
                     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
                     hiddenWhenCompleted = hiddenWhenCompleted,
                     stepAnimationDuration = stepAnimationDuration
@@ -123,16 +124,18 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
         val sectorProgressPainter = rememberDrawableProgressPainter(
             remember(hiddenWhenIndeterminate, hiddenWhenCompleted, shortStep) {
                 val stepAnimationDuration = if (shortStep) 1000 else 300
-                SectorProgressDrawable(
+                createDayNightSectorProgressDrawable(
+                    context = context,
                     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
                     hiddenWhenCompleted = hiddenWhenCompleted,
-                    stepAnimationDuration = stepAnimationDuration
+                    stepAnimationDuration = stepAnimationDuration,
                 )
             })
         val ringProgressPainter = rememberDrawableProgressPainter(
             remember(hiddenWhenIndeterminate, hiddenWhenCompleted, shortStep) {
                 val stepAnimationDuration = if (shortStep) 1000 else 300
-                RingProgressDrawable(
+                createDayNightRingProgressDrawable(
+                    context = context,
                     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
                     hiddenWhenCompleted = hiddenWhenCompleted,
                     stepAnimationDuration = stepAnimationDuration
@@ -146,7 +149,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
         }
 
         val imageState = rememberAsyncImageState()
-        Text(text = "MaskProgressIndicator", color = Color.White)
+        Text(text = "MaskProgressIndicator")
         Spacer(modifier = Modifier.size(4.dp))
         Image(
             painter = placeholderPainter,
@@ -159,7 +162,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        Text(text = "SectorProgressIndicator", color = Color.White)
+        Text(text = "SectorProgressIndicator")
         Spacer(modifier = Modifier.size(4.dp))
         Image(
             painter = placeholderPainter,
@@ -172,7 +175,7 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        Text(text = "RingProgressIndicator", color = Color.White)
+        Text(text = "RingProgressIndicator")
         Spacer(modifier = Modifier.size(4.dp))
         Image(
             painter = placeholderPainter,
@@ -194,12 +197,8 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                 Checkbox(
                     checked = hiddenWhenIndeterminate,
                     onCheckedChange = { viewModel.changeHiddenWhenIndeterminate(!hiddenWhenIndeterminate) },
-                    colors = CheckboxDefaults.colors(
-                        checkmarkColor = Color.Black,
-                        uncheckedColor = Color.White
-                    )
                 )
-                Text(text = "Hidden(0f)", color = Color.White)
+                Text(text = "Hidden(0f)")
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -211,12 +210,8 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                 Checkbox(
                     checked = hiddenWhenCompleted,
                     onCheckedChange = { viewModel.changeHiddenWhenCompleted(!hiddenWhenCompleted) },
-                    colors = CheckboxDefaults.colors(
-                        checkmarkColor = Color.Black,
-                        uncheckedColor = Color.White
-                    )
                 )
-                Text(text = "Hidden(1f)", color = Color.White)
+                Text(text = "Hidden(1f)")
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -228,12 +223,8 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                 Checkbox(
                     checked = shortStep,
                     onCheckedChange = { viewModel.changeShortStep(!shortStep) },
-                    colors = CheckboxDefaults.colors(
-                        checkmarkColor = Color.Black,
-                        uncheckedColor = Color.White
-                    )
                 )
-                Text(text = "ShortStep", color = Color.White)
+                Text(text = "ShortStep")
             }
         }
 
@@ -247,9 +238,8 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                 RadioButton(
                     selected = model == Progress,
                     onClick = { viewModel.changeModel(Progress) },
-                    colors = RadioButtonDefaults.colors(unselectedColor = Color.White)
                 )
-                Text(text = "Progress", color = Color.White)
+                Text(text = "Progress")
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -259,9 +249,8 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                 RadioButton(
                     selected = model == DirectlyComplete,
                     onClick = { viewModel.changeModel(DirectlyComplete) },
-                    colors = RadioButtonDefaults.colors(unselectedColor = Color.White)
                 )
-                Text(text = "DirectlyComplete", color = Color.White)
+                Text(text = "DirectlyComplete")
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
@@ -271,9 +260,8 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
                 RadioButton(
                     selected = model == Error,
                     onClick = { viewModel.changeModel(Error) },
-                    colors = RadioButtonDefaults.colors(unselectedColor = Color.White)
                 )
-                Text(text = "Error", color = Color.White)
+                Text(text = "Error")
             }
         }
 

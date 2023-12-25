@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2E3440</color>
-    <color name="colorPrimaryDark">#2E3440</color>
-    <color name="colorAccent">#bf5660</color>
-    <color name="dialogBackground">#2E2E2E</color>
-    <color name="dialogBackground_translucent">#EE2E2E2E</color>
-
-    <color name="placeholder_bg">#393939</color>
-    <color name="placeholder_icon">#676767</color>
+    <color name="seed">#9b4429</color>
+    <color name="md_theme_primary">#9B4429</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#FFDBD1</color>
+    <color name="md_theme_onPrimaryContainer">#3A0A00</color>
+    <color name="md_theme_secondary">#77574D</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#FFDBD1</color>
+    <color name="md_theme_onSecondaryContainer">#2C150F</color>
+    <color name="md_theme_tertiary">#6B5D2F</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#F5E1A7</color>
+    <color name="md_theme_onTertiaryContainer">#231B00</color>
+    <color name="md_theme_error">#BA1A1A</color>
+    <color name="md_theme_errorContainer">#FFDAD6</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_onErrorContainer">#410002</color>
+    <color name="md_theme_background">#FFFBFF</color>
+    <color name="md_theme_onBackground">#201A18</color>
+    <color name="md_theme_surface">#FFFBFF</color>
+    <color name="md_theme_onSurface">#201A18</color>
+    <color name="md_theme_surfaceVariant">#F5DED7</color>
+    <color name="md_theme_onSurfaceVariant">#53433F</color>
+    <color name="md_theme_outline">#85736E</color>
+    <color name="md_theme_inverseOnSurface">#FBEEEB</color>
+    <color name="md_theme_inverseSurface">#362F2D</color>
+    <color name="md_theme_inversePrimary">#FFB59F</color>
+    <color name="md_theme_shadow">#000000</color>
+    <color name="md_theme_surfaceTint">#9B4429</color>
+    <color name="md_theme_outlineVariant">#D8C2BC</color>
+    <color name="md_theme_scrim">#000000</color>
+    
+    <color name="placeholder_bg">@color/md_theme_primaryContainer</color>
+    <color name="placeholder_icon">@color/md_theme_onPrimaryContainer</color>
     <color name="divider">#676767</color>
+
+    <color name="item_bg">#33000000</color>
+    <color name="menu_icon">#000000</color>
 </resources>

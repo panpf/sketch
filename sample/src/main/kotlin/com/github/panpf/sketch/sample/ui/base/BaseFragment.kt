@@ -37,6 +37,7 @@ abstract class BaseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setTopInsets()
         if (isPage) {
             view.isClickable = true
             if (view.background == null) {
@@ -63,13 +64,10 @@ abstract class BaseFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setupStatusBarStyle()
-        setTopInsets()
     }
 
     private fun setTopInsets() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-            && (requireActivity().window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) != 0
-        ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getTopInsetsView()?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 topMargin = requireContext().getStatusBarHeight()
             }

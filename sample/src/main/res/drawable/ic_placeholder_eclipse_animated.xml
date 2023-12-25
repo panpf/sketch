@@ -4,6 +4,7 @@
         <vector
             android:width="200dp"
             android:height="200dp"
+            android:tint="@color/placeholder_icon"
             android:viewportWidth="100"
             android:viewportHeight="100">
             <group
@@ -11,9 +12,9 @@
                 android:pivotX="50.0"
                 android:pivotY="50.0">
                 <path
-                    android:fillColor="#FFFFFF"
+                    android:fillColor="#000000"
                     android:pathData="M10,50A40,40 0,0 0,90 50A40,42 0,0 1,10 50"
-                    android:strokeColor="#00000000" />
+                    android:strokeColor="#000000" />
             </group>
         </vector>
     </aapt:attr>

@@ -33,10 +33,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -325,10 +325,10 @@ private fun ImagePagerTools(
     }
     val buttonBgColor = buttonBgColorState.value
         ?.let { Color(it) }
-        ?: MaterialTheme.colors.secondary.copy(alpha = 0.7f)
+        ?: MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f)
     val buttonTextColor = buttonBgColorState.value
         ?.let { Color.White }
-        ?: MaterialTheme.colors.onSecondary
+        ?: MaterialTheme.colorScheme.onSecondary
     Row(
         modifier = Modifier
             .fillMaxSize()

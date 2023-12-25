@@ -22,11 +22,11 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.showDataFromLogo
@@ -41,7 +41,7 @@ class ImageFragment : BaseBindingFragment<FragmentImageBinding>() {
     override fun onViewCreated(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         binding.myImage.apply {
             showDataFromLogo()
-            showProgressIndicator(SectorProgressDrawable())
+            showProgressIndicator(createDayNightSectorProgressDrawable(requireContext()))
             displayImage(args.url) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)

@@ -34,12 +34,13 @@ import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
+import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.viewability.showSectorProgressIndicator
+import com.github.panpf.sketch.viewability.showProgressIndicator
 import com.github.panpf.zoomimage.view.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
@@ -86,7 +87,9 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                     }
             }
 
-            showSectorProgressIndicator()
+            showProgressIndicator(
+                createDayNightSectorProgressDrawable(requireContext())
+            )
 
             setOnClickListener {
                 findNavController().popBackStack()

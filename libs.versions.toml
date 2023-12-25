@@ -11,6 +11,7 @@ androidx-activity = "1.6.1"
 androidx-annotation = "1.5.0"
 androidx-appcompat = "1.6.0"
 androidx-compose = "1.5.0"
+androidx-compose-material3 = "1.1.2"
 androidx-compose-compiler = "1.5.0"
 androidx-constraintlayout = "2.1.4"
 androidx-constraintlayout-compose = "1.0.1"
@@ -73,7 +74,7 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
-androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-compose-material3" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
@@ -158,7 +159,7 @@ androidx-compose = [
     "androidx-activity-compose",
     "androidx-compose-animation",
     "androidx-compose-foundation",
-    "androidx-compose-material",
+    "androidx-compose-material3",
     "androidx-compose-runtime",
     "androidx-compose-ui",
     "androidx-compose-ui-tooling",

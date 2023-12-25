@@ -41,7 +41,7 @@ abstract class BaseBindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() 
 
     abstract fun onViewCreated(binding: VIEW_BINDING, savedInstanceState: Bundle?)
 
-    override fun getTopInsetsView(): View? {
+    final override fun getTopInsetsView(): View? {
         return getTopInsetsView(binding!!)
     }
 

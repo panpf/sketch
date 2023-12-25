@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
+import com.github.panpf.sketch.sample.ui.theme.AppTheme
 
 abstract class BaseComposeFragment : BaseFragment() {
 
@@ -30,7 +31,9 @@ abstract class BaseComposeFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View = ComposeView(inflater.context).apply {
         setContent {
-            DrawContent()
+            AppTheme {
+                DrawContent()
+            }
         }
     }
 

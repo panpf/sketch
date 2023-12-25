@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.widget
 import android.content.Context
 import android.util.AttributeSet
 import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.common.createMimeTypeLogoMap
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 import com.github.panpf.sketch.sample.util.lifecycleOwner
@@ -26,7 +27,7 @@ import com.github.panpf.sketch.viewability.removeMimeTypeLogo
 import com.github.panpf.sketch.viewability.removeProgressIndicator
 import com.github.panpf.sketch.viewability.showDataFromLogo
 import com.github.panpf.sketch.viewability.showMimeTypeLogoWithDrawable
-import com.github.panpf.sketch.viewability.showSectorProgressIndicator
+import com.github.panpf.sketch.viewability.showProgressIndicator
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class MyListImageView @JvmOverloads constructor(
@@ -57,7 +58,12 @@ class MyListImageView @JvmOverloads constructor(
 
     private fun setShowProgressIndicator(show: Boolean) {
         if (show) {
-            showSectorProgressIndicator(hiddenWhenIndeterminate = true)
+            showProgressIndicator(
+                createDayNightSectorProgressDrawable(
+                    context = context,
+                    hiddenWhenIndeterminate = true
+                )
+            )
         } else {
             removeProgressIndicator()
         }

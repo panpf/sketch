@@ -25,14 +25,15 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestProgressIndicatorBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.common.createDayNightMaskProgressDrawable
+import com.github.panpf.sketch.sample.ui.common.createDayNightRingProgressDrawable
+import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.viewability.ProgressIndicatorAbility
 import com.github.panpf.sketch.viewability.ViewAbilityContainer
 import com.github.panpf.sketch.viewability.removeProgressIndicator
-import com.github.panpf.sketch.viewability.showMaskProgressIndicator
-import com.github.panpf.sketch.viewability.showRingProgressIndicator
-import com.github.panpf.sketch.viewability.showSectorProgressIndicator
+import com.github.panpf.sketch.viewability.showProgressIndicator
 import kotlinx.coroutines.flow.combine
 
 class ProgressIndicatorTestFragment :
@@ -161,20 +162,29 @@ class ProgressIndicatorTestFragment :
         val hiddenWhenCompleted = viewModel.hiddenWhenCompletedState.value
         val shortStep = viewModel.shortStepState.value
         val stepAnimationDuration = if (shortStep) 1000 else 300
-        binding.image1.showMaskProgressIndicator(
-            hiddenWhenIndeterminate = hiddenWhenIndeterminate,
-            hiddenWhenCompleted = hiddenWhenCompleted,
-            stepAnimationDuration = stepAnimationDuration
+        binding.image1.showProgressIndicator(
+            createDayNightMaskProgressDrawable(
+                context = requireContext(),
+                hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+                hiddenWhenCompleted = hiddenWhenCompleted,
+                stepAnimationDuration = stepAnimationDuration
+            )
         )
-        binding.image2.showSectorProgressIndicator(
-            hiddenWhenIndeterminate = hiddenWhenIndeterminate,
-            hiddenWhenCompleted = hiddenWhenCompleted,
-            stepAnimationDuration = stepAnimationDuration
+        binding.image2.showProgressIndicator(
+            createDayNightSectorProgressDrawable(
+                context = requireContext(),
+                hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+                hiddenWhenCompleted = hiddenWhenCompleted,
+                stepAnimationDuration = stepAnimationDuration
+            )
         )
-        binding.image3.showRingProgressIndicator(
-            hiddenWhenIndeterminate = hiddenWhenIndeterminate,
-            hiddenWhenCompleted = hiddenWhenCompleted,
-            stepAnimationDuration = stepAnimationDuration
+        binding.image3.showProgressIndicator(
+            createDayNightRingProgressDrawable(
+                context = requireContext(),
+                hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+                hiddenWhenCompleted = hiddenWhenCompleted,
+                stepAnimationDuration = stepAnimationDuration
+            )
         )
     }
 

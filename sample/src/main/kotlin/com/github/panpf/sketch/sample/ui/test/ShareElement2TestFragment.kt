@@ -19,6 +19,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.displayImage
@@ -36,6 +37,10 @@ class ShareElement2TestFragment : BaseBindingFragment<FragmentTestShareElement2B
             sharedElementEnterTransition = TransitionInflater.from(requireContext())
                 .inflateTransition(R.transition.my_move)
         }
+    }
+
+    override fun getTopInsetsView(binding: FragmentTestShareElement2Binding): View {
+        return binding.zoomImage
     }
 
     override fun onViewCreated(

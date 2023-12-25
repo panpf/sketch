@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.kotlin.serialization)
     alias(libs.plugins.org.jetbrains.kotlin.parcelize)
-//    id("kotlin-parcelize")
-//    id("kotlinx-serialization")
     alias(libs.plugins.androidx.navigation.safeargs.kotlin)
 }
 
@@ -86,7 +84,6 @@ dependencies {
     implementation(project(":sketch-svg"))
     implementation(project(":sketch-video"))
     implementation(project(":sketch-video-ffmpeg"))
-//    implementation(project(":sketch-zoom"))
     implementation(project(":sketch-resources"))
 
     implementation(libs.kotlinx.serialization.json)
@@ -95,6 +92,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core)
+//    implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.multidex)
