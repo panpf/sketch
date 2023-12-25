@@ -15,15 +15,12 @@
  */
 package com.github.panpf.sketch.sample.ui.base
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.updateLayoutParams
 import com.github.panpf.sketch.sample.databinding.FragmentToolbarPageBinding
-import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 
 abstract class BaseToolbarFragment : BaseFragment() {
 
@@ -34,24 +31,10 @@ abstract class BaseToolbarFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentToolbarPageBinding.inflate(inflater, container, false).apply {
-        compatibleTransparentStatusBar(toolbar)
         this@BaseToolbarFragment.toolbar = toolbar
-
         val view = createView(toolbar, inflater, content)
         content.addView(view)
     }.root
-
-    private fun compatibleTransparentStatusBar(toolbar: Toolbar) {
-        val window = requireActivity().window
-        @Suppress("DEPRECATION")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-            && (window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) != 0
-        ) {
-            toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin += requireContext().getStatusBarHeight()
-            }
-        }
-    }
 
     protected abstract fun createView(
         toolbar: Toolbar,
@@ -69,6 +52,10 @@ abstract class BaseToolbarFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ) {
 
+    }
+
+    final override fun getTopInsetsView(): View? {
+        return toolbar!!
     }
 
     override fun onDestroyView() {

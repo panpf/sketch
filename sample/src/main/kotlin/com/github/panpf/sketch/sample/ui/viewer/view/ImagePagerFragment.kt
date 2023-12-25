@@ -19,11 +19,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.os.Bundle
-import android.view.ViewGroup
+import android.view.View
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
@@ -53,7 +51,6 @@ import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenSize
-import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
@@ -77,11 +74,6 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
         savedInstanceState: Bundle?
     ) {
         binding.pager.apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    topMargin += requireContext().getStatusBarHeight()
-                }
-            }
             adapter = AssemblyFragmentStateAdapter(
                 this@ImagePagerFragment,
                 listOf(ItemFactory()),
@@ -123,14 +115,6 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
                 )
             } else if (it is LoadState.Error) {
                 changeButtonBg(binding, Color.parseColor("#bf5660"))
-            }
-        }
-
-        binding.toolsLayout.apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    topMargin += requireContext().getStatusBarHeight()
-                }
             }
         }
 
@@ -191,6 +175,10 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
                 MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.ZOOM.name)
             )
         }
+    }
+
+    override fun getTopInsetsView(binding: FragmentImagePagerBinding): View {
+        return binding.toolsLayout
     }
 
     private fun loadBgImage(binding: FragmentImagePagerBinding, imageUrl: String) {

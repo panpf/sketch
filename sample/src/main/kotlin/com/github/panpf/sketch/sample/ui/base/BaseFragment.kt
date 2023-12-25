@@ -15,28 +15,25 @@
  */
 package com.github.panpf.sketch.sample.ui.base
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.view.WindowCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.Black
-import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.common.ActionResult
 import com.github.panpf.sketch.sample.ui.theme.getWindowBackgroundColor
 import com.github.panpf.sketch.sample.ui.theme.isNightMode
+import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 
 abstract class BaseFragment : Fragment() {
 
     protected open var statusBarTextStyle: StatusBarTextStyle? = null
     protected open var isPage: Boolean = true
-//    protected open var windowInsetsStyle: WindowInsetsStyle = WindowInsetsStyle.NonFullScreen(
-//        statusBarMode = Floating,
-//        statusBarStyle = Style(
-//            backgroundColor = Color.parseColor("#40000000"),
-//            textColor = Style.TextColor.White
-//        )
-//    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,6 +44,8 @@ abstract class BaseFragment : Fragment() {
             }
         }
     }
+
+    open fun getTopInsetsView(): View? = null
 
     fun handleActionResult(result: ActionResult): Boolean =
         when (result) {
@@ -63,23 +62,44 @@ abstract class BaseFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        setupStatusBarTextStyle()
+        setupStatusBarStyle()
+        setTopInsets()
     }
 
-    private fun setupStatusBarTextStyle() {
-//        setupWindowInsetStyle(requireActivity().window, windowInsetStyle)
-        val insetsController =
-            WindowCompat.getInsetsController(requireActivity().window, requireView())
-        val statusBarTextStyle =
-            statusBarTextStyle ?: if (requireContext().isNightMode()) White else Black
-        requireActivity().window.decorView.apply {
-            insetsController.isAppearanceLightStatusBars = statusBarTextStyle == Black
-//            val textStyleFlag = if (statusBarTextStyle == Black) {
-//                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-//            } else {
-//                View.SYSTEM_UI_FLAG_VISIBLE
-//            }
-//            systemUiVisibility = systemUiVisibility or textStyleFlag
+    private fun setTopInsets() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+            && (requireActivity().window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) != 0
+        ) {
+            getTopInsetsView()?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = requireContext().getStatusBarHeight()
+            }
+        }
+    }
+
+    private fun setupStatusBarStyle() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+        val window = requireActivity().window
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.statusBarColor = Color.TRANSPARENT
+                val insetsController =
+                    WindowCompat.getInsetsController(window, requireView())
+                val statusBarTextStyle =
+                    statusBarTextStyle
+                        ?: if (requireContext().isNightMode()) StatusBarTextStyle.White else StatusBarTextStyle.Black
+                window.decorView.apply {
+                    insetsController.isAppearanceLightStatusBars =
+                        statusBarTextStyle == StatusBarTextStyle.Black
+                }
+            } else {
+                window.statusBarColor = Color.parseColor("#60000000")
+            }
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
     }
 }
