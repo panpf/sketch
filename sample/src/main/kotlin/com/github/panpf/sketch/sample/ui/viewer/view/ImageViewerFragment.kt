@@ -51,7 +51,6 @@ import kotlin.math.roundToInt
 class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
-    private val requestState = DisplayRequestState()
 
     override var statusBarTextStyle: StatusBarTextStyle? = White
     override var isPage = false
@@ -125,13 +124,10 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
             merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
-            listener(requestState)
-            progressListener(requestState)
         }
 
-        // TODO SketchZoomImageView add requestState
         binding.smallState.apply {
-            requestState.loadState
+            binding.zoomImage.requestState.loadState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     if (it is Error) {
                         error {

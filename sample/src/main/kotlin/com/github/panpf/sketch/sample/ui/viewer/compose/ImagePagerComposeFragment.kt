@@ -273,7 +273,6 @@ private fun PagerBgImage(
             }
         }
     }
-    // todo When the background is switched, it will appear white
     AsyncImage(
         request = DisplayRequest(LocalContext.current, imageUri) {
             resize(
