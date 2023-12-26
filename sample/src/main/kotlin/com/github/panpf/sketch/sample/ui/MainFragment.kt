@@ -37,7 +37,7 @@ import com.github.panpf.sketch.sample.model.Link
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
-import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
+import com.github.panpf.sketch.sample.ui.common.list.GridSeparatorItemFactory
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
@@ -66,14 +66,14 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
         binding.recycler.apply {
             layoutManager = AssemblyGridLayoutManager.Builder(requireContext(), 2).apply {
-                itemSpanByItemFactory(ListSeparatorItemFactory::class to ItemSpan.fullSpan())
+                itemSpanByItemFactory(GridSeparatorItemFactory::class to ItemSpan.fullSpan())
             }.build()
             adapter = AssemblyRecyclerAdapter(
                 itemFactoryList = listOf(
                     LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
                         startLink(data)
                     },
-                    ListSeparatorItemFactory()
+                    GridSeparatorItemFactory()
                 ),
                 initDataList = pageList()
             )
