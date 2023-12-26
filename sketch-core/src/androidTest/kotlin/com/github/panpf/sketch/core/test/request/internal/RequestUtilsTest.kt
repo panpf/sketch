@@ -231,7 +231,9 @@ class RequestUtilsTest {
         )
 
         request = request.newDisplayRequest {
-            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+            placeholder(IconStateImage(drawable.ic_delete) {
+                resColorBackground(color.background_dark)
+            })
         }
         verifyCacheKey(
             uriString + _parameters +
@@ -475,7 +477,9 @@ class RequestUtilsTest {
         )
 
         request = request.newLoadRequest {
-            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+            placeholder(IconStateImage(drawable.ic_delete) {
+                resColorBackground(color.background_dark)
+            })
         }
         verifyCacheKey(
             uriString + _parameters +
@@ -719,7 +723,9 @@ class RequestUtilsTest {
         )
 
         request = request.newDownloadRequest {
-            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+            placeholder(IconStateImage(drawable.ic_delete) {
+                resColorBackground(color.background_dark)
+            })
         }
         verifyCacheKey(
             uriString + _parameters +
@@ -975,7 +981,9 @@ class RequestUtilsTest {
         )
 
         request = request.newDisplayRequest {
-            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+            placeholder(IconStateImage(drawable.ic_delete) {
+                resColorBackground(color.background_dark)
+            })
         }
         verifyCacheKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +

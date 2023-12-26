@@ -16,27 +16,23 @@
 package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInvalidException
-import com.github.panpf.sketch.drawable.internal.IconDrawable
+import com.github.panpf.sketch.drawable.internal.AnimatableIconDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.DrawableFetcher
-import com.github.panpf.sketch.util.RealColorDrawable
 import com.github.panpf.sketch.util.RealDrawable
-import com.github.panpf.sketch.util.ResColorDrawable
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
 
 /**
- * Create an IconStateImage. Set the size and background of the icon through trailing functions.
+ * Create an AnimatableIconStateImage. Set the size and background of the icon through trailing functions.
  */
-fun IconStateImage(
+fun AnimatableIconStateImage(
     icon: DrawableFetcher,
     block: (IconStateImageBuilderScope.() -> Unit)? = null
-): IconStateImage {
+): AnimatableIconStateImage {
     var iconSize: Size? = null
     var background: DrawableFetcher? = null
     if (block != null) {
@@ -44,60 +40,35 @@ fun IconStateImage(
         iconSize = scope.iconSize
         background = scope.background
     }
-    return IconStateImage(icon, iconSize, background)
+    return AnimatableIconStateImage(icon, iconSize, background)
 }
 
 /**
- * Create an IconStateImage. Set the size and background of the icon through trailing functions.
+ * Create an AnimatableIconStateImage. Set the size and background of the icon through trailing functions.
  */
-fun IconStateImage(
+fun AnimatableIconStateImage(
     icon: Drawable,
     block: (IconStateImageBuilderScope.() -> Unit)? = null
-): IconStateImage = IconStateImage(RealDrawable(icon), block)
-
+): AnimatableIconStateImage = AnimatableIconStateImage(RealDrawable(icon), block)
 
 /**
- * Create an IconStateImage. Set the size and background of the icon through trailing functions.
+ * Create an AnimatableIconStateImage. Set the size and background of the icon through trailing functions.
  */
-fun IconStateImage(
+fun AnimatableIconStateImage(
     @DrawableRes icon: Int,
     block: (IconStateImageBuilderScope.() -> Unit)? = null
-): IconStateImage = IconStateImage(ResDrawable(icon), block)
+): AnimatableIconStateImage = AnimatableIconStateImage(ResDrawable(icon), block)
 
 /**
  * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.
  *
  * Icons are centered and always the same size
  */
-class IconStateImage internal constructor(
+class AnimatableIconStateImage internal constructor(
     private val icon: DrawableFetcher,
     private val iconSize: Size?,
     private val background: DrawableFetcher?,
 ) : StateImage {
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(icon: Drawable, bg: Drawable)
-            : this(RealDrawable(icon), null, RealDrawable(bg))
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(icon: Drawable, @DrawableRes bg: Int)
-            : this(RealDrawable(icon), null, ResDrawable(bg))
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(icon: Drawable, bg: ColorFetcher)
-            : this(RealDrawable(icon), null, bg.toDrawableFetcher())
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(@DrawableRes icon: Int, bg: Drawable)
-            : this(ResDrawable(icon), null, RealDrawable(bg))
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(@DrawableRes icon: Int, @DrawableRes bg: Int)
-            : this(ResDrawable(icon), null, ResDrawable(bg))
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(@DrawableRes icon: Int, bg: ColorFetcher)
-            : this(ResDrawable(icon), null, bg.toDrawableFetcher())
 
     override fun getDrawable(
         sketch: Sketch,
@@ -122,9 +93,9 @@ class IconStateImage internal constructor(
                 }
             }
             val background = background?.getDrawable(request.context)
-            IconDrawable(icon, background, iconSize)
+            AnimatableIconDrawable(icon, background, iconSize)
         } catch (e: Throwable) {
-            sketch.logger.w("IconStateImage", "getDrawable error. ${e.message}")
+            sketch.logger.w("AnimatableIconDrawable", "getDrawable error. ${e.message}")
             e.printStackTrace()
             null
         }
@@ -133,7 +104,7 @@ class IconStateImage internal constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as IconStateImage
+        other as AnimatableIconStateImage
         if (icon != other.icon) return false
         if (iconSize != other.iconSize) return false
         if (background != other.background) return false
@@ -148,40 +119,6 @@ class IconStateImage internal constructor(
     }
 
     override fun toString(): String {
-        return "IconStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
-    }
-}
-
-class IconStateImageBuilderScope {
-
-    internal var iconSize: Size? = null
-    internal var background: DrawableFetcher? = null
-
-    fun iconSize(size: Size?) {
-        this.iconSize = size
-    }
-
-    fun iconSize(width: Int, height: Int) {
-        this.iconSize = Size(width = width, height = height)
-    }
-
-    fun iconSize(size: Int) {
-        this.iconSize = Size(width = size, height = size)
-    }
-
-    fun background(drawable: Drawable) {
-        this.background = RealDrawable(drawable)
-    }
-
-    fun resBackground(@DrawableRes resId: Int) {
-        this.background = ResDrawable(resId)
-    }
-
-    fun colorBackground(@ColorInt color: Int) {
-        this.background = RealColorDrawable(color)
-    }
-
-    fun resColorBackground(@ColorRes resId: Int) {
-        this.background = ResColorDrawable(resId)
+        return "AnimatableIconStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
     }
 }

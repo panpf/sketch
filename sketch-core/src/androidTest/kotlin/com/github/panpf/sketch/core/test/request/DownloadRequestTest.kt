@@ -1639,7 +1639,9 @@ class DownloadRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newDownloadRequest())
         }.newDownloadRequest {
-            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+            placeholder(IconStateImage(drawable.ic_delete) {
+                resColorBackground(color.background_dark)
+            })
         }.apply {
             Assert.assertEquals(this, this.newDownloadRequest())
         }.newDownloadRequest {

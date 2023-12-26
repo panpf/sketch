@@ -19,6 +19,17 @@ import android.content.Context
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
+import com.github.panpf.sketch.util.DrawableFetcher
+import com.github.panpf.sketch.util.RealColorDrawable
+import com.github.panpf.sketch.util.ResColorDrawable
+
+fun ColorFetcher.toDrawableFetcher(): DrawableFetcher {
+    return when (this) {
+        is IntColor -> RealColorDrawable(color)
+        is ResColor -> ResColorDrawable(resId)
+        else -> throw IllegalArgumentException("Unsupported ColorFetcher: $this")
+    }
+}
 
 /**
  * For getting the color

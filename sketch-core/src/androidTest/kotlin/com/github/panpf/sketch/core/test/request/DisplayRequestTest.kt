@@ -1913,7 +1913,9 @@ class DisplayRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newDisplayRequest())
         }.newDisplayRequest {
-            placeholder(IconStateImage(drawable.ic_delete, color.background_dark))
+            placeholder(IconStateImage(drawable.ic_delete) {
+                resColorBackground(color.background_dark)
+            })
         }.apply {
             Assert.assertEquals(this, this.newDisplayRequest())
         }.newDisplayRequest {

@@ -18,9 +18,11 @@ package com.github.panpf.sketch.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import com.github.panpf.sketch.decode.ImageInvalidException
 
 /**
  * For getting the Drawable
@@ -98,5 +100,51 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
 
     override fun toString(): String {
         return "RealDrawable($drawable)"
+    }
+}
+
+class RealColorDrawable(@ColorInt val color: Int) : DrawableFetcher {
+
+    override fun getDrawable(context: Context): Drawable {
+        return ColorDrawable(color)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as RealColorDrawable
+        if (color != other.color) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return color.hashCode()
+    }
+
+    override fun toString(): String {
+        return "RealColorDrawable($color)"
+    }
+}
+
+class ResColorDrawable(@ColorRes val resId: Int) : DrawableFetcher {
+
+    override fun getDrawable(context: Context): Drawable {
+        return context.resources.getDrawableCompat(resId, null)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as ResColorDrawable
+        if (resId != other.resId) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return resId.hashCode()
+    }
+
+    override fun toString(): String {
+        return "ResColorDrawable($resId)"
     }
 }

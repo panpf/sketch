@@ -33,11 +33,11 @@ import com.github.panpf.sketch.util.Size
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
  * It is suitable for use as a placeholder image for waterfall flow.
  */
-class IconDrawable constructor(
+class AnimatableIconDrawable constructor(
     val icon: Drawable,
     val background: Drawable? = null,
     val iconSize: Size? = null,
-) : Drawable(), Callback {
+) : AnimatableDrawableWrapper(icon), Callback {
 
     init {
         background?.callback = this
@@ -52,11 +52,11 @@ class IconDrawable constructor(
         return -1
     }
 
-    override fun mutate(): IconDrawable {
+    override fun mutate(): AnimatableIconDrawable {
         val newIcon = icon.mutate()
         val newBackground = background?.mutate()
         return if (newIcon !== icon || newBackground !== background) {
-            IconDrawable(newIcon, newBackground, iconSize)
+            AnimatableIconDrawable(newIcon, newBackground, iconSize)
         } else {
             this
         }
