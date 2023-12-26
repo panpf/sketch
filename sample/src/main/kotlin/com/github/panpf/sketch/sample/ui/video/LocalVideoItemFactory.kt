@@ -25,7 +25,6 @@ import com.github.panpf.sketch.sample.databinding.ListItemVideoBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 
 class LocalVideoItemFactory :
@@ -37,10 +36,15 @@ class LocalVideoItemFactory :
         item: BindingItem<VideoInfo, ListItemVideoBinding>
     ) {
         binding.thumbnailImage.updateDisplayImageOptions {
-            val bg = ResColor(R.color.placeholder_bg)
-            placeholder(IconStateImage(R.drawable.ic_image_outline, bg))
-            error(IconStateImage(R.drawable.ic_error_baseline, bg)) {
-                saveCellularTrafficError(R.drawable.im_save_cellular_traffic)
+            placeholder(IconStateImage(R.drawable.ic_image_outline) {
+                resColorBackground(R.color.placeholder_bg)
+            })
+            error(IconStateImage(R.drawable.ic_error_baseline) {
+                resColorBackground(R.color.placeholder_bg)
+            }) {
+                saveCellularTrafficError(IconStateImage(R.drawable.im_save_cellular_traffic) {
+                    resColorBackground(R.color.placeholder_bg)
+                })
             }
             crossfade()
             videoFramePercent(0.5f)

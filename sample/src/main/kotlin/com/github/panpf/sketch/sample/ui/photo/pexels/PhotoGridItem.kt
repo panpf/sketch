@@ -32,8 +32,8 @@ import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDraw
 import com.github.panpf.sketch.sample.ui.common.createMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.util.letIf
+import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import com.google.accompanist.drawablepainter.DrawablePainter
 
@@ -95,18 +95,27 @@ fun PhotoGridItem(
     val request = remember(photo.listThumbnailUrl, listSettings) {
         DisplayRequest(context, photo.listThumbnailUrl) {
             if (animatedPlaceholder) {
-                placeholder(drawable.ic_placeholder_eclipse_animated)
+                placeholder(
+                    AnimatableIconStateImage(drawable.ic_placeholder_eclipse_animated) {
+                        resColorBackground(color.placeholder_bg)
+                    }
+                )
             } else {
                 placeholder(
-                    IconStateImage(
-                        drawable.ic_image_outline,
-                        ResColor(color.placeholder_bg)
-                    )
+                    IconStateImage(drawable.ic_image_outline) {
+                        resColorBackground(color.placeholder_bg)
+                    }
                 )
             }
-            error(IconStateImage(drawable.ic_error_baseline, ResColor(color.placeholder_bg))) {
+            error(
+                IconStateImage(drawable.ic_error_baseline) {
+                    resColorBackground(color.placeholder_bg)
+                }
+            ) {
                 saveCellularTrafficError(
-                    IconStateImage(drawable.ic_signal_cellular, ResColor(color.placeholder_bg))
+                    IconStateImage(drawable.ic_signal_cellular) {
+                        resColorBackground(color.placeholder_bg)
+                    }
                 )
             }
             crossfade()

@@ -2,8 +2,8 @@
     xmlns:aapt="http://schemas.android.com/aapt">
     <aapt:attr name="android:drawable">
         <vector
-            android:width="200dp"
-            android:height="200dp"
+            android:width="48dp"
+            android:height="48dp"
             android:tint="@color/placeholder_icon"
             android:viewportWidth="100"
             android:viewportHeight="100">
@@ -23,9 +23,9 @@
         <aapt:attr name="android:animation">
             <objectAnimator
                 android:duration="1000"
+                android:interpolator="@android:anim/linear_interpolator"
                 android:propertyName="rotation"
                 android:repeatCount="-1"
-                android:interpolator="@android:anim/linear_interpolator"
                 android:valueFrom="0"
                 android:valueTo="360" />
         </aapt:attr>

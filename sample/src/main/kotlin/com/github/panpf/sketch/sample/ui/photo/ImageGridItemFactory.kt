@@ -31,8 +31,8 @@ import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
@@ -81,21 +81,27 @@ class ImageGridItemFactory(val animatedPlaceholder: Boolean = false) :
             setClickIgnoreSaveCellularTrafficEnabled(true)
             updateDisplayImageOptions {
                 if (animatedPlaceholder) {
-                    placeholder(R.drawable.ic_placeholder_eclipse_animated)
+                    placeholder(
+                        AnimatableIconStateImage(R.drawable.ic_placeholder_eclipse_animated) {
+                            resColorBackground(R.color.placeholder_bg)
+                        }
+                    )
                 } else {
                     placeholder(
-                        IconStateImage(
-                            R.drawable.ic_image_outline,
-                            ResColor(R.color.placeholder_bg)
-                        )
+                        IconStateImage(R.drawable.ic_image_outline) {
+                            resColorBackground(R.color.placeholder_bg)
+                        }
                     )
                 }
-                error(IconStateImage(R.drawable.ic_error_baseline, ResColor(R.color.placeholder_bg))) {
+                error(
+                    IconStateImage(R.drawable.ic_error_baseline) {
+                        resColorBackground(R.color.placeholder_bg)
+                    }
+                ) {
                     saveCellularTrafficError(
-                        IconStateImage(
-                            R.drawable.ic_signal_cellular,
-                            ResColor(R.color.placeholder_bg)
-                        )
+                        IconStateImage(R.drawable.ic_signal_cellular) {
+                            resColorBackground(R.color.placeholder_bg)
+                        }
                     )
                 }
                 crossfade()

@@ -69,7 +69,7 @@ abstract class BaseFragment : Fragment() {
     private fun setTopInsets() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getTopInsetsView()?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin = requireContext().getStatusBarHeight()
+                topMargin += requireContext().getStatusBarHeight()
             }
         }
     }

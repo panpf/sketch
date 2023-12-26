@@ -21,6 +21,7 @@ import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.transition.TransitionInflater
+import com.github.panpf.sketch.drawable.internal.IconDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestProgressIndicatorBinding
@@ -29,6 +30,7 @@ import com.github.panpf.sketch.sample.ui.common.createDayNightMaskProgressDrawab
 import com.github.panpf.sketch.sample.ui.common.createDayNightRingProgressDrawable
 import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel.Model
+import com.github.panpf.sketch.sample.util.getDrawableCompat
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.viewability.ProgressIndicatorAbility
 import com.github.panpf.sketch.viewability.ViewAbilityContainer
@@ -56,15 +58,24 @@ class ProgressIndicatorTestFragment :
     ) {
         toolbar.title = "ProgressIndicator"
 
-        if (VERSION.SDK_INT >= 21) {
-            binding.image1.setImageResource(R.drawable.im_placeholder)
-            binding.image2.setImageResource(R.drawable.im_placeholder)
-            binding.image3.setImageResource(R.drawable.im_placeholder)
-        } else {
-            binding.image1.setImageResource(R.drawable.im_placeholder_bg)
-            binding.image2.setImageResource(R.drawable.im_placeholder_bg)
-            binding.image3.setImageResource(R.drawable.im_placeholder_bg)
-        }
+        binding.image1.setImageDrawable(
+            IconDrawable(
+                icon = requireContext().getDrawableCompat(R.drawable.ic_image_outline),
+                background = requireContext().getDrawableCompat(R.color.placeholder_bg),
+            )
+        )
+        binding.image2.setImageDrawable(
+            IconDrawable(
+                icon = requireContext().getDrawableCompat(R.drawable.ic_image_outline),
+                background = requireContext().getDrawableCompat(R.color.placeholder_bg),
+            )
+        )
+        binding.image3.setImageDrawable(
+            IconDrawable(
+                icon = requireContext().getDrawableCompat(R.drawable.ic_image_outline),
+                background = requireContext().getDrawableCompat(R.color.placeholder_bg),
+            )
+        )
 
         binding.actionButton.setOnClickListener {
             viewModel.action()

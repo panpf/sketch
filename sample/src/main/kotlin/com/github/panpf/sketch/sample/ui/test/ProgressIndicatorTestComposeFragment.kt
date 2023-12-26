@@ -51,7 +51,9 @@ import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
+import com.github.panpf.sketch.drawable.internal.IconDrawable
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
 import com.github.panpf.sketch.sample.ui.common.createDayNightMaskProgressDrawable
@@ -105,7 +107,12 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
     ) {
         val context = LocalContext.current
         val placeholderPainter = remember {
-            DrawablePainter(context.resources.getDrawableCompat(drawable.im_placeholder))
+            DrawablePainter(
+                IconDrawable(
+                    icon = context.getDrawableCompat(drawable.ic_image_outline),
+                    background = context.getDrawableCompat(color.placeholder_bg),
+                )
+            )
         }
 
         val hiddenWhenIndeterminate by viewModel.hiddenWhenIndeterminateState.collectAsState()

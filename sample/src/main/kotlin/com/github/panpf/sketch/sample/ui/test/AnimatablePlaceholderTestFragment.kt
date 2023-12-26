@@ -17,15 +17,13 @@ package com.github.panpf.sketch.sample.ui.test
 
 import android.os.Bundle
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.BitmapDecodeInterceptor.Chain
-import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestAnimatablePlaceholderBinding
+import com.github.panpf.sketch.sample.image.DelayBitmapDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import kotlinx.coroutines.delay
+import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 
 class AnimatablePlaceholderTestFragment :
     BaseToolbarBindingFragment<FragmentTestAnimatablePlaceholderBinding>() {
@@ -48,23 +46,42 @@ class AnimatablePlaceholderTestFragment :
     }
 
     private fun displayImage(binding: FragmentTestAnimatablePlaceholderBinding) {
-        val urlString = AssetImages.statics[urlIndex % AssetImages.statics.size]
-        binding.myImage.displayImage(urlString) {
+        val images = arrayOf(AssetImages.jpeg, AssetImages.webp, AssetImages.bmp)
+        val urlString = images[urlIndex % images.size]
+        binding.myImage1.displayImage(urlString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            placeholder(R.drawable.ic_placeholder_eclipse_animated)
+            placeholder(
+                AnimatableIconStateImage(R.drawable.ic_placeholder_eclipse_animated) {
+                    resColorBackground(R.color.placeholder_bg)
+                }
+            )
             components {
-                addBitmapDecodeInterceptor(object : BitmapDecodeInterceptor {
-                    override val key: String?
-                        get() = null
-                    override val sortWeight: Int
-                        get() = 0
-
-                    override suspend fun intercept(chain: Chain): Result<BitmapDecodeResult> {
-                        delay(5000)
-                        return chain.proceed()
-                    }
-                })
+                addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
+            }
+        }
+        binding.myImage2.displayImage(urlString) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            placeholder(
+                AnimatableIconStateImage(R.drawable.ic_placeholder_eclipse_animated) {
+                    resColorBackground(R.color.placeholder_bg)
+                }
+            )
+            components {
+                addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
+            }
+        }
+        binding.myImage3.displayImage(urlString) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            placeholder(
+                AnimatableIconStateImage(R.drawable.ic_placeholder_eclipse_animated) {
+                    resColorBackground(R.color.placeholder_bg)
+                }
+            )
+            components {
+                addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
             }
         }
     }
