@@ -24,8 +24,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
+import com.github.panpf.assemblyadapter.recycler.ItemSpan
+import com.github.panpf.assemblyadapter.recycler.divider.AssemblyGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
@@ -35,6 +38,7 @@ import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
+import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
@@ -61,46 +65,59 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
         }
 
         binding.recycler.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = AssemblyGridLayoutManager.Builder(requireContext(), 2).apply {
+                itemSpanByItemFactory(ListSeparatorItemFactory::class to ItemSpan.fullSpan())
+            }.build()
             adapter = AssemblyRecyclerAdapter(
-                itemFactoryList = listOf(LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
-                    startLink(data)
-                }, ListSeparatorItemFactory()),
+                itemFactoryList = listOf(
+                    LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
+                        startLink(data)
+                    },
+                    ListSeparatorItemFactory()
+                ),
                 initDataList = pageList()
             )
+            addItemDecoration(AssemblyGridDividerItemDecoration.Builder(requireContext()).apply {
+                divider(Divider.space(16.dp2px))
+                footerDivider(Divider.space(16.dp2px))
+                sideDivider(Divider.space(16.dp2px))
+                useSideDividerAsSideHeaderAndFooterDivider()
+            }.build())
         }
     }
 
     private fun pageList(): List<Any> = listOf(
-        ListSeparator("View"),
+        ListSeparator("Examples"),
+
         Link(
-            title = "Local Photos",
+            title = "Local Photos\n(View)",
             navDirections = NavMainDirections.actionLocalPhotoListFragment(),
             permissions = listOf(permission.READ_EXTERNAL_STORAGE)
         ),
         Link(
-            title = "Pexels Photos",
-            navDirections = NavMainDirections.actionPexelsPhotoListFragment()
-        ),
-        Link(
-            title = "Giphy GIFs",
-            navDirections = NavMainDirections.actionGiphyGifListFragment()
-        ),
-
-        ListSeparator("Jetpack Compose"),
-        Link(
-            title = "Local Photos (Compose)",
+            title = "Local Photos\n(Compose)",
             navDirections = NavMainDirections.actionLocalPhotoListComposeFragment(),
             minSdk = VERSION_CODES.LOLLIPOP,
             permissions = listOf(permission.READ_EXTERNAL_STORAGE)
         ),
+
         Link(
-            title = "Pexels Photos (Compose)",
+            title = "Pexels Photos\n(View)",
+            navDirections = NavMainDirections.actionPexelsPhotoListFragment()
+        ),
+        Link(
+            title = "Pexels Photos\n(Compose)",
             navDirections = NavMainDirections.actionPexelsPhotoListComposeFragment(),
             minSdk = VERSION_CODES.LOLLIPOP
         ),
+
         Link(
-            title = "Giphy GIFs (Compose)",
+            title = "Giphy GIFs\n(View)",
+            navDirections = NavMainDirections.actionGiphyGifListFragment()
+        ),
+
+        Link(
+            title = "Giphy GIFs\n(Compose)",
             navDirections = NavMainDirections.actionGiphyGifListComposeFragment(),
             minSdk = VERSION_CODES.LOLLIPOP
         ),
@@ -133,29 +150,32 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
             navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
         ),
         Link(
-            title = "ProgressIndicator",
+            title = "ProgressIndicator\n" +
+                    "(View)",
             navDirections = NavMainDirections.actionProgressIndicatorTestFragment()
         ),
         Link(
-            title = "ProgressIndicator (Compose)",
+            title = "ProgressIndicator\n(Compose)",
             navDirections = NavMainDirections.actionProgressIndicatorTestComposeFragment(),
-                    minSdk = VERSION_CODES.LOLLIPOP
+            minSdk = VERSION_CODES.LOLLIPOP
         ),
         Link(
-            title = "Display Insanity",
+            title = "Display Insanity\n" +
+                    "(View)",
             navDirections = NavMainDirections.actionInsanityTestFragment()
         ),
         Link(
-            title = "Display Insanity (Compose)",
+            title = "Display Insanity\n(Compose)",
             navDirections = NavMainDirections.actionInsanityTestComposeFragment(),
             minSdk = VERSION_CODES.LOLLIPOP
         ),
         Link(
-            title = "Animatable Placeholder",
+            title = "Animatable Placeholder\n" +
+                    "(View)",
             navDirections = NavMainDirections.actionAnimatablePlaceholder(),
         ),
         Link(
-            title = "Animatable Placeholder (Compose)",
+            title = "Animatable Placeholder\n(Compose)",
             navDirections = NavMainDirections.actionAnimatablePlaceholderCompose(),
             minSdk = VERSION_CODES.LOLLIPOP
         ),
@@ -173,7 +193,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private fun debugPageList(): List<Link> = listOf(
         Link(
-            title = "Temp Test (Compose)",
+            title = "Temp Test\n(Compose)",
             navDirections = NavMainDirections.actionTempTestComposeFragment(),
             minSdk = VERSION_CODES.LOLLIPOP
         ),

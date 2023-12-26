@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_item">
+    android:background="@drawable/bg_container_rounded_primary"
+    android:minWidth="100dp"
+    android:minHeight="100dp">
 
     <TextView
         android:id="@+id/linkTitleText"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingLeft="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
         android:paddingTop="16dp"
-        android:paddingEnd="20dp"
-        android:paddingRight="20dp"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
         android:paddingBottom="16dp"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:text="AssemblyRecyclerAdapter" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
