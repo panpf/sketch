@@ -101,7 +101,7 @@ fun calculateSampledBitmapSizeForRegion(
     return Size(width, height)
 }
 
-private fun checkSampleSize(
+private fun checkSampledSize(
     sampledSize: Size,
     targetSize: Size,
     smallerSizeMode: Boolean
@@ -109,6 +109,7 @@ private fun checkSampleSize(
     return if (smallerSizeMode) {
         sampledSize.width <= targetSize.width && sampledSize.height <= targetSize.height
     } else {
+        // todo Limit cannot exceed targetSize * 1.5f
         sampledSize.width * sampledSize.height <= targetSize.width * targetSize.height
     }
 }
@@ -125,9 +126,9 @@ fun calculateSampleSize(
     var sampleSize = 1
     var accepted = false
     while (!accepted) {
-        val bitmapSize = calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
-        accepted = checkSampleSize(
-            sampledSize = bitmapSize,
+        val sampledBitmapSize = calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
+        accepted = checkSampledSize(
+            sampledSize = sampledBitmapSize,
             targetSize = targetSize,
             smallerSizeMode = smallerSizeMode
         )
@@ -168,7 +169,7 @@ fun calculateSampleSizeForRegion(
         val bitmapSize = calculateSampledBitmapSizeForRegion(
             regionSize, sampleSize, mimeType, imageSize
         )
-        accepted = checkSampleSize(
+        accepted = checkSampledSize(
             sampledSize = bitmapSize,
             targetSize = targetSize,
             smallerSizeMode = smallerSizeMode
