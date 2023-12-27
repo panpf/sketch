@@ -47,7 +47,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
-class ViewTargetRequestManager constructor(private val view: View) : View.OnAttachStateChangeListener {
+class ViewTargetRequestManager constructor(private val view: View) :
+    View.OnAttachStateChangeListener {
 
     // The disposable for the current request attached to this view.
     private var currentDisposable: ViewTargetDisposable? = null

@@ -70,8 +70,10 @@ internal fun Context.getXmlDrawableCompat(resources: Resources, @XmlRes resId: I
         when (parser.name) {
             "vector" -> VectorDrawableCompat
                 .createFromXmlInner(resources, parser, Xml.asAttributeSet(parser), theme)
+
             "animated-vector" -> AnimatedVectorDrawableCompat
                 .createFromXmlInner(this, resources, parser, Xml.asAttributeSet(parser), theme)
+
             else -> resources.getDrawableCompat(resId, theme)
         }
     }

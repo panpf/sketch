@@ -126,6 +126,7 @@ internal fun reverseRotateRect(rect: Rect, rotateDegrees: Int, drawableSize: Siz
             rect.top = drawableSize.height - rect.top
             rect.bottom = drawableSize.height - rect.bottom
         }
+
         180 -> {
             var right = rect.right
             rect.right = rect.left
@@ -138,6 +139,7 @@ internal fun reverseRotateRect(rect: Rect, rotateDegrees: Int, drawableSize: Siz
             rect.left = drawableSize.width - rect.left
             rect.right = drawableSize.width - rect.right
         }
+
         270 -> {
             val bottom = rect.bottom
             rect.bottom = rect.right
@@ -159,10 +161,12 @@ internal fun rotatePoint(point: PointF, rotateDegrees: Int, drawableSize: Size) 
             point.x = drawableSize.height - point.y
             point.y = point.x
         }
+
         180 -> {
             point.x = drawableSize.width - point.x
             point.y = drawableSize.height - point.y
         }
+
         270 -> {
             point.x = point.y
             point.y = drawableSize.width - point.x

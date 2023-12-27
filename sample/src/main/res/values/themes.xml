@@ -30,6 +30,5 @@
         <item name="colorPrimaryInverse">@color/md_theme_inversePrimary</item>
     </style>
 
-    <style name="AppTheme" parent="Material3Theme">
-    </style>
+    <style name="AppTheme" parent="Material3Theme"></style>
 </resources>

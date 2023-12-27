@@ -259,6 +259,7 @@ internal class TileManager constructor(
                         "loadTile. null. $tile. '$imageUri'"
                     }
                 }
+
                 isActive -> {
                     withContext(Dispatchers.Main) {
                         val newCountBitmap = CountBitmap(
@@ -287,6 +288,7 @@ internal class TileManager constructor(
                         notifyTileChanged()
                     }
                 }
+
                 else -> {
                     logger.d(SubsamplingHelper.MODULE) {
                         "loadTile. canceled. $tile. '$imageUri'"

@@ -54,6 +54,7 @@ class SaveCellularTrafficDisplayInterceptor constructor(
             request !is DisplayRequest -> {
                 request
             }
+
             enabled && request.isSaveCellularTraffic
                     && !request.isIgnoredSaveCellularTraffic
                     && isCellularNetworkConnected(chain.sketch) -> {
@@ -67,6 +68,7 @@ class SaveCellularTrafficDisplayInterceptor constructor(
                     request
                 }
             }
+
             else -> {
                 val oldDepth =
                     request.parameters?.value<String>(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY)?.let {
@@ -102,5 +104,6 @@ class SaveCellularTrafficDisplayInterceptor constructor(
         return sortWeight
     }
 
-    override fun toString(): String = "SaveCellularTrafficDisplayInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
+    override fun toString(): String =
+        "SaveCellularTrafficDisplayInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
 }

@@ -28,9 +28,9 @@ import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerI
 import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
@@ -102,7 +102,7 @@ class InsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerRefreshB
                         is LoadState.NotLoading -> {
                             binding.swipeRefresh.isRefreshing = false
                             if (pagingAdapter.itemCount <= 0) {
-                                binding.state.empty{
+                                binding.state.empty {
                                     message("No Photos")
                                 }
                             } else {

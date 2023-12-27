@@ -138,6 +138,7 @@ internal class ScaleDragHelper constructor(
                 baseMatrix.postScale(initState.scale, initState.scale)
                 baseMatrix.postTranslate(initState.translateX, initState.translateY)
             }
+
             is Initial.FitXy -> {
                 baseMatrix.setRectToRect(
                     initState.srcRectF,
@@ -178,9 +179,11 @@ internal class ScaleDragHelper constructor(
                     else -> (viewWidth - displayWidth) / 2 - drawRectF.left
                 }
             }
+
             drawRectF.left.toInt() > 0 -> {
                 deltaX = -drawRectF.left
             }
+
             drawRectF.right.toInt() < viewWidth -> {
                 deltaX = viewWidth - drawRectF.right
             }
@@ -197,9 +200,11 @@ internal class ScaleDragHelper constructor(
                     else -> (viewHeight - displayHeight) / 2 - drawRectF.top
                 }
             }
+
             drawRectF.top.toInt() > 0 -> {
                 deltaY = -drawRectF.top
             }
+
             drawRectF.bottom.toInt() < viewHeight -> {
                 deltaY = viewHeight - drawRectF.bottom
             }
@@ -505,8 +510,8 @@ internal class ScaleDragHelper constructor(
 //        val overMinZoomScale = currentScale < zoomerHelper.minScale.format(2)
 //        val overMaxZoomScale = currentScale > zoomerHelper.maxScale.format(2)
 //        if (!overMinZoomScale && !overMaxZoomScale) {
-            manualScaling = false
-            onUpdateMatrix()
+        manualScaling = false
+        onUpdateMatrix()
 //        }
     }
 

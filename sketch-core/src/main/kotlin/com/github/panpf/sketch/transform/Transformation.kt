@@ -56,7 +56,11 @@ interface Transformation {
      * @return The transformed [Bitmap].
      */
     @WorkerThread
-    suspend fun transform(sketch: Sketch, requestContext: RequestContext, input: Bitmap): TransformResult?
+    suspend fun transform(
+        sketch: Sketch,
+        requestContext: RequestContext,
+        input: Bitmap
+    ): TransformResult?
 }
 
 /**

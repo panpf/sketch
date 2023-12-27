@@ -91,6 +91,10 @@ class LocalVideoListPagingSource(private val context: Context) :
         } else {
             null
         }
-        return LoadResult.Page(assetVideos.plus(dataList).filter { keySet.add(it.diffKey) }, null, nextKey)
+        return LoadResult.Page(
+            assetVideos.plus(dataList).filter { keySet.add(it.diffKey) },
+            null,
+            nextKey
+        )
     }
 }

@@ -34,7 +34,8 @@ class ExifOrientationTestPagerViewModel(application1: Application) :
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _data.value = ExifOrientationTestFileHelper(application1, AssetImages.jpeg.fileName).files()
+            _data.value =
+                ExifOrientationTestFileHelper(application1, AssetImages.jpeg.fileName).files()
         }
     }
 }

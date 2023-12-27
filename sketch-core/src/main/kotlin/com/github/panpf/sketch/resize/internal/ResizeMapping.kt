@@ -61,7 +61,7 @@ fun calculateResizeMapping(
         return ResizeMapping(srcRect, dstRect)
     } else if (precision == SMALLER_SIZE) {
         var scale = 1f
-        while ((imageWidth * scale).toInt() > resizeWidth ||  (imageHeight * scale).toInt() > resizeHeight) {
+        while ((imageWidth * scale).toInt() > resizeWidth || (imageHeight * scale).toInt() > resizeHeight) {
             scale -= 0.01f
         }
         val srcRect = Rect(0, 0, imageWidth, imageHeight)
@@ -79,6 +79,7 @@ fun calculateResizeMapping(
             val scale = when {
                 resizeWidth >= imageWidth && resizeHeight >= imageHeight ->
                     widthRatio.coerceAtLeast(heightRatio)
+
                 resizeWidth >= imageWidth -> widthRatio
                 resizeHeight >= imageHeight -> heightRatio
                 else -> 1f
@@ -97,6 +98,7 @@ fun calculateResizeMapping(
                 val srcTop = 0
                 Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
             }
+
             CENTER_CROP -> {
                 val finalScale = (imageWidth.toFloat() / newImageWidth)
                     .coerceAtMost(imageHeight.toFloat() / newImageHeight)
@@ -106,6 +108,7 @@ fun calculateResizeMapping(
                 val srcTop = (imageHeight - srcHeight) / 2
                 Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
             }
+
             END_CROP -> {
                 val finalScale = (imageWidth.toFloat() / newImageWidth)
                     .coerceAtMost(imageHeight.toFloat() / newImageHeight)
@@ -115,6 +118,7 @@ fun calculateResizeMapping(
                 val srcTop: Int = imageHeight - srcHeight
                 Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
             }
+
             FILL -> {
                 Rect(0, 0, imageWidth, imageHeight)
             }

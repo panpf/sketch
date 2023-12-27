@@ -27,7 +27,10 @@ import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 /**
  * Set to enable click View to force ignore the data saving function
  */
-fun ViewAbilityContainer.setClickIgnoreSaveCellularTrafficEnabled(sketch: Sketch, enable: Boolean = true) {
+fun ViewAbilityContainer.setClickIgnoreSaveCellularTrafficEnabled(
+    sketch: Sketch,
+    enable: Boolean = true
+) {
     val enabled = isClickIgnoreSaveCellularTrafficEnabled
     if (enable && !enabled) {
         addViewAbility(ClickIgnoreSaveCellularTrafficAbility(sketch))

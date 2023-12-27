@@ -27,7 +27,8 @@ import kotlinx.coroutines.flow.first
  *
  * @see DisplayRequest.Builder.pauseLoadWhenScrolling
  */
-class PauseLoadWhenScrollingDrawableDecodeInterceptor(override val sortWeight: Int = 0) : DrawableDecodeInterceptor {
+class PauseLoadWhenScrollingDrawableDecodeInterceptor(override val sortWeight: Int = 0) :
+    DrawableDecodeInterceptor {
 
     companion object {
         private val scrollingFlow = MutableStateFlow(false)
@@ -68,5 +69,6 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptor(override val sortWeight: I
         return sortWeight
     }
 
-    override fun toString(): String = "PauseLoadWhenScrollingDrawableDecodeInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
+    override fun toString(): String =
+        "PauseLoadWhenScrollingDrawableDecodeInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
 }

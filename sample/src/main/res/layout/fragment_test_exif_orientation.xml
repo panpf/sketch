@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:padding="16dp"
-        android:text="Ignore Exif Orientation"/>
+        android:text="Ignore Exif Orientation" />
 
     <com.github.panpf.sketch.sample.widget.MyImageView
         android:id="@+id/myImage"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:padding="16dp"
-        android:text="Read Exif Orientation"/>
+        android:text="Read Exif Orientation" />
 
     <com.github.panpf.sketch.sample.widget.MyImageView
         android:id="@+id/myImage2"

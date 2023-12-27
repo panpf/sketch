@@ -325,11 +325,13 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Memory Cache",
                 desc = "%s/%s（Long Click Clean）".format(
-                    sketch.memoryCache.size.formatFileSize(0,
+                    sketch.memoryCache.size.formatFileSize(
+                        0,
                         decimalPlacesFillZero = false,
                         compact = true
                     ),
-                    sketch.memoryCache.maxSize.formatFileSize(0,
+                    sketch.memoryCache.maxSize.formatFileSize(
+                        0,
                         decimalPlacesFillZero = false,
                         compact = true
                     )
@@ -347,11 +349,13 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Result Cache",
                 desc = "%s/%s（Long Click Clean）".format(
-                    sketch.resultCache.size.formatFileSize(0,
+                    sketch.resultCache.size.formatFileSize(
+                        0,
                         decimalPlacesFillZero = false,
                         compact = true
                     ),
-                    sketch.resultCache.maxSize.formatFileSize(0,
+                    sketch.resultCache.maxSize.formatFileSize(
+                        0,
                         decimalPlacesFillZero = false,
                         compact = true
                     )
@@ -369,11 +373,13 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Download Cache",
                 desc = "%s/%s（Long Click Clean）".format(
-                    sketch.downloadCache.size.formatFileSize(0,
+                    sketch.downloadCache.size.formatFileSize(
+                        0,
                         decimalPlacesFillZero = false,
                         compact = true
                     ),
-                    sketch.downloadCache.maxSize.formatFileSize(0,
+                    sketch.downloadCache.maxSize.formatFileSize(
+                        0,
                         decimalPlacesFillZero = false,
                         compact = true
                     )
@@ -391,11 +397,13 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Bitmap Pool",
                 desc = "%s/%s（Long Click Clean）".format(
-                    sketch.bitmapPool.size.formatFileSize(0,
+                    sketch.bitmapPool.size.formatFileSize(
+                        0,
                         decimalPlacesFillZero = false,
                         compact = true
                     ),
-                    sketch.bitmapPool.maxSize.formatFileSize(0,
+                    sketch.bitmapPool.maxSize.formatFileSize(
+                        0,
                         decimalPlacesFillZero = false,
                         compact = true
                     )

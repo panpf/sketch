@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/text_rounded_radius"/>
+            android:text="@string/text_rounded_radius" />
 
         <TextView
             android:id="@+id/radiusText"

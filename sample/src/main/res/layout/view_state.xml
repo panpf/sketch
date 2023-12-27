@@ -19,7 +19,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@drawable/ic_error_baseline"/>
+            app:srcCompat="@drawable/ic_error_baseline" />
 
         <TextView
             android:id="@+id/errorMessageText"
@@ -50,7 +50,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@drawable/ic_cloudy"/>
+            app:srcCompat="@drawable/ic_cloudy" />
 
         <TextView
             android:id="@+id/emptyMessageText"

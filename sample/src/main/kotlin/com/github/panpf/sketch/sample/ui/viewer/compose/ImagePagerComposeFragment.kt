@@ -360,7 +360,8 @@ private fun ImagePagerTools(
             modifier = buttonModifier,
             onClick = { onShowOriginClick?.invoke() },
         ) {
-            val iconId = if (showOriginImage) R.drawable.ic_image2_baseline else R.drawable.ic_image2_outline
+            val iconId =
+                if (showOriginImage) R.drawable.ic_image2_baseline else R.drawable.ic_image2_outline
             Icon(
                 painter = painterResource(id = iconId),
                 contentDescription = "show origin image",

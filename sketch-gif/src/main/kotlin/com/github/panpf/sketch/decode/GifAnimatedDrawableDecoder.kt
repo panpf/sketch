@@ -53,7 +53,10 @@ fun ComponentRegistry.Builder.supportAnimatedGif(): ComponentRegistry.Builder = 
 class GifAnimatedDrawableDecoder(
     requestContext: RequestContext,
     dataSource: DataSource,
-) : com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder(requestContext, dataSource) {
+) : com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder(
+    requestContext,
+    dataSource
+) {
 
     class Factory : DrawableDecoder.Factory {
 

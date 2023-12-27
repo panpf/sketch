@@ -125,7 +125,9 @@ internal class ProgressIndicatorNode(
                     is LoadState.Success -> progressPainter.progress = 1f
                     is LoadState.Error -> progressPainter.progress = -1f
                     is LoadState.Canceled -> progressPainter.progress = -1f
-                    else -> { progressPainter.progress = -1f }
+                    else -> {
+                        progressPainter.progress = -1f
+                    }
                 }
             }
         }

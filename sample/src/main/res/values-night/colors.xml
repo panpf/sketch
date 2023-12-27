@@ -31,7 +31,7 @@
     <color name="md_theme_surfaceTint">#FFB59F</color>
     <color name="md_theme_outlineVariant">#53433F</color>
     <color name="md_theme_scrim">#000000</color>
-    
+
     <color name="divider">#676767</color>
 
     <color name="item_bg">#33000000</color>

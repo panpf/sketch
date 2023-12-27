@@ -55,6 +55,7 @@ data class Resize constructor(
                 val resizeAspectRatio = width.toFloat().div(height).format(1)
                 imageAspectRatio != resizeAspectRatio
             }
+
             Precision.LESS_PIXELS -> false
             Precision.SMALLER_SIZE -> false
         }

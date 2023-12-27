@@ -80,6 +80,7 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
             ExifInterface.ORIENTATION_TRANSVERSE,
             ExifInterface.ORIENTATION_FLIP_VERTICAL,
             ExifInterface.ORIENTATION_TRANSPOSE -> true
+
             else -> false
         }
 
@@ -98,13 +99,17 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
         when (exifOrientation) {
             ExifInterface.ORIENTATION_ROTATE_90,
             ExifInterface.ORIENTATION_TRANSVERSE -> 90
+
             ExifInterface.ORIENTATION_ROTATE_180,
             ExifInterface.ORIENTATION_FLIP_VERTICAL -> 180
+
             ExifInterface.ORIENTATION_ROTATE_270,
             ExifInterface.ORIENTATION_TRANSPOSE -> 270
+
             ExifInterface.ORIENTATION_UNDEFINED,
             ExifInterface.ORIENTATION_NORMAL,
             ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> 0
+
             else -> 0
         }
 
@@ -186,42 +191,49 @@ class ExifOrientationHelper constructor(@ExifOrientation val exifOrientation: In
                 srcRect.bottom,
                 imageSize.width - srcRect.left,
             )
+
             ExifInterface.ORIENTATION_TRANSVERSE -> Rect(
                 imageSize.height - srcRect.bottom,
                 imageSize.width - srcRect.right,
                 imageSize.height - srcRect.top,
                 imageSize.width - srcRect.left,
             )
+
             ExifInterface.ORIENTATION_ROTATE_180 -> Rect(
                 imageSize.width - srcRect.right,
                 imageSize.height - srcRect.bottom,
                 imageSize.width - srcRect.left,
                 imageSize.height - srcRect.top
             )
+
             ExifInterface.ORIENTATION_FLIP_VERTICAL -> Rect(
                 srcRect.left,
                 imageSize.height - srcRect.bottom,
                 srcRect.right,
                 imageSize.height - srcRect.top,
             )
+
             ExifInterface.ORIENTATION_ROTATE_270 -> Rect(
                 imageSize.height - srcRect.bottom,
                 srcRect.left,
                 imageSize.height - srcRect.top,
                 srcRect.right
             )
+
             ExifInterface.ORIENTATION_TRANSPOSE -> Rect(
                 srcRect.top,
                 srcRect.left,
                 srcRect.bottom,
                 srcRect.right
             )
+
             ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> Rect(
                 imageSize.width - srcRect.right,
                 srcRect.top,
                 imageSize.width - srcRect.left,
                 srcRect.bottom,
             )
+
             else -> srcRect
         }
 

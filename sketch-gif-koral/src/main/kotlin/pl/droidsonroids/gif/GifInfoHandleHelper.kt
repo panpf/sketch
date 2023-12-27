@@ -31,21 +31,27 @@ class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
             is ByteArrayDataSource -> {
                 GifInfoHandle(dataSource.data)
             }
+
             is ResourceDataSource -> {
                 GifInfoHandle(context.resources.openRawResourceFd(dataSource.resId))
             }
+
             is ContentDataSource -> {
                 GifInfoHandle.openUri(context.contentResolver, dataSource.contentUri)
             }
+
             is AssetDataSource -> {
                 GifInfoHandle(context.assets.openFd(dataSource.assetFileName))
             }
+
             is BasedFileDataSource -> {
                 GifInfoHandle(dataSource.getFile().path)
             }
+
             is BasedStreamDataSource -> {
                 GifInfoHandle(dataSource.newInputStream())
             }
+
             else -> {
                 throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
             }

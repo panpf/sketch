@@ -53,7 +53,10 @@ fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder =
 class WebpAnimatedDrawableDecoder(
     requestContext: RequestContext,
     dataSource: DataSource,
-) : com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder(requestContext, dataSource) {
+) : com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder(
+    requestContext,
+    dataSource
+) {
 
     class Factory : DrawableDecoder.Factory {
 

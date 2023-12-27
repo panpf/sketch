@@ -135,7 +135,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
                     is LoadState.NotLoading -> {
                         binding.swipeRefresh.isRefreshing = false
                         if (pagingAdapter.itemCount <= 0) {
-                            binding.state.empty{
+                            binding.state.empty {
                                 message("No Videos")
                             }
                         } else {

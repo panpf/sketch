@@ -64,10 +64,12 @@ sealed interface BitmapConfig {
                 ImageFormat.parseMimeType(mimeType) == ImageFormat.JPEG -> {
                     Bitmap.Config.RGB_565
                 }
+
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT -> {
                     @Suppress("DEPRECATION")
                     Bitmap.Config.ARGB_4444
                 }
+
                 else -> {
                     Bitmap.Config.ARGB_8888
                 }

@@ -66,9 +66,11 @@ open class AnimatableDrawableWrapper constructor(
                     animatableDrawable.registerAnimationCallback(proxyCallback)
                 }
             }
+
             animatableDrawable is Animatable2Compat -> {
                 animatableDrawable.registerAnimationCallback(callback)
             }
+
             else -> {
                 val callbacks = callbacks
                     ?: mutableListOf<Animatable2Compat.AnimationCallback>().apply {
@@ -87,9 +89,11 @@ open class AnimatableDrawableWrapper constructor(
                 callbackMap?.get(callback)
                     ?.let { animatableDrawable.unregisterAnimationCallback(it) } == true
             }
+
             animatableDrawable is Animatable2Compat -> {
                 animatableDrawable.unregisterAnimationCallback(callback)
             }
+
             else -> {
                 callbacks?.remove(callback) == true
             }
@@ -101,9 +105,11 @@ open class AnimatableDrawableWrapper constructor(
                 callbackMap?.clear()
                 animatableDrawable.clearAnimationCallbacks()
             }
+
             animatableDrawable is Animatable2Compat -> {
                 animatableDrawable.clearAnimationCallbacks()
             }
+
             else -> {
                 callbacks?.clear()
             }

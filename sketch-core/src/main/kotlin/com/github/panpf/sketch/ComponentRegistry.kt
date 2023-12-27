@@ -116,7 +116,10 @@ open class ComponentRegistry private constructor(
      * Create a [Fetcher] with the registered [Fetcher.Factory]
      */
     @WorkerThread
-    @Deprecated("Use newFetcherOrThrow instead", replaceWith = ReplaceWith("newFetcherOrThrow(sketch, request)"))
+    @Deprecated(
+        "Use newFetcherOrThrow instead",
+        replaceWith = ReplaceWith("newFetcherOrThrow(sketch, request)")
+    )
     internal fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher {
         return newFetcherOrThrow(sketch, request)
     }
@@ -156,7 +159,10 @@ open class ComponentRegistry private constructor(
      * Create a [BitmapDecoder] with the registered [BitmapDecoder.Factory]
      */
     @WorkerThread
-    @Deprecated("Use newBitmapDecoderOrThrow instead", replaceWith = ReplaceWith("newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)"))
+    @Deprecated(
+        "Use newBitmapDecoderOrThrow instead",
+        replaceWith = ReplaceWith("newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)")
+    )
     internal fun newBitmapDecoder(
         sketch: Sketch,
         requestContext: RequestContext,
@@ -200,7 +206,10 @@ open class ComponentRegistry private constructor(
      * Create a [DrawableDecoder] with the registered [DrawableDecoder.Factory]
      */
     @WorkerThread
-    @Deprecated("Use newDrawableDecoderOrThrow instead", replaceWith = ReplaceWith("newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)"))
+    @Deprecated(
+        "Use newDrawableDecoderOrThrow instead",
+        replaceWith = ReplaceWith("newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)")
+    )
     internal fun newDrawableDecoder(
         sketch: Sketch,
         requestContext: RequestContext,
@@ -423,7 +432,10 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     /**
      * Create a [Fetcher] with [ImageRequest]'s (preferred) and global [Fetcher.Factory]
      */
-    @Deprecated("Use newFetcherOrThrow instead", replaceWith = ReplaceWith("newFetcherOrThrow(request)"))
+    @Deprecated(
+        "Use newFetcherOrThrow instead",
+        replaceWith = ReplaceWith("newFetcherOrThrow(request)")
+    )
     fun newFetcher(request: ImageRequest): Fetcher = newFetcherOrThrow(request)
 
     /**
@@ -442,7 +454,10 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
      * Create a [BitmapDecoder] with [ImageRequest]'s (preferred) and global [BitmapDecoder.Factory]
      */
     @WorkerThread
-    @Deprecated("Use newBitmapDecoderOrThrow instead", replaceWith = ReplaceWith("newBitmapDecoderOrThrow(requestContext, fetchResult)"))
+    @Deprecated(
+        "Use newBitmapDecoderOrThrow instead",
+        replaceWith = ReplaceWith("newBitmapDecoderOrThrow(requestContext, fetchResult)")
+    )
     fun newBitmapDecoder(
         requestContext: RequestContext,
         fetchResult: FetchResult,
@@ -464,7 +479,10 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
      * Create a [DrawableDecoder] with [ImageRequest]'s (preferred) and global [DrawableDecoder.Factory]
      */
     @WorkerThread
-    @Deprecated("Use newDrawableDecoderOrThrow instead", replaceWith = ReplaceWith("newDrawableDecoderOrThrow(requestContext, fetchResult)"))
+    @Deprecated(
+        "Use newDrawableDecoderOrThrow instead",
+        replaceWith = ReplaceWith("newDrawableDecoderOrThrow(requestContext, fetchResult)")
+    )
     fun newDrawableDecoder(
         requestContext: RequestContext,
         fetchResult: FetchResult,

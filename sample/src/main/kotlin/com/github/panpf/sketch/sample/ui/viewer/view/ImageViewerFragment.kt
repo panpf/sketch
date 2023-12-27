@@ -25,7 +25,6 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResult
-import com.github.panpf.sketch.request.DisplayRequestState
 import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
