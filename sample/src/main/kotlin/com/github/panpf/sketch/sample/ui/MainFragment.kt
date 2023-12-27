@@ -87,7 +87,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
     }
 
     private fun pageList(): List<Any> = listOf(
-        ListSeparator("Examples"),
+        ListSeparator("Samples"),
 
         Link(
             title = "Local Photos\n(View)",

@@ -71,6 +71,17 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
+
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.all {
+            val output = this
+            if (output is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
+                output.outputFileName =
+                    "sketch-sample-${variant.name}-${variant.versionName}.apk"
+            }
+        }
+    }
 }
 
 dependencies {
