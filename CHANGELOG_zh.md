@@ -2,14 +2,14 @@
 
 翻译：[English](CHANGELOG.md)
 
-# new
+# v3.3.0-rc01
 
 #### sketch:
 
 * new: IconStateImage 新增 iconSize 属性，支持调整 icon 的尺寸
 * new: 增加 IconStateImage() 函数，专门用于创建 IconStateImage
-* new: 新增 AnimatableIconStateImage 类，用于显示动态图标
-* deprecated: 废弃 IconStateImage 的 所有重载构造函数，用 IconStateImage() 函数替代
+* new: 新增 AnimatableIconStateImage 类，用于显示动态占位符
+* deprecated: 废弃 IconStateImage 的所有重载构造函数，用 IconStateImage() 函数替代
 
 #### sketch-extensions:
 
