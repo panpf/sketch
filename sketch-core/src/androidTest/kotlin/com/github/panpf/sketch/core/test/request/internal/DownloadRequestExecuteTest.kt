@@ -25,6 +25,9 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.core.test.newSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
@@ -35,11 +38,8 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.LifecycleResolver
-import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.request.get
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
-import com.github.panpf.sketch.core.test.newSketch
+import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
 import com.github.panpf.sketch.test.utils.DownloadProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestDownloadTarget

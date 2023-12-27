@@ -69,7 +69,7 @@ class SketchImageViewTest {
             .inflate(R.layout.attrs_test, null, false) as SketchImageView).apply {
             Assert.assertEquals(ImageOptions {
                 bitmapConfig(RGB_565)
-                crossfade(3000, preferExactIntrinsicSize=true)
+                crossfade(3000, preferExactIntrinsicSize = true)
                 depth(LOCAL)
                 disallowReuseBitmap()
                 downloadCachePolicy(WRITE_ONLY)
@@ -134,7 +134,10 @@ class SketchImageViewTest {
 
         sketchImageView.getDisplayListener().apply {
             Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(listOf(sketchImageView.requestState), (this as Listeners).listenerList)
+            Assert.assertEquals(
+                listOf(sketchImageView.requestState),
+                (this as Listeners).listenerList
+            )
         }
 
         val listener1 = object : Listener<DisplayRequest, Success, Error> {}
@@ -143,19 +146,28 @@ class SketchImageViewTest {
         sketchImageView.registerDisplayListener(listener1)
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(listOf(sketchImageView.requestState, listener1), (this as Listeners).listenerList)
+            Assert.assertEquals(
+                listOf(sketchImageView.requestState, listener1),
+                (this as Listeners).listenerList
+            )
         }
 
         sketchImageView.unregisterDisplayListener(listener2)
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(listOf(sketchImageView.requestState, listener1), (this as Listeners).listenerList)
+            Assert.assertEquals(
+                listOf(sketchImageView.requestState, listener1),
+                (this as Listeners).listenerList
+            )
         }
 
         sketchImageView.registerDisplayListener(listener2)
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(listOf(sketchImageView.requestState, listener1, listener2), (this as Listeners).listenerList)
+            Assert.assertEquals(
+                listOf(sketchImageView.requestState, listener1, listener2),
+                (this as Listeners).listenerList
+            )
         }
 
         sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(context.sketch, true)
@@ -165,7 +177,12 @@ class SketchImageViewTest {
         sketchImageView.getDisplayListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
-                listOf(sketchImageView.requestState, listener1, listener2, viewAbilityDisplayListener),
+                listOf(
+                    sketchImageView.requestState,
+                    listener1,
+                    listener2,
+                    viewAbilityDisplayListener
+                ),
                 (this as Listeners).listenerList
             )
         }
@@ -191,7 +208,10 @@ class SketchImageViewTest {
         sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(context.sketch, false)
         sketchImageView.getDisplayListener().apply {
             Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(listOf(sketchImageView.requestState), (this as Listeners).listenerList)
+            Assert.assertEquals(
+                listOf(sketchImageView.requestState),
+                (this as Listeners).listenerList
+            )
         }
     }
 

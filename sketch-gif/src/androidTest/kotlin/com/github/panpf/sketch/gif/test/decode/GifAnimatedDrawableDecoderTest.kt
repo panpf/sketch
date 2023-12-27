@@ -28,11 +28,11 @@ import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportAnimatedGif
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -107,45 +107,46 @@ class GifAnimatedDrawableDecoderTest {
         Assert.assertEquals("GifAnimatedDrawableDecoder", factory.toString())
 
         // normal
-        DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
+        DisplayRequest(context, AssetImages.animGif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), "image/gif")
+                FetchResult(AssetDataSource(sketch, it, AssetImages.animGif.fileName), "image/gif")
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
-        DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
+        DisplayRequest(context, AssetImages.animGif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), null)
+                FetchResult(AssetDataSource(sketch, it, AssetImages.animGif.fileName), null)
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
         // disallowAnimatedImage true
-        DisplayRequest(context, newAssetUri("sample_anim.gif")) {
+        DisplayRequest(context, AssetImages.animGif.uri) {
             disallowAnimatedImage()
         }.let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, "sample_anim.gif"), null)
+                FetchResult(AssetDataSource(sketch, it, AssetImages.animGif.fileName), null)
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // data error
-        DisplayRequest(context, newAssetUri("sample.png")).let {
-            val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), null)
+        DisplayRequest(context, AssetImages.png.uri).let {
+            val fetchResult =
+                FetchResult(AssetDataSource(sketch, it, AssetImages.png.fileName), null)
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // mimeType error
-        DisplayRequest(context, newAssetUri("sample_anim.gif")).let {
+        DisplayRequest(context, AssetImages.animGif.uri).let {
             val fetchResult = FetchResult(
-                AssetDataSource(sketch, it, "sample_anim.gif"),
+                AssetDataSource(sketch, it, AssetImages.animGif.fileName),
                 "image/jpeg",
             )
             factory.create(sketch, it.toRequestContext(), fetchResult)
@@ -162,7 +163,7 @@ class GifAnimatedDrawableDecoderTest {
         val sketch = context.sketch
         val factory = GifAnimatedDrawableDecoder.Factory()
 
-        val request = DisplayRequest(context, newAssetUri("sample_anim.gif")) {
+        val request = DisplayRequest(context, AssetImages.animGif.uri) {
             colorSpace(ColorSpace.get(ColorSpace.Named.SRGB))
             onAnimationEnd { }
             onAnimationStart { }
@@ -180,7 +181,7 @@ class GifAnimatedDrawableDecoderTest {
                 Assert.assertEquals(-1, animatedImageDrawable.repeatCount)
             }
 
-        val request1 = DisplayRequest(context, newAssetUri("sample_anim.gif")) {
+        val request1 = DisplayRequest(context, AssetImages.animGif.uri) {
             repeatCount(3)
             resizeSize(300, 300)
         }

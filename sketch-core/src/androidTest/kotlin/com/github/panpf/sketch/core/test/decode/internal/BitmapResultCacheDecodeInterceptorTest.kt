@@ -20,6 +20,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -27,11 +28,10 @@ import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.resultCacheDataKey
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -65,7 +65,7 @@ class BitmapResultCacheDecodeInterceptorTest {
             }.getOrThrow()
         }
 
-        val loadRequest = LoadRequest(context, newAssetUri("sample.jpeg")) {
+        val loadRequest = LoadRequest(context, AssetImages.jpeg.uri) {
             resizeSize(500, 500)
             resizePrecision(LESS_PIXELS)
             resultCachePolicy(ENABLED)
@@ -175,7 +175,7 @@ class BitmapResultCacheDecodeInterceptorTest {
         }
         Assert.assertFalse(resultCache.exist(loadRequest.toRequestContext().resultCacheDataKey))
 
-        val loadRequest1 = LoadRequest(context, newAssetUri("sample.jpeg")) {
+        val loadRequest1 = LoadRequest(context, AssetImages.jpeg.uri) {
             resizeSize(2000, 2000)
             resizePrecision(LESS_PIXELS)
             resultCachePolicy(ENABLED)

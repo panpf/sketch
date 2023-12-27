@@ -102,7 +102,10 @@ class ResourceUriFetcherTest {
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
         val androidResUriByName = newResourceUri(testAppPackage, "drawable", "ic_launcher")
-        val androidResUriById = newResourceUri(testAppPackage, com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+        val androidResUriById = newResourceUri(
+            testAppPackage,
+            com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+        )
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
@@ -171,7 +174,10 @@ class ResourceUriFetcherTest {
         }
         assertNoThrow {
             runBlocking {
-                newResourceUri(context.packageName, com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
+                newResourceUri(
+                    context.packageName,
+                    com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+                ).let {
                     ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
@@ -186,9 +192,10 @@ class ResourceUriFetcherTest {
         }
         assertNoThrow {
             runBlocking {
-                context.newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
-                }.fetch()
+                context.newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+                    .let {
+                        ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    }.fetch()
             }.getOrThrow()
         }
 

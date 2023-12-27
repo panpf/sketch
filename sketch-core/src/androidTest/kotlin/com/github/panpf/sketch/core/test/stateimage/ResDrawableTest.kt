@@ -61,7 +61,10 @@ class ResDrawableTest {
 
         val context = getTestContext()
         ResDrawable(context.packageName, context.resources, android.R.drawable.bottom_bar).apply {
-            Assert.assertEquals("ResDrawable(packageName=${context.packageName}, resources=${context.resources}, resId=${android.R.drawable.bottom_bar})", toString())
+            Assert.assertEquals(
+                "ResDrawable(packageName=${context.packageName}, resources=${context.resources}, resId=${android.R.drawable.bottom_bar})",
+                toString()
+            )
         }
     }
 

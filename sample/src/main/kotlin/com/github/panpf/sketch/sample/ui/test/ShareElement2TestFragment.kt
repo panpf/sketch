@@ -27,6 +27,7 @@ import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestShareElement2Binding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class ShareElement2TestFragment : BaseBindingFragment<FragmentTestShareElement2Binding>() {
@@ -51,7 +52,8 @@ class ShareElement2TestFragment : BaseBindingFragment<FragmentTestShareElement2B
             ViewCompat.setTransitionName(this, "transition_app_icon")
             Log.i("ShareElementTest", "$id. displayImage")
             postponeEnterTransition(100, MILLISECONDS)
-            displayImage(AssetImages.jpeg) {
+            displayImage(AssetImages.jpeg.uri) {
+                placeholder(ThumbnailMemoryCacheStateImage())
                 listener(
                     onSuccess = { _, _ ->
                         startPostponedEnterTransition()

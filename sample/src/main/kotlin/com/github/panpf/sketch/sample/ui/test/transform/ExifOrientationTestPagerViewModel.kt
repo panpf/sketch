@@ -17,6 +17,7 @@ package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.sample.util.ExifOrientationTestFileHelper.TestFile
@@ -33,7 +34,7 @@ class ExifOrientationTestPagerViewModel(application1: Application) :
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _data.value = ExifOrientationTestFileHelper(application1, "sample.jpeg").files()
+            _data.value = ExifOrientationTestFileHelper(application1, AssetImages.jpeg.fileName).files()
         }
     }
 }

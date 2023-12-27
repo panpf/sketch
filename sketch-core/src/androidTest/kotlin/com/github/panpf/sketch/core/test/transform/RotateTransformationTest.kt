@@ -20,8 +20,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
@@ -64,8 +64,8 @@ class RotateTransformationTest {
     fun testTransform() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
-        val inBitmap = context.assets.open("sample.jpeg").use {
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
+        val inBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }.apply {
             Assert.assertNotEquals(
@@ -134,7 +134,7 @@ class RotateTransformationTest {
             )
         }
 
-        val rgb565InBitmap = context.assets.open("sample.jpeg").use {
+        val rgb565InBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it, null, BitmapFactory.Options().apply {
                 inPreferredConfig = Bitmap.Config.RGB_565
             })

@@ -19,8 +19,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
@@ -107,9 +107,9 @@ class RoundedCornersTransformationTest {
     fun testTransform() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
 
-        val inBitmap = context.assets.open("sample.jpeg").use {
+        val inBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }.apply {
             Assert.assertNotEquals(
@@ -123,7 +123,11 @@ class RoundedCornersTransformationTest {
         }
 
         runBlocking {
-            RoundedCornersTransformation(20f).transform(sketch, request.toRequestContext(), inBitmap)
+            RoundedCornersTransformation(20f).transform(
+                sketch,
+                request.toRequestContext(),
+                inBitmap
+            )
         }.apply {
             Assert.assertNotSame(inBitmap, bitmap)
             Assert.assertEquals(

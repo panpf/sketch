@@ -23,8 +23,8 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.LayerDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.findLeafChildDrawable
 import com.github.panpf.sketch.util.toNewBitmap

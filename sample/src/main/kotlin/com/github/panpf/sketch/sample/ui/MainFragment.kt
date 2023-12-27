@@ -150,8 +150,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
             navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
         ),
         Link(
-            title = "ProgressIndicator\n" +
-                    "(View)",
+            title = "ProgressIndicator\n(View)",
             navDirections = NavMainDirections.actionProgressIndicatorTestFragment()
         ),
         Link(
@@ -160,8 +159,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
             minSdk = VERSION_CODES.LOLLIPOP
         ),
         Link(
-            title = "Display Insanity\n" +
-                    "(View)",
+            title = "Display Insanity\n(View)",
             navDirections = NavMainDirections.actionInsanityTestFragment()
         ),
         Link(
@@ -170,8 +168,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
             minSdk = VERSION_CODES.LOLLIPOP
         ),
         Link(
-            title = "Animatable Placeholder\n" +
-                    "(View)",
+            title = "Animatable Placeholder\n(View)",
             navDirections = NavMainDirections.actionAnimatablePlaceholder(),
         ),
         Link(
@@ -180,7 +177,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
             minSdk = VERSION_CODES.LOLLIPOP
         ),
         Link(
-            title = "Share Element",
+            title = "Share Element\n(View)",
             navDirections = NavMainDirections.actionShareElementTestFragment(),
         ),
     ).let {

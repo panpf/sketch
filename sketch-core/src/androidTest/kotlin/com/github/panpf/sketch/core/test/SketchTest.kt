@@ -36,6 +36,7 @@ import com.github.panpf.sketch.fetch.ContentUriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
+import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
@@ -49,12 +50,12 @@ import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
 import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
 import com.github.panpf.sketch.test.utils.LoadListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestBitmapDecoder
 import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
@@ -62,9 +63,6 @@ import com.github.panpf.sketch.test.utils.TestDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
-import com.github.panpf.sketch.core.test.newSketch
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
@@ -80,6 +78,8 @@ import kotlin.math.roundToLong
 
 @RunWith(AndroidJUnit4::class)
 class SketchTest {
+
+    private val errorUri = newAssetUri("error.jpeg")
 
     @Test
     fun testBuilder() {
@@ -369,7 +369,7 @@ class SketchTest {
 
         /* success */
         val listenerSupervisor1 = DisplayListenerSupervisor()
-        val request1 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        val request1 = DisplayRequest(context, AssetImages.jpeg.uri) {
             listener(listenerSupervisor1)
         }
         val result1 = runBlocking {
@@ -380,7 +380,7 @@ class SketchTest {
 
         /* error */
         val listenerSupervisor2 = DisplayListenerSupervisor()
-        val request2 = DisplayRequest(context, TestAssets.ERROR_URI) {
+        val request2 = DisplayRequest(context, errorUri) {
             listener(listenerSupervisor2)
         }
         val result2 = runBlocking {
@@ -392,7 +392,7 @@ class SketchTest {
         /* cancel */
         var disposable3: Disposable<DisplayResult>? = null
         val listenerSupervisor3 = DisplayListenerSupervisor()
-        val request3 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        val request3 = DisplayRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             // Make the execution slower, cancellation can take effect
@@ -414,7 +414,7 @@ class SketchTest {
 
         /* success */
         val listenerSupervisor1 = DisplayListenerSupervisor()
-        val request1 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        val request1 = DisplayRequest(context, AssetImages.jpeg.uri) {
             listener(listenerSupervisor1)
         }
         val result1 = runBlocking {
@@ -425,7 +425,7 @@ class SketchTest {
 
         /* error */
         val listenerSupervisor2 = DisplayListenerSupervisor()
-        val request2 = DisplayRequest(context, TestAssets.ERROR_URI) {
+        val request2 = DisplayRequest(context, errorUri) {
             listener(listenerSupervisor2)
         }
         val result2 = runBlocking {
@@ -439,7 +439,7 @@ class SketchTest {
         val listenerSupervisor3 = DisplayListenerSupervisor {
             deferred3?.cancel()
         }
-        val request3 = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        val request3 = DisplayRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
@@ -455,7 +455,7 @@ class SketchTest {
         /* ViewTarget */
         val imageView = ImageView(context)
         val listenerSupervisor4 = DisplayListenerSupervisor()
-        val request4 = DisplayRequest(imageView, TestAssets.SAMPLE_JPEG_URI) {
+        val request4 = DisplayRequest(imageView, AssetImages.jpeg.uri) {
             listener(listenerSupervisor4)
             lifecycle(GlobalLifecycle)
         }
@@ -476,7 +476,7 @@ class SketchTest {
 
         /* success */
         val listenerSupervisor1 = LoadListenerSupervisor()
-        val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        val request1 = LoadRequest(context, AssetImages.jpeg.uri) {
             listener(listenerSupervisor1)
         }
         val result1 = runBlocking {
@@ -487,7 +487,7 @@ class SketchTest {
 
         /* error */
         val listenerSupervisor2 = LoadListenerSupervisor()
-        val request2 = LoadRequest(context, TestAssets.ERROR_URI) {
+        val request2 = LoadRequest(context, errorUri) {
             listener(listenerSupervisor2)
         }
         val result2 = runBlocking {
@@ -501,7 +501,7 @@ class SketchTest {
         val listenerSupervisor3 = LoadListenerSupervisor {
             disposable3?.job?.cancel()
         }
-        val request3 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        val request3 = LoadRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
@@ -519,7 +519,7 @@ class SketchTest {
 
         /* success */
         val listenerSupervisor1 = LoadListenerSupervisor()
-        val request1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        val request1 = LoadRequest(context, AssetImages.jpeg.uri) {
             listener(listenerSupervisor1)
         }
         val result1 = runBlocking {
@@ -530,7 +530,7 @@ class SketchTest {
 
         /* error */
         val listenerSupervisor2 = LoadListenerSupervisor()
-        val request2 = LoadRequest(context, TestAssets.ERROR_URI) {
+        val request2 = LoadRequest(context, errorUri) {
             listener(listenerSupervisor2)
         }
         val result2 = runBlocking {
@@ -544,7 +544,7 @@ class SketchTest {
         val listenerSupervisor3 = LoadListenerSupervisor {
             deferred3?.cancel()
         }
-        val request3 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        val request3 = LoadRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
@@ -580,7 +580,7 @@ class SketchTest {
 
         /* error */
         val listenerSupervisor2 = DownloadListenerSupervisor()
-        val request2 = DownloadRequest(context, TestAssets.ERROR_URI) {
+        val request2 = DownloadRequest(context, errorUri) {
             listener(listenerSupervisor2)
         }
         val result2 = runBlocking {
@@ -637,7 +637,7 @@ class SketchTest {
 
         /* error */
         val listenerSupervisor2 = DownloadListenerSupervisor()
-        val request2 = DownloadRequest(context, TestAssets.ERROR_URI) {
+        val request2 = DownloadRequest(context, errorUri) {
             listener(listenerSupervisor2)
         }
         val result2 = runBlocking {

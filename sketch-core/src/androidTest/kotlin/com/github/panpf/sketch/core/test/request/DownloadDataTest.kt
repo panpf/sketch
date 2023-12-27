@@ -16,10 +16,10 @@
 package com.github.panpf.sketch.core.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.request.DownloadData
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test

@@ -20,8 +20,8 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.target.ViewDisplayTarget
 import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.target.ViewDisplayTarget
 import org.junit.Test
 import org.junit.runner.RunWith
 

@@ -20,8 +20,8 @@ import android.graphics.Color
 import androidx.core.graphics.ColorUtils
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
@@ -80,10 +80,10 @@ class BlurTransformationTest {
     fun testTransform() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
 
         // isMutable false
-        val inBitmap = context.assets.open("sample.jpeg").use {
+        val inBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }.apply {
             Assert.assertNotEquals(
@@ -116,7 +116,7 @@ class BlurTransformationTest {
         }
 
         // isMutable true
-        val mutableInBitmap = context.assets.open("sample.jpeg").use {
+        val mutableInBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it, null, BitmapFactory.Options().apply {
                 inMutable = true
             })
@@ -130,7 +130,7 @@ class BlurTransformationTest {
         }
 
         // hasAlphaBitmapBgColor
-        val hasAlphaBitmap1 = context.assets.open("sample.png").use {
+        val hasAlphaBitmap1 = context.assets.open(AssetImages.png.fileName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
             Assert.assertTrue(this.hasAlpha())
@@ -141,7 +141,7 @@ class BlurTransformationTest {
             Assert.assertTrue(this.bitmap.hasAlpha())
         }.bitmap
 
-        val hasAlphaBitmap2 = context.assets.open("sample.png").use {
+        val hasAlphaBitmap2 = context.assets.open(AssetImages.png.fileName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
             Assert.assertTrue(this.hasAlpha())

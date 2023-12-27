@@ -17,10 +17,10 @@ package com.github.panpf.sketch.core.test.http
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
+import com.github.panpf.sketch.resources.AssetImages
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.junit.Assert
@@ -33,7 +33,7 @@ class ProgressListenerDelegateTest {
     @Test
     fun test() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, AssetImages.jpeg.uri)
         val scope = CoroutineScope(SupervisorJob())
         val completedList = mutableListOf<Long>()
         val listener = ProgressListener<LoadRequest> { _, _, completedLength ->

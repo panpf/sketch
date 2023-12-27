@@ -59,11 +59,12 @@ class LocalPhotoListPagingSource(private val context: Context) :
     private suspend fun readAssetPhotos(): List<String> = withToIO {
         AssetImages.statics
             .plus(AssetImages.anims)
+            .map { it.uri }
             .toList()
     }
 
     private suspend fun readExifPhotos(): List<String> = withToIO {
-        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg")
+        ExifOrientationTestFileHelper(context, AssetImages.clockHor.fileName)
             .files()
             .map { it.file.path }
             .toList()

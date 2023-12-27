@@ -19,14 +19,14 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.singleton.sketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -122,9 +122,9 @@ class ErrorStateImageTest {
     }
 
     @Test
-    fun testUriEmptyCondition(){
+    fun testUriEmptyCondition() {
         val context = getTestContext()
-        val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
         val request1 = DisplayRequest(context, "")
         val request2 = DisplayRequest(context, " ")
 
@@ -139,9 +139,9 @@ class ErrorStateImageTest {
     }
 
     @Test
-    fun testDefaultCondition(){
+    fun testDefaultCondition() {
         val context = getTestContext()
-        val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
 
         ErrorStateImage.DefaultCondition.apply {
             Assert.assertTrue(accept(request, null))

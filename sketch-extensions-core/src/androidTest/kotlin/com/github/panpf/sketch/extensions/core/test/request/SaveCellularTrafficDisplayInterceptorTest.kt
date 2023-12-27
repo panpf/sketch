@@ -23,7 +23,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -41,6 +40,7 @@ import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test

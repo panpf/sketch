@@ -339,7 +339,8 @@ class AnimatableIconDrawableTest {
         )
         Assert.assertNotEquals(iconSize, iconIntrinsicSize)
 
-        val iconDrawable = AnimatableIconDrawable(icon = icon, background = bgDrawable, iconSize = iconSize)
+        val iconDrawable =
+            AnimatableIconDrawable(icon = icon, background = bgDrawable, iconSize = iconSize)
         Assert.assertEquals(iconSize, iconDrawable.iconSize)
         Assert.assertEquals(Rect(0, 0, 0, 0), iconDrawable.bounds)
 
@@ -407,7 +408,8 @@ class AnimatableIconDrawableTest {
         if (Build.VERSION.SDK_INT < 21) return
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
+        val iconDrawable =
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
         val bgDrawable = ColorDrawable(Color.RED)
         AnimatableIconDrawable(icon = iconDrawable, background = bgDrawable).apply {
             Assert.assertEquals(Rect(0, 0, 0, 0), Rect().apply { getHotspotBounds(this) })
@@ -480,7 +482,8 @@ class AnimatableIconDrawableTest {
         if (Build.VERSION.SDK_INT < 19) return
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
+        val iconDrawable =
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
         val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background)
         AnimatableIconDrawable(icon = iconDrawable, background = bgDrawable).apply {
             Assert.assertFalse(isAutoMirrored)
@@ -535,9 +538,11 @@ class AnimatableIconDrawableTest {
     fun testTransparentRegion() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated).apply {
-            Assert.assertNull(transparentRegion)
-        }
+        val iconDrawable =
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
+                .apply {
+                    Assert.assertNull(transparentRegion)
+                }
         val bgDrawable =
             context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
                 Assert.assertNull(transparentRegion)
@@ -558,12 +563,14 @@ class AnimatableIconDrawableTest {
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated).apply {
-            Assert.assertFalse(isFilterBitmap)
-            isFilterBitmap = true
-            Assert.assertFalse(isFilterBitmap)
-            isFilterBitmap = false
-        }
+        val iconDrawable =
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
+                .apply {
+                    Assert.assertFalse(isFilterBitmap)
+                    isFilterBitmap = true
+                    Assert.assertFalse(isFilterBitmap)
+                    isFilterBitmap = false
+                }
         val bgDrawable =
             context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
                 Assert.assertFalse(isFilterBitmap)
@@ -597,7 +604,8 @@ class AnimatableIconDrawableTest {
     fun testChangingConfigurations() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
+        val iconDrawable =
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
         val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
         val iconChangingConfigurations = iconDrawable.changingConfigurations
         val bgChangingConfigurations = bgDrawable.changingConfigurations
@@ -633,7 +641,8 @@ class AnimatableIconDrawableTest {
     fun testState() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
+        val iconDrawable =
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
         val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
 
         AnimatableIconDrawable(icon = iconDrawable, background = bgDrawable).apply {
@@ -670,7 +679,8 @@ class AnimatableIconDrawableTest {
     fun testVisible() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
+        val iconDrawable =
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
         val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
 
         Assert.assertTrue(iconDrawable.isVisible)

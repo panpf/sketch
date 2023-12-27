@@ -352,7 +352,10 @@ class BitmapPoolUtilsTest {
         bitmapPool.put(bitmap)
         Assert.assertTrue(bitmapPool.exist(100, 100, ARGB_8888))
         Assert.assertEquals("39.06KB", bitmapPool.size.formatFileSize())
-        Assert.assertNotSame(bitmap, bitmapPool.getOrCreate(100, 100, ARGB_8888, disallowReuseBitmap = true))
+        Assert.assertNotSame(
+            bitmap,
+            bitmapPool.getOrCreate(100, 100, ARGB_8888, disallowReuseBitmap = true)
+        )
         Assert.assertEquals("39.06KB", bitmapPool.size.formatFileSize())
     }
 
@@ -371,7 +374,12 @@ class BitmapPoolUtilsTest {
         Assert.assertEquals(0, bitmapPool.size)
 
         val resources = getTestContext().resources
-        bitmapPool.freeBitmap(BitmapFactory.decodeResource(resources, com.github.panpf.sketch.test.utils.R.drawable.ic_launcher))
+        bitmapPool.freeBitmap(
+            BitmapFactory.decodeResource(
+                resources,
+                com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+            )
+        )
         Thread.sleep(100)
         Assert.assertEquals(0, bitmapPool.size)
 

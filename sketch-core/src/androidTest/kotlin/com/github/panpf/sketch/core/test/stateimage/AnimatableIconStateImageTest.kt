@@ -21,8 +21,8 @@ import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.internal.AnimatableIconDrawable
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.util.Size
@@ -39,8 +39,9 @@ class AnimatableIconStateImageTest {
     fun testGetDrawable() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
-        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
+        val iconDrawable =
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
         val greenBgDrawable = ColorDrawable(Color.GREEN)
 
         AnimatableIconStateImage(iconDrawable) {

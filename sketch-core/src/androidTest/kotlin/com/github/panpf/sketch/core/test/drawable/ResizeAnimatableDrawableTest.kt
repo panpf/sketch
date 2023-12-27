@@ -20,15 +20,15 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getDrawableCompat
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +42,7 @@ class ResizeAnimatableDrawableTest {
 
     @Test
     fun test() {
-        val imageUri = newAssetUri("sample.jpeg")
+        val imageUri = AssetImages.jpeg.uri
         val animDrawable = SketchAnimatableDrawable(
             animatableDrawable = TestAnimatableDrawable1(ColorDrawable(Color.GREEN)),
             imageUri = imageUri,
@@ -71,7 +71,7 @@ class ResizeAnimatableDrawableTest {
     @Test
     fun testMutate() {
         val context = getTestContext()
-        val imageUri = newAssetUri("sample.jpeg")
+        val imageUri = AssetImages.jpeg.uri
 
         ResizeAnimatableDrawable(
             SketchAnimatableDrawable(
@@ -126,7 +126,7 @@ class ResizeAnimatableDrawableTest {
 
     @Test
     fun testToString() {
-        val imageUri = newAssetUri("sample.jpeg")
+        val imageUri = AssetImages.jpeg.uri
         val animDrawable = SketchAnimatableDrawable(
             animatableDrawable = TestAnimatableDrawable1(ColorDrawable(Color.GREEN)),
             imageUri = imageUri,
@@ -138,7 +138,10 @@ class ResizeAnimatableDrawableTest {
             extras = null,
         )
         ResizeAnimatableDrawable(animDrawable, Size(100, 500), CENTER_CROP).apply {
-            Assert.assertEquals("ResizeAnimatableDrawable(wrapped=$animDrawable, resizeSize=100x500, resizeScale=CENTER_CROP)", toString())
+            Assert.assertEquals(
+                "ResizeAnimatableDrawable(wrapped=$animDrawable, resizeSize=100x500, resizeScale=CENTER_CROP)",
+                toString()
+            )
         }
     }
 }

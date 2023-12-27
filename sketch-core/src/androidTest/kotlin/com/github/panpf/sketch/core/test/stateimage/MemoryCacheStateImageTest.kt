@@ -25,12 +25,12 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
+import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import org.junit.Assert
 import org.junit.Test
@@ -43,7 +43,7 @@ class MemoryCacheStateImageTest {
     fun testGetDrawable() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
         val memoryCache = sketch.memoryCache
         val memoryCacheKey = request.toRequestContext().cacheKey
 
@@ -147,7 +147,7 @@ class MemoryCacheStateImageTest {
     @Test
     fun testToString() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
         val memoryCacheKey = request.toRequestContext().cacheKey
 
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {

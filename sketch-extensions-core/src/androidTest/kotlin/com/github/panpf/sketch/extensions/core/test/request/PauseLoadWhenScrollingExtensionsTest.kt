@@ -17,8 +17,6 @@ package com.github.panpf.sketch.extensions.core.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest.Builder
@@ -26,6 +24,8 @@ import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isIgnoredPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.test.utils.toRequestContext
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -78,15 +78,15 @@ class PauseLoadWhenScrollingExtensionsTest {
             Assert.assertFalse(isPauseLoadWhenScrolling)
         }
 
-        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().key
-        val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+        val key1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().key
+        val key2 = DisplayRequest(context, AssetImages.svg.uri) {
             pauseLoadWhenScrolling()
         }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
-        val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+            DisplayRequest(context, AssetImages.svg.uri).toRequestContext().cacheKey
+        val cacheKey2 = DisplayRequest(context, AssetImages.svg.uri) {
             pauseLoadWhenScrolling(true)
         }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
@@ -137,15 +137,15 @@ class PauseLoadWhenScrollingExtensionsTest {
             Assert.assertFalse(isIgnoredPauseLoadWhenScrolling)
         }
 
-        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().key
-        val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+        val key1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().key
+        val key2 = DisplayRequest(context, AssetImages.svg.uri) {
             ignorePauseLoadWhenScrolling()
         }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
-        val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+            DisplayRequest(context, AssetImages.svg.uri).toRequestContext().cacheKey
+        val cacheKey2 = DisplayRequest(context, AssetImages.svg.uri) {
             ignorePauseLoadWhenScrolling(true)
         }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)

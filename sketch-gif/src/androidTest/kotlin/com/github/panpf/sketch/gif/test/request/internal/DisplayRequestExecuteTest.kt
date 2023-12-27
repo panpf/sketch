@@ -24,7 +24,7 @@ import com.github.panpf.sketch.gif.test.getTestContext
 import com.github.panpf.sketch.gif.test.newSketch
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.asOrNull
 import kotlinx.coroutines.runBlocking
@@ -46,7 +46,7 @@ class DisplayRequestExecuteTest {
             }
             httpStack(TestHttpStack(context))
         }
-        val imageUri = TestAssets.SAMPLE_ANIM_GIF_URI
+        val imageUri = AssetImages.animGif.uri
         val request = DisplayRequest(context, imageUri)
 
         request.let { runBlocking { sketch.execute(it) } }

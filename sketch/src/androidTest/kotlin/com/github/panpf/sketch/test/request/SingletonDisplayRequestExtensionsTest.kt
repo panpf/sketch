@@ -20,8 +20,8 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.request.execute
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.getTestContext
-import com.github.panpf.sketch.test.utils.TestAssets
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -34,13 +34,13 @@ class SingletonDisplayRequestExtensionsTest {
     fun testExecuteAndEnqueue() {
         val context = getTestContext()
 
-        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
+        DisplayRequest(context, AssetImages.jpeg.uri).let { request ->
             runBlocking { request.execute() }
         }.apply {
             Assert.assertTrue(this is DisplayResult.Success)
         }
 
-        DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
+        DisplayRequest(context, AssetImages.jpeg.uri).let { request ->
             runBlocking { request.enqueue().job.await() }
         }.apply {
             Assert.assertTrue(this is DisplayResult.Success)

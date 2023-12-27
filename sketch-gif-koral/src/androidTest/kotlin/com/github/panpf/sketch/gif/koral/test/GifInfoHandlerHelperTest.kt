@@ -29,10 +29,10 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
@@ -51,10 +51,10 @@ class GifInfoHandlerHelperTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample_anim.gif")),
-            assetFileName = "sample_anim.gif"
+            request = LoadRequest(context, AssetImages.animGif.uri),
+            assetFileName = AssetImages.animGif.fileName
         ).getFile()
-        val snapshot = sketch.resultCache[newAssetUri("sample_anim.gif") + "_data_source"]!!
+        val snapshot = sketch.resultCache[AssetImages.animGif.uri + "_data_source"]!!
 
         GifInfoHandleHelper(
             ByteArrayDataSource(
@@ -79,7 +79,7 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             DiskCacheDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample_anim.gif")),
+                request = LoadRequest(context, AssetImages.animGif.uri),
                 dataFrom = LOCAL,
                 snapshot = snapshot
             )
@@ -99,7 +99,10 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             ResourceDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.resources.R.raw.sample_anim)),
+                request = LoadRequest(
+                    context,
+                    newResourceUri(com.github.panpf.sketch.resources.R.raw.sample_anim)
+                ),
                 packageName = context.packageName,
                 resources = context.resources,
                 resId = com.github.panpf.sketch.resources.R.raw.sample_anim
@@ -158,8 +161,8 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, newAssetUri("sample_anim.gif")),
-                assetFileName = "sample_anim.gif"
+                request = LoadRequest(context, AssetImages.animGif.uri),
+                assetFileName = AssetImages.animGif.fileName
             )
         ).apply {
             Assert.assertEquals(480, width)

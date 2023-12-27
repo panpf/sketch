@@ -43,7 +43,7 @@ class LocalVideoListPagingSource(private val context: Context) :
                         SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     VideoInfo(
                         title = "sample",
-                        path = it,
+                        path = it.uri,
                         mimeType = "video/mp4",
                         size = 157092,
                         duration = 2000,

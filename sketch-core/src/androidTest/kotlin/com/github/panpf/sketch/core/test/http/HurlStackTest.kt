@@ -16,10 +16,10 @@
 package com.github.panpf.sketch.core.test.http
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.tools4a.network.Networkx
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert

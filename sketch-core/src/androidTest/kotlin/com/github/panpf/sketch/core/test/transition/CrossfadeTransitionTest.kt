@@ -23,15 +23,15 @@ import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.target.ImageViewDisplayTarget
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
@@ -52,7 +52,7 @@ class CrossfadeTransitionTest {
         val context = getTestContext()
         val imageView = ImageView(context)
         val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
         val resultDrawable =
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))
         val result = DisplayResult.Success(
@@ -89,7 +89,7 @@ class CrossfadeTransitionTest {
     @Test
     fun testTransition() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
 
         val imageView = ImageView(context)
         val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
@@ -189,7 +189,7 @@ class CrossfadeTransitionTest {
     @Test
     fun testFactoryCreate() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
         val factory = CrossfadeTransition.Factory()
 
         val imageView = ImageView(context)

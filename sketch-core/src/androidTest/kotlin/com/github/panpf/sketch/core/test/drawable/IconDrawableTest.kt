@@ -479,6 +479,7 @@ class IconDrawableTest {
         val iconDrawable = context.getDrawableCompat(android.R.drawable.ic_delete)
         val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background)
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
+            isAutoMirrored = false
             Assert.assertFalse(isAutoMirrored)
             Assert.assertFalse(iconDrawable.isAutoMirrored)
             Assert.assertFalse(bgDrawable.isAutoMirrored)
@@ -487,6 +488,18 @@ class IconDrawableTest {
             Assert.assertTrue(isAutoMirrored)
             Assert.assertTrue(iconDrawable.isAutoMirrored)
             Assert.assertTrue(bgDrawable.isAutoMirrored)
+
+            iconDrawable.isAutoMirrored = false
+            bgDrawable.isAutoMirrored = true
+            Assert.assertTrue(isAutoMirrored)
+            Assert.assertFalse(iconDrawable.isAutoMirrored)
+            Assert.assertTrue(bgDrawable.isAutoMirrored)
+
+            iconDrawable.isAutoMirrored = true
+            bgDrawable.isAutoMirrored = false
+            Assert.assertTrue(isAutoMirrored)
+            Assert.assertTrue(iconDrawable.isAutoMirrored)
+            Assert.assertFalse(bgDrawable.isAutoMirrored)
         }
 
         iconDrawable.isAutoMirrored = false
@@ -497,6 +510,10 @@ class IconDrawableTest {
             isAutoMirrored = true
             Assert.assertTrue(isAutoMirrored)
             Assert.assertTrue(iconDrawable.isAutoMirrored)
+
+            iconDrawable.isAutoMirrored = false
+            Assert.assertFalse(isAutoMirrored)
+            Assert.assertFalse(iconDrawable.isAutoMirrored)
         }
     }
 

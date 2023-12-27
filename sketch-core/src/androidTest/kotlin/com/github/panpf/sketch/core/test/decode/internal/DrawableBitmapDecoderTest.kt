@@ -25,11 +25,11 @@ import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
@@ -54,7 +54,10 @@ class DrawableBitmapDecoderTest {
         Assert.assertEquals("DrawableBitmapDecoder", factory.toString())
 
         // normal
-        LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)).let {
+        LoadRequest(
+            context,
+            newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)
+        ).let {
             val fetcher = sketch.components.newFetcherOrThrow(it)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             factory.create(sketch, it.toRequestContext(), fetchResult)
@@ -63,7 +66,7 @@ class DrawableBitmapDecoderTest {
         }
 
         // data error
-        LoadRequest(context, newAssetUri("sample.png")).let {
+        LoadRequest(context, AssetImages.png.uri).let {
             val fetcher = sketch.components.newFetcherOrThrow(it)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             factory.create(sketch, it.toRequestContext(), fetchResult)

@@ -19,15 +19,15 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -52,7 +52,7 @@ class BitmapTransformationDecodeInterceptorTest {
             listOf(EngineBitmapDecodeInterceptor())
 
         runBlocking {
-            val request = LoadRequest(context, newAssetUri("sample.jpeg")) {
+            val request = LoadRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
             }
@@ -75,7 +75,7 @@ class BitmapTransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = LoadRequest(context, newAssetUri("sample.jpeg")) {
+            val request = LoadRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
                 transformations(CircleCropTransformation())
@@ -99,7 +99,7 @@ class BitmapTransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = LoadRequest(context, newAssetUri("sample.jpeg")) {
+            val request = LoadRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
                 transformations(object : Transformation {
@@ -132,7 +132,7 @@ class BitmapTransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = LoadRequest(context, newAssetUri("sample.jpeg")) {
+            val request = LoadRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
                 transformations(object : Transformation {
@@ -166,7 +166,7 @@ class BitmapTransformationDecodeInterceptorTest {
 
         assertThrow(IllegalArgumentException::class) {
             runBlocking {
-                val request = LoadRequest(context, newAssetUri("sample.jpeg")) {
+                val request = LoadRequest(context, AssetImages.jpeg.uri) {
                     transformations(object : Transformation {
                         override val key: String
                             get() = "TestTransformation"

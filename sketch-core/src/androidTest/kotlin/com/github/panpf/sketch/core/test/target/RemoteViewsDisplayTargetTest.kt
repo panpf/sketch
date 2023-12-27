@@ -17,8 +17,8 @@ package com.github.panpf.sketch.core.test.target
 
 import android.widget.RemoteViews
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.target.RemoteViewsDisplayTarget
 import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.target.RemoteViewsDisplayTarget
 import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
 import org.junit.Test

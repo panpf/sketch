@@ -46,7 +46,7 @@ class AnimatablePlaceholderTestFragment :
     }
 
     private fun displayImage(binding: FragmentTestAnimatablePlaceholderBinding) {
-        val images = arrayOf(AssetImages.jpeg, AssetImages.webp, AssetImages.bmp)
+        val images = arrayOf(AssetImages.jpeg.uri, AssetImages.webp.uri, AssetImages.bmp.uri)
         val urlString = images[urlIndex % images.size]
         binding.myImage1.displayImage(urlString) {
             memoryCachePolicy(DISABLED)

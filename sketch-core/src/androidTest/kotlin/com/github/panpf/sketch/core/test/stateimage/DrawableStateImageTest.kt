@@ -20,10 +20,10 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.DrawableStateImage
+import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.util.asOrNull
 import org.junit.Assert
 import org.junit.Test
@@ -36,7 +36,7 @@ class DrawableStateImageTest {
     fun testGetDrawable() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
 
         DrawableStateImage(ColorDrawable(Color.BLUE)).apply {
             Assert.assertEquals(

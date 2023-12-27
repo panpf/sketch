@@ -23,13 +23,14 @@ import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
-import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDrawableFetcher
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -100,7 +101,7 @@ class AppIconBitmapDecoderTest {
         // dataSource error
         LoadRequest(context, testAppIconUri).let {
             val fetchResult = FetchResult(
-                AssetDataSource(sketch, it, "sample.jpeg"),
+                AssetDataSource(sketch, it, AssetImages.jpeg.fileName),
                 "application/vnd.android.app-icon"
             )
             factory.create(sketch, it.toRequestContext(), fetchResult)

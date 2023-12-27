@@ -19,12 +19,12 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.util.toShortInfoString

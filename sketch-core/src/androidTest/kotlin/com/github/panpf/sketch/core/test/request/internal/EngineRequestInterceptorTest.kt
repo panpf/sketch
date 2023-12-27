@@ -16,6 +16,8 @@
 package com.github.panpf.sketch.core.test.request.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.core.test.newSketch
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadData
@@ -26,12 +28,10 @@ import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
-import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestRequest
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
-import com.github.panpf.sketch.core.test.newSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -63,15 +63,15 @@ class EngineRequestInterceptorTest {
             }.getOrThrow()
         }
 
-        executeRequest(DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI)).asOrThrow<DisplayData>()
+        executeRequest(DisplayRequest(context, AssetImages.jpeg.uri)).asOrThrow<DisplayData>()
 
-        executeRequest(LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)).asOrThrow<LoadData>()
+        executeRequest(LoadRequest(context, AssetImages.jpeg.uri)).asOrThrow<LoadData>()
 
         executeRequest(DownloadRequest(context, TestHttpStack.testImages.first().uriString))
             .asOrThrow<DownloadData>()
 
         assertThrow(UnsupportedOperationException::class) {
-            executeRequest(TestRequest(context, TestAssets.SAMPLE_JPEG_URI))
+            executeRequest(TestRequest(context, AssetImages.jpeg.uri))
         }
 
         val sketch1 = newSketch {
@@ -129,6 +129,9 @@ class EngineRequestInterceptorTest {
 
     @Test
     fun testToString() {
-        Assert.assertEquals("EngineRequestInterceptor(sortWeight=100)", EngineRequestInterceptor().toString())
+        Assert.assertEquals(
+            "EngineRequestInterceptor(sortWeight=100)",
+            EngineRequestInterceptor().toString()
+        )
     }
 }

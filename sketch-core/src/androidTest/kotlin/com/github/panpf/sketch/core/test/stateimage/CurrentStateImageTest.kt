@@ -23,12 +23,12 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.test.utils.TestDisplayTarget
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,7 +40,7 @@ class CurrentStateImageTest {
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
         val imageView = ImageView(context)
-        val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(imageView, AssetImages.jpeg.uri)
 
         CurrentStateImage().apply {
             Assert.assertNull(getDrawable(sketch, request, null))
@@ -64,7 +64,7 @@ class CurrentStateImageTest {
             Assert.assertTrue(getDrawable(sketch, request, null) is BitmapDrawable)
         }
 
-        val request1 = DisplayRequest(context, newAssetUri("sample.jpeg")) {
+        val request1 = DisplayRequest(context, AssetImages.jpeg.uri) {
             target(TestDisplayTarget())
         }
         CurrentStateImage(ColorDrawable(Color.RED)).apply {
@@ -76,7 +76,7 @@ class CurrentStateImageTest {
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndNewSketch()
         val imageView = ImageView(context)
-        val request = DisplayRequest(imageView, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(imageView, AssetImages.jpeg.uri)
         val drawable1 = ColorDrawable(Color.BLUE)
         val drawable2 = ColorDrawable(Color.GREEN)
 

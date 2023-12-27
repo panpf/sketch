@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.decode.ImageInfo
@@ -30,7 +31,6 @@ import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable2
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable3
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.tools4j.test.ktx.assertThrow

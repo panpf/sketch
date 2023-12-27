@@ -63,7 +63,7 @@ class MultiTransformationTestFragment :
         }
 
         rotateViewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.myImage.displayImage(AssetImages.statics.first()) {
+            binding.myImage.displayImage(AssetImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(
@@ -77,7 +77,7 @@ class MultiTransformationTestFragment :
             viewLifecycleOwner,
             State.STARTED
         ) {
-            binding.myImage.displayImage(AssetImages.statics.first()) {
+            binding.myImage.displayImage(AssetImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(

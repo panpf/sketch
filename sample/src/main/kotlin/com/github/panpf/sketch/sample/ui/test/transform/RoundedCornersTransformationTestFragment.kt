@@ -39,7 +39,7 @@ class RoundedCornersTransformationTestFragment :
         savedInstanceState: Bundle?
     ) {
         viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.myImage.displayImage(AssetImages.statics.first()) {
+            binding.myImage.displayImage(AssetImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RoundedCornersTransformation(it.toFloat()))

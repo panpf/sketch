@@ -17,8 +17,6 @@ package com.github.panpf.sketch.extensions.core.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
@@ -32,6 +30,8 @@ import com.github.panpf.sketch.request.isDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic
 import com.github.panpf.sketch.request.saveCellularTraffic
+import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.test.utils.toRequestContext
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -84,14 +84,14 @@ class SaveCellularTrafficExtensionsTest {
             Assert.assertFalse(isSaveCellularTraffic)
         }
 
-        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().key
-        val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+        val key1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().key
+        val key2 = DisplayRequest(context, AssetImages.svg.uri) {
             saveCellularTraffic()
         }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
-        val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+        val cacheKey1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().cacheKey
+        val cacheKey2 = DisplayRequest(context, AssetImages.svg.uri) {
             saveCellularTraffic(true)
         }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
@@ -142,14 +142,14 @@ class SaveCellularTrafficExtensionsTest {
             Assert.assertFalse(isIgnoredSaveCellularTraffic)
         }
 
-        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().key
-        val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+        val key1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().key
+        val key2 = DisplayRequest(context, AssetImages.svg.uri) {
             ignoreSaveCellularTraffic()
         }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
-        val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+        val cacheKey1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().cacheKey
+        val cacheKey2 = DisplayRequest(context, AssetImages.svg.uri) {
             ignoreSaveCellularTraffic(true)
         }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
@@ -200,14 +200,14 @@ class SaveCellularTrafficExtensionsTest {
             Assert.assertFalse(isDepthFromSaveCellularTraffic)
         }
 
-        val key1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().key
-        val key2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+        val key1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().key
+        val key2 = DisplayRequest(context, AssetImages.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.toRequestContext().key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = DisplayRequest(context, newAssetUri("sample.svg")).toRequestContext().cacheKey
-        val cacheKey2 = DisplayRequest(context, newAssetUri("sample.svg")) {
+        val cacheKey1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().cacheKey
+        val cacheKey2 = DisplayRequest(context, AssetImages.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.toRequestContext().cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)

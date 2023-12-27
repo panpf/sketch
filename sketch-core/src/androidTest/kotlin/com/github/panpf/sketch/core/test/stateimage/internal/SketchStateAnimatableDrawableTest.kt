@@ -21,10 +21,10 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.stateimage.internal.SketchStateAnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.util.getDrawableCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

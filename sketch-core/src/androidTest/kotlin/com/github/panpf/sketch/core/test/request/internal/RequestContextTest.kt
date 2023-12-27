@@ -22,15 +22,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +46,7 @@ class RequestContextTest {
     fun testRequest() {
         val context = getTestContext()
         runBlocking {
-            val request0 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
+            val request0 = LoadRequest(context, AssetImages.jpeg.uri)
             request0.toRequestContext().apply {
                 Assert.assertSame(request0, request)
                 Assert.assertEquals(listOf(request0), requestList)
@@ -77,7 +77,7 @@ class RequestContextTest {
     fun testKey() {
         val context = getTestContext()
         runBlocking {
-            DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI).toRequestContext().apply {
+            DisplayRequest(context, AssetImages.jpeg.uri).toRequestContext().apply {
                 val key0 = key
 
                 setNewRequest(request.newRequest())
@@ -120,7 +120,7 @@ class RequestContextTest {
     fun testCacheKey() {
         val context = getTestContext()
         runBlocking {
-            DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI).toRequestContext().apply {
+            DisplayRequest(context, AssetImages.jpeg.uri).toRequestContext().apply {
                 val cacheKey0 = cacheKey
 
                 setNewRequest(request.newRequest())
@@ -194,7 +194,7 @@ class RequestContextTest {
             extras = null,
             dataFrom = NETWORK
         )
-        val request = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
+        val request = LoadRequest(context, AssetImages.jpeg.uri)
 
         request.toRequestContext().apply {
             assertThrow(IllegalStateException::class) {

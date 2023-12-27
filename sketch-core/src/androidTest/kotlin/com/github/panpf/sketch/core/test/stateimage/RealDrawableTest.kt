@@ -18,8 +18,8 @@ package com.github.panpf.sketch.core.test.stateimage
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.util.RealDrawable
 import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.util.RealDrawable
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

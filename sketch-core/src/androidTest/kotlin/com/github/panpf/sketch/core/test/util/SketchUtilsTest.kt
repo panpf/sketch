@@ -33,6 +33,7 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.displayAssetImage
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.InternalDrawableWrapperImpl
@@ -56,7 +57,7 @@ class SketchUtilsTest {
         val imageView = ImageView(context)
 
         Assert.assertNull(SketchUtils.requestManagerOrNull(imageView))
-        imageView.displayAssetImage("sample.jpeg")
+        imageView.displayAssetImage(AssetImages.jpeg.fileName)
         Assert.assertNotNull(SketchUtils.requestManagerOrNull(imageView))
     }
 
@@ -308,7 +309,8 @@ class SketchUtilsTest {
 
     @Test
     fun testGetRequest() {
-        val activity = ImageViewExtensionsTest.TestActivity::class.launchActivity().getActivitySync()
+        val activity =
+            ImageViewExtensionsTest.TestActivity::class.launchActivity().getActivitySync()
         val imageView = ImageView(activity)
         runBlocking(Dispatchers.Main) {
             activity.setContentView(imageView, LayoutParams(500, 500))
@@ -316,14 +318,15 @@ class SketchUtilsTest {
         Thread.sleep(100)
 
         Assert.assertNull(SketchUtils.getRequest(imageView))
-        imageView.displayAssetImage("sample.jpeg")
+        imageView.displayAssetImage(AssetImages.jpeg.fileName)
         Thread.sleep(100)
         Assert.assertNotNull(SketchUtils.getRequest(imageView))
     }
 
     @Test
     fun testGetSketch() {
-        val activity = ImageViewExtensionsTest.TestActivity::class.launchActivity().getActivitySync()
+        val activity =
+            ImageViewExtensionsTest.TestActivity::class.launchActivity().getActivitySync()
         val imageView = ImageView(activity)
         runBlocking(Dispatchers.Main) {
             activity.setContentView(imageView, LayoutParams(500, 500))
@@ -331,7 +334,7 @@ class SketchUtilsTest {
         Thread.sleep(100)
 
         Assert.assertNull(SketchUtils.getSketch(imageView))
-        imageView.displayAssetImage("sample.jpeg")
+        imageView.displayAssetImage(AssetImages.jpeg.fileName)
         Thread.sleep(100)
         Assert.assertNotNull(SketchUtils.getSketch(imageView))
     }

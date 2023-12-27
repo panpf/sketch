@@ -21,16 +21,16 @@ import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
-import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.internal.SketchStateAnimatableDrawable
 import com.github.panpf.sketch.stateimage.internal.SketchStateNormalDrawable
 import com.github.panpf.sketch.stateimage.internal.toSketchStateDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getDrawableCompat
@@ -46,7 +46,7 @@ class SketchStateNormalDrawableTest {
         val context = getTestContext()
         val resources = context.resources
 
-        val imageUri = newAssetUri("sample.jpeg")
+        val imageUri = AssetImages.jpeg.uri
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
 
         bitmapDrawable.toSketchStateDrawable().let { it as SketchStateNormalDrawable }.apply {

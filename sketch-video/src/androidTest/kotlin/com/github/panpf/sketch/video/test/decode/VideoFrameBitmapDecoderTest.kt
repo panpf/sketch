@@ -30,7 +30,6 @@ import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.supportVideoFrame
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -39,6 +38,7 @@ import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.video.test.utils.corners
@@ -113,31 +113,35 @@ class VideoFrameBitmapDecoderTest {
         Assert.assertEquals("VideoFrameBitmapDecoder", factory.toString())
 
         // normal
-        LoadRequest(context, newAssetUri("sample.mp4")).let {
-            val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.mp4"), null)
+        LoadRequest(context, AssetImages.mp4.uri).let {
+            val fetchResult =
+                FetchResult(AssetDataSource(sketch, it, AssetImages.mp4.fileName), null)
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
-        LoadRequest(context, newAssetUri("sample.mp4")).let {
-            val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.mp4"), "video/mp4")
+        LoadRequest(context, AssetImages.mp4.uri).let {
+            val fetchResult =
+                FetchResult(AssetDataSource(sketch, it, AssetImages.mp4.fileName), "video/mp4")
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
         // data error
-        LoadRequest(context, newAssetUri("sample.png")).let {
-            val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.png"), "video/mp4")
+        LoadRequest(context, AssetImages.png.uri).let {
+            val fetchResult =
+                FetchResult(AssetDataSource(sketch, it, AssetImages.png.fileName), "video/mp4")
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
         // mimeType error
-        LoadRequest(context, newAssetUri("sample.mp4")).let {
-            val fetchResult = FetchResult(AssetDataSource(sketch, it, "sample.mp4"), "image/png")
+        LoadRequest(context, AssetImages.mp4.uri).let {
+            val fetchResult =
+                FetchResult(AssetDataSource(sketch, it, AssetImages.mp4.fileName), "image/png")
             factory.create(sketch, it.toRequestContext(), fetchResult)
         }.apply {
             Assert.assertNull(this)
@@ -171,7 +175,7 @@ class VideoFrameBitmapDecoderTest {
         val sketch = context.sketch
         val factory = VideoFrameBitmapDecoder.Factory()
 
-        LoadRequest(context, newAssetUri("sample.mp4")).run {
+        LoadRequest(context, AssetImages.mp4.uri).run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
@@ -192,7 +196,7 @@ class VideoFrameBitmapDecoderTest {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            LoadRequest(context, newAssetUri("sample.mp4")) {
+            LoadRequest(context, AssetImages.mp4.uri) {
                 bitmapConfig(RGB_565)
             }.run {
                 val fetcher = sketch.components.newFetcherOrThrow(this)
@@ -211,7 +215,7 @@ class VideoFrameBitmapDecoderTest {
             }
         }
 
-        LoadRequest(context, newAssetUri("sample.mp4")) {
+        LoadRequest(context, AssetImages.mp4.uri) {
             resize(300, 300, LESS_PIXELS)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
@@ -240,7 +244,7 @@ class VideoFrameBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
         }
 
-        LoadRequest(context, newAssetUri("sample.png")).run {
+        LoadRequest(context, AssetImages.png.uri).run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(NullPointerException::class) {
@@ -259,7 +263,7 @@ class VideoFrameBitmapDecoderTest {
 
         val sketch = context.sketch
         val factory = VideoFrameBitmapDecoder.Factory()
-        val bitmap1 = LoadRequest(context, newAssetUri("sample.mp4")) {
+        val bitmap1 = LoadRequest(context, AssetImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -270,7 +274,7 @@ class VideoFrameBitmapDecoderTest {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }.getOrThrow()
         }.bitmap
-        val bitmap11 = LoadRequest(context, newAssetUri("sample.mp4")) {
+        val bitmap11 = LoadRequest(context, AssetImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -281,7 +285,7 @@ class VideoFrameBitmapDecoderTest {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }.getOrThrow()
         }.bitmap
-        val bitmap2 = LoadRequest(context, newAssetUri("sample.mp4")) {
+        val bitmap2 = LoadRequest(context, AssetImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -305,7 +309,7 @@ class VideoFrameBitmapDecoderTest {
 
         val sketch = context.sketch
         val factory = VideoFrameBitmapDecoder.Factory()
-        val bitmap1 = LoadRequest(context, newAssetUri("sample.mp4")) {
+        val bitmap1 = LoadRequest(context, AssetImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -316,7 +320,7 @@ class VideoFrameBitmapDecoderTest {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }.getOrThrow()
         }.bitmap
-        val bitmap11 = LoadRequest(context, newAssetUri("sample.mp4")) {
+        val bitmap11 = LoadRequest(context, AssetImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -327,7 +331,7 @@ class VideoFrameBitmapDecoderTest {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }.getOrThrow()
         }.bitmap
-        val bitmap2 = LoadRequest(context, newAssetUri("sample.mp4")) {
+        val bitmap2 = LoadRequest(context, AssetImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -351,7 +355,7 @@ class VideoFrameBitmapDecoderTest {
 
         val sketch = context.sketch
         val factory = VideoFrameBitmapDecoder.Factory()
-        val bitmap1 = LoadRequest(context, newAssetUri("sample.mp4")) {
+        val bitmap1 = LoadRequest(context, AssetImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFramePercent(0.5f)
@@ -362,7 +366,7 @@ class VideoFrameBitmapDecoderTest {
                 factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
             }.getOrThrow()
         }.bitmap
-        val bitmap2 = LoadRequest(context, newAssetUri("sample.mp4")) {
+        val bitmap2 = LoadRequest(context, AssetImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFramePercent(0.5f)

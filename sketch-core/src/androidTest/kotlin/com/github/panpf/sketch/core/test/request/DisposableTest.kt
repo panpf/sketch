@@ -19,14 +19,14 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -66,7 +66,7 @@ class DisposableTest {
                 delay(100)
                 delay(100)
                 delay(100)
-                val requestContext = DisplayRequest(view, TestAssets.SAMPLE_JPEG_URI).toRequestContext()
+                val requestContext = DisplayRequest(view, AssetImages.jpeg.uri).toRequestContext()
                 DisplayResult.Success(
                     request = requestContext.request as DisplayRequest,
                     requestKey = requestContext.key,

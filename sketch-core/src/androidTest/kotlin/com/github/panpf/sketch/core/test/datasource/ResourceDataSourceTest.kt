@@ -33,7 +33,10 @@ class ResourceDataSourceTest {
     @Test
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher))
+        val request = LoadRequest(
+            context,
+            newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+        )
         ResourceDataSource(
             sketch = sketch,
             request = request,
@@ -43,7 +46,10 @@ class ResourceDataSourceTest {
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertEquals(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher, this.resId)
+            Assert.assertEquals(
+                com.github.panpf.sketch.test.utils.R.drawable.ic_launcher,
+                this.resId
+            )
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
         }
     }
@@ -53,7 +59,10 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)),
+            request = LoadRequest(
+                context,
+                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+            ),
             packageName = context.packageName,
             resources = context.resources,
             resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
@@ -79,13 +88,16 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)),
+            request = LoadRequest(
+                context,
+                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+            ),
             packageName = context.packageName,
             resources = context.resources,
             resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
         ).apply {
             val file = getFile()
-            Assert.assertEquals("d8613eafa03919093537960a44c4f919.0", file.name)
+            Assert.assertEquals("0257c278c299ae9196d4e58fbf234e56.0", file.name)
         }
     }
 
@@ -94,7 +106,10 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)),
+            request = LoadRequest(
+                context,
+                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+            ),
             packageName = context.packageName,
             resources = context.resources,
             resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher

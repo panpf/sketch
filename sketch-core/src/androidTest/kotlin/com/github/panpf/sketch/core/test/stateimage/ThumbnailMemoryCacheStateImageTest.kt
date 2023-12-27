@@ -18,17 +18,16 @@ package com.github.panpf.sketch.core.test.stateimage
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
-import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestDisplayCountDisplayTarget
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -51,17 +50,17 @@ class ThumbnailMemoryCacheStateImageTest {
         Assert.assertEquals(0, memoryCache.keys().size)
 
         val requests1 = arrayOf(
-            DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            DisplayRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestDisplayCountDisplayTarget())
             },
-            DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            DisplayRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
                 target(TestDisplayCountDisplayTarget())
             },
-            DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+            DisplayRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestDisplayCountDisplayTarget())
@@ -69,19 +68,19 @@ class ThumbnailMemoryCacheStateImageTest {
             },
         )
         val requests2 = arrayOf(
-            DisplayRequest(context, TestAssets.SAMPLE_PNG_URI) {
+            DisplayRequest(context, AssetImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestDisplayCountDisplayTarget())
             },
-            DisplayRequest(context, TestAssets.SAMPLE_PNG_URI) {
+            DisplayRequest(context, AssetImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
                 target(TestDisplayCountDisplayTarget())
             },
-            DisplayRequest(context, TestAssets.SAMPLE_PNG_URI) {
+            DisplayRequest(context, AssetImages.png.uri) {
                 resizeSize(100, 100)
-                resizePrecision( LESS_PIXELS)
+                resizePrecision(LESS_PIXELS)
                 target(TestDisplayCountDisplayTarget())
                 transformations(CircleCropTransformation())
             },
@@ -374,7 +373,7 @@ class ThumbnailMemoryCacheStateImageTest {
     @Test
     fun testToString() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
         val uriString = request.uriString
 
         ThumbnailMemoryCacheStateImage(uriString, ColorStateImage(IntColor(Color.BLUE))).apply {

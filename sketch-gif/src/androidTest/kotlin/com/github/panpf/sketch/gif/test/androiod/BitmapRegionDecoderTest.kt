@@ -23,6 +23,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.gif.test.getTestContext
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
@@ -42,7 +43,7 @@ class BitmapRegionDecoderTest {
     fun testInBitmapAndInSampleSize() {
         listOf(
             ImageDecodeCompatibility(
-                assetName = "sample_anim.gif",
+                assetName = AssetImages.animGif.fileName,
                 size = Size(480, 480),
                 minAPI = -1,
                 inSampleSizeMinAPI = -1,
@@ -50,7 +51,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1,
             ),
             ImageDecodeCompatibility(
-                assetName = "sample_anim.webp",
+                assetName = AssetImages.animWebp.fileName,
                 size = Size(480, 270),
                 minAPI = 26,
                 inSampleSizeMinAPI = 26,
@@ -58,7 +59,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = 26,
             ),
             ImageDecodeCompatibility(
-                assetName = "sample_anim.heif",
+                assetName = AssetImages.animHeif.fileName,
                 size = Size(256, 144),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,

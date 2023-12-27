@@ -147,7 +147,10 @@ class LruDiskCacheTest {
             directory(directory)
         }.build().use {
             Assert.assertEquals(1, it.appVersion)
-            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, it.internalVersion)
+            Assert.assertEquals(
+                LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION,
+                it.internalVersion
+            )
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
             it.putFile("file1", 1)
@@ -160,7 +163,10 @@ class LruDiskCacheTest {
             directory(directory)
         }.build().use {
             Assert.assertEquals(1, it.appVersion)
-            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, it.internalVersion)
+            Assert.assertEquals(
+                LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION,
+                it.internalVersion
+            )
             Assert.assertNotNull(it["file1"])
             Assert.assertNotNull(it["file2"])
         }
@@ -170,7 +176,10 @@ class LruDiskCacheTest {
             appVersion(2)
         }.build().use {
             Assert.assertEquals(2, it.appVersion)
-            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, it.internalVersion)
+            Assert.assertEquals(
+                LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION,
+                it.internalVersion
+            )
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
         }
@@ -180,7 +189,10 @@ class LruDiskCacheTest {
             appVersion(2)
         }.build().use {
             Assert.assertEquals(2, it.appVersion)
-            Assert.assertEquals(LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION, it.internalVersion)
+            Assert.assertEquals(
+                LruDiskCache.ForDownloadBuilder.INTERNAL_VERSION,
+                it.internalVersion
+            )
             Assert.assertNull(it["file1"])
             Assert.assertNull(it["file2"])
             it.putFile("file1", 1)

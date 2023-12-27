@@ -16,10 +16,10 @@
 package com.github.panpf.sketch.core.test.request.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.test.utils.DownloadProgressListenerSupervisor
-import com.github.panpf.sketch.core.test.getTestContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert

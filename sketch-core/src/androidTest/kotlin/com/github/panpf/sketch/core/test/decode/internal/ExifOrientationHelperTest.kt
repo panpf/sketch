@@ -29,7 +29,6 @@ import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.readExifOrientation
 import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Resize
@@ -37,6 +36,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
@@ -70,18 +70,22 @@ class ExifOrientationHelperTest {
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
             AssetDataSource(
-                sketch, LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
+                sketch, LoadRequest(context, AssetImages.jpeg.uri), AssetImages.jpeg.fileName
             ).readExifOrientation()
         )
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
             AssetDataSource(
-                sketch, LoadRequest(context, newAssetUri("sample.webp")), "sample.webp"
+                sketch, LoadRequest(context, AssetImages.webp.uri), AssetImages.webp.fileName
             ).readExifOrientation()
         )
 
-        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files()
+        ExifOrientationTestFileHelper(
+            context,
+            context.sketch,
+            AssetImages.clockHor.fileName
+        ).files()
             .forEach {
                 Assert.assertEquals(
                     it.exifOrientation,
@@ -116,7 +120,7 @@ class ExifOrientationHelperTest {
             ExifInterface.ORIENTATION_NORMAL,
             AssetDataSource(
                 sketch,
-                LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
+                LoadRequest(context, AssetImages.jpeg.uri), AssetImages.jpeg.fileName
             ).readExifOrientationWithMimeType("image/jpeg")
         )
 
@@ -124,7 +128,7 @@ class ExifOrientationHelperTest {
             ExifInterface.ORIENTATION_UNDEFINED,
             AssetDataSource(
                 sketch,
-                LoadRequest(context, newAssetUri("sample.jpeg")), "sample.jpeg"
+                LoadRequest(context, AssetImages.jpeg.uri), AssetImages.jpeg.fileName
             ).readExifOrientationWithMimeType("image/bmp")
         )
 
@@ -132,11 +136,15 @@ class ExifOrientationHelperTest {
             ExifInterface.ORIENTATION_UNDEFINED,
             AssetDataSource(
                 sketch,
-                LoadRequest(context, newAssetUri("sample.webp")), "sample.webp"
+                LoadRequest(context, AssetImages.webp.uri), AssetImages.webp.fileName
             ).readExifOrientationWithMimeType("image/webp")
         )
 
-        ExifOrientationTestFileHelper(context, context.sketch, "exif_origin_clock_hor.jpeg").files()
+        ExifOrientationTestFileHelper(
+            context,
+            context.sketch,
+            AssetImages.clockHor.fileName
+        ).files()
             .forEach {
                 Assert.assertEquals(
                     it.exifOrientation,
@@ -247,7 +255,7 @@ class ExifOrientationHelperTest {
     fun testApplyToBitmap() {
         val context = getTestContext()
         val bitmapPool = LruBitmapPool(44124124)
-        val inBitmap = context.assets.open("sample.jpeg").use {
+        val inBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }
         Assert.assertTrue(
@@ -341,7 +349,7 @@ class ExifOrientationHelperTest {
     fun testAddToBitmap() {
         val context = getTestContext()
         val bitmapPool = LruBitmapPool(44124124)
-        val inBitmap = context.assets.open("sample.jpeg").use {
+        val inBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }
         Assert.assertTrue(
@@ -429,7 +437,7 @@ class ExifOrientationHelperTest {
     fun testAddAndApplyToBitmap() {
         val context = getTestContext()
         val bitmapPool = LruBitmapPool(44124124)
-        val inBitmap = context.assets.open("sample.jpeg").use {
+        val inBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }
         Assert.assertTrue(

@@ -41,7 +41,7 @@ class NotificationService : Service() {
         // Test whether result LruDiskCache:67 can use different cache folders under multi-process
         @Suppress("OPT_IN_USAGE")
         GlobalScope.launch(Dispatchers.Main) {
-            LoadRequest(this@NotificationService, AssetImages.statics.first()) {
+            LoadRequest(this@NotificationService, AssetImages.statics.first().uri) {
                 resize(200, 200)
             }.execute()
 

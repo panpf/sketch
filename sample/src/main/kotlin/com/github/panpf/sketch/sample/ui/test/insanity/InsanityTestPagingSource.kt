@@ -23,8 +23,8 @@ import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4k.coroutines.withToIO
@@ -46,7 +46,7 @@ class InsanityTestPagingSource(private val context: Context) :
     private suspend fun readAssetPhotos(): List<String> = withToIO {
         buildList {
             repeat(100) {
-                addAll(AssetImages.numbers)
+                addAll(AssetImages.numbers.map { it.uri })
             }
         }
     }

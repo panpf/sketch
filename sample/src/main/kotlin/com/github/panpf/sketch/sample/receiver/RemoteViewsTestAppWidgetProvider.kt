@@ -42,9 +42,9 @@ class RemoteViewsTestAppWidgetProvider : AppWidgetProvider() {
     }
 
     private val imageUris = arrayOf(
-        AssetImages.statics[0],
-        AssetImages.statics[2],
-        AssetImages.statics[3]
+        AssetImages.statics[0].uri,
+        AssetImages.statics[2].uri,
+        AssetImages.statics[3].uri,
     )
     private var imageUriIndex = 0
 

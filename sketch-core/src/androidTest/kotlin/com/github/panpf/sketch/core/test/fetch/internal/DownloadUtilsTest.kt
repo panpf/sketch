@@ -16,12 +16,12 @@
 package com.github.panpf.sketch.core.test.fetch.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.fetch.internal.copyToWithActive
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.test.utils.DownloadProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.SlowInputStream
-import com.github.panpf.sketch.core.test.getTestContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert

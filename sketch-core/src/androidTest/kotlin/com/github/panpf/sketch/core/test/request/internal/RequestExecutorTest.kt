@@ -18,11 +18,11 @@
 package com.github.panpf.sketch.core.test.request.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.internal.RequestExecutor
-import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.resources.AssetImages
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -39,7 +39,7 @@ class RequestExecutorTest {
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(
                 sketch,
-                LoadRequest(context, TestAssets.SAMPLE_JPEG_URI),
+                LoadRequest(context, AssetImages.jpeg.uri),
                 false
             ).apply {
                 Assert.assertTrue(this is LoadResult.Success)

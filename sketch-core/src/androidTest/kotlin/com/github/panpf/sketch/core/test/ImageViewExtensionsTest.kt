@@ -24,9 +24,9 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayResult
 import com.github.panpf.sketch.disposeDisplay
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.displayImage
 import com.github.panpf.sketch.test.utils.DelayTransformation
-import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +45,7 @@ class ImageViewExtensionsTest {
 
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayImage(TestAssets.SAMPLE_JPEG_URI).job.join()
+            imageView.displayImage(AssetImages.jpeg.uri).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
 
@@ -54,7 +54,7 @@ class ImageViewExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayImage(TestAssets.SAMPLE_PNG_URI) {
+            imageView.displayImage(AssetImages.png.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 addTransformations(DelayTransformation {
@@ -73,7 +73,7 @@ class ImageViewExtensionsTest {
         Assert.assertNull(imageView.displayResult)
 
         runBlocking {
-            imageView.displayImage(TestAssets.SAMPLE_JPEG_URI).job.join()
+            imageView.displayImage(AssetImages.jpeg.uri).job.join()
         }
         Assert.assertTrue(imageView.displayResult is DisplayResult.Success)
 
@@ -83,7 +83,7 @@ class ImageViewExtensionsTest {
         Assert.assertTrue(imageView.displayResult is DisplayResult.Error)
 
         runBlocking {
-            imageView.displayImage(TestAssets.SAMPLE_PNG_URI) {
+            imageView.displayImage(AssetImages.png.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 addTransformations(DelayTransformation {

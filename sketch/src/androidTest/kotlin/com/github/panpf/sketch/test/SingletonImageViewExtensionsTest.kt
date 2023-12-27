@@ -24,9 +24,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.displayAssetImage
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResourceImage
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
-import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +48,7 @@ class SingletonImageViewExtensionsTest {
 
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayImage(TestAssets.SAMPLE_JPEG_URI).job.join()
+            imageView.displayImage(AssetImages.jpeg.uri).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
 
@@ -57,7 +57,7 @@ class SingletonImageViewExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayImage(Uri.parse(TestAssets.SAMPLE_PNG_URI)).job.join()
+            imageView.displayImage(Uri.parse(AssetImages.png.uri)).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
@@ -120,7 +120,7 @@ class SingletonImageViewExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayAssetImage("sample_anim.gif").job.join()
+            imageView.displayAssetImage(AssetImages.animGif.fileName).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
@@ -139,7 +139,7 @@ class SingletonImageViewExtensionsTest {
         val file = ExifOrientationTestFileHelper(
             context = context,
             sketch = context.sketch,
-            assetFileName = "exif_origin_clock_hor.jpeg",
+            assetFileName = AssetImages.clockHor.fileName,
             inSampleSize = 2
         ).files()
             .first().file

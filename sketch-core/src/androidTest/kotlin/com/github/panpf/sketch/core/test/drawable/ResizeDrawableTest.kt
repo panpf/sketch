@@ -22,6 +22,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
@@ -29,17 +31,15 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
@@ -56,7 +56,7 @@ class ResizeDrawableTest {
         val context = getTestContext()
         val resources = context.resources
 
-        val imageUri = newAssetUri("sample.jpeg")
+        val imageUri = AssetImages.jpeg.uri
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
 
         val request = DisplayRequest(context, imageUri)
@@ -133,7 +133,7 @@ class ResizeDrawableTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val resources = context.resources
 
-        val imageUri = newAssetUri("sample.jpeg")
+        val imageUri = AssetImages.jpeg.uri
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
             .apply {
                 Assert.assertEquals(Size(100, 200), intrinsicSize)
@@ -257,7 +257,10 @@ class ResizeDrawableTest {
             }
 
         ResizeDrawable(bitmapDrawable, Size(500, 300), CENTER_CROP).apply {
-            Assert.assertEquals("ResizeDrawable(wrapped=$bitmapDrawable, resizeSize=500x300, resizeScale=CENTER_CROP)", toString())
+            Assert.assertEquals(
+                "ResizeDrawable(wrapped=$bitmapDrawable, resizeSize=500x300, resizeScale=CENTER_CROP)",
+                toString()
+            )
         }
     }
 }

@@ -16,13 +16,13 @@
 package com.github.panpf.sketch.core.test.datasource
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.FileDataSource
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -38,8 +38,8 @@ class FileDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val file = AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
+            request = LoadRequest(context, AssetImages.jpeg.uri),
+            assetFileName = AssetImages.jpeg.fileName
         ).getFile()
         val request = LoadRequest(context, newFileUri(file.path))
         FileDataSource(
@@ -59,8 +59,8 @@ class FileDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val file = AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
+            request = LoadRequest(context, AssetImages.jpeg.uri),
+            assetFileName = AssetImages.jpeg.fileName
         ).getFile()
         FileDataSource(
             sketch = sketch,
@@ -86,8 +86,8 @@ class FileDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val file = AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
+            request = LoadRequest(context, AssetImages.jpeg.uri),
+            assetFileName = AssetImages.jpeg.fileName
         ).getFile()
         FileDataSource(
             sketch = sketch,
@@ -104,8 +104,8 @@ class FileDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val file = AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
+            request = LoadRequest(context, AssetImages.jpeg.uri),
+            assetFileName = AssetImages.jpeg.fileName
         ).getFile()
         FileDataSource(
             sketch = sketch,

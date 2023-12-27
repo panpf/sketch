@@ -22,9 +22,9 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.lifecycle.LifecycleOwner
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.target.GenericViewDisplayTarget
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import org.junit.Assert
 import org.junit.Test

@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.core.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
@@ -23,7 +24,6 @@ import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.DefaultFetchResult
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

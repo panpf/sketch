@@ -37,7 +37,10 @@ class LongImageDeciderTest {
             Assert.assertEquals(5.0f, notSameDirectionMultiple, 0.0f)
         }
 
-        DefaultLongImageDecider(sameDirectionMultiple = 3.2f, notSameDirectionMultiple = 6.1f).apply {
+        DefaultLongImageDecider(
+            sameDirectionMultiple = 3.2f,
+            notSameDirectionMultiple = 6.1f
+        ).apply {
             Assert.assertEquals(3.2f, sameDirectionMultiple, 0.0f)
             Assert.assertEquals(6.1f, notSameDirectionMultiple, 0.0f)
         }

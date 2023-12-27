@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
+import com.github.panpf.sketch.resources.AssetImages
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,9 +27,9 @@ class GifDrawableWrapperDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = GifDrawable(context.assets, "sample_anim.gif")
-        val movie2 = GifDrawable(context.assets, "sample_anim.gif")
-        val movie3 = GifDrawable(context.assets, "sample_anim.gif")
+        val movie = GifDrawable(context.assets, AssetImages.animGif.fileName)
+        val movie2 = GifDrawable(context.assets, AssetImages.animGif.fileName)
+        val movie3 = GifDrawable(context.assets, AssetImages.animGif.fileName)
         val element1 = GifDrawableWrapperDrawable(movie)
         val element11 = GifDrawableWrapperDrawable(movie)
         val element2 = GifDrawableWrapperDrawable(movie2)
@@ -62,7 +63,7 @@ class GifDrawableWrapperDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = GifDrawable(context.assets, "sample_anim.gif")
+        val movie = GifDrawable(context.assets, AssetImages.animGif.fileName)
         Assert.assertEquals(
             "GifDrawableWrapperDrawable(GifDrawable(480x480)@${Integer.toHexString(movie.hashCode())})",
             GifDrawableWrapperDrawable(movie).toString()

@@ -90,7 +90,7 @@ class BlurTransformationTestFragment :
         radius: Int,
         maskColor: Int?
     ) {
-        binding.myImage.displayImage(AssetImages.statics.first()) {
+        binding.myImage.displayImage(AssetImages.statics.first().uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             addTransformations(BlurTransformation(radius, maskColor = maskColor))

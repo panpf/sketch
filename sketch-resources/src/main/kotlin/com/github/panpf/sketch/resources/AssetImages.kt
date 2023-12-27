@@ -15,38 +15,43 @@
  */
 package com.github.panpf.sketch.resources
 
+import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.util.Size
+
 object AssetImages {
 
-    val jpeg = "asset://sample.jpeg"
-    val png = "asset://sample.png"
-    val webp = "asset://sample.webp"
-    val bmp = "asset://sample.bmp"
-    val svg = "asset://sample.svg"
-    val heic = "asset://sample.heic"
-    val animGif = "asset://sample_anim.gif"
-    val animWebp = "asset://sample_anim.webp"
-    val animHeif = "asset://sample_anim.heif"
-    val mp4 = "asset://sample.mp4"
-    val number1 = "asset://number_1.png"
-    val number2 = "asset://number_2.png"
-    val number3 = "asset://number_3.png"
-    val number4 = "asset://number_4.png"
-    val number5 = "asset://number_5.png"
-    val number6 = "asset://number_6.png"
-    val number7 = "asset://number_7.png"
-    val number8 = "asset://number_8.png"
-    val number9 = "asset://number_9.png"
-
+    val bmp = Image("sample.bmp", "BMP", Size(700, 1012))
+    val heic = Image("sample.heic", "HEIC", Size(750, 931))
+    val jpeg = Image("sample.jpeg", "JPEG", Size(1291, 1936))
+    val png = Image("sample.png", "PNG", Size(750, 719))
+    val svg = Image("sample.svg", "SVG", Size(842, 595))
+    val webp = Image("sample.webp", "WEBP", Size(1080, 1344))
     val statics = arrayOf(jpeg, png, webp, bmp, svg, heic)
+
+    val animGif = Image("sample_anim.gif", "GIF", Size(480, 480))
+    val animHeif = Image("sample_anim.heif", "HEIF_ANIM", Size(256, 144))
+    val animWebp = Image("sample_anim.webp", "WEBP_ANIM", Size(480, 270))
     val anims = arrayOf(animGif, animWebp, animHeif)
+
+    val mp4 = Image("sample.mp4", "MP4", Size(500, 250))
     val videos = arrayOf(mp4)
+
+    val number1 = Image("number_1.png", "NUMBER_1", Size(698, 776))
+    val number2 = Image("number_2.png", "NUMBER_2", Size(698, 776))
+    val number3 = Image("number_3.png", "NUMBER_3", Size(698, 776))
+    val number4 = Image("number_4.png", "NUMBER_4", Size(698, 776))
+    val number5 = Image("number_5.png", "NUMBER_5", Size(698, 776))
+    val number6 = Image("number_6.png", "NUMBER_6", Size(698, 776))
+    val number7 = Image("number_7.png", "NUMBER_7", Size(698, 776))
+    val number8 = Image("number_8.png", "NUMBER_8", Size(698, 776))
+    val number9 = Image("number_9.png", "NUMBER_9", Size(698, 776))
     val numbers =
         arrayOf(number1, number2, number3, number4, number5, number6, number7, number8, number9)
 
-    // TODO add clock_hor.jpeg
-    // TODO add clock_ver.jpeg
-    // TODO Add Item
-    class Item (val fileName: String) {
-        val imageUri: String by lazy { "asset://$fileName" }
+    val clockHor = Image("clock_hor.jpeg", "CLOCK_HOR", Size(1500, 750))
+    val clockVer = Image("clock_ver.jpeg", "CLOCK_VER", Size(750, 1500))
+
+    class Image(val fileName: String, val name: String, val size: Size) {
+        val uri: String by lazy { newAssetUri(fileName) }
     }
 }

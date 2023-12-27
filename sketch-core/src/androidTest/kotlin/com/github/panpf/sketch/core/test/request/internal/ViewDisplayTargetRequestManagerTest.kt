@@ -32,8 +32,8 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.ViewTargetDisposable
 import com.github.panpf.sketch.request.internal.requestManager
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.displayImage
-import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
@@ -71,7 +71,7 @@ class ViewDisplayTargetRequestManagerTest {
         val context = getTestContext()
 
         val imageView = ImageView(context)
-        val request = DisplayRequest(imageView, TestAssets.SAMPLE_JPEG_URI)
+        val request = DisplayRequest(imageView, AssetImages.jpeg.uri)
 
         runBlocking(Dispatchers.Main) {
             val deferred = async {
@@ -110,7 +110,7 @@ class ViewDisplayTargetRequestManagerTest {
 
         // If there is no attached to the window, the display will inevitably fail
         runBlocking {
-            imageView.displayImage(TestAssets.SAMPLE_JPEG_URI)
+            imageView.displayImage(AssetImages.jpeg.uri)
             delay(1500)
         }
         Assert.assertFalse(ViewCompat.isAttachedToWindow(imageView))

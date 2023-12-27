@@ -20,8 +20,8 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.request.execute
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.getTestContext
-import com.github.panpf.sketch.test.utils.TestAssets
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -34,13 +34,13 @@ class SingletonLoadRequestExtensionsTest {
     fun testExecuteAndEnqueue() {
         val context = getTestContext()
 
-        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
+        LoadRequest(context, AssetImages.jpeg.uri).let { request ->
             runBlocking { request.execute() }
         }.apply {
             Assert.assertTrue(this is LoadResult.Success)
         }
 
-        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI).let { request ->
+        LoadRequest(context, AssetImages.jpeg.uri).let { request ->
             runBlocking { request.enqueue().job.await() }
         }.apply {
             Assert.assertTrue(this is LoadResult.Success)

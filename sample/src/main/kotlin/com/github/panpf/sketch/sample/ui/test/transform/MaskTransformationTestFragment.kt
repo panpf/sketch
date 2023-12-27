@@ -41,7 +41,7 @@ class MaskTransformationTestFragment :
             binding.greenButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.GREEN
             binding.blueButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.BLUE
 
-            binding.myImage.displayImage(AssetImages.statics.first()) {
+            binding.myImage.displayImage(AssetImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(CircleCropTransformation(), MaskTransformation(it.colorInt))

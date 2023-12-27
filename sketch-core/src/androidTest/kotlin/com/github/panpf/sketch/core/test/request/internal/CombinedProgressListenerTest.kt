@@ -16,10 +16,10 @@
 package com.github.panpf.sketch.core.test.request.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
-import com.github.panpf.sketch.core.test.getTestContext
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -52,9 +52,15 @@ class CombinedProgressListenerTest {
         )
         Assert.assertSame(listener1, combinedProgressListener.fromProviderProgressListener)
         Assert.assertSame(listener2, combinedProgressListener.fromBuilderProgressListener)
-        Assert.assertSame(listener3, combinedProgressListener.fromBuilderProgressListeners!!.first())
+        Assert.assertSame(
+            listener3,
+            combinedProgressListener.fromBuilderProgressListeners!!.first()
+        )
 
         combinedProgressListener.onUpdateProgress(request, 10000, 2000)
-        Assert.assertEquals(listOf("onUpdateProgress1", "onUpdateProgress2", "onUpdateProgress3"), listenerCallbackList)
+        Assert.assertEquals(
+            listOf("onUpdateProgress1", "onUpdateProgress2", "onUpdateProgress3"),
+            listenerCallbackList
+        )
     }
 }

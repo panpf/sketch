@@ -42,7 +42,6 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
@@ -72,6 +71,7 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
@@ -83,7 +83,6 @@ import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.test.utils.TestAssets
 import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestBitmapDecoder
 import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
@@ -110,7 +109,7 @@ class LoadRequestTest {
     @Test
     fun testFun() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest(context1, uriString1).apply {
             Assert.assertSame(context1, this.context)
             Assert.assertEquals("asset://sample.jpeg", uriString)
@@ -153,7 +152,7 @@ class LoadRequestTest {
     @Test
     fun testNewBuilder() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
 
         LoadRequest(context1, uriString1).newBuilder().build().apply {
             Assert.assertEquals(NETWORK, depth)
@@ -247,7 +246,7 @@ class LoadRequestTest {
     @Test
     fun testContext() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest(context1, uriString1).apply {
             Assert.assertEquals(context1, context)
             Assert.assertNotEquals(context1, context.applicationContext)
@@ -257,7 +256,7 @@ class LoadRequestTest {
     @Test
     fun testTarget() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
 
         LoadRequest(context1, uriString1).apply {
             Assert.assertNull(target)
@@ -302,7 +301,7 @@ class LoadRequestTest {
     @Test
     fun testLifecycle() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         var lifecycle1: Lifecycle? = null
         val lifecycleOwner = object : LifecycleOwner {
             override val lifecycle: Lifecycle
@@ -336,7 +335,7 @@ class LoadRequestTest {
     @Test
     fun testDefinedOptions() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
 
         LoadRequest(context1, uriString1).apply {
             Assert.assertEquals(ImageOptions(), definedOptions)
@@ -358,7 +357,7 @@ class LoadRequestTest {
     @Test
     fun testDefault() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
 
         LoadRequest(context1, uriString1).apply {
             Assert.assertNull(defaultOptions)
@@ -379,7 +378,7 @@ class LoadRequestTest {
     @Test
     fun testMerge() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertEquals(NETWORK, depth)
@@ -414,7 +413,7 @@ class LoadRequestTest {
     @Test
     fun testDepth() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest(context1, uriString1).apply {
             Assert.assertEquals(NETWORK, depth)
             Assert.assertNull(depthFrom)
@@ -459,7 +458,7 @@ class LoadRequestTest {
     @Test
     fun testParameters() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(parameters)
@@ -514,7 +513,7 @@ class LoadRequestTest {
     @Test
     fun testHttpHeaders() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(httpHeaders)
@@ -584,7 +583,7 @@ class LoadRequestTest {
     @Test
     fun testLoadDiskCachePolicy() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertEquals(ENABLED, downloadCachePolicy)
@@ -610,7 +609,7 @@ class LoadRequestTest {
     @Test
     fun testBitmapConfig() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(bitmapConfig)
@@ -648,7 +647,7 @@ class LoadRequestTest {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(colorSpace)
@@ -675,7 +674,7 @@ class LoadRequestTest {
     @Suppress("DEPRECATION")
     fun testPreferQualityOverSpeed() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertFalse(preferQualityOverSpeed)
@@ -701,7 +700,7 @@ class LoadRequestTest {
     @Test
     fun testResize() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(definedOptions.resizeSizeResolver)
@@ -859,7 +858,7 @@ class LoadRequestTest {
     @Test
     fun testResizeSize() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(definedOptions.resizeSizeResolver)
@@ -895,7 +894,7 @@ class LoadRequestTest {
     @Test
     fun testResizePrecision() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context, uriString1).apply {
             build().apply {
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
@@ -952,7 +951,7 @@ class LoadRequestTest {
     @Test
     fun testResizeScale() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), resizeScaleDecider)
@@ -978,7 +977,7 @@ class LoadRequestTest {
     @Test
     fun testTransformations() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(transformations)
@@ -1065,7 +1064,7 @@ class LoadRequestTest {
     @Test
     fun testDisallowReuseBitmap() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertFalse(disallowReuseBitmap)
@@ -1091,7 +1090,7 @@ class LoadRequestTest {
     @Test
     fun testIgnoreExifOrientation() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertFalse(ignoreExifOrientation)
@@ -1117,7 +1116,7 @@ class LoadRequestTest {
     @Test
     fun testResultCachePolicy() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertEquals(ENABLED, resultCachePolicy)
@@ -1143,7 +1142,7 @@ class LoadRequestTest {
     @Test
     fun testDisallowAnimatedImage() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertFalse(disallowAnimatedImage)
@@ -1169,7 +1168,7 @@ class LoadRequestTest {
     @Test
     fun testPlaceholder() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(placeholder)
@@ -1203,7 +1202,7 @@ class LoadRequestTest {
     @Test
     fun testUriEmpty() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(uriEmpty)
@@ -1237,7 +1236,7 @@ class LoadRequestTest {
     @Test
     fun testError() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(error)
@@ -1293,7 +1292,7 @@ class LoadRequestTest {
     @Test
     fun testTransitionFactory() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(transitionFactory)
@@ -1314,7 +1313,7 @@ class LoadRequestTest {
     @Test
     fun testResizeApplyToDrawable() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertFalse(resizeApplyToDrawable)
@@ -1340,7 +1339,7 @@ class LoadRequestTest {
     @Test
     fun testMemoryCachePolicy() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertEquals(ENABLED, memoryCachePolicy)
@@ -1366,7 +1365,7 @@ class LoadRequestTest {
     @Test
     fun testListener() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(listener)
@@ -1439,7 +1438,7 @@ class LoadRequestTest {
     @Test
     fun testProgressListener() {
         val context1 = getTestContext()
-        val uriString1 = newAssetUri("sample.jpeg")
+        val uriString1 = AssetImages.jpeg.uri
         LoadRequest.Builder(context1, uriString1).apply {
             build().apply {
                 Assert.assertNull(progressListener)
@@ -1486,11 +1485,11 @@ class LoadRequestTest {
     @Test
     fun testComponents() {
         val context = getTestContext()
-        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI).apply {
+        LoadRequest(context, AssetImages.jpeg.uri).apply {
             Assert.assertNull(componentRegistry)
         }
 
-        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        LoadRequest(context, AssetImages.jpeg.uri) {
             components {
                 addFetcher(HttpUriFetcher.Factory())
                 addFetcher(TestFetcher.Factory())
@@ -1523,9 +1522,9 @@ class LoadRequestTest {
     @Test
     fun testEqualsAndHashCode() {
         val context = getTestContext()
-        val element1 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
-        val element11 = LoadRequest(context, TestAssets.SAMPLE_JPEG_URI)
-        val element2 = LoadRequest(context, TestAssets.SAMPLE_PNG_URI)
+        val element1 = LoadRequest(context, AssetImages.jpeg.uri)
+        val element11 = LoadRequest(context, AssetImages.jpeg.uri)
+        val element2 = LoadRequest(context, AssetImages.png.uri)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -1543,7 +1542,7 @@ class LoadRequestTest {
         Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
 
-        LoadRequest(context, TestAssets.SAMPLE_JPEG_URI).apply {
+        LoadRequest(context, AssetImages.jpeg.uri).apply {
             Assert.assertEquals(this, this.newLoadRequest())
         }.newLoadRequest {
             listener(onStart = {})

@@ -17,13 +17,13 @@ package com.github.panpf.sketch.core.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.test.utils.TestAssets
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.samplingByTarget
@@ -43,7 +43,7 @@ class DefaultDrawableDecoderTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val imageSize = Size(1291, 1936)
         val resizeSize = Size(500, 400)
-        val request = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        val request = DisplayRequest(context, AssetImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             resizeSize(resizeSize)
             resizePrecision(LESS_PIXELS)

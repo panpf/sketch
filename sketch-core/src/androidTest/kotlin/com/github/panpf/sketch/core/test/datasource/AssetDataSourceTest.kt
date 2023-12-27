@@ -16,11 +16,12 @@
 package com.github.panpf.sketch.core.test.datasource
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -34,15 +35,15 @@ class AssetDataSourceTest {
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
 
-        val request = LoadRequest(context, newAssetUri("sample.jpeg"))
+        val request = LoadRequest(context, AssetImages.jpeg.uri)
         AssetDataSource(
             sketch = sketch,
             request = request,
-            assetFileName = "sample.jpeg"
+            assetFileName = AssetImages.jpeg.fileName
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertEquals("sample.jpeg", this.assetFileName)
+            Assert.assertEquals(AssetImages.jpeg.fileName, this.assetFileName)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
         }
     }
@@ -53,8 +54,8 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
+            request = LoadRequest(context, AssetImages.jpeg.uri),
+            assetFileName = AssetImages.jpeg.fileName
         ).apply {
             newInputStream().close()
         }
@@ -76,8 +77,8 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
+            request = LoadRequest(context, AssetImages.jpeg.uri),
+            assetFileName = AssetImages.jpeg.fileName
         ).apply {
             Assert.assertEquals(
                 "AssetDataSource('sample.jpeg')",

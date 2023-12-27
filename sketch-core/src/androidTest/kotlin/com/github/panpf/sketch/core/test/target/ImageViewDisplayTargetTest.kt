@@ -21,14 +21,14 @@ import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.target.ImageViewDisplayTarget
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -44,7 +44,7 @@ class ImageViewDisplayTargetTest {
     fun testDrawable() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
-        val request = DisplayRequest(context, newAssetUri("sample.jpeg"))
+        val request = DisplayRequest(context, AssetImages.jpeg.uri)
 
         val imageView = ImageView(context)
         Assert.assertNull(imageView.drawable)

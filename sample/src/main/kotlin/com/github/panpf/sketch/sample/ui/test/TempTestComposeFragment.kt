@@ -4,9 +4,6 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -30,11 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
-import com.github.panpf.sketch.sample.ui.base.BaseToolbarFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -111,10 +107,10 @@ class TempTestComposeFragment : BaseToolbarComposeFragment() {
         private var rememberedCount = 0
         private var currentIndex: Int by mutableIntStateOf(0)
         private val imagePaths = arrayOf(
-            "sample.jpeg",
-            "sample.png",
-            "sample.webp",
-            "sample.bmp",
+            AssetImages.jpeg.fileName,
+            AssetImages.png.fileName,
+            AssetImages.webp.fileName,
+            AssetImages.bmp.fileName,
         )
         private var coroutineScope: CoroutineScope? = null
 

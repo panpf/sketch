@@ -24,6 +24,7 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
@@ -42,9 +43,8 @@ import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
-import com.github.panpf.sketch.test.utils.TestAssets
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestDisplayCountDisplayTarget
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -81,27 +81,27 @@ class MemoryCacheRequestInterceptorTest {
         Assert.assertEquals(0, memoryCache.size)
 
         /* DownloadRequest */
-        executeRequest(DownloadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        executeRequest(DownloadRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<DownloadData>()
         Assert.assertEquals(0, memoryCache.size)
-        executeRequest(DownloadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        executeRequest(DownloadRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<DownloadData>()
         Assert.assertEquals(0, memoryCache.size)
 
         /* LoadRequest */
-        executeRequest(LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        executeRequest(LoadRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<LoadData>()
         Assert.assertEquals(0, memoryCache.size)
-        executeRequest(LoadRequest(context, TestAssets.SAMPLE_JPEG_URI) {
+        executeRequest(LoadRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<LoadData>()
         Assert.assertEquals(0, memoryCache.size)
 
         /* DisplayRequest - ENABLED */
-        val displayRequest = DisplayRequest(context, TestAssets.SAMPLE_JPEG_URI){
+        val displayRequest = DisplayRequest(context, AssetImages.jpeg.uri) {
             target(TestDisplayCountDisplayTarget())
         }
         val countBitmapDrawable: SketchCountBitmapDrawable

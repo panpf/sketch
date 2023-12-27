@@ -45,7 +45,7 @@ class CircleCropTransformationTestFragment :
             binding.endButton.isChecked = it == END_CROP
             binding.fillButton.isChecked = it == FILL
 
-            binding.myImage.displayImage(AssetImages.statics.first()) {
+            binding.myImage.displayImage(AssetImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 resizeScale(it)

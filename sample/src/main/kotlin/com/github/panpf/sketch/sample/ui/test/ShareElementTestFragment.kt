@@ -40,7 +40,7 @@ class ShareElementTestFragment : BaseBindingFragment<FragmentTestShareElementBin
             ViewCompat.setTransitionName(this, "transition_app_icon")
             Log.i("ShareElementTest", "$id. displayImage")
             postponeEnterTransition(100, MILLISECONDS)
-            displayImage(AssetImages.jpeg) {
+            displayImage(AssetImages.jpeg.uri) {
                 listener(
                     onSuccess = { _, _ ->
                         startPostponedEnterTransition()

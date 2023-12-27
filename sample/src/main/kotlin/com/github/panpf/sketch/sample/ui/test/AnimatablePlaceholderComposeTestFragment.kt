@@ -53,7 +53,7 @@ class AnimatablePlaceholderComposeTestFragment : BaseToolbarComposeFragment() {
         Column(modifier = Modifier.fillMaxSize()) {
             val urlIndexState = urlIndexFlow.collectAsState()
             val images = remember {
-                arrayOf(AssetImages.jpeg, AssetImages.webp, AssetImages.bmp)
+                arrayOf(AssetImages.jpeg.uri, AssetImages.webp.uri, AssetImages.bmp.uri)
             }
             val uriString = images[urlIndexState.value % images.size]
             val request = DisplayRequest(LocalContext.current, uriString) {

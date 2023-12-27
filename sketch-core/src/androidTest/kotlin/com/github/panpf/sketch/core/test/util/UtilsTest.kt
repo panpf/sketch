@@ -25,12 +25,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.fitScale
@@ -210,8 +211,8 @@ class UtilsTest {
         val (context, sketch) = getTestContextAndNewSketch()
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newAssetUri("sample.jpeg")),
-            assetFileName = "sample.jpeg"
+            request = LoadRequest(context, AssetImages.jpeg.uri),
+            assetFileName = AssetImages.jpeg.fileName
         ).apply {
             val file = getCacheFileFromStreamDataSource(sketch, request, this)
             Assert.assertTrue(file.path.contains("/cache/"))
