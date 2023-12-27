@@ -27,7 +27,8 @@ compose:
 
 ### 配置
 
-如果上述默认值无法获取到 Lifecycle 或默认获取的 Lifecycle 不满足你的需求，[ImageRequest].Builder 还提供了 lifecycle() 方法用于设置 lifecycle，如下：
+如果上述默认值无法获取到 Lifecycle 或默认获取的 Lifecycle 不满足你的需求，[ImageRequest].Builder 还提供了
+lifecycle() 方法用于设置 lifecycle，如下：
 
 ```kotlin
 val lifecycle = LifecycleRegistry(this)

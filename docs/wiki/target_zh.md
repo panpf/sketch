@@ -4,7 +4,8 @@
 
 [Target] 用来接收 [ImageRequest] 的结果 [ImageResult]，并将结果应用到目标上
 
-从前面的 [入门][getting_started] 文档可以知道 [ImageRequest] 分为 [DisplayRequest]、[LoadRequest]、[DownloadRequest]
+从前面的 [入门][getting_started] 文档可以知道 [ImageRequest]
+分为 [DisplayRequest]、[LoadRequest]、[DownloadRequest]
 三种，他们又都有不同的 [ImageResult] 实现，因此 [Target] 也有对应的三种实现：
 
 * [DisplayTarget]：接收 Drawable 类型的结果，[DisplayRequest] 专用
@@ -31,7 +32,8 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 
 > LoadTarget 和 DownloadTarget 同 DisplayTarget 使用方式大同小异
 
-[DisplayTarget] 通常用来将 Drawable 应用到 View，因此 Sketch 提供了 [ViewDisplayTarget] 和 [ImageViewDisplayTarget]
+[DisplayTarget] 通常用来将 Drawable 应用到 View，因此 Sketch 提供了 [ViewDisplayTarget]
+和 [ImageViewDisplayTarget]
 来简化使用
 
 [DisplayRequest] 还提供了 target(ImageView) 方法来简化绑定到 ImageView，如下：
@@ -72,7 +74,8 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 }.enqueue()
 ```
 
-1. 如上所示 [RemoteViewsDisplayTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的 setImageViewBitmap
+1. 如上所示 [RemoteViewsDisplayTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的
+   setImageViewBitmap
    方法设置 Bitmap
 2. 所以还需要你在 onUpdated 函数中刷新通知或 AppWidget 才能将 Bitmap 显示到屏幕上
 

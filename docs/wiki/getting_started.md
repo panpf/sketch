@@ -244,7 +244,8 @@ coroutineScope.launch(Dispatchers.Main) {
 
 #### Proactive cancellation
 
-Executing a request using the enqueue() method returns a [Disposable] that can be used to cancel the request, as follows:
+Executing a request using the enqueue() method returns a [Disposable] that can be used to cancel the
+request, as follows:
 
 ```kotlin
 val disposable = DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
@@ -253,7 +254,8 @@ val disposable = DisplayRequest(imageView, "https://www.example.com/image.jpg").
 disposable.dispose()
 ```
 
-When a request is executed using the execute() method, it can be canceled by the job of its coroutine, as follows:
+When a request is executed using the execute() method, it can be canceled by the job of its
+coroutine, as follows:
 
 ```kotlin
 val job = coroutineScope.launch(Dispatchers.Main) {

@@ -13,9 +13,12 @@ Sketch 的 [SketchZoomImageView] 提供了手势缩放以及超大图采样功�
 ### 对比 PhotoView
 
 * 双击缩放层级：从 [PhotoView] 的三级减少到两级，操作更简单
-* 双击缩放比例：[PhotoView] 的双击缩放比例是固定的，而 [SketchZoomImageView] 是根据图片的尺寸、View 的宽高以及 ScaleType 动态计算的，体验更好
-* 边界阻尼：手动缩放超过了最小或最大比例时 [PhotoView] 直接就拉不动了，而 [SketchZoomImageView] 会有种拉橡皮筋的感觉，体验更好
-* 边界判定：[SketchZoomImageView] 优化了 scrollEdge 的判断，修复了在不能整除的缩放比例下，无法识别边缘的 BUG
+* 双击缩放比例：[PhotoView] 的双击缩放比例是固定的，而 [SketchZoomImageView] 是根据图片的尺寸、View
+  的宽高以及 ScaleType 动态计算的，体验更好
+* 边界阻尼：手动缩放超过了最小或最大比例时 [PhotoView] 直接就拉不动了，而 [SketchZoomImageView]
+  会有种拉橡皮筋的感觉，体验更好
+* 边界判定：[SketchZoomImageView] 优化了 scrollEdge 的判断，修复了在不能整除的缩放比例下，无法识别边缘的
+  BUG
 * 滚动条：[SketchZoomImageView] 增加了滚动条，可以方便的看到当前滚动的位置
 * 定位：[SketchZoomImageView] 增加了定位功能，可以指定图片上的一个点，然后以动画的方式移动到这个点
 * 阅读模式：[SketchZoomImageView] 增加了阅读模式，对于长图的阅读体验更好
@@ -97,11 +100,14 @@ sketchZoomImageView.scrollBarEnabled = false
 sketchZoomImageView.readModeEnabled = true
 ```
 
-[SketchZoomImageView] 通过 [ReadModeDecider] 来判定是否需要使用阅读模式，默认实现是 [LongImageReadModeDecider]，仅对长图使用阅读模式
+[SketchZoomImageView] 通过 [ReadModeDecider]
+来判定是否需要使用阅读模式，默认实现是 [LongImageReadModeDecider]，仅对长图使用阅读模式
 
-> 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageReadModeDecider] 时使用自定义的长图判定规则
+> 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageReadModeDecider]
+> 时使用自定义的长图判定规则
 
-如果你想修改阅读模式判定规则可以实现 [ReadModeDecider] 接口，然后通过 [SketchZoomImageView] 的 `readModeDecider` 属性应用，如下：
+如果你想修改阅读模式判定规则可以实现 [ReadModeDecider] 接口，然后通过 [SketchZoomImageView]
+的 `readModeDecider` 属性应用，如下：
 
 ```kotlin
 class MyReadModeDecider : ReadModeDecider {
@@ -198,7 +204,8 @@ sketchZoomImageView.onViewLongPressListener = { view: View, x: Float, y: Float -
 // more ...
 ```
 
-> 注意：当没有注册 OnViewTapListener 或 OnViewLongPressListener 时，[SketchZoomImageView] 会尝试回调 ImageView 的 OnClickListener 或 OnLongClickListener
+> 注意：当没有注册 OnViewTapListener 或 OnViewLongPressListener 时，[SketchZoomImageView] 会尝试回调
+> ImageView 的 OnClickListener 或 OnLongClickListener
 
 ### ArrayIndexOutOfBoundsException 与 IllegalArgumentException：pointerIndex out of range
 
@@ -232,10 +239,12 @@ class ImageDetailActivity : AppCompatActivity() {
 
 ### Lifecycle
 
-[SketchZoomImageView] 能够监听 Lifecycle 的状态，在 pause 状态时暂停超大图采样并释放所有碎片的 Bitmap，在 resume
+[SketchZoomImageView] 能够监听 Lifecycle 的状态，在 pause 状态时暂停超大图采样并释放所有碎片的
+Bitmap，在 resume
 状态时恢复超大图采样并重新加载碎片，这样能够在 Fragment 或 Activity 切换到后台或不显示时主动释放内存
 
-[SketchZoomImageView] 会从 [DisplayRequest] 获取 Lifecycle，[DisplayRequest] 优先从 [SketchZoomImageView]
+[SketchZoomImageView] 会从 [DisplayRequest] 获取 Lifecycle，[DisplayRequest]
+优先从 [SketchZoomImageView]
 .context 上获取 Lifecycle，这样通常获取到的是 Activity 的 Lifecycle，一般情况下是够用的
 
 如果 [SketchZoomImageView] 是在 ViewPager + Fragment 的组合中使用那么需要主动将 Fragment 的

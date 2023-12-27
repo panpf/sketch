@@ -6,7 +6,8 @@ Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 
 * [VideoFrameBitmapDecoder]：使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
     * 需要先导入 `sketch-video` 模块
-    * 建议 Android 8.1 及以上版本使用，因为 8.0 及以下版本不支持读取帧的缩略图，在解码 4k 等较大的视频时将消耗大量的内存
+    * 建议 Android 8.1 及以上版本使用，因为 8.0 及以下版本不支持读取帧的缩略图，在解码 4k
+      等较大的视频时将消耗大量的内存
 * [FFmpegVideoFrameBitmapDecoder]：使用 [wseemann]
   /[FFmpegMediaMetadataRetriever-project] 库的 [FFmpegMediaMetadataRetriever] 类解码视频文件的帧
     * 需要先导入 `sketch-video-ffmpeg` 模块

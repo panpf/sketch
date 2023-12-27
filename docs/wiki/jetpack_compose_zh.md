@@ -152,7 +152,8 @@ DisplayRequest 会作为 AsyncImage 和 SubcomposeAsyncImage 的参数时会因�
 
 ### Size
 
-图像请求需要一个大小来确定输出图像的尺寸。默认情况下，AsyncImage 在确定尺寸时解析请求的大小，而单独使用 AsyncImagePainter
+图像请求需要一个大小来确定输出图像的尺寸。默认情况下，AsyncImage 在确定尺寸时解析请求的大小，而单独使用
+AsyncImagePainter
 在将绘制第一帧时解析请求的大小。它以这种方式解决以最大限度地提高性能。
 
 你可以主动设置 resizeSize 避免图像请求等待确定组件大小来进一步提高性能，如下：

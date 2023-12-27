@@ -7,7 +7,8 @@ Sketch 的解码过程支持拦截器，你可以通过拦截器来改变解码�
 Sketch 将解码分为 Drawable 和 Bitmap 两种，因此拦截也同样分为两种 [BitmapDecodeInterceptor]
 和 [DrawableDecodeInterceptor]
 
-首先，实现 [BitmapDecodeInterceptor] 或 [DrawableDecodeInterceptor] 接口定义你的 DecodeInterceptor，如下：
+首先，实现 [BitmapDecodeInterceptor] 或 [DrawableDecodeInterceptor] 接口定义你的
+DecodeInterceptor，如下：
 
 ```kotlin
 class MyBitmapDecodeInterceptor : BitmapDecodeInterceptor {
@@ -51,10 +52,12 @@ class MyDrawableDecodeInterceptor : DrawableDecodeInterceptor {
 
 > 1. MyBitmapDecodeInterceptor 演示了一个将所有请求的 Bitmap.Config 改为 ARGB_4444 的案例
 > 2. MyDrawableDecodeInterceptor 演示了一个禁止所有请求解码动图的案例
-> 3. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [BitmapDecodeResult] 或 [DrawableDecodeResult] 即可
+> 3. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [BitmapDecodeResult]
+     或 [DrawableDecodeResult] 即可
 > 4. 如果想不再执行请求只需不执行 proceed 方法即可
 
-然后，通过 addBitmapDecodeInterceptor() 和 addDrawableDecodeInterceptor() 方法注册你的 DecodeInterceptor，如下：
+然后，通过 addBitmapDecodeInterceptor() 和 addDrawableDecodeInterceptor() 方法注册你的
+DecodeInterceptor，如下：
 
 ```kotlin
 /* 为所有 ImageRequest 注册 */

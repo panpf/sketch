@@ -12,14 +12,17 @@ Sketch 为了提高图片的加载速度引入了下载缓存、结果缓存、�
 
 * 根据最少使用原则清除旧的缓存
 * 默认最大容量是 300MB
-* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/download`，另外为了兼容多进程，当在非主进程使用 Sketch
+* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/download`，另外为了兼容多进程，当在非主进程使用
+  Sketch
   时缓存目录名称后会加上进程名，例如 "download:push"
 
-> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForDownloadBuilder 创建并修改最大容量或缓存目录，然后通过 downloadCache() 方法注册
+> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForDownloadBuilder 创建并修改最大容量或缓存目录，然后通过
+> downloadCache() 方法注册
 
 #### 配置下载缓存
 
-下载缓存默认开启，你可以通过 [ImageRequest] 或 [ImageOptions] 的 downloadCachePolicy 属性控制下载缓存:
+下载缓存默认开启，你可以通过 [ImageRequest] 或 [ImageOptions] 的 downloadCachePolicy
+属性控制下载缓存:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -88,18 +91,22 @@ try {
 
 * 根据最少使用原则清除旧的缓存
 * 默认最大容量是 200MB
-* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/result`，另外为了兼容多进程，当在非主进程使用 Sketch
+* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/result`，另外为了兼容多进程，当在非主进程使用
+  Sketch
   时缓存目录名称后会加上进程名，例如 "result:push"
 
-> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForResultBuilder 创建并修改最大容量或缓存目录，然后通过 resultCache() 方法注册
+> 你可以在初始化 Sketch 时通过 [LruDiskCache].ForResultBuilder 创建并修改最大容量或缓存目录，然后通过
+> resultCache() 方法注册
 
 Sketch 会在以下情况将 Bitmap 缓存到磁盘缓存中：
+
 * Resize 不为 null 且解码后的 Bitmap 与原图尺寸不一样
 * 经过 Transformation 转换
 
 #### 配置结果缓存
 
-结果缓存默认开启，你可以通过 [ImageRequest] 或 [ImageOptions] 的 resultCachePolicy 属性控制 Bitmap 结果缓存:
+结果缓存默认开启，你可以通过 [ImageRequest] 或 [ImageOptions] 的 resultCachePolicy 属性控制 Bitmap
+结果缓存:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -173,7 +180,8 @@ try {
 
 #### 配置内存缓存
 
-内存缓存默认开启，你可以通过 [ImageRequest] 或 [ImageOptions] 的 memoryCachePolicy 属性控制 Bitmap 内存缓存:
+内存缓存默认开启，你可以通过 [ImageRequest] 或 [ImageOptions] 的 memoryCachePolicy 属性控制 Bitmap
+内存缓存:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {

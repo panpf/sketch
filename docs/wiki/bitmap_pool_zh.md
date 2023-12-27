@@ -2,7 +2,8 @@
 
 翻译：[English](bitmap_pool.md)
 
-Android 支持通过 BitmapFactory.Options.inBitmap 字段来复用 Bitmap，复用 Bitmap 可以在 Android 8.0 以下显著的减少 GC 进而提高
+Android 支持通过 BitmapFactory.Options.inBitmap 字段来复用 Bitmap，复用 Bitmap 可以在 Android 8.0
+以下显著的减少 GC 进而提高
 App 的流畅度
 
 Sketch 的 [BitmapPool] 组件为复用 Bitmap 功能提供了 Bitmap 池服务，默认的实现是 [LruBitmapPool]：
@@ -14,7 +15,8 @@ Sketch 的 [BitmapPool] 组件为复用 Bitmap 功能提供了 Bitmap 池服务�
 
 ### 禁用
 
-Sketch 默认开启了复用 Bitmap 功能，你可以通过 [ImageRequest] 或 [ImageOptions] 的 disallowReuseBitmap 函数禁用它:
+Sketch 默认开启了复用 Bitmap 功能，你可以通过 [ImageRequest] 或 [ImageOptions] 的 disallowReuseBitmap
+函数禁用它:
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {

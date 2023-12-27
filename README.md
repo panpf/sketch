@@ -221,7 +221,8 @@ Please review the [CHANGELOG.md] file
 
 ## Special thanks
 
-* [coil-kt]/[coil]: Sketch uses some code from Coil, including framework, compose, sketch-gif-movie parts
+* [coil-kt]/[coil]: Sketch uses some code from Coil, including framework, compose, sketch-gif-movie
+  parts
 * [bumptech]/[glide]: BitmapPool
 * [chrisbanes]/[PhotoView]: Zoom
 * [koral--]/[android-gif-drawable]: gif-koral

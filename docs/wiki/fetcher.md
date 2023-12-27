@@ -2,9 +2,11 @@
 
 Translations: [简体中文](fetcher_zh.md)
 
-[Fetcher] is used to get data from uri, return [FetchResult], and hand it over to [BitmapDecoder] or [DrawableDecoder] for use.
+[Fetcher] is used to get data from uri, return [FetchResult], and hand it over to [BitmapDecoder]
+or [DrawableDecoder] for use.
 
-Sketch has a corresponding [Fetcher] implementation for each uri supported, and there are the following types:
+Sketch has a corresponding [Fetcher] implementation for each uri supported, and there are the
+following types:
 
 * [AssetUriFetcher][AssetUriFetcher]: Load images from the app’s assets directory
 * [Base64UriFetcher][Base64UriFetcher]: Load an image in base 64 format from the uri itself
@@ -12,11 +14,13 @@ Sketch has a corresponding [Fetcher] implementation for each uri supported, and 
 * [FileUriFetcher][FileUriFetcher]: Load images from local files
 * [HttpUriFetcher][HttpUriFetcher]: Load image from http uri
 * [ResourceUriFetcher][ResourceUriFetcher]: Load images from Android Resource
-* [AppIconUriFetcher][AppIconUriFetcher]: Load the icon from the installed app, [Learn more](apk_app_icon.md#displays-an-icon-for-the-installed-app)
+* [AppIconUriFetcher][AppIconUriFetcher]: Load the icon from the installed
+  app, [Learn more](apk_app_icon.md#displays-an-icon-for-the-installed-app)
 
 ### Extend Fetcher
 
-First you need to implement the [Fetcher] interface to define your [Fetcher] and its Factory, as follows:
+First you need to implement the [Fetcher] interface to define your [Fetcher] and its Factory, as
+follows:
 
 ```kotlin
 class MyFetcher : Fetcher {
@@ -42,7 +46,7 @@ class MyFetcher : Fetcher {
 }
 ```
 
-Then register through the addFetcher method, as follows: 
+Then register through the addFetcher method, as follows:
 
 ```kotlin
 /* Register for all ImageRequests */

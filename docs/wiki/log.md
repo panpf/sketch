@@ -2,7 +2,8 @@
 
 Translations: [简体中文](log_zh.md)
 
-[Sketch] logs are provided by the [Logger] component. By default, android.util.Log is used for output, and the Tag is unified to `Sketch`
+[Sketch] logs are provided by the [Logger] component. By default, android.util.Log is used for
+output, and the Tag is unified to `Sketch`
 
 ### Modify Level
 
@@ -27,11 +28,13 @@ You can also provide options in the App settings to modify them at any time, as 
 context.sketch.logger.level = Logger.Level.DEBUG
 ```
 
-> Note: Excessive Log logs will affect UI fluency. Please set the level to INFO and above for the official release version.
+> Note: Excessive Log logs will affect UI fluency. Please set the level to INFO and above for the
+> official release version.
 
 ### Modify output
 
-[Logger] outputs to android.util.Log by default. You can implement the [Logger].Proxy interface to customize new output, and then modify it when initializing [Sketch], as follows:
+[Logger] outputs to android.util.Log by default. You can implement the [Logger].Proxy interface to
+customize new output, and then modify it when initializing [Sketch], as follows:
 
 ```kotlin
 class MyProxy : Logger.Proxy {

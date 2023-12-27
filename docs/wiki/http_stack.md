@@ -84,7 +84,8 @@ class MyApplication : Application(), SketchFactory {
 
 ### Android 4.* TLS 1.1, 1.2 supported
 
-Android versions 4.1 to 4.4 support TLS 1.1 and 1.2 but are not enabled by default. HurlStack and OkHttpStack are enabled as follows:
+Android versions 4.1 to 4.4 support TLS 1.1 and 1.2 but are not enabled by default. HurlStack and
+OkHttpStack are enabled as follows:
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {
@@ -110,7 +111,8 @@ class MyApplication : Application(), SketchFactory {
 
 ### Customize
 
-Implement the [HttpStack] interface to define your own HttpStack, and then register it through the `httpStack()` method when initializing Sketch:
+Implement the [HttpStack] interface to define your own HttpStack, and then register it through
+the `httpStack()` method when initializing Sketch:
 
 ```kotlin
 class MyApplication : Application(), SketchFactory {

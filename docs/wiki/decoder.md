@@ -112,7 +112,8 @@ imageView.displayImage("asset://sample.mypng") {
 3.The custom [DrawableDecoder] flow is the same as the [BitmapDecoder] flow, with the only
 difference being that it is called when it is registered to Sketch
 addDrawableDecoder() method
-> Note: If your custom [DrawableDecoder] is a decoded animated image, be sure to check the [ImageRequest]
+> Note: If your custom [DrawableDecoder] is a decoded animated image, be sure to check
+> the [ImageRequest]
 > .disallowAnimatedImage parameter
 
 

@@ -67,7 +67,8 @@ imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCo
 imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1))
 ```
 
-* versionCode：App 的版本号，必须传入正确的版本号。因为对图标进行修改时就会将修改后的图标缓存在磁盘上，如果只用 packageName 作为缓存 key 那么 App
+* versionCode：App 的版本号，必须传入正确的版本号。因为对图标进行修改时就会将修改后的图标缓存在磁盘上，如果只用
+  packageName 作为缓存 key 那么 App
   版本更新后图标即使改变了缓存也不会刷新
 
 [Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt

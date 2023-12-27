@@ -10,9 +10,11 @@
 * [Precision]：精度。决定如何使用 width 和 height 去调整图片的尺寸
     * LESS_PIXELS：默认精度。只要最终 Bitmap 的像素数（宽乘以高）小于等于 [Resize] 的像素数即可
     * SMALLER_SIZE：只要最终 Bitmap 的宽和高都小于等于 [Resize] 的宽和高即可
-    * SAME_ASPECT_RATIO：最终 Bitmap 的宽高比和 [Resize] 的宽高比一致并且像素数一定少于 [Resize]，如果比例不一致会根据 [Scale]
+    * SAME_ASPECT_RATIO：最终 Bitmap 的宽高比和 [Resize] 的宽高比一致并且像素数一定少于 [Resize]
+      ，如果比例不一致会根据 [Scale]
       裁剪原图、优先使用 BitmapRegionDecoder 裁剪
-    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果尺寸不一致会根据 [Scale] 裁剪原图、优先使用 BitmapRegionDecoder 裁剪
+    * EXACTLY：最终 Bitmap 的尺寸一定和 [Resize] 一样，如果尺寸不一致会根据 [Scale] 裁剪原图、优先使用
+      BitmapRegionDecoder 裁剪
 * [PrecisionDecider]：精度决策器。根据图片尺寸和 [Resize] 决定使用哪个 [Precision]
     * [FixedPrecisionDecider]：始终使用指定的 [Precision]
     * [LongImageClipPrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
@@ -25,12 +27,15 @@
     * [FixedScaleDecider]：始终使用指定的 [Scale]
     * [LongImageScaleDecider]：指定两个 [Scale]，长图使用第一个，否则使用第二个
 
-> 1. 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageClipPrecisionDecider] 或 [LongImageScaleDecider] 时使用自定义的规则
-> 2. 使用 [LongImageClipPrecisionDecider] 有助于提高长图在网格列表中的清晰度，[查看具体介绍][long_image_grid_thumbnails]
+> 1. 长图规则默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageClipPrecisionDecider]
+     或 [LongImageScaleDecider] 时使用自定义的规则
+> 2. 使用 [LongImageClipPrecisionDecider]
+     有助于提高长图在网格列表中的清晰度，[查看具体介绍][long_image_grid_thumbnails]
 
 ### 配置
 
-[ImageRequest] 和 [ImageOptions] 都提供了 resize、resizeSize、resizePrecision、resizeScale 方法用于配置 [Resize]
+[ImageRequest] 和 [ImageOptions] 都提供了 resize、resizeSize、resizePrecision、resizeScale
+方法用于配置 [Resize]
 
 ```kotlin
 imageView.displayImage("https://www.sample.com/image.jpg") {
@@ -81,18 +86,21 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
         2. 其次延迟到绘制阶段取 View 的宽高，如果到绘制阶段宽高还是 0，那么请求不会继续执行
     2. 如果是在 compose 中使用
         1. 如果是使用的 AsyncImage 则取测量宽高
-        2. 如果是直接使用的 AsyncImagePainter 则在绘制阶段取绘制宽高，同样到绘制阶段宽高还是 0，那么请求不会继续执行
+        2. 如果是直接使用的 AsyncImagePainter 则在绘制阶段取绘制宽高，同样到绘制阶段宽高还是
+           0，那么请求不会继续执行
     3. 取屏幕的宽高
 * [Precision]：LESS_PIXELS
 * [Scale]：CENTER_CROP
 
 ### resizeApplyToDrawable
 
-[ImageRequest] 和 [ImageOptions] 的 resizeApplyToDrawable 属性用于将 [Resize] 应用到 [DisplayTarget] 的
+[ImageRequest] 和 [ImageOptions] 的 resizeApplyToDrawable 属性用于将 [Resize] 应用到 [DisplayTarget]
+的
 placeholder, error, result Drawable 上
 
 Sketch 会用 [ResizeDrawable] 或 [ResizeAnimatableDrawable] 将 placeholder, error, result Drawable
-包一层，对外用 [Resize] 作为 intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable 进行缩放
+包一层，对外用 [Resize] 作为 intrinsicWidth 和 intrinsicHeight，内部用 [Resize] 的 scale 对 Drawable
+进行缩放
 
 此功能搭配 [CrossfadeTransition] 使用可实现完美过渡，[查看完美过渡介绍][transition]
 

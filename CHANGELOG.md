@@ -9,7 +9,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: IconStateImage adds iconSize attribute to support adjusting the size of the icon
 * new: Added IconStateImage() function, specifically used to create IconStateImage
 * new: Added AnimatableIconStateImage class for displaying dynamic icons
-* deprecated: Deprecate all overloaded constructors of IconStateImage and replace them with the IconStateImage() function
+* deprecated: Deprecate all overloaded constructors of IconStateImage and replace them with the
+  IconStateImage() function
 
 #### sketch-extensions:
 

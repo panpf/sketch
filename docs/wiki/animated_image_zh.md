@@ -14,7 +14,8 @@ Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [D
 
 > 注意：
 > 1. GIF 提供了三种 [DrawableDecoder] 可以根据 app 支持的最低版本选择合适的
-> 2. `sketch-gif` 模块使用 Android 自带的 [ImageDecoder] 和 [Movie] 类实现播放 GIF、WEBP、HEIF，不会额外增加包体积
+> 2. `sketch-gif` 模块使用 Android 自带的 [ImageDecoder] 和 [Movie] 类实现播放
+     GIF、WEBP、HEIF，不会额外增加包体积
 > 3. `sketch-gif-koral` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放
      gif，库体积大概 250 KB
 
