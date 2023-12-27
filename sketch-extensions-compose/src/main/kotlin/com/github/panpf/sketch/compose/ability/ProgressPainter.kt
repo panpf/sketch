@@ -177,9 +177,7 @@ private val Drawable.intrinsicSize: Size
     }
 
 internal object EmptyProgressPainter : ProgressPainter() {
-    override var progress: Float
-        get() = 0f
-        set(value) {}
+    override var progress: Float = 0f
     override val intrinsicSize: Size get() = Size.Unspecified
     override fun DrawScope.onDraw() {}
 }
