@@ -9,8 +9,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * improve: Improved calculation of inSampleSize on API 16, and now uses 2 times the target size as
   the maximum bitmap size when the opengl texture size cannot be obtained
 * change: Upgrading Result LruDiskCache internalVersion will clear all old caches
-
-[//]: # (* change: Logger no longer outputs thread names by default. You need to manually set `Logger.showThreadName = true` to output thread names.)
+* change: Logger no longer outputs thread names by default. You need to manually
+  set `Logger.showThreadName = true` to output thread names.
 
 # v3.3.0-rc01
 

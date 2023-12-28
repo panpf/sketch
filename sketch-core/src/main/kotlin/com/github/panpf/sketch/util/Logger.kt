@@ -26,12 +26,24 @@ class Logger constructor(
         const val TAG = "Sketch"
     }
 
+    private val threadNameLocal by lazy { ThreadLocal<String>() }
+
     var level: Level = level
         set(value) {
-            val oldLevel = field
-            field = value
-            val newLevel = value.name
-            Log.w(TAG, "Logger. setLevel. $oldLevel -> $newLevel")
+            if (value != field) {
+                val oldLevel = field
+                field = value
+                val newLevel = value.name
+                Log.w(TAG, "Logger. setLevel. $oldLevel -> $newLevel")
+            }
+        }
+
+    var showThreadName = false
+        set(value) {
+            if (value != field) {
+                field = value
+                Log.w(TAG, "Logger. showThreadName. $value")
+            }
         }
 
     fun isLoggable(level: Level): Boolean {
@@ -132,24 +144,42 @@ class Logger constructor(
         proxy.flush()
     }
 
-    private fun joinModuleAndMsg(module: String?, msg: String): String {
-        // TODO threadName is not displayed by default
-        val threadName = Thread.currentThread().name.let {
-            // kotlin coroutine thread name 'DefaultDispatcher-worker-1' change to 'worker1'
-            if (it.startsWith("DefaultDispatcher-worker-")) {
-                it.replace("DefaultDispatcher-worker-", "work")
-            } else {
-                it
+    private fun getThreadName(): String? {
+        val threadName = threadNameLocal.get()
+        return if (threadName == null) {
+            val name = Thread.currentThread().name.let {
+                // kotlin coroutine thread name 'DefaultDispatcher-worker-1' change to 'worker1'
+                if (it.startsWith("DefaultDispatcher-worker-")) {
+                    "worker${it.substring("DefaultDispatcher-worker-".length)}"
+                } else if (it.startsWith("Thread-")) {
+                    "Thread${it.substring("Thread-".length)}"
+                } else {
+                    it
+                }
             }
-        }
-        return if (module?.isNotEmpty() == true) {
-            "$threadName - $module. $msg"
+            threadNameLocal.set(name)
+            name
         } else {
-            "$threadName - $msg"
+            threadName
         }
     }
 
-    override fun toString(): String = "Logger(level=$level,proxy=$proxy)"
+    private fun joinModuleAndMsg(module: String?, msg: String): String = buildString {
+        if (showThreadName) {
+            append(getThreadName())
+            if (isNotEmpty()) append(" - ")
+        }
+
+        if (module?.isNotEmpty() == true) {
+            append(module)
+            if (isNotEmpty()) append(". ")
+        }
+
+        append(msg)
+    }
+
+    override fun toString(): String =
+        "Logger(level=$level,proxy=$proxy,showThreadName=$showThreadName)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -157,12 +187,14 @@ class Logger constructor(
         other as Logger
         if (level != other.level) return false
         if (proxy != other.proxy) return false
+        if (showThreadName != showThreadName) return false
         return true
     }
 
     override fun hashCode(): Int {
         var result = level.hashCode()
         result = 31 * result + proxy.hashCode()
+        result = 31 * result + showThreadName.hashCode()
         return result
     }
 
