@@ -19,10 +19,13 @@ import android.annotation.TargetApi
 import android.content.res.Resources
 import android.opengl.EGL14
 import android.opengl.EGLConfig
+import android.opengl.GLES10
 import android.opengl.GLES20
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.Log
+import javax.microedition.khronos.egl.EGL10
+import javax.microedition.khronos.egl.EGLContext
 
 object OpenGLTextureHelper {
 
@@ -38,24 +41,35 @@ object OpenGLTextureHelper {
      */
     val maxSize: Int? by lazy {
         val originMaxSize = impl.getMaxSize()
-        val finalMaxSize = checkMaxSize(originMaxSize)
+        val finalMaxSize = originMaxSize?.let { checkMaxSize(it) }
         val displayMetrics = Resources.getSystem().displayMetrics
         val displaySize = "${displayMetrics.widthPixels}x${displayMetrics.heightPixels}"
         Log.d(
             "OpenGLTextureHelper",
-            "OpenGL texture maxSize=$finalMaxSize, originMaxSize=$originMaxSize, allowedSize=${allowedSize.contentToString()}, API=${VERSION.SDK_INT}, displaySize=$displaySize"
+            "OpenGL texture maxSize=$finalMaxSize, " +
+                    "originMaxSize=$originMaxSize, " +
+                    "allowedSize=${allowedSize.contentToString()}, " +
+                    "API=${VERSION.SDK_INT}, " +
+                    "displaySize=$displaySize"
         )
         finalMaxSize
     }
 
-    private fun checkMaxSize(maxSize: Int?): Int? {
-        return maxSize?.takeIf { allowedSize.any { it == maxSize } }
+    private fun checkMaxSize(maxSize: Int): Int? {
+        val last = allowedSize.last()
+        if (maxSize > last) return last // Maybe 32766
+        return maxSize.takeIf { allowedSize.any { it == maxSize } }
     }
 
     interface Impl {
         fun getMaxSize(): Int?
     }
 
+    /**
+     * Galaxy Nexus: 2048
+     * Redmi K20 Pro, API 30: 16384
+     * MIX4, API 33: 16384
+     */
     @TargetApi(VERSION_CODES.JELLY_BEAN_MR1)
     class Impl17 : Impl {
 
@@ -132,62 +146,61 @@ object OpenGLTextureHelper {
         }
     }
 
-    // Jelly Bean
+    /**
+     * Galaxy Nexus: 2048
+     */
     class Impl16 : Impl {
         override fun getMaxSize(): Int {
-            return 2048
-            // missing in EGL10
-            // In JELLY_BEAN will collapse
-//            val maxSize: IntArray
-//            try {
-//                val egl = EGLContext.getEGL() as EGL10
-//                val dpy = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY)
-//                val vers = IntArray(2)
-//                egl.eglInitialize(dpy, vers)
-//                val configAttr = intArrayOf(
-//                    EGL10.EGL_COLOR_BUFFER_TYPE, EGL10.EGL_RGB_BUFFER,
-//                    EGL10.EGL_LEVEL, 0,
-//                    EGL10.EGL_SURFACE_TYPE, EGL10.EGL_PBUFFER_BIT,
-//                    EGL10.EGL_NONE
-//                )
-//                val configs = arrayOfNulls<javax.microedition.khronos.egl.EGLConfig>(1)
-//                val numConfig = IntArray(1)
-//                egl.eglChooseConfig(dpy, configAttr, configs, 1, numConfig)
-//                @Suppress("ControlFlowWithEmptyBody")
-//                if (numConfig[0] == 0) {
-//                    // TROUBLE! No config found.
-//                }
-//                val config = configs[0]
-//                val surfAttr = intArrayOf(
-//                    EGL10.EGL_WIDTH, 64,
-//                    EGL10.EGL_HEIGHT, 64,
-//                    EGL10.EGL_NONE
-//                )
-//                val surf = egl.eglCreatePbufferSurface(dpy, config, surfAttr)
-//                @Suppress("LocalVariableName") val EGL_CONTEXT_CLIENT_VERSION =
-//                    0x3098 // missing in EGL10
-//                val ctxAttrib = intArrayOf(
-//                    EGL_CONTEXT_CLIENT_VERSION, 1,
-//                    EGL10.EGL_NONE
-//                )
-//                val ctx = egl.eglCreateContext(dpy, config, EGL10.EGL_NO_CONTEXT, ctxAttrib)
-//                egl.eglMakeCurrent(dpy, surf, surf, ctx)
-//                maxSize = IntArray(1)
-//                GLES10.glGetIntegerv(GLES10.GL_MAX_TEXTURE_SIZE, maxSize, 0)
-//                egl.eglMakeCurrent(
-//                    dpy,
-//                    EGL10.EGL_NO_SURFACE,
-//                    EGL10.EGL_NO_SURFACE,
-//                    EGL10.EGL_NO_CONTEXT
-//                )
-//                egl.eglDestroySurface(dpy, surf)
-//                egl.eglDestroyContext(dpy, ctx)
-//                egl.eglTerminate(dpy)
-//            } catch (e: Throwable) {
-//                e.printStackTrace()
-//                return null
-//            }
-//            return maxSize[0]
+            val maxSize: IntArray
+            try {
+                val egl = EGLContext.getEGL() as EGL10
+                val dpy = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY)
+                val vers = IntArray(2)
+                egl.eglInitialize(dpy, vers)
+                val configAttr = intArrayOf(
+                    EGL10.EGL_COLOR_BUFFER_TYPE, EGL10.EGL_RGB_BUFFER,
+                    EGL10.EGL_LEVEL, 0,
+                    EGL10.EGL_SURFACE_TYPE, EGL10.EGL_PBUFFER_BIT,
+                    EGL10.EGL_NONE
+                )
+                val configs = arrayOfNulls<javax.microedition.khronos.egl.EGLConfig>(1)
+                val numConfig = IntArray(1)
+                egl.eglChooseConfig(dpy, configAttr, configs, 1, numConfig)
+                @Suppress("ControlFlowWithEmptyBody")
+                if (numConfig[0] == 0) {
+                    // TROUBLE! No config found.
+                }
+                val config = configs[0]
+                val surfAttr = intArrayOf(
+                    EGL10.EGL_WIDTH, 64,
+                    EGL10.EGL_HEIGHT, 64,
+                    EGL10.EGL_NONE
+                )
+                val surf = egl.eglCreatePbufferSurface(dpy, config, surfAttr)
+                @Suppress("LocalVariableName") val EGL_CONTEXT_CLIENT_VERSION =
+                    0x3098 // missing in EGL10
+                val ctxAttrib = intArrayOf(
+                    EGL_CONTEXT_CLIENT_VERSION, 1,
+                    EGL10.EGL_NONE
+                )
+                val ctx = egl.eglCreateContext(dpy, config, EGL10.EGL_NO_CONTEXT, ctxAttrib)
+                egl.eglMakeCurrent(dpy, surf, surf, ctx)
+                maxSize = IntArray(1)
+                GLES10.glGetIntegerv(GLES10.GL_MAX_TEXTURE_SIZE, maxSize, 0)
+                egl.eglMakeCurrent(
+                    dpy,
+                    EGL10.EGL_NO_SURFACE,
+                    EGL10.EGL_NO_SURFACE,
+                    EGL10.EGL_NO_CONTEXT
+                )
+                egl.eglDestroySurface(dpy, surf)
+                egl.eglDestroyContext(dpy, ctx)
+                egl.eglTerminate(dpy)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                return 2048
+            }
+            return maxSize[0]
         }
     }
 }

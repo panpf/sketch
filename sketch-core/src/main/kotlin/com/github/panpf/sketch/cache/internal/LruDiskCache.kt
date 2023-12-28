@@ -363,8 +363,9 @@ class LruDiskCache private constructor(
              * 2: change. BitmapDecodeResult.transformedList change to List<String>
              * 3: added. BitmapDecodeResult.extras
              * 4: change. DecodeUtils.realDecode(): transformedList.add(createSubsamplingTransformed(resizeMapping.srcRect, decodeConfig.inSampleSize))
+             * 5. change. DecodeUtils.calculateSampleSize()
              */
-            const val INTERNAL_VERSION = 4
+            const val INTERNAL_VERSION = 5
         }
 
         private var maxSize: Long? = null
