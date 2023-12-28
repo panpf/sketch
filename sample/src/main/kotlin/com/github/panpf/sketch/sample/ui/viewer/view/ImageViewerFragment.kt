@@ -15,10 +15,14 @@
  */
 package com.github.panpf.sketch.sample.ui.viewer.view
 
+import android.Manifest
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -26,30 +30,41 @@ import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResult
 import com.github.panpf.sketch.request.LoadState.Error
+import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
-import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
+import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
+import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
+import com.github.panpf.sketch.sample.ui.viewer.ImageViewerViewModel
+import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.ignoreFirst
+import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.showProgressIndicator
+import com.github.panpf.tools4k.lang.asOrThrow
 import com.github.panpf.zoomimage.view.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
+    private val viewModel by viewModels<ImageViewerViewModel>()
+    private val pagerViewModel by parentViewModels<ImagePagerViewModel>()
+    private val requestPermissionResult =
+        registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
 
     override var statusBarTextStyle: StatusBarTextStyle? = White
     override var isPage = false
@@ -73,10 +88,6 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         alignmentState.value = AlignmentCompat.valueOf(it)
                     }
-                eventService.viewerPagerRotateEvent
-                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                        rotate(transformState.value.rotation.roundToInt() + 90)
-                    }
             }
             subsampling.apply {
                 appSettingsService.showTileBounds.stateFlow
@@ -97,12 +108,6 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                 startImageInfoDialog(this)
                 true
             }
-            eventService.viewerPagerInfoEvent
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    if (it == args.itemIndex) {
-                        startImageInfoDialog(this)
-                    }
-                }
 
             appSettingsService.viewersCombinedFlow
                 .ignoreFirst()
@@ -114,12 +119,73 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                     displayImage(binding)
                 }
         }
+
+        binding.shareIcon.setOnClickListener {
+            share()
+        }
+
+        binding.saveIcon.setOnClickListener {
+            save()
+        }
+
+        binding.zoomIcon.apply {
+            val zoomable = binding.zoomImage.zoomable
+            setOnClickListener {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val nextStepScale = zoomable.getNextStepScale()
+                    zoomable.scale(nextStepScale, animated = true)
+                }
+            }
+            zoomable.transformState
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    val zoomIn =
+                        zoomable.getNextStepScale() > zoomable.transformState.value.scaleX
+                    if (zoomIn) {
+                        setImageResource(R.drawable.ic_zoom_in)
+                    } else {
+                        setImageResource(R.drawable.ic_zoom_out)
+                    }
+                }
+        }
+
+        binding.rotateIcon.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val zoomable = binding.zoomImage.zoomable
+                zoomable.rotate(zoomable.transformState.value.rotation.roundToInt() + 90)
+            }
+        }
+
+        binding.infoIcon.setOnClickListener {
+            startImageInfoDialog(binding.zoomImage)
+        }
+
+        pagerViewModel.buttonBgColor.repeatCollectWithLifecycle(
+            owner = viewLifecycleOwner,
+            state = State.STARTED
+        ) { color ->
+            listOf(
+                binding.shareIcon,
+                binding.saveIcon,
+                binding.zoomIcon,
+                binding.rotateIcon,
+                binding.infoIcon
+            ).forEach {
+                it.background.asOrThrow<GradientDrawable>().setColor(color)
+            }
+        }
+    }
+
+    private fun getImageUrl(): String {
+        return if (appSettingsService.showOriginImage.value) {
+            args.originImageUri
+        } else {
+            args.previewImageUri ?: args.originImageUri
+        }
     }
 
     private fun displayImage(binding: FragmentImageViewerBinding) {
-        val showOriginImage: Boolean = appSettingsService.showOriginImage.stateFlow.value
-        val uri = if (showOriginImage) args.originImageUri else args.previewImageUri
-        binding.zoomImage.displayImage(uri) {
+        val imageUri = getImageUrl()
+        binding.zoomImage.displayImage(imageUri) {
             merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
@@ -139,6 +205,25 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                     }
                 }
         }
+    }
+
+    private fun share() {
+        val imageUri = getImageUrl()
+        lifecycleScope.launch {
+            handleActionResult(viewModel.share(imageUri))
+        }
+    }
+
+    private fun save() {
+        val imageUri = getImageUrl()
+        val input = WithDataActivityResultContracts.RequestPermission.Input(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        ) {
+            lifecycleScope.launch {
+                handleActionResult(viewModel.save(imageUri))
+            }
+        }
+        requestPermissionResult.launch(input)
     }
 
     private fun startImageInfoDialog(imageView: ImageView) {

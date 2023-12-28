@@ -17,10 +17,8 @@ package com.github.panpf.sketch.sample.ui.viewer
 
 import android.app.Application
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
-import androidx.core.graphics.ColorUtils
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.LoadRequest
@@ -31,19 +29,10 @@ import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
 import com.github.panpf.tools4j.security.ktx.getMD5Digest
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class ImagePagerViewModel(application: Application) : LifecycleAndroidViewModel(application) {
-
-    private val _buttonBgColor = MutableStateFlow(ColorUtils.setAlphaComponent(Color.parseColor("#bf5660"), 160))
-    val buttonBgColor: StateFlow<Int> = _buttonBgColor
-
-    fun setButtonBgColor(color: Int) {
-        _buttonBgColor.value = ColorUtils.setAlphaComponent(color, 160)
-    }
+class ImageViewerViewModel(application: Application) : LifecycleAndroidViewModel(application) {
 
     suspend fun share(imageUri: String): ActionResult {
         val application = application1

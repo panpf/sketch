@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.sample.ui.viewer.view
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -24,7 +23,6 @@ import android.view.View
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
@@ -35,7 +33,6 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding
-import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.image.PaletteBitmapDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
@@ -46,14 +43,11 @@ import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
 import com.github.panpf.sketch.sample.ui.viewer.view.ImageViewerFragment.ItemFactory
-import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
-import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenSize
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import com.github.panpf.tools4k.lang.asOrThrow
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
@@ -63,8 +57,6 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
         Json.decodeFromString<List<ImageDetail>>(args.imageDetailJsonArray)
     }
     private val viewModel by viewModels<ImagePagerViewModel>()
-    private val requestPermissionResult =
-        registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
 
     override var statusBarTextStyle: StatusBarTextStyle? = White
 
@@ -109,19 +101,20 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
                         ?: simplePalette?.mutedSwatch?.rgb
                         ?: simplePalette?.darkVibrantSwatch?.rgb
                         ?: simplePalette?.darkMutedSwatch?.rgb
-                changeButtonBg(
-                    binding,
-                    accentColor ?: Color.parseColor("#bf5660")
-                )
-            } else if (it is LoadState.Error) {
-                changeButtonBg(binding, Color.parseColor("#bf5660"))
+                viewModel.setButtonBgColor(accentColor ?: Color.parseColor("#bf5660"))
+            } else {
+                viewModel.setButtonBgColor(Color.parseColor("#bf5660"))
             }
         }
 
         binding.pageNumberText.apply {
             val updateCurrentPageNumber: () -> Unit = {
                 val pageNumber = args.startPosition + binding.pager.currentItem + 1
-                text = "$pageNumber/${args.totalCount}"
+                text = context.resources.getString(
+                    R.string.pager_number_ver,
+                    pageNumber.coerceAtMost(999),
+                    args.totalCount.coerceAtMost(999)
+                )
             }
             binding.pager.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
@@ -131,26 +124,6 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
                 }
             })
             updateCurrentPageNumber()
-        }
-
-        binding.shareImage.setOnClickListener {
-            share(imageList[binding.pager.currentItem])
-        }
-
-        binding.saveImage.setOnClickListener {
-            save(imageList[binding.pager.currentItem])
-        }
-
-        binding.rotateImage.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                eventService.viewerPagerRotateEvent.emit(0)
-            }
-        }
-
-        binding.infoImage.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                eventService.viewerPagerInfoEvent.emit(binding.pager.currentItem)
-            }
         }
 
         binding.originImage.apply {
@@ -174,6 +147,15 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
             findNavController().navigate(
                 MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.ZOOM.name)
             )
+        }
+
+        viewModel.buttonBgColor.repeatCollectWithLifecycle(
+            owner = viewLifecycleOwner,
+            state = State.STARTED
+        ) { color ->
+            listOf(binding.settingsImage, binding.originImage, binding.pageNumberText).forEach {
+                it.background.asOrThrow<GradientDrawable>().setColor(color)
+            }
         }
     }
 
@@ -201,47 +183,5 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
                 addBitmapDecodeInterceptor(PaletteBitmapDecodeInterceptor())
             }
         }
-    }
-
-    private fun changeButtonBg(binding: FragmentImagePagerBinding, color: Int) {
-        val finalInt = ColorUtils.setAlphaComponent(color, 160)
-        listOf(
-            binding.settingsImage,
-            binding.originImage,
-            binding.shareImage,
-            binding.saveImage,
-            binding.rotateImage,
-            binding.infoImage,
-            binding.pageNumberText,
-        ).forEach {
-            it.background.asOrThrow<GradientDrawable>().setColor(finalInt)
-        }
-    }
-
-    private fun share(image: ImageDetail) {
-        val imageUri = if (appSettingsService.showOriginImage.value) {
-            image.originUrl
-        } else {
-            image.mediumUrl ?: image.originUrl
-        }
-        lifecycleScope.launch {
-            handleActionResult(viewModel.share(imageUri))
-        }
-    }
-
-    private fun save(image: ImageDetail) {
-        val imageUri = if (appSettingsService.showOriginImage.value) {
-            image.originUrl
-        } else {
-            image.mediumUrl ?: image.originUrl
-        }
-        val input = WithDataActivityResultContracts.RequestPermission.Input(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        ) {
-            lifecycleScope.launch {
-                handleActionResult(viewModel.save(imageUri))
-            }
-        }
-        requestPermissionResult.launch(input)
     }
 }

@@ -59,4 +59,5 @@
     <string name="button_rotate_45">Rotate 45°</string>
     <string name="text_blur_radius">Blur Radius</string>
     <string name="text_stroke_width">Stroke Width</string>
+    <string name="pager_number_ver">%d\n·\n%d</string>
 </resources>

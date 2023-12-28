@@ -1,24 +1,38 @@
 package com.github.panpf.sketch.sample.ui.viewer.compose
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.findNavController
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.common.compose.LoadState
 import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
@@ -33,16 +47,19 @@ import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 fun ImageViewer(
     index: Int, imageDetail: ImageDetail,
-    showInfoEvent: MutableSharedFlow<DisplayResult?>,
-    onClick: (() -> Unit)? = null
+    buttonBgColorState: MutableState<Int>,
+    onClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onSaveClick: () -> Unit,
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val appSettingsService = context.appSettingsService
     val imageState = rememberAsyncImageState()
     val showOriginImage by appSettingsService.showOriginImage.stateFlow.collectAsState()
@@ -72,18 +89,6 @@ fun ImageViewer(
         }
         LaunchedEffect(readMode) {
             zoomable.readMode = readMode
-        }
-        LaunchedEffect(Unit) {
-            context.eventService.viewerPagerRotateEvent.collect {
-                zoomable.rotate(zoomable.transform.rotation.roundToInt() + 90)
-            }
-        }
-    }
-    LaunchedEffect(Unit) {
-        context.eventService.viewerPagerInfoEvent.collect {
-            if (index == it) {
-                showInfoEvent.emit(imageState.result)
-            }
         }
     }
     val imageUrl by remember {
@@ -127,7 +132,7 @@ fun ImageViewer(
             alignment = alignment,
             state = zoomState,
             scrollBar = scrollBar,
-            onTap = { onClick?.invoke() },
+            onTap = { onClick.invoke() },
             onLongPress = {
                 val displayResult = imageState.result
                 if (displayResult != null) {
@@ -138,8 +143,115 @@ fun ImageViewer(
             }
         )
 
+        Row(
+            Modifier
+                .align(Alignment.BottomCenter)
+                .padding(vertical = 30.dp),
+        ) {
+            val buttonBgColor = Color(buttonBgColorState.value)
+            val buttonTextColor = Color.White
+            val buttonModifier = Modifier
+                .size(40.dp)
+                .background(
+                    color = buttonBgColor,
+                    shape = RoundedCornerShape(50)
+                )
+                .padding(8.dp)
+            IconButton(
+                modifier = buttonModifier,
+                onClick = { onShareClick.invoke() },
+            ) {
+                Icon(
+                    painter = painterResource(id = drawable.ic_share),
+                    contentDescription = "share",
+                    tint = buttonTextColor
+                )
+            }
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            IconButton(
+                modifier = buttonModifier,
+                onClick = { onSaveClick.invoke() },
+            ) {
+                Icon(
+                    painter = painterResource(id = drawable.ic_save),
+                    contentDescription = "save",
+                    tint = buttonTextColor
+                )
+            }
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            val zoomIcon by remember {
+                derivedStateOf {
+                    val zoomIn =
+                        zoomState.zoomable.getNextStepScale() > zoomState.zoomable.transform.scaleX
+                    if (zoomIn) {
+                        R.drawable.ic_zoom_in
+                    } else {
+                        R.drawable.ic_zoom_out
+                    }
+                }
+            }
+            IconButton(
+                modifier = buttonModifier,
+                onClick = {
+                    coroutineScope.launch {
+                        val zoomable = zoomState.zoomable
+                        val nextStepScale = zoomable.getNextStepScale()
+                        zoomable.scale(nextStepScale, animated = true)
+                    }
+                },
+            ) {
+                Icon(
+                    painter = painterResource(id = zoomIcon),
+                    contentDescription = "zoom",
+                    tint = buttonTextColor
+                )
+            }
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            IconButton(
+                modifier = buttonModifier,
+                onClick = {
+                    coroutineScope.launch {
+                        val zoomable = zoomState.zoomable
+                        zoomable.rotate(zoomable.transform.rotation.roundToInt() + 90)
+                    }
+                },
+            ) {
+                Icon(
+                    painter = painterResource(id = drawable.ic_rotate_right),
+                    contentDescription = "right rotate",
+                    tint = buttonTextColor
+                )
+            }
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            IconButton(
+                modifier = buttonModifier,
+                onClick = {
+                    val displayResult = imageState.result
+                    if (displayResult != null) {
+                        view
+                            .findNavController()
+                            .navigate(ImageInfoDialogFragment.createNavDirections(displayResult))
+                    }
+                },
+            ) {
+                Icon(
+                    painter = painterResource(id = drawable.ic_info_baseline),
+                    contentDescription = "info",
+                    tint = buttonTextColor
+                )
+            }
+        }
+
         LoadState(
-            modifier = Modifier.align(androidx.compose.ui.Alignment.Center),
+            modifier = Modifier.align(Alignment.Center),
             imageState = imageState
         )
     }

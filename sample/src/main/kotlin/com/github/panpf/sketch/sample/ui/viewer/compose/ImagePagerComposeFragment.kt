@@ -17,32 +17,28 @@ package com.github.panpf.sketch.sample.ui.viewer.compose
 
 import android.Manifest
 import android.os.Build
-import android.os.Bundle
-import android.view.View
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -60,7 +56,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -71,7 +66,6 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.eventService
 import com.github.panpf.sketch.sample.image.PaletteBitmapDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
@@ -79,16 +73,13 @@ import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
-import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
-import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.toast.ktx.showLongToast
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
@@ -102,7 +93,6 @@ class ImagePagerComposeFragment : BaseComposeFragment() {
     private val viewModel by viewModels<ImagePagerViewModel>()
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
-    private val showInfoEvent = MutableSharedFlow<DisplayResult?>()
 
     override var statusBarTextStyle: StatusBarTextStyle? = White
 
@@ -113,7 +103,6 @@ class ImagePagerComposeFragment : BaseComposeFragment() {
             totalCount = args.totalCount,
             startPosition = args.startPosition,
             initialPosition = args.initialPosition,
-            showInfoEvent = showInfoEvent,
             onSettingsClick = {
                 findNavController().navigate(
                     MainFragmentDirections.actionGlobalSettingsDialogFragment(Page.ZOOM.name)
@@ -134,32 +123,10 @@ class ImagePagerComposeFragment : BaseComposeFragment() {
             onSaveClick = {
                 save(it)
             },
-            onRotateClick = {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    eventService.viewerPagerRotateEvent.emit(0)
-                }
-            },
-            onInfoClick = {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    eventService.viewerPagerInfoEvent.emit(it)
-                }
-            },
             onImageClick = {
                 findNavController().popBackStack()
             },
         )
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        showInfoEvent.repeatCollectWithLifecycle(
-            viewLifecycleOwner,
-            State.STARTED
-        ) { displayResult ->
-            findNavController()
-                .navigate(ImageInfoDialogFragment.createNavDirections(displayResult))
-        }
     }
 
     private fun share(image: ImageDetail) {
@@ -197,14 +164,11 @@ private fun ImagePager(
     initialPosition: Int,
     startPosition: Int,
     totalCount: Int,
-    showInfoEvent: MutableSharedFlow<DisplayResult?>,
-    onSettingsClick: (() -> Unit)? = null,
-    onShowOriginClick: (() -> Unit)? = null,
-    onShareClick: ((ImageDetail) -> Unit)? = null,
-    onSaveClick: ((ImageDetail) -> Unit)? = null,
-    onRotateClick: (() -> Unit)? = null,
-    onInfoClick: ((Int) -> Unit)? = null,
-    onImageClick: (() -> Unit)? = null,
+    onSettingsClick: () -> Unit,
+    onShowOriginClick: () -> Unit,
+    onShareClick: (ImageDetail) -> Unit,
+    onSaveClick: (ImageDetail) -> Unit,
+    onImageClick: () -> Unit,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
@@ -218,7 +182,8 @@ private fun ImagePager(
         val uriString = imageList[pagerState.currentPage].let {
             it.thumbnailUrl ?: it.mediumUrl ?: it.originUrl
         }
-        val buttonBgColorState = remember { mutableStateOf<Int?>(null) }
+        val buttonBgColorState =
+            remember { mutableIntStateOf(android.graphics.Color.parseColor("#bf5660")) }
 
         PagerBgImage(uriString, buttonBgColorState, IntSize(maxWidthPx, maxHeightPx))
 
@@ -227,7 +192,18 @@ private fun ImagePager(
             beyondBoundsPageCount = 0,
             modifier = Modifier.fillMaxSize()
         ) { index ->
-            ImageViewer(index, imageList[index], showInfoEvent, onImageClick)
+            ImageViewer(
+                index = index,
+                imageDetail = imageList[index],
+                buttonBgColorState = buttonBgColorState,
+                onClick = onImageClick,
+                onShareClick = {
+                    onShareClick.invoke(imageList[pagerState.currentPage])
+                },
+                onSaveClick = {
+                    onSaveClick.invoke(imageList[pagerState.currentPage])
+                },
+            )
         }
 
         val showOriginImage by LocalContext.current.appSettingsService.showOriginImage.stateFlow.collectAsState()
@@ -238,16 +214,6 @@ private fun ImagePager(
             buttonBgColorState = buttonBgColorState,
             onSettingsClick = onSettingsClick,
             onShowOriginClick = onShowOriginClick,
-            onShareClick = {
-                onShareClick?.invoke(imageList[pagerState.currentPage])
-            },
-            onSaveClick = {
-                onSaveClick?.invoke(imageList[pagerState.currentPage])
-            },
-            onRotateClick = onRotateClick,
-            onInfoClick = {
-                onInfoClick?.invoke(pagerState.currentPage)
-            },
         )
     }
 }
@@ -255,7 +221,7 @@ private fun ImagePager(
 @Composable
 private fun PagerBgImage(
     imageUri: String,
-    buttonBgColorState: MutableState<Int?>,
+    buttonBgColorState: MutableState<Int>,
     screenSize: IntSize,
 ) {
     val imageState = rememberAsyncImageState()
@@ -270,6 +236,9 @@ private fun PagerBgImage(
                             ?: simplePalette?.mutedSwatch?.rgb
                             ?: simplePalette?.darkVibrantSwatch?.rgb
                             ?: simplePalette?.darkMutedSwatch?.rgb
+                            ?: android.graphics.Color.parseColor("#bf5660")
+            } else {
+                android.graphics.Color.parseColor("#bf5660")
             }
         }
     }
@@ -304,13 +273,9 @@ private fun ImagePagerTools(
     pageNumber: Int,
     pageCount: Int,
     showOriginImage: Boolean,
-    buttonBgColorState: MutableState<Int?>,
-    onSettingsClick: (() -> Unit)? = null,
-    onShowOriginClick: (() -> Unit)? = null,
-    onShareClick: (() -> Unit)? = null,
-    onSaveClick: (() -> Unit)? = null,
-    onRotateClick: (() -> Unit)? = null,
-    onInfoClick: (() -> Unit)? = null,
+    buttonBgColorState: MutableState<Int>,
+    onSettingsClick: () -> Unit,
+    onShowOriginClick: () -> Unit,
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
@@ -322,124 +287,69 @@ private fun ImagePagerTools(
         }
         with(density) { toolbarTopMargin.toDp() }
     }
-    val buttonBgColor = buttonBgColorState.value
-        ?.let { Color(it) }
-        ?: MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f)
-    val buttonTextColor = buttonBgColorState.value
-        ?.let { Color.White }
-        ?: MaterialTheme.colorScheme.onSecondary
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = toolbarTopMarginDp)
-            .padding(20.dp), // margin,
-        horizontalArrangement = Arrangement.End
-    ) {
-        val buttonModifier = Modifier
-            .size(34.dp)
-            .background(
-                color = buttonBgColor,
-                shape = RoundedCornerShape(50)
-            )
-            .padding(8.dp)
+    val buttonBgColor = Color(buttonBgColorState.value)
+    val buttonTextColor = Color.White
 
-        IconButton(
-            modifier = buttonModifier,
-            onClick = { onSettingsClick?.invoke() },
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = toolbarTopMarginDp)
+                .padding(20.dp), // margin,
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_settings),
-                contentDescription = "settings",
-                tint = buttonTextColor
-            )
-        }
-
-        Spacer(modifier = Modifier.size(10.dp))
-
-        IconButton(
-            modifier = buttonModifier,
-            onClick = { onShowOriginClick?.invoke() },
-        ) {
-            val iconId =
-                if (showOriginImage) R.drawable.ic_image2_baseline else R.drawable.ic_image2_outline
-            Icon(
-                painter = painterResource(id = iconId),
-                contentDescription = "show origin image",
-                tint = buttonTextColor
-            )
-        }
-
-        Spacer(modifier = Modifier.size(10.dp))
-
-        IconButton(
-            modifier = buttonModifier,
-            onClick = { onShareClick?.invoke() },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_share),
-                contentDescription = "share",
-                tint = buttonTextColor
-            )
-        }
-
-        Spacer(modifier = Modifier.size(10.dp))
-
-        IconButton(
-            modifier = buttonModifier,
-            onClick = { onSaveClick?.invoke() },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_save),
-                contentDescription = "save",
-                tint = buttonTextColor
-            )
-        }
-
-        Spacer(modifier = Modifier.size(10.dp))
-
-        IconButton(
-            modifier = buttonModifier,
-            onClick = { onRotateClick?.invoke() },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_rotate_right),
-                contentDescription = "right rotate",
-                tint = buttonTextColor
-            )
-        }
-
-        Spacer(modifier = Modifier.size(10.dp))
-
-        IconButton(
-            modifier = buttonModifier,
-            onClick = { onInfoClick?.invoke() },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_info_baseline),
-                contentDescription = "info",
-                tint = buttonTextColor
-            )
-        }
-
-        Spacer(modifier = Modifier.size(10.dp))
-
-        Box(
-            Modifier
-                .height(34.dp)
+            val buttonModifier = Modifier
+                .size(40.dp)
                 .background(
                     color = buttonBgColor,
                     shape = RoundedCornerShape(50)
                 )
-                .padding(horizontal = 8.dp, vertical = 8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "${pageNumber}/$pageCount",
-                textAlign = TextAlign.Center,
-                color = buttonTextColor,
-                style = TextStyle(lineHeight = 12.sp),
-                modifier = Modifier
-            )
+                .padding(8.dp)
+            IconButton(
+                modifier = buttonModifier,
+                onClick = { onShowOriginClick.invoke() },
+            ) {
+                val iconId =
+                    if (showOriginImage) R.drawable.ic_image2_baseline else R.drawable.ic_image2_outline
+                Icon(
+                    painter = painterResource(id = iconId),
+                    contentDescription = "show origin image",
+                    tint = buttonTextColor
+                )
+            }
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            Box(
+                Modifier
+                    .width(40.dp)
+                    .background(
+                        color = buttonBgColor,
+                        shape = RoundedCornerShape(50)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "${pageNumber.coerceAtMost(999)}\n·\n${pageCount.coerceAtMost(999)}",
+                    textAlign = TextAlign.Center,
+                    color = buttonTextColor,
+                    style = TextStyle(lineHeight = 12.sp),
+                    modifier = Modifier
+                )
+            }
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            IconButton(
+                modifier = buttonModifier,
+                onClick = { onSettingsClick.invoke() },
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_settings),
+                    contentDescription = "settings",
+                    tint = buttonTextColor
+                )
+            }
         }
     }
 }
@@ -448,12 +358,14 @@ private fun ImagePagerTools(
 @Composable
 fun ImagePagerToolsPreview() {
     val buttonBgColorState = remember {
-        mutableStateOf<Int?>(null)
+        mutableIntStateOf(android.graphics.Color.parseColor("#bf5660"))
     }
     ImagePagerTools(
         pageNumber = 9,
         pageCount = 99,
         showOriginImage = false,
         buttonBgColorState = buttonBgColorState,
+        onSettingsClick = {},
+        onShowOriginClick = {},
     )
 }
