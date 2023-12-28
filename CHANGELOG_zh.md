@@ -2,6 +2,13 @@
 
 翻译：[English](CHANGELOG.md)
 
+# new
+
+#### sketch:
+
+* improve: 改进 inSampleSize 的计算，现在无法获取到 opengl 纹理大小时使用 target 尺寸的 2 倍作为最大 bitmap 尺寸，并且现在 API 16 上 bitmap 最大尺寸始终是 2048
+
+
 # v3.3.0-rc01
 
 #### sketch:

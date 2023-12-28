@@ -337,3 +337,25 @@ internal fun getCacheFileFromStreamDataSource(
         }
     }.file
 }
+
+
+/**
+ * Gets a power of 2 that is less than or equal to the given integer
+ *
+ * Examples: -1->1，0->1，1->1，2->2，3->2，4->4，5->4，6->4，7->4，8->8，9->8
+ */
+internal fun floorRoundPow2(number: Int): Int {
+    return number.takeHighestOneBit().coerceAtLeast(1)
+}
+
+/**
+ * Gets a power of 2 that is greater than or equal to the given integer
+ *
+ * Examples: -1->1，0->1，1->1，2->2，3->4，4->4，5->8，6->8，7->8，8->8，9->16
+ *
+ * Copy from Java 17 'HashMap.tableSizeFor()' method
+ */
+internal fun ceilRoundPow2(number: Int): Int {
+    val n = -1 ushr (number - 1).countLeadingZeroBits()
+    return if (n < 0) 1 else if (n >= 1073741824) 1073741824 else n + 1
+}

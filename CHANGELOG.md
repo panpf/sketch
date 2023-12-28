@@ -2,6 +2,12 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
+# new
+
+#### sketch:
+
+* improve: Improve the calculation of inSampleSize, now use 2 times the target size as the maximum bitmap size when the opengl texture size cannot be obtained, and now the maximum bitmap size on API 16 is always 2048
+
 # v3.3.0-rc01
 
 #### sketch:

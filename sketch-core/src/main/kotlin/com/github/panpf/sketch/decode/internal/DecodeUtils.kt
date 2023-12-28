@@ -51,14 +51,6 @@ import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 
-val maxBitmapSize: Size by lazy {
-    OpenGLTextureHelper.maxSize?.let {
-        Size(it, it)
-    } ?: Canvas().let {
-        Size(it.maximumBitmapWidth, it.maximumBitmapHeight)
-    }
-}
-
 /**
  * Calculate the size of the sampled Bitmap, support for BitmapFactory or ImageDecoder
  */
@@ -109,7 +101,6 @@ private fun checkSampledSize(
     return if (smallerSizeMode) {
         sampledSize.width <= targetSize.width && sampledSize.height <= targetSize.height
     } else {
-        // todo Limit cannot exceed targetSize * 1.5f
         sampledSize.width * sampledSize.height <= targetSize.width * targetSize.height
     }
 }
@@ -136,7 +127,12 @@ fun calculateSampleSize(
             sampleSize *= 2
         }
     }
-    return limitedSampleSizeByMaxBitmapSize(sampleSize, imageSize, mimeType)
+    return limitedSampleSizeByMaxBitmapSize(
+        sampleSize = sampleSize,
+        imageSize = imageSize,
+        targetSize = targetSize,
+        mimeType = mimeType
+    )
 }
 
 /**
@@ -179,7 +175,11 @@ fun calculateSampleSizeForRegion(
         }
     }
     return limitedSampleSizeByMaxBitmapSizeForRegion(
-        regionSize, sampleSize, mimeType, imageSize
+        sampleSize = sampleSize,
+        regionSize = regionSize,
+        targetSize = targetSize,
+        mimeType = mimeType,
+        imageSize = imageSize
     )
 }
 
@@ -204,9 +204,11 @@ fun calculateSampleSizeForRegion(
  * The width and height limit cannot be greater than the maximum size allowed by OpenGL, support for BitmapFactory or ImageDecoder
  */
 fun limitedSampleSizeByMaxBitmapSize(
-    sampleSize: Int, imageSize: Size, mimeType: String? = null
+    sampleSize: Int, imageSize: Size, targetSize: Size, mimeType: String? = null
 ): Int {
-    val maxBitmapSize = maxBitmapSize
+    val maxBitmapSize = OpenGLTextureHelper.maxSize
+        ?.let { Size(it, it) }
+        ?: Size(targetSize.width * 2, targetSize.height * 2)
     var finalSampleSize = sampleSize.coerceAtLeast(1)
     while (true) {
         val bitmapSize = calculateSampledBitmapSize(imageSize, finalSampleSize, mimeType)
@@ -223,9 +225,15 @@ fun limitedSampleSizeByMaxBitmapSize(
  * The width and height limit cannot be greater than the maximum size allowed by OpenGL, support for BitmapRegionDecoder
  */
 fun limitedSampleSizeByMaxBitmapSizeForRegion(
-    regionSize: Size, sampleSize: Int, mimeType: String? = null, imageSize: Size? = null
+    sampleSize: Int,
+    regionSize: Size,
+    targetSize: Size,
+    mimeType: String? = null,
+    imageSize: Size? = null
 ): Int {
-    val maximumBitmapSize = maxBitmapSize
+    val maximumBitmapSize = OpenGLTextureHelper.maxSize
+        ?.let { Size(it, it) }
+        ?: Size(targetSize.width * 2, targetSize.height * 2)
     var finalSampleSize = sampleSize.coerceAtLeast(1)
     while (true) {
         val bitmapSize = calculateSampledBitmapSizeForRegion(

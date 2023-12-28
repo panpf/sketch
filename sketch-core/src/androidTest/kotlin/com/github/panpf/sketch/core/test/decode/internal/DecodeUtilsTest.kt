@@ -18,6 +18,7 @@ package com.github.panpf.sketch.core.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -35,6 +36,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.OpenGLTextureHelper
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
@@ -53,7 +55,6 @@ import com.github.panpf.sketch.decode.internal.isSupportInBitmap
 import com.github.panpf.sketch.decode.internal.isSupportInBitmapForRegion
 import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSize
 import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSizeForRegion
-import com.github.panpf.sketch.decode.internal.maxBitmapSize
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
@@ -210,6 +211,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampleSize() {
+        // TODO Retest
         Assert.assertEquals(
             1,
             calculateSampleSize(
@@ -320,6 +322,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampleSize2() {
+        // TODO Retest
         Assert.assertEquals(
             1,
             calculateSampleSize(
@@ -584,6 +587,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampleSizeForRegion() {
+        // TODO Retest
         Assert.assertEquals(
             1,
             calculateSampleSizeForRegion(
@@ -661,6 +665,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampleSizeForRegion2() {
+        // TODO Retest
         Assert.assertEquals(
             1,
             calculateSampleSizeForRegion(
@@ -848,113 +853,109 @@ class DecodeUtilsTest {
 
     @Test
     fun testLimitedSampleSizeByMaxBitmapSize() {
-        val maxSize = maxBitmapSize.width
+        // TODO Retest
+        val maxSize = OpenGLTextureHelper.maxSize ?: Canvas().maximumBitmapWidth
+        val targetSize = Size(10180, 1920)
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize - 1, maxSize))
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize - 1, maxSize), targetSize)
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize - 1))
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize - 1), targetSize)
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize - 1, maxSize - 1))
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize - 1, maxSize - 1), targetSize)
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize))
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize), targetSize)
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize + 1, maxSize))
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize + 1, maxSize), targetSize)
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize + 1))
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize + 1), targetSize)
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize + 1, maxSize + 1))
+            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize + 1, maxSize + 1), targetSize)
         )
 
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(0, Size(maxSize, maxSize))
+            limitedSampleSizeByMaxBitmapSize(0, Size(maxSize, maxSize), targetSize)
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSize(-1, Size(maxSize, maxSize))
+            limitedSampleSizeByMaxBitmapSize(-1, Size(maxSize, maxSize), targetSize)
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(-1, Size(maxSize + 1, maxSize + 1))
+            limitedSampleSizeByMaxBitmapSize(-1, Size(maxSize + 1, maxSize + 1), targetSize)
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSize(0, Size(maxSize + 1, maxSize + 1))
+            limitedSampleSizeByMaxBitmapSize(0, Size(maxSize + 1, maxSize + 1), targetSize)
         )
     }
 
     @Test
     fun testLimitedSampleSizeByMaxBitmapSizeForRegion() {
-        val maxSize = maxBitmapSize.width
+        // TODO Retest
+        val maxSize = OpenGLTextureHelper.maxSize ?: Canvas().maximumBitmapWidth
+        val targetSize = Size(10180, 1920)
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(Size(maxSize - 1, maxSize), 1)
+            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize - 1, maxSize), targetSize)
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(Size(maxSize, maxSize - 1), 1)
+            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize, maxSize - 1), targetSize)
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(
-                Size(maxSize - 1, maxSize - 1),
-                1
-            )
+            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize - 1, maxSize - 1), targetSize)
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(Size(maxSize, maxSize), 1)
+            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize, maxSize), targetSize)
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSizeForRegion(Size(maxSize + 1, maxSize), 1)
+            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize + 1, maxSize), targetSize)
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSizeForRegion(Size(maxSize, maxSize + 1), 1)
+            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize, maxSize + 1), targetSize)
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSizeForRegion(
-                Size(maxSize + 1, maxSize + 1),
-                1
-            )
+            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize + 1, maxSize + 1), targetSize)
         )
 
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(Size(maxSize, maxSize), 0)
+            limitedSampleSizeByMaxBitmapSizeForRegion(0, Size(maxSize, maxSize), targetSize)
         )
         Assert.assertEquals(
             1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(Size(maxSize, maxSize), -1)
+            limitedSampleSizeByMaxBitmapSizeForRegion(-1, Size(maxSize, maxSize), targetSize)
         )
         Assert.assertEquals(
             2,
             limitedSampleSizeByMaxBitmapSizeForRegion(
+                -1,
                 Size(maxSize + 1, maxSize + 1),
-                -1
+                targetSize
             )
         )
         Assert.assertEquals(
             2,
-            limitedSampleSizeByMaxBitmapSizeForRegion(
-                Size(maxSize + 1, maxSize + 1),
-                0
-            )
+            limitedSampleSizeByMaxBitmapSizeForRegion(0, Size(maxSize + 1, maxSize + 1), targetSize)
         )
     }
 
