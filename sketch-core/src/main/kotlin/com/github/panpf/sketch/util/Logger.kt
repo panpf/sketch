@@ -133,6 +133,7 @@ class Logger constructor(
     }
 
     private fun joinModuleAndMsg(module: String?, msg: String): String {
+        // TODO threadName is not displayed by default
         val threadName = Thread.currentThread().name.let {
             // kotlin coroutine thread name 'DefaultDispatcher-worker-1' change to 'worker1'
             if (it.startsWith("DefaultDispatcher-worker-")) {
