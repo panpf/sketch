@@ -59,6 +59,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
     private suspend fun readAssetPhotos(): List<String> = withToIO {
         AssetImages.statics
             .plus(AssetImages.anims)
+            .plus(AssetImages.longQMSHT)
             .map { it.uri }
             .toList()
     }

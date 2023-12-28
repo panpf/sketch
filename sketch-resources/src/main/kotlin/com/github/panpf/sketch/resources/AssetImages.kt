@@ -36,6 +36,8 @@ object AssetImages {
     val mp4 = Image("sample.mp4", "MP4", Size(500, 250))
     val videos = arrayOf(mp4)
 
+    val longQMSHT = Image("sample_long_qmsht.jpg", "QMSHT", Size(30000, 926))
+
     val number1 = Image("number_1.png", "NUMBER_1", Size(698, 776))
     val number2 = Image("number_2.png", "NUMBER_2", Size(698, 776))
     val number3 = Image("number_3.png", "NUMBER_3", Size(698, 776))
