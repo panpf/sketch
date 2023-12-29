@@ -68,26 +68,26 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     override fun onViewCreated(binding: FragmentImageViewerBinding, savedInstanceState: Bundle?) {
         binding.zoomImage.apply {
-            appSettingsService.scrollBarEnabled.stateFlow
+            appSettingsService.scrollBarEnabled
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     scrollBar = if (it) ScrollBarSpec.Default else null
                 }
             zoomable.apply {
-                appSettingsService.readModeEnabled.stateFlow
+                appSettingsService.readModeEnabled
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         readModeState.value = if (it) ReadMode.Default else null
                     }
-                appSettingsService.contentScale.stateFlow
+                appSettingsService.contentScale
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         contentScaleState.value = ContentScaleCompat.valueOf(it)
                     }
-                appSettingsService.alignment.stateFlow
+                appSettingsService.alignment
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         alignmentState.value = AlignmentCompat.valueOf(it)
                     }
             }
             subsampling.apply {
-                appSettingsService.showTileBounds.stateFlow
+                appSettingsService.showTileBounds
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         showTileBoundsState.value = it
                     }
@@ -111,7 +111,7 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     displayImage(binding)
                 }
-            appSettingsService.showOriginImage.stateFlow
+            appSettingsService.showOriginImage
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     displayImage(binding)
                 }

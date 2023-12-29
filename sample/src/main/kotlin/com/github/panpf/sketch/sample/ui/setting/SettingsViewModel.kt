@@ -34,6 +34,7 @@ import com.github.panpf.sketch.sample.ui.setting.Page.COMPOSE_LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.NONE
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
+import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.tools4j.io.ktx.formatFileSize
@@ -62,25 +63,25 @@ class SettingsViewModel(application1: Application, val page: Page) :
 
     init {
         val states = listOfNotNull(
-            appSettingsService.showMimeTypeLogoInLIst.sharedFlow,
-            appSettingsService.showProgressIndicatorInList.sharedFlow,
-            appSettingsService.saveCellularTrafficInList.sharedFlow,
-            appSettingsService.pauseLoadWhenScrollInList.sharedFlow,
-            appSettingsService.resizePrecision.sharedFlow,
-            appSettingsService.resizeScale.sharedFlow,
-            appSettingsService.longImageResizeScale.sharedFlow,
-            appSettingsService.otherImageResizeScale.sharedFlow,
-            appSettingsService.inPreferQualityOverSpeed.sharedFlow,
-            appSettingsService.bitmapQuality.sharedFlow,
-            if (VERSION.SDK_INT >= VERSION_CODES.O) appSettingsService.colorSpace.sharedFlow else null,
-            appSettingsService.ignoreExifOrientation.sharedFlow,
-            appSettingsService.disabledMemoryCache.sharedFlow,
-            appSettingsService.disabledResultCache.sharedFlow,
-            appSettingsService.disabledDownloadCache.sharedFlow,
-            appSettingsService.disallowReuseBitmap.sharedFlow,
-            appSettingsService.showDataFromLogo.sharedFlow,
-            appSettingsService.showTileBounds.sharedFlow,
-            appSettingsService.logLevel.sharedFlow,
+            appSettingsService.showMimeTypeLogoInLIst.ignoreFirst(),
+            appSettingsService.showProgressIndicatorInList.ignoreFirst(),
+            appSettingsService.saveCellularTrafficInList.ignoreFirst(),
+            appSettingsService.pauseLoadWhenScrollInList.ignoreFirst(),
+            appSettingsService.resizePrecision.ignoreFirst(),
+            appSettingsService.resizeScale.ignoreFirst(),
+            appSettingsService.longImageResizeScale.ignoreFirst(),
+            appSettingsService.otherImageResizeScale.ignoreFirst(),
+            appSettingsService.inPreferQualityOverSpeed.ignoreFirst(),
+            appSettingsService.bitmapQuality.ignoreFirst(),
+            if (VERSION.SDK_INT >= VERSION_CODES.O) appSettingsService.colorSpace.ignoreFirst() else null,
+            appSettingsService.ignoreExifOrientation.ignoreFirst(),
+            appSettingsService.disabledMemoryCache.ignoreFirst(),
+            appSettingsService.disabledResultCache.ignoreFirst(),
+            appSettingsService.disabledDownloadCache.ignoreFirst(),
+            appSettingsService.disallowReuseBitmap.ignoreFirst(),
+            appSettingsService.showDataFromLogo.ignoreFirst(),
+            appSettingsService.showTileBounds.ignoreFirst(),
+            appSettingsService.logLevel.ignoreFirst(),
         )
         viewModelScope.launch {
             merge(*states.toTypedArray()).collect {

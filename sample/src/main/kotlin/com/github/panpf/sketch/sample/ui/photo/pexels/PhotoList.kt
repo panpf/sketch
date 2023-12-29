@@ -42,6 +42,7 @@ import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.compose.AppendState
+import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.flow.Flow
@@ -55,7 +56,7 @@ fun PhotoList(
     val appSettingsService = LocalContext.current.appSettingsService
     val lazyPagingItems = photoPagingFlow.collectAsLazyPagingItems()
     LaunchedEffect(Unit) {
-        appSettingsService.ignoreExifOrientation.sharedFlow.collect {
+        appSettingsService.ignoreExifOrientation.ignoreFirst().collect {
             lazyPagingItems.refresh()
         }
     }
@@ -63,7 +64,7 @@ fun PhotoList(
         state = SwipeRefreshState(lazyPagingItems.loadState.refresh is LoadState.Loading),
         onRefresh = { lazyPagingItems.refresh() }
     ) {
-        val photoListLayoutMode by appSettingsService.photoListLayoutMode.stateFlow.collectAsState()
+        val photoListLayoutMode by appSettingsService.photoListLayoutMode.collectAsState()
         if (LayoutMode.valueOf(photoListLayoutMode) == LayoutMode.GRID) {
             PhotoGrid(lazyPagingItems, animatedPlaceholder, onClick)
         } else {

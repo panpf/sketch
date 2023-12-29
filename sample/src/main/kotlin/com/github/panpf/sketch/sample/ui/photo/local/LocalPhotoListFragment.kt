@@ -102,7 +102,7 @@ class LocalPhotoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
         }
 
         binding.myRecycler.apply {
-            appSettingsService.photoListLayoutMode.stateFlow
+            appSettingsService.photoListLayoutMode
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     (0 until itemDecorationCount).forEach { index ->
                         removeItemDecorationAt(index)
@@ -118,7 +118,7 @@ class LocalPhotoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
-            appSettingsService.ignoreExifOrientation.sharedFlow
+            appSettingsService.ignoreExifOrientation.ignoreFirst()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.findPagingAdapter()?.refresh()
                 }

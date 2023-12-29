@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.sample.model
 
-import com.github.panpf.sketch.sample.util.BooleanMmkvData
+import com.github.panpf.sketch.sample.util.SettingsStateFlow
 
 interface SwitchMenu {
 
@@ -28,7 +28,7 @@ interface SwitchMenu {
 class SwitchMenuFlow constructor(
     override val title: String,
     override val desc: String?,
-    private val data: BooleanMmkvData,
+    private val data: SettingsStateFlow<Boolean>,
     private val reverse: Boolean = false,
     override val onLongClick: (() -> Unit)? = null,
 ) : SwitchMenu {

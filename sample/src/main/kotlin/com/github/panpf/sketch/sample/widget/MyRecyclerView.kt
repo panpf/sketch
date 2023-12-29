@@ -31,7 +31,7 @@ class MyRecyclerView @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        appSettingsService.pauseLoadWhenScrollInList.stateFlow.collectWithLifecycle(lifecycleOwner) {
+        appSettingsService.pauseLoadWhenScrollInList.collectWithLifecycle(lifecycleOwner) {
             setEnabledPauseLoadWhenScrolling(it)
         }
     }

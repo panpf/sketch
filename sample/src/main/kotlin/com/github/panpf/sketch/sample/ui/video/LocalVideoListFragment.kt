@@ -104,7 +104,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
-            appSettingsService.ignoreExifOrientation.sharedFlow
+            appSettingsService.ignoreExifOrientation.ignoreFirst()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.findPagingAdapter()?.refresh()
                 }

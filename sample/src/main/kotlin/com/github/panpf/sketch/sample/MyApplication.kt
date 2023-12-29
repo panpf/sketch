@@ -34,14 +34,8 @@ import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
 import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.util.Logger
-import com.tencent.mmkv.MMKV
 
 class MyApplication : MultiDexApplication(), SketchFactory {
-
-    override fun onCreate() {
-        super.onCreate()
-        MMKV.initialize(this)
-    }
 
     override fun createSketch(): Sketch = Sketch.Builder(this).apply {
         logger(Logger(Logger.Level.valueOf(appSettingsService.logLevel.value)))

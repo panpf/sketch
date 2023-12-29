@@ -193,7 +193,6 @@ private fun ImagePager(
             modifier = Modifier.fillMaxSize()
         ) { index ->
             ImageViewer(
-                index = index,
                 imageDetail = imageList[index],
                 buttonBgColorState = buttonBgColorState,
                 onClick = onImageClick,
@@ -206,7 +205,7 @@ private fun ImagePager(
             )
         }
 
-        val showOriginImage by LocalContext.current.appSettingsService.showOriginImage.stateFlow.collectAsState()
+        val showOriginImage by LocalContext.current.appSettingsService.showOriginImage.collectAsState()
         ImagePagerTools(
             pageNumber = startPosition + pagerState.currentPage + 1,
             pageCount = totalCount,

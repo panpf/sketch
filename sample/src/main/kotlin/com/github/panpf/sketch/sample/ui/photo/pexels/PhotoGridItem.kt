@@ -54,9 +54,9 @@ fun PhotoGridItem(
         createDayNightSectorProgressDrawable(context, hiddenWhenIndeterminate = true)
     })
     val appSettingsService = context.appSettingsService
-    val showDataFromLogo by appSettingsService.showDataFromLogo.stateFlow.collectAsState()
-    val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInLIst.stateFlow.collectAsState()
-    val showProgressIndicator by appSettingsService.showProgressIndicatorInList.stateFlow.collectAsState()
+    val showDataFromLogo by appSettingsService.showDataFromLogo.collectAsState()
+    val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInLIst.collectAsState()
+    val showProgressIndicator by appSettingsService.showProgressIndicatorInList.collectAsState()
     val modifier = Modifier
         .fillMaxWidth()
         .let {

@@ -127,7 +127,7 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
         }
 
         binding.originImage.apply {
-            appSettingsService.showOriginImage.stateFlow
+            appSettingsService.showOriginImage
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     setImageResource(if (it) R.drawable.ic_image2_baseline else R.drawable.ic_image2_outline)
                 }

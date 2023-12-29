@@ -52,7 +52,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ImageViewer(
-    index: Int, imageDetail: ImageDetail,
+    imageDetail: ImageDetail,
     buttonBgColorState: MutableState<Int>,
     onClick: () -> Unit,
     onShareClick: () -> Unit,
@@ -62,12 +62,12 @@ fun ImageViewer(
     val coroutineScope = rememberCoroutineScope()
     val appSettingsService = context.appSettingsService
     val imageState = rememberAsyncImageState()
-    val showOriginImage by appSettingsService.showOriginImage.stateFlow.collectAsState()
-    val scrollBarEnabled by appSettingsService.scrollBarEnabled.stateFlow.collectAsState()
-    val readModeEnabled by appSettingsService.readModeEnabled.stateFlow.collectAsState()
-    val showTileBounds by appSettingsService.showTileBounds.stateFlow.collectAsState()
-    val contentScaleName by appSettingsService.contentScale.stateFlow.collectAsState()
-    val alignmentName by appSettingsService.alignment.stateFlow.collectAsState()
+    val showOriginImage by appSettingsService.showOriginImage.collectAsState()
+    val scrollBarEnabled by appSettingsService.scrollBarEnabled.collectAsState()
+    val readModeEnabled by appSettingsService.readModeEnabled.collectAsState()
+    val showTileBounds by appSettingsService.showTileBounds.collectAsState()
+    val contentScaleName by appSettingsService.contentScale.collectAsState()
+    val alignmentName by appSettingsService.alignment.collectAsState()
     val contentScale by remember {
         derivedStateOf {
             ContentScaleCompat.valueOf(contentScaleName).toPlatform()

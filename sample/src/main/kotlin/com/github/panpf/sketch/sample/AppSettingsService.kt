@@ -35,119 +35,115 @@ import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
-import com.github.panpf.sketch.sample.util.BooleanMmkvData
-import com.github.panpf.sketch.sample.util.StringMmkvData
+import com.github.panpf.sketch.sample.util.SettingsStateFlow
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.name
-import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
 class AppSettingsService(val context: Context) {
 
-    private val mmkv = MMKV.defaultMMKV()
+    private val preferences = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
 
     /*
      * list config
      */
     val showMimeTypeLogoInLIst by lazy {
-        BooleanMmkvData(mmkv, "showMimeTypeLogoInLIst", true)
+        SettingsStateFlow("showMimeTypeLogoInLIst", true, preferences)
     }
     val showProgressIndicatorInList by lazy {
-        BooleanMmkvData(mmkv, "showProgressIndicatorInList", true)
+        SettingsStateFlow("showProgressIndicatorInList", true, preferences)
     }
     val showDataFromLogo by lazy {
-        BooleanMmkvData(mmkv, "showDataFrom", true)
+        SettingsStateFlow("showDataFrom", true, preferences)
     }
     val pauseLoadWhenScrollInList by lazy {
-        BooleanMmkvData(mmkv, "pauseLoadWhenScrollInList", false)
+        SettingsStateFlow("pauseLoadWhenScrollInList", false, preferences)
     }
 
     /*
      * image load
      */
     val bitmapQuality by lazy {
-        StringMmkvData(mmkv, "bitmapQuality", "Default")
+        SettingsStateFlow("bitmapQuality", "Default", preferences)
     }
     val colorSpace by lazy {
-        StringMmkvData(mmkv, "colorSpace", "Default")
+        SettingsStateFlow("colorSpace", "Default", preferences)
     }
     val inPreferQualityOverSpeed by lazy {
-        BooleanMmkvData(mmkv, "inPreferQualityOverSpeed", false)
+        SettingsStateFlow("inPreferQualityOverSpeed", false, preferences)
     }
 
     val disabledMemoryCache by lazy {
-        BooleanMmkvData(mmkv, "disabledBitmapMemoryCache", false)
+        SettingsStateFlow("disabledBitmapMemoryCache", false, preferences)
     }
     val disabledResultCache by lazy {
-        BooleanMmkvData(mmkv, "disabledBitmapResultCache", false)
+        SettingsStateFlow("disabledBitmapResultCache", false, preferences)
     }
     val disabledDownloadCache by lazy {
-        BooleanMmkvData(mmkv, "disabledDownloadCache", false)
+        SettingsStateFlow("disabledDownloadCache", false, preferences)
     }
     val disallowReuseBitmap by lazy {
-        BooleanMmkvData(mmkv, "disallowReuseBitmap", false)
+        SettingsStateFlow("disallowReuseBitmap", false, preferences)
     }
 
     val resizePrecision by lazy {
-        StringMmkvData(mmkv, "resizePrecision", "LongImageClipMode")
+        SettingsStateFlow("resizePrecision", "LongImageClipMode", preferences)
     }
     val resizeScale by lazy {
-        StringMmkvData(mmkv, "resizeScale", "LongImageMode")
+        SettingsStateFlow("resizeScale", "LongImageMode", preferences)
     }
     val longImageResizeScale by lazy {
-        StringMmkvData(mmkv, "longImageResizeScale", Scale.START_CROP.name)
+        SettingsStateFlow("longImageResizeScale", Scale.START_CROP.name, preferences)
     }
     val otherImageResizeScale by lazy {
-        StringMmkvData(mmkv, "otherImageResizeScale", Scale.CENTER_CROP.name)
+        SettingsStateFlow("otherImageResizeScale", Scale.CENTER_CROP.name, preferences)
     }
 
     val ignoreExifOrientation by lazy {
-        BooleanMmkvData(mmkv, "ignoreExifOrientation", false)
+        SettingsStateFlow("ignoreExifOrientation", false, preferences)
     }
     val saveCellularTrafficInList by lazy {
-        BooleanMmkvData(mmkv, "saveCellularTrafficInList", false)
+        SettingsStateFlow("saveCellularTrafficInList", false, preferences)
     }
     val disallowAnimatedImageInList by lazy {
-        BooleanMmkvData(mmkv, "disallowAnimatedImageInList", false)
+        SettingsStateFlow("disallowAnimatedImageInList", false, preferences)
     }
 
     /*
      * view config
      */
     val contentScale by lazy {
-        StringMmkvData(mmkv, "contentScale", ContentScaleCompat.Fit.name)
+        SettingsStateFlow("contentScale", ContentScaleCompat.Fit.name, preferences)
     }
     val alignment by lazy {
-        StringMmkvData(mmkv, "alignment", AlignmentCompat.Center.name)
+        SettingsStateFlow("alignment", AlignmentCompat.Center.name, preferences)
     }
     val scrollBarEnabled by lazy {
-        BooleanMmkvData(mmkv, "scrollBarEnabled", true)
+        SettingsStateFlow("scrollBarEnabled", true, preferences)
     }
     val readModeEnabled by lazy {
-        BooleanMmkvData(mmkv, "readModeEnabled", true)
+        SettingsStateFlow("readModeEnabled", true, preferences)
     }
     val showTileBounds by lazy {
-        BooleanMmkvData(mmkv, "showTileBounds", false)
+        SettingsStateFlow("showTileBounds", false, preferences)
     }
 
     /*
      * other
      */
     val photoListLayoutMode by lazy {
-        StringMmkvData(mmkv, "photoListLayoutMode", GRID.name)
+        SettingsStateFlow("photoListLayoutMode", GRID.name, preferences)
     }
     val showOriginImage by lazy {
-        BooleanMmkvData(mmkv, "showOriginImage", false)
+        SettingsStateFlow("showOriginImage", false, preferences)
     }
     val logLevel by lazy {
-        StringMmkvData(
-            mmkv,
-            "logLevel",
+        val defaultState =
             if (BuildConfig.DEBUG) Logger.Level.DEBUG.name else Logger.Level.INFO.name
-        )
+        SettingsStateFlow("logLevel", defaultState, preferences)
     }
 
     private val bitmapQualityValue: BitmapConfig?
@@ -208,7 +204,7 @@ class AppSettingsService(val context: Context) {
         disallowAnimatedImageInList,
     )
 
-    val listsCombinedFlow: Flow<Any> = combine(listFlows.map { it.stateFlow }) { it.joinToString() }
+    val listsCombinedFlow: Flow<Any> = combine(listFlows) { it.joinToString() }
 
     private val viewerFlows = listOf(
         bitmapQuality,
@@ -223,7 +219,7 @@ class AppSettingsService(val context: Context) {
         ignoreExifOrientation,
     )
     val viewersCombinedFlow: Flow<Any> =
-        combine(viewerFlows.map { it.stateFlow }) { it.joinToString() }
+        combine(viewerFlows) { it.joinToString() }
 
     fun buildListImageOptions(): ImageOptions = ImageOptions {
         pauseLoadWhenScrolling(pauseLoadWhenScrollInList.value)

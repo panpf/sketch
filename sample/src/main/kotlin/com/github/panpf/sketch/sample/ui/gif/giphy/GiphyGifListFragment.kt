@@ -101,7 +101,7 @@ class GiphyGifListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefreshB
         }
 
         binding.myRecycler.apply {
-            appSettingsService.photoListLayoutMode.stateFlow
+            appSettingsService.photoListLayoutMode
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     (0 until itemDecorationCount).forEach { index ->
                         removeItemDecorationAt(index)
@@ -117,7 +117,7 @@ class GiphyGifListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefreshB
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
-            appSettingsService.ignoreExifOrientation.sharedFlow
+            appSettingsService.ignoreExifOrientation.ignoreFirst()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.findPagingAdapter()?.refresh()
                 }
