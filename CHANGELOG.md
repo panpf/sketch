@@ -2,6 +2,12 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
+# new
+
+#### sketch:
+
+* improve: Improve log
+
 # v3.3.0-rc02
 
 #### sketch:

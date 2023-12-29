@@ -2,6 +2,12 @@
 
 翻译：[English](CHANGELOG.md)
 
+# new
+
+#### sketch:
+
+* improve: 改进日志
+
 # v3.3.0-rc02
 
 #### sketch:
