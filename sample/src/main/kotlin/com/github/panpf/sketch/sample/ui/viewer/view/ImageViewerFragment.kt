@@ -20,7 +20,6 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -41,7 +40,6 @@ import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment
 import com.github.panpf.sketch.sample.ui.viewer.ImagePagerViewModel
-import com.github.panpf.sketch.sample.ui.viewer.ImageViewerViewModel
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.registerForActivityResult
@@ -61,7 +59,6 @@ import kotlin.math.roundToInt
 class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private val args by navArgs<ImageViewerFragmentArgs>()
-    private val viewModel by viewModels<ImageViewerViewModel>()
     private val pagerViewModel by parentViewModels<ImagePagerViewModel>()
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
@@ -210,7 +207,7 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
     private fun share() {
         val imageUri = getImageUrl()
         lifecycleScope.launch {
-            handleActionResult(viewModel.share(imageUri))
+            handleActionResult(pagerViewModel.share(imageUri))
         }
     }
 
@@ -220,7 +217,7 @@ class ImageViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
         ) {
             lifecycleScope.launch {
-                handleActionResult(viewModel.save(imageUri))
+                handleActionResult(pagerViewModel.save(imageUri))
             }
         }
         requestPermissionResult.launch(input)

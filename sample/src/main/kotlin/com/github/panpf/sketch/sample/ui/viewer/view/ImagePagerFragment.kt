@@ -101,9 +101,9 @@ class ImagePagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
                         ?: simplePalette?.mutedSwatch?.rgb
                         ?: simplePalette?.darkVibrantSwatch?.rgb
                         ?: simplePalette?.darkMutedSwatch?.rgb
-                viewModel.setButtonBgColor(accentColor ?: Color.parseColor("#bf5660"))
-            } else {
-                viewModel.setButtonBgColor(Color.parseColor("#bf5660"))
+                if (accentColor != null) {
+                    viewModel.setButtonBgColor(accentColor)
+                }
             }
         }
 

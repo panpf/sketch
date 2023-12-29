@@ -229,16 +229,16 @@ private fun PagerBgImage(
         snapshotFlow { imageState.result }.collect {
             if (it is DisplayResult.Success) {
                 val simplePalette = it.simplePalette
-                buttonBgColorState.value = simplePalette?.dominantSwatch?.rgb
+                val accentColor = (simplePalette?.dominantSwatch?.rgb
                     ?: simplePalette?.lightVibrantSwatch?.rgb
-                            ?: simplePalette?.vibrantSwatch?.rgb
-                            ?: simplePalette?.lightMutedSwatch?.rgb
-                            ?: simplePalette?.mutedSwatch?.rgb
-                            ?: simplePalette?.darkVibrantSwatch?.rgb
-                            ?: simplePalette?.darkMutedSwatch?.rgb
-                            ?: android.graphics.Color.parseColor("#bf5660")
-            } else {
-                android.graphics.Color.parseColor("#bf5660")
+                    ?: simplePalette?.vibrantSwatch?.rgb
+                    ?: simplePalette?.lightMutedSwatch?.rgb
+                    ?: simplePalette?.mutedSwatch?.rgb
+                    ?: simplePalette?.darkVibrantSwatch?.rgb
+                    ?: simplePalette?.darkMutedSwatch?.rgb)
+                if (accentColor != null) {
+                    buttonBgColorState.value = accentColor
+                }
             }
         }
     }
