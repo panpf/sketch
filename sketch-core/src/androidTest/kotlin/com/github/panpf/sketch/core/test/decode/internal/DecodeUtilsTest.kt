@@ -211,7 +211,6 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampleSize() {
-        // TODO Retest
         Assert.assertEquals(
             1,
             calculateSampleSize(
@@ -322,7 +321,6 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampleSize2() {
-        // TODO Retest
         Assert.assertEquals(
             1,
             calculateSampleSize(
@@ -567,8 +565,14 @@ class DecodeUtilsTest {
         )
 
 
+        val maxSize = OpenGLTextureHelper.maxSize ?: 0
+        val expected = when {
+            maxSize <= 4096 -> 32
+            maxSize <= 8192 -> 16
+            else -> 4
+        }
         Assert.assertEquals(
-            4,
+            expected,
             calculateSampleSize(
                 imageSize = Size(30000, 750),
                 targetSize = Size(1080, 1920),
@@ -587,7 +591,6 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampleSizeForRegion() {
-        // TODO Retest
         Assert.assertEquals(
             1,
             calculateSampleSizeForRegion(
@@ -665,7 +668,6 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampleSizeForRegion2() {
-        // TODO Retest
         Assert.assertEquals(
             1,
             calculateSampleSizeForRegion(
@@ -833,8 +835,14 @@ class DecodeUtilsTest {
             )
         )
 
+        val maxSize = OpenGLTextureHelper.maxSize ?: 0
+        val expected = when {
+            maxSize <= 4096 -> 32
+            maxSize <= 8192 -> 16
+            else -> 4
+        }
         Assert.assertEquals(
-            4,
+            expected,
             calculateSampleSizeForRegion(
                 regionSize = Size(30000, 750),
                 targetSize = Size(1080, 1920),
@@ -853,7 +861,6 @@ class DecodeUtilsTest {
 
     @Test
     fun testLimitedSampleSizeByMaxBitmapSize() {
-        // TODO Retest
         val maxSize = OpenGLTextureHelper.maxSize ?: Canvas().maximumBitmapWidth
         val targetSize = Size(10180, 1920)
         Assert.assertEquals(
@@ -905,7 +912,6 @@ class DecodeUtilsTest {
 
     @Test
     fun testLimitedSampleSizeByMaxBitmapSizeForRegion() {
-        // TODO Retest
         val maxSize = OpenGLTextureHelper.maxSize ?: Canvas().maximumBitmapWidth
         val targetSize = Size(10180, 1920)
         Assert.assertEquals(
