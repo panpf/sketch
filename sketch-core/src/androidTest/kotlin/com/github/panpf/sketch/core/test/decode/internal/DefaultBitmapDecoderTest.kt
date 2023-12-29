@@ -1078,27 +1078,38 @@ class DefaultBitmapDecoderTest {
 
         /* full */
         assertThrow(BitmapDecodeException::class) {
-            val request = LoadRequest(context, AssetImages.jpeg.uri)
+            val request = LoadRequest(context, AssetImages.jpeg.uri) {
+                resize(AssetImages.jpeg.size.width * 2, AssetImages.jpeg.size.height * 2)
+            }
             val dataSource = runBlocking {
                 sketch.components.newFetcherOrThrow(request).fetch()
             }.getOrThrow().dataSource
-            sketch.bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
-            DefaultBitmapDecoder(
-                sketch, request.toRequestContext(), FullTestDataSource(dataSource.asOrThrow())
-            ).let { runBlocking { it.decode() } }.getOrThrow()
+            sketch.bitmapPool.put(Bitmap.createBitmap(AssetImages.jpeg.size.width, AssetImages.jpeg.size.height, ARGB_8888))
+            val bitmapDecoder = DefaultBitmapDecoder(
+                sketch = sketch,
+                requestContext = request.toRequestContext(),
+                dataSource = FullTestDataSource(dataSource.asOrThrow())
+            )
+            val result = runBlocking { bitmapDecoder.decode() }
+            result.getOrThrow()
         }
 
         assertNoThrow {
-            val request = LoadRequest(context, AssetImages.jpeg.uri)
+            val request = LoadRequest(context, AssetImages.jpeg.uri) {
+                resize(AssetImages.jpeg.size.width * 2, AssetImages.jpeg.size.height * 2)
+            }
             val dataSource = runBlocking {
                 sketch.components.newFetcherOrThrow(request).fetch()
             }.getOrThrow().dataSource
-            sketch.bitmapPool.put(Bitmap.createBitmap(1291, 1936, ARGB_8888))
-            DefaultBitmapDecoder(
-                sketch,
-                request.toRequestContext(),
-                FullTestDataSource(dataSource.asOrThrow(), enabledCount = true)
-            ).let { runBlocking { it.decode() } }.getOrThrow()
+            sketch.bitmapPool.put(Bitmap.createBitmap(AssetImages.jpeg.size.width, AssetImages.jpeg.size.height, ARGB_8888))
+            val bitmapDecoder = DefaultBitmapDecoder(
+                sketch = sketch,
+                requestContext = request.toRequestContext(),
+                dataSource = FullTestDataSource(dataSource.asOrThrow(), enabledCount = true)
+            )
+            val result = runBlocking { bitmapDecoder.decode() }
+            result.exceptionOrNull()?.printStackTrace()
+            result.getOrThrow()
         }
 
         /* region */

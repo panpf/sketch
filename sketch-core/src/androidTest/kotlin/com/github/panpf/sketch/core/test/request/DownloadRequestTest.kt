@@ -27,6 +27,7 @@ import android.graphics.ColorSpace.Named.BT709
 import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -1652,7 +1653,8 @@ class DownloadRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newDownloadRequest())
         }.newDownloadRequest {
-            placeholder(DrawableStateImage(context.getDrawable(drawable.ic_delete)!!))
+            val drawable = ResourcesCompat.getDrawable(context.resources, drawable.ic_delete, null)
+            placeholder(DrawableStateImage(drawable!!))
         }.apply {
             Assert.assertEquals(this, this.newDownloadRequest())
         }.newDownloadRequest {

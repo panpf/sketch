@@ -71,14 +71,23 @@ class ContextsTest {
     fun testGetXmlDrawableCompat() {
         val context = getTestContext()
 
-        context.getXmlDrawableCompat(
-            context.resources,
-            com.github.panpf.sketch.test.utils.R.drawable.ic_cloudy
-        ).apply {
-            if (Build.VERSION.SDK_INT >= 24) {
-                Assert.assertTrue(this is VectorDrawable)
-            } else {
-                Assert.assertTrue(this is VectorDrawableCompat)
+        if (Build.VERSION.SDK_INT >= 21) {
+            context.getXmlDrawableCompat(
+                context.resources,
+                com.github.panpf.sketch.test.utils.R.drawable.ic_cloudy
+            ).apply {
+                if (Build.VERSION.SDK_INT >= 24) {
+                    Assert.assertTrue(this is VectorDrawable)
+                } else {
+                    Assert.assertTrue(this is VectorDrawableCompat)
+                }
+            }
+        } else {
+            assertThrow(Resources.NotFoundException::class) {
+                context.getXmlDrawableCompat(
+                    context.resources,
+                    com.github.panpf.sketch.test.utils.R.drawable.ic_cloudy
+                )
             }
         }
 
