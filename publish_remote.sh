@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Build and upload the artifacts to 'mavenCentral'.
-./gradlew clean assembleRelease publish
+./gradlew clean publish
 if [[ $? -eq 0 ]]; then
   echo "publish success"
 else
