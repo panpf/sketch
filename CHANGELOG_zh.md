@@ -2,11 +2,98 @@
 
 翻译：[English](CHANGELOG.md)
 
-# new
+# v3.3.0 stable
 
 #### sketch:
 
-* improve: 改进日志
+* Request:
+    * change: 借助 View.findViewTreeLifecycleOwner() 和 LocalLifecycleOwner.current API，现在可以自动获取最近的
+      Lifecycle，无需主动设置生命周期。
+    * change: DisplayRequest、LoadRequest 和 DownloadRequest 的 `enqueue()` 和 `execute()`
+      方法现在是扩展函数，需要导入依赖
+    * new: DisplayRequest.Builder、DisplayRequest.Builder、DisplayRequest.Builder 新增 addListener()
+      、removeListener()、addProgressListener()、removeProgressListener() 方法
+    * new: DisplayRequest 新增 allowSetNullDrawable(Boolean) 方法，它可以设置是否允许将 null 的
+      Drawable 设置到 ImageView 或 AsyncImagePainter
+    * new: ImageRequest 和 ImageOptions 添加 `uriEmpty()` 方法，可以更方便地配置 uri 空状态图像
+* execute:
+    * improve: 现在 onStart 之后检查 uri 是否为空
+* cache:
+    * change: 升级 Result LruDiskCache internalVersion，会清空所有旧的缓存
+* decode:
+    * improve: 改进 API 16 上 inSampleSize 的计算，并且现在无法获取到 opengl 纹理大小时使用 target
+      尺寸的 2 倍作为最大 bitmap 尺寸
+* resize:
+    * new: Precision 添加 `SMALLER_SIZE` 枚举值
+    * new: 增加 LongImageDecider()、PrecisionDecider(precision: Precision)、ScaleDecider(scale: Scale)
+      、SizeResolver(size: Size) 等函数
+* StateImage:
+    * fix: 修复 uri 为空时可能会意外显示其他图片的问题
+    * fix: 修复 StateImage 获取 Drawable 失败时请求中断的 bug
+    * change: 现在默认不再将 null 的 placeholder 或 error drawable 设置到 ImageView
+    * deprecated: 废弃 IconStateImage 的所有重载构造函数，用 IconStateImage() 函数替代
+    * new: IconStateImage 新增 iconSize 属性，支持调整 icon 的尺寸
+    * new: 增加 IconStateImage() 函数，专门用于创建 IconStateImage
+    * new: 新增 AnimatableIconStateImage 类，用于显示动态占位符
+* log:
+    * change: Logger 默认不再输出线程名字，你需要手动设置 `Logger.showThreadName = true` 才能输出线程名字
+    * improve: 内置异常不再打印堆栈信息
+* http:
+    * change: 不再拦截 "Transfer-Encoding" 为 "chunked" 的下载请求
+    * improve: 现在 HttpUriFetcher 在禁用磁盘缓存时也会验证 readLength 和 contentLength
+      是否一样，不一样则会抛出异常
+* other:
+    * new: 拆分出 `sketch-core` 模块以提供基本功能
+    * new: SketchSingleton 增加了 `setSketch()` 方法，用于设置 Sketch 的单例实例
+
+#### sketch-zoom:
+
+* deprecated：`sketch-zoom` 模块以及其 `SketchZoomImageView`
+  组件已弃用。请改用 https://github.com/panpf/zoomimage 库的 `SketchZoomImageView` 组件。
+
+#### sketch-extensions
+
+* remove: SketchImageView 和 SketchZoomImageView 删除 submitRequest() 方法
+* remove: 删除 SketchImageView 的 `sketch_src` xml 属性
+* change: ApkIconBitmapDecoder 和 AppIconUriFetcher 的 IMAGE_MIME_TYPE 从 'image/appicon' 更改为 '
+  image/png'
+* deprecated: 弃用 `sketch-extensions` 模块，暂时保留，现在它仅依赖 `sketch-extensions-view` 模块
+* improve: 改进 ProgressDrawable
+* new: 拆分出 `sketch-extensions-core` 模块以提供基本功能
+* new: 新增 `sketch-extensions-view` 和 `sketch-extensions-compose` 模块分别为 view 和 compose
+  提供扩展功能
+* new: 为 compose 提供 MimeType 角标、DataFrom 角标、进度指示器功能
+* new: SketchImageView 新增 requestState 属性，可以使用 flow 的方式监听请求的状态、结果和进度
+* new: RingProgressDrawable 的构造函数增加 backgroundColor 参数
+
+#### sketch-compose:
+
+> [!CAUTION]
+> 如果你在使用 AsyncImage、AsyncImagePainter、SubcomposeAsyncImage 时有以下两种情况，那么你需要修改你的代码：
+> * 使用了他们的 onState 参数
+> * 使用了 DisplayRequest 的 listener、progressListener、target 属性
+
+* change: 重构
+  AsyncImage、AsyncImagePainter、SubcomposeAsyncImage，给他们增加了一个 `state: AsyncImageState` 参数，通过
+  AsyncImageState 可以观察图像加载状态和结果以及重启加载
+* change: 现在默认不再将 null 的 placeholder 或 error painter 设置到 AsyncImagePainter
+* improve: 改进性能，将 DisplayRequest 和 Sketch 标记为 @Stable，重载可组合函数标记为
+  @NonRestartableComposable
+* new: AsyncImage 和 SubcomposeAsyncImage 添加 `clipToBounds:Boolean = true` 参数
+* new: AsyncImage、SubcomposeAsyncImage、AsyncImagePainter 添加了支持配置 sketch 参数的版本
+* new: 拆分出 `sketch-compose-core` 模块以提供基本功能
+
+#### sketch-gif:
+
+> [!CAUTION]
+> 如果你使用了 `sketch` 模块的 gif 相关的类或函数现在你需要额外依赖 `sketch-gif` 模块 ：
+
+* deprecated: 弃用 `sketch-gif-movie` 模块，暂时保留，现在它仅依赖 `sketch-gif` 模块
+* new: 新增 `sketch-gif` 模块，并将 `sketch-gif-movie` 和 `sketch` 模块里的 gif 相关的代码移到此模块
+
+#### other:
+
+* depend: Upgrade kotlin 1.9.0, kotlinx coroutines 1.7.3, compose 1.5.0, lifecycle 2.6.1
 
 # v3.3.0-rc02
 
@@ -47,10 +134,8 @@
 #### sketch:
 
 * fix: 修复 StateImage 获取 Drawable 失败时请求中断的 bug
-* improve: 改进 ProgressDrawable
 * new: DisplayRequest.Builder、DisplayRequest.Builder、DisplayRequest.Builder 新增 addListener()
-  、removeListener()
-  addProgressListener()、removeProgressListener() 方法
+  、removeListener()、addProgressListener()、removeProgressListener() 方法
 
 #### sketch-compose:
 
@@ -68,6 +153,7 @@
 #### sketch-extensions:
 
 * deprecated: 弃用 `sketch-extensions` 模块，暂时保留，现在它仅依赖 `sketch-extensions-view` 模块
+* improve: 改进 ProgressDrawable
 * new: 新增 `sketch-extensions-view` 和 `sketch-extensions-compose` 模块分别为 view 和 compose
   提供扩展功能
 * new: 为 compose 提供 MimeType 角标、DataFrom 角标、进度指示器功能

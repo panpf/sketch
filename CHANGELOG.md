@@ -2,11 +2,111 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
-# new
+# v3.3.0 stable
 
 #### sketch:
 
-* improve: Improve log
+* Request:
+    * change: With the help of View.findViewTreeLifecycleOwner() and LocalLifecycleOwner.current
+      API, the latest Lifecycle can now be automatically obtained, and there is no need to actively
+      set the Lifecycle.
+    * change: The `enqueue()` and `execute()` methods of DisplayRequest, LoadRequest, and
+      DownloadRequest are now extended functions, requiring the import of dependencies
+    * new: Add addListener(), removeListener(), addProgressListener(), removeProgressListener()
+      methods for DisplayRequest.Builder, DisplayRequest.Builder, DisplayRequest.Builder
+    * new: DisplayRequest adds the allowSetNullDrawable(Boolean) method, which can set whether to
+      allow null Drawables to be set to ImageView or AsyncImagePainter
+    * new: ImageRequest and ImageOptions add `uriEmpty()` method for more convenient configuration
+      of uri empty state image
+* execute:
+    * improve: Now after onStart check uri is empty
+* cache:
+    * change: Upgrading Result LruDiskCache internalVersion will clear all old caches
+* decode:
+    * improve: Improved calculation of inSampleSize on API 16, and now uses 2 times the target size
+      as the maximum bitmap size when the opengl texture size cannot be obtained
+* resize:
+    * new: Precision adds `SMALLER_SIZE` enum value
+    * new: Adds LongImageDecider(), PrecisionDecider(Precision), ScaleDecider(Scale), SizeResolver(
+      Size) functions
+* StateImage:
+    * fix: Fixed a bug where other images may be displayed unexpectedly when uri is empty
+    * fix: Fix the bug of request interruption when StateImage fails to obtain Drawable
+    * change: A null placeholder or error drawable is now no longer set to an ImageView by default
+    * deprecated: Deprecate all overloaded constructors of IconStateImage and replace them with the
+      IconStateImage() function
+    * new: IconStateImage adds iconSize attribute to support adjusting the size of the icon
+    * new: Added IconStateImage() function, specifically used to create IconStateImage
+    * new: Added AnimatableIconStateImage class for displaying dynamic placeholder
+* log:
+    * change: Logger no longer outputs thread names by default. You need to manually
+      set `Logger.showThreadName = true` to output thread names.
+    * improve: Built-in exceptions no longer print stack information
+* http:
+    * change: No longer intercept download requests with 'Transfer-Encoding' is 'chunked'
+    * improve: HttpUriFetcher now also verifies that readLength and contentLength are the same when
+      disabling disk caching, and throws an exception if they are not
+* other:
+    * new: Split out the `sketch-core` module to provide basic functionality
+    * new: SketchSingleton adds the `setSketch()` method, which is used to set up a singleton
+      instance of Sketch
+
+#### sketch-zoom:
+
+* deprecated：The `sketch-zoom` module and its `SketchZoomImageView` component are deprecated. Please
+  use the `SketchZoomImageView` component from the https://github.com/panpf/zoomimage library
+  instead.
+
+#### sketch-extensions
+
+* remove: SketchImageView and SketchZoomImageView remove submitRequest method
+* remove: Remove the `sketch_src` xml attribute of SketchImageView
+* change: ApkIconBitmapDecoder and AppIconUriFetcher's IMAGE_MIME_TYPE changed from 'image/appicon'
+  to 'image/png'
+* deprecated: The `sketch-extensions` module is deprecated and kept for now, now it only depends on
+  the `sketch-extensions-view` module
+* improve: Improve ProgressDrawable
+* new: Split out the `sketch-extensions-core` module to provide basic functionality
+* new: Added `sketch-extensions-view` and `sketch-extensions-compose` modules to provide extension
+  functions for view and compose respectively
+* new: Provide MimeType logo, DataFrom logo, and progress indicator functions for compose
+* new: SketchImageView adds a new requestState attribute, which can use flow to monitor the status,
+  results and progress of the request.
+* new: The constructor of RingProgressDrawable adds backgroundColor parameter
+
+#### sketch-compose:
+
+> [!CAUTION]
+> If you have the following two situations when using AsyncImage, AsyncImagePainter, or
+> SubcomposeAsyncImage, then you need to modify your code:
+> * using their onState parameter
+> * Using the listener, progressListener, and target properties of DisplayRequest
+
+* change: Refactor
+  AsyncImage, AsyncImagePainter, SubcomposeAsyncImage, add a `state: AsyncImageState` parameter to
+  them, through AsyncImageState can observe image loading state and results and restart loading
+* change: A null placeholder or error painter is now no longer set to AsyncImagePainter by default
+* improve: To improve performance, mark DisplayRequest and Sketch as @Stable and overloaded
+  composable functions as @NonRestartableComposable
+* new: AsyncImage and SubcomposeAsyncImage add `clipToBounds:Boolean = true` parameter
+* new: AsyncImage, SubcomposeAsyncImage, AsyncImagePainter added a sketch parameter version that
+  supports configuration
+* new: Split out the `sketch-compose-core` module to provide basic functionality
+
+#### sketch-gif:
+
+> [!CAUTION]
+> If you use the gif-related classes or functions of the `sketch` module, now you need to
+> additionally depend on the `sketch-gif` module
+
+* deprecated: Deprecated `sketch-gif-movie` module, retained for now, now it only depends
+  on `sketch-gif` module
+* new: Add the `sketch-gif` module and move the gif-related code in the `sketch-gif-movie`
+  and `sketch` modules to this module
+
+#### other:
+
+* depend: Upgrade kotlin 1.9.0, kotlinx coroutines 1.7.3, compose 1.5.0, lifecycle 2.6.1
 
 # v3.3.0-rc02
 
@@ -49,7 +149,6 @@ Translations: [简体中文](CHANGELOG_zh.md)
 #### sketch
 
 * fix: Fix the bug of request interruption when StateImage fails to obtain Drawable
-* improve: Improve ProgressDrawable
 * new: Add addListener(), removeListener(), addProgressListener(), removeProgressListener() methods
   for DisplayRequest.Builder, DisplayRequest.Builder, DisplayRequest.Builder
 
@@ -63,8 +162,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * change: Refactor
   AsyncImage, AsyncImagePainter, SubcomposeAsyncImage, add a `state: AsyncImageState` parameter to
-  them, through
-  AsyncImageState can observe image loading state and results and restart loading
+  them, through AsyncImageState can observe image loading state and results and restart loading
 * improve: To improve performance, mark DisplayRequest and Sketch as @Stable and overloaded
   composable functions as @NonRestartableComposable
 
@@ -72,6 +170,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * deprecated: The `sketch-extensions` module is deprecated and kept for now, now it only depends on
   the `sketch-extensions-view` module
+* improve: Improve ProgressDrawable
 * new: Added `sketch-extensions-view` and `sketch-extensions-compose` modules to provide extension
   functions for view and compose respectively
 * new: Provide MimeType logo, DataFrom logo, and progress indicator functions for compose
