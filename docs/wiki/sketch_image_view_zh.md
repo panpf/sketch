@@ -16,14 +16,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.panpf.sketch.sample.widget.MyImageView 
-        android:id="@+id/testFragmentImageView"
+    <com.github.panpf.sketch.SketchImageView 
+        android:id="@+id/imageView"
         android:layout_width="300dp" 
         android:layout_height="300dp"
         android:contentDescription="@string/app_name"
         app:sketch_placeholder="@drawable/im_placeholder"
         app:sketch_error="@drawable/im_error"
-        app:sketch_uriEmptyError="@drawable/im_uri_empty"
+        app:sketch_uriEmpty="@drawable/im_uri_empty"
         app:sketch_crossfade="true"
         app:sketch_transformation="rotate"
         app:sketch_transformation_rotate_degrees="55" />

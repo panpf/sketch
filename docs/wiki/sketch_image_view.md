@@ -13,15 +13,21 @@ as follows:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.panpf.sketch.sample.widget.MyImageView android:id="@+id/testFragmentImageView"
-        android:layout_width="300dp" android:layout_height="300dp"
+    <com.github.panpf.sketch.SketchImageView
+        android:id="@+id/imageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:contentDescription="@string/app_name"
-        app:sketch_placeholder="@drawable/im_placeholder" app:sketch_error="@drawable/im_error"
-        app:sketch_uriEmptyError="@drawable/im_uri_empty" app:sketch_crossfade="true"
-        app:sketch_transformation="rotate" app:sketch_transformation_rotate_degrees="55" />
+        app:sketch_placeholder="@drawable/im_placeholder"
+        app:sketch_error="@drawable/im_error"
+        app:sketch_uriEmpty="@drawable/im_uri_empty"
+        app:sketch_crossfade="true"
+        app:sketch_transformation="rotate"
+        app:sketch_transformation_rotate_degrees="55" />
 </FrameLayout>
 ```
 
