@@ -24,7 +24,6 @@ import android.view.WindowManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import com.github.panpf.sketch.sample.ui.common.ActionResult
 import com.github.panpf.sketch.sample.ui.theme.getWindowBackgroundColor
 import com.github.panpf.sketch.sample.ui.theme.isNightMode
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight

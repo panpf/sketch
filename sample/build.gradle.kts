@@ -119,15 +119,8 @@ dependencies {
     implementation(libs.bundles.panpf.tools4j)
     implementation(libs.panpf.tools4k)
     implementation(libs.panpf.activitymonitor)
-    implementation(libs.panpf.zoomimage.compose.sketch) {
-        exclude(group = "io.github.panpf.sketch3")
-    }
-    implementation(libs.panpf.zoomimage.compose) {
-        exclude(group = "io.github.panpf.sketch3")
-    }
-    implementation(libs.panpf.zoomimage.view.sketch) {
-        exclude(group = "io.github.panpf.sketch3")
-    }
+    implementation(libs.panpf.zoomimage.compose)
+    implementation(libs.panpf.zoomimage.view)
     implementation(libs.bundles.retrofit2)
     implementation(libs.tinypinyin)
     implementation(libs.okhttp3.logging)

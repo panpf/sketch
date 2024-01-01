@@ -6,7 +6,7 @@
     <!-- It needs to be wrapped with one layer,
     otherwise there will be deviation in the size in StaggeredGridLayoutManager -->
 
-    <com.github.panpf.sketch.sample.widget.MyListImageView
+    <com.github.panpf.sketch.sample.ui.widget.MyListImageView
         android:id="@+id/myListImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

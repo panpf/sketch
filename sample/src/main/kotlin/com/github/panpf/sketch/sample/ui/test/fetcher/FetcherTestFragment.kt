@@ -23,7 +23,7 @@ import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.github.panpf.sketch.sample.ui.viewer.view.ImageFragment
+import com.github.panpf.sketch.sample.ui.test.ImageFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
 

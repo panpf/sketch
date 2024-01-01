@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.github.panpf.sketch.sample.widget.MyImageView
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
             android:id="@+id/image1"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -47,7 +47,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image1" />
 
-        <com.github.panpf.sketch.sample.widget.MyImageView
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
             android:id="@+id/image2"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -71,7 +71,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image2" />
 
-        <com.github.panpf.sketch.sample.widget.MyImageView
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
             android:id="@+id/image3"
             android:layout_width="0dp"
             android:layout_height="0dp"

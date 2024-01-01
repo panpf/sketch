@@ -7,7 +7,7 @@
     android:background="@drawable/bg_item"
     android:padding="16dp">
 
-    <com.github.panpf.sketch.sample.widget.MyListImageView
+    <com.github.panpf.sketch.sample.ui.widget.MyListImageView
         android:id="@+id/thumbnailImage"
         android:layout_width="100dp"
         android:layout_height="70dp"

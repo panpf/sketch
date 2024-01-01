@@ -11,7 +11,7 @@
         android:padding="16dp"
         android:text="Ignore Exif Orientation" />
 
-    <com.github.panpf.sketch.sample.widget.MyImageView
+    <com.github.panpf.sketch.sample.ui.widget.MyImageView
         android:id="@+id/myImage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -25,7 +25,7 @@
         android:padding="16dp"
         android:text="Read Exif Orientation" />
 
-    <com.github.panpf.sketch.sample.widget.MyImageView
+    <com.github.panpf.sketch.sample.ui.widget.MyImageView
         android:id="@+id/myImage2"
         android:layout_width="match_parent"
         android:layout_height="0dp"

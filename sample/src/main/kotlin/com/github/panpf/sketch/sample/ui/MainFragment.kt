@@ -91,7 +91,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
         Link(
             title = "Local Photos\n(View)",
-            navDirections = NavMainDirections.actionLocalPhotoListFragment(),
+            navDirections = NavMainDirections.actionLocalPhotoListViewFragment(),
             permissions = listOf(permission.READ_EXTERNAL_STORAGE)
         ),
         Link(
@@ -103,7 +103,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
         Link(
             title = "Pexels Photos\n(View)",
-            navDirections = NavMainDirections.actionPexelsPhotoListFragment()
+            navDirections = NavMainDirections.actionPexelsPhotoListViewFragment()
         ),
         Link(
             title = "Pexels Photos\n(Compose)",
@@ -113,12 +113,12 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
         Link(
             title = "Giphy GIFs\n(View)",
-            navDirections = NavMainDirections.actionGiphyGifListFragment()
+            navDirections = NavMainDirections.actionGifPhotoListViewFragment()
         ),
 
         Link(
             title = "Giphy GIFs\n(Compose)",
-            navDirections = NavMainDirections.actionGiphyGifListComposeFragment(),
+            navDirections = NavMainDirections.actionGifPhotoListComposeFragment(),
             minSdk = VERSION_CODES.LOLLIPOP
         ),
 
@@ -151,7 +151,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
         ),
         Link(
             title = "ProgressIndicator\n(View)",
-            navDirections = NavMainDirections.actionProgressIndicatorTestFragment()
+            navDirections = NavMainDirections.actionProgressIndicatorTestViewFragment()
         ),
         Link(
             title = "ProgressIndicator\n(Compose)",
@@ -160,7 +160,7 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
         ),
         Link(
             title = "Display Insanity\n(View)",
-            navDirections = NavMainDirections.actionInsanityTestFragment()
+            navDirections = NavMainDirections.actionInsanityTestViewFragment()
         ),
         Link(
             title = "Display Insanity\n(Compose)",
@@ -169,11 +169,11 @@ class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
         ),
         Link(
             title = "Animatable Placeholder\n(View)",
-            navDirections = NavMainDirections.actionAnimatablePlaceholder(),
+            navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
         ),
         Link(
             title = "Animatable Placeholder\n(Compose)",
-            navDirections = NavMainDirections.actionAnimatablePlaceholderCompose(),
+            navDirections = NavMainDirections.actionAnimatablePlaceholderTestComposeFragment(),
             minSdk = VERSION_CODES.LOLLIPOP
         ),
         Link(

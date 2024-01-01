@@ -73,7 +73,7 @@
             app:tint="@android:color/white" />
     </LinearLayout>
 
-    <com.github.panpf.sketch.sample.widget.SmallStateView
+    <com.github.panpf.sketch.sample.ui.widget.SmallStateView
         android:id="@+id/smallState"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

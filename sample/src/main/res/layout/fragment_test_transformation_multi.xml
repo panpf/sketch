@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.github.panpf.sketch.sample.widget.MyImageView
+    <com.github.panpf.sketch.sample.ui.widget.MyImageView
         android:id="@+id/myImage"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -15,14 +15,6 @@
  */
 package com.github.panpf.sketch.sample.util
 
-import android.content.Context
-import android.content.pm.PackageInfo
-import android.content.res.Resources
-import android.content.res.Resources.Theme
-import android.graphics.drawable.Drawable
-import androidx.annotation.DrawableRes
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.res.ResourcesCompat
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -32,23 +24,4 @@ internal fun Float.format(newScale: Int): Float {
     } else {
         BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
     }
-}
-
-@Suppress("DEPRECATION")
-internal val PackageInfo.versionCodeCompat: Int
-    get() = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-        longVersionCode.toInt()
-    } else {
-        versionCode
-    }
-
-internal fun Resources.getDrawableCompat(@DrawableRes id: Int, theme: Theme? = null): Drawable {
-    return checkNotNull(ResourcesCompat.getDrawable(this, id, theme)) {
-        "Can't find drawable by id=$id"
-    }
-}
-
-internal fun Context.getDrawableCompat(@DrawableRes resId: Int): Drawable {
-    val drawable = AppCompatResources.getDrawable(this, resId)
-    return checkNotNull(drawable) { "Invalid resource ID: $resId" }
 }

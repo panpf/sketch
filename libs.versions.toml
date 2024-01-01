@@ -125,9 +125,8 @@ panpf-tools4j-test = { module = "io.github.panpf.tools4j:tools4j-test-ktx", vers
 panpf-tools4j-reflect = { module = "io.github.panpf.tools4j:tools4j-reflect-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4j-security = { module = "io.github.panpf.tools4j:tools4j-security-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4k = { module = "io.github.panpf.tools4k:tools4k", version.ref = "panpf-tools4k" }
-panpf-zoomimage-view-sketch = { module = "io.github.panpf.zoomimage:zoomimage-view-sketch", version.ref = "panpf-zoomimage" }
+panpf-zoomimage-view = { module = "io.github.panpf.zoomimage:zoomimage-view", version.ref = "panpf-zoomimage" }
 panpf-zoomimage-compose = { module = "io.github.panpf.zoomimage:zoomimage-compose", version.ref = "panpf-zoomimage" }
-panpf-zoomimage-compose-sketch = { module = "io.github.panpf.zoomimage:zoomimage-compose-sketch", version.ref = "panpf-zoomimage" }
 
 # other
 androidgifdrawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version.ref = "androidgifdrawable" }

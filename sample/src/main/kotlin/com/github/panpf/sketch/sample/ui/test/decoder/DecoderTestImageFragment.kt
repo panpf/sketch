@@ -29,7 +29,7 @@ import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
-import com.github.panpf.sketch.sample.ui.common.createDayNightSectorProgressDrawable
+import com.github.panpf.sketch.sample.ui.util.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.viewability.showDataFromLogo

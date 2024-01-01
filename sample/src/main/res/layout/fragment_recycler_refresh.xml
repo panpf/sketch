@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.github.panpf.sketch.sample.widget.MyRecyclerView
+        <com.github.panpf.sketch.sample.ui.widget.MyRecyclerView
             android:id="@+id/myRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -17,7 +17,7 @@
             tools:listitem="@layout/list_item_link" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.github.panpf.sketch.sample.widget.StateView
+    <com.github.panpf.sketch.sample.ui.widget.StateView
         android:id="@+id/state"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

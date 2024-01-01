@@ -9,33 +9,173 @@
         android:name="com.github.panpf.sketch.sample.ui.MainFragment"
         android:label="MainFragment" />
 
+
+    <!-- Gallery -->
+
     <fragment
-        android:id="@+id/localPhotoListFragment"
-        android:name="com.github.panpf.sketch.sample.ui.photo.local.LocalPhotoListFragment"
-        android:label="LocalPhotoListFragment" />
+        android:id="@+id/gifPhotoListComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.GifPhotoListComposeFragment"
+        android:label="GifPhotoListComposeFragment" />
     <action
-        android:id="@+id/action_localPhotoListFragment"
-        app:destination="@id/localPhotoListFragment"
+        android:id="@+id/action_gifPhotoListComposeFragment"
+        app:destination="@id/gifPhotoListComposeFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/pexelsPhotoListFragment"
-        android:name="com.github.panpf.sketch.sample.ui.photo.pexels.PexelsPhotoListFragment"
-        android:label="PexelsPhotoListFragment" />
+        android:id="@+id/gifPhotoListViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.GifPhotoListViewFragment"
+        android:label="GifPhotoListViewFragment" />
     <action
-        android:id="@+id/action_pexelsPhotoListFragment"
-        app:destination="@id/pexelsPhotoListFragment"
+        android:id="@+id/action_gifPhotoListViewFragment"
+        app:destination="@id/gifPhotoListViewFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
 
+    <fragment
+        android:id="@+id/localPhotoListComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListComposeFragment"
+        android:label="LocalPhotoListComposeFragment" />
+    <action
+        android:id="@+id/action_localPhotoListComposeFragment"
+        app:destination="@id/localPhotoListComposeFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
+        android:id="@+id/localPhotoListViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListViewFragment"
+        android:label="LocalPhotoListViewFragment" />
+    <action
+        android:id="@+id/action_localPhotoListViewFragment"
+        app:destination="@id/localPhotoListViewFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
+        android:id="@+id/pexelsPhotoListComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListComposeFragment"
+        android:label="PexelsPhotoListComposeFragment" />
+    <action
+        android:id="@+id/action_pexelsPhotoListComposeFragment"
+        app:destination="@id/pexelsPhotoListComposeFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
+        android:id="@+id/pexelsPhotoListViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListViewFragment"
+        android:label="PexelsPhotoListViewFragment" />
+    <action
+        android:id="@+id/action_pexelsPhotoListViewFragment"
+        app:destination="@id/pexelsPhotoListViewFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
+        android:id="@+id/photoPagerComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoPagerComposeFragment"
+        android:label="PhotoPagerComposeFragment">
+        <argument
+            android:name="imageDetailJsonArray"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="totalCount"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="startPosition"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="initialPosition"
+            app:argType="integer"
+            app:nullable="false" />
+    </fragment>
+    <action
+        android:id="@+id/action_photoPagerComposeFragment"
+        app:destination="@id/photoPagerComposeFragment"
+        app:enterAnim="@anim/nav_enter_from_bottom"
+        app:exitAnim="@anim/nav_exit_from_bottom"
+        app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
+        app:popExitAnim="@anim/nav_pop_exit_from_bottom" />
+
+    <fragment
+        android:id="@+id/photoPagerViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoPagerViewFragment"
+        android:label="PhotoPagerViewFragment">
+        <argument
+            android:name="imageDetailJsonArray"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="totalCount"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="startPosition"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="initialPosition"
+            app:argType="integer"
+            app:nullable="false" />
+    </fragment>
+    <action
+        android:id="@+id/action_photoPagerViewFragment"
+        app:destination="@id/photoPagerViewFragment"
+        app:enterAnim="@anim/nav_enter_from_bottom"
+        app:exitAnim="@anim/nav_exit_from_bottom"
+        app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
+        app:popExitAnim="@anim/nav_pop_exit_from_bottom" />
+
+    <fragment
+        android:id="@+id/photoViewerViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoViewerViewFragment"
+        android:label="PhotoViewerViewFragment">
+        <argument
+            android:name="itemIndex"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="originImageUri"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="previewImageUri"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="thumbnailImageUrl"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+    <action
+        android:id="@+id/action_photoViewerViewFragment"
+        app:destination="@id/photoViewerViewFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+
+    <!-- Test -->
     <fragment
         android:id="@+id/imageFragment"
-        android:name="com.github.panpf.sketch.sample.ui.viewer.view.ImageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.ImageFragment"
         android:label="ImageFragment">
         <argument
             android:name="url"
@@ -44,7 +184,7 @@
             app:nullable="true" />
     </fragment>
     <action
-        android:id="@+id/action_global_imageFragment"
+        android:id="@+id/action_imageFragment"
         app:destination="@id/imageFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
@@ -64,107 +204,8 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/imagePagerFragment"
-        android:name="com.github.panpf.sketch.sample.ui.viewer.view.ImagePagerFragment"
-        android:label="ImagePagerFragment">
-        <argument
-            android:name="imageDetailJsonArray"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="totalCount"
-            app:argType="integer"
-            app:nullable="false" />
-        <argument
-            android:name="startPosition"
-            app:argType="integer"
-            app:nullable="false" />
-        <argument
-            android:name="initialPosition"
-            app:argType="integer"
-            app:nullable="false" />
-    </fragment>
-    <action
-        android:id="@+id/action_global_imagePagerFragment"
-        app:destination="@id/imagePagerFragment"
-        app:enterAnim="@anim/nav_enter_from_bottom"
-        app:exitAnim="@anim/nav_exit_from_bottom"
-        app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
-        app:popExitAnim="@anim/nav_pop_exit_from_bottom" />
-
-    <fragment
-        android:id="@+id/imagePagerComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.viewer.compose.ImagePagerComposeFragment"
-        android:label="ImagePagerFragment">
-        <argument
-            android:name="imageDetailJsonArray"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="totalCount"
-            app:argType="integer"
-            app:nullable="false" />
-        <argument
-            android:name="startPosition"
-            app:argType="integer"
-            app:nullable="false" />
-        <argument
-            android:name="initialPosition"
-            app:argType="integer"
-            app:nullable="false" />
-    </fragment>
-    <action
-        android:id="@+id/action_global_imagePagerComposeFragment"
-        app:destination="@id/imagePagerComposeFragment"
-        app:enterAnim="@anim/nav_enter_from_bottom"
-        app:exitAnim="@anim/nav_exit_from_bottom"
-        app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
-        app:popExitAnim="@anim/nav_pop_exit_from_bottom" />
-
-    <fragment
-        android:id="@+id/imageViewerFragment"
-        android:name="com.github.panpf.sketch.sample.ui.viewer.view.ImageViewerFragment"
-        android:label="ImageViewerFragment">
-        <argument
-            android:name="itemIndex"
-            app:argType="integer"
-            app:nullable="false" />
-        <argument
-            android:name="originImageUri"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="previewImageUri"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="thumbnailImageUrl"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>
-    <action
-        android:id="@+id/action_global_imageZoomFragment"
-        app:destination="@id/imageViewerFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
-        android:id="@+id/giphyGifListFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gif.giphy.GiphyGifListFragment"
-        android:label="GiphyGifListFragment" />
-    <action
-        android:id="@+id/action_giphyGifListFragment"
-        app:destination="@id/giphyGifListFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
         android:id="@+id/localVideoListFragment"
-        android:name="com.github.panpf.sketch.sample.ui.video.LocalVideoListFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.video.LocalVideoListFragment"
         android:label="LocalVideoListFragment" />
     <action
         android:id="@+id/action_localVideoListFragment"
@@ -173,56 +214,6 @@
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.github.panpf.sketch.sample.ui.setting.SettingsFragment"
-        android:label="SettingsFragment" />
-    <action
-        android:id="@+id/action_settingsFragment"
-        app:destination="@id/settingsFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
-        android:id="@+id/giphyGifListComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gif.giphy.GiphyGifListComposeFragment"
-        android:label="GiphyGifListComposeFragment" />
-    <action
-        android:id="@+id/action_giphyGifListComposeFragment"
-        app:destination="@id/giphyGifListComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
-        android:id="@+id/pexelsPhotoListComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.photo.pexels.PexelsPhotoListComposeFragment"
-        android:label="PexelsPhotoListComposeFragment" />
-    <action
-        android:id="@+id/action_pexelsPhotoListComposeFragment"
-        app:destination="@id/pexelsPhotoListComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
-        android:id="@+id/localPhotoListComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.photo.local.LocalPhotoListComposeFragment"
-        android:label="LocalPhotoListComposeFragment" />
-    <action
-        android:id="@+id/action_localPhotoListComposeFragment"
-        app:destination="@id/localPhotoListComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <!-- Test -->
 
     <fragment
         android:id="@+id/fetcherTestFragment"
@@ -258,7 +249,7 @@
             app:nullable="false" />
     </fragment>
     <action
-        android:id="@+id/action_global_decoderTestImageFragment"
+        android:id="@+id/action_decoderTestImageFragment"
         app:destination="@id/decoderTestImageFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
@@ -290,12 +281,12 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/insanityTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.insanity.InsanityTestFragment"
-        android:label="InsanityTestFragment" />
+        android:id="@+id/insanityTestViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.insanity.InsanityTestViewFragment"
+        android:label="InsanityTestViewFragment" />
     <action
-        android:id="@+id/action_insanityTestFragment"
-        app:destination="@id/insanityTestFragment"
+        android:id="@+id/action_insanityTestViewFragment"
+        app:destination="@id/insanityTestViewFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
@@ -314,12 +305,12 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/progressIndicatorTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestFragment"
-        android:label="ProgressIndicatorTestFragment" />
+        android:id="@+id/progressIndicatorTestViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewFragment"
+        android:label="ProgressIndicatorTestViewFragment" />
     <action
-        android:id="@+id/action_progressIndicatorTestFragment"
-        app:destination="@id/progressIndicatorTestFragment"
+        android:id="@+id/action_progressIndicatorTestViewFragment"
+        app:destination="@id/progressIndicatorTestViewFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
@@ -327,7 +318,7 @@
 
     <fragment
         android:id="@+id/progressIndicatorTestComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestComposeFragment"
         android:label="ProgressIndicatorTestFragment" />
     <action
         android:id="@+id/action_progressIndicatorTestComposeFragment"
@@ -338,24 +329,24 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/animatablePlaceholderTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.AnimatablePlaceholderTestFragment"
-        android:label="ProgressIndicatorTestFragment" />
+        android:id="@+id/animatablePlaceholderTestViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.placeholder.AnimatablePlaceholderTestViewFragment"
+        android:label="ProgressIndicatorTestViewFragment" />
     <action
-        android:id="@+id/action_animatablePlaceholder"
-        app:destination="@id/animatablePlaceholderTestFragment"
+        android:id="@+id/action_animatablePlaceholderTestViewFragment"
+        app:destination="@id/animatablePlaceholderTestViewFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/animatablePlaceholderComposeTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.AnimatablePlaceholderComposeTestFragment"
-        android:label="ProgressIndicatorTestFragment" />
+        android:id="@+id/animatablePlaceholderTestComposeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.placeholder.AnimatablePlaceholderTestComposeFragment"
+        android:label="AnimatablePlaceholderTestComposeFragment" />
     <action
-        android:id="@+id/action_animatablePlaceholderCompose"
-        app:destination="@id/animatablePlaceholderComposeTestFragment"
+        android:id="@+id/action_animatablePlaceholderTestComposeFragment"
+        app:destination="@id/animatablePlaceholderTestComposeFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
@@ -363,7 +354,7 @@
 
     <fragment
         android:id="@+id/shareElementTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.ShareElementTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.shareelement.ShareElementTestFragment"
         android:label="ProgressIndicatorTestFragment" />
     <action
         android:id="@+id/action_shareElementTestFragment"
@@ -385,12 +376,26 @@
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
 
+    <!-- Other -->
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.github.panpf.sketch.sample.ui.setting.SettingsFragment"
+        android:label="SettingsFragment" />
+    <action
+        android:id="@+id/action_settingsFragment"
+        app:destination="@id/settingsFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
     <!-- Dialog -->
 
     <dialog
-        android:id="@+id/imageInfoDialogFragment"
-        android:name="com.github.panpf.sketch.sample.ui.setting.ImageInfoDialogFragment"
-        android:label="ImageInfoDialogFragment">
+        android:id="@+id/photoInfoDialogFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoInfoDialogFragment"
+        android:label="PhotoInfoDialogFragment">
         <argument
             android:name="uri"
             android:defaultValue="null"
@@ -433,8 +438,8 @@
             app:nullable="true" />
     </dialog>
     <action
-        android:id="@+id/action_global_imageInfoDialogFragment"
-        app:destination="@id/imageInfoDialogFragment" />
+        android:id="@+id/action_photoInfoDialogFragment"
+        app:destination="@id/photoInfoDialogFragment" />
 
     <dialog
         android:id="@+id/settingsDialogFragment"
@@ -446,6 +451,6 @@
             app:nullable="false" />
     </dialog>
     <action
-        android:id="@+id/action_global_settingsDialogFragment"
+        android:id="@+id/action_settingsDialogFragment"
         app:destination="@id/settingsDialogFragment" />
 </navigation>

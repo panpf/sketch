@@ -20,7 +20,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
-import com.github.panpf.sketch.sample.ui.photo.pexels.PhotoList
+import com.github.panpf.sketch.sample.ui.gallery.PhotoGrid
 
 class InsanityTestComposeFragment : BaseToolbarComposeFragment() {
 
@@ -28,7 +28,7 @@ class InsanityTestComposeFragment : BaseToolbarComposeFragment() {
 
     @Composable
     override fun DrawContent() {
-        PhotoList(
+        PhotoGrid(
             photoPagingFlow = insanityTestViewModel.pagingFlow,
         ) { _, _, _ ->
         }
