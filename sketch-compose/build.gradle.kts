@@ -50,5 +50,5 @@ dependencies {
     api(project(":sketch"))
     api(project(":sketch-compose-core"))
 
-    androidTestImplementation(libs.bundles.test)
+    androidTestImplementation(project(":sketch-test"))
 }

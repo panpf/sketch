@@ -39,7 +39,6 @@ android {
 dependencies {
     api(project(":sketch-gif"))
 
-    androidTestImplementation(libs.bundles.test)
     androidTestImplementation(project(":sketch-resources"))
     androidTestImplementation(project(":sketch-test-singleton"))
 }

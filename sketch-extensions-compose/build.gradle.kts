@@ -51,7 +51,6 @@ dependencies {
     api(project(":sketch-extensions-core"))
     api(libs.androidx.compose.foundation)
 
-    androidTestImplementation(libs.bundles.test)
     androidTestImplementation(project(":sketch-test"))
     androidTestImplementation(project(":sketch-test-singleton"))
 }

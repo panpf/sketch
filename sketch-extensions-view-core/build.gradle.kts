@@ -41,7 +41,6 @@ dependencies {
     api(project(":sketch-viewability"))
     api(libs.androidx.recyclerview)
 
-    androidTestImplementation(libs.bundles.test)
     androidTestImplementation(project(":sketch-resources"))
     androidTestImplementation(project(":sketch-test"))
     androidTestImplementation(project(":sketch-test-singleton"))

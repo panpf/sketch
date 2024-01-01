@@ -42,7 +42,6 @@ dependencies {
     api(libs.ffmpegMediaMetadataRetriever.core)
     api(libs.ffmpegMediaMetadataRetriever.native)
 
-    androidTestImplementation(libs.bundles.test)
     androidTestImplementation(project(":sketch-resources"))
     androidTestImplementation(project(":sketch-test-singleton"))
 }

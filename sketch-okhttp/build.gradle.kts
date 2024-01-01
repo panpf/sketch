@@ -40,5 +40,5 @@ dependencies {
     api(project(":sketch-core"))
     api(libs.okhttp3)
 
-    androidTestImplementation(libs.bundles.test)
+    androidTestImplementation(project(":sketch-test"))
 }

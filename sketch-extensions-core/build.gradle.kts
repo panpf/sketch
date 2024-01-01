@@ -39,7 +39,6 @@ android {
 dependencies {
     api(project(":sketch-core"))
 
-    androidTestImplementation(libs.bundles.test)
     androidTestImplementation(project(":sketch-resources"))
     androidTestImplementation(project(":sketch-test"))
     androidTestImplementation(project(":sketch-test-singleton"))

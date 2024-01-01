@@ -53,8 +53,6 @@ dependencies {
     api(libs.androidx.lifecycle.runtime)
     compileOnly(libs.composeStableMarker)
 
-    androidTestImplementation(libs.bundles.test)
-    androidTestImplementation(libs.androidx.fragment)
     androidTestImplementation(project(":sketch-test"))
     androidTestImplementation(project(":sketch-test-singleton"))
 }

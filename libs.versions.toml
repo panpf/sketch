@@ -66,7 +66,6 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 
 # android
-androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -87,7 +86,6 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidx-multidex" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
-androidx-navigation-safeargsgradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "androidx-paging" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging-compose" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "androidx-paging" }
@@ -140,7 +138,7 @@ okhttp3-logging = { module = "com.squareup.okhttp3:logging-interceptor", version
 retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit2" }
 retrofit2-kotlinxSerializationConverter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2-kotlinxSerializationConverter" }
 tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyin" }
-composeStableMarker = {module = "com.github.skydoves:compose-stable-marker", version.ref = "composeStableMarker"}
+composeStableMarker = { module = "com.github.skydoves:compose-stable-marker", version.ref = "composeStableMarker" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -152,63 +150,3 @@ org-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.seriali
 org-jetbrains-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 
 [bundles]
-androidx-compose = [
-    "androidx-activity-compose",
-    "androidx-compose-animation",
-    "androidx-compose-foundation",
-    "androidx-compose-material3",
-    "androidx-compose-runtime",
-    "androidx-compose-ui",
-    "androidx-compose-ui-tooling",
-    "androidx-lifecycle-viewmodel-compose",
-    "androidx-paging-compose",
-    "google-accompanist-swiperefresh",
-]
-androidx-navigation = [
-    "androidx-navigation-fragment",
-    "androidx-navigation-ui",
-]
-androidx-paging = [
-    "androidx-paging-common",
-    "androidx-paging-runtime",
-]
-panpf-assemblyadapter4 = [
-    "panpf-assemblyadapter4-pager",
-    "panpf-assemblyadapter4-pager2",
-    "panpf-assemblyadapter4-recycler",
-    "panpf-assemblyadapter4-recycler-paging",
-]
-panpf-tools4a = [
-    "panpf-tools4a-activity",
-    "panpf-tools4a-device",
-    "panpf-tools4a-display",
-    "panpf-tools4a-dimen",
-    "panpf-tools4a-fileprovider",
-    "panpf-tools4a-network",
-    "panpf-tools4a-toast",
-]
-panpf-tools4j = [
-    "panpf-tools4j-date",
-    "panpf-tools4j-math",
-    "panpf-tools4j-io",
-    "panpf-tools4j-security",
-]
-retrofit2 = [
-    "retrofit2",
-    "retrofit2-kotlinxSerializationConverter",
-]
-test = [
-    "androidx-test-runner",
-    "androidx-test-rules",
-    "androidx-test-ext-junit",
-    "junit",
-    "panpf-tools4a-device",
-    "panpf-tools4a-dimen",
-    "panpf-tools4a-display",
-    "panpf-tools4a-network",
-    "panpf-tools4a-run",
-    "panpf-tools4a-test",
-    "panpf-tools4j-reflect",
-    "panpf-tools4j-security",
-    "panpf-tools4j-test",
-]

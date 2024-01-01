@@ -40,5 +40,5 @@ dependencies {
     api(project(":sketch-core"))
     api(project(":sketch-viewability"))
 
-    androidTestImplementation(libs.bundles.test)
+    androidTestImplementation(project(":sketch-test"))
 }

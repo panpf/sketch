@@ -51,5 +51,5 @@ dependencies {
     api(libs.androidx.compose.foundation)
     api(libs.google.accompanist.drawablepainter)
 
-    androidTestImplementation(libs.bundles.test)
+    androidTestImplementation(project(":sketch-test"))
 }
