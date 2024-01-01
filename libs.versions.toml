@@ -11,6 +11,7 @@ androidx-activity = "1.6.1"
 androidx-annotation = "1.5.0"
 androidx-appcompat = "1.6.0"
 androidx-compose = "1.5.0"
+androidx-compose-material = "1.5.0"
 androidx-compose-material3 = "1.1.2"
 androidx-compose-compiler = "1.5.0"
 androidx-constraintlayout = "2.1.4"
@@ -71,6 +72,7 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
+androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose-material" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-compose-material3" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
@@ -97,7 +99,6 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "a
 
 # google
 google-accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "google-accompanist" }
-google-accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "google-accompanist" }
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 
 # panpf

@@ -16,7 +16,9 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -25,14 +27,20 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
+import androidx.paging.LoadState.Loading
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -43,10 +51,9 @@ import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.common.list.AppendState
 import com.github.panpf.sketch.sample.util.ignoreFirst
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.flow.Flow
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PhotoGrid(
     photoPagingFlow: Flow<PagingData<Photo>>,
@@ -54,50 +61,62 @@ fun PhotoGrid(
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit
 ) {
     val appSettingsService = LocalContext.current.appSettingsService
-    val lazyPagingItems = photoPagingFlow.collectAsLazyPagingItems()
+    val pagingItems = photoPagingFlow.collectAsLazyPagingItems()
     LaunchedEffect(Unit) {
         appSettingsService.ignoreExifOrientation.ignoreFirst().collect {
-            lazyPagingItems.refresh()
+            pagingItems.refresh()
         }
     }
-    SwipeRefresh(
-        state = SwipeRefreshState(lazyPagingItems.loadState.refresh is LoadState.Loading),
-        onRefresh = { lazyPagingItems.refresh() }
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = pagingItems.loadState.refresh is Loading,
+        onRefresh = { pagingItems.refresh() }
+    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pullRefresh(pullRefreshState)
     ) {
         val photoListLayoutMode by appSettingsService.photoListLayoutMode.collectAsState()
         if (LayoutMode.valueOf(photoListLayoutMode) == LayoutMode.GRID) {
-            PhotoNormalGrid(lazyPagingItems, animatedPlaceholder, onClick)
+            PhotoNormalGrid(pagingItems, animatedPlaceholder, onClick)
         } else {
-            PhotoStaggeredGrid(lazyPagingItems, animatedPlaceholder, onClick)
+            PhotoStaggeredGrid(pagingItems, animatedPlaceholder, onClick)
         }
+
+        PullRefreshIndicator(
+            refreshing = pagingItems.loadState.refresh is Loading,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 
 @Composable
 private fun PhotoNormalGrid(
-    lazyPagingItems: LazyPagingItems<Photo>,
+    pagingItems: LazyPagingItems<Photo>,
     animatedPlaceholder: Boolean,
-    onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit
+    onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit,
 ) {
-    val lazyGridState = rememberLazyGridState()
-    LaunchedEffect(lazyGridState.isScrollInProgress) {
+    val gridState = rememberLazyGridState()
+    LaunchedEffect(gridState.isScrollInProgress) {
         PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling =
-            lazyGridState.isScrollInProgress
+            gridState.isScrollInProgress
     }
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 100.dp),
-        state = lazyGridState,
+        state = gridState,
         contentPadding = PaddingValues(dimensionResource(id = R.dimen.grid_divider)),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
     ) {
         items(
-            count = lazyPagingItems.itemCount,
-            key = { lazyPagingItems.peek(it)?.diffKey ?: "" },
+            count = pagingItems.itemCount,
+            key = { pagingItems.peek(it)?.diffKey ?: "" },
             contentType = { 1 }
         ) { index ->
-            val item = lazyPagingItems[index]
+            val item = pagingItems[index]
             item?.let {
                 PhotoGridItem(
                     index = index,
@@ -105,19 +124,19 @@ private fun PhotoNormalGrid(
                     animatedPlaceholder = animatedPlaceholder,
                     staggeredGridMode = false
                 ) { photo, index ->
-                    onClick(lazyPagingItems.itemSnapshotList.items, photo, index)
+                    onClick(pagingItems.itemSnapshotList.items, photo, index)
                 }
             }
         }
 
-        if (lazyPagingItems.itemCount > 0) {
+        if (pagingItems.itemCount > 0) {
             item(
                 key = "AppendState",
                 span = { GridItemSpan(this.maxLineSpan) },
                 contentType = 2
             ) {
-                AppendState(lazyPagingItems.loadState.append) {
-                    lazyPagingItems.retry()
+                AppendState(pagingItems.loadState.append) {
+                    pagingItems.retry()
                 }
             }
         }
@@ -126,29 +145,29 @@ private fun PhotoNormalGrid(
 
 @Composable
 private fun PhotoStaggeredGrid(
-    lazyPagingItems: LazyPagingItems<Photo>,
+    pagingItems: LazyPagingItems<Photo>,
     animatedPlaceholder: Boolean,
-    onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit
+    onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit,
 ) {
-    val lazyGridState = rememberLazyStaggeredGridState()
-    LaunchedEffect(lazyGridState.isScrollInProgress) {
+    val gridState = rememberLazyStaggeredGridState()
+    LaunchedEffect(gridState.isScrollInProgress) {
         PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling =
-            lazyGridState.isScrollInProgress
+            gridState.isScrollInProgress
     }
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(minSize = 100.dp),
-        state = lazyGridState,
+        state = gridState,
         contentPadding = PaddingValues(dimensionResource(id = R.dimen.grid_divider)),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.grid_divider)),
         verticalItemSpacing = dimensionResource(id = R.dimen.grid_divider),
     ) {
         items(
-            count = lazyPagingItems.itemCount,
-            key = { lazyPagingItems.peek(it)?.diffKey ?: "" },
+            count = pagingItems.itemCount,
+            key = { pagingItems.peek(it)?.diffKey ?: "" },
             contentType = { 1 }
         ) { index ->
-            val item = lazyPagingItems[index]
+            val item = pagingItems[index]
             item?.let {
                 PhotoGridItem(
                     index = index,
@@ -156,19 +175,19 @@ private fun PhotoStaggeredGrid(
                     animatedPlaceholder = animatedPlaceholder,
                     staggeredGridMode = true
                 ) { photo, index ->
-                    onClick(lazyPagingItems.itemSnapshotList.items, photo, index)
+                    onClick(pagingItems.itemSnapshotList.items, photo, index)
                 }
             }
         }
 
-        if (lazyPagingItems.itemCount > 0) {
+        if (pagingItems.itemCount > 0) {
             item(
                 key = "AppendState",
                 span = StaggeredGridItemSpan.FullLine,
                 contentType = 2
             ) {
-                AppendState(lazyPagingItems.loadState.append) {
-                    lazyPagingItems.retry()
+                AppendState(pagingItems.loadState.append) {
+                    pagingItems.retry()
                 }
             }
         }
