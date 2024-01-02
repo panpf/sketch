@@ -74,6 +74,7 @@ fun DisplayRequest(
  * [Target] can only be [DisplayTarget], [ImageResult] can only be [DisplayResult]
  */
 @Stable
+// TODO Remove DisplayRequest and use ImageRequest directly
 interface DisplayRequest : ImageRequest {
 
     override fun newBuilder(

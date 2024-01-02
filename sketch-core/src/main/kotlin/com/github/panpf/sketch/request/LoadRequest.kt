@@ -57,6 +57,7 @@ fun LoadRequest(
  *
  * [Target] can only be [LoadTarget], [ImageResult] can only be [LoadResult]
  */
+// TODO Remove LoadRequest and use ImageRequest directly
 interface LoadRequest : ImageRequest {
 
     override fun newBuilder(

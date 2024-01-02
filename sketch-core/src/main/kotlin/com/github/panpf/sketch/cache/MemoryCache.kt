@@ -74,6 +74,7 @@ interface MemoryCache {
      */
     fun clear()
 
+    // TODO In 4.0, a Map<String, Any> will be created to store these metadata.
     class Value constructor(
         val countBitmap: CountBitmap,
         val imageUri: String,

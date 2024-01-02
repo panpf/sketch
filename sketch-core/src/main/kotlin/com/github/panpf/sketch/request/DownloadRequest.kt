@@ -56,6 +56,7 @@ fun DownloadRequest(
  *
  * [Target] can only be [DownloadTarget], [ImageResult] can only be [DownloadResult]
  */
+// TODO Remove DownloadRequest and use ImageRequest directly
 interface DownloadRequest : ImageRequest {
 
     override fun newBuilder(

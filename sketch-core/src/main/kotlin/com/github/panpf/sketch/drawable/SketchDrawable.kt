@@ -21,6 +21,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 /**
  * The public interface of Sketch Drawable, which extends the relevant information of the picture
  */
+// TODO Remove the interface
 interface SketchDrawable {
 
     val imageUri: String

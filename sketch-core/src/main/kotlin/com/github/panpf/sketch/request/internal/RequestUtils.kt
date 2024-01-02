@@ -97,6 +97,7 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
         appendQueryParameter("_downloadCachePolicy", it.toString())
     }
 
+    // TODO Define a Key interface. All interfaces that need to participate in key calculation implement this interface. Then SizeResolver, PrecisionDecider, ScaleDecider, BitmapDecodeInterceptor, DrawableDecodeInterceptor, RequestInterceptor, and bitmapConfig all implement this interface.
     if (this@newKey is LoadRequest || this@newKey is DisplayRequest) {
         bitmapConfig?.let {
             appendQueryParameter("_bitmapConfig", it.key)
@@ -111,6 +112,7 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
             appendQueryParameter("_preferQualityOverSpeed", true.toString())
         }
 
+        // TODO Split into three parameters: _size, _precision, and _scale, weakening the concept of Resize
         appendQueryParameter("_resize", newResizeKey(size))
         transformations?.takeIf { it.isNotEmpty() }?.let { list ->
             appendQueryParameter(
